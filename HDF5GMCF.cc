@@ -3287,6 +3287,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
 
     for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
         // We only check the original attribute name
+        // Remove the original "coordinates" attribute.
         if((*ira)->name == co_attrname) {
             Retrieve_H5_Attr_Value((*ira),var->fullpath);
             string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
@@ -3302,6 +3303,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
 
     if(true == has_coor_attr) {
 
+        // We need to loop through each element in the "coordinates".
         size_t ele_start_pos = 0;
         size_t cur_pos = orig_coor_value.find_first_of(sc);
         while(cur_pos !=string::npos) {
@@ -3311,11 +3313,13 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
             ele_start_pos = cur_pos+1;
             cur_pos = orig_coor_value.find_first_of(sc,cur_pos+1);
         }
+        // Flatten each element
         if(ele_start_pos == 0)
             flatten_coor_value = get_CF_string(orig_coor_value);
         else
             flatten_coor_value += get_CF_string(orig_coor_value.substr(ele_start_pos));
 
+        // Generate the new "coordinates" attribute.
         Attribute *attr = new Attribute();
         Add_Str_Attr(attr,co_attrname,flatten_coor_value);
         var->attrs.push_back(attr);
@@ -3325,6 +3329,8 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
  
 } 
 
+// The following two routines only handle one 2-D lat/lon CVs. It is replaced by the more general 
+// multi 2-D lat/lon CV routines. Leave it here just for references.
 #if 0
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
 
@@ -4996,7 +5002,7 @@ void GMFile:: Handle_Coor_Attr() {
         return;
     }
    
-    // Now handle the 2-D lat/lon case(note: this only applies to the one that dim. scale doesn't apply)
+    // Now handle the 2-D lat/lon case(note: this only applies to the non-dimscale cases)
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->rank == 2) {
@@ -5026,7 +5032,7 @@ void GMFile:: Handle_Coor_Attr() {
     // Check if having 2-D lat/lon CVs
     bool has_ll2d_coords = false;
 
-    // Since iscoard is true up to this point. So the netCDF-4 like 2-D case must fulfill if the program comes here.
+    // Since iscoard is false up to this point, So the netCDF-4 like 2-D lat/lon case must fulfill if the program comes here.
     if(General_Product == this->product_type && GENERAL_DIMSCALE == this->gproduct_pattern) 
         has_ll2d_coords = true; 
 
@@ -5054,9 +5060,9 @@ void GMFile:: Handle_Coor_Attr() {
 
             if(((*irv)->rank >=2)) { 
                
-                // Check if this var is under group_cv_paths, no, then check if this var's dims are the same as  GMCVAR rank =2 dims 
+                // Check if this var is under group_cv_paths, no, then check if this var's dims are the same as the dims of 2-D CVars 
                 if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) == grp_cv_paths.end()) 
-                    // If finding this var is associated with 2-D lat/lon CVs, will not keep the original "coordinates" attribute.
+                    // If finding this var is associated with 2-D lat/lon CVs, not keep the original "coordinates" attribute.
                     coor_attr_keep_exist = Check_Var_2D_CVars(*irv);
                 else {
                     coor_attr_keep_exist = true;
@@ -5066,7 +5072,7 @@ void GMFile:: Handle_Coor_Attr() {
                 if(product_type == SMAP)
                     coor_attr_keep_exist = true;
 
-                // Need to delete the original "coordinates" and rebuild the "coordinates" if this var is assocaited with the 2-D lat/lon CVs.
+                // Need to delete the original "coordinates" and rebuild the "coordinates" if this var is associated with the 2-D lat/lon CVs.
                 if (false == coor_attr_keep_exist) {
                     for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
                         ira !=(*irv)->attrs.end();) {
@@ -5079,7 +5085,7 @@ void GMFile:: Handle_Coor_Attr() {
                         }
                     }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ...
                 
-                    // Generate the "coordinates" attribute only for variables that have both 2-D lat/lon dim. names.
+                    // Generate the new "coordinates" attribute. 
                     for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
                         ird != (*irv)->dims.end(); ++ ird) {
                         for (vector<GMCVar *>::iterator ircv = this->cvars.begin();

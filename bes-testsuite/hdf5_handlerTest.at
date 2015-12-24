@@ -17,7 +17,7 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -150,6 +150,9 @@ AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_wrongdimorder.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_wrongdimorder.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_nocvs.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_nocvs.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_za.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_za.h5.das.bescmd])
+
 
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
