@@ -56,9 +56,11 @@ Attributes {
     latitude {
         String origname "latitude";
         String fullnamepath "/latitude";
+        String units "degrees_north";
     }
     longitude {
         String origname "longitude";
         String fullnamepath "/longitude";
+        String units "degrees_east";
     }
 }

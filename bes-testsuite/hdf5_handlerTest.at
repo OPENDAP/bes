@@ -17,7 +17,7 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])

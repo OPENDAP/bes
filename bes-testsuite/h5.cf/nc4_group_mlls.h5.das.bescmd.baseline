@@ -66,6 +66,7 @@ Attributes {
     g3_latitude {
         String origname "latitude";
         String fullnamepath "/g3/latitude";
+        String units "degrees_north";
     }
     g1_lat1 {
         String units "degrees_north";
@@ -80,6 +81,7 @@ Attributes {
     g3_longitude {
         String origname "longitude";
         String fullnamepath "/g3/longitude";
+        String units "degrees_east";
     }
     g1_lon1 {
         String units "degrees_east";
