@@ -1214,7 +1214,8 @@ void GMFile::Check_General_Product_Pattern() throw(Exception) {
 
     if(false == Check_Dimscale_General_Product_Pattern()) {
         if(false == Check_LatLon2D_General_Product_Pattern()) 
-            Check_LatLon1D_General_Product_Pattern();
+            if(false == Check_LatLon1D_General_Product_Pattern())
+                Check_LatLon_With_Coordinate_Attr_General_Product_Pattern();
     }
 
 }
@@ -1255,14 +1256,23 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
 
         if((*irv)->rank == 2) {
             if((*irv)->name == latname) {
-                ll_flag++;
-                lat_size[0] = (*irv)->getDimensions()[0]->size; 
-                lat_size[1] = (*irv)->getDimensions()[1]->size; 
+
+                string lat_path =HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+
+                // Tackle only the root group or the name of the group as "/Geolocation"
+                if("/" == lat_path || "/Geolocation/" == lat_path) {
+                    ll_flag++;
+                    lat_size[0] = (*irv)->getDimensions()[0]->size; 
+                    lat_size[1] = (*irv)->getDimensions()[1]->size; 
+                }
             }
             else if((*irv)->name == lonname) {
-                ll_flag++;
-                lon_size[0] = (*irv)->getDimensions()[0]->size; 
-                lon_size[1] = (*irv)->getDimensions()[1]->size; 
+                string lon_path = HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+                if("/" == lon_path || "/Geolocation/" == lon_path) {
+                    ll_flag++;
+                    lon_size[0] = (*irv)->getDimensions()[0]->size; 
+                    lon_size[1] = (*irv)->getDimensions()[1]->size; 
+                }
             }
             if(2 == ll_flag)
                 break;
@@ -1338,13 +1348,20 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
         irv != this->vars.end(); ++irv) {
 
         if((*irv)->rank == 1) {
-            if((*irv)->name == latname) {
-                ll_flag++;
-                lat_size = (*irv)->getDimensions()[0]->size; 
+            if((*irv)->name == latname)  {
+                string lat_path =HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+                // Tackle only the root group or the name of the group as "/Geolocation"
+                if("/" == lat_path || "/Geolocation/" == lat_path) {
+                    ll_flag++;
+                    lat_size = (*irv)->getDimensions()[0]->size; 
+                }
             }
             else if((*irv)->name == lonname) {
-                ll_flag++;
-                lon_size = (*irv)->getDimensions()[0]->size; 
+                string lon_path = HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+                if("/" == lon_path || "/Geolocation/" == lon_path) {
+                    ll_flag++;
+                    lon_size = (*irv)->getDimensions()[0]->size; 
+                }
             }
             if(2 == ll_flag)
                 break;
@@ -1400,6 +1417,10 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
 }
 
 
+bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception) {
+
+    return false;
+}
 #if 0
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" names.
 // This routine will check this case.
@@ -4985,6 +5006,12 @@ void GMFile:: Handle_Coor_Attr() {
         Handle_GPM_l1_Coor_Attr();
         return;
     }
+
+    // Handle Lat/Lon with "coordinates" attribute.
+    else if(product_type == General_Product && gproduct_pattern == GENERAL_LATLON_COOR_ATTR){
+        Handle_LatLon_With_CoordinateAttr_Coor_Attr();
+        return;
+    }
     // No need to handle products that follow COARDS.
     else if (true == iscoard) {
 
@@ -5317,6 +5344,11 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() throw(Exception){
         }
 
     }
+}
+
+void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
+
+
 }
 
 // Create Missing coordinate variables. Index numbers are used for these variables.

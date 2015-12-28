@@ -52,7 +52,7 @@
 
 enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
 enum EOS5Type {GRID,SWATH,ZA,OTHERVARS};
-enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,GENERAL_LATLON1D, OTHERGMS};
+enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,GENERAL_LATLON1D, GENERAL_LATLON_COOR_ATTR,OTHERGMS};
 enum EOS5AuraName {OMI,MLS,HIRDLS,TES,NOTAURA};
 static string FILE_ATTR_TABLE_NAME ="HDF5_GLOBAL";
 
@@ -830,6 +830,8 @@ namespace HDF5CF
             bool Check_LatLon2D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
             bool Check_LatLon1D_General_Product_Pattern() throw(Exception);
             bool Check_LatLon1D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
+
+            bool Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception);
             //bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
             void Add_Dim_Name_LatLon1D_General_Product() throw(Exception);
             void Add_Dim_Name_LatLon2D_General_Product() throw(Exception);
@@ -880,6 +882,7 @@ namespace HDF5CF
             bool Check_Var_2D_CVars(Var*) throw(Exception);
             bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
 
+            void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception);
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
             void Add_Aqu_Attrs() throw(Exception);
