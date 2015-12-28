@@ -211,12 +211,9 @@ void BESServerHandler::execute(Connection *c)
 		BESDEBUG("server2", "BESServerHandler::execute - command = " << cmd_str << endl);
 		BESDEBUG("server", "BESServerHandler::execute - command ... " << endl);
 
-
 		BESStopWatch sw;
 		if (BESISDEBUG( TIMING_LOG ))
 			sw.start("BESServerHandler::execute");
-
-
 
 		int descript = c->getSocket()->getSocketDescriptor();
 

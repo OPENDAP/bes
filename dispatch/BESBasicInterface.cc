@@ -122,6 +122,8 @@ void BESBasicInterface::validate_data_request()
  */
 void BESBasicInterface::build_data_request_plan()
 {
+    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+
     // The derived class build_data_request_plan should be run first to
     // parse the incoming request. Once parsed we can determine if there is
     // a return command

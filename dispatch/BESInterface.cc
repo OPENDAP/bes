@@ -68,19 +68,23 @@ list<p_bes_end> BESInterface::_end_list;
 
 using namespace std;
 
-static volatile sig_atomic_t sigalarm = 0; // FIXME Not used
+static volatile sig_atomic_t sigalarm = 0; //FIXME Not used
 static volatile int timeout = 0;    // non-zero is the timeout period in seconds
 
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        sigalarm = 1;   // FIXME Hack
+        sigalarm = 1;   // FIXME Not uesd
 
-        (*BESLog::TheLog()) << "Child listener timeout after " << timeout << " seconds, exiting." << endl;
-
-        // Try this: If we wind up here, raise SIGTERM using the default
-        // action which is to terminate the process.
-#if 1
+       LOG("Child listener timeout after " << timeout << " seconds, exiting." << endl);
+#if 0
+       // Maybe use an exception with sigwait() in a child thread. For the first
+       // version of 'timeout,' have the bes child listener exit using SIGTERM.
+       // jhrg 12/28/15
+       stringstream oss;
+       oss << "Child listener timeout after " << timeout << " seconds, exiting." << ends;
+       throw BESError(oss.str(), 6, __FILE__, __LINE__);
+#else
         signal(SIGTERM, SIG_DFL);
         raise(SIGTERM);
 #endif
@@ -102,8 +106,6 @@ static void register_signal_handler()
         throw BESInternalFatalError("Could not register a handler to catch beslistener alarm/timeout handler.", __FILE__,
         __LINE__);
 }
-
-
 
 BESInterface::BESInterface(ostream *output_stream) :
     _strm(output_stream), _dhi(0), _transmitter(0)
@@ -164,19 +166,6 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 int BESInterface::execute_request(const string &from)
 {
     BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
-
-    bool found = false;
-    string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
-    BESDEBUG("bes", "Set request timeout sentinel " << found << endl);
-
-    if (found) {
-        timeout = strtol(context.c_str(), NULL, 10);
-        LOG("Set request timeout to " << timeout << " seconds." << endl);
-        BESDEBUG("bes", "Set request timeout to " << timeout << " seconds." << endl);
-        // VERBOSE_LOG timeout
-        sigalarm = 0;
-        alarm(timeout);
-    }
 
     if (!_dhi) {
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
@@ -241,14 +230,16 @@ int BESInterface::execute_request(const string &from)
     catch (BESError & ex) {
         return exception_manager(ex);
     }
-    catch (bad_alloc &) {
-        string serr = "BES out of memory";
-        BESInternalFatalError ex(serr, __FILE__, __LINE__);
+    catch (bad_alloc &e) {
+        BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
+        return exception_manager(ex);
+    }
+    catch (exception &e) {
+        BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
         return exception_manager(ex);
     }
     catch (...) {
-        string serr = "An undefined exception has been thrown";
-        BESInternalError ex(serr, __FILE__, __LINE__);
+        BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
         return exception_manager(ex);
     }
 
@@ -258,11 +249,7 @@ int BESInterface::execute_request(const string &from)
     delete bes_timing::elapsedTimeToTransmitStart;
     bes_timing::elapsedTimeToTransmitStart = 0;
 
-    int status = finish(0 /* status */);
-
-    alarm(0);
-
-    return status;
+    return finish(0 /* status */);;
 }
 
 // I think this code was written when execute_request() called transmit_data()
@@ -299,7 +286,7 @@ int BESInterface::finish(int /*status*/)
         status = exception_manager(ex);
     }
 #endif
-#if 1
+
     // If there is error information then the transmit of the error failed,
     // print it to standard out. Once printed, delete the error
     // information since we are done with it.
@@ -308,7 +295,7 @@ int BESInterface::finish(int /*status*/)
         delete _dhi->error_info;
         _dhi->error_info = 0;
     }
-#endif
+
     // if there is a problem with the rest of these steps then all we will
     // do is log it to the BES log file and not handle the exception with
     // the exception manager.
@@ -420,6 +407,17 @@ void BESInterface::execute_data_request_plan()
         sw.start("BESInterface::execute_data_request_plan(\"" + _dhi->data[DATA_REQUEST] + "\")",
             _dhi->data[REQUEST_ID]);
 
+    // Set timeout if the 'bes_timeout' context value was passed in with the
+    // command.
+    bool found = false;
+    string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
+    if (found) {
+        timeout = strtol(context.c_str(), NULL, 10);
+        VERBOSE("Set request timeout to " << timeout << " seconds." << endl);
+        sigalarm = 0; // FIXME Not used
+        alarm(timeout);
+    }
+
     BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
     BESResponseHandler *rh = _dhi->response_handler;
     if (rh) {
@@ -437,6 +435,12 @@ void BESInterface::execute_data_request_plan()
 
     // And finally, transmit the response of this request
     transmit_data();
+
+    // Only clear the timeout if it has been set.
+    if (timeout != 0) {
+        timeout = 0;
+        alarm(0);
+    }
 }
 
 /** @brief Aggregate the resulting response object

@@ -82,7 +82,7 @@ void BESXMLInterface::validate_data_request()
  */
 void BESXMLInterface::build_data_request_plan()
 {
-
+    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
     BESDEBUG("besxml", "building request plan for xml document: " << endl << _dhi->data["XMLDoc"] << endl);
 
     if (BESLog::TheLog()->is_verbose()) {

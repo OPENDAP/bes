@@ -36,11 +36,10 @@
 #include <fstream>
 #include <string>
 
-#if 1
-#define LOG(x) do { *(BESLog::TheLog()) << "[" << BESDebug::GetPidStr() << "] " << x ; } while( 0 )
-
-#define VERBOSE_LOG(x) do { if ((BESLog::TheLog()->is_verbose())) *(BESLog::TheLog()) << "[" << BESDebug::GetPidStr() << "] " << x ; } while( 0 )
-#endif
+// Note that the BESLog::operator<<() methods will prefix output with
+// the time and PID by checking for the flush and endl stream operators.
+#define LOG(x) do { *(BESLog::TheLog()) << x ; } while( 0 )
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << x ; } while( 0 )
 
 #include "BESObj.h"
 
