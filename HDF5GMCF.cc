@@ -4974,27 +4974,6 @@ void GMFile:: Handle_Coor_Attr() {
            (*ircv)->attrs.push_back(attr);
         }
 
-        // We meet several products that miss the latitude and longitude CF units although they
-        // have the CV names like latitude/longitude, we should double check this case,
-        // add add the correct CF units if possible. We will watch if this is the right way.
-#if 0
-        else if((*ircv)->cvartype == CV_EXIST) {
-
-  
-          if((*ircv)->rank == 2) {
-            //Note: When the 2nd parameter is true in the function Is_geolatlon, it checks the lat/latitude/Latitude 
-            if(true == Is_geolatlon((*ircv)->name,true)) 
-                Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
-
-            //Note: When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
-            else if(true == Is_geolatlon((*ircv)->name,false))
-                Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
-}
-
-
-        }
-#endif
-
     } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin(); ...
    
     // No need to handle MeaSUREs SeaWiFS level 2 products
@@ -5031,27 +5010,26 @@ void GMFile:: Handle_Coor_Attr() {
         if((*ircv)->rank == 2 && (*ircv)->cvartype == CV_EXIST) {
 
             //Note: When the 2nd parameter is true in the function Is_geolatlon, it checks the lat/latitude/Latitude 
-            //if(true == Is_geolatlon((*ircv)->name,true)) 
-             //   Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
-
-            //Note: When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
-            //else if(true == Is_geolatlon((*ircv)->name,false))
-             //   Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
+            //      When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
 
             // The following code makes sure that the replacement only happens with the general 2-D lat/lon case.
             if(gp_latname == (*ircv)->name) { 
-                // Only if gp_latname is not lat/latitude/Latitude
+                // Only if gp_latname is not lat/latitude/Latitude, change the units
                 if(false == Is_geolatlon(gp_latname,true)) 
                     Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
             }
             else if(gp_lonname ==(*ircv)->name) { 
+                // Only if gp_lonname is not lon/longitude/Longitude, change the units
                 if(false == Is_geolatlon(gp_lonname,false))
                     Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
             }
+
+            // We meet several products that miss the 2-D latitude and longitude CF units although they
+            // have the CV names like latitude/longitude, we should double check this case,
+            // add add the correct CF units if possible. We will watch if this is the right way.
             else if(true == Is_geolatlon((*ircv)->name,true))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
 
-            //Note: When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
             else if(true == Is_geolatlon((*ircv)->name,false))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
         }
