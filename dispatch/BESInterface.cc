@@ -68,26 +68,22 @@ list<p_bes_end> BESInterface::_end_list;
 
 using namespace std;
 
-static volatile sig_atomic_t sigalarm = 0; //FIXME Not used
-static volatile int timeout = 0;    // non-zero is the timeout period in seconds
+// Define this to use sigwait() is a child thread to detect that SIGALRM
+// has been raised (i.e., that the timeout interval has elapsed). This
+// does not currently work, but could be a way to get information about
+// a timeout back to the BES's client if the BES itslef were structured
+// differently. See my comment further down. jhrg 12/28/15
+#undef USE_SIGWAIT
+
+static volatile int timeout = 0;    // timeout period in seconds; 0 --> no timeout
 
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        sigalarm = 1;   // FIXME Not uesd
+        LOG("Child listener timeout after " << timeout << " seconds, exiting." << endl);
 
-       LOG("Child listener timeout after " << timeout << " seconds, exiting." << endl);
-#if 0
-       // Maybe use an exception with sigwait() in a child thread. For the first
-       // version of 'timeout,' have the bes child listener exit using SIGTERM.
-       // jhrg 12/28/15
-       stringstream oss;
-       oss << "Child listener timeout after " << timeout << " seconds, exiting." << ends;
-       throw BESError(oss.str(), 6, __FILE__, __LINE__);
-#else
         signal(SIGTERM, SIG_DFL);
         raise(SIGTERM);
-#endif
     }
 }
 
@@ -103,9 +99,79 @@ static void register_signal_handler()
 
     act.sa_handler = catch_sig_alarm;
     if (sigaction(SIGALRM, &act, 0))
-        throw BESInternalFatalError("Could not register a handler to catch beslistener alarm/timeout handler.", __FILE__,
-        __LINE__);
+        throw BESInternalFatalError("Could not register a handler to catch alarm/timeout.", __FILE__, __LINE__);
 }
+
+#if USE_SIGWAIT
+
+// If the BES is changed so that the plan build here is run in a child thread,
+// then we can have a much more flexible signal catching scheme, including catching
+// the alarm signal used for the timeout. It's not possible to throw from a child
+// thread to a parent thread, but if the parent thread sees that SIGALRM is
+// raised, then it can stop the child thread (which is running the 'plan') and
+// return a suitable message to the front end. Similarly, the BES could also
+// handle a number of other signals using this scheme. These signals (SIGPIPE, ...)
+// are currently processed using while/for loop(s) in the bes/server code. It may
+// be that these signals are caught only in the master listener, but I can't
+// quite figure that out now... jhrg 12/28/15
+
+#include <pthread.h>
+
+
+// An alternative to a function that catches the signal; use sigwait()
+// in a child thread after marking the signal as blocked. When/if sigwait()
+// returns, look at the signal number and if it is the alarm, sort out
+// what to do (throw an exception, ...). NB: A signal handler cannot
+// portably throw an exception, but this code can.
+
+static pthread_t alarm_thread;
+
+static void* alarm_wait(void * /* arg */)
+{
+    BESDEBUG("bes", "Starting: " << __PRETTY_FUNCTION__ << endl);
+
+    // block SIGALRM
+    sigset_t sigset;
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGALRM);
+    sigprocmask(SIG_BLOCK, &sigset, NULL);
+
+    // Might replace this with a while loop. Not sure about interactions
+    // with other signal processing code in the BES. jhrg 12/28/15
+    int sig;
+    int result = sigwait(&sigset, &sig);
+    if (result != 0) {
+        BESDEBUG("bes", "Fatal error establishing timeout: " << strerror(result) << endl);
+        throw BESInternalFatalError(string("Fatal error establishing timeout: ") + strerror(result), __FILE__, __LINE__);
+    }
+    else if (result == 0 && sig == SIGALRM) {
+        BESDEBUG("bes", "Timeout found in " << __PRETTY_FUNCTION__ << endl);
+        throw BESError("Timeout", BES_TIMEOUT, __FILE__, __LINE__);
+    }
+    else {
+        stringstream oss;
+        oss << "While waiting for a timeout, found signal '" << result << "' in "  << __PRETTY_FUNCTION__ << ends;
+        BESDEBUG("bes", oss.str() << endl);
+        throw BESInternalFatalError(oss.str(), __FILE__, __LINE__);
+    }
+}
+
+static void wait_for_timeout()
+{
+    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+
+    pthread_attr_t thread_attr;
+
+    if (pthread_attr_init(&thread_attr) != 0)
+        throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
+    if (pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED /*PTHREAD_CREATE_JOINABLE*/) != 0)
+        throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
+
+    int status = pthread_create(&alarm_thread, &thread_attr, alarm_wait, NULL);
+    if (status != 0)
+        throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
+}
+#endif
 
 BESInterface::BESInterface(ostream *output_stream) :
     _strm(output_stream), _dhi(0), _transmitter(0)
@@ -116,6 +182,10 @@ BESInterface::BESInterface(ostream *output_stream) :
 
     // Install signal handler for alram() here
     register_signal_handler();
+
+#if USE_SIGWAIT
+    wait_for_timeout();
+#endif
 }
 
 BESInterface::~BESInterface()
@@ -220,9 +290,7 @@ int BESInterface::execute_request(const string &from)
         // 'response object' (the C++ object that will hold the response) and
         // then calls the transmitter to actually send it or build and send it.
         //
-        // It may be that for some kinds of requests/responses, the timeout alarm
-        // should be shut off deep down in code such as the dap module that actually
-        // starts sending data back to the OLFS or other front end.
+        // The timeout is also set in this method.
         execute_data_request_plan();
 
         _dhi->executed = true;
@@ -414,7 +482,6 @@ void BESInterface::execute_data_request_plan()
     if (found) {
         timeout = strtol(context.c_str(), NULL, 10);
         VERBOSE("Set request timeout to " << timeout << " seconds." << endl);
-        sigalarm = 0; // FIXME Not used
         alarm(timeout);
     }
 
@@ -492,10 +559,12 @@ void BESInterface::transmit_data()
             _dhi->error_info->print(strm);
             (*BESLog::TheLog()) << strm.str() << endl;
             BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
+
             _dhi->error_info->transmit(_transmitter, *_dhi);
         }
         else if (_dhi->response_handler) {
             BESDEBUG("bes", "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+
             _dhi->response_handler->transmit(_transmitter, *_dhi);
         }
 #if 0

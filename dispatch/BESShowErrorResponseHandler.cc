@@ -32,7 +32,7 @@
 
 #include <sstream>
 
-using std::istringstream ;
+using std::istringstream;
 
 #include "BESShowErrorResponseHandler.h"
 #include "BESDataNames.h"
@@ -42,12 +42,12 @@ using std::istringstream ;
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 
-BESShowErrorResponseHandler::BESShowErrorResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESShowErrorResponseHandler::~BESShowErrorResponseHandler( )
+BESShowErrorResponseHandler::~BESShowErrorResponseHandler()
 {
 }
 
@@ -65,50 +65,42 @@ BESShowErrorResponseHandler::~BESShowErrorResponseHandler( )
  * @see BESInfo
  * @see BESContextManager
  */
-void
-BESShowErrorResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESShowErrorResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    string etype_s = dhi.data[SHOW_ERROR_TYPE] ;
-    if( etype_s.empty() )
-    {
-	string err = dhi.action + " error type missing" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string etype_s = dhi.data[SHOW_ERROR_TYPE];
+    if (etype_s.empty()) {
+        string err = dhi.action + " error type missing";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    istringstream strm( etype_s ) ;
-    unsigned int etype = 0 ;
-    strm >> etype ;
-    if( !etype || etype > 5 )
-    {
-	string err = dhi.action + " invalid error type, should be 1-5" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    istringstream strm(etype_s);
+    unsigned int etype = 0;
+    strm >> etype;
+    if (!etype || etype > 5) {
+        string err = dhi.action + " invalid error type, should be 1-5";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    switch( etype )
-    {
-	case BES_INTERNAL_ERROR:
-	{
-	    string err = dhi.action + " Internal Error" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-	case BES_INTERNAL_FATAL_ERROR:
-	{
-	    string err = dhi.action + " Internal Fatal Error" ;
-	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
-	}
-	case BES_SYNTAX_USER_ERROR:
-	{
-	    string err = dhi.action + " Syntax User Error" ;
-	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	}
-	case BES_FORBIDDEN_ERROR:
-	{
-	    string err = dhi.action + " Forbidden Error" ;
-	    throw BESForbiddenError( err, __FILE__, __LINE__ ) ;
-	}
-	case BES_NOT_FOUND_ERROR:
-	{
-	    string err = dhi.action + " Not Found Error" ;
-	    throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
-	}
+
+    switch (etype) {
+    case BES_INTERNAL_ERROR: {
+        string err = dhi.action + " Internal Error";
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+    case BES_INTERNAL_FATAL_ERROR: {
+        string err = dhi.action + " Internal Fatal Error";
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
+    }
+    case BES_SYNTAX_USER_ERROR: {
+        string err = dhi.action + " Syntax User Error";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    }
+    case BES_FORBIDDEN_ERROR: {
+        string err = dhi.action + " Forbidden Error";
+        throw BESForbiddenError(err, __FILE__, __LINE__);
+    }
+    case BES_NOT_FOUND_ERROR: {
+        string err = dhi.action + " Not Found Error";
+        throw BESNotFoundError(err, __FILE__, __LINE__);
+    }
     }
 }
 
@@ -124,12 +116,10 @@ BESShowErrorResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESShowErrorResponseHandler::transmit( BESTransmitter */*transmitter*/,
-				        BESDataHandlerInterface &/*dhi*/ )
+void BESShowErrorResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
-    string err = "An exception should have been thrown, nothing to transmit" ;
-    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    string err = "An exception should have been thrown, nothing to transmit";
+    throw BESInternalError(err, __FILE__, __LINE__);
 }
 
 /** @brief dumps information about this object
@@ -138,19 +128,17 @@ BESShowErrorResponseHandler::transmit( BESTransmitter */*transmitter*/,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESShowErrorResponseHandler::dump( ostream &strm ) const
+void BESShowErrorResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESShowErrorResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESShowErrorResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESShowErrorResponseHandler::ResponseBuilder( const string &name )
+BESShowErrorResponseHandler::ResponseBuilder(const string &name)
 {
-    return new BESShowErrorResponseHandler( name ) ;
+    return new BESShowErrorResponseHandler(name);
 }
 

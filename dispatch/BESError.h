@@ -49,9 +49,8 @@
 #define BES_NOT_FOUND_ERROR 5
 
 // I added these; the timeout is, at this point, still an experiment.
+// jhrg 12/28/15
 #define BES_TIMEOUT 6
-
-#define BES_OTHER_ERROR 100
 
 
 /** @brief Abstract exception class for the BES with basic string message

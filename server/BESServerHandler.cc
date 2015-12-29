@@ -291,6 +291,7 @@ void BESServerHandler::execute(Connection *c)
 				case BES_SYNTAX_USER_ERROR:
 				case BES_FORBIDDEN_ERROR:
 				case BES_NOT_FOUND_ERROR:
+
 				default:
 				break;
 			}
