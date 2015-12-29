@@ -270,7 +270,7 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
                 }
             }
             else {
-                // TODO THis should not be an internal error - it's really a configuration error
+                // TODO This should not be an internal error - it's really a configuration error
                 // jhrg 2/20/15
                 string se = "Request handler \"" + dhi.container->get_container_type()
                     + "\" does not handle the response type \"" + dhi.action + "\"";

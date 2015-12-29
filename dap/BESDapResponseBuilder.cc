@@ -54,6 +54,9 @@
 #include <ctime>
 
 //#define DODS_DEBUG
+#define CLEAR_LOCAL_DATA
+#undef FUNCTION_CACHING
+#undef USE_LOCAL_TIMEOUT_SCHEME
 
 #include <DAS.h>
 #include <DDS.h>
@@ -80,10 +83,12 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <escaping.h>
 #include <util.h>
+#if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
 #include <SignalHandler.h>
 #include <EventHandler.h>
 #include <AlarmHandler.h>
+#endif
 #endif
 
 #include "TheBESKeys.h"
@@ -94,9 +99,6 @@
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
-
-#define CLEAR_LOCAL_DATA
-#undef FUNCTION_CACHING
 
 #define DAP_PROTOCOL_VERSION "3.2"
 
@@ -139,10 +141,12 @@ BESDapResponseBuilder::responseCache()
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
     // If an alarm was registered, delete it. The register code in SignalHandler
     // always deletes the old alarm handler object, so only the one returned by
     // remove_handler needs to be deleted at this point.
     delete dynamic_cast<AlarmHandler*>(SignalHandler::instance()->remove_handler(SIGALRM));
+#endif
 }
 
 /** Return the entire DAP2 constraint expression in a string.  This
@@ -291,14 +295,24 @@ int BESDapResponseBuilder::get_timeout() const
 void
 BESDapResponseBuilder::timeout_on() const
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
     alarm(d_timeout);
+#endif
 #endif
 }
 
 /**
  * Turn off the timeout.
- * @see timeout_on() and register_timeout().
+ *
+ * @note This is the only part of timeout system that this code originally
+ * had that is used. The BES timeout is set/controlled in bes/dispatch/BESInterface
+ * in the 'int BESInterface::execute_request(const string &from)' method. This
+ * method here is used to turn off the alarm signal once data responses are sent
+ * so that a response that takes a long time to send because of a slow network
+ * won't be cut off in mid stream.
+ *
+ * @see BESInterface::execute_request(const string &from)
  */
 void
 BESDapResponseBuilder::timeout_off()
@@ -316,10 +330,12 @@ BESDapResponseBuilder::timeout_off()
  */
 void BESDapResponseBuilder::register_timeout() const
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
     SignalHandler *sh = SignalHandler::instance();
     EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler());
     delete old_eh;
+#endif
 #endif
 }
 
@@ -331,6 +347,7 @@ void BESDapResponseBuilder::register_timeout() const
  */
 void BESDapResponseBuilder::establish_timeout(ostream &) const
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
     if (d_timeout > 0) {
         SignalHandler *sh = SignalHandler::instance();
@@ -338,6 +355,7 @@ void BESDapResponseBuilder::establish_timeout(ostream &) const
         delete old_eh;
         alarm(d_timeout);
     }
+#endif
 #endif
 }
 
