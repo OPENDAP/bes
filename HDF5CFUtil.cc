@@ -215,6 +215,17 @@ void HDF5CFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_in
        str = newstr;
 }
 
+void
+HDF5CFUtil::Split_helper(vector<string> &tokens, const string &text, const char sep)
+{
+    string::size_type start = 0, end = 0;
+    while ((end = text.find(sep, start)) != string::npos) {
+        tokens.push_back(text.substr(start, end - start));
+        start = end + 1;
+    }
+    tokens.push_back(text.substr(start));
+}
+
            
 // From a string separated by a separator to a list of string,
 // for example, split "ab,c" to {"ab","c"}

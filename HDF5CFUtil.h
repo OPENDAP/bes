@@ -84,6 +84,8 @@ struct HDF5CFUtil {
                static void Split (const char *sz, char sep,
                             std::vector < std::string > &names);
 
+               static void Split_helper(vector<string>&tokens, const string &text,const char sep);
+
                // Parse GPM Level 3 GridHeaders
                //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
                static void parser_gpm_l3_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, 

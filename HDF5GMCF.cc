@@ -1419,6 +1419,31 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
 
 bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception) {
 
+    bool ret_value = false;
+    string co_attrname = "coordinates";
+    string co_attrvalue="";
+    string unit_attrname = "units";
+    string lat_unit_attrvalue ="degrees_north";
+    string lon_unit_attrvalue ="degrees_east";
+
+ for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        if((*irv)->rank >=2) {
+            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
+                ira !=(*irv)->attrs.end();++ira) {
+                if((*ira)->name == co_attrname) {
+                    Retrieve_H5_Attr_Value((*ira),(*irv)->fullpath);
+                    string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
+                    vector<string> coord_values;
+                    char sep=' ';
+                    HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
+                    // STOPPP - 
+                }
+            }
+
+        }
+
+    }
     return false;
 }
 #if 0
