@@ -1429,8 +1429,8 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
     bool coor_has_lat_flag = false;
     bool coor_has_lon_flag = false;
 
-    vector<Var*> tempcvar_2dlat;
-    vector<Var*> tempcvar_2dlon;
+    vector<Var*> tempvar_lat;
+    vector<Var*> tempvar_lon;
 
     // Check if having both lat, lon coordinate values.
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -1447,8 +1447,6 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
 for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs)
 cerr<<"coord value is "<<(*irs) <<endl;
 
-                    string coord_value_suffix1;
-                    string coord_value_suffix2;
                        
                     for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs) {
                         string coord_value_suffix1;
@@ -1479,8 +1477,60 @@ cerr<<"coord value is "<<(*irs) <<endl;
 
     // Check the variable names that include latitude and longitude suffixes such as lat,latitude and Latitude. 
     if(true == coor_has_lat_flag && true == coor_has_lon_flag) {
-        
 
+        for (vector<Var *>::iterator irv = this->vars.begin();
+            irv != this->vars.end(); ++irv) {
+            bool var_is_lat = false;
+            bool var_is_lon = false;
+         
+            string varname = (*irv)->name;
+            string ll_ssuffix;
+            string ll_lsuffix;
+            if(varname.size() >=3) {
+                ll_ssuffix = varname.substr(varname.size()-3,3);
+                if(varname.size() >=6)
+                    ll_lsuffix = varname.substr(varname.size()-6,6);
+            }
+            if(ll_ssuffix=="lat" || ll_lsuffix =="latitude" || ll_lsuffix == "Latitude")
+                var_is_lat = true;
+            else if(ll_ssuffix=="lon" || ll_lsuffix =="longitude" || ll_lsuffix == "Longitude")
+                var_is_lon = true;
+ 
+            if(true == var_is_lat) {
+                Var * lat = new Var(*irv);
+                tempvar_lat.push_back(lat);
+
+            }
+            else if(true == var_is_lon) {
+                Var * lon = new Var(*irv);
+                tempvar_lon.push_back(lon);
+            }
+
+        }
+
+        // Build up lat/lon name-size struct, 
+        // 1) Compare the rank, sizes and the orders of tempvar_lon against tempvar_lat
+        //      rank >=2 the sizes,orders, should be consistent
+        //      rank =1, no check issue.
+        //   2) If the condition is fulfilled, save them to the vector struct, also mark if more than lon is found, 
+        //      only pick up the correct one. If no correct one, remove this lat/lon.
+        for(vector<Var*>:: iterator irlat = tempvar_lat.begin(); irlat!=tempvar_lat.end();++irlat) {
+cerr<<"lat variable name is "<<(*irlat)->fullpath <<endl;
+            set<string> lon_candidate_path;
+            for(vector<Var*>:: iterator irlon = tempvar_lon.begin(); irlon!=tempvar_lon.end();++irlon) {
+cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
+                if ((*irlat)->rank == (*irlon)->rank) {
+                    if((*irlat)->rank == 1) 
+                        lon_candidate_path.insert((*irlon)->fullpath);
+                    else { // Check the dim order and size.
+   
+                    }
+                }               
+            }
+        }
+        
+        release_standalone_var_vector(tempvar_lat);
+        release_standalone_var_vector(tempvar_lon);
 
     }
     return false;

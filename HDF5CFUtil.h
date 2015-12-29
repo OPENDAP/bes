@@ -63,7 +63,7 @@ struct Name_Size_2Pairs {
     std::string name2;
     hsize_t size1;
     hsize_t size2;
-
+    int  rank;
 };
 
 struct HDF5CFUtil {
