@@ -41,17 +41,14 @@
 
 // BES_INTERNAL_FATAL_ERROR will cause the bes listener to exit()
 // while the others (BES_INTERNAL_ERROR, ...) won't.
-// FIXME I think TIMEOUT should also exit, but maybe not. jhrg 12/28/15
 #define BES_INTERNAL_FATAL_ERROR 2
 
 #define BES_SYNTAX_USER_ERROR 3
 #define BES_FORBIDDEN_ERROR 4
 #define BES_NOT_FOUND_ERROR 5
 
-// I added these; the timeout is, at this point, still an experiment.
-// jhrg 12/28/15
+// I added this for the timeout feature. jhrg 12/28/15
 #define BES_TIMEOUT 6
-
 
 /** @brief Abstract exception class for the BES with basic string message
  *

@@ -39,6 +39,8 @@
 #include <unistd.h>
 #endif
 
+#include <setjmp.h> // Used for the timeout processing
+
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -66,6 +68,8 @@
 list<p_bes_init> BESInterface::_init_list;
 list<p_bes_end> BESInterface::_end_list;
 
+static jmp_buf timeout_jump;
+
 using namespace std;
 
 // Define this to use sigwait() is a child thread to detect that SIGALRM
@@ -82,8 +86,17 @@ static void catch_sig_alarm(int sig)
     if (sig == SIGALRM) {
         LOG("Child listener timeout after " << timeout << " seconds, exiting." << endl);
 
+        // Causes setjmp() below to return 1; see the call to
+        // execute_data_request_plan() in execute_request() below.
+        // jhrg 12/29/15
+        longjmp(timeout_jump, 1);
+#if 0
+        // This is the old version of this code; it forced the BES child
+        // listener to exit without returning an error message to the
+        // OLFS/client. jhrg 12/29/15
         signal(SIGTERM, SIG_DFL);
         raise(SIGTERM);
+#endif
     }
 }
 
@@ -114,6 +127,13 @@ static void register_signal_handler()
 // are currently processed using while/for loop(s) in the bes/server code. It may
 // be that these signals are caught only in the master listener, but I can't
 // quite figure that out now... jhrg 12/28/15
+//
+// NB: It might be possible to edit this so that it writes info to the OLFS and
+// then uses the 'raise SIGTERM' technique to exit. That way the OLFS will at least
+// get a message about the timeout. I'm not sure how to close up the PPT part
+// of the conversation, however. The idea would be that the current command's DHI
+// would be passed in as an arg and then the stream accessed that way. The BESError
+// would be written to the stream and the child process killed. jhrg 12/2/9/15
 
 #include <pthread.h>
 
@@ -290,8 +310,17 @@ int BESInterface::execute_request(const string &from)
         // 'response object' (the C++ object that will hold the response) and
         // then calls the transmitter to actually send it or build and send it.
         //
-        // The timeout is also set in this method.
-        execute_data_request_plan();
+        // The timeout is also set in execute_data_request_plan(). The alarm signal
+        // handler (above), run when the timeout expires, will call longjmp with a
+        // return value of 1.
+        if (setjmp(timeout_jump) == 0) {
+            execute_data_request_plan();
+        }
+        else {
+            ostringstream oss;
+            oss << "BES listener timeout after " << timeout << " seconds." << ends;
+            throw BESError(oss.str(), BES_TIMEOUT, __FILE__, __LINE__);
+        }
 
         _dhi->executed = true;
     }
