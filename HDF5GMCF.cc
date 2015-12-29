@@ -1426,7 +1426,14 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
     string lat_unit_attrvalue ="degrees_north";
     string lon_unit_attrvalue ="degrees_east";
 
- for (vector<Var *>::iterator irv = this->vars.begin();
+    bool coor_has_lat_flag = false;
+    bool coor_has_lon_flag = false;
+
+    vector<Var*> tempcvar_2dlat;
+    vector<Var*> tempcvar_2dlon;
+
+    // Check if having both lat, lon coordinate values.
+    for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
         if((*irv)->rank >=2) {
             for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
@@ -1437,11 +1444,43 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
                     vector<string> coord_values;
                     char sep=' ';
                     HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
-                    // STOPPP - 
+for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs)
+cerr<<"coord value is "<<(*irs) <<endl;
+
+                    string coord_value_suffix1;
+                    string coord_value_suffix2;
+                       
+                    for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs) {
+                        string coord_value_suffix1;
+                        string coord_value_suffix2;
+                        if((*irs).size() >=3) {
+                            coord_value_suffix1 = (*irs).substr((*irs).size()-3,3);
+                            if((*irs).size() >=6)
+                                coord_value_suffix2 = (*irs).substr((*irs).size()-6,6);
+                        }
+                        if(coord_value_suffix1=="lat" || coord_value_suffix2 =="latitude" || coord_value_suffix2 == "Latitude")
+                            coor_has_lat_flag = true;
+                        else if(coord_value_suffix1=="lon" || coord_value_suffix2 =="longitude" || coord_value_suffix2 == "Longitude")
+                            coor_has_lon_flag = true;
+                    }
+
+                    if(true == coor_has_lat_flag && true == coor_has_lon_flag)
+                        break;
                 }
             }
-
+            if(true == coor_has_lat_flag && true == coor_has_lon_flag)
+                break;
+            else {
+                coor_has_lat_flag = false;
+                coor_has_lon_flag = false;
+            }
         }
+    }
+
+    // Check the variable names that include latitude and longitude suffixes such as lat,latitude and Latitude. 
+    if(true == coor_has_lat_flag && true == coor_has_lon_flag) {
+        
+
 
     }
     return false;

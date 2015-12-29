@@ -58,6 +58,14 @@ enum H5DataType
 
 using namespace std;
 
+struct Name_Size_2Pairs {
+    std::string name1;
+    std::string name2;
+    hsize_t size1;
+    hsize_t size2;
+
+};
+
 struct HDF5CFUtil {
 
 
