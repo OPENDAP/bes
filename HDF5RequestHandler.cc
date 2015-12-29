@@ -180,6 +180,11 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
+    catch (BESError &e){
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw;
+    }
     catch(...) {
 
         if(cf_fileid !=-1)
@@ -310,9 +315,16 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         if(fileid !=-1)
             H5Fclose(fileid);
 
-
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
+    }
+    catch (BESError &e){
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+        throw;
     }
     catch(...) {
 
@@ -471,6 +483,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
+    catch (BESError &e){
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+        throw;
+    }
     catch(...) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -547,6 +567,11 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
             H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
+    }
+    catch (BESError &e){
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw;
     }
     catch(...) {
         if(cf_fileid !=-1)
@@ -682,6 +707,13 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
+    catch (BESError &e){
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+        throw;
+    }
     catch(...) {
 
         if(cf_fileid !=-1)
@@ -767,6 +799,11 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
+    }
+    catch (BESError &e){
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw;
     }
     catch(...) {
 
