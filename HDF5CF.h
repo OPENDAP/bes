@@ -914,7 +914,7 @@ namespace HDF5CF
             string gp_latname;
             string gp_lonname; 
             set<string> grp_cv_paths;
-            vector<struct Name_Size_2Pairs> latlon2D_pairs;
+            vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
             //map<string,string>dimcvars_2dlatlon;
             bool iscoard;
             bool ll2d_no_cv;

@@ -1446,7 +1446,6 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
                     HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
 for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs)
 cerr<<"coord value is "<<(*irs) <<endl;
-
                        
                     for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs) {
                         string coord_value_suffix1;
@@ -1497,13 +1496,17 @@ cerr<<"coord value is "<<(*irs) <<endl;
                 var_is_lon = true;
  
             if(true == var_is_lat) {
-                Var * lat = new Var(*irv);
-                tempvar_lat.push_back(lat);
+                if((*irv)->rank > 0) {
+                    Var * lat = new Var(*irv);
+                    tempvar_lat.push_back(lat);
+                }
 
             }
             else if(true == var_is_lon) {
-                Var * lon = new Var(*irv);
-                tempvar_lon.push_back(lon);
+                if((*irv)->rank >0) {
+                    Var * lon = new Var(*irv);
+                    tempvar_lon.push_back(lon);
+                }
             }
 
         }
@@ -1537,6 +1540,37 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                     }
                 }
             }
+           
+            // Check the size of the lon., if the size is not 1, see if having the same path one.
+            if(lon_candidate_path.size() != 1) {
+                string lat_path = HDF5CFUtil::obtain_string_before_lastslash((*irlat)->fullpath);
+                string lon_final_candidate_path;
+                short num_lon_path = 0;
+                for(set<string>::iterator islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
+                    // Search the path.
+                    if(HDF5CFUtil::obtain_string_before_lastslash((*islon_path))==lat_path) {
+                        num_lon_path++;
+                        if(1 == num_lon_path)
+                            lon_final_candidate_path = *islon_path;
+                        else if(num_lon_path > 1) 
+                            break;
+                    }
+                }
+                if(num_lon_path ==1) {// insert this lat/lon pair to the struct
+                    Name_Size_2Pairs latlon_pair;
+                    
+                    latlon_pair.name1 = (*irlat)->fullpath;
+                    latlon_pair.name2 = lon_final_candidate_path;
+                    latlon_pair.size1 = (*irlat)->getDimensions()[0]->size;
+                    latlon_pair.size2 = (*irlat)->getDimensions()[1]->size;
+                    latlon_pair.rank = (*irlat)->rank;
+                    latloncv_candidate_pairs.push_back(latlon_pair);
+                }
+            }
+            else {//insert this lat/lon pair to the struct
+
+            }
+
         }
         
         release_standalone_var_vector(tempvar_lat);
