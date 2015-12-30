@@ -1500,7 +1500,6 @@ cerr<<"coord value is "<<(*irs) <<endl;
                     Var * lat = new Var(*irv);
                     tempvar_lat.push_back(lat);
                 }
-
             }
             else if(true == var_is_lon) {
                 if((*irv)->rank >0) {
@@ -1508,7 +1507,6 @@ cerr<<"coord value is "<<(*irs) <<endl;
                     tempvar_lon.push_back(lon);
                 }
             }
-
         }
 
         // Build up lat/lon name-size struct, 
@@ -1568,6 +1566,40 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                 }
             }
             else {//insert this lat/lon pair to the struct
+
+                Name_Size_2Pairs latlon_pair;
+                    
+                latlon_pair.name1 = (*irlat)->fullpath;
+                // Find how to get the first element of the size TOOODOOO,comment out the following line
+                //latlon_pair.name2 = lon_candidate_path[0];
+                latlon_pair.size1 = (*irlat)->getDimensions()[0]->size;
+                latlon_pair.size2 = (*irlat)->getDimensions()[1]->size;
+                latlon_pair.rank = (*irlat)->rank;
+                latloncv_candidate_pairs.push_back(latlon_pair);
+ 
+            }
+
+        }
+        
+        if(latloncv_candidate_pairs.size() >0) {
+            int num_1d_rank = 0;
+            int num_2d_rank = 0;
+            int num_g2d_rank = 0;
+            for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+                if(1 == (*ivs).rank)
+                    num_1d_rank++;
+                else if(2 == (*ivs).rank)
+                    num_2d_rank++;
+                else if((*ivs).rank >2) 
+                    num_g2d_rank++;
+                else 
+                    ;// throw an error
+            }
+ 
+            if (num_2d_rank !=0) 
+                ret_value = true;
+            else if(num_1d_rank!=0) {
+                // Check if lat and lon shares the same size and the dimension of a variable that holds the coordinates only holds one size.
 
             }
 
