@@ -30,29 +30,29 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESSyntaxUserError_h_
-#define BESSyntaxUserError_h_ 1
+#ifndef BESTimeoutError_h_
+#define BESTimeoutError_h_ 1
 
 #include "BESError.h"
 
 /** @brief error thrown if there is a user syntax error in the request or
  * any other user error
  */
-class BESSyntaxUserError : public BESError
+class BESTimeoutError : public BESError
 {
 protected:
-      			BESSyntaxUserError() {}
+    BESTimeoutError() {}
 public:
-      			BESSyntaxUserError( const string &s,
+    BESTimeoutError( const string &s,
 					  const string &file,
 					  unsigned int line )
-			    : BESError( s, BES_SYNTAX_USER_ERROR,
+			    : BESError( s, BES_TIMEOUT_ERROR,
 			                file, line ) {}
-    virtual		~BESSyntaxUserError() {}
+    virtual		~BESTimeoutError() {}
 
     virtual void	dump( ostream &strm ) const
 			{
-			    strm << "BESSyntaxUserError::dump - ("
+			    strm << "BESTimeoutError::dump - ("
 			         << (void *)this << ")" << endl ;
 			    BESIndent::Indent() ;
 			    BESError::dump( strm ) ;
@@ -61,5 +61,5 @@ public:
 
 };
 
-#endif // BESSyntaxUserError_h_
+#endif // BESTimeoutError_h_
 
