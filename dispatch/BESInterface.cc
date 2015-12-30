@@ -60,6 +60,7 @@
 
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+#include "BESTimeoutError.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 
@@ -166,7 +167,7 @@ static void* alarm_wait(void * /* arg */)
     }
     else if (result == 0 && sig == SIGALRM) {
         BESDEBUG("bes", "Timeout found in " << __PRETTY_FUNCTION__ << endl);
-        throw BESError("Timeout", BES_TIMEOUT, __FILE__, __LINE__);
+        throw BESTimeoutError("Timeout", __FILE__, __LINE__);
     }
     else {
         stringstream oss;
@@ -319,7 +320,7 @@ int BESInterface::execute_request(const string &from)
         else {
             ostringstream oss;
             oss << "BES listener timeout after " << timeout << " seconds." << ends;
-            throw BESError(oss.str(), BES_TIMEOUT, __FILE__, __LINE__);
+            throw BESTimeoutError(oss.str(), __FILE__, __LINE__);
         }
 
         _dhi->executed = true;
