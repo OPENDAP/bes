@@ -42,6 +42,7 @@
 
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
+#include "TheBESKeys.h"
 #include "BESDebug.h"
 
 #include "test_utils.h"
@@ -66,17 +67,16 @@ using namespace libdap;
 class ResponseCacheTest: public TestFixture {
 private:
 	TestTypeFactory ttf;
-	DDS *test_05_dds;
+	DDS *test_dds;
 	DDXParser dp;
 	ConstraintEvaluator eval;
-	BESDapResponseBuilder rb;
+	BESDapResponseBuilder *rb;
 
     string d_response_cache;
     BESDapResponseCache *cache;
 
 public:
-    ResponseCacheTest() : test_05_dds(0), dp(&ttf),
-		d_response_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0) {
+    ResponseCacheTest() : test_dds(0), dp(&ttf), rb(0), d_response_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0) {
     }
 
     ~ResponseCacheTest() {
@@ -84,21 +84,23 @@ public:
 
     void setUp() {
     	DBG(cerr << "setUp() - BEGIN" << endl);
-		if(bes_debug)
-			BESDebug::SetUp("cerr,all");
+		DBG(BESDebug::SetUp("cerr,all"));
 
     	string cid;
-    	test_05_dds = new DDS(&ttf);
-    	dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_05_dds, cid);
+    	test_dds = new DDS(&ttf);
+    	dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_dds, cid);
 
     	// for these tests, set the filename to the dataset_name. ...keeps the cache names short
-    	test_05_dds->filename(test_05_dds->get_dataset_name());
+    	test_dds->filename(test_dds->get_dataset_name());
 
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
-    	DBG(cerr << "DDS Name: " << test_05_dds->get_dataset_name() << endl);
+    	DBG(cerr << "DDS Name: " << test_dds->get_dataset_name() << endl);
     	DBG(cerr << "Intern CID: " << cid << endl);
 
     	clean_cache_dir(d_response_cache);
+
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
+    	rb = new BESDapResponseBuilder();
 
     	DBG(cerr << "setUp() - END" << endl);
     }
@@ -106,7 +108,7 @@ public:
 	void tearDown() {
 		DBG(cerr << "tearDown() - BEGIN" << endl);
 
-		delete test_05_dds;
+		delete test_dds;
 
 		clean_cache_dir(d_response_cache);
 
@@ -194,7 +196,7 @@ public:
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
 			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
 			cache->unlock_and_close(token);
 
@@ -203,7 +205,6 @@ public:
 			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
 			// TODO Stat the cache file to check it's size
 			delete cache_dds;
-	    	// cache->delete_instance();
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
@@ -222,7 +223,7 @@ public:
 		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -280,7 +281,7 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -290,7 +291,7 @@ public:
 
 			// This reads the dataset from the cache, but unlike the previous test,
 			// does so using the public interface.
-			cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
@@ -331,7 +332,7 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "b,u", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "b,u", rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -352,7 +353,7 @@ public:
 			delete cache_dds; cache_dds = 0;
 			oss.str("");
 
-			cache_dds = cache->cache_dataset(*test_05_dds, "b,u", &rb, &eval, token);
+			cache_dds = cache->cache_dataset(*test_dds, "b,u", rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);

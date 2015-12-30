@@ -27,6 +27,8 @@
 
 #include <string>
 
+#define DAP_PROTOCOL_VERSION "3.2"
+
 class BESDapResponseCache;
 
 namespace libdap {
@@ -44,16 +46,18 @@ namespace libdap {
 
 class BESDapResponseBuilder {
 public:
-	friend class ResponseBuilderTest;
+    friend class ResponseBuilderTest;
 
 protected:
 	std::string d_dataset;          /// Name of the dataset/database
-	std::string d_dap2ce;               /// DAP2 Constraint expression
+	std::string d_dap2ce;           /// DAP2 Constraint expression
 	std::string d_dap4ce;           /// DAP4 Constraint expression
 	std::string d_dap4function;     /// DAP4 Server Side Function expression
 	std::string d_btp_func_ce;      /// The BTP functions, extracted from the CE
 	int d_timeout;                  /// Response timeout after N seconds
-	std::string d_default_protocol;	/// Version std::string for the library's default protocol version
+	std::string d_default_protocol;	/// Version string for the library's default protocol version
+
+	bool d_cancel_timeout_on_send;  /// Should a timeout be cancelled once transmission starts?
 
 	/**
 	 * Time, if any, that the client will wait for an async response.
@@ -70,6 +74,7 @@ protected:
 	std::string d_store_result;
 
 	void initialize();
+
 	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
 
 	void send_dap4_data_using_ce(std::ostream &out, libdap::DMR &dmr, bool with_mime_headersr);
@@ -79,7 +84,9 @@ public:
 	/** Make an empty instance. Use the set_*() methods to load with needed
 	 values. You must call at least set_dataset_name() or be requesting
 	 version information. */
-	BESDapResponseBuilder()
+	BESDapResponseBuilder(): d_dataset(""), d_dap2ce(""), d_dap4ce(""), d_dap4function(""),
+	    d_btp_func_ce(""), d_timeout(0), d_default_protocol(DAP_PROTOCOL_VERSION),
+	    d_cancel_timeout_on_send(false), d_async_accepted(""), d_store_result("")
 	{
 		initialize();
 	}
@@ -113,11 +120,19 @@ public:
 	virtual std::string get_dataset_name() const;
 	virtual void set_dataset_name(const std::string _dataset);
 
+    /** @name DDS_timeout
+     *  Old deprecated BESDapResponseBuilder timeout code. Do not use.
+     *  @deprecated
+     */
+    ///@{
 	void register_timeout() const;
 	void set_timeout(int timeout = 0);
 	int get_timeout() const;
 	void timeout_on() const;
-	void timeout_off();
+    void timeout_off();
+	///@}
+
+	void conditional_timeout_cancel();
 
 	virtual void establish_timeout(std::ostream &stream) const;
 	virtual void remove_timeout() const;
@@ -148,8 +163,6 @@ public:
 
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
-
-    //virtual void promote_function_output_structure(libdap::DDS **dds);
 };
 
 #endif // _response_builder_h
