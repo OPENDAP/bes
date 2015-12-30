@@ -1523,9 +1523,19 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                     if((*irlat)->rank == 1) 
                         lon_candidate_path.insert((*irlon)->fullpath);
                     else { // Check the dim order and size.
-   
+
+                        bool same_dim = true;
+                        for(int dim_index = 0; dim_index <(*irlat)->rank; dim_index++) {
+                            if((*irlat)->getDimensions()[dim_index]->size !=
+                               (*irlon)->getDimensions()[dim_index]->size){ 
+                                same_dim = false;
+                                break;
+                            }
+                        }
+                        if(true == same_dim) 
+                            lon_candidate_path.insert((*irlon)->fullpath);
                     }
-                }               
+                }
             }
         }
         
