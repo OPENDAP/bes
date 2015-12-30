@@ -32,6 +32,13 @@ BES.LogName=@prefix@/var/bes.log
 BES.LogVerbose=no
 
 #-----------------------------------------------------------------------#
+# When the context 'bes-timeout' is used to set the BES timeout feature #
+# should the tiemout period include the time to send the response, or   #
+# just to build it? Teh default value is False.                         #
+#-----------------------------------------------------------------------#
+# BES.CancelTimeoutOnSend=true;
+
+#-----------------------------------------------------------------------#
 # Setting data information
 #-----------------------------------------------------------------------#
 

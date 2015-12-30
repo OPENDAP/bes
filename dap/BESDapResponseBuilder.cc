@@ -117,6 +117,7 @@ void BESDapResponseBuilder::initialize()
     TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, cancel_timeout_on_send, found);
     if (found && !cancel_timeout_on_send.empty()) {
         // The default value is false.
+        downcase(cancel_timeout_on_send);
         if (cancel_timeout_on_send == "yes" || cancel_timeout_on_send == "true")
             d_cancel_timeout_on_send = true;
     }
