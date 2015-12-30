@@ -66,12 +66,13 @@
 
 #include "BESLog.h"
 
+using namespace std;
+
 list<p_bes_init> BESInterface::_init_list;
 list<p_bes_end> BESInterface::_end_list;
 
 static jmp_buf timeout_jump;
-
-using namespace std;
+static bool timeout_jump_valid = false;
 
 // Define this to use sigwait() is a child thread to detect that SIGALRM
 // has been raised (i.e., that the timeout interval has elapsed). This
@@ -90,14 +91,15 @@ static void catch_sig_alarm(int sig)
         // Causes setjmp() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
         // jhrg 12/29/15
-        longjmp(timeout_jump, 1);
-#if 0
-        // This is the old version of this code; it forced the BES child
-        // listener to exit without returning an error message to the
-        // OLFS/client. jhrg 12/29/15
-        signal(SIGTERM, SIG_DFL);
-        raise(SIGTERM);
-#endif
+        if (timeout_jump_valid)
+            longjmp(timeout_jump, 1);
+        else {
+            // This is the old version of this code; it forces the BES child
+            // listener to exit without returning an error message to the
+            // OLFS/client. jhrg 12/29/15
+            signal(SIGTERM, SIG_DFL);
+            raise(SIGTERM);
+        }
     }
 }
 
@@ -314,6 +316,7 @@ int BESInterface::execute_request(const string &from)
         // handler (above), run when the timeout expires, will call longjmp with a
         // return value of 1.
         if (setjmp(timeout_jump) == 0) {
+            timeout_jump_valid = true;
             execute_data_request_plan();
         }
         else {
@@ -323,19 +326,26 @@ int BESInterface::execute_request(const string &from)
         }
 
         _dhi->executed = true;
+
+        // Once we exit the block where setjmp() was called, the jump_buf is not valid
+        timeout_jump_valid = false;
     }
     catch (BESError & ex) {
+        timeout_jump_valid = false;
         return exception_manager(ex);
     }
     catch (bad_alloc &e) {
+        timeout_jump_valid = false;
         BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
         return exception_manager(ex);
     }
     catch (exception &e) {
+        timeout_jump_valid = false;
         BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
         return exception_manager(ex);
     }
     catch (...) {
+        timeout_jump_valid = false;
         BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
         return exception_manager(ex);
     }
