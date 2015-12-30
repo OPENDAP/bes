@@ -138,7 +138,6 @@ static void register_signal_handler()
 
 #include <pthread.h>
 
-
 // An alternative to a function that catches the signal; use sigwait()
 // in a child thread after marking the signal as blocked. When/if sigwait()
 // returns, look at the signal number and if it is the alarm, sort out
@@ -201,7 +200,7 @@ BESInterface::BESInterface(ostream *output_stream) :
         throw BESInternalError("output stream must be set in order to output responses", __FILE__, __LINE__);
     }
 
-    // Install signal handler for alram() here
+    // Install signal handler for alarm() here
     register_signal_handler();
 
 #if USE_SIGWAIT
