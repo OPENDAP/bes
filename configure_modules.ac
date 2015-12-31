@@ -747,6 +747,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_ppt.pc
 		 bes_xml_command.pc
 		 doxy.conf
+		 main_page.doxygen
 		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
