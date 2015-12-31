@@ -1585,9 +1585,11 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
             int num_1d_rank = 0;
             int num_2d_rank = 0;
             int num_g2d_rank = 0;
+            vector<struct Name_Size_2Pairs> temp_1d_latlon_pairs;
             for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
-                if(1 == (*ivs).rank)
+                if(1 == (*ivs).rank) {
                     num_1d_rank++;
+                }
                 else if(2 == (*ivs).rank)
                     num_2d_rank++;
                 else if((*ivs).rank >2) 
@@ -1600,6 +1602,8 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                 ret_value = true;
             else if(num_1d_rank!=0) {
                 // Check if lat and lon shares the same size and the dimension of a variable that holds the coordinates only holds one size.
+                
+                
 
             }
 
