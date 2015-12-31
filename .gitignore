@@ -36,6 +36,8 @@ Makefile.in
 # to one of configure_modules.ac or configure_standard.ac
 configure.ac
 doxy.conf
+doxygen_warnings.txt
+main_page.doxygen
 
 conf/compile
 conf/config.guess
