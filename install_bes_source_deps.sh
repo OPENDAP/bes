@@ -17,33 +17,91 @@
 # a big difference. Also, building this way mimics what we will do when it's
 # time to make the release RPMs.
 
-set -e
+set -e # enable exit on error
 
 # hyrax-dependencies appends '/deps' to 'prefix'
 export prefix=$HOME
 export PATH=$HOME/deps/bin:$PATH
 
-# Force the build by un-commenting the following line
-# rm -rf $HOME/deps
+echo prefix: $prefix
 
-if test ! -d "$HOME/deps" -o ! -x "$HOME/deps/bin/bison"
+
+# Clean it 
+# rm -rf $HOME/deps $HOME/hyrax-dependencies $HOME/libdap4
+
+#------------------------------------------------------------------------------
+# Build hyrax-dependencies project
+#
+#
+newClone=false
+
+if test ! -f "$HOME/hyrax-dependencies/Makefile"
 then
-    wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
-    tar -xf hyrax-dependencies-1.11.2.tar
-    (cd hyrax-dependencies && make for-travis -j7 > /dev/null)
-    echo "Completed dependency build - stdout to /dev/null to save space"
+    echo "Cloning hyrax-dependencies."
+    (cd $HOME && git clone https://github.com/opendap/hyrax-dependencies)
+    echo "Cloned hyrax-dependencies"
+    newClone=true  
+fi     
+echo newClone: $newClone
+
+echo "Using 'git pull' to update hyrax-dependencies..."
+set +e # disable  exit on error
+pull_status="up-to-date"
+(cd $HOME/hyrax-dependencies; git pull) | grep "$pull_status" 
+if [ $? -ne 0 ]; then
+    pull_status="needs_update"
+fi
+set -e # (re)enable exit on error
+
+echo pull_status: $pull_status 
+
+if test "$newClone" = "true" -o ! $pull_status = "up-to-date"  -o ! -x "$HOME/deps/bin/bison" 
+then
+    echo "(Re)Building hyrax-dependencies (stdout > /dev/null)"
+    (cd $HOME/hyrax-dependencies && make for-travis -j7) > /dev/null
+    echo "Completed hyrax-dependencies build - stdout to /dev/null to save space"
 else
     echo "Using cached hyrax-dependencies."
 fi
 
-# unlike hyrax-dependencies, the libdap tar needs --prefix to be the
-# complete dir name. The hyrax-deps... project is a bit of a hack...
+# ls -l $HOME/deps/lib
 
-if test ! -x "$HOME/deps/bin/dap-config" -o ! "`dap-config --version`" = "libdap 3.16.0"
+#------------------------------------------------------------------------------
+# Build libdap4 project
+#
+#
+newClone=false
+
+if test ! -f "$HOME/libdap4/Makefile.am"
 then
-    wget http://www.opendap.org/pub/tmp/travis/libdap-3.16.0.tar.gz
-    tar -xzf libdap-3.16.0.tar.gz
-    (cd libdap-3.16.0 && ./configure --prefix=$prefix/deps/ && make -j7 && make install)
-else
-    echo "Using cached libdap."
+    echo "Cloning libdap4..."
+    (cd $HOME && git clone https://github.com/opendap/libdap4)
+    echo "Cloned libdap4"
+    newClone=true  
+fi     
+echo newClone: $newClone
+
+echo "Using 'git pull' to update libdap4..."
+pull_status="up-to-date"
+set +e # disable  exit on error
+(cd $HOME/libdap4; git pull) | grep "$pull_status" 
+if [ $? -ne 0 ]; then
+    pull_status="needs_update"
 fi
+set -e # (re)enable exit on error
+
+echo pull_status: $pull_status 
+
+if test "$newClone" = "true" -o ! $pull_status = "up-to-date"  -o ! -x "$HOME/deps/bin/dap-config" 
+then
+    echo "(Re)Building libdap4"
+    (cd $HOME/libdap4 && autoreconf -vif && ./configure --prefix=$prefix/deps/ && make -j7 && make install)
+    echo "Completed libdap4 build"
+else
+    echo "Using cached libdap4."
+fi
+
+gridfields-config --cflags
+
+ls -lR $HOME/deps
+
