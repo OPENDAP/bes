@@ -1589,6 +1589,7 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
             for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
                 if(1 == (*ivs).rank) {
                     num_1d_rank++;
+                    temp_1d_latlon_pairs.push_back(*ivs);
                 }
                 else if(2 == (*ivs).rank)
                     num_2d_rank++;
@@ -1601,7 +1602,26 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
             if (num_2d_rank !=0) 
                 ret_value = true;
             else if(num_1d_rank!=0) {
-                // Check if lat and lon shares the same size and the dimension of a variable that holds the coordinates only holds one size.
+                // TOOODDOO: Check if lat and lon share the same size and the dimension of a variable that holds the coordinates only holds one size.
+                for(vector<struct Name_Size_2Pairs>::iterator ivs=temp_1d_latlon_pairs.begin();ivs!=temp_1d_latlon_pairs.end();++ivs) {
+                    if((*ivs).size1 != (*ivs).size2) {
+                        ret_value = true;
+                        break;
+                    }
+                    else {// If 1-D lat and lon share the same size,we need to check if there is a variable
+                          // that has both lat and lon as the coordinates but only has one dimension that holds the size.
+                          // This is the SMAP level 2 case.
+                        for (vector<Var *>::iterator irv = this->vars.begin();
+                            irv != this->vars.end(); ++irv) {
+                            if((*ivs).rank >=2) {//STOP
+
+                            }
+     
+
+                        }
+                    }
+
+                }
                 
                 
 
