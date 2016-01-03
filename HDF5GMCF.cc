@@ -1679,12 +1679,13 @@ cerr<<"before check LatLon return value "<<endl;
     return ret_value;
 }
 
-void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*>lon_vec) {
+void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*> &lon_vec) {
 
     set<string> lon_candidate_path;
-    vector<pair<string,hsize_t>>lon_path_size_vec;
+    //vector<pair<int,int>> tlon_path_size_vec;
+    vector< pair<string,hsize_t> > lon_path_size_vec;
 
-    for(vector<Var*>:: iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
+    for(vector<Var *>::const_iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
 
 cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
         if (lat->rank == (*irlon)->rank) {
@@ -1711,8 +1712,7 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
         pair<string,hsize_t> lon_final_path_size;
         short num_lon_match = 0;
-        for(vector<pair<string,hsize_t>>::iterator islon =lon_path_size_vec.begin();islon!=lon_path_size_vec.end();++islon_path) {
-cerr<<"lon candidate path is "<<*islon_path <<endl;
+        for(vector <pair<string,hsize_t> >::iterator islon =lon_path_size_vec.begin();islon!=lon_path_size_vec.end();++islon) {
             // Search the path.
             if(HDF5CFUtil::obtain_string_before_lastslash((*islon).first)==lat_path) {
                 num_lon_match++;
@@ -1734,15 +1734,13 @@ cerr<<"lon candidate path is "<<*islon_path <<endl;
 
     }
 
-
-
 }
 
-void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*>lon_vec) {
+void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec) {
 
     set<string> lon_candidate_path;
 
-    for(vector<Var*>:: iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
+    for(vector<Var*>:: const_iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
 
 cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
         if (lat->rank == (*irlon)->rank) {

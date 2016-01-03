@@ -832,6 +832,8 @@ namespace HDF5CF
             bool Check_LatLon1D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
 
             bool Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception);
+            void Build_lat1D_latlon_candidate(Var*,const vector<Var*>&);
+            void Build_latg1D_latlon_candidate(Var*,const vector<Var*>&);
             //bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
             void Add_Dim_Name_LatLon1D_General_Product() throw(Exception);
             void Add_Dim_Name_LatLon2D_General_Product() throw(Exception);
