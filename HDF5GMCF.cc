@@ -1517,8 +1517,16 @@ cerr<<"coord value is "<<(*irs) <<endl;
         //      only pick up the correct one. If no correct one, remove this lat/lon.
         for(vector<Var*>:: iterator irlat = tempvar_lat.begin(); irlat!=tempvar_lat.end();++irlat) {
 cerr<<"lat variable name is "<<(*irlat)->fullpath <<endl;
+
+            if((*irlat)->rank == 1) 
+                Build_lat1D_latlon_candidate(*irlat,tempvar_lon);
+            else if((*irlat)->rank >1)
+                Build_latg1D_latlon_candidate(*irlat,tempvar_lon);
+             
             set<string> lon_candidate_path;
+
             for(vector<Var*>:: iterator irlon = tempvar_lon.begin(); irlon!=tempvar_lon.end();++irlon) {
+
 cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                 if ((*irlat)->rank == (*irlon)->rank) {
                     if((*irlat)->rank == 1) 
@@ -1538,13 +1546,16 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                     }
                 }
             }
+//for(set<string>::iterator ilon = lon_candidate_path.begin();ilon!=lon_can
+cerr<<"M1 "<<endl;
            
             // Check the size of the lon., if the size is not 1, see if having the same path one.
-            if(lon_candidate_path.size() != 1) {
+            if(lon_candidate_path.size() > 1) {
                 string lat_path = HDF5CFUtil::obtain_string_before_lastslash((*irlat)->fullpath);
                 string lon_final_candidate_path;
                 short num_lon_path = 0;
                 for(set<string>::iterator islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
+cerr<<"lon candidate path is "<<*islon_path <<endl;
                     // Search the path.
                     if(HDF5CFUtil::obtain_string_before_lastslash((*islon_path))==lat_path) {
                         num_lon_path++;
@@ -1565,13 +1576,13 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                     latloncv_candidate_pairs.push_back(latlon_pair);
                 }
             }
-            else {//insert this lat/lon pair to the struct
+            else if(lon_candidate_path.size() == 1) {//insert this lat/lon pair to the struct
+cerr<<"M2 "<<endl;
 
                 Name_Size_2Pairs latlon_pair;
                     
                 latlon_pair.name1 = (*irlat)->fullpath;
-                // Find how to get the first element of the size TOOODOOO,comment out the following line
-                //latlon_pair.name2 = lon_candidate_path[0];
+                latlon_pair.name2 = *(lon_candidate_path.begin());
                 latlon_pair.size1 = (*irlat)->getDimensions()[0]->size;
                 latlon_pair.size2 = (*irlat)->getDimensions()[1]->size;
                 latlon_pair.rank = (*irlat)->rank;
@@ -1580,6 +1591,7 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
             }
 
         }
+cerr<<"M4 latloncv size is "<<latloncv_candidate_pairs.size() <<endl;
         
         if(latloncv_candidate_pairs.size() >0) {
             int num_1d_rank = 0;
@@ -1602,6 +1614,7 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
             if (num_2d_rank !=0) 
                 ret_value = true;
             else if(num_1d_rank!=0) {
+cerr<<"M3"<<endl;
                 // TOOODDOO: Check if lat and lon share the same size and the dimension of a variable that holds the coordinates only holds one size.
                 for(vector<struct Name_Size_2Pairs>::iterator ivs=temp_1d_latlon_pairs.begin();ivs!=temp_1d_latlon_pairs.end();++ivs) {
                     if((*ivs).size1 != (*ivs).size2) {
@@ -1610,31 +1623,190 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                     }
                     else {// If 1-D lat and lon share the same size,we need to check if there is a variable
                           // that has both lat and lon as the coordinates but only has one dimension that holds the size.
+                          // The "coordinates" attribute should not be flattened for this case.
                           // This is the SMAP level 2 case.
+                        // Assume we can flatten the "coordinates" attribute.
+                        ret_value = true;
                         for (vector<Var *>::iterator irv = this->vars.begin();
                             irv != this->vars.end(); ++irv) {
-                            if((*ivs).rank >=2) {//STOP
-
+                            if((*irv)->rank >=2) {
+                                for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
+                                    ira !=(*irv)->attrs.end();++ira) {
+                                    if((*ira)->name == co_attrname) {
+                                        Retrieve_H5_Attr_Value((*ira),(*irv)->fullpath);
+                                        string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
+                                        vector<string> coord_values;
+                                        char sep=' ';
+                                        HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
+                                        bool has_lat_flag = false;
+                                        bool has_lon_flag = false;
+                                        for (vector<string>::iterator itcv=coord_values.begin();itcv!=coord_values.end();++itcv) {
+                                            if((*ivs).name1 == (*itcv)) 
+	                                        has_lat_flag = true;
+                                            else if((*ivs).name2 == (*itcv))
+                                                has_lon_flag = true;
+                                        }
+                                        // Find both lat and lon, now check the dim. size 
+                                        if(true == has_lat_flag && true == has_lon_flag) {
+                                            short has_same_ll_size = 0;
+                                            for(vector<Dimension *>::iterator ird = (*irv)->dims.begin();ird!=(*irv)->dims.end();++ird){
+                                                if((*ird)->size == (*ivs).size1)
+                                                    has_same_ll_size++;
+                                            }
+                                            if(has_same_ll_size!=2){
+                                                ret_value = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if(false == ret_value)
+                                    break;
                             }
-     
-
                         }
+                        if(true == ret_value) 
+                            break;
                     }
-
                 }
-                
-                
-
             }
-
         }
         
         release_standalone_var_vector(tempvar_lat);
         release_standalone_var_vector(tempvar_lon);
 
     }
-    return false;
+cerr<<"before check LatLon return value "<<endl;
+    return ret_value;
 }
+
+void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*>lon_vec) {
+
+    set<string> lon_candidate_path;
+    vector<pair<string,hsize_t>>lon_path_size_vec;
+
+    for(vector<Var*>:: iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
+
+cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
+        if (lat->rank == (*irlon)->rank) {
+            pair<string,hsize_t>lon_path_size;
+            lon_path_size.first = (*irlon)->fullpath;
+            lon_path_size.second = (*irlon)->getDimensions()[0]->size;
+            lon_path_size_vec.push_back(lon_path_size);
+        }
+    }
+
+    if(lon_path_size_vec.size() == 1) {
+
+        Name_Size_2Pairs latlon_pair;
+        latlon_pair.name1 = lat->fullpath;
+        latlon_pair.name2 = lon_path_size_vec[0].first;
+        latlon_pair.size1 = lat->getDimensions()[0]->size;
+        latlon_pair.size2 = lon_path_size_vec[0].second;
+        latlon_pair.rank = lat->rank;
+        latloncv_candidate_pairs.push_back(latlon_pair);
+ 
+    }
+    else if(lon_path_size_vec.size() >1) {
+
+        string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
+        pair<string,hsize_t> lon_final_path_size;
+        short num_lon_match = 0;
+        for(vector<pair<string,hsize_t>>::iterator islon =lon_path_size_vec.begin();islon!=lon_path_size_vec.end();++islon_path) {
+cerr<<"lon candidate path is "<<*islon_path <<endl;
+            // Search the path.
+            if(HDF5CFUtil::obtain_string_before_lastslash((*islon).first)==lat_path) {
+                num_lon_match++;
+                if(1 == num_lon_match)
+                    lon_final_path_size = *islon;
+                else if(num_lon_match > 1) 
+                    break;
+            }
+        }
+        if(num_lon_match ==1) {// insert this lat/lon pair to the struct
+            Name_Size_2Pairs latlon_pair;
+            latlon_pair.name1 = lat->fullpath;
+            latlon_pair.name2 = lon_final_path_size.first;
+            latlon_pair.size1 = lat->getDimensions()[0]->size;
+            latlon_pair.size2 = lon_final_path_size.second;
+            latlon_pair.rank = lat->rank;
+            latloncv_candidate_pairs.push_back(latlon_pair);
+        }
+
+    }
+
+
+
+}
+
+void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*>lon_vec) {
+
+    set<string> lon_candidate_path;
+
+    for(vector<Var*>:: iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
+
+cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
+        if (lat->rank == (*irlon)->rank) {
+
+            // Check the dim order and size.
+            bool same_dim = true;
+            for(int dim_index = 0; dim_index <lat->rank; dim_index++) {
+                if(lat->getDimensions()[dim_index]->size !=
+                   (*irlon)->getDimensions()[dim_index]->size){ 
+                    same_dim = false;
+                    break;
+                }
+            }
+            if(true == same_dim) 
+                lon_candidate_path.insert((*irlon)->fullpath);
+        }
+    }
+//for(set<string>::iterator ilon = lon_candidate_path.begin();ilon!=lon_can
+cerr<<"M1 "<<endl;
+           
+    // Check the size of the lon., if the size is not 1, see if having the same path one.
+    if(lon_candidate_path.size() > 1) {
+        string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
+        string lon_final_candidate_path;
+        short num_lon_path = 0;
+        for(set<string>::iterator islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
+cerr<<"lon candidate path is "<<*islon_path <<endl;
+                    // Search the path.
+            if(HDF5CFUtil::obtain_string_before_lastslash((*islon_path))==lat_path) {
+                num_lon_path++;
+                if(1 == num_lon_path)
+                    lon_final_candidate_path = *islon_path;
+                else if(num_lon_path > 1) 
+                    break;
+            }
+        }
+        if(num_lon_path ==1) {// insert this lat/lon pair to the struct
+            Name_Size_2Pairs latlon_pair;
+                    
+            latlon_pair.name1 = lat->fullpath;
+            latlon_pair.name2 = lon_final_candidate_path;
+            latlon_pair.size1 = lat->getDimensions()[0]->size;
+//STOP
+            latlon_pair.size2 = lat->getDimensions()[1]->size;
+            latlon_pair.rank = lat->rank;
+            latloncv_candidate_pairs.push_back(latlon_pair);
+        }
+    }
+    else if(lon_candidate_path.size() == 1) {//insert this lat/lon pair to the struct
+cerr<<"M2 "<<endl;
+
+        Name_Size_2Pairs latlon_pair;
+                    
+        latlon_pair.name1 = lat->fullpath;
+        latlon_pair.name2 = *(lon_candidate_path.begin());
+        latlon_pair.size1 = lat->getDimensions()[0]->size;
+        latlon_pair.size2 = lat->getDimensions()[1]->size;
+        latlon_pair.rank = lat->rank;
+        latloncv_candidate_pairs.push_back(latlon_pair);
+ 
+    }
+
+}
+
 #if 0
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" names.
 // This routine will check this case.
