@@ -648,6 +648,8 @@ namespace HDF5CF
             virtual void Replace_Var_Attrs(Var *src, Var*target);
 
             void Add_Str_Attr(Attribute* attr,const string &attrname, const string& strvalue) throw(Exception);
+            bool Var_Has_Attr(Var*var,const string &attrname,Attribute *attr);
+            string  Retrieve_Str_Attr_Value(Attribute *attr,const string var_path);
             bool Is_Str_Attr(Attribute* attr,string varfullpath, const string &attrname, const string& strvalue);
             void Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_value) throw(Exception);
             void Replace_Var_Str_Attr(Var* var, const string &attr_name, const string& strvalue); 
@@ -834,8 +836,9 @@ namespace HDF5CF
             bool Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception);
             void Build_lat1D_latlon_candidate(Var*,const vector<Var*>&);
             void Build_latg1D_latlon_candidate(Var*,const vector<Var*>&);
+            void Build_unique_latlon_candidate();
             //bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
-            void Add_Dim_Name_LatLon1D_General_Product() throw(Exception);
+            void Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() throw(Exception);
             void Add_Dim_Name_LatLon2D_General_Product() throw(Exception);
             void Add_Dim_Name_Dimscale_General_Product() throw(Exception);
             void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) throw(Exception);
@@ -885,6 +888,7 @@ namespace HDF5CF
             bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
 
             void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception);
+            bool Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception);
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
             void Add_Aqu_Attrs() throw(Exception);
