@@ -61,7 +61,7 @@ GMCVar::GMCVar(Var*var) {
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
         attrs.push_back(attr);
-    }
+    } //for (vector<Attribute*>::iterator ira = var->attrs.begin();
 
     for (vector<Dimension*>::iterator ird = var->dims.begin();
         ird!=var->dims.end(); ++ird) {
@@ -71,7 +71,7 @@ GMCVar::GMCVar(Var*var) {
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dims.push_back(dim);
-    }
+    } // for (vector<Dimension*>::iterator ird = var->dims.begin();
     product_type = General_Product;
 
 }
@@ -116,6 +116,7 @@ GMCVar::GMCVar(GMCVar*cvar) {
  
 }
 #endif
+
 GMSPVar::GMSPVar(Var*var) {
 
     fullpath = var->fullpath;
@@ -142,7 +143,7 @@ GMSPVar::GMSPVar(Var*var) {
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dims.push_back(dim);
-    }
+    } 
 }
 
 
@@ -230,8 +231,6 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
           ircv != this->cvars.end(); ++ircv) {
           
-        //if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype) 
-         //   || (CV_FILLINDEX == (*ircv)->cvartype)){
         if ((*ircv)->cvartype != CV_NONLATLON_MISS){
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
@@ -370,6 +369,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
        if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern)
           || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
           || (OBPG_L3 == this->product_type)) {
+
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                  irv != this->cvars.end(); ++irv) {
                 // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
@@ -389,9 +389,10 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                                     this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                             }
                         }
-                    }
-                }  
+                    } // if (true == (*irv)->unsupported_attr_dtype) 
+                } // if (false == (*irv)->attrs.empty()) 
             }    
+
             for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
                  irv != this->spvars.end(); ++irv) {
                 // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
@@ -411,11 +412,9 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                                     this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                             }
                         }
-                    }
-                }  
+                    } // if (true == (*irv)->unsupported_attr_dtype)
+                } // if (false == (*irv)->attrs.empty())  
             }    
-
-
         }
 
         else {
@@ -433,7 +432,8 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                         }
                     }
                 }
-           }
+            }// for (vector<GMCVar *>::iterator irv = this->cvars.begin() STOP adding end logic comments
+
             for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
                  irv != this->spvars.end(); ++irv) {
                 if (false == (*irv)->attrs.empty()) {
@@ -1776,7 +1776,6 @@ cerr<<"M2 "<<endl;
 
 void GMFile::Build_unique_latlon_candidate() {
 
-    vector<struct Name_Size_2Pairs> temp_latlon_cv_pairs = latloncv_candidate_pairs;
     set<int> duplicate_index;
     for(int i= 0; i<latloncv_candidate_pairs.size();i++) {
         for(int j=i+1;j<latloncv_candidate_pairs.size();j++) {
@@ -5729,6 +5728,9 @@ void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
                 string coor_value = Retrieve_Str_Attr_Value(co_attr,(*irv)->fullpath);
                 if(Coord_Match_LatLon_NameSize(coor_value) == true) 
                     Flatten_VarPath_In_Coordinates_Attr(*irv);
+                // STOP - ADD more contents
+                //else if(Coord_Match_LatLon_NameSize_Same_Group(coor_value) == true) 
+                    // Add_VarPath_In_Coordinates_Attr(*irv);
             }
         }
 
@@ -5741,13 +5743,32 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exce
     bool ret_value =false;
     vector<string> coord_values_vec;
     char sep=' ';
+    int match_lat_name_pair_index = -1;
+    int match_lon_name_pair_index = -2;
+    int num_match_lat = 0;
+    int num_match_lon = 0;
+
     HDF5CFUtil::Split_helper(coord_values_vec,coord_values,sep);
     for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
         for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
-         // CHECK HERE.
-
+            if((*irs) == (*ivs).name1){
+                match_lat_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
+                num_match_lat++;
+            }
+            else if ((*irs) == (*ivs).name2) {
+                match_lon_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
+                num_match_lon++;
+            }
         }
     }
+cerr<<"index lat is "<<match_lat_name_pair_index <<endl;
+cerr<<"index lon is "<<match_lon_name_pair_index <<endl;
+cerr<<"num lat is "<<num_match_lat <<endl;
+cerr<<"num lon is "<<num_match_lon <<endl;
+
+    if((match_lat_name_pair_index == match_lon_name_pair_index) && (num_match_lat ==1) && (num_match_lon ==1))
+        ret_value = true;
+
     return ret_value;
     
 }
