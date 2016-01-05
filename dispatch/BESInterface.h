@@ -131,6 +131,8 @@ private:
     static list<p_bes_end> _end_list;
 
     ostream *_strm;
+    int _timeout_from_keys; ///< can be overridden by a setContext command
+
 protected:
     BESDataHandlerInterface *_dhi;
     BESTransmitter *_transmitter;

@@ -81,7 +81,11 @@ static bool timeout_jump_valid = false;
 // differently. See my comment further down. jhrg 12/28/15
 #undef USE_SIGWAIT
 
-static volatile int timeout = 0;    // timeout period in seconds; 0 --> no timeout
+// timeout period in seconds; 0 --> no timeout. This is a static value so
+// that it can be accessed by the signal handler. jhrg 1/4/16
+static volatile int timeout = 0;
+
+#define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
 static void catch_sig_alarm(int sig)
 {
@@ -196,10 +200,22 @@ static void wait_for_timeout()
 #endif
 
 BESInterface::BESInterface(ostream *output_stream) :
-    _strm(output_stream), _dhi(0), _transmitter(0)
+    _strm(output_stream), _timeout_from_keys(0), _dhi(0), _transmitter(0)
 {
     if (!output_stream) {
         throw BESInternalError("output stream must be set in order to output responses", __FILE__, __LINE__);
+    }
+
+    // Grab the BES Key for the timeout. Note that the Hyrax server generally
+    // overrides this value using a 'context' that is set/sent by the OLFS.
+    // Also note that a value of zero means no timeout, but that the context
+    // with override that too. jhrg 1/4/16
+    bool found;
+    string timeout_key_value;
+    TheBESKeys::TheKeys()->get_value(BES_TIMEOUT_KEY, timeout_key_value, found);
+    if (found) {
+        istringstream iss(timeout_key_value);
+        iss >> _timeout_from_keys;
     }
 
     // Install signal handler for alarm() here
@@ -318,6 +334,8 @@ int BESInterface::execute_request(const string &from)
         if (setjmp(timeout_jump) == 0) {
             timeout_jump_valid = true;
             execute_data_request_plan();
+            // Once we exit the block where setjmp() was called, the jump_buf is not valid
+            timeout_jump_valid = false;
         }
         else {
             ostringstream oss;
@@ -326,9 +344,6 @@ int BESInterface::execute_request(const string &from)
         }
 
         _dhi->executed = true;
-
-        // Once we exit the block where setjmp() was called, the jump_buf is not valid
-        timeout_jump_valid = false;
     }
     catch (BESError & ex) {
         timeout_jump_valid = false;
@@ -520,9 +535,15 @@ void BESInterface::execute_data_request_plan()
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
         timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE("Set request timeout to " << timeout << " seconds." << endl);
+        VERBOSE("Set request timeout to " << timeout << " seconds (from context)." << endl);
         alarm(timeout);
     }
+    else if (_timeout_from_keys != 0) {
+        timeout = _timeout_from_keys;
+        VERBOSE("Set request timeout to " << timeout << " seconds (from keys)." << endl);
+        alarm(timeout);
+    }
+
 
     BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
     BESResponseHandler *rh = _dhi->response_handler;
