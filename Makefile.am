@@ -50,7 +50,7 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = apache hello_world doxy.conf bes.spec \
+EXTRA_DIST = apache hello_world doxy.conf.in bes.spec \
 OSX_Resources bes-config-pkgconfig
 
 server-tests:
@@ -61,9 +61,10 @@ docs: doxy.conf
 	doxygen doxy.conf
 	(cd docs && tar -czf html.tar.gz html)
 
-doxy.conf: doxy.conf.in config.status
-	./config.status --file=doxy.conf
-	
+# Not needed. jhrg 1/4/16
+# doxy.conf: doxy.conf.in config.status
+# 	./config.status --file=doxy.conf
+
 # cccc computes metrics like Lines of code and McCabe. It'a available
 # on the web...
 # For the BES, compute metrics for: dispatch xmlcommand ppt server
