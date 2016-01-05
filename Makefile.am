@@ -57,10 +57,13 @@ server-tests:
 	cd cmdln && make server-tests
 
 .PHONY: docs
-docs:
+docs: doxy.conf
 	doxygen doxy.conf
 	(cd docs && tar -czf html.tar.gz html)
 
+doxy.conf: doxy.conf.in config.status
+	./config.status --file=doxy.conf
+	
 # cccc computes metrics like Lines of code and McCabe. It'a available
 # on the web...
 # For the BES, compute metrics for: dispatch xmlcommand ppt server
