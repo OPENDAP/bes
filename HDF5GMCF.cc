@@ -1540,7 +1540,9 @@ cerr<<"lat variable name is "<<(*irlat)->fullpath <<endl;
             else if((*irlat)->rank >1)
                 Build_latg1D_latlon_candidate(*irlat,tempvar_lon);
         }
-             
+for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
+}
         // Check if there is duplicate latitude variables for one longitude variable in the latloncv_candidate_pairs.
         // if yes, remove the ones that have duplicate latitude variables. 
         // This will assure that the latloncv_candidate_pairs is one-to-one mapping between latitude and longitude.
@@ -1733,29 +1735,65 @@ cerr<<"M1 "<<endl;
     // Check the size of the lon., if the size is not 1, see if having the same path one.
     if(lon_candidate_path.size() > 1) {
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
-        string lon_final_candidate_path;
-        short num_lon_path = 0;
+        vector <string> lon_final_candidate_path_vec;
         for(set<string>::iterator islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
 cerr<<"lon candidate path is "<<*islon_path <<endl;
-                    // Search the path.
-            if(HDF5CFUtil::obtain_string_before_lastslash((*islon_path))==lat_path) {
-                num_lon_path++;
-                if(1 == num_lon_path)
-                    lon_final_candidate_path = *islon_path;
-                else if(num_lon_path > 1) 
-                    break;
-            }
+            // Search the path.
+            if(HDF5CFUtil::obtain_string_before_lastslash((*islon_path))==lat_path) 
+                lon_final_candidate_path_vec.push_back(*islon_path);
         }
-        if(num_lon_path ==1) {// insert this lat/lon pair to the struct
+        if(lon_final_candidate_path_vec.size() == 1) {// insert this lat/lon pair to the struct
+
             Name_Size_2Pairs latlon_pair;
                     
             latlon_pair.name1 = lat->fullpath;
-            latlon_pair.name2 = lon_final_candidate_path;
+            latlon_pair.name2 = lon_final_candidate_path_vec[0];
             latlon_pair.size1 = lat->getDimensions()[0]->size;
-//STOP
             latlon_pair.size2 = lat->getDimensions()[1]->size;
             latlon_pair.rank = lat->rank;
             latloncv_candidate_pairs.push_back(latlon_pair);
+        }
+        else if(lon_final_candidate_path_vec.size() >1) {
+
+            // Under the same group, if we have two pairs lat/lon such as foo1_lat,foo1_lon, foo2_lat,foo2_lon, we will
+            // treat {foo1_lat,foo1_lon} and {foo2_lat,foo2_lon} as two lat,lon coordinate candidates. This is essentially the SMAP L1B case.
+            // We only compare three potential suffixes, lat/lon, latitude/longitude,Latitude/Longitude. We will treat the pair
+            // latitude/Longitude and Latitude/longitude as a valid one. 
+          
+            string lat_name = HDF5CFUtil::obtain_string_after_lastslash(lat->fullpath);
+            string lat_name_prefix1;
+            string lat_name_prefix2;
+             
+            // name prefix before the pair lat,note: no need to check if the last 3 characters are lat or lon. We've checked already.
+            if(lat_name.size() >3) {
+                lat_name_prefix1 = lat_name.substr(0,lat_name.size()-3);
+                if(lat_name.size() >8)
+                    lat_name_prefix2 = lat_name.substr(0,lat_name.size()-8);
+            }
+            string lon_name_prefix1;
+            string lon_name_prefix2;
+
+            for(vector<string>::iterator ilon = lon_final_candidate_path_vec.begin(); ilon!=lon_final_candidate_path_vec.end();++ilon) {
+                string lon_name = HDF5CFUtil::obtain_string_after_lastslash(*ilon);
+                if(lon_name.size() >3) {
+                    lon_name_prefix1 = lon_name.substr(0,lon_name.size()-3);
+                    if(lon_name.size() >9)
+                        lon_name_prefix2 = lon_name.substr(0,lon_name.size()-9);
+                }
+                if((lat_name_prefix1 !="" && lat_name_prefix1 == lon_name_prefix1) ||
+                   (lat_name_prefix2 !="" && lat_name_prefix2 == lon_name_prefix2)) {// match lat,lon this one is the candidate
+
+                    Name_Size_2Pairs latlon_pair;
+                    latlon_pair.name1 = lat->fullpath;
+                    latlon_pair.name2 = *ilon;
+                    latlon_pair.size1 = lat->getDimensions()[0]->size;
+                    latlon_pair.size2 = lat->getDimensions()[1]->size;
+                    latlon_pair.rank = lat->rank;
+                    latloncv_candidate_pairs.push_back(latlon_pair);
+
+                }
+            }
+
         }
     }
     else if(lon_candidate_path.size() == 1) {//insert this lat/lon pair to the struct
@@ -3704,10 +3742,10 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
             ele_start_pos = cur_pos+1;
             cur_pos = orig_coor_value.find_first_of(sc,cur_pos+1);
         }
-        // Flatten each element
+        // Only one element
         if(ele_start_pos == 0)
             flatten_coor_value = get_CF_string(orig_coor_value);
-        else
+        else // Add the last element
             flatten_coor_value += get_CF_string(orig_coor_value.substr(ele_start_pos));
 
         // Generate the new "coordinates" attribute.
@@ -5723,17 +5761,19 @@ void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
         if((*irv)->rank >= 2) {
-            Attribute *co_attr = NULL;
-            if(Var_Has_Attr(*irv,co_attrname,co_attr) == true) { 
-                string coor_value = Retrieve_Str_Attr_Value(co_attr,(*irv)->fullpath);
-                if(Coord_Match_LatLon_NameSize(coor_value) == true) 
-                    Flatten_VarPath_In_Coordinates_Attr(*irv);
-                // STOP - ADD more contents
-                //else if(Coord_Match_LatLon_NameSize_Same_Group(coor_value) == true) 
-                    // Add_VarPath_In_Coordinates_Attr(*irv);
+            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end(); ++ira) { 
+                if((*ira)->name == co_attrname) {
+                    string coor_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+                    if(Coord_Match_LatLon_NameSize(coor_value) == true) 
+                        Flatten_VarPath_In_Coordinates_Attr(*irv);
+                    // STOP - ADD more contents
+                    else if(Coord_Match_LatLon_NameSize_Same_Group(coor_value,HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) == true) 
+                        Add_VarPath_In_Coordinates_Attr(*irv,coor_value);
+                        //Flatten_VarPath_In_Coordinates_Attr(*irv);
+                     break;
+                }
             }
         }
-
     }
 
 }
@@ -5748,9 +5788,19 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exce
     int num_match_lat = 0;
     int num_match_lon = 0;
 
+cerr<<"coordinate values not separated are "<<coord_values <<endl;
     HDF5CFUtil::Split_helper(coord_values_vec,coord_values,sep);
+    if((coord_values_vec[0])[0] !='/') {
+        for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
+            if(((*irs).find_first_of('/'))!=string::npos) {
+                *irs = '/' + (*irs);
+            }
+        }
+    }
     for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
+cerr<<"coordinate values are "<<*irs <<endl;
         for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
             if((*irs) == (*ivs).name1){
                 match_lat_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
                 num_match_lat++;
@@ -5773,6 +5823,75 @@ cerr<<"num lon is "<<num_match_lon <<endl;
     
 }
 
+
+bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,const string &var_path) throw(Exception){
+
+    bool ret_value =false;
+    vector<string> coord_values_vec;
+    char sep=' ';
+    int match_lat_name_pair_index = -1;
+    int match_lon_name_pair_index = -2;
+    int num_match_lat = 0;
+    int num_match_lon = 0;
+
+cerr<<"coordinate values not separated are "<<coord_values <<endl;
+    HDF5CFUtil::Split_helper(coord_values_vec,coord_values,sep);
+ 
+    // Assume the 3rd-variable is also located under the same group if rank >=2
+    for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
+cerr<<"coordinate values are "<<*irs <<endl;
+        for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
+            string lat_name = HDF5CFUtil::obtain_string_after_lastslash((*ivs).name1);
+            string lat_path = HDF5CFUtil::obtain_string_before_lastslash((*ivs).name1);
+            string lon_name = HDF5CFUtil::obtain_string_after_lastslash((*ivs).name2);
+            string lon_path = HDF5CFUtil::obtain_string_before_lastslash((*ivs).name2);
+            if((*irs) == lat_name && lat_path == var_path){
+                match_lat_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
+                num_match_lat++;
+            }
+            else if ((*irs) == lon_name && lon_path == var_path) {
+                match_lon_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
+                num_match_lon++;
+            }
+        }
+    }
+
+    if((match_lat_name_pair_index == match_lon_name_pair_index) && (num_match_lat ==1) && (num_match_lon ==1))
+        ret_value = true;
+
+    return ret_value;
+}
+
+void GMFile::Add_VarPath_In_Coordinates_Attr(Var *var, const string &coor_value) {
+cerr<<"coming to Add_VarPath "<<endl;
+    string new_coor_value;
+    char sep =' ';
+    string var_path = HDF5CFUtil::obtain_string_before_lastslash(var->fullpath) ;
+    string var_flatten_path = get_CF_string(var_path);
+cerr<<"var_path is "<<var_path <<endl;
+
+    // We need to loop through each element in the "coor_value".
+    size_t ele_start_pos = 0;
+    size_t cur_pos = coor_value.find_first_of(sep);
+    while(cur_pos !=string::npos) {
+        string tempstr = coor_value.substr(ele_start_pos,cur_pos-ele_start_pos);
+        tempstr = var_flatten_path + tempstr;
+        new_coor_value += tempstr + sep;
+        ele_start_pos = cur_pos+1;
+        cur_pos = coor_value.find_first_of(sep,cur_pos+1);
+    }
+
+    if(ele_start_pos == 0)
+        new_coor_value = var_flatten_path + coor_value;
+    else
+        new_coor_value += var_flatten_path + coor_value.substr(ele_start_pos);
+
+cerr<<"coordinates are "<<new_coor_value <<endl;
+    string coor_attr_name = "coordinates";
+    Replace_Var_Str_Attr(var,coor_attr_name,new_coor_value);
+
+}
 
 // Create Missing coordinate variables. Index numbers are used for these variables.
 void GMFile:: Create_Missing_CV(GMCVar *GMcvar, const string& dimname) throw(Exception) {

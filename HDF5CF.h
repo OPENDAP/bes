@@ -648,7 +648,7 @@ namespace HDF5CF
             virtual void Replace_Var_Attrs(Var *src, Var*target);
 
             void Add_Str_Attr(Attribute* attr,const string &attrname, const string& strvalue) throw(Exception);
-            bool Var_Has_Attr(Var*var,const string &attrname,Attribute *attr);
+            //bool Var_Has_Attr(Var*var,const string &attrname);
             string  Retrieve_Str_Attr_Value(Attribute *attr,const string var_path);
             bool Is_Str_Attr(Attribute* attr,string varfullpath, const string &attrname, const string& strvalue);
             void Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_value) throw(Exception);
@@ -889,6 +889,8 @@ namespace HDF5CF
 
             void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception);
             bool Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception);
+            bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values,const string &var_path) throw(Exception);
+            void Add_VarPath_In_Coordinates_Attr(Var*,const string &);
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
             void Add_Aqu_Attrs() throw(Exception);

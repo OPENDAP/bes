@@ -1551,20 +1551,21 @@ File:: Add_Str_Attr(Attribute* attr,const string &attrname, const string& strval
     copy(strvalue.begin(),strvalue.end(),attr->value.begin());
 }
 
+#if 0
 bool
-File:: Var_Has_Attr(Var*var,const string &attrname, Attribute *attr) {
+File:: Var_Has_Attr(Var*var,const string &attrname) {
 
     for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end(); ++ira) {
 
         // We only check the original attribute name
         // Remove the original "coordinates" attribute.
         if((*ira)->name == attrname || (*ira)->newname == attrname) { 
-            attr = *ira;
             return true;
         }
     }
     return false;
 }
+#endif
 
 string
 File::Retrieve_Str_Attr_Value(Attribute *attr,const string var_path) {
