@@ -123,7 +123,13 @@ GMSPVar::GMSPVar(Var*var) {
     rank  = var->rank;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
-    
+
+    // The caller of this function should change the following fields.
+    // This is just to make data coverity happy.
+    otype = H5UNSUPTYPE;
+    sdbit = -1;
+    numofdbits = -1;
+
     for (vector<Attribute*>::iterator ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
         Attribute* attr= new Attribute();
@@ -181,7 +187,14 @@ string GMFile::get_CF_string(string s) {
     else if (General_Product == product_type &&  OTHERGMS == gproduct_pattern)  { 
 
         string check_keepleading_underscore_key = "H5.KeepVarLeadingUnderscore";
-        if(true == HDF5CFDAPUtil::check_beskeys(check_keepleading_underscore_key))
+        bool bes_key_value = false;
+        try {
+            bes_key_value = HDF5CFDAPUtil::check_beskeys(check_keepleading_underscore_key);
+        }
+        catch (...) {
+            throw;
+        }
+        if(true == bes_key_value)
             return File::get_CF_string(s);
         else {
             s.erase(0,1);
@@ -515,7 +528,12 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         // Check the drop long string feature.
         string check_droplongstr_key ="H5.EnableDropLongString";
         bool is_droplongstr = false;
-        is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        try {
+            is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        }
+        catch(...) {
+            throw1("Check BES key H5.EnableDropLongString failed.");
+        }
         if(true == is_droplongstr){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                  irv != this->cvars.end(); ++irv) {

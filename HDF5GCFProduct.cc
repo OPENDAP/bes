@@ -861,9 +861,15 @@ bool check_smap_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     }
                         
                     // Reclaim any VL memory if necessary.
-                    H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,&temp_buf[0]);
-
-
+                    herr_t ret_vlen_claim;
+                    ret_vlen_claim = H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,&temp_buf[0]);
+                    if(ret_vlen_claim < 0) {
+                        H5Sclose(dspace);
+                        H5Tclose(dtype);
+                        H5Dclose(s_dset_id);
+                        H5Gclose(s_group_id);
+                        throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+                    }
                     H5Sclose(dspace);
                     H5Tclose(dtype);
                     H5Dclose(s_dset_id);

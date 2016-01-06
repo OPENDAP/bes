@@ -68,6 +68,20 @@ EOS5CVar::EOS5CVar(Var*var) {
         dims.push_back(dim);
     }
 
+    // For the coordinate variable specific fields, we just fill in the default one in the ctr
+    // If needed, the caller of this function should fill in those information after calling this function.
+    eos_type = OTHERVARS;
+    is_2dlatlon = false;
+    point_lower = 0.0;
+    point_upper = 0.0;
+    point_left  = 0.0;
+    point_right = 0.0;
+    xdimsize    = 0;
+    ydimsize    = 0;
+    eos5_pixelreg = HE5_HDFE_CENTER;
+    eos5_origin   = HE5_HDFE_GD_UL;
+    eos5_projcode = HE5_GCTP_GEO;
+
 }
 
 //This method will effectively remove any dimnames like
@@ -289,7 +303,13 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         // Check the drop long string feature.
         string check_droplongstr_key ="H5.EnableDropLongString";
         bool is_droplongstr = false;
-        is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        try {
+            is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        }
+        catch(...) {
+            throw1("Check H5.EnableDropLongString BES key failed");
+        }
+
         if(true == is_droplongstr){
              for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
                 ira != this->root_attrs.end(); ++ira) {

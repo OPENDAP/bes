@@ -124,7 +124,12 @@ throw(Exception) {
         // Check if the BES key is set to check the ignored objects
         // We will only use DAS to output these information.
         string check_ignored_objects_key_str="H5.CheckIgnoreObj";
-        this->check_ignored = HDF5CFDAPUtil::check_beskeys(check_ignored_objects_key_str);
+        try {
+            this->check_ignored = HDF5CFDAPUtil::check_beskeys(check_ignored_objects_key_str);
+        }
+        catch(...) {
+            throw1("Check BES key H5.CheckIgnoreObj failed. ");
+        }
         if(true == this->check_ignored) 
             this->add_ignored_info_page_header();
 

@@ -1307,8 +1307,15 @@ void map_h5_attrs_to_d4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * d4
                 temp_bp +=H5Tget_size(attr_inst.type);
             }
             if (temp_buf.empty() != true) {
+
                 // Reclaim any VL memory if necessary.
-                H5Dvlen_reclaim(attr_inst.type,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
+                herr_t ret_vlen_claim;
+                ret_vlen_claim = H5Dvlen_reclaim(attr_inst.type,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
+                if(ret_vlen_claim < 0){
+                    H5Sclose(temp_space_id);
+                    throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+                }
+                 
                 temp_buf.clear();
             }
             H5Sclose(temp_space_id);

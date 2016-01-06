@@ -570,7 +570,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             }
             if (temp_buf.empty() != true) {
                 // Reclaim any VL memory if necessary.
-                H5Dvlen_reclaim(attr_inst.type, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
+                herr_t ret_vlen_claim;
+                ret_vlen_claim = H5Dvlen_reclaim(attr_inst.type, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
+                if(ret_vlen_claim < 0) {
+                    H5Sclose(temp_space_id);
+                    throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+                }
                 temp_buf.clear();
             }
             H5Sclose(temp_space_id);
