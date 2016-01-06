@@ -1210,7 +1210,14 @@ void GMFile::Add_Dim_Name_General_Product()throw(Exception){
         
 }
 
-
+// We check four patterns under the General_Product category
+// 1. General products that uses HDF5 dimension scales following netCDF-4 data model
+// 2. General products that have 2-D lat/lon variables(variable names are used to identify the case) under the root group or
+//    a special geolocation group
+// 3. General products that have 1-D lat/lon variables(variable names are used to identify the case) under the root group or
+//    a special geolocation group
+// 4. General products that have some variables containing CF "coordinates" attributes. We can support some products if the "coordinates"
+//    attribute contains CF lat/lon units and the variable ranks are 2 or 1.  
 void GMFile::Check_General_Product_Pattern() throw(Exception) {
 
     if(false == Check_Dimscale_General_Product_Pattern()) {
@@ -1239,12 +1246,14 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern() throw(Exception) {
         }
     }
 
+    // Make sure set the general product pattern flag for this case.
     if(true == ret_value)
         this->gproduct_pattern = GENERAL_LATLON2D;
     return ret_value;
 
 }
 
+// Helper function for Check_LatLon2D_General_Product_Pattern
 bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
 
     bool ret_value = false;
@@ -1252,20 +1261,26 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
     vector<size_t>lat_size(2.0);
     vector<size_t>lon_size(2,0);
 
+
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
 
         if((*irv)->rank == 2) {
             if((*irv)->name == latname) {
 
+                // Obtain the variable path
                 string lat_path =HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
 
                 // Tackle only the root group or the name of the group as "/Geolocation"
+                // By doing this, we assume that the file has lat/lon either under the root or under the "Geolocation
+                // but not BOTH. The following code may generate wrong results if the file contains lat/lon under
+                // both the root and /Geolocation. This is documented in https://jira.hdfgroup.org/browse/HFVHANDLER-175
                 if("/" == lat_path || "/Geolocation/" == lat_path) {
                     ll_flag++;
                     lat_size[0] = (*irv)->getDimensions()[0]->size; 
                     lat_size[1] = (*irv)->getDimensions()[1]->size; 
                 }
+
             }
             else if((*irv)->name == lonname) {
                 string lon_path = HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
@@ -1277,9 +1292,11 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
             }
             if(2 == ll_flag)
                 break;
-        }
-    }
+        } // if((*irv)->rank == 2)
+    } // for (vector<Var *>::iterator irv = this->vars.begin();
  
+    // Only when both lat/lon are found can we support this case.
+    // Before that, we also need to check if the lat/lon shares the same dimensions.
     if(2 == ll_flag) {
 
         bool latlon_size_match = true;
@@ -1290,6 +1307,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
             }
         }
         if (true == latlon_size_match) {
+            // If we do find the lat/lon pair, save them for later use.
             gp_latname = latname;
             gp_lonname = lonname;
             ret_value = true;
@@ -1314,7 +1332,7 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 }
 #endif
 
-// If having 2-D latitude/longitude,set the general product pattern.
+// If having 1-D latitude/longitude,set the general product pattern.
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" and "cell_lat,cell_lon"names.
 // The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
 bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
@@ -1338,6 +1356,7 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 
 }
 
+// Helper function for Check_LatLon1D_General_Product_Pattern.
 bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
 
     bool ret_value = false;
@@ -1350,8 +1369,11 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
 
         if((*irv)->rank == 1) {
             if((*irv)->name == latname)  {
+
                 string lat_path =HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+
                 // Tackle only the root group or the name of the group as "/Geolocation"
+                // May not generate the correct output. See https://jira.hdfgroup.org/browse/HFVHANDLER-175
                 if("/" == lat_path || "/Geolocation/" == lat_path) {
                     ll_flag++;
                     lat_size = (*irv)->getDimensions()[0]->size; 
@@ -1371,10 +1393,10 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
  
     if(2 == ll_flag) {
 
-
         bool latlon_size_match_grid = true;
+
         // When the size of latitude is equal to the size of longitude for a 1-D lat/lon, it is very possible
-        // that this is not a regular grid but rather a profile with the lat,lon to be recorded as the function of time.
+        // that this is not a regular grid but rather a profile with the lat,lon recorded as the function of time.
         // Adding the coordinate/dimension as the normal grid is wrong, so check out this case.
         // KY 2015-12-2
         if(lat_size == lon_size) {
@@ -1382,8 +1404,8 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
             // It is very unusual that lat_size = lon_size for a grid.
             latlon_size_match_grid = false;
 
-            // For a normal grid, a >2D variable should exist to have both lat and lon size, if such a variable that has the same size exists, we 
-            // will treat it as a normal grid. 
+            // For a normal grid, a >2D variable should exist to have both lat and lon size, 
+            // if such a variable that has the same size exists, we will treat it as a normal grid.
             for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
                 if((*irv)->rank >=2) {
@@ -1405,19 +1427,20 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
             }
         }
 
+        // If the sizes of lat and lon match the grid, this is the lat/lon candidate.
+        // Save the latitude and longitude names for later use.
         if (true == latlon_size_match_grid) {
             gp_latname = latname;
             gp_lonname = lonname;
             ret_value = true;
         }
-
     }
  
     return ret_value;
-
 }
 
-
+// This function checks if this general product contains "coordinates" attributes in some variables
+// that can be handled CF friendly.
 bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception) {
 
     bool ret_value = false;
@@ -1433,20 +1456,20 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
     vector<Var*> tempvar_lat;
     vector<Var*> tempvar_lon;
 
-    // Check if having both lat, lon coordinate values.
+    // Check if having both lat, lon names stored in the coordinate attribute value by looping through rank >1 variables.
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
         if((*irv)->rank >=2) {
             for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
                 ira !=(*irv)->attrs.end();++ira) {
+                // If having attribute "coordinates" for this variable, checking the values and 
+                // see if having lat/lon,latitude/longitude, Latitude/Longitude pairs.
                 if((*ira)->name == co_attrname) {
                     Retrieve_H5_Attr_Value((*ira),(*irv)->fullpath);
                     string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
                     vector<string> coord_values;
                     char sep=' ';
                     HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
-for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs)
-cerr<<"coord value is "<<(*irs) <<endl;
                        
                     for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs) {
                         string coord_value_suffix1;
@@ -1465,7 +1488,8 @@ cerr<<"coord value is "<<(*irs) <<endl;
                                     coord_value_suffix3 = (*irs).substr((*irs).size()-9,9);
                             }
                         }
-
+                        
+                        // lat/longitude or latitude/lon pairs in theory are fine.
                         if(coord_value_suffix1=="lat" || coord_value_suffix2 =="latitude" || coord_value_suffix2 == "Latitude")
                             coor_has_lat_flag = true;
                         else if(coord_value_suffix1=="lon" || coord_value_suffix3 =="longitude" || coord_value_suffix3 == "Longitude")
@@ -1475,15 +1499,15 @@ cerr<<"coord value is "<<(*irs) <<endl;
                     if(true == coor_has_lat_flag && true == coor_has_lon_flag)
                         break;
                 }
-            }
+            }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin()
             if(true == coor_has_lat_flag && true == coor_has_lon_flag) 
                 break;
             else {
                 coor_has_lat_flag = false;
                 coor_has_lon_flag = false;
             }
-        }
-    }
+        } // if((*irv)->rank >=2) 
+    }//  for (vector<Var *>::iterator irv = this->vars.begin()
 
     // Check the variable names that include latitude and longitude suffixes such as lat,latitude and Latitude. 
     if(true == coor_has_lat_flag && true == coor_has_lon_flag) {
@@ -1497,11 +1521,11 @@ cerr<<"coord value is "<<(*irs) <<endl;
             string ll_ssuffix;
             string ll_lsuffix1;
             string ll_lsuffix2;
-            if(varname.size() >=3) {
+            if(varname.size() >=3) {//lat/lon
                 ll_ssuffix = varname.substr(varname.size()-3,3);
-                if(varname.size() >=8) {
+                if(varname.size() >=8) {//latitude/Latitude
                     ll_lsuffix1 = varname.substr(varname.size()-8,8);
-                    if(varname.size() >=9)
+                    if(varname.size() >=9)//Longitude/longitude
                         ll_lsuffix2 = varname.substr(varname.size()-9,9);
                 }
             }
@@ -1510,6 +1534,7 @@ cerr<<"coord value is "<<(*irs) <<endl;
             else if(ll_ssuffix=="lon" || ll_lsuffix2 =="longitude" || ll_lsuffix2 == "Longitude")
                 var_is_lon = true;
  
+            // Find the lat/lon candidate, save them to  temporary vectors
             if(true == var_is_lat) {
                 if((*irv)->rank > 0) {
                     Var * lat = new Var(*irv);
@@ -1522,15 +1547,14 @@ cerr<<"coord value is "<<(*irs) <<endl;
                     tempvar_lon.push_back(lon);
                 }
             }
-        }
+        }// for (vector<Var *>::iterator
 
         // Build up latloncv_candidate_pairs,  Name_Size_2Pairs struct, 
         // 1) Compare the rank, dimension sizes and the dimension orders of tempvar_lon against tempvar_lat
         //      rank >=2 the sizes,orders, should be consistent
         //      rank =1, no check issue.
-        //   2) If the condition is fulfilled, save them to the Name_Size struct 
+        //   2) If the conditions are fulfilled, save them to the Name_Size struct 
         for(vector<Var*>:: iterator irlat = tempvar_lat.begin(); irlat!=tempvar_lat.end();++irlat) {
-cerr<<"lat variable name is "<<(*irlat)->fullpath <<endl;
 
             // Check the rank =1 case
             if((*irlat)->rank == 1) 
@@ -1540,32 +1564,36 @@ cerr<<"lat variable name is "<<(*irlat)->fullpath <<endl;
             else if((*irlat)->rank >1)
                 Build_latg1D_latlon_candidate(*irlat,tempvar_lon);
         }
+
+#if 0
 for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
 cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
 }
+#endif
+
         // Check if there is duplicate latitude variables for one longitude variable in the latloncv_candidate_pairs.
         // if yes, remove the ones that have duplicate latitude variables. 
         // This will assure that the latloncv_candidate_pairs is one-to-one mapping between latitude and longitude.
         Build_unique_latlon_candidate();
         
-
-cerr<<"M4 latloncv size is "<<latloncv_candidate_pairs.size() <<endl;
         
         // Even if we find that there are qualified geo-location coordinate pairs, we still need to check
-        // the geo-location variable rank. If the rank of any one-pair is 2, this case is qualified for the category GENERAL_LATLON_COOR_ATTR.
-        // Otherwise, if the rank of any one-pair is 1, 
-        //          we will check if the sizes of the lat and the lon in a pair are the same.
-        //          If they are not the same, this case is qualified for the category GENERAL_LATLON_COOR_ATTR
-        //          else check if there is any variable that has the "coordinates" attribute and the "coordinates" attribute includes
-        //          the paths of this lat/lon pair. If the dimensions of such a variable have two sizes that are equal to the size of the lat,
-        //          this case is still qualfied for the category GENERAL_LATLON_COOR_ATTR.
+        // the geo-location variable rank. 
+        // If the rank of any one-pair is 2, this case is qualified for the category GENERAL_LATLON_COOR_ATTR.
+        // If the rank of any one-pair is 1, 
+        //    we will check if the sizes of the lat and the lon in a pair are the same.
+        //    If they are not the same, this case is qualified for the category GENERAL_LATLON_COOR_ATTR
+        //    else check if there is any variable that has the "coordinates" attribute and the "coordinates" attribute includes
+        //    the paths of this lat/lon pair. If the dimensions of such a variable have two sizes that are equal to the size of the lat,
+        //    this case is still qualfied for the category GENERAL_LATLON_COOR_ATTR.
         //          
         if(latloncv_candidate_pairs.size() >0) {
             int num_1d_rank = 0;
             int num_2d_rank = 0;
             int num_g2d_rank = 0;
             vector<struct Name_Size_2Pairs> temp_1d_latlon_pairs;
-            for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+            for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); 
+                ivs!=latloncv_candidate_pairs.end();++ivs) {
                 if(1 == (*ivs).rank) {
                     num_1d_rank++;
                     temp_1d_latlon_pairs.push_back(*ivs);
@@ -1574,29 +1602,34 @@ cerr<<"M4 latloncv size is "<<latloncv_candidate_pairs.size() <<endl;
                     num_2d_rank++;
                 else if((*ivs).rank >2) 
                     num_g2d_rank++;
-                else 
-                    ;// throw an error
             }
  
+            // This is the GENERAL_LATLON_COOR_ATTR case.
             if (num_2d_rank !=0) 
                 ret_value = true;
             else if(num_1d_rank!=0) {
-cerr<<"M3"<<endl;
-                // Check if lat and lon share the same size and the dimension of a variable that has the "coordinates" only holds one size.
-                for(vector<struct Name_Size_2Pairs>::iterator ivs=temp_1d_latlon_pairs.begin();ivs!=temp_1d_latlon_pairs.end();++ivs) {
+
+                // Check if lat and lon share the same size and the dimension of a variable 
+                // that has the "coordinates" only holds one size.
+                for(vector<struct Name_Size_2Pairs>::iterator ivs=temp_1d_latlon_pairs.begin();
+                    ivs!=temp_1d_latlon_pairs.end();++ivs) {
                     if((*ivs).size1 != (*ivs).size2) {
                         ret_value = true;
                         break;
                     }
-                    else {// If 1-D lat and lon share the same size,we need to check if there is a variable
-                          // that has both lat and lon as the coordinates but only has one dimension that holds the size.
-                          // If this is true, this is not the GENERAL_LATLON_COOR_ATTR case(SMAP level 2 follows into the category).
+                    else {
+
+                    // If 1-D lat and lon share the same size,we need to check if there is a variable
+                    // that has both lat and lon as the coordinates but only has one dimension that holds the size.
+                    // If this is true, this is not the GENERAL_LATLON_COOR_ATTR case(SMAP level 2 follows into the category).
+                    
                         ret_value = true;
                         for (vector<Var *>::iterator irv = this->vars.begin();
                             irv != this->vars.end(); ++irv) {
                             if((*irv)->rank >=2) {
                                 for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
                                     ira !=(*irv)->attrs.end();++ira) {
+                                    // Check if this variable has the "coordinates" attribute
                                     if((*ira)->name == co_attrname) {
                                         Retrieve_H5_Attr_Value((*ira),(*irv)->fullpath);
                                         string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
@@ -1624,42 +1657,44 @@ cerr<<"M3"<<endl;
                                             }
                                         }
                                     }
-                                }
+                                }// for (vector<Attribute *>:: iterator ira 
                                 if(false == ret_value)
                                     break;
-                            }
-                        }
+                            }// if((*irv)->rank >=2) 
+                        }// for (vector<Var *>::iterator irv
+
                         if(true == ret_value) 
                             break;
-                    }
-                }
-            }
-        }
-//#endif
+                    }// else 
+                }// for(vector<struct Name_Size_2Pairs>::iterator ivs
+            } // else if(num_1d_rank!=0)
+        }// if(latloncv_candidate_pairs.size() >0)
         
         release_standalone_var_vector(tempvar_lat);
         release_standalone_var_vector(tempvar_lon);
 
     }
-cerr<<"before check LatLon return value "<<endl;
+#if 0
 if(true == ret_value) 
 cerr<<"This product is the coordinate type "<<endl;
-
+#endif
+    // Don't forget to set the flag for this general product pattern.
     if(true == ret_value)
         this->gproduct_pattern = GENERAL_LATLON_COOR_ATTR;
 
     return ret_value;
 }
 
+// Build 1-D latlon coordinate variables candidate for GENERAL_LATLON_COOR_ATTR.
 void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*> &lon_vec) {
 
     set<string> lon_candidate_path;
-    //vector<pair<int,int>> tlon_path_size_vec;
     vector< pair<string,hsize_t> > lon_path_size_vec;
 
+    // Obtain the path and the size info. from all the potential qualified longitude candidate.
     for(vector<Var *>::const_iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
 
-cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
+//cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
         if (lat->rank == (*irlon)->rank) {
             pair<string,hsize_t>lon_path_size;
             lon_path_size.first = (*irlon)->fullpath;
@@ -1668,6 +1703,7 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
         }
     }
 
+    // If there is only one potential qualified longitude for this latitude, just save this pair.
     if(lon_path_size_vec.size() == 1) {
 
         Name_Size_2Pairs latlon_pair;
@@ -1681,11 +1717,13 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
     }
     else if(lon_path_size_vec.size() >1) {
 
+        // For more than one potential qualified longitude, we can still find a qualified one
+        // if we find there is only one longitude under the same group of this latitude.
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
         pair<string,hsize_t> lon_final_path_size;
         short num_lon_match = 0;
         for(vector <pair<string,hsize_t> >::iterator islon =lon_path_size_vec.begin();islon!=lon_path_size_vec.end();++islon) {
-            // Search the path.
+            // Search the longitude path and see if it matches with the latitude.
             if(HDF5CFUtil::obtain_string_before_lastslash((*islon).first)==lat_path) {
                 num_lon_match++;
                 if(1 == num_lon_match)
@@ -1707,13 +1745,14 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
 
 }
 
+// Build >1D latlon coordinate variables candidate for GENERAL_LATLON_COOR_ATTR.
 void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec) {
 
     set<string> lon_candidate_path;
 
+    // We will check if the longitude shares the same dimensions of the latitude
     for(vector<Var*>:: const_iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
 
-cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
         if (lat->rank == (*irlon)->rank) {
 
             // Check the dim order and size.
@@ -1729,19 +1768,19 @@ cerr<<"lon variable name is "<<(*irlon)->fullpath <<endl;
                 lon_candidate_path.insert((*irlon)->fullpath);
         }
     }
-//for(set<string>::iterator ilon = lon_candidate_path.begin();ilon!=lon_can
-cerr<<"M1 "<<endl;
            
     // Check the size of the lon., if the size is not 1, see if having the same path one.
     if(lon_candidate_path.size() > 1) {
+
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
         vector <string> lon_final_candidate_path_vec;
         for(set<string>::iterator islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
-cerr<<"lon candidate path is "<<*islon_path <<endl;
+
             // Search the path.
             if(HDF5CFUtil::obtain_string_before_lastslash((*islon_path))==lat_path) 
                 lon_final_candidate_path_vec.push_back(*islon_path);
         }
+
         if(lon_final_candidate_path_vec.size() == 1) {// insert this lat/lon pair to the struct
 
             Name_Size_2Pairs latlon_pair;
@@ -1793,11 +1832,10 @@ cerr<<"lon candidate path is "<<*islon_path <<endl;
 
                 }
             }
+        }// else if(lon_final_candidate_path_vec.size() >1) 
+    }//  if(lon_candidate_path.size() > 1)
 
-        }
-    }
     else if(lon_candidate_path.size() == 1) {//insert this lat/lon pair to the struct
-cerr<<"M2 "<<endl;
 
         Name_Size_2Pairs latlon_pair;
                     
@@ -1812,6 +1850,8 @@ cerr<<"M2 "<<endl;
 
 }
 
+// We need to make sure that one lat maps to one lon is the lat/lon pairs.
+// This routine removes the duplicate ones like (lat1,lon1) and (lat2,lon1).
 void GMFile::Build_unique_latlon_candidate() {
 
     set<int> duplicate_index;
@@ -1824,6 +1864,7 @@ void GMFile::Build_unique_latlon_candidate() {
         }       
     }
 
+    // set is pre-sorted. we used a quick way to remove multiple elements.
     for(set<int>::reverse_iterator its= duplicate_index.rbegin();its!=duplicate_index.rend();++its) {
         latloncv_candidate_pairs[*its] = latloncv_candidate_pairs.back();
         latloncv_candidate_pairs.pop_back();
@@ -2124,7 +2165,8 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
  
 }
 
-// Add dimension names for the case that has 1-D lat/lon.
+// Add dimension names for the case that has 1-D lat/lon or CoordAttr..
+// 
 void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() throw(Exception) {
 
     // Only need to add the fake dimension names
@@ -2919,6 +2961,7 @@ void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
     // If this is not a file that only includes 1-D lat/lon CVs
     if(false == Check_1DGeolocation_Dimscale()) {
+
 //if(iscoard == true)
 //cerr<<"COARD is true at the beginning of Update"<<endl;
 //cerr<<"File path is "<<this->path <<endl;
@@ -2934,7 +2977,6 @@ void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
         vector<Var*> tempcvar_2dlat;
         vector<Var*> tempcvar_2dlon;
         
-        // TODO: Add descriptions
         // This map remembers the positions of the latlon vars in the vector var. 
         // Remembering the positions avoids the searching of these lat and lon again when
         // deleting them for the var vector and adding them(only the CVs) to the CV vector.
@@ -2978,8 +3020,7 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
 #endif
 
         // 5. Remove the 2-D lat/lon variables that are to be used as CVs from the vector that stores general variables
-        
-        // var2d_index remembers the index of the 2-D lat/lon CVs in the original vector of vars.
+        // var2d_index, remembers the index of the 2-D lat/lon CVs in the original vector of vars.
         vector<int> var2d_index;
         for (map<string,int>::const_iterator it= latlon2d_path_to_index.begin();it!=latlon2d_path_to_index.end();++it)
             var2d_index.push_back(it->second);
@@ -3080,12 +3121,13 @@ cerr<<(*i)->fullpath <<endl;
 #endif
        
 
-        // 6. release the resources allocated by the temporary vectors.
+        // 9. release the resources allocated by the temporary vectors.
         release_standalone_GMCVar_vector(tempcvar_1dlat);
         release_standalone_GMCVar_vector(tempcvar_1dlon);
         release_standalone_var_vector(tempcvar_2dlat);
         release_standalone_var_vector(tempcvar_2dlon);
-    }
+    }// if(false == Check_1DGeolocation_Dimscale())
+
 }
     
 // If Check_1DGeolocation_Dimscale() is true, no need to build 2-D lat/lon coordinate variables.
@@ -3169,7 +3211,7 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
                 }
                 else 
                     has_only_1d_geolocation_cv = true;
-            }
+            }// if(0 == this->groups.size())
             else {
                 // Multiple groups, need to check if having 2-D lat/lon pairs 
                 bool has_2d_latname_flag = false;
@@ -3230,7 +3272,7 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
                                 break;
                         }
                     }
-                }
+                }// if(has_2d_latname_flag != true || has_2d_lonname_flag != true)
 
                 // If we cannot find either of 2-D any lat/lon variables, this file is treated as having only 1-D lat/lon. 
                 if(has_2d_latname_flag != true  || has_2d_lonname_flag != true)
@@ -3288,8 +3330,8 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
                     cvar_1dlon.push_back(lon);
                 }
             }
-        }
-    }
+        }// if((*ircv)->cvartype == CV_EXIST)
+    }// for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
 
 }
 
@@ -3348,8 +3390,8 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
                     }
                 }
             }
-        }
-    }
+        } // if((*irv)->rank == 2)
+    } // for (vector<Var *>::iterator irv
 }
 
 //  Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
@@ -3380,7 +3422,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
 
         if(false == remove_2dlat)
             ++irv;
-    }
+    }// for(vector<Var *>::iterator irv = var_2dlat.begin()
 
     for(vector<Var *>::iterator irv = var_2dlon.begin();irv != var_2dlon.end();) {
         bool remove_2dlon = false;
@@ -3402,7 +3444,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
 
         if(false == remove_2dlon)
             ++irv;
-    }
+    } // for(vector<Var *>::iterator irv = var_2dlon.begin()
 
 }
 
@@ -3551,7 +3593,7 @@ cerr<<"2-D CV longitude name is "<<(*itv)->fullpath <<endl;
  
     // This is to serve as a sanity check. This can help us find bugs in the first place.
     if(var_2dlat.size() != var_2dlon.size()) {
-        throw1("Error in generating 2-D lat/lon CVs.");
+        throw1("Error in generating 2-D lat/lon CVs. The size of 2d-lat should be the same as that of 2d-lon.");
     }
 }
 
@@ -3562,7 +3604,11 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
     vector<bool> var_share_dims(var_ll.size(),false);
     
     for( int i = 0; i <var_ll.size();i++) {
+
+        // obtain the path of var_ll
         string var_ll_i_path = HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath);
+        
+        // Check if two vars share the same dims.
 	for(int j = i+1; j<var_ll.size();j++)   {
             if((var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[0]->name)
               ||(var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[1]->name)
@@ -3571,6 +3617,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
                 string var_ll_j_path = HDF5CFUtil::obtain_string_before_lastslash(var_ll[j]->fullpath);
 
                 // Compare var_ll_i_path and var_ll_j_path,only set the child group path be true and remember the path.
+                // The variable at the parent group can be the coordinate variable.
                 // Obtain the string size, 
                 // compare the string size, long.compare(0,shortlength,short)==0, 
                 // yes, save the long path(child group path), set the long path one true. Else save two paths, set both true
@@ -3588,9 +3635,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
                   
                         grp_cv_paths.insert(var_ll_i_path);
                         grp_cv_paths.insert(var_ll_j_path);
- 
                     }
-
                 }
                 else if (var_ll_i_path.size() == var_ll_j_path.size()) {// Share the same group, remember both group paths.
                     var_share_dims[i] = true;      
@@ -3600,9 +3645,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
                    else {
                       grp_cv_paths.insert(var_ll_i_path);
                       grp_cv_paths.insert(var_ll_j_path);
-
                    }
- 
                 }
                 else {
                     // var_ll_i_path is the parent group of var_ll_j_path,
@@ -3620,10 +3663,9 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
  
                     }
                 }
-                
-            }
-        }
-    }
+            }// if((var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[0]->name)
+        }// for(int j = i+1; j<var_ll.size();j++)
+    }// for( int i = 0; i <var_ll.size();i++)
 
     // Remove the shared 2-D lat/lon CVs from the 2-D lat/lon CV candidates. 
     int var_index = 0;
@@ -5376,10 +5418,10 @@ void GMFile:: Handle_Coor_Attr() {
     string lat_unit_attrvalue ="degrees_north";
     string lon_unit_attrvalue ="degrees_east";
 
-//cerr<<"coming to handle 2-D lat/lon CVs first ."<<endl;
+    // Attribute units should be added for coordinate variables that
+    // have the type CV_NONLATLON_MISS,CV_LAT_MISS and CV_LON_MISS.
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
-//cerr<<"CV name is "<<(*ircv)->name << " cv type is "<<(*ircv)->cvartype <<endl;
 
         if ((*ircv)->cvartype == CV_NONLATLON_MISS) {
            Attribute * attr = new Attribute();
@@ -5468,10 +5510,10 @@ void GMFile:: Handle_Coor_Attr() {
             else if(true == Is_geolatlon((*ircv)->name,false))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
         }
-    }
+    } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin()
     
-    // If we find that there are groups that should check the coordinates attribute of the variable. 
-    // We should flatten the path inside the coordinates. Note this is for 2D-latlon CV case.
+    // If we find that there are groups that we should check the coordinates attribute of the variable under, 
+    // we should flatten the path inside the coordinates. Note this is for 2D-latlon CV case.
     if(grp_cv_paths.size() >0) {
         for (vector<Var *>::iterator irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
@@ -5490,7 +5532,6 @@ void GMFile:: Handle_Coor_Attr() {
     // Since iscoard is false up to this point, So the netCDF-4 like 2-D lat/lon case must fulfill if the program comes here.
     if(General_Product == this->product_type && GENERAL_DIMSCALE == this->gproduct_pattern) 
         has_ll2d_coords = true; 
-
     else {// For other cases.
         string ll2d_dimname0,ll2d_dimname1;
         for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
@@ -5506,6 +5547,7 @@ void GMFile:: Handle_Coor_Attr() {
         }
     }
     
+    // We now walk through all the >=2 vars and flatten the "coordinates"
     if(true == has_ll2d_coords) {
  
         for (vector<Var *>::iterator irv = this->vars.begin();
@@ -5754,23 +5796,29 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() throw(Exception){
     }
 }
 
+// This routine is for handling "coordinates" for the GENERAL_LATLON_COOR_ATTR pattern of General_Product.
 void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
 
     string co_attrname = "coordinates";
 
+    // Loop through all rank >1 variables 
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
         if((*irv)->rank >= 2) {
             for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end(); ++ira) { 
                 if((*ira)->name == co_attrname) {
+                    // If having the coordinates attribute, check if the "coordinates" variables match 2-D lat/lon CV condition,
+                    // if yes, flatten the coordinates attribute.
                     string coor_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
                     if(Coord_Match_LatLon_NameSize(coor_value) == true) 
                         Flatten_VarPath_In_Coordinates_Attr(*irv);
-                    // STOP - ADD more contents
+                    // If the "coordinates" variables don't match the first condition, we can still check
+                    // if we can find the corresponding "coordinates" variables that match the names under the same group,
+                    // if yes, we add the path to the attribute "coordinates".
                     else if(Coord_Match_LatLon_NameSize_Same_Group(coor_value,HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) == true) 
                         Add_VarPath_In_Coordinates_Attr(*irv,coor_value);
-                        //Flatten_VarPath_In_Coordinates_Attr(*irv);
-                     break;
+                    // For other cases, we don't do anything with the "coordinates".
+                    break;
                 }
             }
         }
@@ -5778,6 +5826,8 @@ void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
 
 }
 
+// We will check the "coordinates variables" stored in the coordinate attribute match the
+// checked latlon_name_pairs for the GENERAL_LATLON_COOR_ATTR case.
 bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception) {
 
     bool ret_value =false;
@@ -5788,8 +5838,12 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exce
     int num_match_lat = 0;
     int num_match_lon = 0;
 
-cerr<<"coordinate values not separated are "<<coord_values <<endl;
+//cerr<<"coordinate values not separated are "<<coord_values <<endl;
+
+    // Decompose the coordinates attribute into a string vector.
     HDF5CFUtil::Split_helper(coord_values_vec,coord_values,sep);
+
+    // Some products ignore the first "/" of the coordinate path in the coordinate attribute, we will correct this 
     if((coord_values_vec[0])[0] !='/') {
         for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
             if(((*irs).find_first_of('/'))!=string::npos) {
@@ -5797,10 +5851,13 @@ cerr<<"coordinate values not separated are "<<coord_values <<endl;
             }
         }
     }
+
+    //Loop through all coordinate path stored in the coordinate patch vector,
     for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
-cerr<<"coordinate values are "<<*irs <<endl;
+
+        // Loop through all the lat/lon pairs generated in the Check_LatLon_With_Coordinate_Attr routine
+        // Remember the index and number appeared for both lat and lon.
         for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
-cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
             if((*irs) == (*ivs).name1){
                 match_lat_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
                 num_match_lat++;
@@ -5811,11 +5868,12 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
             }
         }
     }
-cerr<<"index lat is "<<match_lat_name_pair_index <<endl;
-cerr<<"index lon is "<<match_lon_name_pair_index <<endl;
-cerr<<"num lat is "<<num_match_lat <<endl;
-cerr<<"num lon is "<<num_match_lon <<endl;
+//cerr<<"index lat is "<<match_lat_name_pair_index <<endl;
+//cerr<<"index lon is "<<match_lon_name_pair_index <<endl;
+//cerr<<"num lat is "<<num_match_lat <<endl;
+//cerr<<"num lon is "<<num_match_lon <<endl;
 
+    //Only when both index and the number of appearence match, we can set this be true.
     if((match_lat_name_pair_index == match_lon_name_pair_index) && (num_match_lat ==1) && (num_match_lon ==1))
         ret_value = true;
 
@@ -5823,7 +5881,8 @@ cerr<<"num lon is "<<num_match_lon <<endl;
     
 }
 
-
+//Some products only store the coordinate name(not full path) in the attribute coordinates, as
+//long as it is valid, we should add the path to this coordinates.
 bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,const string &var_path) throw(Exception){
 
     bool ret_value =false;
@@ -5834,14 +5893,14 @@ bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,c
     int num_match_lat = 0;
     int num_match_lon = 0;
 
-cerr<<"coordinate values not separated are "<<coord_values <<endl;
+//cerr<<"coordinate values not separated are "<<coord_values <<endl;
     HDF5CFUtil::Split_helper(coord_values_vec,coord_values,sep);
  
     // Assume the 3rd-variable is also located under the same group if rank >=2
     for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
-cerr<<"coordinate values are "<<*irs <<endl;
+//cerr<<"coordinate values are "<<*irs <<endl;
         for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
-cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
+//cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<endl;
             string lat_name = HDF5CFUtil::obtain_string_after_lastslash((*ivs).name1);
             string lat_path = HDF5CFUtil::obtain_string_before_lastslash((*ivs).name1);
             string lon_name = HDF5CFUtil::obtain_string_after_lastslash((*ivs).name2);
@@ -5864,12 +5923,11 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
 }
 
 void GMFile::Add_VarPath_In_Coordinates_Attr(Var *var, const string &coor_value) {
-cerr<<"coming to Add_VarPath "<<endl;
+
     string new_coor_value;
     char sep =' ';
     string var_path = HDF5CFUtil::obtain_string_before_lastslash(var->fullpath) ;
     string var_flatten_path = get_CF_string(var_path);
-cerr<<"var_path is "<<var_path <<endl;
 
     // We need to loop through each element in the "coor_value".
     size_t ele_start_pos = 0;
@@ -5887,7 +5945,7 @@ cerr<<"var_path is "<<var_path <<endl;
     else
         new_coor_value += var_flatten_path + coor_value.substr(ele_start_pos);
 
-cerr<<"coordinates are "<<new_coor_value <<endl;
+//cerr<<"coordinates are "<<new_coor_value <<endl;
     string coor_attr_name = "coordinates";
     Replace_Var_Str_Attr(var,coor_attr_name,new_coor_value);
 
