@@ -89,7 +89,7 @@ void BESXMLInterface::build_data_request_plan()
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << "] building" << endl;
     }
 
-    LIBXML_TEST_VERSION
+    // LIBXML_TEST_VERSION
 
     xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
