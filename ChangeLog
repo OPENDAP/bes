@@ -1,4 +1,12 @@
-2015-10-26  root  <root@localhost.localdomain>
+2015-01-06  Kent Yang <myang6@hdfgroup.org>
+        For the CF option, add support to make two-dimensional latitude and
+	longitude coordinate variables follow CF conventions. 
+	This includes both general HDF5 files(like SMAP) and netCDF-4 like
+	HDF5 products(like TOMS MEaSURES).
+	We also strip the leading underscore of the variable name for the CF
+	option. Users can change a BES key value to resume the old behavior. 
+
+2015-10-26  Kent Yang  <myang6@hdfgroup.org>
 
 	Tackling issues discovered by coverity. 1)fixed a bug (missing a
 	parentsis) inside HDF5GCFProduct.cc. 2) Removed a couple of

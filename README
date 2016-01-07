@@ -35,6 +35,24 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.3.2
+----------------------------
+CF option:
+- By default, the leading underscore of a variable path is removed for all files. Although not recommended,
+  Users can change the BES key H5.KeepVarLeadingUnderscore at h5.conf.in to be true for backward compatibility if necessary.
+
+- Signficiantly improve the support of generic HDF5 files that have 2-D lat/lon. This improvement makes some SMAP level 1,leve 3
+  and level 4 products plottable by CF tools such as Panoply.
+
+- Add the general support of netCDF-4-like HDF5 files that have 2-D lat/lon. This improvement makes TOMS MEaSURES product plottable
+  by CF tools such as Panoply. It will aso support future potential products that follow netCDF generic data model.
+
+What's new for version 2.3.1
+----------------------------
+There are no new features added in this release. We improved the code quality by fixing
+a potential resource leaking issue and other misc. issues.
+
+
 What's new for version 2.3.0
 ----------------------------
 Default option:
