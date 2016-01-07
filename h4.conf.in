@@ -65,9 +65,15 @@ H4.EnableCF=true
 # ensure different users to be able to use different features of the handler. 
 #
 # The BES keys are largely divided into three categories:
-# 1. Performance keys
-# 2. Vdata and Vgroup keys
-# 3. Misc. keys
+# 1. General performance keys
+# 2. Cache keys
+# 3. Vdata and Vgroup keys
+# 4. Misc. keys
+#
+# All keys followed can take effect only when H4.EnableCF is set to true. However,
+# One should be aware that except for "Cache keys", there are **NO** dependencies among keys
+# described below. Please go to section III. Cache keys for the keys dependencies on how to tune
+# cache.
 #
 # For each category, two tables(description and default values(products)) are listed first,  
 # then keys are set.
@@ -75,7 +81,7 @@ H4.EnableCF=true
 # More description for some keys can be found after all the tables and the set of all keys.
 # Keys with more description are marked with * in the tables.
 #
-# II. Performance keys
+# II. General performance keys
 #  
 #  Performance keys            |   Description (if value is true)
 #==========================================================================================
@@ -87,10 +93,6 @@ H4.EnableCF=true
 #  DisableStructMetaAttr       |   ECS Struct metadata attribute is not mapped to DAP
 #                              |   The handler makes metadata follow CF based on this attribute
 #-----------------------------------------------------------------------------------------
-#  EnableEOSGeoCacheFile*      |   HDF-EOS2 Grid lat and lon values are cached in two files
-#                              |   Cache directory must be created first
-#                              |   Cache directory size should be set properly
-#------------------------------------------------------------------------------------------
 #  EnableSpecialEOS*           |   DDS and DAS are built based on the special file structure
 # -----------------------------------------------------------------------------------------
 #  DisableScaleOffsetComp*     |   Non-CF MODIS data values are not calculated 
@@ -109,12 +111,6 @@ H4.EnableCF=true
 #  ----------------------------------------------------------------------
 #  DisableStructMetaAttr       |   true            | HDF-EOS2 or HDF4-ECS 
 #  ----------------------------------------------------------------------
-#  EnableEOSGeoCacheFile       |   false           | HDF-EOS2 Grid
-#  ----------------------------------------------------------------------
-#  EnableDataCacheFile         |   false           | variables read by HDF4 SD interfaces
-#  ----------------------------------------------------------------------
-#  EnableMetaDataCacheFile     |   false           | AIRS v. 6
-#  ----------------------------------------------------------------------
 #  EnableSpecialEOS            |   true            | AIRS v.6, MOD/MYD-M8
 #  ----------------------------------------------------------------------
 #  DisableScaleOffsetComp      |   true            | MODIS that use non-CF scale rules 
@@ -126,36 +122,77 @@ H4.EnableCF=true
 
 H4.EnablePassFileID=false
 H4.DisableStructMetaAttr=true
-H4.EnableEOSGeoCacheFile=false
-H4.EnableDataCacheFile=false
-H4.EnableMetaDataCacheFile=false
-
-######### Additional keys when EnableEOSGeoCacheFile or EnableDataCachefile are set.##################
-#HDF4.Cache.latlon.path must be set if H4.EnableEOSGeoCacheFile or H4.EnableDataCacheFile are true. 
-# Users can change the value, but the path(/tmp/latlon) must exist with the proper permission.
-HDF4.Cache.latlon.path=/tmp/latlon
-
-#The prefix of the cached file must be given
-HDF4.Cache.latlon.prefix=l
-
-#The size of the cache in megabytes, currently ~20GB cache for lat,lon
-# The size must be >0
-HDF4.Cache.latlon.size=20000 
-
-######### Additional keys when EnableMetaDataCacheFile is set.##################
-# HDF4.Cache.metadata.path must be set if H4.EnableMetaDataCacheFile is true. 
-# Users can change the value, but the path(/tmp/md) must exist with the proper permission.
-
-H4.Cache.metadata.path=/tmp/md
-
-######### End of the additional cached keys ############################
-
 H4.EnableSpecialEOS=true
+
 H4.DisableScaleOffsetComp=true
 H4.DisableECSMetaDataMin=true
 H4.DisableECSMetaDataAll=false
 
-# III. Vdata and Vgroup keys
+# III. Cache keys
+
+# There are three main cache keys that can help cache DAP data and metadata(DDS and DAS) 
+# in the handler level. These keys are 
+#    the HDF-EOS2 geolocation data caching key, 
+#    the variable data caching key,
+#    the metadata(DDS and DAS) caching key.
+# There are other keys associated with the main cache keys that must be set correctly. 
+# Examples are provided to help users understand the usage of these keys.
+# By default, all these keys are set to false. Users should read carefully 
+# about the descriptions and set the associated keys correctly before setting the main cache keys true.
+# 
+#
+# HDF-EOS2 geolocation data cache key
+# The latitude and longitude of an HDF-EOS2 grid will be calculated on-the-fly according to projection parameters stored
+# in the HDF-EOS2 file. The same latitude and longitude are calculated each time when an HDF-EOS2 grid is fetched. When
+# the H4.EnableEOSGeoCacheFile key is set to true, the calculated latitude and longitude are cached to two flat binary files
+# so that the same latitude and longitude will be obtained from the cached files starting from the second fetch. Several associated 
+# keys must be set correctly when this key is set to true.
+#
+# HDF4 variable data cache key
+# When the H4.EnableDataCacheFile is set to true, the variable data opened by the HDF5 SDS API will write to a binary file in
+# the server. Data will be read in from the cached file since the second fetch.
+# Several associated keys must be set correctly when this key is set to true. 
+
+# The associated keys are the same for both the H4.EnableEOSGeoCacheFile and the H4.EnableDataCacheFile keys.
+# The description of these associated keys are:
+# HDF4.Cache.latlon.path   - An existing directory with read and write permissions for the BES process.
+# HDF4.Cache.latlon.prefix - The cache file prefix, it must be given for the cache to work.
+# HDF4,Cache.latlon.size   - The size of the cache in megabytes, the must must be > 0.
+
+# Example:  
+# H4.EnableEOSGeoCacheFile=true
+# H4.EnableDataCacheFile=true
+# HDF4.Cache.latlon.path=/tmp/latlon
+# HDF4.Cache.latlon.prefix=l
+# HDF4.Cache.latlon.size=20000
+#
+
+H4.EnableEOSGeoCacheFile=false
+H4.EnableDataCacheFile=false
+
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+HDF4.Cache.latlon.size=20000 
+
+
+# HDF4 metadata cache key 
+# When this key is set to true,  
+# DDS and DAS of special products(currently AIRS version 6 only) will be  
+# written to local files of the server under the H4.Cache.metadata.path directory. 
+# DDS and DAS will be read directly from the server since the second time.
+# Note: no total file size under the directory is enforced since
+# DDS and DAS are relatively small and each HDF4 file may only have
+# 2-3 DAS and DDS local files.
+#
+# HDF4.Cache.metadata.path must be set if H4.EnableMetaDataCacheFile is true. 
+# Users can change the value, but the path(/tmp/md) must exist with the proper permission.
+
+H4.EnableMetaDataCacheFile=false
+H4.Cache.metadata.path=/tmp/md
+
+
+
+# IV. Vdata and Vgroup keys
 #
 # Users may desire various ways for the HDF4 Vdata mapping. The following keys list
 # some options to help users. 
@@ -198,7 +235,7 @@ H4.EnableVdataDescAttr=false
 H4.DisableVdataNameclashingCheck=true
 H4.EnableVgroupAttr=true
 
-# IV. Misc. keys
+# V. Misc. keys
 #
 #          Keys                |   Description (if a key value is true)
 #=========================================================================================
@@ -226,7 +263,7 @@ H4.EnableSwathGridAttr=true
 H4.EnableCERESMERRAShortName=true
 H4.EnableCheckScaleOffsetType=false
 
-# IV. More descriptions of keys
+# VI. More descriptions of keys
  
 
 # KEY = H4.EnableEOSGeoCacheFile 
@@ -254,7 +291,6 @@ H4.EnableCheckScaleOffsetType=false
 # DDS and DAS are relatively small and each HDF4 file may only have
 # 2-3 DAS and DDS local files.
 #
-
 #
 # KEY = H4.EnableSpecialEOS 
 #
