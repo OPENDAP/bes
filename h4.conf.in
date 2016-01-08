@@ -179,13 +179,15 @@ HDF4.Cache.latlon.size=20000
 # When this key is set to true,  
 # DDS and DAS of special products(currently AIRS version 6 only) will be  
 # written to local files of the server under the H4.Cache.metadata.path directory. 
-# DDS and DAS will be read directly from the server since the second time.
-# Note: no total file size under the directory is enforced since
-# DDS and DAS are relatively small and each HDF4 file may only have
-# 2-3 DAS and DDS local files.
+# DDS and DAS will be read directly from the server since the second fetch.
 #
-# HDF4.Cache.metadata.path must be set if H4.EnableMetaDataCacheFile is true. 
-# Users can change the value, but the path(/tmp/md) must exist with the proper permission.
+# The following BES key must be true if H4.EnableMetaDataCacheFile is set to true. 
+# H4.Cache.metadata.path - An existing directory with read and write permissions for the BES process.
+
+#Example:
+#H4.EnableMetaDataCacheFile=true
+#H4.Cache.metada.path=/tmp/md
+#
 
 H4.EnableMetaDataCacheFile=false
 H4.Cache.metadata.path=/tmp/md
