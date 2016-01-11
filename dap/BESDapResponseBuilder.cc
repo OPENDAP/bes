@@ -770,7 +770,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     // be removed from libdap - it is much more about how the BES processes these kinds
     // of operations. Change this when working on the response caching for ODSIP. But...
     // do we really need to put the style sheet in the bes.conf file? Should it be baked
-    // into the code (because we don't want people to cahnge it)?
+    // into the code (because we don't want people to change it)?
     bool found;
     string *stylesheet_ref = 0, ss_ref_value;
     TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
