@@ -583,7 +583,7 @@ bool CmdTranslation::translate_define(BESTokenizer &t, xmlTextWriterPtr writer)
             else {
                 string c = t.parse_container_name(token, type);
                 if (clist[c] != c) {
-                    t.parse_error("contstraint container does not exist");
+                    t.parse_error("constraint container does not exist");
                 }
                 if (type == 1) {
                     // constraint

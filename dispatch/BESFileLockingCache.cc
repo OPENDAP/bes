@@ -324,11 +324,23 @@ static bool createLockedFile(string file_name, int &ref_fd)
 /** Private method */
 void BESFileLockingCache::m_check_ctor_params()
 {
+    // TODO Should this really be a fatal error? What about just not 
+    // using the cache in ths case or writing out a warning message 
+    // to the log. jhrg 10/23/15
     if (d_cache_dir.empty()) {
         string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory was not specified";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
+#if 0
+    // This code has a Time of check, time of Use (TOCTOU) error.
+    // It could be that stat returns that the directory does not
+    // exist, then another process makes the directory and then this
+    // code tries and fails. I think it would be better to just try
+    // and if it fails, return an error only when the code indicates
+    // there really is an error. 
+    //
+    // jhrg 10/23/15
     struct stat buf;
     int statret = stat(d_cache_dir.c_str(), &buf);
     if (statret != 0 || !S_ISDIR(buf.st_mode)) {
@@ -339,15 +351,26 @@ void BESFileLockingCache::m_check_ctor_params()
             throw BESInternalError(err, __FILE__, __LINE__);
         }
     }
+#endif
+
+    // I changed these to BES_SYNTAX_USER_ERROR. jhrg 10/23/15
+
+    int status = mkdir(d_cache_dir.c_str(), 0775);
+    // If there is an error and it's not that the dir already exists,
+    // throw an exception.
+    if (status == -1 && errno != EEXIST) {
+	string err = "The cache directory " + d_cache_dir + " could not be created: " + strerror(errno);
+	throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
+    }
 
     if (d_prefix.empty()) {
-        string err = "BESFileLockingCache::m_check_ctor_params() - The cache file prefix was not specified, must not be empty";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        string err = "The cache file prefix was not specified, must not be empty";
+        throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     if (d_max_cache_size_in_bytes <= 0) {
-        string err = "BESFileLockingCache::m_check_ctor_params() - The cache size was not specified, must be greater than zero";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        string err = "The cache size was not specified, must be greater than zero";
+        throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     BESDEBUG("cache", "BESFileLockingCache::m_check_ctor_params() - directory " << d_cache_dir << ", prefix " << d_prefix

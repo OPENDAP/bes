@@ -101,11 +101,7 @@ BESTokenizer::get_first_token()
 string &
 BESTokenizer::get_current_token()
 {
-    if (_counter == -1) {
-        parse_error("incomplete expression!");
-    }
-
-    if (_counter > (int) (_number_tokens - 1)) {
+    if (_counter < 0 || _counter > (int)_number_tokens - 1) {
         parse_error("incomplete expression!");
     }
 

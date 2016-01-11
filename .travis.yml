@@ -9,6 +9,8 @@ sudo: false
 cache:
   directories:
   - $HOME/deps
+  - $HOME/hyrax-dependencies
+  - $HOME/libdap4
 
 language: cpp
 

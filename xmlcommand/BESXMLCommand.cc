@@ -57,11 +57,16 @@ void BESXMLCommand::set_response()
 {
     _dhi.response_handler = BESResponseHandlerList::TheList()->find_handler(_dhi.action);
     if (!_dhi.response_handler) {
-        string err("Command ");
-        err += _dhi.action + " does not have a registered response handler";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        throw BESSyntaxUserError(string("Command '") + _dhi.action + "' does not have a registered response handler",
+            __FILE__, __LINE__);
     }
+
+    // The _str_cmd is a text version of the xml command used for the log.
+    // It is not used for anything else. I think the 'sql like' syntax is
+    // actually no longer used by the BES and that the software in cmdln
+    // translates that syntax into XML. But I'm not 100% sure... jhrg 12/29/15
     _dhi.data[DATA_REQUEST] = _str_cmd;
+
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID] << " from " << _dhi.data[REQUEST_FROM] << " [" << _str_cmd
         << "] received" << endl;
 }

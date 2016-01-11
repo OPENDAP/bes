@@ -35,24 +35,29 @@
 
 #include <string>
 
-using std::string;
-
 #include "BESObj.h"
 
 #define BES_INTERNAL_ERROR 1
+
+// BES_INTERNAL_FATAL_ERROR will cause the bes listener to exit()
+// while the others (BES_INTERNAL_ERROR, ...) won't.
 #define BES_INTERNAL_FATAL_ERROR 2
+
 #define BES_SYNTAX_USER_ERROR 3
 #define BES_FORBIDDEN_ERROR 4
 #define BES_NOT_FOUND_ERROR 5
+
+// I added this for the timeout feature. jhrg 12/28/15
+#define BES_TIMEOUT_ERROR 6
 
 /** @brief Abstract exception class for the BES with basic string message
  *
  */
 class BESError: public BESObj {
 protected:
-    string _msg;
+    std::string _msg;
     unsigned int _type;
-    string _file;
+    std::string _file;
     unsigned int _line;
 
     BESError(): _msg("UNDEFINED"), _type(0), _file(""), _line(0) { }
@@ -69,7 +74,7 @@ public:
      * @param line the line number within the file in which this error
      * object was created
      */
-    BESError(const string &msg, unsigned int type, const string &file, unsigned int line) :
+    BESError(const std::string &msg, unsigned int type, const std::string &file, unsigned int line) :
             _msg(msg), _type(type), _file(file), _line(line)
     {
     }
@@ -81,7 +86,7 @@ public:
      *
      * @param msg message string
      */
-    virtual void set_message(const string &msg)
+    virtual void set_message(const std::string &msg)
     {
         _msg = msg;
     }
@@ -89,7 +94,7 @@ public:
      *
      * @return error message
      */
-    virtual string get_message()
+    virtual std::string get_message()
     {
         return _msg;
     }
@@ -97,7 +102,7 @@ public:
      *
      * @return file name
      */
-    virtual string get_file()
+    virtual std::string get_file()
     {
         return _file;
     }
@@ -139,7 +144,7 @@ public:
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESError_h_ 

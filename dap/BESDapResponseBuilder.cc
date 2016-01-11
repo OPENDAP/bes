@@ -54,9 +54,13 @@
 #include <ctime>
 
 //#define DODS_DEBUG
+#define CLEAR_LOCAL_DATA
+#undef FUNCTION_CACHING
+#undef USE_LOCAL_TIMEOUT_SCHEME
 
 #include <DAS.h>
 #include <DDS.h>
+#include <Structure.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <Ancillary.h>
@@ -79,10 +83,12 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <escaping.h>
 #include <util.h>
+#if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
 #include <SignalHandler.h>
 #include <EventHandler.h>
 #include <AlarmHandler.h>
+#endif
 #endif
 
 #include "TheBESKeys.h"
@@ -94,54 +100,37 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-#define CLEAR_LOCAL_DATA
-#undef FUNCTION_CACHING
-
-#define DAP_PROTOCOL_VERSION "3.2"
-
-const std::string CRLF = "\r\n";             // Change here, expr-test.cc
-
 using namespace std;
 using namespace libdap;
 
-/** Called when initializing a ResponseBuilder that's not going to be passed
- command line arguments. */
+const string CRLF = "\r\n";             // Change here, expr-test.cc
+const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
+
+/**
+ * Look up the BES Keys (parameters in the bes.conf file) that this class
+ * uses.
+ */
 void BESDapResponseBuilder::initialize()
 {
-    // Set default values. Don't use the C++ constructor initialization so
-    // that a subclass can have more control over this process.
-    d_dataset = "";
-    d_dap2ce = "";
-    d_btp_func_ce = "";
-    d_timeout = 0;
-
-    d_default_protocol = DAP_PROTOCOL_VERSION;
-
-    // d_response_cache = 0;
-
-    d_dap4ce = "";
-    d_dap4function = "";
-    d_store_result = "";
-    d_async_accepted = "";
+    bool found = false;
+    string cancel_timeout_on_send = "";
+    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, cancel_timeout_on_send, found);
+    if (found && !cancel_timeout_on_send.empty()) {
+        // The default value is false.
+        downcase(cancel_timeout_on_send);
+        if (cancel_timeout_on_send == "yes" || cancel_timeout_on_send == "true")
+            d_cancel_timeout_on_send = true;
+    }
 }
-
-#if 0
-/** Lazy getter for the ResponseCache. */
-BESDapResponseCache *
-BESDapResponseBuilder::responseCache()
-{
-    if (!d_response_cache) d_response_cache = BESDapResponseCache::get_instance();
-
-    return d_response_cache;
-}
-#endif
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
     // If an alarm was registered, delete it. The register code in SignalHandler
     // always deletes the old alarm handler object, so only the one returned by
     // remove_handler needs to be deleted at this point.
     delete dynamic_cast<AlarmHandler*>(SignalHandler::instance()->remove_handler(SIGALRM));
+#endif
 }
 
 /** Return the entire DAP2 constraint expression in a string.  This
@@ -283,24 +272,104 @@ int BESDapResponseBuilder::get_timeout() const
     return d_timeout;
 }
 
-/** Use values of this instance to establish a timeout alarm for the server.
- If the timeout value is zero, do nothing.
+/**
+ * Turn on the alarm. The code will timeout after d_timeout
+ * seconds unless timeout_off() is called first.
+ *
+ * @deprecated
  */
-void BESDapResponseBuilder::establish_timeout(ostream &stream) const
+void
+BESDapResponseBuilder::timeout_on() const
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
+#ifndef WIN32
+    alarm(d_timeout);
+#endif
+#endif
+}
+
+/**
+ * Turn off the timeout.
+ *
+ * @deprecated
+ */
+void
+BESDapResponseBuilder::timeout_off()
+{
+#if USE_LOCAL_TIMEOUT_SCHEME
+#ifndef WIN32
+    alarm(0);
+#endif
+#endif
+}
+
+/**
+ * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
+ * timeout. The intent of this is to stop the timeout counter once the
+ * BES starts sending data back since, the network link used by a remote
+ * client may be low-bandwidth and data providers might want to ensure those
+ * users get their data (and don't submit second, third, ..., requests when/if
+ * the first one fails). The timeout is initiated in the BES framework when it
+ * first processes the request.
+ *
+ * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
+ * in the 'int BESInterface::execute_request(const string &from)' method.
+ *
+ * @see BESInterface::execute_request(const string &from)
+ */
+void BESDapResponseBuilder::conditional_timeout_cancel()
+{
+    if (d_cancel_timeout_on_send)
+        alarm(0);
+}
+
+/**
+ * Configure a signal handler for the SIGALRM. The signal handler
+ * will throw a DAP Error object if the alarm signal is triggered.
+ *
+ * @deprecated
+ *
+ * @return void
+ */
+void BESDapResponseBuilder::register_timeout() const
+{
+#if USE_LOCAL_TIMEOUT_SCHEME
+#ifndef WIN32
+    SignalHandler *sh = SignalHandler::instance();
+    EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler());
+    delete old_eh;
+#endif
+#endif
+}
+
+
+/** Use values of this instance to establish a timeout alarm for the server.
+ * If the timeout value is zero, do nothing.
+ *
+ * @deprecated
+ */
+void BESDapResponseBuilder::establish_timeout(ostream &) const
+{
+#if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
     if (d_timeout > 0) {
         SignalHandler *sh = SignalHandler::instance();
-        EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler(stream));
+        EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler());
         delete old_eh;
         alarm(d_timeout);
     }
 #endif
+#endif
 }
 
+/**
+ * @deprecated Use timeout_off() instead.
+ */
 void BESDapResponseBuilder::remove_timeout() const
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
     alarm(0);
+#endif
 }
 
 static string::size_type find_closing_paren(const string &ce, string::size_type pos)
@@ -425,12 +494,15 @@ void BESDapResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_head
 void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained,
     bool with_mime_headers)
 {
+#if USE_LOCAL_TIMEOUT_SCHEME
     // Set up the alarm.
     establish_timeout(out);
     dds.set_timeout(d_timeout);
-
+#endif
     if (!constrained) {
         if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
+
+        conditional_timeout_cancel();
 
         dds.print_das(out);
         out << flush;
@@ -460,6 +532,9 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        conditional_timeout_cancel();
+
+
         fdds->print_das(out);
 
         if (responseCache)
@@ -473,10 +548,100 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        conditional_timeout_cancel();
+
+
         dds.print_das(out);
     }
 
     out << flush;
+}
+
+/**
+ * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
+ * false otherwise.
+ */
+static bool ends_with (const string &full_string, const string &ending) {
+    if (full_string.length() >= ending.length()) {
+        return (0 == full_string.compare (full_string.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+
+/**
+ * For an Structure in the given DDS, if that Structure's name ends with
+ * "_unwrap" take each variable from the structure and 'promote it to the
+ * top level of the DDS. This function deletes the DDS passed to it. The
+ * caller is responsible for deleting the returned DDS.
+ *
+ * @note Here we remove top-level Structure variables that have been added by server
+ * functions which return multiple values. This will necessarily be a hack since
+ * DAP2 was never designed to do this sort of thing - support functions that
+ * return computed values.
+ *
+ * @note The DDS referenced by 'fdds' may have one or more variables because there may
+ * have been one or more function calls given in the CE supplied by the CE. For
+ * example, "linear_scale(SST),linear_scale(AIRT)" would have two variables. It is
+ * possible for a CE that contains function calls to also include a 'regular'
+ * projection (i.e., "linear_scale(SST),SST[0][0:179]") but this means run the function(s)
+ * and build a new DDS and then apply the remaining constraints to that new DDS. So,
+ * this (hack) code can assume that there is one variable per function call and no
+ * other variables. Furthermore, lets adopt a simple convention that functions use
+ * a Structure named <something>_unwrap when they want the function result to be
+ * unwrapped and something else when they want this code to leave the Structure as
+ * it is.
+ *
+ * @param fdds The source DDS - look for Structures here
+ * @return A new DDS with new instances such that the Structures named
+ * *_unwrap have been removed and their members 'promoted' up to the new
+ * DDS's top level scope.
+ */
+static DDS *promote_function_output_structure(DDS *fdds)
+{
+    // Look in the top level of the DDS for a promotable member - i.e. a member
+    // variable that is a collection and whose name ends with "_unwrap"
+    bool found_promotable_member = false;
+    for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de && !found_promotable_member; ++di) {
+        Structure *collection = dynamic_cast<Structure *>(*di);
+        if (collection && ends_with(collection->name(), "_unwrap")) {
+            found_promotable_member = true;
+        }
+    }
+
+    // If we found one or more promotable member variables, promote them.
+    if (found_promotable_member) {
+
+        // Dump pointers to the values here temporarily... If we had methods in libdap
+        // that could be used to access the underlying erase() and insert() methods, we
+        // could skip the (maybe expensive) copy operations I use below. What we would
+        // need are ways to delete a Structure/Constructor without calling delete on its
+        // fields and ways to call vector::erase() and vector::insert(). Some of this
+        // exists, but it's not quite enough.
+
+        DDS *temp_dds = new DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
+
+        for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
+            Structure *collection = dynamic_cast<Structure *>(*di);
+            if (collection && ends_with(collection->name(), "_unwrap")) {
+                // So we're going to 'flatten this structure' and return its fields
+                Structure::Vars_iter vi;
+                for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
+                    temp_dds->add_var(*vi); // better to use add_var_nocopy(*vi); need to modify libdap?
+                }
+            }
+            else {
+                temp_dds->add_var(*di);
+            }
+        }
+
+        delete fdds;
+        return temp_dds;
+    }
+    else {
+        // Otherwise do nothing to alter the DDS
+        return fdds;
+    }
 }
 
 /** This function formats and prints an ASCII representation of a
@@ -504,14 +669,19 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        conditional_timeout_cancel();
+
+
         dds.print(out);
         out << flush;
         return;
     }
 
+#if USE_LOCAL_TIMEOUT_SCHEME
     // Set up the alarm.
     establish_timeout(out);
     dds.set_timeout(d_timeout);
+#endif
 
     // Split constraint into two halves
     split_ce(eval);
@@ -546,6 +716,11 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        fdds = promote_function_output_structure(/*&*/fdds);
+
+        conditional_timeout_cancel();
+
+
         fdds->print_constrained(out);
 
         if (responseCache)
@@ -558,6 +733,9 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
 
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+
+        conditional_timeout_cancel();
+
 
         dds.print_constrained(out);
     }
@@ -588,6 +766,11 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     XMLWriter xmlWrtr;
     D4AsyncUtil d4au;
 
+    // FIXME Keys should be read in initialize(). Also, I think the D4AsyncUtil should
+    // be removed from libdap - it is much more about how the BES processes these kinds
+    // of operations. Change this when working on the response caching for ODSIP. But...
+    // do we really need to put the style sheet in the bes.conf file? Should it be baked
+    // into the code (because we don't want people to cahnge it)?
     bool found;
     string *stylesheet_ref = 0, ss_ref_value;
     TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
@@ -671,6 +854,11 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, Cons
 
     XDRStreamMarshaller m(out);
 
+    // This only has an effect when the timeout in BESInterface::execute_request()
+    // is set. Otherwise it does nothing.
+    conditional_timeout_cancel();
+
+
     // Send all variables in the current projection (send_p())
     for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
         if ((*i)->send_p()) {
@@ -696,7 +884,7 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
     const string &boundary, const string &start, bool ce_eval)
 {
     BESDEBUG("dap", __PRETTY_FUNCTION__ << " BEGIN" << endl);
-#if 1
+
     // Write the MPM headers for the DDX (text/xml) part of the response
     libdap::set_mime_ddx_boundary(out, boundary, start, dods_ddx, x_plain);
 
@@ -709,22 +897,20 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
     if (getdomainname(domain, 255) != 0 || strlen(domain) == 0) strncpy(domain, "opendap.org", 255);
 
     string cid = string(&uuid[0]) + "@" + string(&domain[0]);
-#endif
+
     // Send constrained DDX with a data blob reference.
     // FIXME Comment CID passed but ignored jhrg 10/20/15
     dds.print_xml_writer(out, true, cid);
 
-#if 1
     // write the data part mime headers here
     set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
-#endif
+
     XDRStreamMarshaller m(out);
 
-    // Send all variables in the current projection (send_p()).
+    conditional_timeout_cancel();
 
-    // FIXME: This part is misleading. This is not DAP4: In DAP4,
-    // all of the top-level variables are serialized with their checksums.
-    // Internal variables are not.
+
+    // Send all variables in the current projection (send_p()).
     for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
         if ((*i)->send_p()) {
             (*i)->serialize(eval, dds, m, ce_eval);
@@ -758,9 +944,11 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 {
     BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BEGIN"<< endl);
 
+#if USE_LOCAL_TIMEOUT_SCHEME
     // Set up the alarm.
     establish_timeout(data_stream);
     dds.set_timeout(d_timeout);
+#endif
 
     // Split constraint into two halves
     split_ce(eval);
@@ -801,6 +989,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         fdds->mark_all(false);
+
+        fdds = promote_function_output_structure(fdds);
 
         eval.parse_constraint(get_ce(), *fdds);
 
@@ -859,6 +1049,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 
 }
 
+
 /** Send the DDX response. The DDX never contains data, instead it holds a
  reference to a Blob response which is used to get the data values. The
  DDS and DAS objects are built using code that already exists in the
@@ -884,9 +1075,11 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         return;
     }
 
+#if USE_LOCAL_TIMEOUT_SCHEME
     // Set up the alarm.
     establish_timeout(out);
     dds.set_timeout(d_timeout);
+#endif
 
     // Split constraint into two halves
     split_ce(eval);
@@ -898,7 +1091,11 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         string cache_token = "";
         DDS *fdds = 0;
         ConstraintEvaluator func_eval;
-        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+        BESDapResponseCache *responseCache = 0;
+
+#if FUNCTION_CACHING
+        responseCache = BESDapResponseCache::get_instance();
+#endif
 
         if (responseCache) {
             fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
@@ -915,15 +1112,22 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // result) will be sent.
         fdds->mark_all(false);
 
+        fdds = promote_function_output_structure(fdds);
+
         eval.parse_constraint(d_dap2ce, *fdds);
 
         if (with_mime_headers)
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-        fdds->print_constrained(out);
+        conditional_timeout_cancel();
 
+
+        fdds->print_xml_writer(out, true, "");
+
+#if FUNCTION_CACHING
         if (responseCache)
-        	responseCache->unlock_and_close(cache_token);
+            responseCache->unlock_and_close(cache_token);
+#endif
 
         delete fdds;
     }
@@ -932,6 +1136,9 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 
         if (with_mime_headers)
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+
+        conditional_timeout_cancel();
+
 
         // dds.print_constrained(out);
         dds.print_xml_writer(out, true, "");
@@ -962,11 +1169,12 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
     if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
+    conditional_timeout_cancel();
+
+
     XMLWriter xml;
     dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
-
-    out << flush;
 }
 
 void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
@@ -997,42 +1205,31 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
 {
-    try {
-        // Set up the alarm.
-        establish_timeout(out);
+    // If a function was passed in with this request, evaluate it and use that DMR
+    // for the remainder of this request.
+    // TODO Add caching for these function invocations
+    if (!d_dap4function.empty()) {
+        D4BaseTypeFactory d4_factory;
+        DMR function_result(&d4_factory, "function_results");
 
-        // If a function was passed in with this request, evaluate it and use that DMR
-        // for the remainder of this request.
-        // TODO Add caching for these function invocations
-        if (!d_dap4function.empty()) {
-            D4BaseTypeFactory d4_factory;
-            DMR function_result(&d4_factory, "function_results");
+        // Function modules load their functions onto this list. The list is
+        // part of libdap, not the BES.
+        if (!ServerFunctionsList::TheList())
+            throw Error(
+                "The function expression could not be evaluated because there are no server functions defined on this server");
 
-            // Function modules load their functions onto this list. The list is
-            // part of libdap, not the BES.
-            if (!ServerFunctionsList::TheList())
-                throw Error(
-                    "The function expression could not be evaluated because there are no server functions defined on this server");
+        D4FunctionEvaluator parser(&dmr, ServerFunctionsList::TheList());
+        bool parse_ok = parser.parse(d_dap4function);
+        if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
 
-            D4FunctionEvaluator parser(&dmr, ServerFunctionsList::TheList());
-            bool parse_ok = parser.parse(d_dap4function);
-            if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
+        parser.eval(&function_result);
 
-            parser.eval(&function_result);
-
-            // Now use the results of running the functions for the remainder of the
-            // send_data operation.
-            send_dap4_data_using_ce(out, function_result, with_mime_headers);
-        }
-        else {
-            send_dap4_data_using_ce(out, dmr, with_mime_headers);
-
-            remove_timeout();
-        }
+        // Now use the results of running the functions for the remainder of the
+        // send_data operation.
+        send_dap4_data_using_ce(out, function_result, with_mime_headers);
     }
-    catch (...) {
-        remove_timeout();
-        throw;
+    else {
+        send_dap4_data_using_ce(out, dmr, with_mime_headers);
     }
 }
 
@@ -1054,6 +1251,8 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     // chunk. (+2 for the CRLF bytes).
     chunked_ostream cos(out, max((unsigned int) CHUNK_SIZE, xml.get_doc_size() + 2));
 
+    conditional_timeout_cancel();
+
     // using flush means that the DMR and CRLF are in the first chunk.
     cos << xml.get_doc() << CRLF << flush;
 
@@ -1063,7 +1262,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 #ifdef CLEAR_LOCAL_DATA
     dmr.root()->clear_local_data();
 #endif
-    out << flush;
+    cos << flush;
 
     BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - END" << endl);
 }
@@ -1090,6 +1289,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
         D4AsyncUtil d4au;
         XMLWriter xmlWrtr;
 
+        // FIXME See above comment for store dap2 result
         bool found;
         string *stylesheet_ref = 0, ss_ref_value;
         TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);

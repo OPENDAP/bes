@@ -4,7 +4,11 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS = csv_handler dap-server freeform_handler
+SUBDIRS = csv_handler dap-server freeform_handler 
+
+if BES_DEVELOPER
+SUBDIRS += debug_functions
+endif
 
 if BUILD_NETCDF
 SUBDIRS += netcdf_handler fileout_netcdf

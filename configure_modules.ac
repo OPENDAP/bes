@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.15.1, support@opendap.org)
+AC_INIT(bes, 3.16.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -77,8 +77,9 @@ LIBXMLCOMMAND_VERSION="$LIB_XML_CMD_CURRENT:$LIB_XML_CMD_REVISION:$LIB_XML_CMD_A
 AC_SUBST(LIBXMLCOMMAND_VERSION)
 
 AC_CHECK_LIB([pthread], [pthread_kill],
-[PTHREAD_LIBS="-lpthread"],
-[AC_MSG_ERROR([I could not find pthreads])])
+    [PTHREAD_LIBS="-lpthread"],
+    [AC_MSG_ERROR([I could not find pthreads])])
+    
 AC_SUBST([PTHREAD_LIBS])
 
 AC_DEFINE([DAPREADER_PACKAGE], ["dapreader_module"], [dapreader_module])
@@ -107,6 +108,10 @@ AC_CHECK_PROG(YACC,[bison],[bison])
 dnl Use libtool instead?
 dnl AC_PROG_RANLIB
 AM_PROG_LIBTOOL
+
+AC_SEARCH_LIBS([uuid_generate], [uuid],
+    [],
+    [AC_MSG_ERROR([I could not find a library with uuid_generate])])
 
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
@@ -420,26 +425,25 @@ AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this lo
 
 AS_IF([test -z "$with_gdal_prefix" -a -n "$ac_bes_dependencies_prefix"],
 	[with_gdal_prefix=$ac_bes_dependencies_prefix])
-	
-if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
-then
-    AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
+ 
+AS_IF([test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config],
+    dnl then
+    [AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
     GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
     GDAL_FOUND="yes"
+    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])],
     
-    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])
-elif test -n "$with_gdal_prefix"
-then
-    AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
-    AC_MSG_NOTICE([but gdal-config is not there. Not building GDAL-dependent modules.])
-else
-    AC_MSG_NOTICE([Looking for GDAL.])
+    dnl if
+    [test -n "$with_gdal_prefix"],
+    dnl then
+    [AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
+    AC_MSG_NOTICE([but gdal-config is not there. Not building GDAL-dependent modules.])],
+    
+    dnl else
+    [AC_MSG_NOTICE([Looking for GDAL.])
     AX_LIB_GDAL([1.10.0])
-    if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
-        GDAL_FOUND="yes"
-    fi
-fi
+    AS_IF([test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"], [GDAL_FOUND=yes])])
 
 AM_CONDITIONAL([BUILD_GDAL], [test x$GDAL_FOUND = xyes])
 
@@ -743,6 +747,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_ppt.pc
 		 bes_xml_command.pc
 		 doxy.conf
+		 main_page.doxygen
 		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
@@ -812,6 +817,12 @@ AM_COND_IF([DAP_MODULES],
     modules/dap-server/asciival/unit-tests/test_config.h
     modules/dap-server/www-interface/Makefile
 
+    modules/debug_functions/Makefile
+    modules/debug_functions/unit-tests/Makefile 
+    modules/debug_functions/unit-tests/test_config.h
+    modules/debug_functions/tests/Makefile 
+    modules/debug_functions/tests/atlocal
+
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
     modules/fileout_json/unit-tests/test_config.h
@@ -837,6 +848,10 @@ AM_COND_IF([DAP_MODULES],
 	modules/fileout_netcdf/unit-tests/Makefile 
 	modules/fileout_netcdf/unit-tests/test_config.h 
 	modules/fileout_netcdf/unit-tests/atlocal
+	
+    modules/fileout_netcdf/tests/Makefile 
+    modules/fileout_netcdf/tests/atlocal
+    modules/fileout_netcdf/data/build_test_data/Makefile 
 	
 	modules/gateway_module/Makefile 
 	modules/gateway_module/bes-testsuite/Makefile 
@@ -913,11 +928,13 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/dap-server/asciival/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
