@@ -51,3 +51,64 @@ AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func4.bescm
 AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func5.bescmd])
 
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/mask_coads_data_dap2_1.bescmd)
+<<<<<<< Updated upstream
+=======
+
+AT_BESCMD_RESPONSE_TEST(bescmd/versionFunction.dds.bescmd)
+
+# This test uses a pattern but tests only for one function.
+AT_BESCMD_PATTERN_DATA_RESPONSE_TEST(bescmd/versionFunction.dods.bescmd)
+
+# This is the 'help' call for the function and the test looks at the
+# response using a pattern.
+AT_BESCMD_PATTERN_DATA_RESPONSE_TEST(bescmd/grid.dods.bescmd)
+
+## These grid and geogrid tests are (likely) broken because of a problem
+## in the dapreader handler. jhrg 1/11/16
+##
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/test.coads.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/grid_2.dods.bescmd, xfail)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid.dods.bescmd, xfail)
+
+# These two requests ask for the same lat/lon box but do so using the
+# negative (-180 to 180) and positive (0 to 360) longitude conventions.
+# Even though the code does not test this, both should return the same 
+# array values (the lon map's values are in the convention of the respective
+# request).
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid_2.dods.bescmd, xfail)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid_3.dods.bescmd, xfail)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale_3.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_3.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_5.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_6.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_7.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_8.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_3.dods.bescmd)
+# The following test returns an error. jhrg 1/11/16
+AT_BESCMD_RESPONSE_PATTERN_TEST(bescmd/bind_name_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_5.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/fast_array_test_1.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/fast_array_test_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/fast_array_test_3.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_1.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_3.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_5.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_6.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_7.dods.bescmd)
+>>>>>>> Stashed changes
