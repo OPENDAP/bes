@@ -55,6 +55,7 @@ private:
 protected:
     BESDataHandlerInterface _dhi;
     virtual void set_response();
+    // The _str_cmd is used only for the log
     string _str_cmd;
     BESXMLCommand(const BESDataHandlerInterface &base_dhi);
 public:

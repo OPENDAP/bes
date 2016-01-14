@@ -14,7 +14,7 @@
 BES.ServerAdministrator=admin.email.address@your.domain.name
 
 #-----------------------------------------------------------------------#
-# User and Group to run the BES as					#
+# User and Group to run the BES as					                    #
 #-----------------------------------------------------------------------#
 # Notes:
 # 1. The user_name and group_name can be user and group ids. To use
@@ -30,6 +30,22 @@ BES.Group=group_name
 #-----------------------------------------------------------------------#
 BES.LogName=@prefix@/var/bes.log
 BES.LogVerbose=no
+
+#-----------------------------------------------------------------------#
+# When the context 'bes_timeout' is used to set the BES timeout feature #
+# should the tiemout period include the time to send the response, or   #
+# just to build it? The default value is False, include the time to     #
+# the response .                                                        #
+#                                                                       #
+# If the OLFS (or other client) does not send a timeout value using     #
+# the setContext command, no timeout will be used by default. Override  #
+# that here using the TimeOutInSeconds key. If this value is set, it    #
+# will be used as the default timeout value. Sending the bes_timeout    #
+# context will override this value.                                     #
+#-----------------------------------------------------------------------#
+
+# BES.CancelTimeoutOnSend=true;
+# BES.TimeOutInSeconds=10
 
 #-----------------------------------------------------------------------#
 # Setting data information

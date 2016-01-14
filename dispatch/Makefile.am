@@ -138,6 +138,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESServiceRegistry.h BESServicesResponseHandler.h 		\
 	BESError.h BESInternalError.h BESInternalFatalError.h 		\
 	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h 	\
+	BESTimeoutError.h \
 	BESConstraintFuncs.h  			\
 	BESMemoryGlobalArea.h BESMemoryManager.h 			\
 	BESServerSystemResources.h 					\

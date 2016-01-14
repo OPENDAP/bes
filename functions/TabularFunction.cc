@@ -67,8 +67,9 @@ static void read_array_values(Array *a)
  * other arrays to determine compatibility for the tabular function.
  *
  * @note Not a static function so it can be tested in the unit tests
+ *
  * @param a Read the size and number of dimensions from this array
- * @return The shape array
+ * @return The array shape
  */
 TabularFunction::Shape TabularFunction::array_shape(Array *a)
 {
@@ -112,7 +113,7 @@ bool TabularFunction::shape_matches(Array *a, const Shape &shape)
  * variables' shape. Do they meet the requirements of this function?
  * The independent variables' shape must match that of the right-most
  * N dimensions of the dependent variables given that those have rank
- * N + 1. This also means that the dependent variables may have at most
+ * >= N + 1. This also means that the dependent variables may have at most
  * one extra dimension in addition to those of the independent variables.
  *
  * @param dep_shape
@@ -126,7 +127,7 @@ bool TabularFunction::dep_indep_match(const Shape &dep_shape, const Shape &indep
     // Start the comparison with the right-most dims (rbegin())
     Shape::const_reverse_iterator di = dep_shape.rbegin();
     for (Shape::const_reverse_iterator i = indep_shape.rbegin(), e = indep_shape.rend(); i != e; ++i) {
-        assert(di != dep_shape.rend());
+        if (di == dep_shape.rend()) return false;   // this was an assert; should be a test. jhrg 11/17/15
         if (*i != *di++) return false;
     }
 
