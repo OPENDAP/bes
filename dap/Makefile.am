@@ -24,7 +24,7 @@ endif
 
 SUBDIRS = . unit-tests
 
-# These tests depend on dapread, which is built after this code.
+# These tests depend on dapreader, which is built after this code.
 # jhrg 3/17/15. 
 # tests
 
