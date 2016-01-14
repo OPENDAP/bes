@@ -202,6 +202,9 @@ public:
         DBG2(cerr << "setUp() - BEGIN" << endl);
         DBG2(BESDebug::SetUp("cerr,cache,dap"));
 
+        // BESDapResponseBuilder now uses theBESKeys. jhrg 12/30/15
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
+
         // Test pathname
         drb = new BESDapResponseBuilder();
 
@@ -269,7 +272,6 @@ public:
         d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
         DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
         TheBESKeys::TheKeys()->set_key(BESDapResponseCache::PATH_KEY, (string) TEST_SRC_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key(BESDapResponseCache::PREFIX_KEY, "dap_response");
         TheBESKeys::TheKeys()->set_key(BESDapResponseCache::SIZE_KEY, "100");

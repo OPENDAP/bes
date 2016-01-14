@@ -44,9 +44,7 @@
 #include <unistd.h>
 #endif
 
-using std::cerr;
-using std::endl;
-using std::flush;
+using namespace std;
 
 BESLog *BESLog::_instance = 0;
 
@@ -132,6 +130,8 @@ void BESLog::dump_time()
 }
 
 /** @brief Overloaded inserter that writes the specified string.
+ *
+ * @todo Decide if this is really necessary.
  *
  * @param s string to write to the log file
  */

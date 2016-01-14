@@ -259,7 +259,7 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
             }
 
             if (p) {
-                p(dhi);
+                p(dhi); // This is where the request handler is called
 
                 if (dhi.container) {
                     // This is (likely) for reporting. May not be used... jhrg 2/20/15
@@ -270,7 +270,7 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
                 }
             }
             else {
-                // TODO THis should not be an internal error - its really a configuration error
+                // TODO This should not be an internal error - it's really a configuration error
                 // jhrg 2/20/15
                 string se = "Request handler \"" + dhi.container->get_container_type()
                     + "\" does not handle the response type \"" + dhi.action + "\"";
