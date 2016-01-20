@@ -1168,7 +1168,7 @@ D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s){
         return attr_uint8_c;
     else if (s == "Int16")
         return attr_int16_c;
-    else if (s == "UInt6")
+    else if (s == "UInt16")
         return attr_uint16_c;
     else if (s == "Int32")
         return attr_int32_c;
