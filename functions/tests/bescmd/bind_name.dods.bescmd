@@ -9,7 +9,6 @@
   
   <bes:define name="d1">
     <bes:container name="c">
-      <!-- y = mx + b -->
         <bes:constraint>bind_name()</bes:constraint>
     </bes:container>
   </bes:define>
