@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5">
+    <Dimension name="rows" size="4320"/>
+    <Dimension name="columns" size="8640"/>
+    <Dimension name="rgb" size="3"/>
+    <Dimension name="eightbitcolor" size="256"/>
+    <Float32 name="rows">
+        <Dim name="/rows"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.      4320</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="columns">
+        <Dim name="/columns"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.      8640</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="rgb">
+        <Dim name="/rgb"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.         3</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="eightbitcolor">
+        <Dim name="/eightbitcolor"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.       256</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </Float32>
+    <String name="palette">
+        <Dim name="/rgb"/>
+        <Dim name="/eightbitcolor"/>
+    </String>
+    <Group name="processing_control">
+        <Attribute name="software_name" type="String">
+            <Value>smigen</Value>
+        </Attribute>
+        <Attribute name="software_version" type="String">
+            <Value>5.02</Value>
+        </Attribute>
+        <Attribute name="input_files" type="String">
+            <Value>A20030602003090.L3b_MO_AT108_CHL.nc</Value>
+        </Attribute>
+        <Attribute name="l2_flag_names" type="String">
+            <Value>ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT</Value>
+        </Attribute>
+    </Group>
+    <Group name="input_parameters">
+        <Attribute name="IFILE" type="String">
+            <Value>A20030602003090.L3b_MO_AT108_CHL.nc</Value>
+        </Attribute>
+        <Attribute name="OFILE" type="String">
+            <Value>A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc</Value>
+        </Attribute>
+        <Attribute name="PFILE" type="String">
+            <Value></Value>
+        </Attribute>
+        <Attribute name="PROD" type="String">
+            <Value>chlor_a</Value>
+        </Attribute>
+        <Attribute name="PALFILE" type="String">
+            <Value>DEFAULT</Value>
+        </Attribute>
+        <Attribute name="PROCESSING" type="String">
+            <Value>2013.2NCDF</Value>
+        </Attribute>
+        <Attribute name="MEAS" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="STYPE" type="String">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="DATAMIN" type="String">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="DATAMAX" type="String">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="LONWEST" type="String">
+            <Value>-180.000000</Value>
+        </Attribute>
+        <Attribute name="LONEAST" type="String">
+            <Value>180.000000</Value>
+        </Attribute>
+        <Attribute name="LATSOUTH" type="String">
+            <Value>-90.000000</Value>
+        </Attribute>
+        <Attribute name="LATNORTH" type="String">
+            <Value>90.000000</Value>
+        </Attribute>
+        <Attribute name="RESOLUTION" type="String">
+            <Value>4km</Value>
+        </Attribute>
+        <Attribute name="PROJECTION" type="String">
+            <Value>RECT</Value>
+        </Attribute>
+        <Attribute name="GAP_FILL" type="String">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="SEAM_LON" type="String">
+            <Value>-180.000000</Value>
+        </Attribute>
+        <Attribute name="MINOBS" type="String">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="DEFLATE" type="String">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="OFORMAT" type="String">
+            <Value>netCDF4</Value>
+        </Attribute>
+        <Attribute name="PRECISION" type="String">
+            <Value>F</Value>
+        </Attribute>
+    </Group>
+    <Group name="geophysical_data">
+        <Float32 name="chlor_a">
+            <Dim name="/rows"/>
+            <Dim name="/columns"/>
+            <Attribute name="long_name" type="String">
+                <Value>Chlorophyll Concentration, OC3 Algorithm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mg m^-3</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>mass_concentration_chlorophyll_concentration_in_sea_water</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-32767.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.001000000047</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="display_scale" type="String">
+                <Value>log</Value>
+            </Attribute>
+            <Attribute name="display_min" type="Float64">
+                <Value>0.01</Value>
+            </Attribute>
+            <Attribute name="display_max" type="Float64">
+                <Value>20.</Value>
+            </Attribute>
+            <Attribute name="scale_factor" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="add_offset" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="reference" type="String">
+                <Value>O'Reilly, J.E., and 24 Coauthors, 2000: SeaWiFS Postlaunch Calibration and Validation Analyses, Part 3. NASA Tech. Memo. 2000-206892, Vol. 11, S.B. Hooker and E.R. Firestone, Eds., NASA Goddard Space Flight Center, 49 pp.\n
+                http://oceancolor.gsfc.nasa.gov/REPROCESSING/R2009/ocv6/</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+</Dataset>

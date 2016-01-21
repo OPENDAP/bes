@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q20111722011263.L3b_SNSU_EVSCI_V1.2.main.h5">
+    <Group name="Level-3 Binned Data">
+        <Structure name="BinIndex">
+            <Int32 name="row_num"/>
+            <Float64 name="vsize"/>
+            <Float64 name="hsize"/>
+            <Int32 name="start_num"/>
+            <Int32 name="begin"/>
+            <Int32 name="extent"/>
+            <Int32 name="max"/>
+            <Dim size="180"/>
+        </Structure>
+        <Structure name="BinList">
+            <UInt32 name="bin_num"/>
+            <Int16 name="nobs"/>
+            <Int16 name="nscenes"/>
+            <Float32 name="weights"/>
+            <UInt64 name="flags_set"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_HH_ant">
+            <Float32 name="Kpc_HH_ant_sum"/>
+            <Float32 name="Kpc_HH_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_HH_toa">
+            <Float32 name="Kpc_HH_toa_sum"/>
+            <Float32 name="Kpc_HH_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_HV_ant">
+            <Float32 name="Kpc_HV_ant_sum"/>
+            <Float32 name="Kpc_HV_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_HV_toa">
+            <Float32 name="Kpc_HV_toa_sum"/>
+            <Float32 name="Kpc_HV_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_VH_ant">
+            <Float32 name="Kpc_VH_ant_sum"/>
+            <Float32 name="Kpc_VH_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_VH_toa">
+            <Float32 name="Kpc_VH_toa_sum"/>
+            <Float32 name="Kpc_VH_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_VV_ant">
+            <Float32 name="Kpc_VV_ant_sum"/>
+            <Float32 name="Kpc_VV_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_VV_toa">
+            <Float32 name="Kpc_VV_toa_sum"/>
+            <Float32 name="Kpc_VV_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="Kpc_total">
+            <Float32 name="Kpc_total_sum"/>
+            <Float32 name="Kpc_total_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="SSS">
+            <Float32 name="SSS_sum"/>
+            <Float32 name="SSS_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="SSS_error">
+            <Float32 name="SSS_error_sum"/>
+            <Float32 name="SSS_error_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="SSS_land">
+            <Float32 name="SSS_land_sum"/>
+            <Float32 name="SSS_land_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_SSS">
+            <Float32 name="anc_SSS_sum"/>
+            <Float32 name="anc_SSS_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_Tb_dw">
+            <Float32 name="anc_Tb_dw_sum"/>
+            <Float32 name="anc_Tb_dw_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_Tb_up">
+            <Float32 name="anc_Tb_up_sum"/>
+            <Float32 name="anc_Tb_up_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_cwat">
+            <Float32 name="anc_cwat_sum"/>
+            <Float32 name="anc_cwat_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_surface_pressure">
+            <Float32 name="anc_surface_pressure_sum"/>
+            <Float32 name="anc_surface_pressure_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_surface_temp">
+            <Float32 name="anc_surface_temp_sum"/>
+            <Float32 name="anc_surface_temp_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_trans">
+            <Float32 name="anc_trans_sum"/>
+            <Float32 name="anc_trans_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_wind_dir">
+            <Float32 name="anc_wind_dir_sum"/>
+            <Float32 name="anc_wind_dir_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="anc_wind_speed">
+            <Float32 name="anc_wind_speed_sum"/>
+            <Float32 name="anc_wind_speed_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="dTB_H">
+            <Float32 name="dTB_H_sum"/>
+            <Float32 name="dTB_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="dTB_H_uncertainty">
+            <Float32 name="dTB_H_uncertainty_sum"/>
+            <Float32 name="dTB_H_uncertainty_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="dTB_V">
+            <Float32 name="dTB_V_sum"/>
+            <Float32 name="dTB_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="dTB_V_uncertainty">
+            <Float32 name="dTB_V_uncertainty_sum"/>
+            <Float32 name="dTB_V_uncertainty_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_Ta3">
+            <Float32 name="rad_Ta3_sum"/>
+            <Float32 name="rad_Ta3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_TaH">
+            <Float32 name="rad_TaH_sum"/>
+            <Float32 name="rad_TaH_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_TaV">
+            <Float32 name="rad_TaV_sum"/>
+            <Float32 name="rad_TaV_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_TbH">
+            <Float32 name="rad_TbH_sum"/>
+            <Float32 name="rad_TbH_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_TbV">
+            <Float32 name="rad_TbV_sum"/>
+            <Float32 name="rad_TbV_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_exp_Ta3">
+            <Float32 name="rad_exp_Ta3_sum"/>
+            <Float32 name="rad_exp_Ta3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_exp_TaH">
+            <Float32 name="rad_exp_TaH_sum"/>
+            <Float32 name="rad_exp_TaH_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_exp_TaV">
+            <Float32 name="rad_exp_TaV_sum"/>
+            <Float32 name="rad_exp_TaV_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_far_TaH">
+            <Float32 name="rad_far_TaH_sum"/>
+            <Float32 name="rad_far_TaH_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_galact_Ta_dir_3">
+            <Float32 name="rad_galact_Ta_dir_3_sum"/>
+            <Float32 name="rad_galact_Ta_dir_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_galact_Ta_dir_H">
+            <Float32 name="rad_galact_Ta_dir_H_sum"/>
+            <Float32 name="rad_galact_Ta_dir_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_galact_Ta_dir_V">
+            <Float32 name="rad_galact_Ta_dir_V_sum"/>
+            <Float32 name="rad_galact_Ta_dir_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_galact_Ta_ref_3">
+            <Float32 name="rad_galact_Ta_ref_3_sum"/>
+            <Float32 name="rad_galact_Ta_ref_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_galact_Ta_ref_H">
+            <Float32 name="rad_galact_Ta_ref_H_sum"/>
+            <Float32 name="rad_galact_Ta_ref_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_galact_Ta_ref_V">
+            <Float32 name="rad_galact_Ta_ref_V_sum"/>
+            <Float32 name="rad_galact_Ta_ref_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_ice_frac">
+            <Float32 name="rad_ice_frac_sum"/>
+            <Float32 name="rad_ice_frac_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_land_frac">
+            <Float32 name="rad_land_frac_sum"/>
+            <Float32 name="rad_land_frac_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_land_toa_H">
+            <Float32 name="rad_land_toa_H_sum"/>
+            <Float32 name="rad_land_toa_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_land_toa_V">
+            <Float32 name="rad_land_toa_V_sum"/>
+            <Float32 name="rad_land_toa_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_moon_Ta_ref_3">
+            <Float32 name="rad_moon_Ta_ref_3_sum"/>
+            <Float32 name="rad_moon_Ta_ref_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_moon_Ta_ref_H">
+            <Float32 name="rad_moon_Ta_ref_H_sum"/>
+            <Float32 name="rad_moon_Ta_ref_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_moon_Ta_ref_V">
+            <Float32 name="rad_moon_Ta_ref_V_sum"/>
+            <Float32 name="rad_moon_Ta_ref_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_bak_3">
+            <Float32 name="rad_solar_Ta_bak_3_sum"/>
+            <Float32 name="rad_solar_Ta_bak_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_bak_H">
+            <Float32 name="rad_solar_Ta_bak_H_sum"/>
+            <Float32 name="rad_solar_Ta_bak_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_bak_V">
+            <Float32 name="rad_solar_Ta_bak_V_sum"/>
+            <Float32 name="rad_solar_Ta_bak_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_dir_3">
+            <Float32 name="rad_solar_Ta_dir_3_sum"/>
+            <Float32 name="rad_solar_Ta_dir_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_dir_H">
+            <Float32 name="rad_solar_Ta_dir_H_sum"/>
+            <Float32 name="rad_solar_Ta_dir_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_dir_V">
+            <Float32 name="rad_solar_Ta_dir_V_sum"/>
+            <Float32 name="rad_solar_Ta_dir_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_ref_3">
+            <Float32 name="rad_solar_Ta_ref_3_sum"/>
+            <Float32 name="rad_solar_Ta_ref_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_ref_H">
+            <Float32 name="rad_solar_Ta_ref_H_sum"/>
+            <Float32 name="rad_solar_Ta_ref_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_solar_Ta_ref_V">
+            <Float32 name="rad_solar_Ta_ref_V_sum"/>
+            <Float32 name="rad_solar_Ta_ref_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_toa_H">
+            <Float32 name="rad_toa_H_sum"/>
+            <Float32 name="rad_toa_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_toa_V">
+            <Float32 name="rad_toa_V_sum"/>
+            <Float32 name="rad_toa_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_toi_3">
+            <Float32 name="rad_toi_3_sum"/>
+            <Float32 name="rad_toi_3_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_toi_H">
+            <Float32 name="rad_toi_H_sum"/>
+            <Float32 name="rad_toi_H_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="rad_toi_V">
+            <Float32 name="rad_toi_V_sum"/>
+            <Float32 name="rad_toi_V_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_HH_ant">
+            <Float32 name="scat_HH_ant_sum"/>
+            <Float32 name="scat_HH_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_HH_toa">
+            <Float32 name="scat_HH_toa_sum"/>
+            <Float32 name="scat_HH_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_HV_ant">
+            <Float32 name="scat_HV_ant_sum"/>
+            <Float32 name="scat_HV_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_HV_toa">
+            <Float32 name="scat_HV_toa_sum"/>
+            <Float32 name="scat_HV_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_VH_ant">
+            <Float32 name="scat_VH_ant_sum"/>
+            <Float32 name="scat_VH_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_VH_toa">
+            <Float32 name="scat_VH_toa_sum"/>
+            <Float32 name="scat_VH_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_VV_ant">
+            <Float32 name="scat_VV_ant_sum"/>
+            <Float32 name="scat_VV_ant_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_VV_toa">
+            <Float32 name="scat_VV_toa_sum"/>
+            <Float32 name="scat_VV_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_ice_frac">
+            <Float32 name="scat_ice_frac_sum"/>
+            <Float32 name="scat_ice_frac_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_land_frac">
+            <Float32 name="scat_land_frac_sum"/>
+            <Float32 name="scat_land_frac_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_tot_toa">
+            <Float32 name="scat_tot_toa_sum"/>
+            <Float32 name="scat_tot_toa_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="scat_wind_speed">
+            <Float32 name="scat_wind_speed_sum"/>
+            <Float32 name="scat_wind_speed_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+        <Structure name="wind_uncertainty">
+            <Float32 name="wind_uncertainty_sum"/>
+            <Float32 name="wind_uncertainty_sum_sq"/>
+            <Dim size="26468"/>
+        </Structure>
+    </Group>
+</Dataset>

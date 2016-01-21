@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5">
+    <Float32 name="l3m_data">
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="Scaling" type="String">
+            <Value>linear</Value>
+        </Attribute>
+        <Attribute name="Scaling Equation" type="String">
+            <Value>(Slope*l3m_data) + Intercept = Parameter value</Value>
+        </Attribute>
+        <Attribute name="Slope" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="Intercept" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Float32>
+    <Byte name="palette">
+        <Dim size="3"/>
+        <Dim size="256"/>
+    </Byte>
+</Dataset>

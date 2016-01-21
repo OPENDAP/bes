@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI_L3.nc4.h5">
+    <Group name="OMI_Column_Amount_O3">
+        <Dimension name="lon" size="1440"/>
+        <Dimension name="lat" size="720"/>
+        <Float64 name="lon">
+            <Dim name="/OMI_Column_Amount_O3/lon"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>longitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="lat">
+            <Dim name="/OMI_Column_Amount_O3/lat"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>latitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+        </Float64>
+        <Attribute name="GCTPProjectionCode" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="Projection" type="String">
+            <Value>Geographic</Value>
+        </Attribute>
+        <Attribute name="GridOrigin" type="String">
+            <Value>Center</Value>
+        </Attribute>
+        <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+            <Value>1440</Value>
+        </Attribute>
+        <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+            <Value>720</Value>
+        </Attribute>
+        <Group name="Data_Fields">
+            <Float32 name="ColumnAmountO3">
+                <Dim name="/OMI_Column_Amount_O3/lat"/>
+                <Dim name="/OMI_Column_Amount_O3/lon"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-1.2676506e+30</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>DU</Value>
+                </Attribute>
+                <Attribute name="Title" type="String">
+                    <Value>Best Total Ozone Solution</Value>
+                </Attribute>
+                <Attribute name="UniqueFieldDefinition" type="String">
+                    <Value>TOMS-OMI-Shared</Value>
+                </Attribute>
+                <Attribute name="ScaleFactor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="Offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="ValidRange" type="Float32">
+                    <Value>50.</Value>
+                    <Value>700.</Value>
+                </Attribute>
+                <Attribute name="MissingValue" type="Float32">
+                    <Value>-1.2676506e+30</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Reflectivity331">
+                <Dim name="/OMI_Column_Amount_O3/lat"/>
+                <Dim name="/OMI_Column_Amount_O3/lon"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-1.2676506e+30</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+                <Attribute name="Title" type="String">
+                    <Value>Effective Surface Reflectivity at 331 nm</Value>
+                </Attribute>
+                <Attribute name="UniqueFieldDefinition" type="String">
+                    <Value>TOMS-OMI-Shared</Value>
+                </Attribute>
+                <Attribute name="ScaleFactor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="Offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="ValidRange" type="Float32">
+                    <Value>-15.</Value>
+                    <Value>115.</Value>
+                </Attribute>
+                <Attribute name="MissingValue" type="Float32">
+                    <Value>-1.2676506e+30</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="UVAerosolIndex">
+                <Dim name="/OMI_Column_Amount_O3/lat"/>
+                <Dim name="/OMI_Column_Amount_O3/lon"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-1.2676506e+30</Value>
+                </Attribute>
+                <Attribute name="Title" type="String">
+                    <Value>UV Aerosol Index</Value>
+                </Attribute>
+                <Attribute name="UniqueFieldDefinition" type="String">
+                    <Value>TOMS-OMI-Shared</Value>
+                </Attribute>
+                <Attribute name="ScaleFactor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="Offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="ValidRange" type="Float32">
+                    <Value>-30.</Value>
+                    <Value>30.</Value>
+                </Attribute>
+                <Attribute name="MissingValue" type="Float32">
+                    <Value>-1.2676506e+30</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>NoUnits</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+    </Group>
+</Dataset>

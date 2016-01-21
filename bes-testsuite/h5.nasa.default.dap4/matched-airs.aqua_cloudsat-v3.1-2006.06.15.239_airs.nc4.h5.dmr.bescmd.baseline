@@ -1,0 +1,2625 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4.h5">
+    <Dimension name="airs_idx" size="141"/>
+    <Float32 name="airs_idx">
+        <Dim name="/airs_idx"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.       141</Value>
+        </Attribute>
+    </Float32>
+    <Group name="AIRS">
+        <Group name="RetStd">
+            <Dimension name="Cloud" size="2"/>
+            <Float32 name="O3Func">
+                <Dim size="9"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="StdPressureLay">
+                <Dim size="28"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.        28</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>3</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="COFunc">
+                <Dim size="9"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>2</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="H2OPressureLay">
+                <Dim size="14"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.        14</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="CldFrcStdErr">
+                <Dim name="/airs_idx"/>
+                <Dim name="/AIRS/RetStd/Cloud"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+            </Float32>
+            <Int16 name="dust_flag">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+            </Int16>
+            <Float32 name="Cloud">
+                <Dim name="/AIRS/RetStd/Cloud"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         2</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>6</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="H2OFunc">
+                <Dim size="11"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.        11</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>4</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="CH4Func">
+                <Dim size="7"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         7</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="latAIRS">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="lonAIRS">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="StdPressureLev">
+                <Dim size="28"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.        28</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>8</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="CldFrcStd">
+                <Dim name="/airs_idx"/>
+                <Dim name="/AIRS/RetStd/Cloud"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+            </Float32>
+            <Int16 name="spectral_clear_indicator">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+            </Int16>
+        </Group>
+        <Group name="Radiances">
+            <Dimension name="Channel:L1B_AIRS_Science" size="2378"/>
+            <Float32 name="scanang">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float64 name="Time">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float64">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float64>
+            <Float32 name="landFrac">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float64 name="Longitude">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float64">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float64>
+            <Int16 name="dust_flag">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+            <Float32 name="solazi">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Channel:L1B_AIRS_Science">
+                <Dim name="/AIRS/Radiances/Channel:L1B_AIRS_Science"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.      2378</Value>
+                </Attribute>
+            </Float32>
+            <Float64 name="Latitude">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float64">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float64>
+            <Int16 name="dust_score">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+            <Float32 name="radiances">
+                <Dim name="/airs_idx"/>
+                <Dim name="/AIRS/Radiances/Channel:L1B_AIRS_Science"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="satzen">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float64 name="spectral_freq">
+                <Dim name="/AIRS/Radiances/Channel:L1B_AIRS_Science"/>
+            </Float64>
+            <Float32 name="solzen">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="satazi">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="landFrac_err">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Int16 name="spectral_clear_indicator">
+                <Dim name="/airs_idx"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+        </Group>
+        <Group name="VIS.Radiances">
+            <Dimension name="SubTrack:L1B_VIS_Science" size="9"/>
+            <Dimension name="Channel:L1B_VIS_Science" size="4"/>
+            <Dimension name="SubXTrack:L1B_VIS_Science" size="8"/>
+            <Float32 name="SubTrack:L1B_VIS_Science">
+                <Dim name="/AIRS/VIS.Radiances/SubTrack:L1B_VIS_Science"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>10</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Channel:L1B_VIS_Science">
+                <Dim name="/AIRS/VIS.Radiances/Channel:L1B_VIS_Science"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="radiances">
+                <Dim name="/airs_idx"/>
+                <Dim name="/AIRS/VIS.Radiances/Channel:L1B_VIS_Science"/>
+                <Dim name="/AIRS/VIS.Radiances/SubTrack:L1B_VIS_Science"/>
+                <Dim name="/AIRS/VIS.Radiances/SubXTrack:L1B_VIS_Science"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="SubXTrack:L1B_VIS_Science">
+                <Dim name="/AIRS/VIS.Radiances/SubXTrack:L1B_VIS_Science"/>
+                <Attribute name="CLASS" type="String">
+                    <Value>DIMENSION_SCALE</Value>
+                </Attribute>
+                <Attribute name="NAME" type="String">
+                    <Value>This is a netCDF dimension but not a netCDF variable.         8</Value>
+                </Attribute>
+                <Attribute name="_Netcdf4Dimid" type="Int32">
+                    <Value>12</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+    </Group>
+    <Group name="CloudSat">
+        <Dimension name="cs_idx" size="17"/>
+        <Dimension name="cs_nbin" size="125"/>
+        <Float32 name="cs_idx">
+            <Dim name="/CloudSat/cs_idx"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>This is a netCDF dimension but not a netCDF variable.        17</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="cs_nbin">
+            <Dim name="/CloudSat/cs_nbin"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>This is a netCDF dimension but not a netCDF variable.       125</Value>
+            </Attribute>
+        </Float32>
+        <Group name="GEOPROF">
+            <Int32 name="Data_quality">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Data Quality</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>127</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Float64 name="Longitude">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Spacecraft Longitude</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-180.</Value>
+                    <Value>180.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="Data_status">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Data status flags</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>127</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="Clutter_reduction_flag">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Clutter_reduction_flag</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="MODIS_scene_char">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>9</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>MODIS scene characterizations</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+            </Int32>
+            <Float64 name="Latitude">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Spacecraft Latitude</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-90.</Value>
+                    <Value>90.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="Pitch_offset">
+                <Dim name="/airs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Nominal satellite pitch angle offset from nadir</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-90.</Value>
+                    <Value>90.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="Navigation_land_sea_flag">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Land Sea Flag</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>1</Value>
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Float64 name="Profile_time">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>seconds</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Seconds since the start of the granule.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>0.</Value>
+                    <Value>6000.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="nbin:2B-GEOPROF">
+                <Dim name="/airs_idx"/>
+            </Int32>
+            <Int32 name="Sigma-Zero">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-1000</Value>
+                    <Value>4000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Sigma-Zero</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>dB*100</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="Height">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-5000</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Height of range bin in Reflectivity/Cloud Mask above reference surface (~ mean sea level).</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>m</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="MODIS_Cloud_Fraction">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-99</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>100</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>MODIS 250m Cloud Fraction</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="Radar_Reflectivity">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>15360</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-8888</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>100.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-4000</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar Reflectivity Factor</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>dBZe</Value>
+                </Attribute>
+            </Int16>
+            <Float64 name="UTC_start">
+                <Dim name="/airs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>seconds</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>UTC seconds since 00:00 Z of the first profile</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>0.</Value>
+                    <Value>86400.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="MODIS_cloud_flag">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>99</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>MOD35_bit_2and3_cloud_flag</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>None</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="SurfaceHeightBin">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>1</Value>
+                    <Value>125</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Location of Surface Bin as determined by 1B CPR algorithm.  The value here is shifted (as Height).</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+            </Int32>
+            <Float64 name="SurfaceHeightBin_fraction">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>none</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>SurfaceHeightBin_fraction</Value>
+                </Attribute>
+                <Attribute name="missing" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int8 name="CPR_Cloud_mask">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int8">
+                    <Value>-99</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>CPR Cloud Mask</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int8>
+            <Int32 name="MODIS_scene_var">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>MODIS scene variability</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="nray:2B-GEOPROF">
+                <Dim name="/airs_idx"/>
+            </Int32>
+        </Group>
+        <Group name="GEOPROF-LIDAR"/>
+        <Group name="CLDCLASS">
+            <Int32 name="Data_quality">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Data Quality</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>127</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Float64 name="Longitude">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Spacecraft Longitude</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-180.</Value>
+                    <Value>180.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="Vertical_binsize">
+                <Dim name="/airs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>m</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Float64">
+                    <Value>-9999.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="Data_status">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Data status flags</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>127</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="DEM_elevation">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>9999</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-9999</Value>
+                    <Value>8850</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Digital Elevation Map</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>meters</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="Data_targetID">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>CPR bus orientation (target ID)</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>81</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="cloud_scenario">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="units" type="String">
+                    <Value>none</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Cloud scenario</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>32767</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+            </Int16>
+            <Float64 name="Latitude">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Spacecraft Latitude</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-90.</Value>
+                    <Value>90.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="nray:2B-CLDCLASS">
+                <Dim name="/airs_idx"/>
+            </Int32>
+            <Int16 name="Height">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-5000</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Height of range bin in Reflectivity/Cloud Mask above reference surface (~ mean sea level).</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>m</Value>
+                </Attribute>
+            </Int16>
+            <Float64 name="UTC_start">
+                <Dim name="/airs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>seconds</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>UTC seconds since 00:00 Z of the first profile</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>0.</Value>
+                    <Value>86400.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="nbin:2B-CLDCLASS">
+                <Dim name="/airs_idx"/>
+            </Int32>
+        </Group>
+        <Group name="CWC-RO">
+            <Int32 name="N_cloudy_bins">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-77</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>125</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of Cloudy Bins</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int32>
+            <Byte name="RO_ice_water_content_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Water Content Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int32 name="Data_quality">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Data Quality</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>127</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Byte name="RO_ice_effective_radius_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Effective Radius Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int32 name="IO_RO_N_not_converged">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of RO Profiles Not Converged (Ice-only)</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Byte name="IO_RO_log_num_conc_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only log(Number Concentration) Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Byte name="IO_RO_effective_radius_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Effective Radius Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int32 name="N_single_cloud_type">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of Cloudy Profiles with Single Cloud Type</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="LO_RO_liquid_water_path">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>15000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Liquid Water Path</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>g m^{-2}</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="LO_RO_N_not_converged">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of RO Profiles Not Converged (Liquid-only)</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Byte name="RO_ice_num_conc_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Number Concentration Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Float64 name="Longitude">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Spacecraft Longitude</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-180.</Value>
+                    <Value>180.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int16 name="IO_RO_log_number_conc">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1000.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-3000</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only log(Number Concentration)</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>log(L^{-1})</Value>
+                </Attribute>
+            </Int16>
+            <Float64 name="Vertical_binsize">
+                <Dim name="/airs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>m</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Float64">
+                    <Value>-9999.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="Data_status">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Data status flags</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>127</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="RO_ice_water_path_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Water Path Uncertainty</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="RO_CWC_status">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Combined Radar-only Status</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-32768</Value>
+                    <Value>32767</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="Data_targetID">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>CPR bus orientation (target ID)</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>81</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="IO_RO_ice_water_content">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Ice Water Content</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>mg m^{-3}</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="PCT_two_cloud_types">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of Cloudy Profiles with Two Cloud Types</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="LO_RO_number_conc">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Number Concentration</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>cm^{-3}</Value>
+                </Attribute>
+            </Int16>
+            <Byte name="RO_ice_distrib_width_param_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Distribution Width Parameter Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int16 name="LO_RO_distrib_width_param">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1000.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Distribution Width Parameter</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="RO_liq_distrib_width_param">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1000.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Distribution Width Parameter</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="N_low_confidence_CLDCLASS">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of Profiles with Low Confidence CLDCLASS</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="LO_RO_effective_radius">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Effective Radius</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>um</Value>
+                </Attribute>
+            </Int16>
+            <Byte name="IO_RO_distrib_width_param_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Distribution Width Parameter Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int32 name="PCT_clear_CPR">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of Profiles that are Cloud-Free</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="LO_RO_PCT_not_converged">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of RO Profiles Not Converged (Liquid-only)</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Byte name="RO_liq_water_content_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Water Content Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int32 name="RO_ice_water_path">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Water Path</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>g m^{-2}</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="IO_RO_effective_radius">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Effective Radius</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>um</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="RO_liq_effective_radius">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Effective Radius</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>um</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="RO_ice_distrib_width_param">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1000.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Distribution Width Parameter</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int16>
+            <Float64 name="Latitude">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Spacecraft Latitude</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>-90.</Value>
+                    <Value>90.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="PCT_three_cloud_types">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of Cloudy Profiles with Three Cloud Types</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Byte name="LO_RO_distrib_width_param_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Distribution Width Parameter Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Byte name="LO_RO_num_conc_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Number Concentration Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Byte name="RO_liq_effective_radius_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Effective Radius Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int16 name="RO_ice_water_content">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Water Content</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>mg m^{-3}</Value>
+                </Attribute>
+            </Int16>
+            <Byte name="RO_liq_num_conc_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Number Concentration Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Float64 name="Profile_time">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="units" type="String">
+                    <Value>seconds</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Seconds since the start of the granule.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float64">
+                    <Value>0.</Value>
+                    <Value>6000.</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="IO_RO_PCT_large_norm_chisq">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of RO Profiles with Large Chi-Square (Ice-only)</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="LO_RO_liquid_water_content">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>15000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Liquid Water Content</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>mg m^{-3}</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="N_three_cloud_types">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of Cloudy Profiles with Three Cloud Types</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="RO_ice_phase_fraction">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1000.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>1000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Phase Fraction</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="PCT_drizzle_or_precipitation">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of Profiles with Possible Drizzle or Precipitation</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="RO_liq_number_conc">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Number Concentration</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>cm^{-3}</Value>
+                </Attribute>
+            </Int16>
+            <Byte name="RO_liq_distrib_width_param_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Distribution Width Parameter Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int16 name="RO_ice_effective_radius">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Effective Radius</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>um</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="Height">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>==</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-9999</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>-5000</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Height of range bin in Reflectivity/Cloud Mask above reference surface (~ mean sea level).</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>m</Value>
+                </Attribute>
+            </Int16>
+            <Byte name="LO_RO_effective_radius_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Effective Radius Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Byte name="LO_RO_liquid_water_content_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Liquid Water Content Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Byte name="IO_RO_ice_water_content_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Ice Water Content Uncertainty</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Byte>
+            <Int32 name="IO_RO_ice_water_path_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Ice Water Path Uncertainty</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="LO_RO_liquid_water_path_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>-6</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Liquid-only Radar-only Liquid Water Path Uncertainty</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="Cloud_mask_threshold">
+                <Dim name="/airs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>99</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Cloud Mask Threshold</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="nbin:2B-CWC-RO">
+                <Dim name="/airs_idx"/>
+            </Int32>
+            <Int32 name="IO_RO_ice_water_path">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Ice Water Path</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>g m^{-2}</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="RO_liq_water_path_uncertainty">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>253</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>250</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Water Path Uncertainty</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>%</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="N_two_cloud_types">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of Cloudy Profiles with Two Cloud Types</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="IO_RO_PCT_not_converged">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of RO Profiles Not Converged (Ice-only)</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="RO_liq_water_content">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>15000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Water Content</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>mg m^{-3}</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="RO_ice_number_conc">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>10.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>30000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Ice Number Concentration</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>L^{-1}</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="N_drizzle_or_precipitation">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Number of Profiles with Possible Drizzle or Precipitation</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int16 name="IO_RO_distrib_width_param">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Dim name="/CloudSat/cs_nbin"/>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1000.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Ice-only Radar-only Distribution Width Parameter</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>--</Value>
+                </Attribute>
+            </Int16>
+            <Int32 name="RO_liq_water_path">
+                <Dim name="/airs_idx"/>
+                <Dim name="/CloudSat/cs_idx"/>
+                <Attribute name="missop" type="String">
+                    <Value>=</Value>
+                </Attribute>
+                <Attribute name="missing" type="Int32">
+                    <Value>-3333</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>15000</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Radar-only Liquid Water Path</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>g m^{-2}</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="LO_RO_PCT_large_norm_chisq">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of RO Profiles with Large Chi-Square (Liquid-only)</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+            <Int32 name="PCT_single_cloud_type">
+                <Dim name="/airs_idx"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Percentage of Cloudy Profiles with Single Cloud Type</Value>
+                </Attribute>
+                <Attribute name="factor" type="Float64">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="offset" type="Float64">
+                    <Value>0.</Value>
+                </Attribute>
+            </Int32>
+        </Group>
+    </Group>
+</Dataset>

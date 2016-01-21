@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GSSTFYC.3.Year.1988_2008.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="BeginDate" type="String">
+                    <Value>1988-01-01</Value>
+                </Attribute>
+                <Attribute name="EndDate" type="String">
+                    <Value>2008-12-31</Value>
+                </Attribute>
+                <Attribute name="DurationUnit" type="String">
+                    <Value>Year</Value>
+                </Attribute>
+                <Attribute name="DurationValue" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="PeriodCycleDurationUnit" type="String">
+                    <Value>YEAR</Value>
+                </Attribute>
+                <Attribute name="PeriodCycleDurationValue" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="ShortName" type="String">
+                    <Value>GSSTFYC</Value>
+                </Attribute>
+                <Attribute name="VersionID" type="String">
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="CollectionDescription" type="String">
+                    <Value>Goddard Satellite-Based Surface Turbulent Fluxes Climatology, 0.25x0.25 degree Yearly Grid, 1998-2008, Set1 and NCEP Variables, V3, (GSSTFYC), at GES DISC</Value>
+                </Attribute>
+                <Attribute name="LongName" type="String">
+                    <Value>Goddard Satellite-Based Surface Turbulent Fluxes Climatology, 0.25x0.25 deg, Yearly Grid, V3, (GSSTFYC), at GES DISC</Value>
+                </Attribute>
+                <Attribute name="DOI" type="String">
+                    <Value>10.5067/MEASURES/GSSTF/DATA311</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="NCEP">
+                <Group name="Data Fields">
+                    <Float32 name="Psea_level">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sea level pressure</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Qsat">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sea surface saturation humidity</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SST">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sea surface skin temperature</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>C</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Tair_2m">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>2m air temperature</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>C</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+            <Group name="SET1">
+                <Group name="Data Fields">
+                    <Float32 name="DQ">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>sea-air humidity difference</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="E">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>latent heat flux</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>W/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>sensible heat flux</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>W/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Qair">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>surface air (~10-m) specific humidity</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="STu">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>zonal wind stress</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>N/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="STv">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>meridional wind stress</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>N/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Tot_Precip_Water">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>total precipitable water</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>g/cm^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="U">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>10-m wind speed</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>m/s</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.11</Value>
+        </Attribute>
+    </Group>
+</Dataset>

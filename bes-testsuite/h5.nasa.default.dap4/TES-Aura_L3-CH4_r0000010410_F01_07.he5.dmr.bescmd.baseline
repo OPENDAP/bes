@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="TES-Aura_L3-CH4_r0000010410_F01_07.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="InstrumentName" type="String">
+                    <Value>TES</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>L3</Value>
+                </Attribute>
+                <Attribute name="OrbitNumber" type="Int32">
+                    <Value>25048</Value>
+                    <Value>25049</Value>
+                    <Value>25050</Value>
+                    <Value>25051</Value>
+                    <Value>25052</Value>
+                    <Value>25053</Value>
+                    <Value>25054</Value>
+                    <Value>25055</Value>
+                    <Value>25056</Value>
+                    <Value>25057</Value>
+                    <Value>25058</Value>
+                    <Value>25059</Value>
+                    <Value>25060</Value>
+                    <Value>25061</Value>
+                    <Value>25062</Value>
+                    <Value>25063</Value>
+                </Attribute>
+                <Attribute name="OrbitPeriod" type="Float64">
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                    <Value>-999.</Value>
+                </Attribute>
+                <Attribute name="TAI93At0zOfGranule" type="Float64">
+                    <Value>512645383.23730397</Value>
+                </Attribute>
+                <Attribute name="GlobalSurveyNumber" type="String">
+                    <Value>10410</Value>
+                </Attribute>
+                <Attribute name="GranuleMonth" type="Int8">
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="GranuleDay" type="Int8">
+                    <Value>31</Value>
+                </Attribute>
+                <Attribute name="GranuleYear" type="Int32">
+                    <Value>2009</Value>
+                </Attribute>
+                <Attribute name="GranuleDayOfYear" type="Int16">
+                    <Value>90</Value>
+                </Attribute>
+                <Attribute name="SurveyMode" type="String">
+                    <Value>Global</Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>R11.01.00</Value>
+                </Attribute>
+                <Attribute name="StartUTC" type="String">
+                    <Value>2009-03-31T09:29:36.237304Z</Value>
+                </Attribute>
+                <Attribute name="EndUTC" type="String">
+                    <Value>2009-04-01T11:28:42.060546Z</Value>
+                </Attribute>
+                <Attribute name="Period" type="String">
+                    <Value>Daily</Value>
+                </Attribute>
+                <Attribute name="Command_Seq_ID" type="Int32">
+                    <Value>41</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="NadirGrid">
+                <Attribute name="Projection" type="String">
+                    <Value>Geographic</Value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <Value>Center</Value>
+                </Attribute>
+                <Attribute name="GridSpacing" type="String">
+                    <Value>(4,2)</Value>
+                </Attribute>
+                <Attribute name="GridSpacingUnit" type="String">
+                    <Value>deg</Value>
+                </Attribute>
+                <Attribute name="GridSpan" type="String">
+                    <Value>(-180,+180,-82,+82)</Value>
+                </Attribute>
+                <Attribute name="GridSpanUnit" type="String">
+                    <Value>deg</Value>
+                </Attribute>
+                <Attribute name="GlobalSurveyL3Algorithm" type="String">
+                    <Value>Along orbit interpolation, Delaunay sphere triangulation, and 2-D linear interpolation</Value>
+                </Attribute>
+                <Attribute name="TriangleVertDistMax" type="Float32">
+                    <Value>-999.</Value>
+                </Attribute>
+                <Group name="Data Fields">
+                    <Float32 name="CH4">
+                        <Dim size="90"/>
+                        <Dim size="83"/>
+                        <Dim size="15"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CH4</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>VMR</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CH4AtSurface">
+                        <Dim size="90"/>
+                        <Dim size="83"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CH4AtSurface</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>VMR</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Latitude">
+                        <Dim size="83"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim size="90"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Pressure">
+                        <Dim size="15"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Pressure</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfacePressure">
+                        <Dim size="90"/>
+                        <Dim size="83"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfacePressure</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TotalColumnDensity">
+                        <Dim size="90"/>
+                        <Dim size="83"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TotalColumnDensity</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Molecules/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <String name="coremetadata"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.10.1</Value>
+        </Attribute>
+    </Group>
+</Dataset>

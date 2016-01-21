@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5">
+    <Group name="Data_Fields">
+        <Float32 name="AprioriProfileOzone">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="21"/>
+            <Attribute name="units" type="String">
+                <Value>DU</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean 21 Layer A Priori Ozone Profile</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AprioriTotalColumnOzone">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>DU</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean A Priori Total Column Ozone</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="Date">
+            <Dim size="72"/>
+            <Attribute name="units" type="String">
+                <Value>NoUnits</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Year and Month in format yyyymm</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="IntegratingKernelProfile">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="20"/>
+            <Dim size="20"/>
+            <Attribute name="units" type="String">
+                <Value>NoUnits</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Integrating Kernel for layers 1 to 20</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="IntegratingKernelTotalColumn">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="20"/>
+            <Attribute name="units" type="String">
+                <Value>NoUnits</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Column Integrating Kernel</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="JacobianDNDX">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="20"/>
+            <Dim size="10"/>
+            <Attribute name="units" type="String">
+                <Value>DU^-1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean DN/DX Jacobian for channels 1 thru 10 and layers 1 to 20</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Latitude">
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Center Latitude for Zonal Mean</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-90.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="LocalStandardTime">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Local Standard Time</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>24.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="MixingRatioPressureLevels">
+            <Dim size="15"/>
+            <Attribute name="units" type="String">
+                <Value>hPa</Value>
+            </Attribute>
+            <Attribute name="positive" type="String">
+                <Value>down</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mid-Level Pressure for Mixing Ratio 15-Layer Vertical Pressure Scale</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.5</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="OrbitMode">
+            <Dim size="72"/>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>NoUnits</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Satellite orientation at equator crossing  (Ascending = 1, descending = -1 or terminator = 0)</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="ProfileOzone">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="21"/>
+            <Attribute name="units" type="String">
+                <Value>DU</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean 21 Layer Retrieved Ozone Profile</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ProfileOzoneStdev">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="21"/>
+            <Attribute name="units" type="String">
+                <Value>DU</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>21 Layer Retrieved Ozone Profile Standard Deviation</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ProfilePressureLevels">
+            <Dim size="21"/>
+            <Attribute name="units" type="String">
+                <Value>hPa</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Bottom Level Pressures for 21-Layer Vertical Pressure Scale</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.1013249978</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1013.25</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+            <Attribute name="positive" type="String">
+                <Value>down</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SmoothingErrorProfile">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="20"/>
+            <Attribute name="units" type="String">
+                <Value>%</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Smoothing Error for Ozone Profile for layers 1 to 20</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SmoothingErrorTotalColumn">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>%</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean Smoothing Error for Total Column Ozone</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SolarZenithAngle">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean Solar Zenith Angle</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>88.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Time">
+            <Dim size="72"/>
+            <Attribute name="units" type="String">
+                <Value>year</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Time</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="TotalColumnOzone">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>DU</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean Retrieved Total Column Ozone</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="TotalColumnOzoneStdev">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>DU</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Retrieved Total Column Ozone Standard Deviation</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="TotalCovarianceMatrix">
+            <Dim size="20"/>
+            <Dim size="20"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>DU^2</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Total Covariance Matrix for layers 1 to 20 (covariance matrix of an ensemble of states about the mean state)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="VCI">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>NoUnits</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Volcanic Contamination Index Designating Periods Affected by Volcanic Eruptions (0 = unaffected, 1 = affected)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="VolumeMixingRatio">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="15"/>
+            <Attribute name="units" type="String">
+                <Value>ppmv</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean 15 Layer Retrieved Mixing Ratios</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="VolumeMixingRatioStdev">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Dim size="15"/>
+            <Attribute name="units" type="String">
+                <Value>ppmv</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Mean 15 Layer Retrieved Mixing Ratio Standard Deviation</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="Wavelength">
+            <Dim size="10"/>
+            <Attribute name="units" type="String">
+                <Value>nm</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Nominal SBUV Wavelengths used in retrieval (actual number of channels used can vary from 7 to 10 depending on latitude and TO3)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Int16 name="nSamples">
+            <Dim size="72"/>
+            <Dim size="36"/>
+            <Attribute name="units" type="String">
+                <Value>NoUnits</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Number of Good Retrievals Used in Mean</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+    </Group>
+</Dataset>

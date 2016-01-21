@@ -1,0 +1,1825 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5">
+    <Group name="Dimensions">
+        <Group name="Aerosol">
+            <Attribute name="Size" type="UInt32">
+                <Value>5</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Retrieved aerosol type.</Value>
+            </Attribute>
+        </Group>
+        <Group name="AncFile">
+            <Attribute name="Size" type="UInt32">
+                <Value>3</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Number of ancillary input files.</Value>
+            </Attribute>
+        </Group>
+        <Group name="Band">
+            <Attribute name="Size" type="UInt32">
+                <Value>3</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Spectrum index (O2, weak CO2, strong CO2).</Value>
+            </Attribute>
+        </Group>
+        <Group name="Exposure">
+            <Attribute name="Size" type="UInt32">
+                <Value>649</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Index of scans in granule.</Value>
+            </Attribute>
+        </Group>
+        <Group name="Gap">
+            <Attribute name="Size" type="UInt32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Number of gaps.</Value>
+            </Attribute>
+        </Group>
+        <Group name="InputPtr">
+            <Attribute name="Size" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Number of primary input files.</Value>
+            </Attribute>
+        </Group>
+        <Group name="L2FullPhysicsInputPtr">
+            <Attribute name="Size" type="UInt32">
+                <Value>10</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Number of full physics input files.</Value>
+            </Attribute>
+        </Group>
+        <Group name="Level">
+            <Attribute name="Size" type="UInt32">
+                <Value>20</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Atmospheric retrieval levels.</Value>
+            </Attribute>
+        </Group>
+        <Group name="Polarization">
+            <Attribute name="Size" type="UInt32">
+                <Value>2</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Polarization index: 0=P, 1=S</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval">
+            <Attribute name="Size" type="UInt32">
+                <Value>60</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Number retrievals reported.</Value>
+            </Attribute>
+        </Group>
+        <Group name="WNConv">
+            <Attribute name="Size" type="UInt32">
+                <Value>2</Value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <Value>Wavenumber conversion Coefficients.</Value>
+            </Attribute>
+        </Group>
+    </Group>
+    <Group name="Metadata">
+        <String name="AerosolTypes">
+            <Dim size="5"/>
+            <Attribute name="Shape" type="String">
+                <Value>Aerosol_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="AncillaryDataDescriptors">
+            <Dim size="3"/>
+            <Attribute name="Shape" type="String">
+                <Value>AncFile_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="AscendingNodeCrossingDate">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="AscendingNodeCrossingTime">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="AutomaticQualityFlag">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="BuildId">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="CollectionLabel">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="DataFormatType">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Int64 name="FirstSoundingId">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed64</Value>
+            </Attribute>
+        </Int64>
+        <String name="GapStartTime">
+            <Dim size="0"/>
+            <Attribute name="Shape" type="String">
+                <Value>Gap_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="GapStopTime">
+            <Dim size="0"/>
+            <Attribute name="Shape" type="String">
+                <Value>Gap_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="GranulePointer">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="HDFVersionId">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="InputPointer">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>InputPtr_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="InstrumentShortName">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="L2FullPhysicsAlgorithmDescriptor">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="L2FullPhysicsDataVersion">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="L2FullPhysicsExeVersion">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="L2FullPhysicsInputPointer">
+            <Dim size="10"/>
+            <Attribute name="Shape" type="String">
+                <Value>L2FullPhysicsInputPtr_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="L2FullPhysicsOperationsVersion">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <Int64 name="LastSoundingId">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed64</Value>
+            </Attribute>
+        </Int64>
+        <String name="LongName">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <Int32 name="MissingExposures">
+            <Dim size="3"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Band_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <String name="NominalDay">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Int32 name="NumberOfExposures">
+            <Dim size="1"/>
+            <Attribute name="Minimum" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Int32">
+                <Value>1320</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <Int8 name="OrbitOfDay">
+            <Dim size="1"/>
+            <Attribute name="Minimum" type="Int8">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Int8">
+                <Value>15</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+        <String name="PlatformLongName">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="PlatformShortName">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="PlatformType">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProcessingLevel">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProducerAgency">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProducerInstitution">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProductionDateTime">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProductionLocation">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProductionLocationCode">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ProjectId">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="QAGranulePointer">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="RangeBeginningDate">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="RangeBeginningTime">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="RangeEndingDate">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="RangeEndingTime">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Int32 name="RetrievalIterationLimit">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <String name="RetrievalPolarization">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="SISName">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="SISVersion">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <String name="ShortName">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <Float32 name="SizeMBECSDataGranule">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Megabyte</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <String name="SpectralChannel">
+            <Dim size="3"/>
+            <Attribute name="Shape" type="String">
+                <Value>Band_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>VarLenStr</Value>
+            </Attribute>
+        </String>
+        <Int32 name="StartPathNumber">
+            <Dim size="1"/>
+            <Attribute name="Minimum" type="Int32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Int32">
+                <Value>44</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="StopPathNumber">
+            <Dim size="1"/>
+            <Attribute name="Minimum" type="Int32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Int32">
+                <Value>44</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <String name="TFTSVersion">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Float32 name="VMRO2">
+            <Dim size="1"/>
+            <Attribute name="Shape" type="String">
+                <Value>Scalar</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="RetrievalResults">
+        <Float32 name="albedo_o2_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="albedo_strong_co2_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="albedo_weak_co2_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="co2_profile">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="co2_profile_apriori">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="co2_profile_uncert">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="diverging_steps">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed16</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="dof_co2_profile">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="dof_full_vector">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="exposure_index">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <Int16 name="iterations">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed16</Value>
+            </Attribute>
+        </Int16>
+        <String name="master_quality_flag">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Int16 name="num_active_levels">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed16</Value>
+            </Attribute>
+        </Int16>
+        <Int8 name="outcome_flag">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="retrieved_aerosol_aod_by_type">
+            <Dim size="60"/>
+            <Dim size="5"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Aerosol_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="retrieved_aerosol_aod_by_type_high">
+            <Dim size="60"/>
+            <Dim size="5"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Aerosol_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="retrieved_aerosol_aod_by_type_low">
+            <Dim size="60"/>
+            <Dim size="5"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Aerosol_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="retrieved_aerosol_aod_by_type_mid">
+            <Dim size="60"/>
+            <Dim size="5"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Aerosol_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Int64 name="sounding_id_reference">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed64</Value>
+            </Attribute>
+        </Int64>
+        <Float32 name="surface_pressure_apriori_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Pascals</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="surface_pressure_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Pascals</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="surface_pressure_uncert_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Pascals</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="vector_pressure_levels">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Pascals</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_apriori">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_avg_kernel">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_avg_kernel_norm">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_pressure_weighting_function">
+            <Dim size="60"/>
+            <Dim size="20"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Level_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_uncert">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_uncert_interf">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_uncert_noise">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="xco2_uncert_smooth">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Mole Mole^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="Shapes">
+        <Group name="Aerosol_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Aerosol</Value>
+            </Attribute>
+        </Group>
+        <Group name="AncFile_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>AncFile</Value>
+            </Attribute>
+        </Group>
+        <Group name="Band_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Band</Value>
+            </Attribute>
+        </Group>
+        <Group name="Band_Polarization_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>2</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Band</Value>
+                <Value>Polarization</Value>
+            </Attribute>
+        </Group>
+        <Group name="Exposure_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Exposure</Value>
+            </Attribute>
+        </Group>
+        <Group name="Gap_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Gap</Value>
+            </Attribute>
+        </Group>
+        <Group name="InputPtr_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>InputPtr</Value>
+            </Attribute>
+        </Group>
+        <Group name="L2FullPhysicsInputPtr_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>L2FullPhysicsInputPtr</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval_Aerosol_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>2</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Retrieval</Value>
+                <Value>Aerosol</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Retrieval</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval_Band_Polarization_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>3</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Retrieval</Value>
+                <Value>Band</Value>
+                <Value>Polarization</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval_Band_Polarization_WNConv_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>4</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Retrieval</Value>
+                <Value>Band</Value>
+                <Value>Polarization</Value>
+                <Value>WNConv</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval_Level_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>2</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Retrieval</Value>
+                <Value>Level</Value>
+            </Attribute>
+        </Group>
+        <Group name="Retrieval_Polarization_Array">
+            <Attribute name="Rank" type="UInt32">
+                <Value>2</Value>
+            </Attribute>
+            <Attribute name="Dimensions" type="String">
+                <Value>Retrieval</Value>
+                <Value>Polarization</Value>
+            </Attribute>
+        </Group>
+        <Group name="Scalar">
+            <Attribute name="Rank" type="UInt32">
+                <Value>0</Value>
+            </Attribute>
+        </Group>
+    </Group>
+    <Group name="SoundingGeometry">
+        <Float32 name="sounding_altitude">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_altitude_max">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_altitude_min">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_altitude_stddev">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_altitude_uncert">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_aspect">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_at_angle">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_at_angle_error">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_azimuth">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_ct_angle">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_ct_angle_error">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_glint_angle">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_land_fraction">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Percent</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_latitude">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_latitude_geoid">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_longitude">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_longitude_geoid">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_plane_fit_quality">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_slope">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_solar_azimuth">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_solar_zenith">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sounding_zenith">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="SoundingHeader">
+        <String name="acquisition_mode">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Int8 name="cloud_flag">
+            <Dim size="649"/>
+            <Attribute name="Shape" type="String">
+                <Value>Exposure_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+        <Int8 name="ct_observation_points">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="exposure_duration">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Seconds</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <String name="gain_swir">
+            <Dim size="60"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Int8 name="glint_flag">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+        <Byte name="l2_packaging_qual_flag">
+            <Dim size="649"/>
+            <Attribute name="Shape" type="String">
+                <Value>Exposure_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>IntBitfield8</Value>
+            </Attribute>
+        </Byte>
+        <Int32 name="retrieval_index">
+            <Dim size="649"/>
+            <Attribute name="Shape" type="String">
+                <Value>Exposure_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed32</Value>
+            </Attribute>
+        </Int32>
+        <Int64 name="sounding_id">
+            <Dim size="649"/>
+            <Attribute name="Shape" type="String">
+                <Value>Exposure_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed64</Value>
+            </Attribute>
+        </Int64>
+        <UInt32 name="sounding_qual_flag">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>IntBitfield32</Value>
+            </Attribute>
+        </UInt32>
+        <String name="sounding_time_string">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>FixLenStr</Value>
+            </Attribute>
+        </String>
+        <Float64 name="sounding_time_tai93">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Seconds</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float64</Value>
+            </Attribute>
+        </Float64>
+        <Int8 name="spike_noise_flag">
+            <Dim size="60"/>
+            <Dim size="3"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Band_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+        <Int8 name="zpd_saturation_flag">
+            <Dim size="60"/>
+            <Dim size="3"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Band_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Signed8</Value>
+            </Attribute>
+        </Int8>
+    </Group>
+    <Group name="SpacecraftGeometry">
+        <Float32 name="ground_track">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>360.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="relative_velocity">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-7.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>7.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters Second^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="spacecraft_alt">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>700000.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>900000.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="spacecraft_lat">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-90.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="spacecraft_lon">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-180.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="x_pos">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-9999999.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>9999999.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="x_vel">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-8000.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>8000.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters Second^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="y_pos">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-9999999.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>9999999.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="y_vel">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-8000.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>8000.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters Second^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="z_pos">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-9999999.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>9999999.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="z_vel">
+            <Dim size="60"/>
+            <Attribute name="Minimum" type="Float32">
+                <Value>-8000.</Value>
+            </Attribute>
+            <Attribute name="Maximum" type="Float32">
+                <Value>8000.</Value>
+            </Attribute>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>Meters Second^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="SpectralParameters">
+        <Float32 name="reduced_chi_squared_o2_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="reduced_chi_squared_strong_co2_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="reduced_chi_squared_weak_co2_fph">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="relative_residual_mean_square_o2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="relative_residual_mean_square_strong_co2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="relative_residual_mean_square_weak_co2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="residual_mean_square_o2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="residual_mean_square_strong_co2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="residual_mean_square_weak_co2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="signal_o2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="signal_strong_co2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="signal_weak_co2">
+            <Dim size="60"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Array</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="snr_o2_l1b">
+            <Dim size="60"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="snr_strong_co2_l1b">
+            <Dim size="60"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="snr_weak_co2_l1b">
+            <Dim size="60"/>
+            <Dim size="2"/>
+            <Attribute name="Shape" type="String">
+                <Value>Retrieval_Polarization_Array</Value>
+            </Attribute>
+            <Attribute name="Type" type="String">
+                <Value>Float32</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+</Dataset>

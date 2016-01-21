@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5">
+    <String name="InputFileNames">
+        <Dim size="1"/>
+    </String>
+    <String name="InputAlgorithmVersions">
+        <Dim size="1"/>
+    </String>
+    <String name="InputGenerationDateTimes">
+        <Dim size="1"/>
+    </String>
+    <Group name="Grid">
+        <Float32 name="fractionQuality2">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="fractionQuality1">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="mixedWater">
+            <Dim size="28"/>
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlayer,nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>g/m^3</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="iceWaterPath">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="surfacePrecipitation">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="fractionQuality0">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="npixTotal">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="cloudWaterPath">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="npixPrecipitation">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="mixedWaterPath">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rainWater">
+            <Dim size="28"/>
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlayer,nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>g/m^3</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="cloudWater">
+            <Dim size="28"/>
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlayer,nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>g/m^3</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="iceWater">
+            <Dim size="28"/>
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlayer,nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>g/m^3</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="surfaceTypeIndex">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="liquidPrecipFraction">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rainWaterPath">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="convectPrecipFraction">
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="latentHeat">
+            <Dim size="28"/>
+            <Dim size="1440"/>
+            <Dim size="720"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlayer,nlon,nlat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>C/hr</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Attribute name="GridHeader" type="String">
+            <Value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=90;
+SouthBoundingCoordinate=-90;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</Value>
+        </Attribute>
+    </Group>
+</Dataset>

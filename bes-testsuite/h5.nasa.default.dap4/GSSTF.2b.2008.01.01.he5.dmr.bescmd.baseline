@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GSSTF.2b.2008.01.01.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="BeginDate" type="String">
+                    <Value>2008-01-01</Value>
+                </Attribute>
+                <Attribute name="EndDate" type="String">
+                    <Value>2008-01-02</Value>
+                </Attribute>
+                <Attribute name="ShortName" type="String">
+                    <Value>GSSTF</Value>
+                </Attribute>
+                <Attribute name="VersionID" type="String">
+                    <Value>2b</Value>
+                </Attribute>
+                <Attribute name="CollectionDescription" type="String">
+                    <Value>Goddard Satellite-Based Surface Turbulent Fluxes (GSSTF2b) in HDF-EOS5, 1x1 degree Daily Grid, Set1 and Set2, Combined Satellites</Value>
+                </Attribute>
+                <Attribute name="LongName" type="String">
+                    <Value>Surface Turbulent Fluxes, 1x1 deg Daily Grid, Set1 and Set2</Value>
+                </Attribute>
+                <Attribute name="Set2eqSet1" type="String">
+                    <Value>F</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="SET1">
+                <Group name="Data Fields">
+                    <Float32 name="DQ">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sea-air humidity difference</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="E">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>latent heat flux</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sensible heat flux</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Qair">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>surface air (~10-m) specific humidity</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="STu">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>zonal wind stress</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="STv">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>meridional wind stress</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Tot_Precip_Water">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>total precipitable water</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/cm^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="U">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>10-m wind speed</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m/s</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="WB">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>lowest 500-m precipitable water</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/cm^^2</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+            <Group name="SET2">
+                <Group name="Data Fields">
+                    <Float32 name="DQ">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sea-air humidity difference</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="E">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>latent heat flux</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>sensible heat flux</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Qair">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>surface air (~10-m) specific humidity</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/kg</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="STu">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>zonal wind stress</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="STv">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>meridional wind stress</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/m^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Tot_Precip_Water">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>total precipitable water</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/cm^^2</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="U">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>10-m wind speed</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m/s</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="WB">
+                        <Dim size="180"/>
+                        <Dim size="360"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="LongName" type="String">
+                            <Value>lowest 500-m precipitable water</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>g/cm^^2</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.11</Value>
+        </Attribute>
+    </Group>
+</Dataset>

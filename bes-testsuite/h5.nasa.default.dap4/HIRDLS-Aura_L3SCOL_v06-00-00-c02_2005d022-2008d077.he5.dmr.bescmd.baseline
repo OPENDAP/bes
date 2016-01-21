@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="InstrumentName" type="String">
+                    <Value>HIRDLS</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>L3    </Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>L3PSTB16sc</Value>
+                </Attribute>
+                <Attribute name="HIRDLSFileType" type="String">
+                    <Value>HIR3SCOL</Value>
+                </Attribute>
+                <Attribute name="Period" type="String">
+                    <Value>Daily</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="HIRDLS">
+                <Dimension name="XDim" size="180"/>
+                <Dimension name="YDim" size="73"/>
+                <Dimension name="nTimes" size="1151"/>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/HIRDLS/XDim"/>
+                    <Attribute name="CLASS" type="String">
+                        <Value>DIMENSION_SCALE</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>longitude</Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/HIRDLS/YDim"/>
+                    <Attribute name="CLASS" type="String">
+                        <Value>DIMENSION_SCALE</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>latitude</Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="nTimes">
+                    <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                    <Attribute name="CLASS" type="String">
+                        <Value>DIMENSION_SCALE</Value>
+                    </Attribute>
+                    <Attribute name="NAME" type="String">
+                        <Value>nTimes</Value>
+                    </Attribute>
+                    <Attribute name="_FillValue" type="Float64">
+                        <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="MissingValue" type="Float64">
+                        <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="Units" type="String">
+                        <Value>seconds since 1993-01-01</Value>
+                    </Attribute>
+                </Float32>
+                <Attribute name="VerticalCoordinate" type="String">
+                    <Value>Partial Column</Value>
+                </Attribute>
+                <Attribute name="ColumnPressureMinimum" type="Float32">
+                    <Value>1.</Value>
+                </Attribute>
+                <Attribute name="ColumnPressureMaximum" type="Float32">
+                    <Value>57.</Value>
+                </Attribute>
+                <Attribute name="ColumnPressureUnits" type="String">
+                    <Value>hPa</Value>
+                </Attribute>
+                <Group name="Data Fields">
+                    <Int32 name="Day">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Day of Observation</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value> </Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="Latitude">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/YDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degress_north</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/XDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degrees_east</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="Month">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Month of observation</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value> </Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="NO2DayColumn">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/XDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide Column vmr</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="NO2DayColumnPrecision">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/XDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide Column Precision vmr</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="NO2DayDataCount">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/XDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide Data Count</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value> </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float64 name="Time">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TAI Time</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>seconds since 1993-01-01</Value>
+                        </Attribute>
+                    </Float64>
+                    <Int32 name="Year">
+                        <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Year of Observation</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value> </Value>
+                        </Attribute>
+                    </Int32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <String name="coremetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+    </Group>
+</Dataset>

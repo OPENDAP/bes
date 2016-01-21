@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A" space="catalog">/data/1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5</setContainer>
+    <define name="d">
+	<container name="1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>

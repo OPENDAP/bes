@@ -1,0 +1,2045 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5">
+    <Dimension name="nCorners" size="4"/>
+    <Dimension name="nLevels" size="5"/>
+    <Dimension name="nTimes" size="392"/>
+    <Dimension name="nWavel" size="4"/>
+    <Dimension name="nXtrack" size="35"/>
+    <Int32 name="nCorners">
+        <Dim name="/nCorners"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>nCorners</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Ground Pixel Corner</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the ground pixel corners.  There are four corners per ground pixel.</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="nLevels">
+        <Dim name="/nLevels"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>nLevels</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Atmospheric Levels</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the atmospheric levels.  The values range from 0.0 to 10.0 km.</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="nTimes">
+        <Dim name="/nTimes"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1993-01-01</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="nWavel">
+        <Dim name="/nWavel"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>nWavel</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TOMS Wavelength</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the TOMS wavelengths.  The values range from 331 to 380 nm.</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nXtrack">
+        <Dim name="/nXtrack"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>nXtrack</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Cross-Track Position (1-Based)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the cross-track position of the observation in the scan line.  The values range from 1 to 35.</Value>
+        </Attribute>
+    </Int32>
+    <Group name="ANCILLARY_DATA">
+        <Float32 name="SurfaceAlbedo331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedo340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedo360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo at 360 nm</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedo380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedoOC331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo Ocean Corrected at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo Ocean Corrected at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedoOC340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo Ocean Corrected at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo Ocean Corrected at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedoOC360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo Ocean Corrected at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo Ocean Corrected at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SurfaceAlbedoOC380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Albedo Ocean Corrected at 380 nm</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Surface Albedo Ocean Corrected at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="TerrainPressure">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>hPa</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>TerrainPressure</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The terrain pressure (in hPa) at the center of the ground pixel (from the TOMS Level 1B file).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-20.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1000.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="GEOLOCATION_DATA">
+        <Float32 name="CornerLatitude">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nCorners"/>
+            <Attribute name="long_name" type="String">
+                <Value>Corner Latitudes for Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The geodetic latitudes (in degrees) of the corner coordinates of the ground pixels (from TOMSN7PIXCOR).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-90.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="CornerLongitude">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nCorners"/>
+            <Attribute name="long_name" type="String">
+                <Value>Corner Longitudes for Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The geodetic longitudes (in degrees) of the corner coordinates of the ground pixels (from TOMSN7PIXCOR).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-180.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="GroundPixelQualityFlags">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Ground Pixel Quality Flags</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The ground pixel quality flags (for the ground pixel):  Bits 0 to 3 together contain the land/water flags:  0 - shallow ocean, 1 - land, 2 - shallow inland water, 3 - ocean coastline/lake shoreline, 4 - ephemeral (intermittent) water, 5 - deep inland water, 6 - continental shelf ocean, 7 - deep ocean, 8 to 14 - not used, 15 - error flag for land/water, Bits 4 to 6 are flags that are set to 0 for FALSE or 1 for TRUE:  Bit 4 - sun glint possibility flag, Bit 5 - solar eclipse possibility flag, Bit 6 - geolocation error flag, Bit 7 is reserved for future use (currently set to 0), Bits 8 to 14 together contain the snow/ice flags (based on NISE):  0 - snow-free land, 1 to 100 - sea ice concentration (percent), 101 - permanent ice (Greenland, Antarctica), 102 - not used, 103 - dry snow, 104 - ocean (NISE-255), 105 to 123 - reserved for future use, 124 - mixed pixels at coastline (NISE-252), 125 - suspect ice value (NISE-253), 126 - corners undefined (NISE-254), 127 - error, Bit 15 - NISE nearest neighbor filling flag.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="Latitude">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Latitude</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The terrestrial latitude (in degrees) at the center of the ground pixel.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-90.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Longitude">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Longitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The terrestrial longitude (in degrees) at the center of the ground pixel.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-180.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="RelativeAzimuthAngle">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Relative Azimuth Angle (sun + 180 - view)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_eastofnorth</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The relative (sun + 180 - view) azimuth angle (in degrees) at the center of the ground pixel.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-180.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SecondsInDay">
+            <Dim name="/nTimes"/>
+            <Attribute name="long_name" type="String">
+                <Value>Seconds After UTC Midnight</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>s</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The time (in s) after UTC midnight at the start of the observation.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>86401.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SolarZenithAngle">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Solar Zenith Angle</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The solar zenith angle (in degrees) at the center of the ground pixel.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float64 name="Time">
+            <Dim name="/nTimes"/>
+            <Attribute name="description" type="String">
+                <Value>The TAI93 time (in continuous seconds since 12 a.m. UTC on January 1, 1993) of the start of the scan.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float64">
+                <Value>-5000000000.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float64">
+                <Value>10000000000.</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Time at Start of Scan (TAI93)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>s</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float64">
+                <Value>-1.2676506002282294e+30</Value>
+            </Attribute>
+        </Float64>
+        <Float32 name="ViewingZenithAngle">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Viewing Zenith Angle</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The viewing zenith angle (in degrees) at the center of the ground pixel.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>70.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="SCIENCE_DATA">
+        <Float32 name="AIRS_CO_Value">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>AIRS CO Value</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>AIRS CO Value.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>10.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolAbsorptionOpticalDepthVsHeight331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolAbsorptionOpticalDepthVsHeight340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolAbsorptionOpticalDepthVsHeight360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolAbsorptionOpticalDepthVsHeight380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolAbsorptionOpticalDepthVsHeight500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolAbsorptionOpticalDepthVsHeight500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolOpticalDepthVsHeight331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolOpticalDepthVsHeight340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolOpticalDepthVsHeight360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolOpticalDepthVsHeight380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolOpticalDepthVsHeight500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolOpticalDepthVsHeight500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolSingleScatteringAlbedoVsHeight331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolSingleScatteringAlbedoVsHeight340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolSingleScatteringAlbedoVsHeight360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolSingleScatteringAlbedoVsHeight380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolSingleScatteringAlbedoVsHeight500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 331- and 360-nm Analysis</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="AerosolSingleScatteringAlbedoVsHeight500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 340- and 380-nm Analysis</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="AerosolType_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Type (331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Type (331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="AerosolType_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Aerosol Type (340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Aerosol Type (340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="AlgorithmFlagsVsHeight_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Algorithm Flags vs. Heights (331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Algorithm Flags vs. Heights (331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="AlgorithmFlagsVsHeight_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Algorithm Flags vs. Heights (340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Algorithm Flags vs. Heights (340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="CloudFraction360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Cloud Fraction at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The effective cloud fraction at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="CloudFraction380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Cloud Fraction at 380 nm</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The effective cloud fraction at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="CloudOpticalDepth360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Cloud Optical Depth at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Cloud Optical Depth at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1000.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="CloudOpticalDepth380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Cloud Optical Depth at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Cloud Optical Depth at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1000.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolAbsorptionOpticalDepth331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 331 nm</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolAbsorptionOpticalDepth340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolAbsorptionOpticalDepth360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 360 nm</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolAbsorptionOpticalDepth380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolAbsorptionOpticalDepth500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolAbsorptionOpticalDepth500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Absorption Optical Depth at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolLayerHeight_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Layer Height (331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>10.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Layer Height (331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>km</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolLayerHeight_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>km</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Layer Height (340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Layer Height (340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>10.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolOpticalDepth331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Optical Depth at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Optical Depth at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolOpticalDepth340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Optical Depth at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Optical Depth at 340 nm</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolOpticalDepth360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Optical Depth at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Optical Depth at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolOpticalDepth380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Optical Depth at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Optical Depth at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolOpticalDepth500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Optical Depth at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Optical Depth at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolOpticalDepth500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Optical Depth at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Optical Depth at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>100.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolSingleScatteringAlbedo331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolSingleScatteringAlbedo340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolSingleScatteringAlbedo360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolSingleScatteringAlbedo380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolSingleScatteringAlbedo500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="FinalAerosolSingleScatteringAlbedo500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Aerosol Single Scattering Albedo at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="FinalAlgorithmFlags_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Algorithm Flags (331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Algorithm Flags (331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="FinalAlgorithmFlags_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Final Algorithm Flags (340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Final Algorithm Flags (340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="ImaginaryRefractiveIndex331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="description" type="String">
+                <Value>Imaginary Part of Refractive Index at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Imaginary Part of Refractive Index at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ImaginaryRefractiveIndex340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Imaginary Part of Refractive Index at 340 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Imaginary Part of Refractive Index at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ImaginaryRefractiveIndex360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Imaginary Part of Refractive Index at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Imaginary Part of Refractive Index at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ImaginaryRefractiveIndex380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Imaginary Part of Refractive Index at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Imaginary Part of Refractive Index at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ImaginaryRefractiveIndex500a">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Imaginary Part of Refractive Index at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Imaginary Part of Refractive Index at 500 nm from 331- and 360-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="ImaginaryRefractiveIndex500b">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nLevels"/>
+            <Attribute name="long_name" type="String">
+                <Value>Imaginary Part of Refractive Index at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Imaginary Part of Refractive Index at 500 nm from 340- and 380-nm Analysis.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="NormalizedRadiance">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Dim name="/nWavel"/>
+            <Attribute name="long_name" type="String">
+                <Value>Normalized Radiances at 331, 340, 360 and 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Normalized Radiances at 331, 340, 360 and 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>1.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Reflectivity331">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 331 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>%</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 331 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-15.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>115.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Reflectivity340">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="units" type="String">
+                <Value>%</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 340 nm</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 340 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-15.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>115.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Reflectivity360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 360 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>%</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 360 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-15.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>115.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Reflectivity380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 380 nm</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>%</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Lambertian Equivalent Reflectivity at 380 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-15.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>115.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Residue_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Residue (331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The Residue (331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-50.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Residue_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>Residue (340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The Residue (340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-50.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="UVAerosolIndex_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>UV Aerosol Index (331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The UV Aerosol Index (331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-50.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="UVAerosolIndex_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>UV Aerosol Index (340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The UV Aerosol Index (340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-50.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="UVAerosolIndex_Mie_331and360">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>UV Aerosol Index (Mie 331 and 360 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The UV Aerosol Index (Mie 331 and 360 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-50.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="UVAerosolIndex_Mie_340and380">
+            <Dim name="/nTimes"/>
+            <Dim name="/nXtrack"/>
+            <Attribute name="long_name" type="String">
+                <Value>UV Aerosol Index (Mie 340 and 380 nm)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The UV Aerosol Index (Mie 340 and 380 nm).</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>-50.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>50.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="SENSOR_DATA">
+        <Int32 name="MeasurementQualityFlags">
+            <Dim name="/nTimes"/>
+            <Attribute name="long_name" type="String">
+                <Value>Measurement Quality Flags</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Measurement Quality Flags</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Int32">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Int32">
+                <Value>65534</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="Wavelength">
+            <Dim name="/nWavel"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOMS Wavelengths</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>nm</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The TOMS wavelengths.  There are twelve wavelengths that range from 308 to 373 nm.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Float32">
+                <Value>300.</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Float32">
+                <Value>400.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-1.2676506e+30</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+</Dataset>

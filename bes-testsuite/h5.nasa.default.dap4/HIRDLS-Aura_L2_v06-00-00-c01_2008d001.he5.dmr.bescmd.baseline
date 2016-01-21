@@ -1,0 +1,1970 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="HIRDLS-Aura_L2_v06-00-00-c01_2008d001.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="InstrumentName" type="String">
+                    <Value>HIRDLS</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>L2    </Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>6.00.00</Value>
+                </Attribute>
+                <Attribute name="HIRDLSFileType" type="String">
+                    <Value>HIRDLS2 </Value>
+                </Attribute>
+                <Attribute name="GranuleMonth" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="GranuleDay" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="GranuleYear" type="Int32">
+                    <Value>2008</Value>
+                </Attribute>
+                <Attribute name="TAI93At0zOfGranule" type="Float64">
+                    <Value>473299206.</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="SWATHS">
+            <Group name="HIRDLS">
+                <Dimension name="nLevels" size="121"/>
+                <Dimension name="nTimes" size="5434"/>
+                <Float32 name="nLevels">
+                    <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                    <Attribute name="CLASS" type="String">
+                        <Value>DIMENSION_SCALE</Value>
+                    </Attribute>
+                    <Attribute name="NAME" type="String">
+                        <Value>nLevels</Value>
+                    </Attribute>
+                    <Attribute name="_FillValue" type="Float32">
+                        <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="MissingValue" type="Float32">
+                        <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="Units" type="String">
+                        <Value>hPa</Value>
+                    </Attribute>
+                    <Attribute name="UniqueFieldDefinition" type="String">
+                        <Value>Aura-Shared</Value>
+                    </Attribute>
+                </Float32>
+                <Float64 name="nTimes">
+                    <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                    <Attribute name="CLASS" type="String">
+                        <Value>DIMENSION_SCALE</Value>
+                    </Attribute>
+                    <Attribute name="NAME" type="String">
+                        <Value>nTimes</Value>
+                    </Attribute>
+                    <Attribute name="MissingValue" type="Float64">
+                        <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="Units" type="String">
+                        <Value>s</Value>
+                    </Attribute>
+                    <Attribute name="_FillValue" type="Float64">
+                        <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="UniqueFieldDefinition" type="String">
+                        <Value>Aura-Shared</Value>
+                    </Attribute>
+                </Float64>
+                <Attribute name="VerticalCoordinate" type="String">
+                    <Value>Pressure</Value>
+                </Attribute>
+                <Attribute name="Pressure" type="Float32">
+                    <Value>1000.</Value>
+                    <Value>908.5175781</Value>
+                    <Value>825.4041748</Value>
+                    <Value>749.8942261</Value>
+                    <Value>681.2920532</Value>
+                    <Value>618.9658203</Value>
+                    <Value>562.3413086</Value>
+                    <Value>510.8969727</Value>
+                    <Value>464.1588745</Value>
+                    <Value>421.6965027</Value>
+                    <Value>383.1186829</Value>
+                    <Value>348.0700684</Value>
+                    <Value>316.2277527</Value>
+                    <Value>287.2984619</Value>
+                    <Value>261.0157471</Value>
+                    <Value>237.1373749</Value>
+                    <Value>215.4434662</Value>
+                    <Value>195.7341919</Value>
+                    <Value>177.8279419</Value>
+                    <Value>161.5597992</Value>
+                    <Value>146.7799377</Value>
+                    <Value>133.3521423</Value>
+                    <Value>121.1527557</Value>
+                    <Value>110.0694275</Value>
+                    <Value>100.</Value>
+                    <Value>90.85176849</Value>
+                    <Value>82.54040527</Value>
+                    <Value>74.98942566</Value>
+                    <Value>68.12921143</Value>
+                    <Value>61.89657593</Value>
+                    <Value>56.23413086</Value>
+                    <Value>51.08970261</Value>
+                    <Value>46.41588593</Value>
+                    <Value>42.16965103</Value>
+                    <Value>38.31187439</Value>
+                    <Value>34.80700302</Value>
+                    <Value>31.62277412</Value>
+                    <Value>28.72985077</Value>
+                    <Value>26.10157013</Value>
+                    <Value>23.71373749</Value>
+                    <Value>21.54434776</Value>
+                    <Value>19.57341576</Value>
+                    <Value>17.78279495</Value>
+                    <Value>16.15598297</Value>
+                    <Value>14.67799091</Value>
+                    <Value>13.33521366</Value>
+                    <Value>12.11527729</Value>
+                    <Value>11.00694084</Value>
+                    <Value>10.</Value>
+                    <Value>9.085173607</Value>
+                    <Value>8.254043579</Value>
+                    <Value>7.498942375</Value>
+                    <Value>6.812919617</Value>
+                    <Value>6.189659119</Value>
+                    <Value>5.623413086</Value>
+                    <Value>5.108968735</Value>
+                    <Value>4.641589642</Value>
+                    <Value>4.216964722</Value>
+                    <Value>3.831186056</Value>
+                    <Value>3.480701208</Value>
+                    <Value>3.162277699</Value>
+                    <Value>2.872984409</Value>
+                    <Value>2.610157728</Value>
+                    <Value>2.371373892</Value>
+                    <Value>2.154434443</Value>
+                    <Value>1.957342029</Value>
+                    <Value>1.778279424</Value>
+                    <Value>1.615597725</Value>
+                    <Value>1.467799544</Value>
+                    <Value>1.333521485</Value>
+                    <Value>1.211527348</Value>
+                    <Value>1.100694418</Value>
+                    <Value>1.</Value>
+                    <Value>0.9085174203</Value>
+                    <Value>0.825404346</Value>
+                    <Value>0.7498942018</Value>
+                    <Value>0.6812919378</Value>
+                    <Value>0.6189659238</Value>
+                    <Value>0.5623412728</Value>
+                    <Value>0.5108969212</Value>
+                    <Value>0.464158982</Value>
+                    <Value>0.4216965139</Value>
+                    <Value>0.3831185997</Value>
+                    <Value>0.3480701149</Value>
+                    <Value>0.3162277639</Value>
+                    <Value>0.2872984409</Value>
+                    <Value>0.2610157728</Value>
+                    <Value>0.2371373773</Value>
+                    <Value>0.2154434323</Value>
+                    <Value>0.1957342178</Value>
+                    <Value>0.1778279394</Value>
+                    <Value>0.1615597904</Value>
+                    <Value>0.1467799544</Value>
+                    <Value>0.1333521456</Value>
+                    <Value>0.1211527437</Value>
+                    <Value>0.1100694388</Value>
+                    <Value>0.09999999404</Value>
+                    <Value>0.0908517912</Value>
+                    <Value>0.08254039288</Value>
+                    <Value>0.07498942316</Value>
+                    <Value>0.06812922657</Value>
+                    <Value>0.06189655513</Value>
+                    <Value>0.0562341325</Value>
+                    <Value>0.05108971521</Value>
+                    <Value>0.04641587287</Value>
+                    <Value>0.04216964915</Value>
+                    <Value>0.03831188381</Value>
+                    <Value>0.03480699286</Value>
+                    <Value>0.03162277862</Value>
+                    <Value>0.02872985974</Value>
+                    <Value>0.02610156313</Value>
+                    <Value>0.02371373773</Value>
+                    <Value>0.02154435404</Value>
+                    <Value>0.01957341097</Value>
+                    <Value>0.01778279245</Value>
+                    <Value>0.01615598798</Value>
+                    <Value>0.01467798743</Value>
+                    <Value>0.013335214</Value>
+                    <Value>0.01211528108</Value>
+                    <Value>0.01100693736</Value>
+                    <Value>0.009999999776</Value>
+                </Attribute>
+                <Group name="Data Fields">
+                    <Int8 name="10.8MicronCloudAerosolFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>10.8 Micron CloudAerosolFlag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>0=no contamination, 1=unknown cloud, 2=cirrus layer, 3=PSC, 4=saturated cloud, 99=anomaly detected</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="10.8MicronExtinction">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>10.8 Micron  Extinction</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="10.8MicronExtinctionNormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>10.8 Micron  Extinction NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="10.8MicronExtinctionPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>10.8 Micron  Extinction Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="10.8MicronExtinctionQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>10.8 Micron  Extinction Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="12.1MicronCloudAerosolFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>12.1 Micron CloudAerosolFlag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>0=no contamination, 1=unknown cloud, 2=cirrus layer, 3=PSC, 4=saturated cloud, 99=anomaly detected</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="12.1MicronExtinction">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>12.1 Micron  Extinction</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="12.1MicronExtinctionNormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>12.1 Micron  Extinction NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="12.1MicronExtinctionPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>12.1 Micron  Extinction Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="12.1MicronExtinctionQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>12.1 Micron  Extinction Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="17.4MicronCloudAerosolFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>17.4 Micron CloudAerosolFlag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>0=no contamination, 1=unknown cloud, 2=cirrus layer, 3=PSC, 4=saturated cloud, 99=anomaly detected</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="17.4MicronExtinction">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>17.4 Micron  Extinction</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="17.4MicronExtinctionNormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>17.4 Micron  Extinction NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="17.4MicronExtinctionPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>17.4 Micron  Extinction Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="17.4MicronExtinctionQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>17.4 Micron  Extinction Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="7.1MicronCloudAerosolFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>7.1 Micron  CloudAerosolFlag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>0=no contamination, 1=unknown cloud, 2=cirrus layer, 3=PSC, 4=saturated cloud, 99=anomaly detected</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="7.1MicronExtinction">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>7.1 Micron  Extinction</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="7.1MicronExtinctionNormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>7.1 Micron  Extinction NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="7.1MicronExtinctionPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>7.1 Micron  Extinction Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="7.1MicronExtinctionQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>7.1 Micron  Extinction Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="8.3MicronCloudAerosolFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>8.3 Micron  CloudAerosolFlag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>0=no contamination, 1=unknown cloud, 2=cirrus layer, 3=PSC, 4=saturated cloud, 99=anomaly detected</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="8.3MicronExtinction">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>8.3 Micron  Extinction</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="8.3MicronExtinctionNormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>8.3 Micron  Extinction NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="8.3MicronExtinctionPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>1/km</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>8.3 Micron  Extinction Precision</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="8.3MicronExtinctionQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>8.3 Micron  Extinction Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="CFC11">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC11</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CFC11NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC11 NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CFC11Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC11 Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="CFC11Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC11 Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="CFC12">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC12</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CFC12NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC12 NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CFC12Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC12 Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="CFC12Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CFC12 Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="CH4">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Methane</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CH4NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Methane NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CH4Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Methane Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="CH4Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Methane Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="ClONO2">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>ClONO2</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ClONO2NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>ClONO2 NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ClONO2Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>ClONO2 Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="ClONO2Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>ClONO2 Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="CloudTopPressure">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Pressure of Top of Clouds</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="GPH">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Smoothed Geopotential Height</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="GPHPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Smoothed Geopotential Height Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H2O">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Water Vapor</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H2ONormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Water Vapor NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H2OPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Water Vapor Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="H2OQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Water Vapor Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="HNO3">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitric Acid</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="HNO3NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitric Acid NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="HNO3Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitric Acid Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="HNO3Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitric Acid Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="N2O">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="N2O5">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O5</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="N2O5NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O5 NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="N2O5Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O5 Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="N2O5Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O5 Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="N2ONormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="N2OPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="N2OQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>N2O Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="NO2">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="NO2NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="NO2Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="NO2Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Nitrogen Dioxide Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="O3">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Ozone</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="O3NormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Ozone NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="O3Precision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Ozone Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="O3Quality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Ozone Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="RawGPH">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Raw Geopotential Height</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RawGPHPrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Raw Geopotential Height Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Temperature">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Temperature</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TemperatureNormChiSq">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Temperature NormChiSq</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TemperaturePrecision">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Temperature Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="TemperatureQuality">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Temperature Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                </Group>
+                <Group name="Geolocation Fields">
+                    <Float32 name="Altitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Altitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Latitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="LocalSolarTime">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Local Solar Time</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>h</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="OrbitAscendingFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Orbit Ascending Node Flag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int32 name="OrbitNumber">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Orbit Number Identifier</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="Pressure">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Pressure</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="ProfileID">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Profile Identification</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="ScanAzimuthAtNominalAltitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scan Azimuth at Nominal Altitude</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ScanElevationAtNominalAltitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scan Elevation at Nominal Altitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int16 name="ScanTable">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scan Table Identifier</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int8 name="ScanUpFlag">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scan Up Flag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int32 name="ScienceScanMode">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-999</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Science Scan Mode Identifier</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="SecondsInDay">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Seconds in Day</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>s</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SolarZenithAngle">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Solar Zenith Angle</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SpacecraftAltitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Spacecraft Altitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SpacecraftLatitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Spacecraft Latitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SpacecraftLongitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Spacecraft Longitude</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TangentHeightAtNominalAltitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tangent Height at Nominal Altitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float64 name="Time">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TAI Time</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>s</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float32 name="ViewDirectionAtNominalAltitude">
+                        <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>View Direction at Nominal Altitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg(EastofNorth)</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <String name="coremetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.12</Value>
+        </Attribute>
+    </Group>
+</Dataset>

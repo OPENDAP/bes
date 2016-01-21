@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4.h5">
+    <Dimension name="nscan" size="2015"/>
+    <Dimension name="npix" size="243"/>
+    <Int16 name="res_c2">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Residual error at 7.3 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="mask">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Bit Mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="opt_depth_c2">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Optical Depth from 7.3 GHz</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="res_c1">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Residual error at 6.9 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="soil_moisture_c2">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Volumetric Soil Moisture from 7.3 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="soil_moisture_c1">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Volumetric Soil Moisture from 6.9 GHZ</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="nscan">
+        <Dim name="/nscan"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.      2015</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lon</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="soil_moisture_c2_error">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Uncertainty of Soil Moisture in 7.3 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="npix">
+        <Dim name="/npix"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.       243</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="opt_depth_c1">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Optical Depth from 6.9 GHz</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Float64 name="scantime">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scan time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1993-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Latitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lat</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="rfi_code2">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>RFI Code using 7.3 GHz</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="opt_depth_x">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Optical Depth from 10.7 GHz</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="res_x">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Residual error at 10.7 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="soil_moisture_c1_error">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Uncertainty of Soil Moisture in 6.9 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="ts">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Skin Temperature (2mm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="rfi_code1">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>RFI Code using 6.9 GHz</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="soil_moisture_x">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Volumetric Soil Moisture from 10.7 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="soil_moisture_x_error">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="long_name" type="String">
+            <Value>Uncertainty of Soil Moisture in 10.7 GHz</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+    </Int16>
+</Dataset>

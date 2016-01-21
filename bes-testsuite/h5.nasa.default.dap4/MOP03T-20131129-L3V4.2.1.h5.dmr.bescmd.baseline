@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MOP03T-20131129-L3V4.2.1.h5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="title" type="String">
+                    <Value>MOPITT Level 3 Daily File</Value>
+                </Attribute>
+                <Attribute name="institution" type="String">
+                    <Value>MOPITT at ACD of NCAR</Value>
+                </Attribute>
+                <Attribute name="StartTime" type="Float64">
+                    <Value>659837222.64699948</Value>
+                </Attribute>
+                <Attribute name="StopTime" type="Float64">
+                    <Value>659923206.82500005</Value>
+                </Attribute>
+                <Attribute name="FillValue" type="Float32">
+                    <Value>-9999.</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="MOP03">
+                <Group name="Data Fields">
+                    <Float32 name="APrioriCOMixingRatioProfileDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori CO Mixing Ratio Profile Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriCOMixingRatioProfileNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori CO Mixing Ratio Profile Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriCOSurfaceMixingRatioDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori CO Surface Mixing Ratio Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriCOSurfaceMixingRatioNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori CO Surface Mixing Ratio Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriCOTotalColumnDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori CO Total Column Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriCOTotalColumnNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori CO Total Column Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriSurfaceEmissivityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori Surface Emissivity Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriSurfaceEmissivityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori Surface Emissivity Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriSurfaceTemperatureDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori Surface Temperature Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="APrioriSurfaceTemperatureNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>A Priori Surface Temperature Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DEMAltitudeDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>DEM Altitude Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DEMAltitudeNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>DEM Altitude Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DEMAltitudeVariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>DEM Altitude Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DEMAltitudeVariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>DEM Altitude Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DegreesofFreedomforSignalDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Degrees of Freedom for Signal Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DegreesofFreedomforSignalNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Degrees of Freedom for Signal Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Latitude">
+                        <Dim size="180"/>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_north</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim size="360"/>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_east</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="NumberofPixelsDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-9999</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Number of Pixel Day</Value>
+                        </Attribute>
+                    </Int32>
+                    <Int32 name="NumberofPixelsNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-9999</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Number of Pixel Night</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="Pressure">
+                        <Dim size="9"/>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Pressure2">
+                        <Dim size="10"/>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievalAveragingKernelMatrixDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="10"/>
+                        <Dim size="10"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieval Averaging Kernel Matrix Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievalAveragingKernelMatrixNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="10"/>
+                        <Dim size="10"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieval Averaging Kernel Matrix Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOMixingRatioProfileDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Mixing Ratio Profile Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOMixingRatioProfileMeanUncertaintyDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Mixing Ratio Profile Mean Uncertainty Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOMixingRatioProfileMeanUncertaintyNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Mixing Ratio Profile Mean Uncertainty Night</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOMixingRatioProfileNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Mixing Ratio Profile Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOMixingRatioProfileVariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Mixing Ratio Profile Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOMixingRatioProfileVariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="9"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Mixing Ratio Profile Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOSurfaceMixingRatioDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Surface Mixing Ratio Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOSurfaceMixingRatioMeanUncertaintyDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Surface Mixing Ratio Mean Uncertainty Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOSurfaceMixingRatioMeanUncertaintyNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Surface Mixing Ratio Mean Uncertainty Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOSurfaceMixingRatioNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Surface Mixing Ratio Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOSurfaceMixingRatioVariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Surface Mixing Ratio Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOSurfaceMixingRatioVariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>ppbv</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Surface Mixing Ratio Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnDiagnosticsDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="2"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Diagnostics Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnDiagnosticsNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Dim size="2"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Diagnostics Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnMeanUncertaintyDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Mean Uncertainty Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnMeanUncertaintyNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Mean Uncertainty Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnVariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedCOTotalColumnVariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>mol/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved CO Total Column Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceEmissivityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Emissivity Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceEmissivityMeanUncertaintyDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Emissivity Mean Uncertainty Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceEmissivityMeanUncertaintyNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Emissivity Mean Uncertainty Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceEmissivityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Emissivity Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceEmissivityVariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Emissivity Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceEmissivityVariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Emissivity Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceTemperatureDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Temperature Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceTemperatureMeanUncertaintyDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Temperature Mean Uncertainty Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceTemperatureMeanUncertaintyNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Temperature Mean Uncertainty Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceTemperatureNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Temperature Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceTemperatureVariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Temperature Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RetrievedSurfaceTemperatureVariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Retrieved Surface Temperature Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SatelliteZenithAngleDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Satellite Zenith Angle Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SatelliteZenithAngleNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Satellite Zenith Angle Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SignalChi2Day">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Signal Chi2 Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SignalChi2Night">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Signal Chi2 Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SignalChi2VariabilityDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Signal Chi2 Variability Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SignalChi2VariabilityNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Signal Chi2 Variability Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SolarZenithAngleDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Solar Zenith Angle Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SolarZenithAngleNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Solar Zenith Angle Night</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="SurfaceIndexDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-9999</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Surface Index Day</Value>
+                        </Attribute>
+                    </Int32>
+                    <Int32 name="SurfaceIndexNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Int32">
+                            <Value>-9999</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>NA</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Surface Index Night</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="SurfacePressureDay">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Surface Pressure Day</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfacePressureNight">
+                        <Dim size="360"/>
+                        <Dim size="180"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-9999.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Surface Pressure Night</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <String name="coremetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.14.01</Value>
+        </Attribute>
+    </Group>
+</Dataset>

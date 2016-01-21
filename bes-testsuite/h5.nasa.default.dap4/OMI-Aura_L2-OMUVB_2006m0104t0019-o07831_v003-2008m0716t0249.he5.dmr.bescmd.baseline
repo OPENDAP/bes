@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="InstrumentName" type="String">
+                    <Value>OMI</Value>
+                </Attribute>
+                <Attribute name="PlatformName" type="String">
+                    <Value>Aura</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>2</Value>
+                </Attribute>
+                <Attribute name="GranuleMonth" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="GranuleDay" type="Int32">
+                    <Value>4</Value>
+                </Attribute>
+                <Attribute name="GranuleYear" type="Int32">
+                    <Value>2006</Value>
+                </Attribute>
+                <Attribute name="TAI93At0zOfGranule" type="Float64">
+                    <Value>410486406.</Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>1.1</Value>
+                </Attribute>
+                <Attribute name="LUTLibraryVersion" type="String">
+                    <Value>MLER_0.3.bin,FLUX_0.3.bin,ERY_0.3.bin,REFEP_0.3.bin,CCF_0.3.txt,RADHIGH_0.3.bin,RADLOW_0.3.bin,RAMANEP_0.3.txt,ALBEDO_0.3.bin</Value>
+                </Attribute>
+                <Attribute name="ProductType" type="String">
+                    <Value>Global</Value>
+                </Attribute>
+                <Attribute name="ProcessingCenter" type="String">
+                    <Value>FIN-GS</Value>
+                </Attribute>
+                <Attribute name="ShortName" type="String">
+                    <Value>OMUVB</Value>
+                </Attribute>
+                <Attribute name="ProductionDateTime" type="String">
+                    <Value>2008-07-16T02:50:06.000Z</Value>
+                </Attribute>
+                <Attribute name="PctSuspiciousInputData" type="Int32">
+                    <Value>35</Value>
+                </Attribute>
+                <Attribute name="PctFatalInputData" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <Attribute name="PctSuspiciousOutputData" type="Int32">
+                    <Value>46</Value>
+                </Attribute>
+                <Attribute name="PctFatalOutputData" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <Attribute name="LocalGranuleId" type="String">
+                    <Value>OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5</Value>
+                </Attribute>
+                <Attribute name="OrbitNumber" type="Int16">
+                    <Value>7831</Value>
+                </Attribute>
+                <Attribute name="EquatorCrossingDate" type="String">
+                    <Value>2006-01-04</Value>
+                </Attribute>
+                <Attribute name="EquatorCrossingTime" type="String">
+                    <Value>01:15:21.000000</Value>
+                </Attribute>
+                <Attribute name="EquatorCrossingLongitude" type="Float64">
+                    <Value>-173.59999999999999</Value>
+                </Attribute>
+                <Attribute name="RangeBeginningDate" type="String">
+                    <Value>2006-01-04</Value>
+                </Attribute>
+                <Attribute name="RangeBeginningTime" type="String">
+                    <Value>00:19:58.000000</Value>
+                </Attribute>
+                <Attribute name="RangeEndingDate" type="String">
+                    <Value>2006-01-04</Value>
+                </Attribute>
+                <Attribute name="RangeEndingTime" type="String">
+                    <Value>01:58:51.000000</Value>
+                </Attribute>
+                <Attribute name="InputVersions" type="String">
+                    <Value>OMTO3:1.0.0</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="SWATHS">
+            <Attribute name="NumTimes" type="Int32">
+                <Value>1643</Value>
+            </Attribute>
+            <Attribute name="VerticalCoordinate" type="String">
+                <Value>SurfaceData</Value>
+            </Attribute>
+            <Group name="UVB">
+                <Group name="Data Fields">
+                    <Float32 name="CSErythemalDailyDose">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Clear Sky Erythemal Daily Dose</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>J/m2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CSErythemalDoseRate">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Clear Sky Erythemal Dose Rate</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CSIrradiance305">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Clear Sky Irradiance at 305 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CSIrradiance310">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Clear Sky Irradiance at 310 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CSIrradiance324">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Clear Sky Irradiance at 324 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CSIrradiance380">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Clear Sky Irradiance at 380 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CloudOpticalThickness">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Cloud Optical Thickness</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ErythemalDailyDose">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Erythemal Daily Dose</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>J/m2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ErythemalDoseRate">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Erythemal Dose Rate</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Irradiance305">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Irradiance at 305 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Irradiance310">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Irradiance at 310 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Irradiance324">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Irradiance at 324 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Irradiance380">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Irradiance at 380 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="LambertianEquivalentReflectivity">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Lambertian Equivalent Reflectivity at 360 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="OMTO3AlgorithmFlags">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>OMTO3 Algorithm Flags</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="OMTO3ColumnAmountO3">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>OMTO3 Column Amount O3</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>DU</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="OMTO3QualityFlags">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>OMTO3 Quality Flags</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Int32 name="OMUVBQuality">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>OMUVB Quality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="OPErythemalDoseRate">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Overpass Erythemal Dose Rate</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="OPIrradiance305">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Overpass Irradiance at 305 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="OPIrradiance310">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Overpass Irradiance at 310 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="OPIrradiance324">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Overpass Irradiance at 324 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="OPIrradiance380">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Overpass Irradiance at 380 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>W/m2/nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceAlbedo">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Surface Albedo at 360 nm</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+                <Group name="Geolocation Fields">
+                    <Int32 name="GroundPixelQualityFlags">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int32">
+                            <Value>-2147483647</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Groundpixel Quality Flags</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>unitless</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float32 name="Latitude">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degree</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degree</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SolarZenithAngle">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Solar Zenith Angle</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degree</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="TerrainHeight">
+                        <Dim size="1643"/>
+                        <Dim size="60"/>
+                        <Attribute name="FillValue" type="Int16">
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Terrain Height for Center Co-ordinate of Ground Pixel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int32>
+                    <Float64 name="Time">
+                        <Dim size="1643"/>
+                        <Attribute name="FillValue" type="Float64">
+                            <Value>-1.2676506002282294e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-1.2676506002282294e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Time</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>second</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float64>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.5</Value>
+        </Attribute>
+    </Group>
+</Dataset>

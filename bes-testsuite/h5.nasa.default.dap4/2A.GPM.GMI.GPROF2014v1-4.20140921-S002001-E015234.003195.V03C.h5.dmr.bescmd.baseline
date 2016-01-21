@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5">
+    <Group name="GprofDHeadr">
+        <Byte name="speciesDescription">
+            <Dim size="5"/>
+            <Dim size="12"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nspecies,sddim</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>50</Value>
+            </Attribute>
+        </Byte>
+        <Float32 name="hgtTopLayer">
+            <Dim size="28"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nlyrs</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>km</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="temperatureDescriptions">
+            <Dim size="21"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>ntemps</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>C</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="clusterProfiles">
+            <Dim size="100"/>
+            <Dim size="28"/>
+            <Dim size="21"/>
+            <Dim size="5"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nprf,nlyrs,ntemps,nspecies</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="S1">
+        <Float32 name="totalColumnWaterVapor">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Longitude">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="pixelStatus">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Int8 name="qualityFlag">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Int8 name="orographicLiftIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Int8 name="spareIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="profileScale">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Dim size="5"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel,nspecies</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="databaseExpansionIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="precip2ndTertial">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="precip1stTertial">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="numOfSignificantProf">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Int8 name="retrievalType">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="iceWaterPath">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="sunGlintAngle">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="Latitude">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="surfacePrecipitation">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="snowCoverIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Int16 name="spare">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="cloudWaterPath">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="totalColumnWaterVaporIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="mixedWaterPath">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="probabilityOfPrecip">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="temp2mIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="mostLikelyPrecipitation">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="surfaceSkinTempIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>K</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Int8 name="surfaceTypeIndex">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="liquidPrecipFraction">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rainWaterPath">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>kg/m^2</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="convectPrecipFraction">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.900391</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="profileNumber">
+            <Dim size="2962"/>
+            <Dim size="221"/>
+            <Dim size="5"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>nscan,npixel,nspecies</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+        </Int16>
+        <Attribute name="SwathHeader" type="String">
+            <Value>NumberScansInSet=1;
+MaximumNumberScansTotal=3100;
+NumberScansBeforeGranule=0;
+NumberScansGranule=2962;
+NumberScansAfterGranule=0;
+NumberPixels=221;
+ScanType=CONICAL;
+</Value>
+        </Attribute>
+        <Group name="ScanTime">
+            <Int16 name="MilliSecond">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>ms</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+            <Int8 name="Minute">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>minutes</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>62</Value>
+                </Attribute>
+            </Int8>
+            <Int16 name="Year">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>years</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+            <Float64 name="SecondOfDay">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>s</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999.900000</Value>
+                </Attribute>
+            </Float64>
+            <Int8 name="Second">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>s</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>0</Value>
+                </Attribute>
+            </Int8>
+            <Int16 name="DayOfYear">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>days</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+            <Int8 name="Hour">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>hours</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>109</Value>
+                </Attribute>
+            </Int8>
+            <Int8 name="Month">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>months</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>101</Value>
+                </Attribute>
+            </Int8>
+            <Int8 name="DayOfMonth">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>days</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>0</Value>
+                </Attribute>
+            </Int8>
+        </Group>
+        <Group name="SCstatus">
+            <Int16 name="SCorientation">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999</Value>
+                </Attribute>
+            </Int16>
+            <Float32 name="SClatitude">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999.900391</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="SClongitude">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999.900391</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="SCaltitude">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="Units" type="String">
+                    <Value>km</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999.900391</Value>
+                </Attribute>
+            </Float32>
+            <Float64 name="FractionalGranuleNumber">
+                <Dim size="2962"/>
+                <Attribute name="DimensionNames" type="String">
+                    <Value>nscan</Value>
+                </Attribute>
+                <Attribute name="CodeMissingValue" type="String">
+                    <Value>-9999.900000</Value>
+                </Attribute>
+            </Float64>
+        </Group>
+    </Group>
+</Dataset>

@@ -1,0 +1,1116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5">
+    <Group name="HALOE">
+        <Dimension name="time" size="12"/>
+        <Dimension name="lev" size="25"/>
+        <Dimension name="lat" size="18"/>
+        <Dimension name="dayInBin" size="31"/>
+        <Float32 name="lat_max">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Latitude from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="time">
+            <Dim name="/HALOE/time"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Time</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>days since 1950-01-01</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Day number referenced to 15th day of the month</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="std_error">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Standard Error from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat_min">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Latitude from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lst_min">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Local Solar Time from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="std_dev">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Standard Deviation from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The standard deviation for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat_avg">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Latitude from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="average">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Zonal Average from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The zonal average for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_avg">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Solar Zenith Angle from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat">
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>lat</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Latitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Center latitude</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_max">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Solar Zenith Angle from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rms_uncertainty">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride RMS Uncertainty from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The root mean square uncertainty for each bin based on uncertainty/error supplied in original source dataset</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="minimum">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Value from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum usable data value for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="maximum">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Value from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum usable data value for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_min">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Solar Zenith Angle from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="days_used">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Dim name="/HALOE/dayInBin"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Days Used in the Calculations of the Zonal Quantities from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Bitmask indicator for which days in the month have usable data for each bin (1 = used, 0 = not used)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int8">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="lst_max">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Local Solar Time from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lst_avg">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Local Solar Time from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="nvalues">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Number of Values from HALOE</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The number of values used in the calculations of the zonal average quantities for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-999</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="dayInBin">
+            <Dim name="/HALOE/dayInBin"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>This is a netCDF dimension but not a netCDF variable.        31</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lev">
+            <Dim name="/HALOE/lev"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>lev</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Pressure</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hPa</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Value of vertical coordinate (Pressure)</Value>
+            </Attribute>
+        </Float32>
+        <Attribute name="OriginalFileVersion" type="String">
+            <Value>v19</Value>
+        </Attribute>
+        <Attribute name="OriginalFileProcessingCenter" type="String">
+            <Value>Langley Research Center</Value>
+        </Attribute>
+        <Attribute name="InputOriginalFile" type="String">
+            <Value>All available original source data for the specified data product/version/year as of the production date</Value>
+        </Attribute>
+        <Attribute name="DataQuality" type="String">
+            <Value>All data screening according to the specifications of the dataset's originating science team, updated following MEaSUREs GOZCARDS documentation; see related URL</Value>
+        </Attribute>
+        <Attribute name="DataSource" type="String">
+            <Value>HALOE</Value>
+        </Attribute>
+        <Attribute name="DataSubset" type="String">
+            <Value>Full Dataset</Value>
+        </Attribute>
+    </Group>
+    <Group name="ACE-FTS">
+        <Dimension name="time" size="12"/>
+        <Dimension name="lev" size="25"/>
+        <Dimension name="lat" size="18"/>
+        <Dimension name="dayInBin" size="31"/>
+        <Float32 name="lat_max">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Latitude from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="time">
+            <Dim name="/ACE-FTS/time"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Time</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>days since 1950-01-01</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Day number referenced to 15th day of the month</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="std_error">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Standard Error from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat_min">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Latitude from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lst_min">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Local Solar Time from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="std_dev">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Standard Deviation from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The standard deviation for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat_avg">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Latitude from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="average">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Zonal Average from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The zonal average for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_avg">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Solar Zenith Angle from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat">
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>lat</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Latitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Center latitude</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_max">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Solar Zenith Angle from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rms_uncertainty">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride RMS Uncertainty from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The root mean square uncertainty for each bin based on uncertainty/error supplied in original source dataset</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="minimum">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Value from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum usable data value for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="maximum">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Value from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum usable data value for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_min">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Solar Zenith Angle from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="days_used">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Dim name="/ACE-FTS/dayInBin"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Days Used in the Calculations of the Zonal Quantities from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Bitmask indicator for which days in the month have usable data for each bin (1 = used, 0 = not used)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int8">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="lst_max">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Local Solar Time from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lst_avg">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Local Solar Time from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="nvalues">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Number of Values from ACE-FTS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The number of values used in the calculations of the zonal average quantities for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-999</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="dayInBin">
+            <Dim name="/ACE-FTS/dayInBin"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>This is a netCDF dimension but not a netCDF variable.        31</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lev">
+            <Dim name="/ACE-FTS/lev"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>lev</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Pressure</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hPa</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Value of vertical coordinate (Pressure)</Value>
+            </Attribute>
+        </Float32>
+        <Attribute name="OriginalFileVersion" type="String">
+            <Value>v2.2</Value>
+        </Attribute>
+        <Attribute name="OriginalFileProcessingCenter" type="String">
+            <Value>University of Waterloo</Value>
+        </Attribute>
+        <Attribute name="InputOriginalFile" type="String">
+            <Value>All available original source data for the specified data product/version/year as of the production date</Value>
+        </Attribute>
+        <Attribute name="DataQuality" type="String">
+            <Value>All data screening according to the specifications of the dataset's originating science team, updated following MEaSUREs GOZCARDS documentation; see related URL</Value>
+        </Attribute>
+        <Attribute name="DataSource" type="String">
+            <Value>ACE-FTS</Value>
+        </Attribute>
+        <Attribute name="DataSubset" type="String">
+            <Value>Full Dataset</Value>
+        </Attribute>
+    </Group>
+    <Group name="Aura MLS">
+        <Dimension name="time" size="12"/>
+        <Dimension name="lev" size="25"/>
+        <Dimension name="lat" size="18"/>
+        <Dimension name="dayInBin" size="31"/>
+        <Float32 name="lat_max">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Latitude from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="time">
+            <Dim name="/Aura MLS/time"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Time</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>days since 1950-01-01</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Day number referenced to 15th day of the month</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="std_error">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Standard Error from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat_min">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Latitude from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lst_min">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Local Solar Time from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="std_dev">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Standard Deviation from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The standard deviation for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat_avg">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Latitude from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average latitude of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="average">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Zonal Average from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The zonal average for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_avg">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Solar Zenith Angle from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lat">
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>lat</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Latitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Center latitude</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_max">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Solar Zenith Angle from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rms_uncertainty">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride RMS Uncertainty from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The root mean square uncertainty for each bin based on uncertainty/error supplied in original source dataset</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="minimum">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Value from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum usable data value for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="maximum">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Value from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mol/mol</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum usable data value for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sza_min">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Minimum Solar Zenith Angle from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The minimum solar zenith angle of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="days_used">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Dim name="/Aura MLS/dayInBin"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Days Used in the Calculations of the Zonal Quantities from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Bitmask indicator for which days in the month have usable data for each bin (1 = used, 0 = not used)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int8">
+                <Value>0</Value>
+            </Attribute>
+        </Int8>
+        <Float32 name="lst_max">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Maximum Local Solar Time from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The maximum local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lst_avg">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Average Local Solar Time from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hour</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The average local solar time of the usable data for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="nvalues">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
+            <Attribute name="long_name" type="String">
+                <Value>Hydrogen Chloride Number of Values from Aura MLS</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>The number of values used in the calculations of the zonal average quantities for each bin</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-999</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="dayInBin">
+            <Dim name="/Aura MLS/dayInBin"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>This is a netCDF dimension but not a netCDF variable.        31</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="lev">
+            <Dim name="/Aura MLS/lev"/>
+            <Attribute name="CLASS" type="String">
+                <Value>DIMENSION_SCALE</Value>
+            </Attribute>
+            <Attribute name="NAME" type="String">
+                <Value>lev</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>Pressure</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>hPa</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>Value of vertical coordinate (Pressure)</Value>
+            </Attribute>
+        </Float32>
+        <Attribute name="OriginalFileVersion" type="String">
+            <Value>v3.3</Value>
+        </Attribute>
+        <Attribute name="OriginalFileProcessingCenter" type="String">
+            <Value>Jet Propulsion Laboratory / California Institute of Technology</Value>
+        </Attribute>
+        <Attribute name="InputOriginalFile" type="String">
+            <Value>All available original source data for the specified data product/version/year as of the production date</Value>
+        </Attribute>
+        <Attribute name="DataQuality" type="String">
+            <Value>All data screening according to the specifications of the dataset's originating science team, updated following MEaSUREs GOZCARDS documentation; see related URL</Value>
+        </Attribute>
+        <Attribute name="DataSource" type="String">
+            <Value>Aura MLS</Value>
+        </Attribute>
+        <Attribute name="DataSubset" type="String">
+            <Value>Full Dataset</Value>
+        </Attribute>
+    </Group>
+</Dataset>

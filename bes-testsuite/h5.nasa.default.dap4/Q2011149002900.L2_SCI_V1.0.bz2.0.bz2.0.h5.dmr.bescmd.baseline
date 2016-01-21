@@ -1,0 +1,1170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5">
+    <Group name="Aquarius Data">
+        <Float32 name="Kpc_HH_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for ANT HH NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_HH_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for TOA HH NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_HV_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for ANT HV NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_HV_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for TOA HV NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_VH_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for ANT VH NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_VH_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for TOA VH NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_VV_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for ANT VV NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_VV_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Kpc statistical uncertainty for TOA VV NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Kpc_total">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Statistical uncertainty for total power NRCS</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SSS">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sea Surface Salinity</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>PSU</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SSS_error">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sea Surface Salinity error</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>PSU</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="SSS_land">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sea Surface Salinity Land Corr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>PSU</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_SSS">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sea surface salinity climatology</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>PSU</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_Tb_dw">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Downwelling atmospheric brightness temperature</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_Tb_up">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Upwelling atmospheric brightness temperature</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_cwat">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Cloud Water</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>kg m-2</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_surface_pressure">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Pressure</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Pascals</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_surface_temp">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Surface Temperature</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_trans">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Atmospheric Transmittance</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_wind_dir">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Ancillary Wind Direction 10m above surface</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="anc_wind_speed">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Ancillary Wind Speed 10m above surface</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meters/sec</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="dTB_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>delta Tb from scatterometer for H pol</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="dTB_H_uncertainty">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Uncertainty in delta Tb-H</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="dTB_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>delta Tb from scatterometer for V pol</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="dTB_V_uncertainty">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Uncertainty in delta Tb-V</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_Ta3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Ta 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_TaH">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Ta H polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_TaV">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Ta V polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_TbH">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Earth surface Tb H polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_TbV">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Earth surface Tb V polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_exp_Ta3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Ta 3rd Stokes (expected)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_exp_TaH">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Ta H (expected)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_exp_TaV">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Ta V (expected)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_far_TaH">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Faraday Angle</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_galact_Ta_dir_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Galactic Direct Corr 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_galact_Ta_dir_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Galactic Direct Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_galact_Ta_dir_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Galactic Direct Corr V polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_galact_Ta_ref_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Galactic Reflect Corr 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_galact_Ta_ref_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Galactic Reflect Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_galact_Ta_ref_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Galactic Reflect Corr V polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_ice_frac">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Fraction of ice contamination (radiometer)</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_land_frac">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Fraction of land contamination (radiometer)</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_land_toa_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOA Land Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_land_toa_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOA Land Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_moon_Ta_ref_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Lunar Reflect Corr 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_moon_Ta_ref_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Lunar Reflect Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_moon_Ta_ref_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Lunar Reflect Corr V polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_bak_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Back Scattered 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_bak_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Back Scattered H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_bak_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Back Scattered V polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_dir_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Direct Corr 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_dir_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Direct Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_dir_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Direct Corr V polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_ref_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Reflect Corr 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_ref_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Reflect Corr H polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_solar_Ta_ref_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer Solar Reflect Corr V polar</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_toa_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOA Tb H polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_toa_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOA Tb V polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_toi_3">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOI Tb 3rd Stokes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_toi_H">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOI Tb H polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rad_toi_V">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer TOI Tb V polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>Kelvin</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_HH_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOI Scatterometer NRCS for HH polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_HH_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOA Scatterometer NRCS for HH polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_HV_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOI Scatterometer NRCS for HV polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_HV_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOA Scatterometer NRCS for HV polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_VH_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOI Scatterometer NRCS for VH polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_VH_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOA Scatterometer NRCS for VH polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_VV_ant">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOI Scatterometer NRCS for VV polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_VV_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOA Scatterometer NRCS for VV polarization</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_ice_frac">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Fraction of ice contamination (scatterometer)</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_land_frac">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Fraction of land contamination (scatterometer)</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_tot_toa">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>TOA Scatterometer (Total)</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>db</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_wind_speed">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer Wind Speed</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meters/sec</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="wind_uncertainty">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Estimated wind speed error</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meters/sec</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="Aquarius Flags">
+        <Byte name="rad_rfi_flags">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Dim size="12"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer RFI flags</Value>
+            </Attribute>
+        </Byte>
+        <UInt32 name="radiometer_flags">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer data quality flags</Value>
+            </Attribute>
+            <Attribute name="f01_name" type="String">
+                <Value>RFI</Value>
+            </Attribute>
+            <Attribute name="f02_name" type="String">
+                <Value>RAIN</Value>
+            </Attribute>
+            <Attribute name="f03_name" type="String">
+                <Value>LAND</Value>
+            </Attribute>
+            <Attribute name="f04_name" type="String">
+                <Value>ICE</Value>
+            </Attribute>
+            <Attribute name="f05_name" type="String">
+                <Value>WINDFOAM</Value>
+            </Attribute>
+            <Attribute name="f06_name" type="String">
+                <Value>TEMP</Value>
+            </Attribute>
+            <Attribute name="f07_name" type="String">
+                <Value>FLUX</Value>
+            </Attribute>
+            <Attribute name="f08_name" type="String">
+                <Value>FLARE</Value>
+            </Attribute>
+            <Attribute name="f09_name" type="String">
+                <Value>DAYLIT</Value>
+            </Attribute>
+            <Attribute name="f10_name" type="String">
+                <Value>MOON</Value>
+            </Attribute>
+            <Attribute name="f11_name" type="String">
+                <Value>GALACTIC</Value>
+            </Attribute>
+            <Attribute name="f12_name" type="String">
+                <Value>GAIN</Value>
+            </Attribute>
+        </UInt32>
+        <Byte name="scat_rfi_flags">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="2"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer RFI flags</Value>
+            </Attribute>
+        </Byte>
+        <UInt32 name="scatterometer_flags">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer data quality flags</Value>
+            </Attribute>
+            <Attribute name="f01_name" type="String">
+                <Value>RFI</Value>
+            </Attribute>
+            <Attribute name="f02_name" type="String">
+                <Value>RAIN</Value>
+            </Attribute>
+            <Attribute name="f03_name" type="String">
+                <Value>NEGSIG</Value>
+            </Attribute>
+            <Attribute name="f04_name" type="String">
+                <Value>BADATT</Value>
+            </Attribute>
+            <Attribute name="f05_name" type="String">
+                <Value>FARADAY</Value>
+            </Attribute>
+        </UInt32>
+    </Group>
+    <Group name="Block Attributes">
+        <UInt16 name="rad_samples">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Attribute name="long_name" type="String">
+                <Value>Number of radiometer samples per average</Value>
+            </Attribute>
+        </UInt16>
+        <UInt16 name="scat_samples">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Number of scatterometer samples per average</Value>
+            </Attribute>
+        </UInt16>
+        <Float64 name="sec">
+            <Dim size="4042"/>
+            <Attribute name="long_name" type="String">
+                <Value>Block time, seconds of day</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>seconds</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="secGPS">
+            <Dim size="4042"/>
+            <Attribute name="long_name" type="String">
+                <Value>Block time, GPS time</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>seconds</Value>
+            </Attribute>
+        </Float64>
+    </Group>
+    <Group name="Converted Telemetry">
+        <Float32 name="rad_caltemps">
+            <Dim size="4042"/>
+            <Dim size="85"/>
+            <Attribute name="long_name" type="String">
+                <Value>Radiometer calibration temperatures</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="Navigation">
+        <Float64 name="att_ang">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Spacecraft roll, pitch, yaw</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+        </Float64>
+        <Float32 name="beam_clat">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Beam Center Latitude</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-90.</Value>
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="beam_clon">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Beam Center Longitude</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="cellatfoot">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Attribute name="long_name" type="String">
+                <Value>Geodectic Latitudes (3 dB)</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-90.</Value>
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="cellonfoot">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Attribute name="long_name" type="String">
+                <Value>East Longitudes (3 dB)</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="celphi">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Boresight Earth Azimuth Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="celtht">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Boresight Earth Incidence Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="glxlat">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Galaxy Declination (J2000)</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-90.</Value>
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="glxlon">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Galaxy Right Ascention (J2000)</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float64 name="moond">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Earth-to-Moon unit vector (eci)</Value>
+            </Attribute>
+        </Float64>
+        <Float32 name="moonglt">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Moon Glint Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float64 name="orb_pos">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Orbital position vector</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <Value>-7100000.</Value>
+                <Value>7100000.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meters</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="orb_vel">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Orbital velocity vector</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <Value>-7600.</Value>
+                <Value>7600.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meters per second</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="scalt">
+            <Dim size="4042"/>
+            <Attribute name="long_name" type="String">
+                <Value>Spacecraft altitude</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meters</Value>
+            </Attribute>
+        </Float64>
+        <Float32 name="scat_beam_clat">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer Beam Center Latitude</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-90.</Value>
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_beam_clon">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer Beam Center Longitude</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>0.</Value>
+                <Value>360.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_latfoot">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer Latitude Footprint</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-90.</Value>
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="scat_lonfoot">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Dim size="4"/>
+            <Attribute name="long_name" type="String">
+                <Value>Scatterometer Longitude Footprint</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>0.</Value>
+                <Value>360.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float64 name="sclat">
+            <Dim size="4042"/>
+            <Attribute name="long_name" type="String">
+                <Value>Spacecraft nadir point latitude</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <Value>-90.</Value>
+                <Value>90.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="sclon">
+            <Dim size="4042"/>
+            <Attribute name="long_name" type="String">
+                <Value>Spacecraft nadir point longitude</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <Value>0.</Value>
+                <Value>360.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="sund">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Earth-to-Sun unit vector (eci)</Value>
+            </Attribute>
+        </Float64>
+        <Float32 name="sunglt">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sun Glint Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="sunphi">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sun Vector Earth Azimuth Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float64 name="sunr">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sun reflection unit vector (eci)</Value>
+            </Attribute>
+        </Float64>
+        <Float32 name="suntht">
+            <Dim size="4042"/>
+            <Dim size="3"/>
+            <Attribute name="long_name" type="String">
+                <Value>Sun Vector Earth Incidence Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float32">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float32>
+        <Float64 name="zang">
+            <Dim size="4042"/>
+            <Attribute name="long_name" type="String">
+                <Value>Intra-Orbit Angle</Value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <Value>-180.</Value>
+                <Value>180.</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+        </Float64>
+    </Group>
+</Dataset>

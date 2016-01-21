@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4" space="catalog">/data/LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4.h5</setContainer>
+    <define name="d">
+	<container name="LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>

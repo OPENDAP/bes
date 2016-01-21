@@ -1,0 +1,1672 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <String name="ProductionHistory">
+                    <Dim size="1"/>
+                </String>
+                <Attribute name="InstrumentName" type="String">
+                    <Value>TES</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>L2</Value>
+                </Attribute>
+                <Attribute name="TAI93At0zOfGranule" type="Float64">
+                    <Value>535457767.19505298</Value>
+                </Attribute>
+                <Attribute name="GlobalSurveyNumber" type="Int32">
+                    <Value>11015</Value>
+                </Attribute>
+                <Attribute name="GranuleMonth" type="Int8">
+                    <Value>12</Value>
+                </Attribute>
+                <Attribute name="GranuleDay" type="Int8">
+                    <Value>20</Value>
+                </Attribute>
+                <Attribute name="GranuleYear" type="Int32">
+                    <Value>2009</Value>
+                </Attribute>
+                <Attribute name="SurveyMode" type="String">
+                    <Value>Global</Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>R11.01.00</Value>
+                </Attribute>
+                <Attribute name="Command_Seq_ID" type="Int32">
+                    <Value>41</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="SWATHS">
+            <Group name="O3NadirSwath">
+                <Attribute name="VerticalCoordinate" type="String">
+                    <Value>Pressure</Value>
+                </Attribute>
+                <Attribute name="CloudFrequency" type="Float32">
+                    <Value>600.</Value>
+                    <Value>650.</Value>
+                    <Value>700.</Value>
+                    <Value>750.</Value>
+                    <Value>800.</Value>
+                    <Value>850.</Value>
+                    <Value>900.</Value>
+                    <Value>950.</Value>
+                    <Value>975.</Value>
+                    <Value>1000.</Value>
+                    <Value>1025.</Value>
+                    <Value>1050.</Value>
+                    <Value>1075.</Value>
+                    <Value>1100.</Value>
+                    <Value>1150.</Value>
+                    <Value>1200.</Value>
+                    <Value>1250.</Value>
+                    <Value>1300.</Value>
+                    <Value>1350.</Value>
+                    <Value>1400.</Value>
+                    <Value>1900.</Value>
+                    <Value>2000.</Value>
+                    <Value>2100.</Value>
+                    <Value>2200.</Value>
+                    <Value>2250.</Value>
+                </Attribute>
+                <Attribute name="EmissivityWavenumber" type="Float32">
+                    <Value>600.</Value>
+                    <Value>650.</Value>
+                    <Value>675.</Value>
+                    <Value>700.</Value>
+                    <Value>725.</Value>
+                    <Value>750.</Value>
+                    <Value>770.</Value>
+                    <Value>780.</Value>
+                    <Value>790.</Value>
+                    <Value>800.</Value>
+                    <Value>810.</Value>
+                    <Value>830.</Value>
+                    <Value>850.</Value>
+                    <Value>900.</Value>
+                    <Value>910.</Value>
+                    <Value>920.</Value>
+                    <Value>930.</Value>
+                    <Value>940.</Value>
+                    <Value>950.</Value>
+                    <Value>960.</Value>
+                    <Value>970.</Value>
+                    <Value>980.</Value>
+                    <Value>990.</Value>
+                    <Value>1000.</Value>
+                    <Value>1020.</Value>
+                    <Value>1030.</Value>
+                    <Value>1040.</Value>
+                    <Value>1050.</Value>
+                    <Value>1060.</Value>
+                    <Value>1070.</Value>
+                    <Value>1080.</Value>
+                    <Value>1090.</Value>
+                    <Value>1100.</Value>
+                    <Value>1105.</Value>
+                    <Value>1110.</Value>
+                    <Value>1115.</Value>
+                    <Value>1120.</Value>
+                    <Value>1125.</Value>
+                    <Value>1130.</Value>
+                    <Value>1135.</Value>
+                    <Value>1140.</Value>
+                    <Value>1145.</Value>
+                    <Value>1150.</Value>
+                    <Value>1155.</Value>
+                    <Value>1160.</Value>
+                    <Value>1165.</Value>
+                    <Value>1170.</Value>
+                    <Value>1175.</Value>
+                    <Value>1180.</Value>
+                    <Value>1185.</Value>
+                    <Value>1190.</Value>
+                    <Value>1195.</Value>
+                    <Value>1200.</Value>
+                    <Value>1205.</Value>
+                    <Value>1210.</Value>
+                    <Value>1215.</Value>
+                    <Value>1220.</Value>
+                    <Value>1225.</Value>
+                    <Value>1230.</Value>
+                    <Value>1235.</Value>
+                    <Value>1240.</Value>
+                    <Value>1245.</Value>
+                    <Value>1250.</Value>
+                    <Value>1255.</Value>
+                    <Value>1260.</Value>
+                    <Value>1265.</Value>
+                    <Value>1270.</Value>
+                    <Value>1275.</Value>
+                    <Value>1280.</Value>
+                    <Value>1285.</Value>
+                    <Value>1290.</Value>
+                    <Value>1295.</Value>
+                    <Value>1300.</Value>
+                    <Value>1350.</Value>
+                    <Value>1400.</Value>
+                    <Value>1450.</Value>
+                    <Value>1500.</Value>
+                    <Value>1550.</Value>
+                    <Value>1600.</Value>
+                    <Value>1650.</Value>
+                    <Value>1700.</Value>
+                    <Value>1750.</Value>
+                    <Value>1800.</Value>
+                    <Value>1830.</Value>
+                    <Value>1850.</Value>
+                    <Value>1870.</Value>
+                    <Value>1900.</Value>
+                    <Value>1930.</Value>
+                    <Value>1950.</Value>
+                    <Value>1960.</Value>
+                    <Value>1980.</Value>
+                    <Value>2000.</Value>
+                    <Value>2030.</Value>
+                    <Value>2050.</Value>
+                    <Value>2060.</Value>
+                    <Value>2100.</Value>
+                    <Value>2120.</Value>
+                    <Value>2140.</Value>
+                    <Value>2160.</Value>
+                    <Value>2180.</Value>
+                    <Value>2200.</Value>
+                    <Value>2220.</Value>
+                    <Value>2240.</Value>
+                    <Value>2260.</Value>
+                    <Value>2280.</Value>
+                    <Value>2300.</Value>
+                    <Value>2320.</Value>
+                    <Value>2340.</Value>
+                    <Value>2360.</Value>
+                    <Value>2380.</Value>
+                    <Value>2400.</Value>
+                    <Value>2460.</Value>
+                    <Value>2500.</Value>
+                    <Value>2540.</Value>
+                    <Value>2560.</Value>
+                    <Value>2600.</Value>
+                    <Value>2700.</Value>
+                    <Value>2800.</Value>
+                    <Value>2900.</Value>
+                    <Value>3000.</Value>
+                    <Value>3100.</Value>
+                </Attribute>
+                <Attribute name="Scan_Resolution" type="String">
+                    <Value>Low</Value>
+                </Attribute>
+                <Attribute name="Pressure" type="Float32">
+                    <Value>1211.530029</Value>
+                    <Value>1100.699951</Value>
+                    <Value>1000.</Value>
+                    <Value>908.5139771</Value>
+                    <Value>825.4019775</Value>
+                    <Value>749.8930054</Value>
+                    <Value>681.2910156</Value>
+                    <Value>618.9660034</Value>
+                    <Value>562.34198</Value>
+                    <Value>510.8980103</Value>
+                    <Value>464.1600037</Value>
+                    <Value>421.697998</Value>
+                    <Value>383.1170044</Value>
+                    <Value>348.0690002</Value>
+                    <Value>316.2269897</Value>
+                    <Value>287.2980042</Value>
+                    <Value>261.0159912</Value>
+                    <Value>237.1369934</Value>
+                    <Value>215.4440002</Value>
+                    <Value>195.7350006</Value>
+                    <Value>177.8289948</Value>
+                    <Value>161.5610046</Value>
+                    <Value>146.779007</Value>
+                    <Value>133.352005</Value>
+                    <Value>121.1520004</Value>
+                    <Value>110.0690002</Value>
+                    <Value>100.</Value>
+                    <Value>90.85179901</Value>
+                    <Value>82.54060364</Value>
+                    <Value>74.98960114</Value>
+                    <Value>68.12950134</Value>
+                    <Value>61.89630127</Value>
+                    <Value>56.23389816</Value>
+                    <Value>51.08959961</Value>
+                    <Value>46.41579819</Value>
+                    <Value>42.16960144</Value>
+                    <Value>38.31190109</Value>
+                    <Value>34.80709839</Value>
+                    <Value>31.62290001</Value>
+                    <Value>28.72990036</Value>
+                    <Value>26.10169983</Value>
+                    <Value>23.71360016</Value>
+                    <Value>21.54430008</Value>
+                    <Value>19.5734005</Value>
+                    <Value>17.78280067</Value>
+                    <Value>16.15600014</Value>
+                    <Value>14.67800045</Value>
+                    <Value>13.33520031</Value>
+                    <Value>12.11530018</Value>
+                    <Value>11.00699997</Value>
+                    <Value>10.</Value>
+                    <Value>9.085140228</Value>
+                    <Value>8.254019737</Value>
+                    <Value>6.81291008</Value>
+                    <Value>5.108980179</Value>
+                    <Value>4.641600132</Value>
+                    <Value>3.162270069</Value>
+                    <Value>2.610160112</Value>
+                    <Value>2.154429913</Value>
+                    <Value>1.61559999</Value>
+                    <Value>1.333520055</Value>
+                    <Value>1.</Value>
+                    <Value>0.6812919974</Value>
+                    <Value>0.3831180036</Value>
+                    <Value>0.2154430002</Value>
+                    <Value>0.1000000015</Value>
+                </Attribute>
+                <Group name="Data Fields">
+                    <Float32 name="AirDensity">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>AirDensity</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Molec/m^3</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Altitude">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Altitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>meters</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AverageCloudEffOpticalDepth">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>AverageCloudEffOpticalDepth</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AverageCloudEffOpticalDepthError">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>AverageCloudEffOpticalDepthError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AveragingKernel">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>AveragingKernel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AveragingKernelDiagonal">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>AveragingKernelDiagonal</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Calibration_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Calibration_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CloudEffectiveOpticalDepth">
+                        <Dim size="2293"/>
+                        <Dim size="25"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CloudEffectiveOpticalDepth</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CloudEffectiveOpticalDepthError">
+                        <Dim size="2293"/>
+                        <Dim size="25"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CloudEffectiveOpticalDepthError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CloudTopPressure">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CloudTopPressure</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CloudTopPressureError">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CloudTopPressureError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(hPa)</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="CloudVariability_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>CloudVariability_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ConstraintVector">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>ConstraintVector</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(vmr) or K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DegreesOfFreedomForSignal">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>DegreesOfFreedomForSignal</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="DeviationVsRetrievalCovariance">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>DeviationVsRetrievalCovariance</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="H2O_HDO_Corr_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>H2O_HDO_Corr_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="InformationContent">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>InformationContent</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Initial">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Initial</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr or K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="KDotDL_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>KDotDL_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="LDotDL_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>LDotDL_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="MaxNumIterations">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>MaxNumIterations</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="MeasurementErrorCovariance">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>MeasurementErrorCovariance</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(vmr)^2 or K^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="NumberIterPerformed">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>NumberIterPerformed</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Integer</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="O3">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>O3</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>vmr or K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="O3Precision">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>O3Precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(vmr) or K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="O3_Ccurve_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>O3_Ccurve_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="ObservationErrorCovariance">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>ObservationErrorCovariance</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(vmr)^2 or K^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Pressure">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Pressure</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>AURA-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RadianceResidualMax">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>RadianceResidualMax</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RadianceResidualMean">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>RadianceResidualMean</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RadianceResidualRMS">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>RadianceResidualRMS</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="Scan_Averaged_Count">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scan_Averaged_Count</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="SpeciesRetrievalConverged">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SpeciesRetrievalConverged</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="SpeciesRetrievalQuality">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SpeciesRetrievalQuality</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="SurfaceEmissMean_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceEmissMean_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceEmissionLayer_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceEmissionLayer_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempConstraint">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempConstraint</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempDegreesOfFreedom">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempDegreesOfFreedom</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempError">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempInitial">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempInitial</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempObservationError">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempObservationError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempPrecision">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempPrecision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempVsApriori_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempVsApriori_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTempVsAtmTemp_QA">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTempVsAtmTemp_QA</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceTemperature">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTemperature</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TotalColumnDensity">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TotalColumnDensity</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TotalColumnDensityError">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TotalColumnDensityError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TotalColumnDensityInitial">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TotalColumnDensityInitial</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TotalError">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TotalError</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(vmr) or K</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="TotalErrorCovariance">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>TotalErrorCovariance</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>ln(vmr)^2 or K^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <String name="UTCTime">
+                        <Dim size="2293"/>
+                        <Attribute name="ARRAYOFSTRINGS" type="Int32">
+                            <Value>57</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="String">
+                            <Value> </Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>UTCTime</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                        <Attribute name="StringLengthAttribute" type="Int32">
+                            <Value>27</Value>
+                        </Attribute>
+                    </String>
+                    <Float32 name="VerticalResolution">
+                        <Dim size="2293"/>
+                        <Dim size="67"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>VerticalResolution</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>meters</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+                <Group name="Geolocation Fields">
+                    <Float64 name="BoresightAzimuth">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>BoresightAzimuth</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="BoresightNadirAngle">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>BoresightNadirAngle</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="BoresightNadirAngleUnc">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>BoresightNadirAngleUnc</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Int8 name="DayNightFlag">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>DayNightFlag</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Int8 name="DominantSurfaceType">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>DominantSurfaceType</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Enumerated</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="Latitude">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float64 name="Latitude_Footprint_1">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude_Footprint_1</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="Latitude_Footprint_2">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude_Footprint_2</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="Latitude_Footprint_3">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude_Footprint_3</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="Latitude_Footprint_4">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude_Footprint_4</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float32 name="LocalSolarTime">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>LocalSolarTime</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hours</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float64 name="Longitude_Footprint_1">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude_Footprint_1</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="Longitude_Footprint_2">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude_Footprint_2</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="Longitude_Footprint_3">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude_Footprint_3</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="Longitude_Footprint_4">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude_Footprint_4</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Decimal degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float64>
+                    <Int16 name="Scan">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-1</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-1</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scan</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="Sequence">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-1</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-1</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Sequence</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>N/A</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int16>
+                    <Float32 name="SolarZenithAngle">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SolarZenithAngle</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-MLS-TES-SHARED</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SurfaceElevStandardDeviation">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceElevStandardDeviation</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>meters</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int8 name="SurfaceTypeFootprint">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int8">
+                            <Value>-99</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>SurfaceTypeFootprint</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>Enumerated</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Int8>
+                    <Float32 name="Tgt_SpacecraftAzimuth">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tgt_SpacecraftAzimuth</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degrees (of north)</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Tgt_SpacecraftZenith">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tgt_SpacecraftZenith</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>degrees</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>TES-SPECIFIC</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float64 name="Time">
+                        <Dim size="2293"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-999.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Time</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>sec</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>AURA-SHARED</Value>
+                        </Attribute>
+                    </Float64>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <String name="coremetadata"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.10.1</Value>
+        </Attribute>
+    </Group>
+</Dataset>
