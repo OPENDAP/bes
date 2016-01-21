@@ -52,6 +52,7 @@ Var::Var(Var *var) {
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
+    dimnameflag = var->dimnameflag;
     
     for (vector<Attribute*>::iterator ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
@@ -1170,7 +1171,12 @@ void File:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         // Check the drop long string feature.
         string check_droplongstr_key ="H5.EnableDropLongString";
         bool is_droplongstr = false;
-        is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        try {
+            is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        }
+        catch(...) {
+            throw1("Check BES key H5.EnableDropLongString failed. ");
+        }
         if(true == is_droplongstr){
 
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin();

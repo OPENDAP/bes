@@ -56,6 +56,9 @@ BaseType *HDF5Array::ptr_duplicate() {
 
 HDF5Array::HDF5Array(const string & n, const string &d, BaseType * v) :
     Array(n, d, v) {
+    d_num_dim = 0;
+    d_num_elm = 0;
+    d_memneed = 0;
 }
 
 HDF5Array::~HDF5Array() {
