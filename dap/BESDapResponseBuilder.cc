@@ -1158,7 +1158,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error("Constraint Expression failed to parse.");
+        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -1182,7 +1182,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     if (!d_dap4ce.empty()) {
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error("Constraint Expression (" + d_dap4ce + ") failed to parse.");
+        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
