@@ -16,7 +16,7 @@ BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch+=dapreader:.*\.(das|dds|dods|data|dmr|dap|xml)$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
@@ -55,3 +55,7 @@ DAP.ResponseCache.path=@abs_top_builddir@/functions/tests/dap_cache
 DAP.ResponseCache.prefix=func
 DAP.ResponseCache.size=20000
 
+DR.UseTestTypes=true
+
+# Use the 'series values' feature of the test types
+DR.UseSeriesValues=true

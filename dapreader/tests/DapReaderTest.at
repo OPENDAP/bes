@@ -2,12 +2,28 @@
 
 m4_include([handler_tests_macros.m4])
 
+## These initial tests look at the basic operation of the dapreader
+## handler.
+
 AT_BESCMD_RESPONSE_TEST([dap/test.00.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test.01.bescmd])
-AT_BESCMD_PATTERN_RESPONSE_TEST([dap/test.02.bescmd])
-AT_BESCMD_DATA_RESPONSE_TEST([dap/test.03.bescmd])
+
+AT_BESCMD_RESPONSE_PATTERN_TEST([dap/test.02.bescmd])
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([dap/test.03.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([dap/test.4.bescmd])
 
 AT_BESCMD_RESPONSE_TEST([dap/test1.dds.bescmd])
+
+# These tests build DAP4 stuff from DAP2 responses
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.dds.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dds.bescmd])
+
+AT_BESCMD_DAP_RESPONSE_TEST([dap/test.fnoc1.dds.dap.bescmd])
+
+## These are tests for the DAP4 implementation
 
 # Test DAP4 DMR Responses
 
@@ -74,11 +90,3 @@ AT_BESCMD_DAP_RESPONSE_TEST([dap/test_simple_1.dmr.dap.bescmd])
 # These tests build DMR and Data responses using a .dap file
 AT_BESCMD_RESPONSE_TEST([dap/one_int.dap.dmr.bescmd])
 AT_BESCMD_DAP_RESPONSE_TEST([dap/one_int.dap.dap.bescmd])
-
-# These tests build DAP4 stuff from DAP2 responses
-AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.dds.dmr.bescmd])
-AT_BESCMD_DAP_RESPONSE_TEST([dap/test.fnoc1.dds.dap.bescmd])
-AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dmr.bescmd])
-AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.das.bescmd])
-AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dds.bescmd])
-

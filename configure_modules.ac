@@ -178,49 +178,6 @@ AC_SUBST(BES_ZLIB_LIBS)
 AC_SUBST(BES_BZ2_LIBS)
 
 dnl Checks for libraries.
-dnl AC_CHECK_LIB(termcap, main)
-
-dnl Locate GDAL libraries if possible; this test is here and not down with
-dnl the 'modules' tests because gdal is used by the functions module that 
-dnl has always been part of the bes.
-
-dnl I've commented this out because I think we should move the swath2grid code
-dnl to it's own module, thus removing the gdal dependnecy from the BES itself.
-dnl jhrg 5/29/15
-
-dnl GDAL_FOUND=
-
-dnl AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
-dnl             with_gdal_prefix="$withval", with_gdal_prefix="")
-
-dnl if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
-dnl then
-dnl     AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
-dnl     GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs`"
-dnl     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
-dnl     GDAL_FOUND="yes"
-dnl elif test -n "$with_gdal_prefix"
-dnl then
-dnl     AC_MSG_ERROR([You set the gdal-prefix directory to $with_gdal_prefix, but gdal-config is not there.])
-dnl fi
-
-dnl if test -z "$GDAL_FOUND"
-dnl then
-dnl     AX_LIB_GDAL([1.10.0])
-dnl     if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
-dnl         GDAL_FOUND="yes"
-dnl     fi
-dnl fi
-
-dnl AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
-
-dnl if test -z "$GDAL_FOUND"
-dnl then
-dnl     AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
-dnl else 
-dnl     AC_MSG_NOTICE([GDAL_CFLAGS:  $GDAL_CFLAGS])
-dnl     AC_MSG_NOTICE([GDAL_LDFLAGS: $GDAL_LDFLAGS])
-dnl fi
 
 # check for readline
 VL_LIB_READLINE
@@ -341,18 +298,6 @@ dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/1
 # old and should be removed
 AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
 AC_SUBST([DAP_PROTOCOL_VERSION])
-
-dnl This is used by the web form code. jhrg 12/11/14
-dnl dods_HTML_Filter=no
-dnl if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
-dnl    dods_HTML_Filter=yes
-dnl else 
-dnl    dods_HTML_Filter=no
-dnl fi
-
-dnl if test "z$dods_HTML_Filter" = "zno"; then
-dnl    AC_MSG_WARN([HTML::Filter not found. See INSTALL])
-dnl fi  
 
 dnl Freeform hacks
 
@@ -498,7 +443,7 @@ AC_ARG_WITH([cfits],
             [CFITS_PATH="$BES_DEPS_PREFIX"])
 
 AC_ARG_WITH([cfits_inc],
-            [AS_HELP_STRING([--with-cfits-include=ARG],[cfits include directory])],
+            [AS_HELP_STRING([--with-cfits-inc=ARG],[cfits include directory])],
             [CFITS_PATH_INC=${withval}], 
             [CFITS_PATH_INC=""]) dnl was "/usr/include/cfitsio"
 
@@ -784,11 +729,6 @@ AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
 AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
-
-AC_CONFIG_FILES([functions/tests/generate_data_baseline.sh],
-	[chmod +x functions/tests/generate_data_baseline.sh])
-AC_CONFIG_FILES([functions/tests/generate_metadata_baseline.sh],
-	[chmod +x functions/tests/generate_metadata_baseline.sh])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 

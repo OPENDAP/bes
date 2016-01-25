@@ -770,7 +770,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     // be removed from libdap - it is much more about how the BES processes these kinds
     // of operations. Change this when working on the response caching for ODSIP. But...
     // do we really need to put the style sheet in the bes.conf file? Should it be baked
-    // into the code (because we don't want people to cahnge it)?
+    // into the code (because we don't want people to change it)?
     bool found;
     string *stylesheet_ref = 0, ss_ref_value;
     TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
@@ -1158,7 +1158,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error("Constraint Expression failed to parse.");
+        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -1182,7 +1182,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     if (!d_dap4ce.empty()) {
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error("Constraint Expression (" + d_dap4ce + ") failed to parse.");
+        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change

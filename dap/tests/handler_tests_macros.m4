@@ -1,88 +1,190 @@
+#
+# These macros represent the best way I've found to incorporate builiding baselines
+# into autotest testsuites. Until Hyrax/BES has a comprehensive way to make these
+# kinds of tests - using a single set of macros from one source, copy this into
+# the places it's needed and hack. If substantial changes are needed, try to copy
+# them back into this file. jhrg 12/14/15 
 
-# 
-# These macros are used for both the netcdf3 and netcdf4 tests.
-
-AT_INIT([bes.conf besstandalone getdap getdap4])
+AT_INIT([bes.conf besstandalone])
 # AT_COPYRIGHT([])
 
 AT_TESTED([besstandalone])
-AT_COLOR_TESTS
 
-AT_ARG_OPTION_ARG([generate g],
-    AS_HELP_STRING([--generate=arg, -g arg],[Build the baseline file for test 'arg'])
-    [if besstandalone -c bes.conf  -i $at_arg_generate -f $at_arg_generate.baseline; then
-         echo "Built baseline for $at_arg_generate"
-     else
-         echo "Could not generate baseline for $at_arg_generate"
-     fi     
-     exit],[])
+AT_ARG_OPTION_ARG([baselines],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
 
-AT_ARG_OPTION_ARG([dods o],
-    AS_HELP_STRING([--dods=arg, -o arg],[Build the DAP2 data baseline file for test 'arg'])
-    [if besstandalone -c bes.conf  -i $at_arg_dods | getdap -M - > $at_arg_dods.baseline; then
-         echo "Built baseline for $at_arg_dods"
-     else
-         echo "Could not generate baseline for $at_arg_dods"
-     fi     
-     exit],[])
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass])
 
-AT_ARG_OPTION_ARG([dap a],
-    AS_HELP_STRING([--dap=arg, -a arg],[Build the DAP4 data baseline file for test 'arg'])
-    [if besstandalone -c bes.conf  -i $at_arg_dap | getdap4 -M - > $at_arg_dap.baseline; then
-         echo "Built baseline for $at_arg_dap"
-     else
-         echo "Could not generate baseline for $at_arg_dap"
-     fi     
-     exit],[])
+m4_define([_AT_BESCMD_TEST], [dnl
 
-AT_ARG_OPTION_ARG([generate-data a],
-    [  -a arg, --generate-data=arg   Build the baseline file for test 'arg'],
-    [if ./generate_data_baseline.sh $at_arg_generate_data; then
-         echo "Built baseline for $at_arg_generate_data"
-     else
-         echo "Could not generate baseline for $at_arg_generate_data"
-     fi     
-     exit],[])
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
 
-# Use these to actually run the tests.
-#
-# Usage: AT_BESCMD_*(<test> <keyword>)
+    input=$1
+    baseline=$2
 
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_PATTERN_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([grep -f $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_ERROR_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_BINARYDATA_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+    
+m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([binary])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl AT_CHECK (commands, [status = `0'], [stdout = `'], [stderr = `'], [run-if-fail], [run-if-pass])
+
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of couse, this
+dnl requires ncdump be accessible.
+
+m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([netcdf])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        
+        dnl first get the version number, then the header, then the data
+        AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
+        AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+        AT_CHECK([ncdump test.nc > $baseline.data.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        
+        AT_CHECK([ncdump -k test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.ver tmp])
+        
+        AT_CHECK([ncdump -h test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.header tmp])
+        
+        AT_CHECK([ncdump test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.data tmp])
+        
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+    
 m4_define([AT_BESCMD_RESPONSE_TEST],
-[AT_KEYWORD([$2])
-_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+[_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])])
+
+m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
+[_AT_BESCMD_PATTERN_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+])
+
+m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
+[_AT_BESCMD_ERROR_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
 ])
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
-[AT_KEYWORD([$2])
-_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
-])
+[_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
-m4_define([AT_BESCMD_PATTERN_DATA_RESPONSE_TEST],
-[AT_KEYWORD([$2])
-_AT_BESCMD_PATTERN_DATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
-])
+m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],
+[_AT_BESCMD_DAP4_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
-# Helper code
-# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
-
-m4_define([_AT_BESCMD_TEST],   
-[AT_SETUP([BESCMD $1])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_CLEANUP])
-
-m4_define([_AT_BESCMD_BINARYDATA_TEST],   
-[AT_SETUP([BESCMD $1])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_CLEANUP])
-
-# Note that the 'pattern' source is the <test>.baseline file.
-
-m4_define([_AT_BESCMD_PATTERN_DATA_TEST],   
-[AT_SETUP([BESCMD $1])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
-AT_CHECK([grep -f $2 stdout], [], [ignore],[],[])
-AT_CLEANUP])
-
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
+[_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])

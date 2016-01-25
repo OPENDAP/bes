@@ -49,10 +49,10 @@ AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE([1.10 tar-pax])
-AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
+AC_CONFIG_TESTDIR(cmdln/testsuite, [cmdln])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
-AC_CONFIG_TESTDIR(functions/tests, [.])
-AC_CONFIG_TESTDIR(test_server/tests, [.])
+AC_CONFIG_TESTDIR(functions/tests, [standalone])
+dnl AC_CONFIG_TESTDIR(test_server/tests, [.])
 
 dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [.])
 
@@ -319,9 +319,6 @@ AC_CONFIG_FILES([Makefile
 		 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])
 AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh], [chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
-
-AC_CONFIG_FILES([functions/tests/generate_data_baseline.sh], [chmod +x functions/tests/generate_data_baseline.sh])
-AC_CONFIG_FILES([functions/tests/generate_metadata_baseline.sh], [chmod +x functions/tests/generate_metadata_baseline.sh])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 
