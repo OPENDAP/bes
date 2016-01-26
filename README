@@ -1,7 +1,18 @@
 
 README for the OpenDAP BES
 
-Updated for version 3.16.
+Updated for version 3.17.
+
+Fixed the Timeout implementation and made it controllable from both
+the bes.conf file and OLFS. 
+
+New BES keys were added to control the timeout feature:
+# BES.CancelTimeoutOnSend=true
+# BES.TimeOutInSeconds=600
+
+Error messages are greatly improved.
+
+See NEWS for other details.
 
 See the INSTALL file for build instructions, including special
 instructions for building from a (git) cloned repo. This code can

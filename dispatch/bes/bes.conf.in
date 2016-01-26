@@ -44,8 +44,8 @@ BES.LogVerbose=no
 # context will override this value.                                     #
 #-----------------------------------------------------------------------#
 
-# BES.CancelTimeoutOnSend=true;
-# BES.TimeOutInSeconds=10
+# BES.CancelTimeoutOnSend=true
+# BES.TimeOutInSeconds=600
 
 #-----------------------------------------------------------------------#
 # Setting data information
