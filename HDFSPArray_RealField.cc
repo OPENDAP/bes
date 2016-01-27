@@ -321,7 +321,7 @@ HDFSPArray_RealField::read ()
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     // Close the SDS interface
@@ -592,7 +592,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 }
                     break;
                 default:
-                    InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                    throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
 
             }// end switch(dtype)
         }// end else (stride is not 1)

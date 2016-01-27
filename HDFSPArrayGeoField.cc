@@ -178,16 +178,14 @@ bool HDFSPArrayGeoField::read ()
         // We don't handle any OtherHDF products
         case OTHERHDF:
         {
-            throw
-                InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
+                throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
 
             break;
         }
         default:
         {
 
-            throw
-                InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
+                throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
 
             break;
         }
@@ -416,7 +414,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
 
         r = SDendaccess (sdsid);
@@ -951,7 +949,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     r = SDendaccess (sdsid);
@@ -1384,7 +1382,7 @@ HDFSPArrayGeoField::readcersavgid1 (int *offset, int *count, int *step,
         // Assume the longitude is 0 in average
         float32 val = 0;
         if (nelms > 1)
-            InternalErr (__FILE__, __LINE__,
+            throw InternalErr (__FILE__, __LINE__,
                                         "the number of element must be 1");
         set_value ((dods_float32 *) (&val), nelms);
 
@@ -1505,7 +1503,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     r = SDendaccess (sdsid);
@@ -1702,7 +1700,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     r = SDendaccess (sdsid);

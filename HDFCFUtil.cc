@@ -1726,7 +1726,7 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
                 delete ar_dim0;
             if(ar_dim1) 
                 delete ar_dim1;
-            InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFEOS2GeoCF1D instance.");
+            throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFEOS2GeoCF1D instance.");
         }
 
         if(bt_dim0)
@@ -3588,12 +3588,12 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         HANDLE_CASE(DFNT_UINT32, HDFUInt32); 
         HANDLE_CASE(DFNT_UCHAR8, HDFByte); 
         default: 
-            InternalErr(__FILE__,__LINE__,"unsupported data type."); 
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type."); 
 #undef HANDLE_CASE 
         } 
 
         if(NULL == bt)
-            InternalErr(__FILE__,__LINE__,"Cannot create the basetype when creating DDS from a cache file.");
+            throw InternalErr(__FILE__,__LINE__,"Cannot create the basetype when creating DDS from a cache file.");
 
         SPType sptype = OTHERHDF;
 
@@ -3617,7 +3617,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
             }
             catch(...) {
                 delete bt;
-                InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
             }
 
             for(int i = 0; i <sds_rank; i++)
@@ -3638,7 +3638,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
                 }
 
                 ar->append_dim(dimsizes[0],dimnames[0]);
@@ -3647,7 +3647,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
                 delete ar;
             }
             else 
-                InternalErr(__FILE__,__LINE__,"SDS rank  must be 1 for the missing coordinate.");
+                throw InternalErr(__FILE__,__LINE__,"SDS rank  must be 1 for the missing coordinate.");
         }
 
         if(*temp_pointer == cend)

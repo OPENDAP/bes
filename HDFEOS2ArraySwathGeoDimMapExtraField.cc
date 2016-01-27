@@ -300,7 +300,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             detachfunc(swathid);
             closefunc(fileid);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
     }
 

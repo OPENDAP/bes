@@ -290,7 +290,7 @@ HDFEOS2ArraySwathGeoField::read ()
         default:
             detachfunc (swathid);
             HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     r = detachfunc (swathid);
