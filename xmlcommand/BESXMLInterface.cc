@@ -89,6 +89,10 @@ void BESXMLInterface::build_data_request_plan()
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << "] building" << endl;
     }
 
+    // I do not know why, but uncommenting this macro breaks some tests
+    // on linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
+    // causing some XML elements in DMR responses to be twiddled in the 
+    // responses build on linux but not on OSX.
     // LIBXML_TEST_VERSION
 
     xmlDoc *doc = NULL;
