@@ -1,3 +1,18 @@
+2016-01-07  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Update comments for BES cache keys
+
+2016-01-07  kyang2014  <myang6@hdfgroup.org>
+
+	update the description of BES cache keys
+
+2015-11-20  root  <root@localhost.localdomain>
+
+	Add another sample HDF-EOS2 file grid_1_2d.hdf. This will be very handy for quick check of the HDF-EOS2 behavior.
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
 2015-10-23  root  <root@localhost.localdomain>
 
 	This check-in removes some defects from the coverity scan. Most of
