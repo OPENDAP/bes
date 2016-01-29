@@ -48,6 +48,9 @@ using std::string ;
 
 #include "BESUtil.h"
 
+#ifdef NDEBUG
+#define BESDEBUG( x, y )
+#else
 /** @brief macro used to send debug information to the debug stream
  *
  * The BESDEBUG macro is used by developers to display debug information
@@ -62,6 +65,7 @@ using std::string ;
  * @param y information to send to the output stream
  */
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< x << "] " << y ; } while( 0 )
+#endif
 
 /** @brief macro used to determine if the specified debug context is set
  *
@@ -77,6 +81,9 @@ using std::string ;
  *         BESDEBUG( "bes", " _list[" << i << "] = " << _list[i] << endl ) ;
  *     }
  * }
+ *
+ * @note This is used within the BES framework only for the BESStopWatch
+ * setup calls and then only sparingly.
  *
  * @param x bes debug to check
  */
