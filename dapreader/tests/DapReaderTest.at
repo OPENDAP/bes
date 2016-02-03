@@ -21,7 +21,7 @@ AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dds.bescmd])
 
-AT_BESCMD_DAP_RESPONSE_TEST([dap/test.fnoc1.dds.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/test.fnoc1.dds.dap.bescmd])
 
 ## These are tests for the DAP4 implementation
 
@@ -85,8 +85,21 @@ AT_BESCMD_RESPONSE_TEST([dap/test_simple_9.xml.dmr.bescmd])
 
 # Test DAP4 Data responses
 # This test builds a DAP4 data response using a DMR and the test classes
-AT_BESCMD_DAP_RESPONSE_TEST([dap/test_simple_1.dmr.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/test_simple_1.dmr.dap.bescmd])
 
 # These tests build DMR and Data responses using a .dap file
 AT_BESCMD_RESPONSE_TEST([dap/one_int.dap.dmr.bescmd])
-AT_BESCMD_DAP_RESPONSE_TEST([dap/one_int.dap.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/one_int.dap.dap.bescmd])
+
+# Test zero length arrays (from DAP2 data - dods - files)
+AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([dap/zero_length_array.dods.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/zero_length_array.dap.bescmd])
+
+# Test zero length arrays (from DAP4 data - dap - files)
+AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.dmr2.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/zero_length_array.dap2.bescmd])
+
