@@ -369,7 +369,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     }
                     catch(...) {
                         delete bt;
-                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
                     }
                     for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++){
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -396,7 +396,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     }
                     catch(...) {
                         delete bt;
-                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
                     }
                     dds.add_var(sca_str);
                     delete bt;
@@ -2747,7 +2747,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
         HANDLE_CASE(DFNT_UINT32, HDFUInt32);
         HANDLE_CASE(DFNT_UCHAR8, HDFByte);
         default:
-            InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
         }
 
@@ -2774,7 +2774,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
                     }
                     catch(...) {
                         delete bt;
-                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
                     }
                     dds.add_var(sca_str);
                     delete bt;
@@ -2799,7 +2799,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
                     }
                     catch(...) {
                         delete bt;
-                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
                     }
 
                     for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++)
@@ -2838,7 +2838,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
                     }
                     catch(...) {
                         delete bt;
-                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
                     }
                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -2864,7 +2864,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
                     }
                     catch(...) {                
                         delete bt;
-                        InternalErr(__FILE__,__LINE__,
+                        throw InternalErr(__FILE__,__LINE__,
                                         "Unable to allocate the HDFSPArrayMissGeoField instance.");
                     }   
 
@@ -2974,7 +2974,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
         HANDLE_CASE(DFNT_UINT32, HDFUInt32);
         HANDLE_CASE(DFNT_UCHAR, HDFByte);
         default:
-            InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
     }
     int fieldtype = spsds->getFieldType();// Whether the field is real field,lat/lon field or missing Z-dimension field 
@@ -3004,7 +3004,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
                 }
                 dds.add_var(sca_str);
                 delete bt;
@@ -3028,7 +3028,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
                 }
 
                 for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++)
@@ -3065,7 +3065,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
             }
             catch(...) {
                 delete bt;
-                InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
             }
 
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
@@ -3104,7 +3104,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,
+                    throw InternalErr(__FILE__,__LINE__,
                                 "Unable to allocate the HDFSPArray_RealField instance.");
                 }
 
@@ -3135,7 +3135,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,
+                    throw InternalErr(__FILE__,__LINE__,
                                 "Unable to allocate the HDFSPArray_RealField instance.");
                 }
 
@@ -3166,7 +3166,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
             }
             catch(...) {                
                 delete bt;
-                InternalErr(__FILE__,__LINE__,
+                throw InternalErr(__FILE__,__LINE__,
                                 "Unable to allocate the HDFSPArrayMissGeoField instance.");
             }   
 
@@ -3199,7 +3199,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
             }
             catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,
+                    throw InternalErr(__FILE__,__LINE__,
                                 "Unable to allocate the HDFSPArrayAddCVField instance.");
             }
 
@@ -3243,7 +3243,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
         //HANDLE_CASE(DFNT_CHAR8, HDFByte);
         //HANDLE_CASE(DFNT_CHAR8, HDFByte);
         default:
-            InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
     }
              
@@ -3271,7 +3271,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
                 }
                 dds.add_var(sca_str);
                 delete bt;
@@ -3297,7 +3297,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
                 }
                 catch(...) {
                     delete bt;
-                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
                 }
 
                 string dimname0 = "VDFDim0_"+spvd->getNewName();  

@@ -883,7 +883,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
             {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
             }
 
         }
@@ -1405,7 +1405,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
         default:
             detachfunc(gridid);
             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
 
     }
@@ -1911,7 +1911,7 @@ HDFEOS2ArrayGridGeoField::getCorrectSubset (int *offset, int *count,
         }
 
         else {// errors
-            InternalErr (__FILE__, __LINE__,
+            throw InternalErr (__FILE__, __LINE__,
                          "Lat/lon subset is wrong for condensed lat/lon");
         }
     }
@@ -1941,7 +1941,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lat[i] = total_latlon[i*xdim];
 
             if (false == CorLatLon(&temp_lat[0],fieldtype,ydim,fv))
-                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[0]); i++)
                 latlon[i] = temp_lat[offset[0] + i* step[0]];
@@ -1954,7 +1954,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
 
 
             if (false == CorLatLon(&temp_lon[0],fieldtype,xdim,fv))
-                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[1]); i++)
                 latlon[i] = temp_lon[offset[1] + i* step[1]];
@@ -1969,7 +1969,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lat[i] = total_latlon[i];
 
             if (false == CorLatLon(&temp_lat[0],fieldtype,ydim,fv))
-                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[1]); i++)
                 latlon[i] = temp_lat[offset[1] + i* step[1]];
@@ -1982,7 +1982,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
 
 
             if (false == CorLatLon(&temp_lon[0],fieldtype,xdim,fv))
-                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[0]); i++)
                 latlon[i] = temp_lon[offset[0] + i* step[0]];

@@ -1311,7 +1311,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             break;
         default:
         {
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
     }
 
@@ -1555,7 +1555,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             break;
         default:
         {
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
     }
 

@@ -354,7 +354,7 @@ HDFSPArray_VDField::read ()
             }
                 break;
             default:
-                InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
 
         if (VSdetach (vdata_id) == -1) {

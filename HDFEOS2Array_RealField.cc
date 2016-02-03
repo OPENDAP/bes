@@ -1832,7 +1832,7 @@ if (r != 0) {
         default:
             release_mod1b_res(reflectance_scales,reflectance_offsets,
                               radiance_scales,radiance_offsets);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
@@ -2067,7 +2067,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
         }
             break;
         default:
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
     return 0;
 }
