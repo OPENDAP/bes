@@ -1,3 +1,345 @@
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Module commit hash updates
+	I fixed a number of small issues in the tests
+
+2016-01-25  James Gallagher  <jgallagher@opendap.org>
+
+	commit hashes for submodules
+
+	New commit hashes for the modules (git submodules)
+
+	Merge branch 'master' of github.com:opendap/bes
+
+2016-01-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed distclean
+	To make distclean work for both configure_*ac files, I had to
+	hack the Makefile.am so that DIST_SUBDIRS is set to $(SUBDIRS).
+	This means that whatever the configure script sets SUBDIRS to
+	will define what gets included in the 'dist dirs' as well.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2016-01-19  James Gallagher  <jgallagher@opendap.org>
+
+	Throw malformed_expr when the DAP4 parser returns false.
+	Really, the parser should signal errors with an exception, but this
+	provides a fallback in case it does not.
+
+	Merge pull request #15 from OPENDAP/function-tests-fixes
+	Function tests fixes
+
+2016-01-14  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Added BESTimeoutError to the error() function in debug_functions.
+
+2016-01-14  James Gallagher  <jgallagher@opendap.org>
+
+	modules updates/sync [ci skip]
+
+	spelling fix in a comment
+
+2016-01-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	Conflicts:
+		doxy.conf.in
+
+	Changes to the doxy.conf file - exclude more stuff.
+
+	Added error test bescmd files to bes/dap - not used, however
+	The autotest tests in bes/dap use dapreader, but that is not
+	built until after bes/dap is built. I moved two tests into
+	bes/dap/tests all the same because that's the best place to
+	not loose them. At some point we'll need to refactor the bes/dap
+	testing and get it working again and these will be useful.
+
+2016-01-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'new_functions_tests' into function-tests-fixes
+
+	Resolved conflict in functionsTest.at
+	Popping stashed changes while moving these edits from a branch
+	introduced a conflict.
+
+	Added the 'broken_tests.at' tests back into the bes/functions tests
+	This code will not work without the changes from new-functions-tests.
+
+2016-01-11  James Gallagher  <jgallagher@opendap.org>
+
+	cleanup from the functions/tests work
+	removed broken_tests.at; replaced modules/handler_tests_macros.m4
+	with a fixed version (extraneous 'bescmd' dirs removed from two
+	macros).
+
+	Added back the 'broken_tests.at'
+	These tests were mostly not really broken but suffering from being
+	grouped in with a small set of tests that are really hosed (because
+	dapreader cannot read real data from .dods responses for Grid
+	variables,
+
+	Spelling error in a comment
+
+2016-01-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added a note about the LIBXML_VERSION_MACRO
+	[ci skip]
+
+	Fixed the build on linux.
+	The problem was that adding the macro (uncommenting it, really) broke
+	the build on linux (but not OSX).
+
+2016-01-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge branch 'master' into bes-38
+
+2016-01-04  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the duplicate doxy.conf target from Makefile.am
+
+	Added a comment for BES.TimeOutInSeconds to the default bes.conf
+
+	Added the BES.TimeOutInSeconds key to BESInterface.
+	...and a test in modules/debug_functions.
+
+2015-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the doxy.conf file
+	Now it only documents methods/functions for which there's a real doc
+	comment - all the rest are listed in the warnings file.
+	[ci skip]
+
+	Tweaks to the doxy.conf.in and Makefile.am docs target.
+	ci-skip skip-ci
+
+2015-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge branch 'master' into bes-38
+
+	Doxygen updates
+	I'm going to try to update the doxygen pages so that they
+	really document the BES. I might extend this to the modules
+	too, if it proves useful.
+	ci-skip skip-ci
+
+	More last-minute changes for the new timeout code
+	Downcase the BES keys param value; add a bit about that param in the
+	default bes.conf file installed by make install.
+
+	Added a refinement to the timeout code - test to make sure the jump buf is valid
+
+	Migrated more macro refinements to the common handler macros file
+
+	Arrgh - found a spelling error after issuing the pull request,
+
+	Track submodule commits
+
+	Timeout cancel in DapResponseBuilder now configured by a BES key
+
+2015-12-30  Nathan Potter  <ndp@opendap.org>
+
+	Fixed BESTimeoutError implementation.
+
+	Worked on BESTimeoutError
+
+2015-12-29  Nathan Potter  <ndp@opendap.org>
+
+	Worked on BESTimeoutError
+
+2015-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	Change that removes the bogus timeout code from BESDapResponseBuilder
+
+	Merge branch 'bes-38' of https://github.com/opendap/bes into bes-38
+
+	Comments added to som of the XML Command processing code.
+
+	New version of timeout that returns an error to the OLFS/client.
+	Uses setjmp/longjmp. Long live the old school!
+
+	New version of timeout that returns an error to the OLFS/client.
+	Uses setjmp/longjmp. Long live the old school!
+
+	Spelling fix
+
+2015-12-28  James Gallagher  <jgallagher@opendap.org>
+
+	Added some experimental code for timeouts using sigwait()
+	It's a great idea, but it won't work with the current BES design.
+	Comments in the code, which is excluded from the build using
+
+	Added a simple timeout feature to the BES
+	Use the context 'bes_timeout' to pass in a timeout interval
+	in seconds. The BES will exit if the current operation/command
+	does not complete in the given time. No message is returned;
+	the bes just exits. There are no tests yet.
+
+2015-12-23  James Gallagher  <jgallagher@opendap.org>
+
+	Adding timeout to BESInterface
+	This is to address Jira ticket BES-38 where the folks at
+	LARC (MMIC) want Hyrax to timeout when a function takes
+	too long. I'm using alarm() and trying to set it up so
+	that a 'context' can be used to pass a timeout value from
+	the OLFS to the BES (to minimize config file confusion).
+	It doesn't work yet...
+
+2015-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added debug_functions to the git modules
+
+	Now the debug_functions only build with --enable-developer
+
+	Added debug_functions module
+	ci-skip
+
+2015-12-17  James Gallagher  <jgallagher@opendap.org>
+
+	Test fixes for the libdap DMR fix.
+
+	Added 'template' handler_tests_macros.m4
+	Use this for new autotest tests - update as needed and copy changes
+	back to this file.
+
+2015-12-09  Nathan Potter  <ndp@opendap.org>
+
+	Portability patch.
+
+	Working mktemp call.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Added getDAP script.
+
+2015-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	New module hashes - updated fileout_netcdf
+
+2015-12-04  Nathan Potter  <ndp@opendap.org>
+
+	TravisCI trigger
+
+2015-12-03  Nathan Potter  <ndp@opendap.org>
+
+	TraviCI trigger
+
+	TraviCI trigger
+
+	TraviCI trigger
+
+	Added libdap4 and hyrax-dependencies to the set of cached directories in .tarvis.yml
+
+	TraviCI trigger
+
+	Updated the install_bes_source_deps.sh to utilize the master branch of git for both the hyrax-dependencies and libdap4. Now, when built, the repo's will be cloned if needed otherwise they will be updated and the code built and installed as needed
+
+2015-12-02  Nathan Potter  <ndp@opendap.org>
+
+	Triggering TravisCI
+
+	Removing unused BES keys from conf file.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	triggering travis
+
+2015-12-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Bumped module hash codes.
+
+	Merged fileout_netcdf string_bug branch.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	submodule hash code updates
+
+	Added support for new tests in fileout_netcdf
+
+2015-11-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2015-11-30  Patrick West  <pwest@vsto.tw.rpi.edu>
+
+	removed openssl ref, fixed functions unit-tests mk
+	bes-config.in was still referencing openssl libs. Also,
+	functions/unit-tests/Makefile.am needed to have DAP_SERVER_LIBS added in
+	order for the tests to build.
+
+2015-11-27  James Gallagher  <jgallagher@opendap.org>
+
+	Changed an assert to a test - it should be checked all the time.
+
+2015-11-25  James Gallagher  <jgallagher@opendap.org>
+
+	Removed some dead code in TabularFunction.cc
+
+2015-11-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Modified/fixed install_bes_source_deps.sh when the travis cache fails
+	It seems that sometimes Travis cannot get cached stuff - look for that
+	and rebuild.
+
+2015-11-19  Nathan Potter  <ndp@opendap.org>
+
+	Improved efficiency of promotion checking
+
+	Added check so that promotion copying only happens when there is actually stuff thst needs promoting
+
+2015-11-18  James Gallagher  <jgallagher@opendap.org>
+
+	Removed #define DODS_DEBUG
+
+	The 'promote' code was being called at the wrong time; fixed
+	I have also made a handful of other edits: the code is now a function;
+	uses the same naming convention as the rest of the code, and uses it's
+	return value (no RVP). I've also fixed a bug in bes/functions'
+	Makefile.am where test failures were being ignored. And removed some
+	dead code from bes/functions/TabularFunction.
+
+2015-11-18  Nathan Potter  <ndp@opendap.org>
+
+	Modified function promoter to work on any struct that ends with the string '_unwrap'
+
+2015-11-16  James Gallagher  <jgallagher@opendap.org>
+
+	Hacked BESDapResponseBuilder.cc so functions returning structures work
+	A test hack: If we see that a server function has returned a Structure,
+	assume that it should be 'flattened' and do so. This means that the
+	ugrid() subsetting function can return its multiple variables and the
+	client will see that as such and not a Structure with N fields. This
+	preserves the look of the source dataset. We'll have to think about
+	this hack and how best to really implement it. The code could be faster
+	(using fewer/no copies) and could be less prone to failure (it assumes
+	every Structure returned by a function should be flattened). Not
+	insurmountable problems...
+
+2015-11-16  Nathan Potter  <ndp@opendap.org>
+
+	Working in unpacking function results
+
+2015-10-27  Nathan Potter  <ndp@opendap.org>
+
+	Repaired declaration of GridAggregationBase::cleanup()
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	NCML handler, still
+
+	NCML fix
 2015-10-26  James Gallagher  <jgallagher@opendap.org>
 
 	More coverity model updates plus ncml commit/push
@@ -6,7 +348,7 @@
 
 	distcheck works
 
-	Modified confgure_{modules,standard}.ac so it includes libuuid when needed.
+	Modified configure_{modules,standard}.ac so it includes libuuid when needed.
 	The UUID functions are part of libc on some OSs (OSX) and not
 	others (CentOS). Used AC_SEARCH_LIBS to fix this.
 
@@ -23,7 +365,7 @@
 2015-10-22  James Gallagher  <jgallagher@opendap.org>
 
 	Update to hdf5_handler
-	New basline for test 257 - just updated libdap for this.
+	New baseline for test 257 - just updated libdap for this.
 
 	Removed force of libdap 3.16 rebuild
 
@@ -82,8 +424,8 @@
 	hdf4: Removed an old unused file
 
 	Changes made while working on HR-64
-	I made some minor changes to the BES while trcking down HR-64.
-	The actual fix was in ncml_module, but these cahnges fixed
+	I made some minor changes to the BES while tracking down HR-64.
+	The actual fix was in ncml_module, but these changes fixed
 	formatting and BESDEBUG output.
 
 	Fixed a glitch in volatile container store
@@ -151,13 +493,13 @@
 
 	Patched BESFileLockingCache::get_cache_file_name() to reject
 	file names longer than 254 characters. Temporary patch for a
-	lorger issue
+	larger issue
 
 2015-10-05  Nathan Potter  <ndp@opendap.org>
 
 	Small changes - hunting function test issues.
 
-	Small chnages for clarity
+	Small changes for clarity
 
 	Adding dispatch/BESUncompressCache class to replace BESCache3
 
@@ -174,11 +516,11 @@
 2015-10-01  Nathan Potter  <ndp@opendap.org>
 
 	Committing changes (mostly to bes.conf.in files) in support of
-	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	changing ubiquitous use of BES.CacheDir, BES.CachePrefix, and
 	BES.CacheSize to specifically reference the decompression
-	cache (which is waht it actually is) so as to avoid cache
+	cache (which is what it actually is) so as to avoid cache
 	configuration collisions with various handlers that also were
-	utilizing teh same cache with different expectations. Now, by
+	utilizing the same cache with different expectations. Now, by
 	calling these BES keys BES.UncompressCache.dir,
 	BES.UncompressCache.prefix, and BES.UncompressCache.size we
 	specifically isolate the decompression cache configuration
@@ -199,10 +541,10 @@
 
 	Added calls to xmlCleanupParser()
 	To xmlcommand/BESXMLInterface.cc when an exception is thrown and
-	server/DaemonCommandHandler.cc in both the normal and expectional
+	server/DaemonCommandHandler.cc in both the normal and exceptional
 	cases.
 
-	Fix for the obscure 'XML element order dependen on BESDEBUG'
+	Fix for the obscure 'XML element order depended on BESDEBUG'
 	The problem was a missing call to xmlCleanupParser in
 	BESXMLInterface::build_data_request_plan().
 
@@ -210,12 +552,12 @@
 	The culprit was a missing call to xmlCleanupParser() in
 	BESXMLInterface::build_data_request_plan.
 
-	Added 'virutal' to BESStopWatch dtor
+	Added 'virtual' to BESStopWatch dtor
 
 2015-09-24  James Gallagher  <jgallagher@opendap.org>
 
 	Fixed version_update_modules.sh so that it does not mangle Makefile.am
-	Before it was incorrectly substituting the verion number.
+	Before it was incorrectly substituting the version number.
 
 	Added *.Po to gitignore
 
@@ -308,7 +650,7 @@
 
 2015-09-16  James Gallagher  <jgallagher@opendap.org>
 
-	Updated source dpes build; fixes; new versions fo submodules
+	Updated source dpes build; fixes; new versions for submodules
 	This commit references the updated code from THG for the HDF5 and HDF5
 	handlers. It also has fixes for the networking code and for the
 	travis build.

@@ -1,3 +1,32 @@
+News for Version 3.17.0
+
+BES Error responses now better reflect the actual errors - constraint 
+expression parse errors are reported as such, for example. The server
+returns sensible error responses that the newly-modified OLFS can
+interpret and use to send informative messages back to a (human) user.
+
+The BES now supports a usable timeout feature along with the machinery
+to accept the timeout duration from the OLFS using a 'context'. The BES
+will (optionally) cancel the timeout period once data transmission starts
+so the timeout covers only the BES's computation and not the time to 
+send a potentially large response over a slow network. The context name
+is 'bes_timeout' and the value is the timeout period in seconds.
+
+New BES keys were added to control the timeout feature:
+# BES.CancelTimeoutOnSend=true
+# BES.TimeOutInSeconds=600
+
+The BES now have a Timeout error code and uses a 'Timeout exception' to
+signal that the current operation has exceeded the timeout period.
+
+We've settled on multiple value returns using a DAP Structure. In the
+BES/dap module we look for a Structure return with a certain name and
+flatten it. Pretty crude, but it works and doesn't require much fancy
+machinery. Rule: if a Structure's name ends with '_unwrap' then it will
+be flattened.
+
+Better support for doxygen (but sadly, not more actual documentation).
+
 News for version 3.16.0
 
 Major fixes/improvements to the caching code - Hyrax uses a number of
@@ -6,8 +35,8 @@ should use bes/dispatch/BESFileLockingCache when they need to make a
 special-purpose cache for their own use. Contact us for details if needed. 
 Note that caching function results will be redone in the next release.
 
-The BES now supports moulti-homed hosts with a new Key that specifies the
-IP ob which the server should listen (BES.ServerIP).
+The BES now supports multi-homed hosts with a new Key that specifies the
+IP on which the server should listen (BES.ServerIP).
 
 Fixed an issue where SIGPIPE was 'lost'. This fixes the mysterious
 'runaway' BES issue that was happening sometimes, particularly when
@@ -37,10 +66,10 @@ The code in bes/dap now frees data once it has been sent using libdap's
 serialize() methods. This can result in dramatic reduction in memory
 use. However, it requires libdap 3.15.0 or greater.
 
-Combined with the above fix, other improvments in libdap in support of
+Combined with the above fix, other improvements in libdap in support of
 parallel I/O and matching improvements in the NCML handler, Hyrax using
 this version of the BES can build and return aggregations is less time,
-with far less latency and much less total memory. These improvments are
+with far less latency and much less total memory. These improvements are
 directed at JoinNew aggregations.
 
 News for version 3.14.0
@@ -81,7 +110,7 @@ The fileout_netcdf handler has a contributed fix from NSIDC:
 
    Convert OPeNDAP Byte array data to NetCDF NC_SHORT The handler's
    output currently interprets unsigned Bytes from OPeNDAP as signed
-   bytes (NC_BYTE). To avoid misrepresenting data and retain
+   bytes (NC_BYTE). To avoid mis-representing data and retain
    compatibility with NetCDF3/classic we need to convert/output this
    data as a NC_SHORT.
 
@@ -150,7 +179,7 @@ the result of that function.
 
 Note that libdap now supports new server function special forms that
 provide a way to pass large arrays into the server as constants in the
-constriant.
+constraint.
 
 Also note that we've redone how server functions are defined, making
 it simpler to write them correctly. The default set of functions is
@@ -195,9 +224,9 @@ Bug fix in PPT released in this version.
 
 News for version 3.9.1
 
-The CSV handler was moved out of this component and mae its own
-handler, with all the stuff that implies (it's onw RPM, source dist,
-etc.). At teh smae time a new tool for building tests has been added -
+The CSV handler was moved out of this component and made its own
+handler, with all the stuff that implies (it's own RPM, source dist,
+etc.). At the same time a new tool for building tests has been added -
 look in the code for the dapreader classes. Email us for more
 information.
 
@@ -265,7 +294,7 @@ move to this format.
 
 Added a new besd script that can be used to run the BES at boot/reboot
 using chkconfig on linux systems. Please see besd script for more
-information and ask your system administrator about gettig this
+information and ask your system administrator about getting this
 installed in the proper location.
 
 Added a new command to test error handling by clients <showError type="x" />,
@@ -303,9 +332,9 @@ The BES now supports TCP Wrappers (from a patch sent in by
 Gareth.Williams@csiro.au - thank you).
 
 In the past the BES used a SQL-like command language but returned XML
-responses. THis seemed odd, so we've adopted a new syntax where the BES
+responses. This seemed odd, so we've adopted a new syntax where the BES
 accepts XML documents as commands (and still returns XML responses). The XML
-command/documents hold XML that will look very familar to long-time BES users
+command/documents hold XML that will look very familiar to long-time BES users
 but a big change is that more than one command can be included in the
 document, reducing the number of messages needed to get many of the DAP
 responses. The upshot is that the OLFS <--> BES communication is much more
@@ -359,7 +388,7 @@ BESException to BESError and now have only five derived classes for the
 different types of errors (BESInternalError, BESInternalFatalError,
 BESForbiddenError, BESNotFoundError and BESSyntaxUserError.) Each error class
 has a type number associated with it to make it easier for clients to
-clasify the given error. Please refer to the release notes on
+classify the given error. Please refer to the release notes on
 docs.opendap.org for Hyrax 1.4 for more information.
 
 BES catalog and data access now includes an option to follow symbolic links
@@ -371,7 +400,7 @@ document root. If set to no, then we won't follow symbolic links.
 The response to a 'show catalog' request will return the elements of a
 dataset (directory) in alphabetical order.
 
-The 'set container' request now verifies the existance of the data container
+The 'set container' request now verifies the existence of the data container
 whereas before it did not, leaving the error to be handled by the data
 handler in the get command.
 
@@ -513,7 +542,7 @@ News Version 3.4.0
 
 Added a new feature to the BES, the ability to create context within the
 BES. This is done through a new command 'set context <name> to <value>; The
-dap module uses the context feature when determining how to deliever error
+dap module uses the context feature when determining how to deliver error
 messages. If the context 'errors' is set to 'dap2' then all exceptions are
 converted into libdap Error objects. The method print is then called using
 stdout. This way, dap2 clients can recognize errors.
@@ -550,7 +579,7 @@ the dump method called on that BES object.
 
 The BES now does not require libdap. Default responses, transmitters,
 commands, etc... are available through the BES: showing help, status,
-process id, version information, keys defined in the configuratioon file;
+process id, version information, keys defined in the configuration file;
 streaming files using the new command; creating, showing, and deleting
 containers; creating, showing, and deleting definitions. All DAP specific
 commands are now in a loaded module: retrieving the DAS, DDS, DDX, DataDDS
@@ -569,7 +598,7 @@ to serve compressed files.
 
 The bes.conf.in file used 'hdf4' in some places and 'h4' in others. This meant
 that lazy people like me ;-) who didn't read what they were doing but just
-blindly uncommented lines were confused. I editied the file to use the same
+blindly uncommented lines were confused. I edited the file to use the same
 identifier in all places. jimg.
 
 News Version 3.2.0
@@ -577,7 +606,7 @@ News Version 3.2.0
 Created bes control script besctl for starting, stopping, restarting, and
 checking the status of the bes daemon and listener processes.
 
-Executibles are again in $prefix/bin instead of sbin and have been renamed
+Executables are again in $prefix/bin instead of sbin and have been renamed
 besdaemon and beslistener. The bescmdln is also in $prefix/bin.
 
 Modules dynamically loaded by the bes should now be built with the
