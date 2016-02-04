@@ -331,9 +331,8 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
 
     case DFNT_FLOAT:
         {
-            bool is_a_fin = true;
             float attr_val = *(float*)vals;
-            is_a_fin = isfinite(attr_val);
+            bool is_a_fin = isfinite(attr_val);
             gp.fp = (float *) vals;
             rep << showpoint;
             rep << setprecision(10);
@@ -351,9 +350,8 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
     case DFNT_DOUBLE:
         {
 
-            bool is_a_fin = true;
             double attr_val = *(double*)vals;
-            is_a_fin = isfinite(attr_val);
+            bool is_a_fin = isfinite(attr_val);
             gp.dp = (double *) vals;
             rep << std::showpoint;
             rep << std::setprecision(17);
