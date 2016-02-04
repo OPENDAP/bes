@@ -35,6 +35,7 @@
 
 
 #include "h5cfdaputil.h"
+#include <math.h>
 
 bool HDF5CFDAPUtil::check_beskeys(const string key) {
 
@@ -252,28 +253,39 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
 
     case H5FLOAT32:
         {
+            float attr_val = *(float*)vals;
+            bool is_a_fin = isfinite(attr_val);
             gp.fp = (float *) vals;
             rep << showpoint;
             rep << setprecision(10);
             //rep << setprecision(6);
             rep << *(gp.fp+loc);
-            if (rep.str().find('.') == string::npos
-                && rep.str().find('e') == string::npos)
-                rep << ".";
+            string tmp_rep_str = rep.str();
+            if (tmp_rep_str.find('.') == string::npos
+                && tmp_rep_str.find('e') == string::npos
+                && tmp_rep_str.find('E') == string::npos){
+                if(true == is_a_fin)
+                    rep<<".";
+            }
             return rep.str();
         }
 
     case H5FLOAT64:
         {
+            double attr_val = *(double*)vals;
+            bool is_a_fin = isfinite(attr_val);
             gp.dp = (double *) vals;
             rep << std::showpoint;
             rep << std::setprecision(17);
             rep << *(gp.dp+loc);
-            if (rep.str().find('.') == string::npos
-                && rep.str().find('e') == string::npos)
-                rep << ".";
+            string tmp_rep_str = rep.str();
+            if (tmp_rep_str.find('.') == string::npos
+                && tmp_rep_str.find('e') == string::npos
+                && tmp_rep_str.find('E') == string::npos) {
+                if(true == is_a_fin)
+                    rep << ".";
+            }
             return rep.str();
-            break;
         }
     default:
         return string("UNKNOWN");

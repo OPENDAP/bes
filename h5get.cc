@@ -50,6 +50,7 @@
 #include "HDF5Structure.h"
 
 #include <BESDebug.h>
+#include <math.h>
 
 using namespace libdap;
 
@@ -1090,6 +1091,8 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
             if (H5Tget_size(type) == 4) {
                 
+                float attr_val = *(float*)sm_buf;
+                bool is_a_fin = isfinite(attr_val);
                 // Represent the float number.
                 // Some space may be wasted. But it is okay.
                 gp.tfp = (float *) sm_buf;
@@ -1097,19 +1100,25 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 int ll = strlen(gps);
 
                 // Add the dot to assure this is a floating number
-                if (!strchr(gps, '.') && !strchr(gps, 'e'))
-                    gps[ll++] = '.';
+                if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')) {
+                    if(true == is_a_fin)
+                        gps[ll++] = '.';
+                }
 
                 gps[ll] = '\0';
                 snprintf(&rep[0], 32, "%s", gps);
             } 
             else if (H5Tget_size(type) == 8) {
 
+                double attr_val = *(double*)sm_buf;
+                bool is_a_fin = isfinite(attr_val);
                 gp.tdp = (double *) sm_buf;
                 snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
                 int ll = strlen(gps);
-                if (!strchr(gps, '.') && !strchr(gps, 'e'))
-                    gps[ll++] = '.';
+                if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')) {
+                    if(true == is_a_fin)
+                        gps[ll++] = '.';
+                }
                 gps[ll] = '\0';
                 snprintf(&rep[0], 32, "%s", gps);
             } 
