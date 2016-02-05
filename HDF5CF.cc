@@ -496,6 +496,8 @@ throw(Exception){
                 if (false == unsup_var_dspace) {
                     for (int i=0; i<ndims; i++) {
                         Dimension * dim = new Dimension(dsize[i]); 
+                        if(maxsize[i] == H5S_UNLIMITED)
+                            dim->unlimited_dim = true;
                         var->dims.push_back(dim);
                     }
                 }

@@ -163,7 +163,7 @@ namespace HDF5CF
 
         protected:
 	    Dimension (hsize_t dimsize)
-		: size (dimsize),name(""),newname("")
+		: size (dimsize),name(""),newname(""),unlimited_dim(false)
 	    {
 	    }
 
@@ -171,6 +171,7 @@ namespace HDF5CF
 	    hsize_t size;
             string name;
             string newname;
+            bool unlimited_dim;
 
             friend class EOS5File;
             friend class GMFile;
