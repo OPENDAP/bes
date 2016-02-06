@@ -605,6 +605,12 @@ namespace HDF5CF
                 return this->groups;
             }
 
+            /// Has unlimited dimensions.
+            const bool HaveUnlimitedDim() const
+            { 
+                return have_udim;
+            }
+
             /// Obtain the flag to see if ignored objects should be generated.
             virtual bool Get_IgnoredInfo_Flag() = 0;
 
@@ -693,7 +699,8 @@ namespace HDF5CF
                     unsupported_var_dspace(false),
                     addeddimindex(0),
                     check_ignored(false),
-                    have_ignored(false)
+                    have_ignored(false),
+                    have_udim(false)
             {
 	    }
 
@@ -718,6 +725,7 @@ namespace HDF5CF
             bool unsupported_var_dspace;
 
             set<string> dimnamelist;
+            //set<string>unlimited_dimnamelist;
             map<string,hsize_t> dimname_to_dimsize;
 
             /// Handle added dimension names
@@ -726,6 +734,7 @@ namespace HDF5CF
 
             bool check_ignored;
             bool have_ignored;
+            bool have_udim;
             string ignored_msg;
 
     };

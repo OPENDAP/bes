@@ -228,11 +228,6 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
 #endif
 
 
-    
-
-
-
-
 void gen_dap_oneobj_das(AttrTable*at,const HDF5CF::Attribute* attr, const HDF5CF::Var *var) {
 
     if ((H5FSTRING == attr->getType()) ||

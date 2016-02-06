@@ -332,6 +332,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                           || GPM_L1 == f->getProductType()) 
             update_GPM_special_attrs(das,*it_v);
+
         
     }
 
@@ -365,6 +366,16 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         }
     }
        
+    // TEMP: MAY JUST NEED TO CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
+    if(f->HaveUnlimitedDim() == true) {
+        for (it_cv = cvars.begin();
+            it_cv != cvars.end(); ++it_cv) {
+            // Check unlimited dimension names.
+            ;
+
+        }
+     
+    }
     // cerr<<"end of gen_gmh5_cfdas "<<endl;
 }
 
