@@ -28,16 +28,17 @@ BES.LogName=@prefix@/var/bes.log
 BES.LogVerbose=no
 
 # Set the value of BES.Catalog.catalog.RootDirectory to the root
-# directory of the data this BES will serve. If you're using the BES
-# as a standalone server, set this to null and use the parameter
-# BES.Data.RootDirectory defined later on in this file.
+# directory of the data this BES will serve. If you are not using the 
+# BES in conjunction with Hyrax, but as a standalone server, set this 
+# to null and use the parameter BES.Data.RootDirectory defined later on 
+# in this file.
 
 BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 
 # Set BES.Catalog.catalog.FollowSymLinks to true/yes if the BES should
 # follow symbolic links in the BES.Catalog.catalog.RootDirectory. If
-# the BES is being used as a standalone server, use the
-# similarly-named parameter defined below.
+# the BES is not being used in conjunction with Hyrax, but is being used 
+# as a standalone server, use the similarly-named parameter defined below.
 
 BES.Catalog.catalog.FollowSymLinks=No
 
@@ -66,12 +67,13 @@ BES.UncompressCache.size=500
 # For the BES timeout, should the timeout period include sending data
 # back to a client, or should it just include the time required to 
 # prepare the response for transmission. For the latter, define the
-# parameter BES.CancelTimeoutOnSend and set it to true.
+# parameter BES.CancelTimeoutOnSend and set it to true. If not set
+# the value of this parameter defaults to false.
 
 # BES.CancelTimeoutOnSend=true
 
 #-----------------------------------------------------------------------#
-# NOTE: It is unlikely that you will need to change anything under      #
+# NOTE: It is unlikely that you will need to change anything below      #
 #       this comment.                                                   #
 #-----------------------------------------------------------------------#
 
@@ -97,9 +99,12 @@ BES.ServerPort=10022
 
 # BES.ServerIP = 127.0.0.1
 
-# The BES has an administrative interface that can be accessed using a
-# web browser. Use the BES.DaemonPort parameter to set the port on
-# which the admin interface listens.
+# The BES supports administrative interface. It accepts specific BES
+# admin commands and is used by Hyrax to support administrator actions
+# accessible via the browser based Hyrax Admin Interface. Use the 
+# BES.DaemonPort parameter to set the port on which the BES admin 
+# interface listens. The OLFS configuration for the BES port must
+# match this value. 
 
 # BES.DaemonPort=11002
 
@@ -143,37 +148,37 @@ BES.Container.Persistence=strict
 # TCP capacity of the client and server communication by setting the	#
 # size of the internal BES buffers to match that of your systems TCP	#
 # window sizes. System administrators can tune the TCP window sizes in	#
-# the kernel. If this is done, set these parameters to match those	#
+# the kernel. If this is done, set these parameters to match those      #
 # buffer sizes set in the kernel. Or, if your system supports dynamic	#
-# TCP window sizes, as many are doing these days, then leave the	#
+# TCP window sizes, as many are doing these days, then leave the        #
 # SetSock*Size parameters to No and the BES will interrogate the socket	#
-# for the buffer sizes.							#
-#									#
+# for the buffer sizes.                                                 #
+#                                                                       #
 # The TCP window size should be equal to the Bandwidth*Delay Product	#
 # (BDP). This is the number of bytes in flight to fill the entire path,	#
 # and is equal to the connection speed times the RTT( Round-Trip Time) 	#
 # divided by 2. For example, if you have a 100 Mbps path and the RTT is	#
-# 75 ms, the BDP = 100 * 0.075 / 2 = 3.75 Mbits (470 KB).		#
-#									#
-# If you are not sure what to do here, we recommend that you leave	#
-# these values set as is.						#
-#									#
+# 75 ms, the BDP = 100 * 0.075 / 2 = 3.75 Mbits (470 KB).               #
+#                                                                       #
+# If you are not sure what to do here, we recommend that you leave      #
+# these values set as is.                                               #
+#                                                                       #
 # BES.SetSockRecvSize=No|Yes - if set to no, then do not set the TCP	#
 #                              TCP receive buffer size. If set to yes	#
 #                              then set the TCP receive buffer size to	#
 #                              the value specified by BES.SockRecvSize	#
 #                              Default is No, use the system TCP window	#
-#                              size.					#
+#                              size.                                    #
 # BES.SockRecvSize=<number> - This value should be set to the size, in	#
 #                              bytes, of the TCP receive buffer size.	#
 # BES.SetSockSendSize=No|Yes - if set to no, then do not set the TCP	#
-#                              TCP send buffer size. If set to yes	#
-#                              then set the TCP send buffer size to	#
+#                              TCP send buffer size. If set to yes      #
+#                              then set the TCP send buffer size to     #
 #                              the value specified by BES.SockSendSize.	#
 #                              Default is No, use the system TCP window	#
-#                              size.					#
-# BES.SockSendSize=<number> - This value should be set to the size, in	#
-#                              bytes, of the TCP send buffer size.	#
+#                              size.                                    #
+# BES.SockSendSize=<number> - This value should be set to the size, in  #
+#                              bytes, of the TCP send buffer size.      #
 #-----------------------------------------------------------------------#
 
 BES.SetSockRecvSize=No
