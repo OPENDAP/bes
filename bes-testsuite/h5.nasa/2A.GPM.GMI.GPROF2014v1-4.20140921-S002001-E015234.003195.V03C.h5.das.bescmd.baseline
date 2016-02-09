@@ -435,4 +435,7 @@ ScanType=CONICAL;
     sddim {
         String units "level";
     }
+    DODS_EXTRA {
+        String Unlimited_Dimension "nscan";
+    }
 }
