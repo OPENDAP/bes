@@ -367,16 +367,26 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     }
        
     // TEMP: MAY JUST NEED TO CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
+#if 0
     if(f->HaveUnlimitedDim() == true) {
         for (it_cv = cvars.begin();
             it_cv != cvars.end(); ++it_cv) {
-            // Check unlimited dimension names.
-            ;
 
+            // Check unlimited dimension names.
+            for (vector<Dimension*>::iterator ird = (*it_cv)->getDimensions().begin();
+                 ird != (*it_cv)->getDimensions().end(); ++ird) {
+
+                if((*ird)->HaveUnlimitedDim() == true) {
+
+                    AttrTable *at = das.get_table((*it_cv)->getNewName());
+                    if (NULL == at)
+                        at = das.add_table((*it_cv)->getNewName(), new AttrTable);
+                }
+                    
+            }
         }
-     
     }
-    // cerr<<"end of gen_gmh5_cfdas "<<endl;
+#endif
 }
 
 void gen_gmh5_cf_ignored_obj_info(DAS &das, HDF5CF::GMFile *f) {

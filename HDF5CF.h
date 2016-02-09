@@ -160,6 +160,14 @@ namespace HDF5CF
                 return this->newname;
             }
 
+        /// Has unlimited dimensions.
+        const bool HaveUnlimitedDim() const
+        { 
+            return unlimited_dim;
+        }
+
+
+
 
         protected:
 	    Dimension (hsize_t dimsize)
