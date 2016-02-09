@@ -6,176 +6,40 @@
 #                                                                       #
 #-----------------------------------------------------------------------#
   
-#-----------------------------------------------------------------------#
-# Who is the administrator for this OPeNDAP back-end server             #
-# Please replace this with the email address to use that gets displayed #
-# to users of your server when errors occur.                            #
-#-----------------------------------------------------------------------#
+# Set this parameter to the email address for the server's
+# administrator. This is the address where users should send basic
+# questions about the server and the data it provides.
+
 BES.ServerAdministrator=admin.email.address@your.domain.name
 
-#-----------------------------------------------------------------------#
-# User and Group to run the BES as					                    #
-#-----------------------------------------------------------------------#
-# Notes:
-# 1. The user_name and group_name can be user and group ids. To use
-# a user or group id specify the id with the '#' character in front.
-# For example:
-# BES.User=#172
-# BES.Group=#14
+# User and Group for the BES
+#
+# The BES.user and BES.group can be either user and group names or id
+# numbers. To use numbers in place of names, prefix the values with a
+# number sign (#).
+# For example: BES.User=#172
+
 BES.User=user_name
 BES.Group=group_name
 
-#-----------------------------------------------------------------------#
-# Where we log the stuff...and how much we log                          #
-#-----------------------------------------------------------------------#
+# Where should the BES keep its log file?
+
 BES.LogName=@prefix@/var/bes.log
 BES.LogVerbose=no
 
-#-----------------------------------------------------------------------#
-# When the context 'bes_timeout' is used to set the BES timeout feature #
-# should the tiemout period include the time to send the response, or   #
-# just to build it? The default value is False, include the time to     #
-# the response .                                                        #
-#                                                                       #
-# If the OLFS (or other client) does not send a timeout value using     #
-# the setContext command, no timeout will be used by default. Override  #
-# that here using the TimeOutInSeconds key. If this value is set, it    #
-# will be used as the default timeout value. Sending the bes_timeout    #
-# context will override this value.                                     #
-#-----------------------------------------------------------------------#
-
-# BES.CancelTimeoutOnSend=true
-# BES.TimeOutInSeconds=600
-
-#-----------------------------------------------------------------------#
-# Setting data information
-#-----------------------------------------------------------------------#
-
-# There are two ways the BES can be used. It can serve as a standalone
-# data server or it can work with the OLFS (i.e., as one component of
-# the OPeNDAP 4 Data Server Hyrax). How you point to data differs for
-# each of the two cases. Most users will be using the BES with the OLFS
-# as part of the OPeNDAP 4 Data Server Hyrax. In this case, set the
-# parameter below, BES.Catalog.catalog.RootDirectory, to point to the
-# root directory that contains the data you want to serve. In this case
-# the value of the 'BES.Data.RootDirectory' parameter, set below to
-# /dev/null, doesn't matter, so long as it has some value.
+# Set the value of BES.Catalog.catalog.RootDirectory to the root
+# directory of the data this BES will serve. If you're using the BES
+# as a standalone server, set this to null and use the parameter
+# BES.Data.RootDirectory defined later on in this file.
 
 BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 
-#-----------------------------------------------------------------------#
-# NOTE: It is unlikely that you will need to change anything under      #
-#       this comment.                                                   #
-#-----------------------------------------------------------------------#
+# Set BES.Catalog.catalog.FollowSymLinks to true/yes if the BES should
+# follow symbolic links in the BES.Catalog.catalog.RootDirectory. If
+# the BES is being used as a standalone server, use the
+# similarly-named parameter defined below.
 
-#-----------------------------------------------------------------------#
-# modules to load, includes data modules and command modules            #
-#-----------------------------------------------------------------------#
-
-# Notes:
-# 1. All module configuration files will be located under
-# <prefix>/etc/bes/modules. No modules are loaded in this configuration
-# file. The module configuration files are included at the very bottom
-# of this file. And the module configuration files add to this
-# parameter.
-#
-BES.modules=
-
-#-----------------------------------------------------------------------#
-# Setting the data location
-#-----------------------------------------------------------------------#
-
-# If you intend to use the BES as a standalone server, set the value of
-# 'BES.Data.RootDirectory' to point to your data and disregard the 
-# 'BES.Catalog.catalog.RootDirectory' parameter in dap.conf.
-#
-# The default value of RootDirectory is /dev/null, which means that
-# BES.Data.RootDirectory is not used and BES.Catalog.catalog.RootDirectory
-# is used from dap.conf. If you want to use this parameter instead, set
-# it to <prefix>/share/hyrax, where prefix is the installation directory
-# for the BES. This will work with the sample data we include with
-# various format handlers distributed for use with the BES. Or you'll need
-# to change this to point to your data! At this time the BES does not
-# support multiple RootDirectory values.
-
-BES.Data.RootDirectory=/dev/null
-
-# Is the BES allowed to follow symbolic links when requesting catalog
-# information. The default is to not allow the BES to follow symbolic links.
-# The values can be either No or Yes. If set to No, and the user requests
-# catalog information on a symbolic link then an error is reported and if a
-# symbolic link is contained within a collection, it is not included in the
-# response. If set to Yes then the requested node in the catalog is treated
-# like any other node.
-#
-# BES.FollowSymLinks parameter is for non-catalog containers and is used in
-# conjunction with the BES.RootDirectory above. It is NOT a general setting.
-
-BES.FollowSymLinks=No
-
-#-----------------------------------------------------------------------#
-# connection information, unix socket, port number, and whether server  #
-# is secure or not. If you are using this option, make sure the BES is  #
-# behind a firewall which blocks the BES.ServerPort unless you intend   #
-# to provide direct access to the BES for the world. In general, if     #
-# that is the case, you should configure the BES to use SSL.            #
-#-----------------------------------------------------------------------#
-BES.ServerPort=10022
-
-# Listen on this address - useful for multi-homed hosts. The BES uses 
-# any interface by default. Usually this is not needed. jhrg 10/14/15
-#
-# BES.ServerIP = 127.0.0.1
-
-# BES.ServerUnixSocket=/tmp/bes.socket
-
-#-----------------------------------------------------------------------#
-# To communicate with the besdaemon, use the port or unix socket given  #
-# below. If one of these values is not given, then the command interface#
-# will not be available (and the daemon will not listen on the port or  #
-# socket. If you do use the interface, make sure to protect it from     #
-# outside access using a firewall. Please re-read that last sentence.   #
-#-----------------------------------------------------------------------#
-
-# BES.DaemonPort=11002
-
-#-----------------------------------------------------------------------#
-# Security information for this server. ServerSecure specifies whether  #
-# the server is secure or not and requires authentication of the client #
-# using SSL certificates and keys. The default secure connection port   #
-# is 10003. Then specify the full path to the certificate and key files.#
-# An initialization file can be created for both the client and server  #
-# side.                                                                 #
-#-----------------------------------------------------------------------#
-BES.ServerSecure=no
-BES.ServerSecurePort=10003
-BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
-BES.ServerCertAuthFile=/full/path/to/serverside/certificate/authority/file.pem
-BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
-BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
-BES.ClientCertAuthFile=/full/path/to/clientside/certificate/authority/file.pem
-BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
-
-#-----------------------------------------------------------------------#
-# help file locations, for text, html, and xml versions                 #
-#-----------------------------------------------------------------------#
-BES.Help.TXT=@pkgdatadir@/bes_help.txt
-BES.Help.HTML=@pkgdatadir@/bes_help.html
-BES.Help.XML=@pkgdatadir@/bes_help.xml
-
-#-----------------------------------------------------------------------#
-# Should informational response objects be buffered, or streamed        #
-# Should informational objects be formatted as text, html, or xml       #
-#-----------------------------------------------------------------------#
-BES.Info.Buffered=no
-BES.Info.Type=xml
-
-#-----------------------------------------------------------------------#
-# Cache and compression configuration                                   #
-#                                                                       #
-# If a data file is compressed the BES will attempt to uncompress it.   #
-#                                                                       #
-#-----------------------------------------------------------------------#
+BES.Catalog.catalog.FollowSymLinks=No
 
 # The BES uncompress cache directory is used to store decompressed 
 # data files. This directory will be shared by all of the BES processes 
@@ -192,10 +56,85 @@ BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
+# Configure the BES timeout feature. In practice, the timeout value is
+# set by the Hyrax front-end, so the value of BES.TimeOutInSeconds is
+# ignored. The value here is a fallback in case the Hyrax front-end 
+# configuration file does not provide a value.
+
+# BES.TimeOutInSeconds=600 
+
+# For the BES timeout, should the timeout period include sending data
+# back to a client, or should it just include the time required to 
+# prepare the response for transmission. For the latter, define the
+# parameter BES.CancelTimeoutOnSend and set it to true.
+
+# BES.CancelTimeoutOnSend=true
+
 #-----------------------------------------------------------------------#
-# If the symbolic name cannot be found in persistence, nice means simply#
-# log an error, strict means throw an exception                         #
+# NOTE: It is unlikely that you will need to change anything under      #
+#       this comment.                                                   #
 #-----------------------------------------------------------------------#
+
+# If you intend to use the BES as a standalone server, set the value
+# of BES.Data.RootDirectory to point to your data and disregard the
+# BES.Catalog.catalog.RootDirectory parameter in dap.conf.
+
+BES.Data.RootDirectory=/dev/null
+
+# When using the BES as a standalone server, set BES.FollowSymLinks to
+# true/yes if the BES should follow symbolic links. When the BES is
+# part of Hyrax, look in the modules/dap.conf for the parameter that 
+# controls this feature.
+
+BES.FollowSymLinks=No
+
+# The TCP port on which the BES listens for commands
+
+BES.ServerPort=10022
+
+# Listen on this address - useful for multi-homed hosts. The BES uses 
+# any interface by default.
+
+# BES.ServerIP = 127.0.0.1
+
+# The BES has an administrative interface that can be accessed using a
+# web browser. Use the BES.DaemonPort parameter to set the port on
+# which the admin interface listens.
+
+# BES.DaemonPort=11002
+
+# Security information for this server. ServerSecure specifies whether
+# the server requires authentication by the client using SSL
+# certificates and keys. If ServerSecure is true/yes, then use
+# ServerSecurePort to set the port number and the subsequent six
+# parameters to set the server and client certificate, authentication
+# and key files.
+
+BES.ServerSecure=no
+
+# BES.ServerSecurePort=10003
+# BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+# BES.ServerCertAuthFile=/full/path/to/serverside/certificate/authority/file.pem
+# BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+# BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+# BES.ClientCertAuthFile=/full/path/to/clientside/certificate/authority/file.pem
+# BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
+
+# Help file locations, for text, html, and xml versions
+
+BES.Help.TXT=@pkgdatadir@/bes_help.txt
+BES.Help.HTML=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.xml
+
+# Should informational response objects be buffered, or streamed
+# Should informational objects be formatted as text, html, or xml
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+# If the symbolic name cannot be found in persistence, nice means simply
+# log an error, strict means throw an exception 
+
 BES.Container.Persistence=strict
 
 #-----------------------------------------------------------------------#
@@ -203,11 +142,11 @@ BES.Container.Persistence=strict
 # the BES. With these parameters you will be able to maximize the       #
 # TCP capacity of the client and server communication by setting the	#
 # size of the internal BES buffers to match that of your systems TCP	#
-# window sizes. System administratos can tune the TCP window sizes in	#
-# the kernal. If this is done, set these parameters to match those	#
+# window sizes. System administrators can tune the TCP window sizes in	#
+# the kernel. If this is done, set these parameters to match those	#
 # buffer sizes set in the kernel. Or, if your system supports dynamic	#
 # TCP window sizes, as many are doing these days, then leave the	#
-# SetSock*Size parameters to No and the BES will interogate the socket	#
+# SetSock*Size parameters to No and the BES will interrogate the socket	#
 # for the buffer sizes.							#
 #									#
 # The TCP window size should be equal to the Bandwidth*Delay Product	#
@@ -236,45 +175,39 @@ BES.Container.Persistence=strict
 # BES.SockSendSize=<number> - This value should be set to the size, in	#
 #                              bytes, of the TCP send buffer size.	#
 #-----------------------------------------------------------------------#
+
 BES.SetSockRecvSize=No
 BES.SockRecvSize=65535
 BES.SetSockSendSize=No
 BES.SockSendSize=65535
 
-#-----------------------------------------------------------------------#
-# Defines size of system global memory pool                             #
-#-----------------------------------------------------------------------#
+# Defines size of system global memory pool, in megabytes
+
 BES.Memory.GlobalArea.EmergencyPoolSize=1
 BES.Memory.GlobalArea.MaximumHeapSize=20
 BES.Memory.GlobalArea.Verbose=no
 BES.Memory.GlobalArea.ControlHeap=no
 
-#-----------------------------------------------------------------------#
-# This key is set to either single or multiple mode.            	#
-#                                                                       #
-# In single mode the listener handles the client request itself, and    #
-# only one client can connect at a time                                 #
-#                                                                       #
-# In multiple mode the listener listens for client connections. When a  #
-# connection is made it forks another bes process to handle that client #
-# connection and goes back to listening for more connections. More than #
-# one client can connect at a time                                      #
-#-----------------------------------------------------------------------#
+# BES.ProcessManagerMethod=multiple is the normal configuration for
+# both Hyrax and a standalone BES. Set this to single when debugging a
+# new module.
+
 BES.ProcessManagerMethod=multiple
 
-#-----------------------------------------------------------------------#
-# Is the client using the GET or POST method of making requests to a    #
-# back-end server that is a built-in web server module. If the back-end #
-# server is not a web server module, this key/value pair is not used    #
-#-----------------------------------------------------------------------#
-# This is used only by the APache module, which is not currently built.
+# This is used only by the Apache module, which is not currently built.
 # jhrg 10/14/15
 #
 # BES.DefaultResponseMethod=POST
 
-#-----------------------------------------------------------------------#
-# Include all module configuration files in the <prefix>/etc/bes/modules#
-# directory								#
-#-----------------------------------------------------------------------#
+# Normally the BES.modules parameter should be blank; the next
+# parameter will force a number of 'per module' configuration files to
+# be loaded and those will incrementally add on to this parameter's
+# value.
+
+BES.modules=
+
+# Scan the directory 'modules' and load all of the 'conf' files found
+# there.
+
 BES.Include=modules/.*\.conf$
 
