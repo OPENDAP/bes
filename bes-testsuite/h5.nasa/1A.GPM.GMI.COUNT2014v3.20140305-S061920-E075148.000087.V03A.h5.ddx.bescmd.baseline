@@ -181,6 +181,11 @@ ScanType=CONICAL;
     <Attribute name="S1_navigation" type="Container"/>
     <Attribute name="S1_sunData" type="Container"/>
     <Attribute name="S1_scanStatus" type="Container"/>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>nscan2</value>
+        </Attribute>
+    </Attribute>
     <Array name="gmi1aHeader_sampleRangeFile">
         <Attribute name="DimensionNames" type="String">
             <value>dim7,dim6</value>

@@ -3798,4 +3798,7 @@ ScanType=CONICAL;
         String comment "Number of hot load pixels in one scan.";
         String units "level";
     }
+    DODS_EXTRA {
+        String Unlimited_Dimension "nscan2";
+    }
 }

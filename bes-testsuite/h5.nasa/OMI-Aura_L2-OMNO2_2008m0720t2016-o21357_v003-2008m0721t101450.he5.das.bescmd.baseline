@@ -1293,4 +1293,7 @@ Attributes {
             }
         }
     }
+    DODS_EXTRA {
+        String Unlimited_Dimension "FakeDim0";
+    }
 }
