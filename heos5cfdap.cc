@@ -814,6 +814,41 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         at->append_attr("Contents","String",other_str);
     }
 
+    // CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
+//#if 0
+    if(f->HaveUnlimitedDim() == true) {
+//cerr<<"coming to unlimited " <<endl;
+        for (it_cv = cvars.begin();
+            it_cv != cvars.end(); ++it_cv) {
+
+            bool has_unlimited_dim = false;
+
+            // Check unlimited dimension names.
+            for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                 ird != (*it_cv)->getDimensions().end(); ++ird) {
+
+                // Currently we only check one unlimited dimension, which is the most
+                // common case. When receiving the conventions from JG, will add
+                // the support of multi-unlimited dimension. KY 2016-02-09
+                if((*ird)->HaveUnlimitedDim() == true) {
+
+                    AttrTable *at = das.get_table("DODS_EXTRA");
+                    if (NULL == at)
+                        at = das.add_table("DODS_EXTRA", new AttrTable);
+                    at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
+                    has_unlimited_dim = true;
+                    break;
+                }
+                    
+            }
+
+            if(true == has_unlimited_dim) 
+                break;
+        }
+    }
+//#endif
+
+
 }
 
 

@@ -65,6 +65,7 @@ EOS5CVar::EOS5CVar(Var*var) {
         Dimension *dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
+        dim->unlimited_dim = (*ird)->unlimited_dim;
         dims.push_back(dim);
     }
 

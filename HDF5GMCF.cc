@@ -70,6 +70,7 @@ GMCVar::GMCVar(Var*var) {
 //"h5","dim->newname "<< (*ird)->newname <<endl;
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
+        dim->unlimited_dim = (*ird)->unlimited_dim;
         dims.push_back(dim);
     } // for (vector<Dimension*>::iterator ird = var->dims.begin();
     product_type = General_Product;
@@ -148,6 +149,7 @@ GMSPVar::GMSPVar(Var*var) {
         Dimension *dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
+        dim->unlimited_dim = (*ird)->unlimited_dim;
         dims.push_back(dim);
     } 
 }

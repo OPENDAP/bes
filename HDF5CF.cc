@@ -74,6 +74,7 @@ Var::Var(Var *var) {
 //"h5","dim->newname "<< (*ird)->newname <<endl;
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
+        dim->unlimited_dim = (*ird)->unlimited_dim;
         dims.push_back(dim);
     }
 
