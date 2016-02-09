@@ -167,8 +167,6 @@ namespace HDF5CF
         }
 
 
-
-
         protected:
 	    Dimension (hsize_t dimsize)
 		: size (dimsize),name(""),newname(""),unlimited_dim(false)
@@ -266,6 +264,7 @@ namespace HDF5CF
                    dtype (H5UNSUPTYPE), 
                    rank (-1),
                    unsupported_attr_dtype(false),
+                   unsupported_attr_dspace(false),
                    unsupported_dspace(false),
                    dimnameflag(false)
 	    {
@@ -325,6 +324,7 @@ namespace HDF5CF
 	    H5DataType dtype;
 	    int rank;
             bool unsupported_attr_dtype;
+            bool unsupported_attr_dspace;
             bool unsupported_dspace;
             bool dimnameflag;
 
@@ -488,7 +488,7 @@ namespace HDF5CF
     class Group
     {
 	public:
-	    Group ():unsupported_attr_dtype(false)
+	    Group ():unsupported_attr_dtype(false),unsupported_attr_dspace(false)
 	    {
 	    }
 	    ~Group ();
@@ -519,6 +519,7 @@ namespace HDF5CF
 
 	    vector < Attribute * >attrs;
             bool unsupported_attr_dtype;
+            bool unsupported_attr_dspace;
 
 	    friend class File;
             friend class GMFile;
@@ -548,7 +549,7 @@ namespace HDF5CF
             virtual void Handle_Unsupported_Dtype(bool) throw(Exception);
                  
             /// Handle unsupported HDF5 dataspaces for datasets
-            virtual void Handle_Unsupported_Dspace() throw(Exception);
+            virtual void Handle_Unsupported_Dspace(bool) throw(Exception);
 
             /// Handle other unmapped objects/attributes
             virtual void Handle_Unsupported_Others(bool) throw(Exception);
@@ -642,6 +643,9 @@ namespace HDF5CF
             void Handle_Var_Unsupported_Dtype() throw(Exception);
             void Handle_VarAttr_Unsupported_Dtype() throw(Exception);
 
+            void Handle_GroupAttr_Unsupported_Dspace() throw(Exception);
+            void Handle_VarAttr_Unsupported_Dspace() throw(Exception);
+
             void Gen_Group_Unsupported_Dtype_Info() throw(Exception);
             void Gen_Var_Unsupported_Dtype_Info() throw(Exception);
             virtual void Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception);
@@ -705,6 +709,7 @@ namespace HDF5CF
                     unsupported_var_dtype(false),
                     unsupported_attr_dtype(false),
                     unsupported_var_dspace(false),
+                    unsupported_attr_dspace(false),
                     addeddimindex(0),
                     check_ignored(false),
                     have_ignored(false),
@@ -731,6 +736,7 @@ namespace HDF5CF
             bool unsupported_attr_dtype; 
 
             bool unsupported_var_dspace;
+            bool unsupported_attr_dspace;
 
             set<string> dimnamelist;
             //set<string>unlimited_dimnamelist;
@@ -779,7 +785,7 @@ namespace HDF5CF
             void Handle_Unsupported_Dtype(bool) throw(Exception);
 
             /// Handle unsupported HDF5 dataspaces for general HDF5 products
-            void Handle_Unsupported_Dspace() throw(Exception);
+            void Handle_Unsupported_Dspace(bool) throw(Exception);
  
             /// Handle other unmapped objects/attributes for general HDF5 products
             void Handle_Unsupported_Others(bool) throw(Exception);
@@ -923,7 +929,7 @@ namespace HDF5CF
             void Gen_GM_VarAttr_Unsupported_Dtype_Info();
             void Gen_Unsupported_Dspace_Info() throw(Exception);
             void Handle_GM_Unsupported_Dtype(bool) throw(Exception);
-            void Handle_GM_Unsupported_Dspace() throw(Exception);
+            void Handle_GM_Unsupported_Dspace(bool) throw(Exception);
             //bool ignored_var_transformed(Var* var);
             //bool ignored_var_attr_transformed();
             // bool ignored_GM_CVar_dimscale_ref_list(GMCVar* var);
@@ -1078,7 +1084,7 @@ namespace HDF5CF
             void Handle_Unsupported_Dtype(bool) throw(Exception);
 
             /// Handle unsupported HDF5 dataspaces for HDF-EOS5 products.
-            void Handle_Unsupported_Dspace() throw(Exception);
+            void Handle_Unsupported_Dspace(bool) throw(Exception);
 
             /// Handle other unmapped objects/attributes for HDF-EOS5 products
             void Handle_Unsupported_Others(bool) throw(Exception);
@@ -1218,7 +1224,7 @@ namespace HDF5CF
             //bool ignored_var_attr_transformed();
            
             void Handle_EOS5_Unsupported_Dtype(bool) throw(Exception);
-            void Handle_EOS5_Unsupported_Dspace() throw(Exception);
+            void Handle_EOS5_Unsupported_Dspace(bool) throw(Exception);
             
             void Gen_Unsupported_Dtype_Info(bool);
             void Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception);

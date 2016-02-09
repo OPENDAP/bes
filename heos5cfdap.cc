@@ -184,7 +184,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Handle_Unsupported_Dtype(include_attr);
 
         // Remove unsupported dataspace 
-        f->Handle_Unsupported_Dspace();
+        f->Handle_Unsupported_Dspace(include_attr);
         
         // May need to adjust the object names for special objects. Currently no operations
         // are done in this routine.
@@ -318,7 +318,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         f->Handle_Unsupported_Dtype(include_attr);
 
         // Remove unsupported dataspace 
-        f->Handle_Unsupported_Dspace();
+        f->Handle_Unsupported_Dspace(include_attr);
 
         // Need to retrieve the attribute values.
         f->Retrieve_H5_Supported_Attr_Values();

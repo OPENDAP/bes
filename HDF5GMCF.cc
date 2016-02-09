@@ -468,17 +468,17 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
 
 }
 
-void GMFile:: Handle_Unsupported_Dspace() throw(Exception) {
+void GMFile:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     if(true == check_ignored)
         Gen_Unsupported_Dspace_Info();
 
-    File::Handle_Unsupported_Dspace();
-    Handle_GM_Unsupported_Dspace();
+    File::Handle_Unsupported_Dspace(include_attr);
+    Handle_GM_Unsupported_Dspace(include_attr);
     
 }
 
-void GMFile:: Handle_GM_Unsupported_Dspace() throw(Exception) {
+void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     if(true == this->unsupported_var_dspace) {
         for (vector<GMCVar *>::iterator ircv = this->cvars.begin();

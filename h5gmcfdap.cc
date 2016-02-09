@@ -100,7 +100,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         f->Handle_Unsupported_Dtype(include_attr);
 
         // Handle unsupported dataspaces
-        f->Handle_Unsupported_Dspace();
+        f->Handle_Unsupported_Dspace(include_attr);
 
 
         // Adjust object names(may remove redundant paths)
@@ -184,7 +184,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Handle_Unsupported_Dtype(include_attr);
 
         // Remove unsupported dataspace 
-        f->Handle_Unsupported_Dspace();
+        f->Handle_Unsupported_Dspace(include_attr);
 
         // Need to retrieve the attribute values to feed DAS
         f->Retrieve_H5_Supported_Attr_Values();

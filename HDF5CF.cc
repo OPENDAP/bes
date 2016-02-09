@@ -487,12 +487,14 @@ throw(Exception){
                     throw2("Cannot obtain the dim. info for the variable ", varname);
 
                 // dsize can be 0. Currently DAP2 doesn't support this. So ignore now. KY 2012-5-21
+#if 0
                 for (int i = 0; i < ndims; i++) {
                     if (0 == dsize[i]) {
                         unsup_var_dspace = true;
                         break;
                     }
                 }
+#endif
 
                 if (false == unsup_var_dspace) {
                     for (int i=0; i<ndims; i++) {
@@ -605,6 +607,13 @@ throw(Exception)
             // attribute.
             if (H5Sget_simple_extent_dims(aspace_id, &asize[0], &maxsize[0])<0) 
                 throw2("Cannot obtain the dim. info for the attribute ", attr_name);
+
+            // Here we need to take care of 0-length attribute. This is legal in HDF5.
+            for(int j = 0; j< ndims; j++) {
+            // STOP adding unsupported_attr_dspace!
+
+
+            }
 
             // Return ndims and size[ndims]. 
             for (int j = 0; j < ndims; j++)
@@ -1083,7 +1092,6 @@ void File::Handle_VarAttr_Unsupported_Dtype() throw(Exception) {
        
     }
  
-
 }
 
 void File:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
@@ -1135,7 +1143,17 @@ void File:: Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
 
 
 }
-void File::Handle_Unsupported_Dspace() throw(Exception) {
+
+void File::Handle_GroupAttr_Unsupported_Dspace() throw(Exception) {
+
+
+}
+
+void File::Handle_VarAttr_Unsupported_Dspace() throw(Exception) {
+
+
+}
+void File::Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     // The unsupported data space 
     if (false == this->vars.empty()) {
@@ -1152,6 +1170,11 @@ void File::Handle_Unsupported_Dspace() throw(Exception) {
                 }
             }
         }
+    }
+
+    if(true == include_attr) {
+        Handle_GroupAttr_Unsupported_Dspace();
+        Handle_VarAttr_Unsupported_Dspace();
     }
 }
 

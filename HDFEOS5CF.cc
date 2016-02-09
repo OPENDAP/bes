@@ -257,18 +257,18 @@ void EOS5File:: Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
 }
 
 
-void EOS5File:: Handle_Unsupported_Dspace() throw(Exception) {
+void EOS5File:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     if(true == check_ignored) {
         Gen_Unsupported_Dspace_Info();
     }
 
-    File::Handle_Unsupported_Dspace();
-    Handle_EOS5_Unsupported_Dspace();
+    File::Handle_Unsupported_Dspace(include_attr);
+    Handle_EOS5_Unsupported_Dspace(include_attr);
  
 }
 
-void EOS5File:: Handle_EOS5_Unsupported_Dspace() throw(Exception) {
+void EOS5File:: Handle_EOS5_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
  
     if (true == this->unsupported_var_dspace) {
