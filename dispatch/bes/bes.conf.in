@@ -99,11 +99,11 @@ BES.ServerPort=10022
 
 # BES.ServerIP = 127.0.0.1
 
-# The BES supports administrative interface. It accepts specific BES
+# The BES supports an administrative interface. It accepts specific BES
 # admin commands and is used by Hyrax to support administrator actions
 # accessible via the browser based Hyrax Admin Interface. Use the 
 # BES.DaemonPort parameter to set the port on which the BES admin 
-# interface listens. The OLFS configuration for the BES port must
+# interface listens. The OLFS configuration for the BES admin port must
 # match this value. 
 
 # BES.DaemonPort=11002
