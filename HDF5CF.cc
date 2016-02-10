@@ -354,6 +354,9 @@ throw(Exception) {
 
                        var->unsupported_attr_dtype = temp_unsup_attr_dtype;
                        var->unsupported_attr_dspace = temp_unsup_attr_dspace;
+
+                       if(!this->unsupported_var_attr_dspace && temp_unsup_attr_dspace)
+                          this->unsupported_var_attr_dspace = true;
                     }
  
                     this->vars.push_back(var);
@@ -1158,13 +1161,70 @@ void File:: Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
 
 void File::Handle_GroupAttr_Unsupported_Dspace() throw(Exception) {
 
+    // First root
+    if  (false == this->root_attrs.empty()) {
+        if (true == this->unsupported_attr_dspace) {
+            for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
+                ira != this->root_attrs.end(); ) {
+                // Remove 0-size attribute
+                if ((*ira)->count == 0) {
+                    delete (*ira);
+		    ira = this->root_attrs.erase(ira);
+		}
+                else {
+                    ++ira;
+                }
+            }
+        }
+    }
 
+    // Then the group attributes
+    if (false == this->groups.empty()) {
+        for (vector<Group *>::iterator irg = this->groups.begin();
+            irg != this->groups.end(); ++irg) {
+            if (false == (*irg)->attrs.empty()) {
+                if (true == (*irg)->unsupported_attr_dspace) {
+                    for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                        ira != (*irg)->attrs.end(); ) {
+                        if ((*ira)->count == 0) {
+                            delete (*ira);
+                            ira = (*irg)->attrs.erase(ira);
+                        }
+                        else {
+                            ++ira;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void File::Handle_VarAttr_Unsupported_Dspace() throw(Exception) {
 
-
+    if (false == this->vars.empty()) {
+        if(true == this->unsupported_var_attr_dspace) {
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                if (false == (*irv)->attrs.empty()) {
+                    if (true == (*irv)->unsupported_attr_dspace) {
+                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                            ira != (*irv)->attrs.end(); ) {
+                            if (0 == (*ira)->count) {
+                                delete (*ira);
+                                ira = (*irv)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
+
 void File::Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     // The unsupported data space 
@@ -1193,6 +1253,9 @@ void File::Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
 void File:: Gen_Unsupported_Dspace_Info() throw(Exception) {
 
+    // Notice in this function, we deliberately don't put the case when an attribute dimension has 0 length.
+    // Since doing this requires non-trivial change of the source code and the 0-size attribute case is really, really rare,
+    // so we just "ignore" this case in the "ignored" information.
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
             for (vector<Var *>::iterator irv = this->vars.begin();

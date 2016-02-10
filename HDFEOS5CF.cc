@@ -285,6 +285,29 @@ void EOS5File:: Handle_EOS5_Unsupported_Dspace(bool include_attr) throw(Exceptio
             }
         }
     }
+
+    if(true == include_attr) {
+        if(true == this->unsupported_var_attr_dspace) {
+            for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
+                ircv != this->cvars.end(); ++ircv) {
+                if (false == (*ircv)->attrs.empty()) {
+                    if (true == (*ircv)->unsupported_attr_dspace) {
+                        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                            ira != (*ircv)->attrs.end(); ) {
+                            if (0 == (*ira)->count) {
+                                delete (*ira);
+                                ira = (*ircv)->attrs.erase(ira);
+                            }   
+                            else {
+                                ++ira;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 void EOS5File:: Gen_Unsupported_Dspace_Info() throw(Exception) {

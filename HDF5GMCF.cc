@@ -514,6 +514,48 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
         }// for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
     }// if(true == this->unsupported_dspace) 
 
+    if(true == include_attr) {
+        if(true == this->unsupported_var_attr_dspace) {
+            for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+                ircv != this->cvars.end(); ++ircv) {
+                if (false == (*ircv)->attrs.empty()) {
+                    if (true == (*ircv)->unsupported_attr_dspace) {
+                        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                            ira != (*ircv)->attrs.end(); ) {
+                            if (0 == (*ira)->count) {
+                                delete (*ira);
+                                ira = (*ircv)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
+                ircv != this->spvars.end(); ++ircv) {
+                if (false == (*ircv)->attrs.empty()) {
+                    if (true == (*ircv)->unsupported_attr_dspace) {
+                        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                            ira != (*ircv)->attrs.end(); ) {
+                            if (0 == (*ira)->count) {
+                                delete (*ira);
+                                ira = (*ircv)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }// if(true == this->unsupported_var_attr_dspace)
+    }// if(true == include_attr)
+
+
 }
 
 void GMFile:: Gen_Unsupported_Dspace_Info() throw(Exception){

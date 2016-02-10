@@ -710,6 +710,7 @@ namespace HDF5CF
                     unsupported_attr_dtype(false),
                     unsupported_var_dspace(false),
                     unsupported_attr_dspace(false),
+                    unsupported_var_attr_dspace(false),
                     addeddimindex(0),
                     check_ignored(false),
                     have_ignored(false),
@@ -737,6 +738,7 @@ namespace HDF5CF
 
             bool unsupported_var_dspace;
             bool unsupported_attr_dspace;
+            bool unsupported_var_attr_dspace;
 
             set<string> dimnamelist;
             //set<string>unlimited_dimnamelist;
