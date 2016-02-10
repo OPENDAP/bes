@@ -192,6 +192,18 @@ Attributes {
         String origname "DataFormatType";
         String fullnamepath "/Metadata/DataFormatType";
     }
+    Metadata_GapStartTime {
+        String Shape "Gap_Array";
+        String Type "FixLenStr";
+        String origname "GapStartTime";
+        String fullnamepath "/Metadata/GapStartTime";
+    }
+    Metadata_GapStopTime {
+        String Shape "Gap_Array";
+        String Type "FixLenStr";
+        String origname "GapStopTime";
+        String fullnamepath "/Metadata/GapStopTime";
+    }
     Metadata_GranulePointer {
         String Shape "Scalar";
         String Type "VarLenStr";
