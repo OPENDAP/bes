@@ -162,11 +162,12 @@ throw(Exception) {
 
         num_attrs = oinfo.num_attrs;
         bool temp_unsup_attr_atype = false;
+        bool temp_unsup_attr_dspace = false;
 
         for (int j = 0; j < num_attrs; j ++) {
             Attribute * attr = new Attribute();
             try {
-                this->Retrieve_H5_Attr_Info(attr,root_id,j, temp_unsup_attr_atype);
+                this->Retrieve_H5_Attr_Info(attr,root_id,j, temp_unsup_attr_atype,temp_unsup_attr_dspace);
             }
             catch(...) {
                 delete attr;
@@ -177,6 +178,7 @@ throw(Exception) {
         }
         
         this->unsupported_attr_dtype = temp_unsup_attr_atype;
+        this->unsupported_attr_dspace = temp_unsup_attr_dspace;
     }
 }
 
@@ -277,16 +279,18 @@ throw(Exception) {
 
                         int num_attrs = oinfo.num_attrs;
                         bool temp_unsup_attr_dtype = false;
+                        bool temp_unsup_attr_dspace = false;
 
                         for (int j = 0; j < num_attrs; j ++) {
 
                             attr = new Attribute();
-                            Retrieve_H5_Attr_Info(attr,cgroup,j, temp_unsup_attr_dtype);
+                            Retrieve_H5_Attr_Info(attr,cgroup,j, temp_unsup_attr_dtype,temp_unsup_attr_dspace);
                             group->attrs.push_back(attr);
                             attr = NULL;
                        }
 
                        group->unsupported_attr_dtype = temp_unsup_attr_dtype;
+                       group->unsupported_attr_dspace = temp_unsup_attr_dspace;
                     }
                     this->groups.push_back(group);
                     Retrieve_H5_Obj(cgroup,full_path_name.c_str(),include_attr);
@@ -337,17 +341,19 @@ throw(Exception) {
 
                        int num_attrs = oinfo.num_attrs;
                        bool temp_unsup_attr_dtype = false;
+                       bool temp_unsup_attr_dspace = false;
 
                        for (int j = 0; j < num_attrs; j ++) {
                           
                             attr = new Attribute();
 
-                            Retrieve_H5_Attr_Info(attr,cdset,j, temp_unsup_attr_dtype);
+                            Retrieve_H5_Attr_Info(attr,cdset,j, temp_unsup_attr_dtype,temp_unsup_attr_dspace);
                             var->attrs.push_back(attr);
                             attr = NULL;
                        }
 
                        var->unsupported_attr_dtype = temp_unsup_attr_dtype;
+                       var->unsupported_attr_dspace = temp_unsup_attr_dspace;
                     }
  
                     this->vars.push_back(var);
@@ -531,7 +537,7 @@ throw(Exception){
 
 
 void 
-File:: Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id,const int j, bool &unsup_attr_dtype) 
+File:: Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id,const int j, bool &unsup_attr_dtype, bool &unsup_attr_dspace) 
 throw(Exception) 
 
 {
@@ -610,14 +616,20 @@ throw(Exception)
 
             // Here we need to take care of 0-length attribute. This is legal in HDF5.
             for(int j = 0; j< ndims; j++) {
-            // STOP adding unsupported_attr_dspace!
-
-
+                // STOP adding unsupported_attr_dspace!
+                if(asize[0] == 0) {
+                    unsup_attr_dspace = true;
+                    break;
+                }
             }
 
-            // Return ndims and size[ndims]. 
-            for (int j = 0; j < ndims; j++)
-                nelmts *= asize[j];
+            if(false == unsup_attr_dspace) {
+                // Return ndims and size[ndims]. 
+                for (int j = 0; j < ndims; j++)
+                    nelmts *= asize[j];
+            }
+            else
+                nelmts = 0;
         } // if(ndims != 0)
 
         size_t ty_size = H5Tget_size(ty_id);

@@ -633,7 +633,7 @@ namespace HDF5CF
         protected:
 
             void Retrieve_H5_Obj(hid_t grp_id,const char*gname, bool include_attr) throw(Exception);
-            void Retrieve_H5_Attr_Info(Attribute *,hid_t obj_id,const int j, bool& unsup_attr_dtype) throw(Exception);
+            void Retrieve_H5_Attr_Info(Attribute *,hid_t obj_id,const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace) throw(Exception);
             void Retrieve_H5_Attr_Value( Attribute *attr, string) throw (Exception);
 
             void Retrieve_H5_VarType(Var*,hid_t dset_id, const string& varname, bool &unsup_var_dtype) throw(Exception);
