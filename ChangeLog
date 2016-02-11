@@ -1,3 +1,354 @@
+2016-01-21  kyang2014  <myang6@hdfgroup.org>
+
+	Fix the uninitialized variable and error handling issues detected by the coverity scan test.
+
+	HFVHANDLER-176, add DAP4 DMR tests(including valgrind) for NASA files.
+
+2016-01-20  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-172, the datatype for unsigned 16-bit integer should UInt16 instead of UInt6(typo).
+
+2016-01-07  kyang2014  <myang6@hdfgroup.org>
+
+	Update README etc for the 2.3.2 release
+
+2016-01-06  kyang2014  <myang6@hdfgroup.org>
+
+	Fixed few issues discovered at coverity scan on Oct.27th, 1) Error handling related to calling BESkey get_value function. Use the try, catch block to throw the error. 2) Check return value of HDF5 H5Vlen_reclaim API 3) Add a few initalization for a copy function of a class constructor.
+
+	Merge branch 'master' into hdf5_handler_local A few patched error handling added in the master
+
+	Add comments for the recent enhancement to handle coordinates for general products.
+
+2016-01-05  kyang2014  <myang6@hdfgroup.org>
+
+	Change "coordinates" attribute for the GENERAL_COOR case. Now all the SMAP files work as they are supposed to work. Tests and valgrind tests all get passed.
+
+2016-01-04  Kent Yang  <myang6@hdfgroup.org>
+
+	Change coordinates for the General_Coord_Attr case.
+
+2016-01-04  kyang2014  <myang6@hdfgroup.org>
+
+	Flatten coordinates for the General_Coord_Attr_pattern case.
+
+2016-01-02  Kent Yang  <myang6@hdfgroup.org>
+
+	Fix compiling bugs to handle the case that have "Coordinates" attributes in a variable.
+
+	Check if the handler can flatten the "coordinates" attribute of variables for general HDF5 products.
+
+2016-01-01  kyang2014  <myang6@hdfgroup.org>
+
+	Add code to check lat/lon 1-D same size case.
+
+2015-12-31  Kent Yang  <myang6@hdfgroup.org>
+
+	2D latlon check
+
+2015-12-30  Kent Yang  <myang6@hdfgroup.org>
+
+	Trim the latlon_name_size pair vectors for the final coordinates handling.
+
+	Trim the latlon cv candidates by comparing the dim order/size of lat and lon.
+
+2015-12-29  Kent Yang  <myang6@hdfgroup.org>
+
+	Latitude,longitude have coordinates: check if lat and lon share the same dimension size with same order.
+
+	Add code to check if the file is qualified to handle the "coordinates" attribute. Collect qualified lat/lon etc.
+
+2015-12-29  kyang2014  <myang6@hdfgroup.org>
+
+	Check if lat/lon is stored inside the "coordinates" attribute.
+
+2015-12-28  Kent Yang  <myang6@hdfgroup.org>
+
+	For general products, if the file is not dimscale,latlon 1D or latlon 2D, check if it belongs to a product that has "lat,lon" coordinates attributes.
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 1) Ensured that libdap::Error objects are converted to BESDapError objects when caught. and 2) Catch and rethrow BESError objects whenever they could be thrown so they don't get swept up as unidentified errors in a catch(...) clause.
+
+2015-12-28  kyang2014  <myang6@hdfgroup.org>
+
+	Start adding the support of 2-D lat/lon in the coordinate attributes.
+
+	Add a few comments.
+
+	Add CF units for 2-D latitude and longitude coordinate variables if their units are not CF compliant.
+
+2015-12-24  kyang2014  <myang6@hdfgroup.org>
+
+	Add netcdf-4-like 1-D zonal lat bescmd and baseline files. Also add some comments.
+
+	Adding comments.
+
+2015-12-23  kyang2014  <myang6@hdfgroup.org>
+
+	Add a few minor comments.
+
+	HFVHANDLER-173, fix a few warnings discovered by other platforms. Also update two NASA data bescmd data reading files. The variable names are changed.
+
+	HFVHANDLER-173, clean up code-comment out the single 2-D lat/lon netCDF-4 case.
+
+	HFVHANDLER-173, add multi-2D lat/lon netCDF-4-like cases to .at and valgrind.at files.
+
+	HFVHANDLER-173, Clean up code a bit and check in the baseline files for the test
+
+2015-12-22  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, finish the main coding and the testing of netCDF-4 like 2-D lat/lon CV case.
+
+2015-12-21  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, Handle 2-D lat/lon for netCDF4-like products. Handle coordinates attribute.
+
+2015-12-19  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, handle the 2D lat/lon that has a shared dimennsion case.
+
+	Fix typo for the testing CDL and the corresponding HDF5 file. The units of lat/lon were wrong in the previous version.
+
+2015-12-19  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, debugging, check the 2-D lat/lon with the shared dimension case.
+
+2015-12-18  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, remove 2D lat/lon CV candidates from the regular variable vector. Use a book keeping index to avoid the comparision of var path for all 2-D variables in the file. A typical swath case may include many 2-D general variables.
+
+	Add a new testing file and the corresponding CDL to the testsuite
+
+2015-12-17  Kent Yang  <myang6@hdfgroup.org>
+
+	 HFVHANDLER-173, adding code to create coordinate variables.
+
+2015-12-17  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, make unique 2dlat/lon CV candidates
+
+	HFVHANDLER-173, adding code to remove 2-D lat that shares the same dimension out of the 2-D lat/lon CV candidates. Also apply the same to the 2-D lon.
+
+2015-12-16  Kent Yang  <myang6@hdfgroup.org>
+
+	Adding more code to obtain the lat/lon CVs for >1 group netCDF-4 like case.
+
+2015-12-16  kyang2014  <myang6@hdfgroup.org>
+
+	Adding more code to check the 2-D lat/lon case.
+
+2015-12-15  Muqun (Kent) Yang  <myang6@wenruo.ad.hdfgroup.org>
+
+	Add a zonal-average netCDF-4 like HDF5 file for testing.
+
+	Add a CDL file to generate zonal average netCDF file
+
+2015-12-15  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-169, Handle 2-D lat/lon cv general case. Create 2-D lat/lon vectors and trim the ones that can be replaced by 1-D lat/lon.
+
+	HFVHANDLER-169, add multi-group 2-D lat/lon netcdf4-like HDF5 file das and dds bescmd files.
+
+	HFVHANDLER-169, add multi-group 2-D lat/lon netCDF-4-like HDF5 files.
+
+	HFVHANDLER-169, add the multi-groups 2-D lat/lon netCDF-4-like HDF5 testing files
+
+2015-12-14  kyang2014  <myang6@hdfgroup.org>
+
+	Add the function to check if the file only contains 1-D CVs. The current code will not work for 2-D lat/lon CV case. Just check in the code to make sure we don't lose them.
+
+2015-12-11  Muqun (Kent) Yang  <myang6@wenruo.ad.hdfgroup.org>
+
+	HFVHANDLER-169, add code to see if this netCDF-4 like file doesn't need to check 2-D lat/lon general variables.
+
+2015-12-11  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-169, support 2-D lat/lon CVs across multiple groups. First, check if 1-D lat/lon CV exists and this general case can be avoided.
+
+2015-12-10  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-173, add TOMS-MeaSURES to NASA testsuite.
+
+2015-12-08  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #3 from OPENDAP/hdf5_handler_local
+	Hdf5 handler local
+
+2015-12-08  kyang2014  <myang6@hdfgroup.org>
+
+	1) Change the way to handle the "coordinates" attribute for the case when coordinate variables contain 2-D lat/lon.    Previous approach: 1) In general, if finding the "coordinates" attribute in a variable, remove that "coordinates" attribute.                       2) Then, create the new "coordinates" attribute based on the dim. to cv mapping.                       This is to correct the "coordinates" attribute based on the dim.    The previous approach problem:                       1) Essentially the handler should only correct the "coordinates" attribute that involves 2-D lat/lon.                       2) This approach  may delete any "coordinates" attribute that doesn't involve 2-D lat/lon.                          Handlers should leave to data producers or users to correct those values if necessary.                       3) It may add wrong "coordinates". For 1-D variable, the "coordinates" may be 2-D "latitude", which is not right.    Current approach:  1) Only modify the "coordinates" attribute that involves 2-D lat/lon.
+
+2015-12-07  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-169, correct the coordinate variables for 2-D lat/lon. The dimension variables of lat/lon should be treated as general variables, not as coordinate variables.
+
+2015-12-04  kyang2014  <myang6@hdfgroup.org>
+
+	Support TOMS MeASURES products by allowing 2-D lat/lon uses dimension scales.
+
+2015-12-03  kyang2014  <myang6@hdfgroup.org>
+
+	Update the h5.conf.in file to include the BES key to keep/remove leading underscore of the variable path. Descriptions are added, the recommended way is to remove the leading underscore.
+
+	HFVHANDLER-170, update baseline files for the "recommended" way to remove the leading underscore from the variable names.
+
+	Update bes.conf etc. files to include the bes key to remove/keep the leading _ in the variable name. HFVHANDLER-170.
+
+	The second-round of check-in to handle SMAP name inconsistency. For the CF option, remove the leading underscore of a variable name for the general HDF5 products. Also introduce a key to go back to the old way.
+
+2015-12-02  kyang2014  <myang6@hdfgroup.org>
+
+	The first round of check-in to handle SMAP name inconsistency. SMAP falls to general 2-D lat/lon case for the CF option. 1) Add cell_lat, cell_lon for the lat/lon pair 2) Make the code not catogrize 1-D lat/lon swath profile case as grid. This will make level-2 SMAP back to the general case that cannot be handled.
+
+2015-11-25  kyang2014  <myang6@hdfgroup.org>
+
+	Fix a memory leaking issue. Forgot "delete the new" for a special case. Also add a sample besstandalone script for easy testing.
+
+	Add int8 mapping baseline files and remove the hard link dap baseline files. Check the comments of hdf5_handlerTest.at file for explanation.
+
+	Update .at files to reflect the addition of int8 tests and the removal of hard link dap test. Also add a bunch of new valgrind tests for NASA products
+
+2015-11-24  Kent Yang  <myang6@hdfgroup.org>
+
+	Add new NASA files.
+
+	Add nasa .at and .bescmd files to git repo. Also modify download.sh.
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+
+2015-10-26  root  <root@localhost.localdomain>
+
+	Tackling issues discovered by coverity. 1)fixed a bug (missing a parentsis) inside HDF5GCFProduct.cc. 2) Removed a couple of unnecessary checkings for overflow. 3) Added a few uninitialized variables. 4) Fixed a case that may cause resource leaking.
+
+2015-10-22  James Gallagher  <jgallagher@opendap.org>
+
+	Bumped up the libdap requirement in .spec
+
+	Fixed test #257's baseline - requires a new libdap
+
+2015-10-21  James Gallagher  <jgallagher@opendap.org>
+
+	Updated baseline for #257
+	I fixed an error in getdap4 used by this test) and now it
+	prints the data for child groups. Had to update the baseline.
+
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'cache_control_patch_02'
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and BES.CacheSize to specifically reference the decompression cache (which is waht it actually is) so as to avoid cache configuration collisions with various handlers that also were utilizing teh same cache with different expectations. Now, by calling these BES keys BES.UncompressCache.dir, BES.UncompressCache.prefix, and BES.UncompressCache.size we specifically isolate the decompression cache configuration from the other caches.
+
+2015-09-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the version mistake.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+	Conflicts: NEWS
+
+	Formatted NEWS
+
+2015-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Version 2.3.0
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #2 from OPENDAP/hdf5_handler_local
+	Hdf5 handler local
+
+2015-09-18  muqun yang  <myang6@hdfgroup.org>
+
+	Merge branch 'hdf5_handler_local' of https://github.com/OPENDAP/hdf5_handler into hdf5_handler_local
+
+	 Use the right and platform-independent way to handle the erase operation in the iterator loop. Although the previous way passes all the tests, it may still crash Linux and MacOS according to JG's experience.
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+	Fixed DIST_EXTRA for the new test directories
+
+	Merge branch 'hdf5_handler_local' of https://github.com/opendap/hdf5_handler into hdf5_handler_local
+
+2015-09-15  muqun yang  <myang6@hdfgroup.org>
+
+	This at file was not up-to-dated in the previous check-in.
+
+2015-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added bes.ignore.conf.modules.in
+
+2015-09-15  muqun yang  <myang6@hdfgroup.org>
+
+	comment out cerr debugging lines.
+
+2015-09-14  muqun yang  <myang6@hdfgroup.org>
+
+	Forgot adding new files(both source code and testing files) for the last commit.
+
+	This check-in includes a new bes option to list the ignored object info from HDF5 to DAP2 for the CF option and also include the HDF5 to DAP4 mapping(group, dimension,64-bit integer and 8-bit integer) for the default option. Also add/improve few NASA HDF5 products(GES DISC GPM, ASF SeaSat and LP DAAC ASTER AED) and the handling of netCDF4-like products for the CF option.
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-06-23  muqun yang  <myang6@hdfgroup.org>
+
+	This check-in mainly fixes and addes features for the following: For CF option: 1) Updated the code to work with the latest GPM level 3 version 2) Added the support for ASF SEASAT, LP DAAC ASTER GED products 3) Updated the code to support latest Aquarius level 3 product 4) Fixed the bug when _Fillvalue attribute datatype is not the same as variable datatype For default option: 1) Fixed the compound data type reading and added complex tests to the testsuite
+
+2015-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Added new BESStopWatch support.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 2.3.0
+
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2015-01-14  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed Makefile.am for DAP4 build
+	The handler need the symbol USE_DAP4 defined to work with DAP4
+	requests. I added -DUSE_DAP4 to AM_CPPFLAGS and the tests now
+	work.
 2015-01-06  Kent Yang <myang6@hdfgroup.org>
         For the CF option, add support to make two-dimensional latitude and
 	longitude coordinate variables follow CF conventions. 

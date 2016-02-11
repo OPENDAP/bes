@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf5_handler
-M_VER=2.3.1
+M_VER=2.3.2
 
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
