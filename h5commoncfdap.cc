@@ -98,7 +98,7 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
                 delete bt;
                 delete sca_str;
             }
-            if(H5INT32 == var->getType()) {
+            else if(H5INT32 == var->getType()) {
                 HDF5CFInt32 * sca_int32 = NULL;
                 try {
                     sca_int32 = new HDF5CFInt32(var->getFullPath(),filename);
