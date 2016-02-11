@@ -98,7 +98,7 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
                 delete bt;
                 delete sca_str;
             }
-            else {
+            else {// STOPP: TODO -Need to support scalar type data.
                 delete bt;
                 throw InternalErr(__FILE__,__LINE__,"Non string scalar data is not supported");
             }
