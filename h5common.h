@@ -1,5 +1,7 @@
-// This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
+// data server.
+
+// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,37 +20,32 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // You can contact The HDF Group, Inc. at 1800 South Oak Street,
 // Suite 203, Champaign, IL 61820  
-
 ////////////////////////////////////////////////////////////////////////////////
-/// \file HDF5CFStr.h
-/// \brief This class provides a way to map HDF5 Str to DAP Str for the CF option
+/// \file h5common.h
+/// Common helper functions to access HDF5 data for both the CF and the default options.
 ///
-/// In the future, this may be merged with the default option.
-/// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-////////////////////////////////////////////////////////////////////////////////
+/// 
 
-#ifndef _HDF5CFSTR_H
-#define _HDF5CFSTR_H
 
-// STL includes
+#ifndef _H5COMMON_H
+#define _H5COMMON_H
+#include <hdf5.h>
+#include <vector>
 #include <string>
 
-// DODS includes
-#include <dods-limits.h>
-#include <Str.h>
+void get_data(hid_t dset, void *buf);
 
-using namespace libdap;
+int get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
 
-class HDF5CFStr:public Str {
-  public:
-    HDF5CFStr(const string &n, const string &d,const string &varname);
-    virtual ~ HDF5CFStr();
-    virtual BaseType *ptr_duplicate();
-    virtual bool read();
-  private:
-   string varname;
-};
+void get_strdata(int, char *, char *, int);
 
-#endif                          // _HDF5CFSTR_H
+bool read_vlen_string(hid_t d_dset_id, int nelms, hsize_t *offset, hsize_t *step, hsize_t *count,std::vector<std::string> &finstrval);
 
+bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id);
+
+void get_vlen_str_data(char*src,std::string &finalstrval);
+
+
+
+#endif                          //_H5COMMON_H

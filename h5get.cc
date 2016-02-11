@@ -1,6 +1,6 @@
 // data server.
 
-// Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -17,8 +17,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5get.cc
@@ -605,6 +605,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
 }
 
 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_data(hid_t dset, void *buf)
 /// will get all data of a \a dset dataset and put it into \a buf.
@@ -803,7 +804,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     return 0;
 }
 
-
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn check_h5str(hid_t h5type)
@@ -822,6 +823,7 @@ bool check_h5str(hid_t h5type)
 }
 
 
+#if 0
 bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep, hsize_t *hcount,vector<string> &finstrval)
 {
 
@@ -971,6 +973,7 @@ void get_vlen_str_data(char*temp_bp,string &finalstr_val) {
         finalstr_val="";
 
 }
+#endif
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn print_attr(hid_t type, int loc, void *sm_buf)
 /// will get the printed representation of an attribute.

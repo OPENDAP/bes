@@ -5,7 +5,7 @@
 // server. 
 
 // Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This is free software; you can redistribute it and/or modify it under the

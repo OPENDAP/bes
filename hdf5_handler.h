@@ -2,7 +2,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2009-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2009-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \mainpage

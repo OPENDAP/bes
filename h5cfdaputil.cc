@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -28,7 +28,7 @@
 ///  
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2013 The HDF Group
+/// Copyright (C) 2011-2016 The HDF Group
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             // Since the character may be a special character and DAP may not be able to represent so supposedly we should escape the character
             // by calling the escattr function. However, HDF5 native char maps to DAP Int16. So the mapping assumes that users will never
             // use HDF5 native char or HDF5 unsigned native char to represent characters. Instead HDF5 string should be used to represent characters.
-            // So don't do any escaping of H5CHAR for now. KY 2013-10-14
+            // So don't do any escaping of H5CHAR for now. KY 2016-10-14
             rep <<(int)c;
             return rep.str();
         }
