@@ -98,6 +98,20 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
                 delete bt;
                 delete sca_str;
             }
+            if(H5INT32 == var->getType()) {
+                HDF5CFInt32 * sca_int32 = NULL;
+                try {
+                    sca_int32 = new HDF5CFInt32(var->getFullPath(),filename);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
+                }
+                dds.add_var(sca_int32);
+                delete bt;
+                delete sca_int32;
+
+            }
             else {// STOPP: TODO -Need to support scalar type data.
                 delete bt;
                 throw InternalErr(__FILE__,__LINE__,"Non string scalar data is not supported");

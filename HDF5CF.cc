@@ -463,7 +463,7 @@ throw(Exception){
             // Note: currently we only support the string scalar space dataset. 
             // In the future, other atomic datatype should be supported. KY 2012-5-21
 // STOP to CHECK if one can turn on the scalar type
-//#if 0
+#if 0
             if (H5S_SCALAR == space_class) {
 
                 // Obtain the data type of the variable. 
@@ -475,7 +475,7 @@ throw(Exception){
 
                 H5Tclose(ty_id);
             }
-//#endif
+#endif
 
             if (false == unsup_var_dspace) {
                 

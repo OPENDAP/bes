@@ -32,7 +32,9 @@
 
 #include <InternalErr.h>
 
+#include <BESDebug.h>
 #include "HDF5CFUInt16.h"
+#include "h5get.h"
 
 HDF5CFUInt16::HDF5CFUInt16(const string &n, const string &d) : UInt16(n, d)
 {
@@ -48,25 +50,27 @@ BaseType *HDF5CFUInt16::ptr_duplicate()
 
 bool HDF5CFUInt16::read()
 {
+
+    BESDEBUG("h5","Coming to HDF5CFUInt16 read "<<endl);
+
     if (read_p())
         return true;
 
-    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-    if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    hid_t file_id = -1;
+    if ((file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
+        ostringstream eherr;
+        eherr << "HDF5 File " << dataset()
+              << " cannot be opened. "<<endl;
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-   
-    hid_t dset_id = -1;
-    if(true == is_dap4())
-        dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
-    else
-        dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
 
+    hid_t dset_id = -1;
+
+    dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
     }
-    
 
     try {
 	dods_uint16 buf;
@@ -87,8 +91,8 @@ bool HDF5CFUInt16::read()
         throw;
     }
 
-
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    return true;
+    //throw InternalErr(__FILE__, __LINE__,
+    //                  "Unimplemented read method called.");
 }
 
