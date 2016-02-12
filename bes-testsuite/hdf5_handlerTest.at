@@ -172,11 +172,10 @@ AT_BESCMD_RESPONSE_TEST([t_cf_2dll.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_cf_2dllz.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_cf_2dllz.h5.das.bescmd])
 
-# The current handler doesn't support scalar.
-# AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_int_scalar.h5.data.bescmd])
-# AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.dds.bescmd])
-# AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.ddx.bescmd])
+# The scalar support.
+AT_BESCMD_RESPONSE_TEST([t_scalar_dset.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_scalar_dset.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_scalar_dset.h5.dds.bescmd])
 
 # It loops forever.
 AT_BESCMD_RESPONSE_TEST([t_link_comment.h5.das.bescmd])

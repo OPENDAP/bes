@@ -30,15 +30,22 @@
 
 #include "config_hdf5.h"
 
-#include <InternalErr.h>
-
-#include <BESDebug.h>
+#include "InternalErr.h"
 #include "HDF5CFUInt16.h"
-#include "h5get.h"
+#include <BESDebug.h>
+#include "h5common.h"
+
+
 
 HDF5CFUInt16::HDF5CFUInt16(const string &n, const string &d) : UInt16(n, d)
 {
 }
+
+HDF5CFUInt16::HDF5CFUInt16(const string &n, const string &d,const string &d_f) : UInt16(n, d)
+{
+    filename = d_f;
+}
+
 
 HDF5CFUInt16::~HDF5CFUInt16()
 {
@@ -57,19 +64,16 @@ bool HDF5CFUInt16::read()
         return true;
 
     hid_t file_id = -1;
-    if ((file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
-        ostringstream eherr;
-        eherr << "HDF5 File " << dataset()
-              << " cannot be opened. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    if ((file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
+        throw InternalErr (__FILE__, __LINE__, "Failed to obtain the HDF5 file ID.");
     }
 
     hid_t dset_id = -1;
 
-    dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+    dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
     }
 
     try {

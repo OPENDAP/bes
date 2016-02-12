@@ -56,99 +56,178 @@ using namespace HDF5CF;
 
 void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
 
-    BaseType *bt = NULL;
+    const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
-    switch(var->getType()) {
-#define HANDLE_CASE(tid,type)                                  \
-        case tid:                                           \
-            bt = new (type)(var->getNewName(),var->getFullPath());  \
-            break;
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFInt16);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
-        default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
-#undef HANDLE_CASE
+    if (0 == dims.size()) { 
+        if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
+            HDF5CFStr *sca_str = NULL;
+            try {
+                sca_str = new HDF5CFStr(var->getNewName(),filename,var->getFullPath());
+            }
+            catch(...) {
+                throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
+            }
+            dds.add_var(sca_str);
+            delete sca_str;
+        }
+        else {
+            switch(var->getType()) {
+
+                case H5UCHAR:
+                {
+                    HDF5CFByte * sca_uchar = NULL;
+                    try {
+                        sca_uchar = new HDF5CFByte(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFByte.");
+                    }
+                    dds.add_var(sca_uchar);
+                    delete sca_uchar;
+
+                }
+                break;
+                case H5CHAR:
+                case H5INT16:
+                {
+                    HDF5CFInt16 * sca_int16 = NULL;
+                    try {
+                        sca_int16 = new HDF5CFInt16(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFInt16.");
+                    }
+                    dds.add_var(sca_int16);
+                    delete sca_int16;
+                }
+                break;
+                case H5UINT16:
+       	        {
+                    HDF5CFUInt16 * sca_uint16 = NULL;
+                    try {
+                        sca_uint16 = new HDF5CFUInt16(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFUInt16.");
+                    }
+                    dds.add_var(sca_uint16);
+                    delete sca_uint16;
+                }
+                break;
+                case H5INT32:
+                {
+                    HDF5CFInt32 * sca_int32 = NULL;
+                    try {
+                        sca_int32 = new HDF5CFInt32(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFInt32.");
+                    }
+                    dds.add_var(sca_int32);
+                    delete sca_int32;
+                }
+                break;
+                case H5UINT32:
+                {
+                    HDF5CFUInt32 * sca_uint32 = NULL;
+                    try {
+                        sca_uint32 = new HDF5CFUInt32(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFUInt32.");
+                    }
+                    dds.add_var(sca_uint32);
+                    delete sca_uint32;
+                }
+                break;
+                case H5FLOAT32:
+                {
+                    HDF5CFFloat32 * sca_float32 = NULL;
+                    try {
+                        sca_float32 = new HDF5CFFloat32(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFFloat32.");
+                    }
+                    dds.add_var(sca_float32);
+                    delete sca_float32;
+                }
+                break;
+                case H5FLOAT64:
+                {
+                    HDF5CFFloat64 * sca_float64 = NULL;
+                    try {
+                        sca_float64 = new HDF5CFFloat64(var->getNewName(),var->getFullPath(),filename);
+                    }
+                    catch(...) {
+                        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFFloat64.");
+                    }
+                    dds.add_var(sca_float64);
+                    delete sca_float64;
+ 
+                }
+                break;
+                default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            }
+        }
     }
+ 
+    else {
+        BaseType *bt = NULL;
 
-    if (bt != NULL) {
+        switch(var->getType()) {
+#define HANDLE_CASE(tid,type)                                  \
+            case tid:                                           \
+                bt = new (type)(var->getNewName(),var->getFullPath()); \
+            break;
+            HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
+            HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
+            HANDLE_CASE(H5CHAR,HDF5CFInt16);
+            HANDLE_CASE(H5UCHAR, HDF5CFByte);
+            HANDLE_CASE(H5INT16, HDF5CFInt16);
+            HANDLE_CASE(H5UINT16, HDF5CFUInt16);
+            HANDLE_CASE(H5INT32, HDF5CFInt32);
+            HANDLE_CASE(H5UINT32, HDF5CFUInt32);
+            HANDLE_CASE(H5FSTRING, Str);
+            HANDLE_CASE(H5VSTRING, Str);
+            default:
+                throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+#undef HANDLE_CASE
+        }
 
-        const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
 //cerr<<"coming to the variable "<<endl;
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
-        if (0 == dims.size()) { 
-            if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
-                HDF5CFStr *sca_str = NULL;
-                try {
-                    sca_str = new HDF5CFStr(var->getNewName(),filename,var->getFullPath());
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
-                }
-                dds.add_var(sca_str);
-                delete bt;
-                delete sca_str;
-            }
-            else if(H5INT32 == var->getType()) {
-                HDF5CFInt32 * sca_int32 = NULL;
-                try {
-                    sca_int32 = new HDF5CFInt32(var->getFullPath(),filename);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
-                }
-                dds.add_var(sca_int32);
-                delete bt;
-                delete sca_int32;
 
-            }
-            else {// STOPP: TODO -Need to support scalar type data.
-                delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Non string scalar data is not supported");
-            }
+        HDF5CFArray *ar = NULL;
+        try {
+            ar = new HDF5CFArray (
+                                  var->getRank(),
+                                  file_id,
+                                  filename,
+                                  var->getType(),
+                                  var->getFullPath(),
+                                  var->getNewName(),
+                                  bt);
         }
-        else {
-
-            HDF5CFArray *ar = NULL;
-            try {
-                ar = new HDF5CFArray (
-                                    var->getRank(),
-                                    file_id,
-                                    filename,
-                                    var->getType(),
-                                    var->getFullPath(),
-                                    var->getNewName(),
-                                    bt);
-            }
-            catch(...) {
-                delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
-            }
-
-//cerr<<"dims size "<<dims.size() <<endl;
-            for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-//cerr<<"Dimen name "<<(*it_d)->getNewName() <<endl;
-               if (""==(*it_d)->getNewName()) 
-                    ar->append_dim((*it_d)->getSize());
-               else 
-                    ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
-            }
-
-            dds.add_var(ar);
+        catch(...) {
             delete bt;
-            delete ar;
+            throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
         }
+
+        for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+            if (""==(*it_d)->getNewName()) 
+                ar->append_dim((*it_d)->getSize());
+            else 
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+        }
+
+        dds.add_var(ar);
+        delete bt;
+        delete ar;
     }
+    
 }
 
 // Currently only when the datatype of fillvalue is not the same as the datatype of the variable, 

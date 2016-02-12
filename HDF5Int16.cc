@@ -109,7 +109,7 @@ bool HDF5Int16::read()
 	    dods_int16 buf;
 	    dods_byte buf2; // wrong, needs to be corrected with signed int8 buffer.
 	    get_data(dset_id, (void *) &buf2);
-	    buf = (signed char) buf2;
+	    buf = (short) buf2;
 	    set_read_p(true);
 	    set_value(buf);
 

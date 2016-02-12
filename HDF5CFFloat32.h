@@ -41,8 +41,11 @@
 using namespace libdap;
 
 class HDF5CFFloat32:public Float32 {
+    private:
+        string filename;
     public:
         HDF5CFFloat32(const string &n, const string &d);
+        HDF5CFFloat32(const string &n, const string &d,const string &d_f);
         virtual ~ HDF5CFFloat32();
         virtual BaseType *ptr_duplicate();
         virtual bool read();

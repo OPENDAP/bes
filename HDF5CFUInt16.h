@@ -39,8 +39,13 @@
 using namespace libdap;
 
 class HDF5CFUInt16:public UInt16 {
+
+    private:
+        string filename;
+
     public:
         HDF5CFUInt16(const string &n, const string &d);
+        HDF5CFUInt16(const string &n, const string &d,const string &d_f);
         virtual ~ HDF5CFUInt16();
         virtual BaseType *ptr_duplicate();
         virtual bool read();

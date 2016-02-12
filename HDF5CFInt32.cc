@@ -35,12 +35,16 @@
 #include <BESDebug.h>
 #include "InternalErr.h"
 #include "HDF5CFInt32.h"
-#include "h5get.h"
+#include "h5common.h"
 
 HDF5CFInt32::HDF5CFInt32(const string &n, const string &d) : Int32(n, d)
 {
 }
 
+HDF5CFInt32::HDF5CFInt32(const string &n, const string &d,const string &d_f) : Int32(n, d)
+{
+    filename = d_f;
+}
 HDF5CFInt32::~HDF5CFInt32()
 {
 }
@@ -57,7 +61,7 @@ bool HDF5CFInt32::read()
     if (read_p())
         return true;
 
-    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
+    hid_t file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
@@ -65,7 +69,7 @@ bool HDF5CFInt32::read()
 //cerr<<"variable name is : "<<name() <<endl;
 
     hid_t dset_id = -1;
-    dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+    dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
 
     if(dset_id < 0) {
         H5Fclose(file_id);

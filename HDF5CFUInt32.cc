@@ -33,9 +33,17 @@
 
 #include "InternalErr.h"
 #include "HDF5CFUInt32.h"
+#include <BESDebug.h>
+#include "h5common.h"
+
 
 HDF5CFUInt32::HDF5CFUInt32(const string &n, const string &d) : UInt32(n, d)
 {
+}
+
+HDF5CFUInt32::HDF5CFUInt32(const string &n, const string &d,const string &d_f) : UInt32(n, d)
+{
+    filename = d_f;
 }
 
 HDF5CFUInt32::~HDF5CFUInt32()
@@ -48,7 +56,48 @@ BaseType *HDF5CFUInt32::ptr_duplicate()
 
 bool HDF5CFUInt32::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    BESDEBUG("h5","Coming to HDF5CFUInt32 read "<<endl);
+
+    if (read_p())
+        return true;
+
+    hid_t file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
+    if(file_id < 0) {
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    }
+   
+    hid_t dset_id = -1;
+    dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
+
+    if(dset_id < 0) {
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
+    }
+    
+    try {
+        dods_uint32 buf;
+        get_data(dset_id, (void *) &buf);
+
+        set_read_p(true);
+        set_value(buf);
+
+        // Release the handles.
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+        H5Fclose(file_id);
+    }
+    catch(...) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw;
+    }
+
+    return true;
+
+    //throw InternalErr(__FILE__, __LINE__,
+    //                  "Unimplemented read method called.");
+
 }
+
 

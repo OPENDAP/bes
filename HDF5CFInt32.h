@@ -40,8 +40,12 @@
 using namespace libdap;
 
 class HDF5CFInt32:public Int32 {
+
+    private:
+        string filename;
     public:
         HDF5CFInt32(const string &n, const string &d);
+        HDF5CFInt32(const string &n, const string &d,const string &d_f);
         virtual ~ HDF5CFInt32();
         virtual BaseType *ptr_duplicate();
         virtual bool read();

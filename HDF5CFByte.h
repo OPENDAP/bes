@@ -42,8 +42,12 @@
 using namespace libdap;
 
 class HDF5CFByte:public Byte {
+
+    private:
+        string filename;
     public:
         HDF5CFByte(const string & n, const string &d);
+        HDF5CFByte(const string & n, const string &d,const string &d_f);
         virtual ~ HDF5CFByte();
         virtual BaseType *ptr_duplicate();
         virtual bool read();
