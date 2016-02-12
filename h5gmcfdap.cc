@@ -442,6 +442,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
         const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+
+        if(dims.size() == 0) 
+            throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
             
         switch(cvar->getCVType()) {
             
@@ -653,6 +656,9 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
 
         const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+
+        if(dims.size() == 0)
+            throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
 
         HDF5GMSPCFArray *ar = NULL;
  
