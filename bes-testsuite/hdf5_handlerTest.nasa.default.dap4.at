@@ -13,7 +13,7 @@ m4_define([_AT_BESCMD_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2 || true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
@@ -66,7 +66,8 @@ AT_BESCMD_RESPONSE_TEST([HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5.d
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5.dmr.bescmd])
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5.data.bescmd])
-AT_BESCMD_RESPONSE_TEST([OMI-Aura_L2-OMNO2_2008m0720t2016-o21357_v003-2008m0721t101450.he5.dmr.bescmd])
+#AT_BESCMD_RESPONSE_TEST([OMI-Aura_L2-OMNO2_2008m0720t2016-o21357_v003-2008m0721t101450.he5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([OMI-Aura_L2-OMNO2_2016m0215t0210-o61626_v003-2016m0215t200753.he5.dmr.bescmd])
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([OMI-Aura_L2-OMNO2_2008m0720t2016-o21357_v003-2008m0721t101450.he5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5.dmr.bescmd])
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5.data.bescmd])

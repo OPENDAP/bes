@@ -2739,6 +2739,7 @@ void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening() throw(Exception) {
 #if 0
 for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
+cerr<<"eos5svar var new name "<<(*irv)->newname <<endl;
     for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
         ird !=(*irv)->dims.end(); ++ird) {
 cerr<<"eos5svar dimension new name "<<(*ird)->newname <<endl;

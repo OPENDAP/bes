@@ -18,7 +18,7 @@ fi
 ## OMI
 ### Swath
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMI-Aura_L2-OMBRO_2012m1204t1200-o44623_v003-2012m1204t185453.he5
-$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMI-Aura_L2-OMNO2_2008m0720t2016-o21357_v003-2008m0721t101450.he5
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMI-Aura_L2-OMNO2_2016m0215t0210-o61626_v003-2016m0215t200753.he5
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5
 ### Grid
