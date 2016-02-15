@@ -110,6 +110,14 @@ void HE5Parser::print()
                 cout << "Swath Data Var Dim Name=" << d.name << endl;
                 cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
             }
+// UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
+#if 0
+            for(k=0; k < v.max_dim_list.size(); k++) {
+                HE5Dim d = v.max_dim_list.at(k);
+                cout << "Swath Data Var Max Dim Name=" << d.name << endl;
+                cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
+            }
+#endif
         }
     }
 
@@ -142,7 +150,13 @@ void HE5Parser::print()
                 HE5Dim d = v.dim_list.at(k);
                 cout << "Grid Var Dim Name=" << d.name << endl;
             }
-        }
+#if 0
+            for(k=0; k < v.max_dim_list.size(); k++) {
+                HE5Dim d = v.max_dim_list.at(k);
+                cout << "Grid Var Max Dim Name=" << d.name << endl;
+            }
+#endif
+       }
         cout << "Grid pixelregistration=" << 
             g.pixelregistration
              << endl;
