@@ -1,10 +1,554 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <setContainer>
-        <BESError>
-            <Type>4</Type>
-            <Message>You do not have permission to access /data/OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315.he5</Message>
-            <Administrator>admin.email.address@your.domain.name</Administrator>
-        </BESError>
-    </setContainer>
-</response>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="OrbitNumber" type="Int32">
+                    <Value>40305</Value>
+                    <Value>40306</Value>
+                    <Value>40307</Value>
+                    <Value>40308</Value>
+                    <Value>40309</Value>
+                    <Value>40310</Value>
+                    <Value>40311</Value>
+                    <Value>40312</Value>
+                    <Value>40313</Value>
+                    <Value>40314</Value>
+                    <Value>40315</Value>
+                    <Value>40316</Value>
+                    <Value>40317</Value>
+                    <Value>40318</Value>
+                    <Value>40319</Value>
+                    <Value>40320</Value>
+                    <Value>40321</Value>
+                    <Value>40322</Value>
+                    <Value>40323</Value>
+                    <Value>40324</Value>
+                    <Value>40325</Value>
+                    <Value>40326</Value>
+                    <Value>40327</Value>
+                    <Value>40328</Value>
+                    <Value>40329</Value>
+                    <Value>40330</Value>
+                    <Value>40331</Value>
+                    <Value>40332</Value>
+                    <Value>40333</Value>
+                    <Value>40334</Value>
+                    <Value>40335</Value>
+                    <Value>40336</Value>
+                    <Value>40337</Value>
+                    <Value>40338</Value>
+                    <Value>40339</Value>
+                    <Value>40340</Value>
+                    <Value>40341</Value>
+                    <Value>40342</Value>
+                    <Value>40343</Value>
+                    <Value>40344</Value>
+                    <Value>40345</Value>
+                    <Value>40346</Value>
+                    <Value>40347</Value>
+                    <Value>40348</Value>
+                </Attribute>
+                <Attribute name="OrbitPeriod" type="Float64">
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                    <Value>5933.</Value>
+                    <Value>5934.</Value>
+                </Attribute>
+                <Attribute name="InstrumentName" type="String">
+                    <Value>OMI</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>3e</Value>
+                </Attribute>
+                <Attribute name="GranuleMonth" type="Int32">
+                    <Value>2</Value>
+                </Attribute>
+                <Attribute name="GranuleDay" type="Int32">
+                    <Value>13</Value>
+                </Attribute>
+                <Attribute name="GranuleYear" type="Int32">
+                    <Value>2012</Value>
+                </Attribute>
+                <Attribute name="GranuleDayOfYear" type="Int32">
+                    <Value>44</Value>
+                </Attribute>
+                <Attribute name="TAI93At0zOfGranule" type="Float64">
+                    <Value>603244807.</Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>&quot;1.1.0.1&quot;</Value>
+                </Attribute>
+                <Attribute name="StartUTC" type="String">
+                    <Value>2012-02-12T12:15:00.000000Z</Value>
+                </Attribute>
+                <Attribute name="EndUTC" type="String">
+                    <Value>2012-02-14T11:45:00.000000Z</Value>
+                </Attribute>
+                <Attribute name="Period" type="String">
+                    <Value>Daily</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="ColumnAmountAerosol">
+                <Attribute name="GCTPProjectionCode" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <Value>Geographic</Value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <Value>Center</Value>
+                </Attribute>
+                <Attribute name="GridSpacing" type="String">
+                    <Value>(0.25,0.25)</Value>
+                </Attribute>
+                <Attribute name="GridSpacingUnit" type="String">
+                    <Value>deg</Value>
+                </Attribute>
+                <Attribute name="GridSpan" type="String">
+                    <Value>(-180,180,-90,90)</Value>
+                </Attribute>
+                <Attribute name="GridSpanUnit" type="String">
+                    <Value>deg</Value>
+                </Attribute>
+                <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+                    <Value>1440</Value>
+                </Attribute>
+                <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+                    <Value>720</Value>
+                </Attribute>
+                <Attribute name="WavelDiagnostic" type="String">
+                    <Value>342.5, 388.0, 442.0, 463.0, 483.5</Value>
+                </Attribute>
+                <Group name="Data Fields">
+                    <Int16 name="AbsorbingAerosolOpticalThicknessMW">
+                        <Dim size="5"/>
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Spectral Absorbing Aerosol Optical Thickness for best fit aerosol model derived with the Multi-Wavelength method, scaled by a factor 1000</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <UInt16 name="AerosolModelMW">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Aerosol model indicator for best fit aerosol model derived with the Multi-Wavelength method</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                    </UInt16>
+                    <Int16 name="AerosolOpticalThicknessMW">
+                        <Dim size="5"/>
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Spectral Aerosol Optical Thickness for best fit aerosol model derived with the Multi-Wavelength method, scaled by a factor 1000</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="AerosolOpticalThicknessPassedThresholdMean">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Mean spectral Aerosol Optical Thickness of aerosol models that passed the threshold.Scaled by a factor 1000.</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="AerosolOpticalThicknessPassedThresholdStd">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Standard deviation of the spectral Single  ScatteringAlbedo ss of aerosol models that passed the threshold.Scaled by a factor 1000.</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Float32 name="Latitude">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude of the center of the groundpixel</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude of the center of the groundpixel</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int16 name="SingleScatteringAlbedoMW">
+                        <Dim size="5"/>
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Spectral Single Scattering Albedo for best fit aerosol model derived with the Multi-Wavelength method, scaled by a factor 1000</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="SingleScatteringAlbedoPassedThresholdMean">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Mean spectral Aerosol Optical Thickness of aerosol models that passed the threshold.Scaled by a factor 1000.</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="SingleScatteringAlbedoPassedThresholdStd">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Standard deviation of the spectral Single  ScatteringAlbedo of aerosol models that passed the threshold.Scaled by a factor 1000.</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Float32 name="SolarZenithAngle">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Solar zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int16 name="TerrainReflectivity">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Reflectivity of the ground pixel, scaled by a factor 1000</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Float32 name="UVAerosolIndex">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>UV Aerosol Index</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="VISAerosolIndex">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>VIS Aerosol Index</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ViewingZenithAngle">
+                        <Dim size="720"/>
+                        <Dim size="1440"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Viewing zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.11</Value>
+        </Attribute>
+    </Group>
+</Dataset>
