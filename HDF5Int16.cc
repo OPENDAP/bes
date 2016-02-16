@@ -112,14 +112,12 @@ bool HDF5Int16::read()
 	    buf = (short) buf2;
 //cerr<<"buf is "<<buf <<endl;
 	    set_read_p(true);
-#if 0
 	    set_value(buf);
-#endif
-            val2buf(&buf);
+            //val2buf(&buf);
 
         }
 
-        if (get_dap_type(memtype,false) == "Int16") {
+        else if (get_dap_type(memtype,false) == "Int16") {
     	    dods_int16 buf;
 	    get_data(dset_id, (void *) &buf);
 
