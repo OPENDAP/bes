@@ -1,0 +1,11 @@
+Attributes {
+    d_size8.h5 {
+        HDF5_ROOT_GROUP {
+            String Dataset "temp";
+        }
+        /temp {
+            String HDF5_OBJ_FULLPATH "/temp";
+            Int16 _FillValue -127;
+        }
+    }
+}
