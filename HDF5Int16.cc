@@ -104,14 +104,18 @@ bool HDF5Int16::read()
 
     try {
       if(false == is_dap4()) {
-        //if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) 
-        if (get_dap_type(memtype,false) == "Int8") {//wrong, needs to be corrected
+        if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
 	    dods_int16 buf;
-	    dods_byte buf2; // wrong, needs to be corrected with signed int8 buffer.
+	    signed char buf2; // wrong, needs to be corrected with signed int8 buffer.
 	    get_data(dset_id, (void *) &buf2);
+cerr<<"buf2 is "<<buf2 <<endl;
 	    buf = (short) buf2;
+cerr<<"buf is "<<buf <<endl;
 	    set_read_p(true);
+#if 0
 	    set_value(buf);
+#endif
+            val2buf(&buf);
 
         }
 

@@ -97,6 +97,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.ddx.bescmd])
 
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.das.bescmd])
+#AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.data.bescmd])
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.ddx.bescmd])
+
+
 #Default DAP4 test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_compound.h5.dap.bescmd])
@@ -121,12 +127,15 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
 
-# Cannot generate correct DMR due to variable mapping. Wait for OPeNDAP to fix the issue. KY 2015-07-11
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int64.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int64.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dmr.bescmd])
+#check int8-bit data
+##AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dap.bescmd])

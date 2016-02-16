@@ -66,7 +66,7 @@ m4_define([_AT_BESCMD_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -77,7 +77,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -88,7 +88,7 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -415,6 +415,18 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.ddx.bescmd])
 
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.das.bescmd])
+#AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.data.bescmd])
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.ddx.bescmd])
+
+# The scalar support.
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dds.bescmd])
+
+
+
 #Default DAP4 test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_compound.h5.dap.bescmd])
@@ -447,6 +459,11 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int64.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int64.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dmr.bescmd])
+
+#check int8-bit data
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dap.bescmd])
