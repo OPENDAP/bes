@@ -67,6 +67,7 @@ public:
 
     }
 
+    // I think this should be set_fileid(...). jhrg 2/18/16
     void setHDF5Dataset(const hid_t fileid_in) { 
         fileid = fileid_in;
     }

@@ -48,6 +48,7 @@
 //#endif
 
 #include<mime_util.h>
+
 #include "hdf5_handler.h"
 #include "HDF5RequestHandler.h"
 #include "HDF5_DDS.h"
@@ -82,6 +83,12 @@ using namespace libdap;
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
+map<std::string, libdap::DAS> HDF5RequestHandler::das_cache;
+map<std::string, libdap::DDS> HDF5RequestHandler::dds_cache;
+map<std::string, libdap::DataDDS> HDF5RequestHandler::data_dds_cache;
+
+bool HDF5RequestHandler::usecf = false;
+bool HDF5RequestHandler::use_experimental_cache = false;
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
     :BESRequestHandler(name)
@@ -89,23 +96,35 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
     add_handler(DATA_RESPONSE, HDF5RequestHandler::hdf5_build_data);
-//#ifdef USE_DAP4
+
     add_handler(DMR_RESPONSE, HDF5RequestHandler::hdf5_build_dmr);
     add_handler(DAP4DATA_RESPONSE, HDF5RequestHandler::hdf5_build_dmr);
-//#endif
 
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 
-}
+    bool found_key = false;
+    string doset;
 
-HDF5RequestHandler::~HDF5RequestHandler()
-{
+    TheBESKeys::TheKeys()->get_value( "H5.EnableCF", doset, found_key ) ;
+    if(true == found_key ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" )
+            usecf = true;
+    }
+
+    TheBESKeys::TheKeys()->get_value( "H5.UseExperimentalCache", doset, found_key ) ;
+    if(true == found_key ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" )
+            use_experimental_cache = true;
+    }
 }
 
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
-
+#if 0
+    // Move this key access code to the class ctor - only do it once. jhrg 2/18/16
     bool found_key = false;
     bool usecf = false;
     string key = "H5.EnableCF";
@@ -122,7 +141,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         if( doset == "true" || doset == "yes" ) 
             usecf = true;
     }
-         
+#endif
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
 
@@ -134,36 +153,54 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     if( !bdas )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
+    // For the time being, separate CF file ID from the default file ID (mainly for debugging)
+    hid_t cf_fileid = -1;
+
     try {
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
-        if (true == usecf) {
+        // This is code is a test for/of the performance improvements we'd get with
+        // using memory aching for the DAS, DDS, ..., objects. jhrg 2/18/16
+        if (use_experimental_cache) {
+            BESDEBUG("h5", "Using the experimental DAS cache" << endl);
+            map<string, DAS>::iterator das_cache_iter = das_cache.find(filename);
+            if (das_cache_iter != das_cache.end()) {
+                BESDEBUG("h5", "Found DAS in the experimental cache" << endl);
+                *das = das_cache_iter->second;
+                bdas->clear_container();
+                return true;
+            }
+        }
 
+        // If the DAS is not in the memory cache, build, cache, and return it.
+        if (true == usecf) {
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
             if (cf_fileid < 0){
                 throw BESNotFoundError((string) "Could not open this hdf5 file: "
                                + filename, __FILE__, __LINE__);
             }
 
-            read_cfdas( *das,filename,cf_fileid);
+            read_cfdas(*das,filename,cf_fileid);
             H5Fclose(cf_fileid);
         }
         else {
-               // go to the default option
-//cerr<<"default option" <<endl;
+            // go to the default option
             hid_t fileid = get_fileid(filename.c_str());
             if (fileid < 0) {
                 throw BESNotFoundError((string) "Could not open this hdf5 file: "
                                + filename, __FILE__, __LINE__);
             }
 
+            // I think this code may leak 'fileid'. jhrg 2/18/16
             find_gloattr(fileid, *das);
             depth_first(fileid, "/", *das);
             close_fileid(fileid);
         }
              
         Ancillary::read_ancillary_das( *das, filename ) ;
+        if (use_experimental_cache)
+            das_cache[filename] = *das;
         bdas->clear_container() ;
     }
     catch(InternalErr & e) {
@@ -198,7 +235,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
-
+#if 0
     bool found = false;
     bool usecf = false;
 
@@ -214,14 +251,15 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
             usecf = true;
         }
     }
-
+#endif
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
     hid_t cf_fileid = -1;
 
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
- 
+#if 0
+    // Moved this after call to ex. cache. jhrg 2/8/16
     // For the time being, not mess up CF's fileID with Default's fileID
     if(true == usecf) {
            
@@ -241,7 +279,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
                                + filename, __FILE__, __LINE__);
         }
     }
-
+#endif
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
@@ -252,23 +290,49 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
-        if( true == usecf ) 
-            read_cfdds(*dds,filename,cf_fileid);
+        // This is code is a test for/of the performance improvements we'd get with
+        // using memory aching for the DAS, DDS, ..., objects. jhrg 2/18/16
+        if (use_experimental_cache) {
+            BESDEBUG("h5", "Using the experimental DDS cache" << endl);
+            map<string, DDS>::iterator dds_cache_iter = dds_cache.find(filename);
+            if (dds_cache_iter != dds_cache.end()) {
+                BESDEBUG("h5", "Found DDS in the experimental cache" << endl);
+                *dds = dds_cache_iter->second;
+                bdds->set_constraint(dhi);
+                bdds->clear_container();
+                return true;
+            }
+        }
 
+        if (true == usecf) {
+            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (cf_fileid < 0) {
+                throw BESNotFoundError((string) "Could not open this hdf5 file: " + filename, __FILE__, __LINE__);
+            }
+
+            read_cfdds(*dds, filename, cf_fileid);
+        }
         else {
+            fileid = get_fileid(filename.c_str());
+            if (fileid < 0) {
+                throw BESNotFoundError(string("hdf5_build_dds: ") + "Could not open hdf5 file: " + filename, __FILE__,
+                    __LINE__);
+            }
 
-            depth_first(fileid, (char*)"/", *dds, filename.c_str());
+            depth_first(fileid, (char*) "/", *dds, filename.c_str());
         }
 
         // Check semantics 
         if (!dds->check_semantics()) {   // DDS didn't comply with the semantics 
-            dds->print(cerr);
+            // dds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined. ");
         }
         
-        Ancillary::read_ancillary_dds( *dds, filename ) ;
+        // There never are ancially DDS files. jhrg 2/18/16
+        // Ancillary::read_ancillary_dds( *dds, filename ) ;
 
+        // Factor this out... see below. jhrg 2/18/16
         DAS *das = new DAS ;
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
@@ -292,6 +356,12 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         Ancillary::read_ancillary_das( *das, filename ) ;
 
         dds->transfer_attributes(das);
+
+        if (use_experimental_cache) {
+            // Use this because DDS doesn't have a no-arg ctor which
+            // map::operator[] requires. jhrg 2/18/16
+            dds_cache.insert(pair<string, DDS>(filename, *dds));
+        }
 
         bdds->set_constraint( dhi ) ;
 
@@ -342,7 +412,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
-
+#if 0
     bool found = false;
     bool usecf = false;
 
@@ -361,7 +431,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
             usecf = true;
         }
     }    
-
+#endif
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
     hid_t cf_fileid = -1;
@@ -370,17 +440,17 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
 
     if(true ==usecf) { 
-       
         if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
             return hdf5_build_data_with_IDs(dhi);
-
+#if 0
         cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         if (cf_fileid < 0){
             throw BESNotFoundError((string) "Could not open this hdf5 file: "
                                + filename, __FILE__, __LINE__);
         }
-
+#endif
     }
+#if 0
     else {
         // Obtain the HDF5 file ID. 
         fileid = get_fileid(filename.c_str());
@@ -390,15 +460,15 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
                                + filename, __FILE__, __LINE__);
         }
     }
-
+#endif
     BESDEBUG("h5","Building DataDDS without passing file IDs. "<<endl);
+
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     try {
-
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
 
 #if 0
@@ -412,13 +482,40 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         DataDDS* dds = bdds->get_dds();
         dds->filename(filename);
 
+        // This is code is a test for/of the performance improvements we'd get with
+        // using memory aching for the DAS, DDS, ..., objects. jhrg 2/18/16
+        if (use_experimental_cache) {
+            BESDEBUG("h5", "Using the experimental DataDDS cache" << endl);
+            map<string, DataDDS>::iterator data_dds_cache_iter = data_dds_cache.find(filename);
+            if (data_dds_cache_iter != data_dds_cache.end()) {
+                BESDEBUG("h5", "Found DataDDS in the experimental cache" << endl);
+                *dds = data_dds_cache_iter->second;
+                bdds->set_constraint(dhi);
+                bdds->clear_container();
+                return true;
+            }
+        }
+
         // DataDDS *dds = bdds->get_dds();
         if(true == usecf) { 
+            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (cf_fileid < 0){
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                                   + filename, __FILE__, __LINE__);
+            }
 
             // This is the CF option
             read_cfdds( *dds,filename,cf_fileid);
         }
         else {
+            // Obtain the HDF5 file ID.
+            fileid = get_fileid(filename.c_str());
+            if (fileid < 0) {
+                throw BESNotFoundError(string("hdf5_build_data: ")
+                                   + "Could not open hdf5 file: "
+                                   + filename, __FILE__, __LINE__);
+            }
+
             depth_first(fileid, (char*)"/", *dds, filename.c_str());
         }
 
@@ -430,18 +527,18 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
+        // Factor this DAS code out - it'sduplicated in build_dds (an maybe elsewhere).
+        // jhrg 2/18/16
         DAS *das = new DAS ;
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
         if(true == usecf) {
-
             // CF option
             read_cfdas( *das,filename,cf_fileid);
 
         }
         else {
-            
             // Obtain the global attributes and map them to DAS
             find_gloattr(fileid, *das);
 
@@ -452,16 +549,27 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
             close_fileid(fileid);
         }
 
-        Ancillary::read_ancillary_das( *das, filename ) ;
-
-        dds->transfer_attributes(das);
-        bdds->set_constraint( dhi ) ;
-        bdds->clear_container() ;
-
         ////close the file ID.
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
 
+        Ancillary::read_ancillary_das( *das, filename ) ;
+
+        dds->transfer_attributes(das);
+
+        if (use_experimental_cache) {
+            // Use this because DDS doesn't have a no-arg ctor which
+            // map::operator[] requires. jhrg 2/18/16
+            data_dds_cache.insert(pair<string, DataDDS>(filename, *dds));
+        }
+
+        bdds->set_constraint( dhi ) ;
+        bdds->clear_container() ;
+#if 0
+        ////close the file ID.
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+#endif
     }
     catch(InternalErr & e) {
 
@@ -586,7 +694,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 //#ifdef USE_DAP4
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
-
+#if 0
     bool found = false;
     bool usecf = false;
 
@@ -605,7 +713,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             usecf = true;
         }
     }    
-
+#endif
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -854,21 +962,19 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESInfo *info = dynamic_cast<BESInfo *>(response);
-    if( !info )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-    map<string,string> attrs ;
-    attrs["name"] = MODULE_NAME ;
-    attrs["version"] = MODULE_VERSION ;
-    list<string> services ;
-    BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services );
-    if( services.size() > 0 )
-        {
-            string handles = BESUtil::implode( services, ',' ) ;
-            attrs["handles"] = handles ;
-        }
-    info->begin_tag( "module", &attrs ) ;
-    info->end_tag( "module" ) ;
+    map<string, string> attrs;
+    attrs["name"] = MODULE_NAME;
+    attrs["version"] = MODULE_VERSION;
+    list<string> services;
+    BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services);
+    if (services.size() > 0) {
+        string handles = BESUtil::implode(services, ',');
+        attrs["handles"] = handles;
+    }
+    info->begin_tag("module", &attrs);
+    info->end_tag("module");
 
     return true;
 }
@@ -876,11 +982,10 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
-    if( !info )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-  
-    info->add_module( MODULE_NAME, MODULE_VERSION ) ;
+    BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(response);
+    if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    info->add_module(MODULE_NAME, MODULE_VERSION);
 
     return true;
 }
