@@ -677,7 +677,7 @@ void GMFile::Add_Dim_Name_Mea_SeaWiFS() throw(Exception){
             ird !=(*irv)->dims.end();++ird) { 
             setret = dimnamelist.insert((*ird)->name);
             if (true == setret.second) 
-                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
         }
     } // for (vector<Var *>::iterator irv = this->vars.begin();
  
@@ -727,7 +727,7 @@ throw(Exception){
         pair<set<string>::iterator,bool> setret;
         setret = dimnamelist.insert((var->dims)[0]->name);
         if (true == setret.second) 
-            Insert_One_NameSizeMap_Element((var->dims)[0]->name,(var->dims)[0]->size);
+            Insert_One_NameSizeMap_Element((var->dims)[0]->name,(var->dims)[0]->size,(var->dims)[0]->unlimited_dim);
     }
 
     // No dimension, add fake dim names, this may never happen for MeaSure
@@ -834,7 +834,7 @@ throw (Exception){
             pair<set<string>::iterator,bool> setret;
             setret = dimnamelist.insert((*ird)->name);
             if (true == setret.second) 
-               Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+               Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
             (*ird)->newname = (*ird)->name;
             H5Dclose(ref_dset);
             ref_dset = -1;
@@ -949,7 +949,7 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
                 ird !=(*irv)->dims.end();++ird) { 
                 setret = dimnamelist.insert((*ird)->name);
                 if(true == setret.second) 
-                    Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+                    Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
             }
         }
  
@@ -1003,7 +1003,7 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
                        (*ird)->name = irmm->second;
                        (*ird)->newname = (*ird)->name;
                        setret = dimnamelist.insert((*ird)->name);
-                       if(setret.second) Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+                       if(setret.second) Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
                        fakedimflag = false;
                        break;
                     }
@@ -1110,7 +1110,8 @@ void GMFile::Add_Dim_Name_GPM()throw(Exception)
                    
                         if (true == setret.second) {
                             Insert_One_NameSizeMap_Element(((*irv)->dims)[i]->name,
-                                                           ((*irv)->dims)[i]->size);
+                                                           ((*irv)->dims)[i]->size,
+                                                           ((*irv)->dims)[i]->unlimited_dim);
                         }
                         else {
                             if(dimname_to_dimsize[((*irv)->dims)[i]->name] !=((*irv)->dims)[i]->size)
@@ -1217,7 +1218,7 @@ void GMFile::Add_Dim_Name_SMAP()throw(Exception){
                    (*ird)->name = irmm->second;
                    (*ird)->newname = (*ird)->name;
                    setret = dimnamelist.insert((*ird)->name);
-                   if(setret.second) Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+                   if(setret.second) Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
                    fakedimflag = false;
                    break;
                 }
@@ -2208,6 +2209,7 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
             ird != (*irv)->dims.end(); ++ird) {
             if(finaldimnamelist.find((*ird)->name)!=finaldimnamelist.end()) {
                 dimname_to_dimsize[(*ird)->name] = (*ird)->size;
+                dimname_to_unlimited[(*ird)->name] = (*ird)->unlimited_dim;
                 finaldimnamelist.erase((*ird)->name);
             }
             
@@ -2323,7 +2325,7 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
             ird !=(*irv)->dims.end();++ird) { 
             setret = dimnamelist.insert((*ird)->name);
             if (true == setret.second) 
-                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
         }
     } // for (vector<Var *>::iterator irv = this->vars.begin();
  
@@ -2378,7 +2380,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var) throw(Ex
         pair<set<string>::iterator,bool> setret;
         setret = dimnamelist.insert((var->dims)[0]->name);
         if (true == setret.second) 
-            Insert_One_NameSizeMap_Element((var->dims)[0]->name,(var->dims)[0]->size);
+            Insert_One_NameSizeMap_Element((var->dims)[0]->name,(var->dims)[0]->size,(var->dims)[0]->unlimited_dim);
     }
 
     // No dimension, add fake dim names, this will rarely happen.
@@ -2477,7 +2479,7 @@ throw (Exception){
             pair<set<string>::iterator,bool> setret;
             setret = dimnamelist.insert((*ird)->name);
             if (true == setret.second) 
-               Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+               Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
             (*ird)->newname = (*ird)->name;
             H5Dclose(ref_dset);
             ref_dset = -1;
@@ -6022,7 +6024,9 @@ void GMFile:: Create_Missing_CV(GMCVar *GMcvar, const string& dimname) throw(Exc
     GMcvar->rank = 1;
     GMcvar->dtype = H5INT32;
     hsize_t gmcvar_dimsize = dimname_to_dimsize[dimname];
+    bool unlimited_flag = dimname_to_unlimited[dimname];
     Dimension* gmcvar_dim = new Dimension(gmcvar_dimsize);
+    gmcvar_dim->unlimited_dim = unlimited_flag;
     gmcvar_dim->name = dimname;
     gmcvar_dim->newname = dimname;
     GMcvar->dims.push_back(gmcvar_dim);

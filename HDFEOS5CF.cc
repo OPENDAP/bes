@@ -640,6 +640,8 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) thr
             mapret2 = eos5grid->dimnames_to_dimsizes.insert(pair<string,hsize_t>(unique_dimname,(hsize_t)he5d.size));
            if (false == mapret2.second) 
                 throw5("The dimension name ",unique_dimname, " with the dimension size ", he5d.size, "is not unique");
+
+            
         } // for (int j=0; j <he5g.dim_list.size(); j++)
 
         // Check if having  Latitude/Longitude.
@@ -1174,7 +1176,7 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var,
             // we have to make the dimension name unique for one variable. So we will
             // change the dimension names. The variable for the same example will be 
             // int foo[nlevels][nlevels_1]. Note this is not required by CF conventions.
-            // This is simply due to the mising of the third coordinate variable for some 
+            // This is simply due to the missing of the third coordinate variable for some 
             // NASA products. Another way is to totally ignore this kind of variables which
             // we will wait for users' responses.
 
@@ -1215,6 +1217,10 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var,
                                 // Should check in the future if the newname may cause potential inconsistency. KY:2012-3-9
                                 (*ird)->newname = (num_groups == 1)? he5d.name :(*ird)->name;
                                 eos5data->vardimnames.insert((*ird)->name);
+                                // Since there is no way to figure out the unlimited dimension info. of an individual variable
+                                // from the dimension list. Here we just provide the dimnames to unlimited dimension mapping
+                                // based on the variable mapping. KY 2016-02-18
+                                eos5data->dimnames_to_unlimited[(*ird)->name]=(*ird)->unlimited_dim;
                             }
                         }
                     }
@@ -1266,7 +1272,7 @@ void EOS5File::Create_Unique_DimName(T*eos5data,set<string>& thisvar_dimname_set
                 thisvar_dimname_set.insert(dimname_candidate);
 
                 // Finally generate a new dimension(new dim. name with a size);Update all information
-                Insert_One_NameSizeMap_Element2(eos5data->dimnames_to_dimsizes,dimname_candidate,dim->size);
+                Insert_One_NameSizeMap_Element2(eos5data->dimnames_to_dimsizes,eos5data->dimnames_to_unlimited,dimname_candidate,dim->size,dim->unlimited_dim);
                 eos5data->dimsizes_to_dimnames.insert(pair<hsize_t,string>(dim->size,dimname_candidate));
                 eos5data->dimnames.push_back(dimname_candidate);
             }
@@ -1291,7 +1297,7 @@ void EOS5File::Create_Unique_DimName(T*eos5data,set<string>& thisvar_dimname_set
         thisvar_dimname_set.insert(Fakedimname);
 
         // Finally generate a new dimension(new dim. name with a size);Update all information
-        Insert_One_NameSizeMap_Element2(eos5data->dimnames_to_dimsizes,Fakedimname,dim->size);
+        Insert_One_NameSizeMap_Element2(eos5data->dimnames_to_dimsizes,eos5data->dimnames_to_unlimited,Fakedimname,dim->size,dim->unlimited_dim);
         eos5data->dimsizes_to_dimnames.insert(pair<hsize_t,string>(dim->size,Fakedimname));
         eos5data->dimnames.push_back(Fakedimname);
         dim->name = Fakedimname;
@@ -3568,6 +3574,7 @@ void EOS5File:: Create_Missing_CV(T* eos5data,EOS5CVar *EOS5cvar, const string& 
     hsize_t eos5cvar_dimsize = (eos5data->dimnames_to_dimsizes)[dimname];
     Dimension* eos5cvar_dim = new Dimension(eos5cvar_dimsize);
     eos5cvar_dim->name = dimname;
+    eos5cvar_dim->unlimited_dim = (eos5data->dimnames_to_unlimited)[dimname];
     if (1 == num_eos5data) 
         eos5cvar_dim->newname = reduced_dimname;
     else eos5cvar_dim->newname = dimname; 

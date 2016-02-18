@@ -820,8 +820,14 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
 //#if 0
     if(f->HaveUnlimitedDim() == true) {
 //cerr<<"coming to unlimited " <<endl;
+
+        AttrTable *at = das.get_table("DODS_EXTRA");
+        if (NULL == at)
+            at = das.add_table("DODS_EXTRA", new AttrTable);
+        string unlimited_names;
+
         for (it_cv = cvars.begin();
-            it_cv != cvars.end(); ++it_cv) {
+            it_cv != cvars.end(); it_cv++) {
 
             bool has_unlimited_dim = false;
 
@@ -833,20 +839,26 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
                 // common case. When receiving the conventions from JG, will add
                 // the support of multi-unlimited dimension. KY 2016-02-09
                 if((*ird)->HaveUnlimitedDim() == true) {
-
-                    AttrTable *at = das.get_table("DODS_EXTRA");
-                    if (NULL == at)
-                        at = das.add_table("DODS_EXTRA", new AttrTable);
-                    at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
-                    has_unlimited_dim = true;
-                    break;
+                    
+                    if(unlimited_names=="") {
+                       unlimited_names = (*ird)->getNewName();
+                       at->append_attr("Unlimited_Dimension","String",unlimited_names);                       
+                    }
+                    else {
+                        if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
+                            unlimited_names = unlimited_names+" "+(*ird)->getNewName();
+                            at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());                       
+                        }
+                    }
                 }
                     
             }
 
-            if(true == has_unlimited_dim) 
-                break;
+            //if(true == has_unlimited_dim) 
+            //    break;
         }
+        //if(unlimited_names!="") 
+         //   at->append_attr("Unlimited_Dimension","String",unlimited_names);
     }
 //#endif
 

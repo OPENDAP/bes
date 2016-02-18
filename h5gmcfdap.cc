@@ -370,6 +370,18 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 //#if 0
     if(f->HaveUnlimitedDim() == true) {
 //cerr<<"coming to unlimited " <<endl;
+
+        AttrTable*at;
+        // Currently there is no way for DAP to present the unlimited dimension info.
+        // when there are no dimension names. So don't create DODS_EXTRA even if
+        // there is a unlimited dimension in the file for now. KY 2016-02-18
+        if(cvars.size() >0){
+            at = das.get_table("DODS_EXTRA");
+            if (NULL == at)
+                at = das.add_table("DODS_EXTRA", new AttrTable);
+        } 
+        string unlimited_names;
+
         for (it_cv = cvars.begin();
             it_cv != cvars.end(); ++it_cv) {
 
@@ -383,20 +395,26 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                 // common case. When receiving the conventions from JG, will add
                 // the support of multi-unlimited dimension. KY 2016-02-09
                 if((*ird)->HaveUnlimitedDim() == true) {
-
-                    AttrTable *at = das.get_table("DODS_EXTRA");
-                    if (NULL == at)
-                        at = das.add_table("DODS_EXTRA", new AttrTable);
-                    at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
-                    has_unlimited_dim = true;
-                    break;
+                    if(unlimited_names=="") {
+                       unlimited_names = (*ird)->getNewName();
+                       if(at !=NULL) 
+                            at->append_attr("Unlimited_Dimension","String",unlimited_names);
+                    }
+                    else {
+                        if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
+                            unlimited_names = unlimited_names+" "+(*ird)->getNewName();
+                            if(at !=NULL) 
+                                at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
+                        }
+                    }
                 }
                     
             }
 
-            if(true == has_unlimited_dim) 
-                break;
         }
+        // The following line will generate the string like "Band1 str1 str2".
+        //if(unlimited_names!="") 
+        //         //   at->append_attr("Unlimited_Dimension","String",unlimited_names);
     }
 //#endif
 }

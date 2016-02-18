@@ -1504,22 +1504,34 @@ File::get_CF_string(string s)
 
 }
 void
-File:: Insert_One_NameSizeMap_Element( string name,hsize_t size) throw(Exception) 
+File:: Insert_One_NameSizeMap_Element( string name,hsize_t size,bool unlimited) throw(Exception) 
 {
     pair<map<string,hsize_t>::iterator,bool>mapret;
     mapret = dimname_to_dimsize.insert(pair<string,hsize_t>(name,size));
     if (false == mapret.second) 
         throw4("The dimension name ",name," should map to ",size);
 
+    pair<map<string,bool>::iterator,bool>mapret2;
+    mapret2 = dimname_to_unlimited.insert(pair<string,bool>(name,unlimited));
+    if (false == mapret2.second) 
+        throw3("The dimension name ",name," unlimited dimension info. should be provided.");
+
+
 }
 
 void
-File:: Insert_One_NameSizeMap_Element2(map<string,hsize_t>& name_to_size, string name,hsize_t size) throw(Exception) 
+File:: Insert_One_NameSizeMap_Element2(map<string,hsize_t>& name_to_size, map<string,bool>& name_to_unlimited, string name,hsize_t size,bool unlimited) throw(Exception) 
 {
     pair<map<string,hsize_t>::iterator,bool>mapret;
     mapret = name_to_size.insert(pair<string,hsize_t>(name,size));
     if (false == mapret.second) 
         throw4("The dimension name ",name," should map to ",size);
+
+    pair<map<string,bool>::iterator,bool>mapret2;
+    mapret2 = name_to_unlimited.insert(pair<string,bool>(name,unlimited));
+    if (false == mapret2.second) 
+        throw3("The dimension name ",name," unlimited dimension info. should be provided.");
+
 
 }
 
@@ -1581,7 +1593,7 @@ File:: Add_One_FakeDim_Name(Dimension *dim) throw(Exception){
         // New dim name is inserted successfully, update the dimname_to_dimsize map.
         dim->name = added_dimname;
         dim->newname = dim->name;
-        Insert_One_NameSizeMap_Element(dim->name,dim->size);
+        Insert_One_NameSizeMap_Element(dim->name,dim->size,dim->unlimited_dim);
 
         // Increase the dimindex since the new dimname has been inserted.
         addeddimindex++;
@@ -1616,7 +1628,7 @@ File:: Adjust_Duplicate_FakeDim_Name(Dimension * dim) throw(Exception){
     }
     dim->name = added_dimname;
     dim->newname = dim->name;
-    Insert_One_NameSizeMap_Element(dim->name,dim->size);
+    Insert_One_NameSizeMap_Element(dim->name,dim->size,dim->unlimited_dim);
 
     // Need to prepare for the next unique FakeDim. 
     addeddimindex++;

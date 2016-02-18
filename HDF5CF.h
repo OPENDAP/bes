@@ -658,8 +658,8 @@ namespace HDF5CF
 
             void Add_One_FakeDim_Name(Dimension *dim) throw(Exception);
             void Adjust_Duplicate_FakeDim_Name(Dimension * dim)throw(Exception);
-            void Insert_One_NameSizeMap_Element(string name,hsize_t size) throw(Exception);
-            void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,string name,hsize_t size) throw(Exception);
+            void Insert_One_NameSizeMap_Element(string name,hsize_t size, bool unlimited) throw(Exception);
+            void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,map<string,bool>&,string name,hsize_t size,bool unlimited) throw(Exception);
             void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
 
             virtual string get_CF_string(string);
@@ -743,6 +743,9 @@ namespace HDF5CF
             set<string> dimnamelist;
             //set<string>unlimited_dimnamelist;
             map<string,hsize_t> dimname_to_dimsize;
+          
+            // Unlimited dim. info
+            map<string,bool> dimname_to_unlimited;
 
             /// Handle added dimension names
             map<hsize_t,string> dimsize_to_fakedimname;
@@ -989,6 +992,10 @@ namespace HDF5CF
             vector <string> dimnames;
             set <string> vardimnames;
             map <string,hsize_t>dimnames_to_dimsizes;
+         
+            // Unlimited dim. info
+            map <string,bool>dimnames_to_unlimited;
+
             map <hsize_t,string>dimsizes_to_dimnames;
             int addeddimindex;
         
@@ -1023,6 +1030,10 @@ namespace HDF5CF
             vector <string> dimnames;
             set <string> vardimnames;
             map <string,hsize_t>dimnames_to_dimsizes;
+
+            // Unlimited dim. info
+            map <string,bool>dimnames_to_unlimited;
+             
             map <hsize_t,string>dimsizes_to_dimnames;
             int addeddimindex;
  
@@ -1046,6 +1057,9 @@ namespace HDF5CF
             vector <string> dimnames;
             set <string> vardimnames;
             map <string,hsize_t>dimnames_to_dimsizes;
+            // Unlimited dim. info
+            map <string,bool>dimnames_to_unlimited;
+
             map <hsize_t,string>dimsizes_to_dimnames;
             int addeddimindex;
 
