@@ -184,6 +184,7 @@ ScanType=CONICAL;
     <Attribute name="DODS_EXTRA" type="Container">
         <Attribute name="Unlimited_Dimension" type="String">
             <value>nscan2</value>
+            <value>nscan1</value>
         </Attribute>
     </Attribute>
     <Array name="gmi1aHeader_sampleRangeFile">

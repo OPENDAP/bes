@@ -3799,6 +3799,6 @@ ScanType=CONICAL;
         String units "level";
     }
     DODS_EXTRA {
-        String Unlimited_Dimension "nscan2";
+        String Unlimited_Dimension "nscan2", "nscan1";
     }
 }
