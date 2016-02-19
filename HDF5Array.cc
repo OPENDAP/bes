@@ -66,6 +66,10 @@ HDF5Array::~HDF5Array() {
 
 int HDF5Array::format_constraint(int *offset, int *step, int *count) {
 
+    // For the 0-length array case, just return 0.
+    if(length() == 0)
+        return 0;
+
     long nels = 1;
     int id = 0;
 
@@ -78,11 +82,11 @@ int HDF5Array::format_constraint(int *offset, int *step, int *count) {
         int stop = dimension_stop(p, true);
 
         // Check for empty constraint
-        if (stride <= 0 || start < 0 || stop < 0 || start > stop) {
+        if (start > stop) {
             ostringstream oss;
 
-            oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                ":" << stride << ":" << stop << "]";
+            oss << "Array/Grid hyperslab start point "<< start <<
+                " is greater than stop point " <<  stop <<".";
             throw Error(malformed_expr, oss.str());
         }
 

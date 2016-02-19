@@ -51,6 +51,10 @@ bool HDF5CFArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
+
+    if(length() == 0)
+        return true;
+
     string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
@@ -642,6 +646,7 @@ bool HDF5CFArray::read()
 int
 HDF5CFArray::format_constraint (int *offset, int *step, int *count)
 {
+
         long nels = 1;
         int id = 0;
 
@@ -653,7 +658,17 @@ HDF5CFArray::format_constraint (int *offset, int *step, int *count)
                 int stride = dimension_stride (p, true);
                 int stop = dimension_stop (p, true);
 
+                // Check for illegal  constraint
+                if (start > stop) {
+                   ostringstream oss;
 
+                   oss << "Array/Grid hyperslab start point "<< start <<
+                         " is greater than stop point " <<  stop <<".";
+                   throw Error(malformed_expr, oss.str());
+                }
+
+
+#if 0
                 // Check for illegical  constraint
                 if (stride < 0 || start < 0 || stop < 0 || start > stop) {
                         ostringstream oss;
@@ -670,6 +685,7 @@ HDF5CFArray::format_constraint (int *offset, int *step, int *count)
                         stop = dimension_stop (p, false);
                 }
 
+#endif
                 offset[id] = start;
                 step[id] = stride;
                 count[id] = ((stop - start) / stride) + 1;      // count of elements

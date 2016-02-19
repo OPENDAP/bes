@@ -49,6 +49,7 @@ bool HDF5GMCFMissLLArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5GMCFMissLLArray read "<<endl);
+
     // Here we still use vector just in case we need to tackle "rank>1" in the future.
     // Also we would like to keep it consistent with other similar handlings.
 
@@ -496,21 +497,13 @@ HDF5GMCFMissLLArray::format_constraint (int *offset, int *step, int *count)
                 int stride = dimension_stride (p, true);
                 int stop = dimension_stop (p, true);
 
+                // Check for illegal  constraint
+                if (start > stop) {
+                   ostringstream oss;
 
-                // Check for illegical  constraint
-                if (stride < 0 || start < 0 || stop < 0 || start > stop) {
-                        ostringstream oss;
-
-                        oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                                ":" << stride << ":" << stop << "]";
-                        throw Error (malformed_expr, oss.str ());
-                }
-
-                // Check for an empty constraint and use the whole dimension if so.
-                if (start == 0 && stop == 0 && stride == 0) {
-                        start = dimension_start (p, false);
-                        stride = dimension_stride (p, false);
-                        stop = dimension_stop (p, false);
+                   oss << "Array/Grid hyperslab start point "<< start <<
+                         " is greater than stop point " <<  stop <<".";
+                   throw Error(malformed_expr, oss.str());
                 }
 
                 offset[id] = start;

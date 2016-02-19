@@ -47,6 +47,9 @@ BaseType *HDF5GMSPCFArray::ptr_duplicate()
 bool HDF5GMSPCFArray::read()
 {
     BESDEBUG("h5","Coming to HDF5GMSPCFArray read "<<endl);
+    if(length() == 0)
+        return true;
+
     string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
@@ -306,22 +309,15 @@ HDF5GMSPCFArray::format_constraint (int *offset, int *step, int *count)
                 int stride = dimension_stride (p, true);
                 int stop = dimension_stop (p, true);
 
+                // Check for illegal  constraint
+                if (start > stop) {
+                   ostringstream oss;
 
-                // Check for illegical  constraint
-                if (stride < 0 || start < 0 || stop < 0 || start > stop) {
-                        ostringstream oss;
-
-                        oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                                ":" << stride << ":" << stop << "]";
-                        throw Error (malformed_expr, oss.str ());
+                   oss << "Array/Grid hyperslab start point "<< start <<
+                         " is greater than stop point " <<  stop <<".";
+                   throw Error(malformed_expr, oss.str());
                 }
 
-                // Check for an empty constraint and use the whole dimension if so.
-                if (start == 0 && stop == 0 && stride == 0) {
-                        start = dimension_start (p, false);
-                        stride = dimension_stride (p, false);
-                        stop = dimension_stop (p, false);
-                }
 
                 offset[id] = start;
                 step[id] = stride;
