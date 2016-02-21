@@ -82,7 +82,7 @@ typedef struct DS {
     /// Number of elements 
     hsize_t nelmts;
     /// Space needed 
-    size_t need;
+    hsize_t need;
 } DS_t;
 /// \brief A structure for DAS generation
 typedef struct DSattr {
@@ -97,7 +97,7 @@ typedef struct DSattr {
     /// Number of elements 
     hsize_t nelmts;
     /// Memory space needed to hold nelmts type.
-    size_t need;
+    hsize_t need;
 } DSattr_t;
 
 /// An abstract respresntation of DAP String type.

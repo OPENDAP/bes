@@ -53,7 +53,7 @@ class HDF5Array:public Array {
     
 //    hid_t d_dset_id;
 //    hid_t d_ty_id;
-    size_t d_memneed;
+    hsize_t d_memneed;
     string var_path;
     
     // Parse constraint expression and make HDF5 coordinate point location.
