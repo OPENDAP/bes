@@ -1584,10 +1584,12 @@ Structure *Get_structure(const string &varname,const string &vpath,
             }
             else {
                 free(memb_name);
+                memb_name = NULL;
 		throw InternalErr(__FILE__, __LINE__, "unsupported field datatype inside a compound datatype");
             }
             // Caller needs to free the memory allocated by the library for memb_name.
-            free(memb_name);
+            if(memb_name != NULL)
+                  free(memb_name);
         }
     }
     catch (...) {
