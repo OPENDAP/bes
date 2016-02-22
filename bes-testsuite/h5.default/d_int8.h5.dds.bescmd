@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
+    <!-- Added this setContext element to address the issue of the
+         response having a spurious Structure element. jhrg 2/22/15/6 -->
+    <setContext name="dap_format">dap2</setContext>
     <setContainer name="d_size8.h5" space="catalog">/data/d_size8.h5</setContainer>
     <define name="d">
 	<container name="d_size8.h5" />
