@@ -51,6 +51,10 @@ BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
 {
     _dhi = &_base_dhi;
     _dhi->data[DATA_REQUEST] = "xml document";
+    // NB: The xml_doc is only used one place in the BES and that's on
+    // line 108  in this file. We could make this a field of the object and
+    // cut down on the use of the map. The downside is that putting the
+    // xml in the map makes it accessible when we look at the DHI. jhrg 2/23/16
     _dhi->data["XMLDoc"] = xml_doc;
 }
 
