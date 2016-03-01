@@ -27,7 +27,17 @@
 #ifndef I_HDF5RequestHandler_H
 #define I_HDF5RequestHandler_H 1
 
+#include<string>
+#include<map>
 #include "BESRequestHandler.h"
+
+namespace libdap {
+
+    class DAS;
+    class DDS;
+    class DataDDS;
+
+}
 
 /// \file HDF5RequestHandler.h
 /// \brief include the entry functions to execute the handlers
@@ -42,13 +52,39 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool hdf5_build_das(BESDataHandlerInterface & dhi);
     static bool hdf5_build_dds(BESDataHandlerInterface & dhi);
     static bool hdf5_build_data(BESDataHandlerInterface & dhi);
-    static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
-//#ifdef USE_DAP4
     static bool hdf5_build_dmr(BESDataHandlerInterface & dhi);
-    static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
-//#endif
     static bool hdf5_build_help(BESDataHandlerInterface & dhi);
     static bool hdf5_build_version(BESDataHandlerInterface & dhi);
+
+    static bool get_usecf()       { return _usecf;}
+    static bool get_pass_fileid() { return _pass_fileid;}
+    static bool get_disable_structmeta() { return _disable_structmeta;}
+    static bool get_keep_var_leading_underscore() { return _keep_var_leading_underscore;}
+    static bool get_check_name_clashing() { return _check_name_clashing;}
+    static bool get_add_path_attrs() { return _add_path_attrs;}
+    static bool get_drop_long_string() { return _drop_long_string;}
+    static bool get_check_ignore_obj() { return _check_ignore_obj;}
+ 
+    
+
+  private:
+     //cache map variables.
+     static map<std::string,libdap::DAS> das_cache;
+     static map<std::string,libdap::DDS> dds_cache;
+     static map<std::string,libdap::DAS> data_dds_cache;
+
+     // BES keys
+     static bool _usecf;
+     static bool _pass_fileid;
+     static bool _disable_structmeta;
+     static bool _keep_var_leading_underscore;
+     static bool _check_name_clashing;
+     static bool _add_path_attrs;
+     static bool _drop_long_string;
+     static bool _check_ignore_obj;
+
+     static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
+     static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
 };
 
 #endif

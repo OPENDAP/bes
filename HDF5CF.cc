@@ -39,6 +39,7 @@
 #include <functional>
 #include <climits>
 #include "HDF5CF.h"
+#include "HDF5RequestHandler.h"
 
 
 using namespace HDF5CF;
@@ -125,6 +126,7 @@ throw(Exception) {
 
         // Check if the BES key is set to check the ignored objects
         // We will only use DAS to output these information.
+#if 0        
         string check_ignored_objects_key_str="H5.CheckIgnoreObj";
         try {
             this->check_ignored = HDF5CFDAPUtil::check_beskeys(check_ignored_objects_key_str);
@@ -132,6 +134,8 @@ throw(Exception) {
         catch(...) {
             throw1("Check BES key H5.CheckIgnoreObj failed. ");
         }
+#endif
+        this->check_ignored = HDF5RequestHandler::get_check_ignore_obj();
         if(true == this->check_ignored) 
             this->add_ignored_info_page_header();
 
@@ -1275,6 +1279,7 @@ void File:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
     if(true == this->check_ignored && true == include_attr) {
 
+#if 0
         // Check the drop long string feature.
         string check_droplongstr_key ="H5.EnableDropLongString";
         bool is_droplongstr = false;
@@ -1284,7 +1289,8 @@ void File:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         catch(...) {
             throw1("Check BES key H5.EnableDropLongString failed. ");
         }
-        if(true == is_droplongstr){
+#endif
+        if(true == HDF5RequestHandler::get_drop_long_string()){
 
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
                 ira != this->root_attrs.end(); ++ira) {

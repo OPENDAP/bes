@@ -38,14 +38,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-//#undef USE_DAP4 
-//#define USE_DAP4 1
-//#ifdef USE_DAP4
 #include <DMR.h>
 #include <D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
 #include "HDF5_DMR.h"
-//#endif
 
 #include<mime_util.h>
 #include "hdf5_handler.h"
@@ -71,16 +67,30 @@
 #include <BESDebug.h>
 #include "h5get.h"
 #include "config_hdf5.h"
-//#include "h5cfdap.h"
 
 #define HDF5_NAME "h5"
 #include "h5cfdaputil.h"
 using namespace std;
 using namespace libdap;
 
+bool check_beskeys(const string);
 // For the CF option
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
+
+// Cache map variables.
+map<string,DAS> HDF5RequestHandler::das_cache;
+map<string,DDS> HDF5RequestHandler::dds_cache;
+map<string,DAS> HDF5RequestHandler::data_dds_cache;
+
+bool HDF5RequestHandler::_usecf                       = false;
+bool HDF5RequestHandler::_pass_fileid                 = false;
+bool HDF5RequestHandler::_disable_structmeta          = false;
+bool HDF5RequestHandler::_keep_var_leading_underscore = false;
+bool HDF5RequestHandler::_check_name_clashing         = false;
+bool HDF5RequestHandler::_add_path_attrs              = false;
+bool HDF5RequestHandler::_drop_long_string            = false;
+bool HDF5RequestHandler::_check_ignore_obj            = false;
 
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
@@ -89,13 +99,47 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
     add_handler(DATA_RESPONSE, HDF5RequestHandler::hdf5_build_data);
-//#ifdef USE_DAP4
     add_handler(DMR_RESPONSE, HDF5RequestHandler::hdf5_build_dmr);
     add_handler(DAP4DATA_RESPONSE, HDF5RequestHandler::hdf5_build_dmr);
-//#endif
 
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
+
+    _usecf                       = check_beskeys("H5.EnableCF");
+
+    // The following keys are only effective when usecf is true.
+    _pass_fileid                 = check_beskeys("H5.EnablePassFileID");
+    _disable_structmeta          = check_beskeys("H5.DisableStructMetaAttr");
+    _keep_var_leading_underscore = check_beskeys("H5.KeepVarLeadingUnderscore");
+    _check_name_clashing         = check_beskeys("H5.EnableCheckNameClashing");
+    _add_path_attrs              = check_beskeys("H5.EnableAddPathAttrs");
+    _drop_long_string            = check_beskeys("H5.EnableDropLongString");
+    _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
+
+#if 0
+
+if(true == usecf) cerr<<"usecf is true"<<endl;
+else cerr<<"usecf is false"<<endl;
+if(true == pass_fileid) cerr<<"pass_fileid is true"<<endl;
+else cerr<<"pass_fileid is false"<<endl;
+if(true == disable_structmeta) cerr<<"disable_structmeta is true"<<endl;
+else cerr<<"disable_structmeta is false"<<endl;
+
+
+if(true == keep_var_leading_underscore) cerr<<"keep_var_leading_underscore is true"<<endl;
+else cerr<<"keep_var_leading_underscore is false"<<endl;
+if(true == check_name_clashing) cerr<<"check_name_clashing is true"<<endl;
+else cerr<<"check_name_clashing is false"<<endl;
+if(true == add_path_attrs) cerr<<"add_path_attrs is true"<<endl;
+else cerr<<"add_path_attrs is false"<<endl;
+
+if(true == drop_long_string) cerr<<"drop_long_string is true"<<endl;
+else cerr<<"drop_long_string is false"<<endl;
+if(true == check_ignore_obj) cerr<<"check_ignore_obj is true"<<endl;
+else cerr<<"check_ignore_obj is false"<<endl;
+#endif
+
+
 
 }
 
@@ -106,22 +150,25 @@ HDF5RequestHandler::~HDF5RequestHandler()
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
 
+#if 0
     bool found_key = false;
     bool usecf = false;
     string key = "H5.EnableCF";
     string doset;
+#endif
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t cf_fileid = -1;
 
+#if 0
     TheBESKeys::TheKeys()->get_value( key, doset, found_key ) ;
 
     if(true ==found_key ) {
-            // cerr<<"found it" <<endl;
         doset = BESUtil::lowercase( doset ) ;
         if( doset == "true" || doset == "yes" ) 
             usecf = true;
     }
+#endif
          
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
@@ -138,7 +185,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
-        if (true == usecf) {
+        if (true == _usecf) {
 
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
             if (cf_fileid < 0){
@@ -199,11 +246,13 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
 
+#if 0
     bool found = false;
     bool usecf = false;
 
     string key="H5.EnableCF";
     string doset;
+
 
     // Obtain the BESKeys. If finding the key, "found" will be true.
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
@@ -215,6 +264,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         }
     }
 
+#endif
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
     hid_t cf_fileid = -1;
@@ -223,7 +273,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
  
     // For the time being, not mess up CF's fileID with Default's fileID
-    if(true == usecf) {
+    if(true == _usecf) {
            
         cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         if (cf_fileid < 0){
@@ -252,7 +302,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
-        if( true == usecf ) 
+        if( true == _usecf ) 
             read_cfdds(*dds,filename,cf_fileid);
 
         else {
@@ -273,7 +323,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
-        if (true == usecf) {
+        if (true == _usecf) {
 
             // go to the CF option
             read_cfdas( *das,filename,cf_fileid);
@@ -343,6 +393,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
 
+#if 0
     bool found = false;
     bool usecf = false;
 
@@ -361,6 +412,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
             usecf = true;
         }
     }    
+#endif
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
@@ -369,9 +421,10 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     string filename = dhi.container->access();
 
-    if(true ==usecf) { 
+    if(true ==_usecf) { 
        
-        if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
+        //if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
+        if(true == _pass_fileid)
             return hdf5_build_data_with_IDs(dhi);
 
         cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -413,7 +466,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         dds->filename(filename);
 
         // DataDDS *dds = bdds->get_dds();
-        if(true == usecf) { 
+        if(true == _usecf) { 
 
             // This is the CF option
             read_cfdds( *dds,filename,cf_fileid);
@@ -434,7 +487,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
-        if(true == usecf) {
+        if(true == _usecf) {
 
             // CF option
             read_cfdas( *das,filename,cf_fileid);
@@ -587,6 +640,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
 
+#if 0
     bool found = false;
     bool usecf = false;
 
@@ -605,6 +659,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             usecf = true;
         }
     }    
+#endif
 
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -622,9 +677,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
 
     try {
-        if(true ==usecf) { 
+        if(true ==_usecf) { 
        
-            if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
+            if(true == _pass_fileid)
                 return hdf5_build_dmr_with_IDs(dhi);
 
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -884,3 +939,21 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
 
     return true;
 }
+
+bool check_beskeys(const string key) {
+
+    bool found = false;
+    string doset ="";
+    const string dosettrue ="true";
+    const string dosetyes = "yes";
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( dosettrue == doset  || dosetyes == doset )
+            return true;
+    }
+    return false;
+
+}
+

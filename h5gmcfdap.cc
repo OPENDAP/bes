@@ -40,6 +40,7 @@
 #include <BESDebug.h>
 #include <InternalErr.h>
 
+#include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
 #include "h5gmcfdap.h"
 #include "HDF5CFByte.h"
@@ -62,9 +63,11 @@ using namespace HDF5CF;
 void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
     BESDEBUG("h5","Coming to GM products DDS mapping function map_gmh5_cfdds  "<<endl);
+#if 0
     string check_objnameclashing_key ="H5.EnableCheckNameClashing";
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
+#endif
 
     H5GCFProduct product_type = check_product(file_id);
 
@@ -114,13 +117,13 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Only when the check_nameclashing key is turned on or
         // general product.
         if(General_Product == product_type ||
-           true == is_check_nameclashing) 
+           true == HDF5RequestHandler::get_check_name_clashing()) 
            f->Handle_Obj_NameClashing(include_attr);
 
         // Adjust Dimension name 
         f->Adjust_Dim_Name();
          if(General_Product == product_type ||
-           true == is_check_nameclashing)
+            true == HDF5RequestHandler::get_check_name_clashing()) 
             f->Handle_DimNameClashing();
     }
     catch (HDF5CF::Exception &e){
@@ -147,7 +150,9 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
     BESDEBUG("h5","Coming to GM products DAS mapping function map_gmh5_cfdas  "<<endl);
+#if 0
     string check_objnameclashing_key ="H5.EnableCheckNameClashing";
+
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
 
@@ -158,6 +163,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
     is_add_path_attrs = HDF5CFDAPUtil::check_beskeys(add_path_attrs_key);
 
     // if(is_add_path_attrs) cerr<<"adding attributes "<<endl;
+#endif
 
     H5GCFProduct product_type = check_product(file_id);
     GMPattern gproduct_pattern = OTHERGMS;
@@ -200,11 +206,13 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         // Need to add original variable name and path
         // and other special attributes
         // Can be turned on/off by using the check_path_attrs keys.
-        f->Add_Supplement_Attrs(is_add_path_attrs);
+        //f->Add_Supplement_Attrs(is_add_path_attrs);
+        f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
         f->Adjust_Obj_Name();
         f->Flatten_Obj_Name(include_attr);
         if(General_Product == product_type ||
-           true == is_check_nameclashing) 
+           true == HDF5RequestHandler::get_check_name_clashing()) 
+           //true == is_check_nameclashing) 
             f->Handle_Obj_NameClashing(include_attr);
 
         // Handle the "coordinate" attributes.

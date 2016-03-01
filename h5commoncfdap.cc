@@ -39,6 +39,7 @@
 
 #include <InternalErr.h>
 
+#include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
 #include "h5gmcfdap.h"
 #include "HDF5CFByte.h"
@@ -373,9 +374,11 @@ void gen_dap_oneobj_das(AttrTable*at,const HDF5CF::Attribute* attr, const HDF5CF
 
 void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr) {
 
+#if 0
     string check_droplongstr_key ="H5.EnableDropLongString";
     bool is_droplongstr = false;
     is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+#endif
 
     const vector<size_t>& strsize = attr->getStrSize();
     unsigned int temp_start_pos = 0;
@@ -388,7 +391,8 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr) {
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
-            if (false == is_droplongstr || 
+            //if (false == is_droplongstr || 
+            if (false == HDF5RequestHandler::get_drop_long_string() || 
                 tempstring.size() <= NC_JAVA_STR_SIZE_LIMIT) {
                 if((attr->getNewName()!="origname")&&(attr->getNewName()!="fullnamepath"))
                     tempstring = HDF5CFDAPUtil::escattr(tempstring);
