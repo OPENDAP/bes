@@ -36,6 +36,7 @@
 #include <BESDebug.h>
 #include "InternalErr.h"
 
+#include "HDF5RequestHandler.h"
 #include "HDFEOS5CFSpecialCVArray.h"
 
 BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
@@ -46,9 +47,12 @@ BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 bool HDFEOS5CFSpecialCVArray::read(){
 
     BESDEBUG("h5","Coming to HDFEOS5CFSpecialCVArray read "<<endl);
+#if 0
     string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     vector<int> offset;
     vector<int> count;

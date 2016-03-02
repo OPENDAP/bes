@@ -35,6 +35,8 @@
 /// All rights reserved.
 
 #include "HDF5CF.h"
+#include "HDF5RequestHandler.h"
+#include "h5cfdaputil.h"
 using namespace HDF5CF;
 
 EOS5CVar::EOS5CVar(Var*var) {
@@ -325,6 +327,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
     if(true == this->check_ignored && true == include_attr) {
 
         // Check the drop long string feature.
+#if 0
         string check_droplongstr_key ="H5.EnableDropLongString";
         bool is_droplongstr = false;
         try {
@@ -333,8 +336,10 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         catch(...) {
             throw1("Check H5.EnableDropLongString BES key failed");
         }
+#endif
+       
 
-        if(true == is_droplongstr){
+        if(true == HDF5RequestHandler::get_drop_long_string()){
              for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
                 ira != this->root_attrs.end(); ++ira) {
                 if(H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {

@@ -37,6 +37,7 @@
 #include <BESDebug.h>
 #include "InternalErr.h"
 
+#include "HDF5RequestHandler.h"
 #include "HDF5GMSPCFArray.h"
 
 BaseType *HDF5GMSPCFArray::ptr_duplicate()
@@ -50,9 +51,13 @@ bool HDF5GMSPCFArray::read()
     if(length() == 0)
         return true;
 
+#if 0
     string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     vector<int>offset;
     vector<int>count;

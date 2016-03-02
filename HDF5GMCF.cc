@@ -35,6 +35,7 @@
 /// All rights reserved.
 
 #include "HDF5CF.h"
+#include "HDF5RequestHandler.h"
 #include <BESDebug.h>
 #include <algorithm>
 //#include <sstream>
@@ -188,6 +189,7 @@ string GMFile::get_CF_string(string s) {
         return File::get_CF_string(s);
     else if (General_Product == product_type &&  OTHERGMS == gproduct_pattern)  { 
 
+#if 0
         string check_keepleading_underscore_key = "H5.KeepVarLeadingUnderscore";
         bool bes_key_value = false;
         try {
@@ -196,7 +198,8 @@ string GMFile::get_CF_string(string s) {
         catch (...) {
             throw;
         }
-        if(true == bes_key_value)
+#endif
+        if(true == HDF5RequestHandler::get_keep_var_leading_underscore())
             return File::get_CF_string(s);
         else {
             s.erase(0,1);
@@ -569,6 +572,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
     File::Handle_Unsupported_Others(include_attr);
     if(true == this->check_ignored && true == include_attr) {
 
+#if 0
         // Check the drop long string feature.
         string check_droplongstr_key ="H5.EnableDropLongString";
         bool is_droplongstr = false;
@@ -578,7 +582,8 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         catch(...) {
             throw1("Check BES key H5.EnableDropLongString failed.");
         }
-        if(true == is_droplongstr){
+#endif
+        if(true == HDF5RequestHandler::get_drop_long_string()){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                  irv != this->cvars.end(); ++irv) {
                 for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();

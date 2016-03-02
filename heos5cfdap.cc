@@ -55,6 +55,7 @@
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDFEOS5CFMissNonLLCVArray.h"
 #include "HDFEOS5CFSpecialCVArray.h"
+#include "HDF5RequestHandler.h"
 
 #include "he5dds.tab.hh"
 #include "HE5Parser.h"
@@ -95,9 +96,13 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         throw InternalErr(__FILE__, __LINE__, msg);
     }
      
+#if 0
     string check_objnameclashing_key ="H5.EnableCheckNameClashing";
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
+#endif
+    
+    bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
 
     EOS5File *f = NULL;
 
@@ -249,13 +254,20 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
+#if 0
     string check_objnameclashing_key ="H5.EnableCheckNameClashing";
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
+#endif
 
+    bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
+
+#if 0
     string add_path_attrs_key = "H5.EnableAddPathAttrs";
     bool is_add_path_attrs = false;
     is_add_path_attrs = HDF5CFDAPUtil::check_beskeys(add_path_attrs_key);
+#endif
+    bool is_add_path_attrs = HDF5RequestHandler::get_add_path_attrs();
 
     EOS5File *f = NULL;
     try {
@@ -705,9 +717,12 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
 #endif
     if(st_str != ""){
 
+#if 0
         string check_disable_smetadata_key ="H5.DisableStructMetaAttr";
         bool is_check_disable_smetadata = false;
         is_check_disable_smetadata = HDF5CFDAPUtil::check_beskeys(check_disable_smetadata_key);
+#endif
+        bool is_check_disable_smetadata = HDF5RequestHandler::get_disable_structmeta();
 
         if (false == is_check_disable_smetadata) {
 

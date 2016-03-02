@@ -37,6 +37,7 @@
 #include "h5cfdaputil.h"
 #include <math.h>
 
+#if 0
 bool HDF5CFDAPUtil::check_beskeys(const string key) {
 
     bool found = false;
@@ -53,6 +54,7 @@ bool HDF5CFDAPUtil::check_beskeys(const string key) {
     return false;
 
 }
+#endif
 
 
 string HDF5CFDAPUtil::escattr(string s)

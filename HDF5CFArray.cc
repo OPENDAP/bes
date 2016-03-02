@@ -38,7 +38,7 @@
 #include "Str.h"
 #include "HDF5RequestHandler.h"
 #include "HDF5CFArray.h"
-//#include "h5cfdaputil.h"
+#include "h5cfdaputil.h"
 
 
 

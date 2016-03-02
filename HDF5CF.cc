@@ -39,6 +39,7 @@
 #include <functional>
 #include <climits>
 #include "HDF5CF.h"
+#include "h5cfdaputil.h"
 #include "HDF5RequestHandler.h"
 
 

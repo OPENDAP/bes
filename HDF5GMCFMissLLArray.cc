@@ -35,6 +35,7 @@
 #include <cassert>
 #include <BESDebug.h>
 #include "InternalErr.h"
+#include "HDF5RequestHandler.h"
 
 #include "HDF5GMCFMissLLArray.h"
 
@@ -81,9 +82,12 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms)
           throw InternalErr (__FILE__, __LINE__,
                           "The number of dimension for Aquarius Level 3 map data must be 1");
 
+#if 0
     string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
     if(false == check_pass_fileid_key) {
     if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
         ostringstream eherr;
@@ -186,9 +190,12 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms) {
             throw InternalErr (__FILE__, __LINE__,
                           "The number of dimension for Aquarius Level 3 map data must be 1");
 
+#if 0
      string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     if(false == check_pass_fileid_key) {
     if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {

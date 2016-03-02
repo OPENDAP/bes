@@ -37,6 +37,7 @@
 #include <BESDebug.h>
 
 #include "InternalErr.h"
+#include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
 #include "HDF5CFStr.h"
 #include <hdf5.h>
@@ -127,9 +128,11 @@ bool HDF5CFStr::read()
     }
 
     // Check if we should drop the long string
+#if 0
     string check_droplongstr_key ="H5.EnableDropLongString";
     bool is_droplongstr = false;
     is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+#endif
 
     htri_t is_vlen_str = H5Tis_variable_str(dtypeid);
     if (is_vlen_str > 0) {
@@ -193,7 +196,7 @@ bool HDF5CFStr::read()
         // If the string size is longer than the current netCDF JAVA
         // string and the "EnableDropLongString" key is turned on,
         // No string is generated.
-        if (true == is_droplongstr) {
+        if (true == HDF5RequestHandler::get_drop_long_string()) {
             if( final_str.size() > NC_JAVA_STR_SIZE_LIMIT) 
                 final_str = "";
         }
@@ -248,7 +251,7 @@ bool HDF5CFStr::read()
         // If the string size is longer than the current netCDF JAVA
         // string and the "EnableDropLongString" key is turned on,
         // No string is generated.
-        if (true == is_droplongstr) {
+        if (true == HDF5RequestHandler::get_drop_long_string()) {
             if( trim_string.size() > NC_JAVA_STR_SIZE_LIMIT) 
                 trim_string = "";
         }
