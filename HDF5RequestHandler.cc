@@ -83,6 +83,7 @@ map<string,DAS> HDF5RequestHandler::das_cache;
 map<string,DDS> HDF5RequestHandler::dds_cache;
 map<string,DAS> HDF5RequestHandler::data_dds_cache;
 
+bool HDF5RequestHandler::_use_memcache                = false;
 bool HDF5RequestHandler::_usecf                       = false;
 bool HDF5RequestHandler::_pass_fileid                 = false;
 bool HDF5RequestHandler::_disable_structmeta          = false;
@@ -105,6 +106,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 
+    _use_memcache                = check_beskeys("H5.EnableMemCache");
     _usecf                       = check_beskeys("H5.EnableCF");
 
     // The following keys are only effective when usecf is true.

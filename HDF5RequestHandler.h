@@ -56,6 +56,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool hdf5_build_help(BESDataHandlerInterface & dhi);
     static bool hdf5_build_version(BESDataHandlerInterface & dhi);
 
+    static bool get_use_memcache()       { return _use_memcache;}
     static bool get_usecf()       { return _usecf;}
     static bool get_pass_fileid() { return _pass_fileid;}
     static bool get_disable_structmeta() { return _disable_structmeta;}
@@ -74,6 +75,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static map<std::string,libdap::DAS> data_dds_cache;
 
      // BES keys
+     static bool _use_memcache;
      static bool _usecf;
      static bool _pass_fileid;
      static bool _disable_structmeta;
