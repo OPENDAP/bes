@@ -141,8 +141,6 @@ if(true == check_ignore_obj) cerr<<"check_ignore_obj is true"<<endl;
 else cerr<<"check_ignore_obj is false"<<endl;
 #endif
 
-
-
 }
 
 HDF5RequestHandler::~HDF5RequestHandler()
@@ -187,6 +185,18 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
+        // Check if the mem_cache is set 
+        if(true == _use_memcache) {
+
+            BESDEBUG("h5", "Using the memory DAS cache" << endl);
+            map<string, DAS>::iterator das_cache_iter = das_cache.find(filename);
+            if (das_cache_iter != das_cache.end()) {
+                BESDEBUG("h5", "Found DAS in the memory DAS cache" << endl);
+                *das = das_cache_iter->second;
+                bdas->clear_container();
+                return true;
+            }
+        }
         if (true == _usecf) {
 
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -213,6 +223,9 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         }
              
         Ancillary::read_ancillary_das( *das, filename ) ;
+
+        if(true == _use_memcache) 
+            das_cache[filename] = *das;
         bdas->clear_container() ;
     }
     catch(InternalErr & e) {
@@ -248,53 +261,13 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
 
-#if 0
-    bool found = false;
-    bool usecf = false;
-
-    string key="H5.EnableCF";
-    string doset;
-
-
-    // Obtain the BESKeys. If finding the key, "found" will be true.
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if(true == found ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-            //  This is the CF option, go to the CF function
-            usecf = true;
-        }
-    }
-
-#endif
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
-    hid_t fileid = -1;
+    hid_t fileid    = -1;
     hid_t cf_fileid = -1;
 
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
  
-    // For the time being, not mess up CF's fileID with Default's fileID
-    if(true == _usecf) {
-           
-        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        if (cf_fileid < 0){
-                throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-        }
-
-    }
-    else {
-
-        fileid = get_fileid(filename.c_str());
-        if (fileid < 0) {
-            throw BESNotFoundError(string("hdf5_build_dds: ")
-                               + "Could not open hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-        }
-    }
-
-
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
     if( !bdds )
@@ -304,13 +277,43 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
-        if( true == _usecf ) 
+        if(true == _use_memcache) {
+
+            BESDEBUG("h5", "Using the DDS mem_cache" << endl);
+            map<string, DDS>::iterator dds_cache_iter = dds_cache.find(filename);
+            if (dds_cache_iter != dds_cache.end()) {
+                BESDEBUG("h5", "Found DDS in the mem_cache" << endl);
+                *dds = dds_cache_iter->second;
+                bdds->set_constraint(dhi);
+                bdds->clear_container();
+                return true;
+            }
+        }
+
+        // For the time being, not mess up CF's fileID with Default's fileID
+        if(true == _usecf) {
+           
+            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (cf_fileid < 0){
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                               + filename, __FILE__, __LINE__);
+            }
             read_cfdds(*dds,filename,cf_fileid);
 
+        }
         else {
 
+            fileid = get_fileid(filename.c_str());
+            if (fileid < 0) {
+                throw BESNotFoundError(string("hdf5_build_dds: ")
+                                       + "Could not open hdf5 file: "
+                                       + filename, __FILE__, __LINE__);
+            }
+
             depth_first(fileid, (char*)"/", *dds, filename.c_str());
+
         }
+
 
         // Check semantics 
         if (!dds->check_semantics()) {   // DDS didn't comply with the semantics 
@@ -344,6 +347,14 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         Ancillary::read_ancillary_das( *das, filename ) ;
 
         dds->transfer_attributes(das);
+
+        if(true == _use_memcache) {
+
+            // Use this because DDS doesn't have a no-arg ctor which
+            // map::operator[] requires. KY 3/3/16 from JG's comments
+            dds_cache.insert(pair<string, DDS>(filename, *dds));
+
+        }
 
         bdds->set_constraint( dhi ) ;
 
@@ -395,29 +406,8 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
 
-#if 0
-    bool found = false;
-    bool usecf = false;
-
-    string key="H5.EnableCF";
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if(true == found )
-    {
-        // cerr<<"found it" <<endl;
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-            
-           // This is the CF option, go to the CF function
-            // cerr<<"go to CF option "<<endl;
-            usecf = true;
-        }
-    }    
-#endif
-
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
-    hid_t fileid = -1;
+    hid_t fileid    = -1;
     hid_t cf_fileid = -1;
 
 
@@ -425,7 +415,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     if(true ==_usecf) { 
        
-        //if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
+        // STOP HERE.
         if(true == _pass_fileid)
             return hdf5_build_data_with_IDs(dhi);
 
