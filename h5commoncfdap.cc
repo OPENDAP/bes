@@ -245,7 +245,10 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
         throw InternalErr(__FILE__,__LINE__,"FillValue attribute can only have one element.");
 
     H5DataType var_dtype = var->getType();
+    // TODO: need to check if attr. type is signed int8 or signed int 16, if yes, need to check the range
+    // Need to have another routine in h5cfdaputil.cc for this purpose.
     string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(),0,(void*)(&(attr->getValue()[0])));
+
 
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
 }
