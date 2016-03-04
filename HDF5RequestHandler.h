@@ -64,8 +64,8 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_check_name_clashing() { return _check_name_clashing;}
     static bool get_add_path_attrs() { return _add_path_attrs;}
     static bool get_drop_long_string() { return _drop_long_string;}
+    static bool get_fillvalue_check() { return _fillvalue_check;}
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
- 
     
 
   private:
@@ -83,6 +83,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _check_name_clashing;
      static bool _add_path_attrs;
      static bool _drop_long_string;
+     static bool _fillvalue_check;
      static bool _check_ignore_obj;
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);

@@ -236,7 +236,6 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
 bool need_special_attribute_handling(const HDF5CF::Attribute* attr,const HDF5CF::Var* var) { 
     return ((("_FillValue" == attr->getNewName()) && (var->getType() != attr->getType()))?true:false);
 }
-
      
 // Currently we only handle the case when the datatype of _FillValue is not the same as the variable datatype.
 void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,const HDF5CF::Var* var) {
@@ -245,14 +244,87 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
         throw InternalErr(__FILE__,__LINE__,"FillValue attribute can only have one element.");
 
     H5DataType var_dtype = var->getType();
-    // TODO: need to check if attr. type is signed int8 or signed int 16, if yes, need to check the range
-    // Need to have another routine in h5cfdaputil.cc for this purpose.
+    if(true == HDF5RequestHandler::get_fillvalue_check()) {
+        if(false == is_fvalue_valid(var_dtype,attr)) {
+            string msg = "The value of <" + attr->getNewName()  + "> of variable <" + var->getNewName();
+            msg += "> is out of the range.";
+            throw InternalErr(__FILE__,__LINE__,msg);
+        }
+    }
     string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(),0,(void*)(&(attr->getValue()[0])));
-
-
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
 }
 
+// Check if this fillvalue is in the valid datatype range when the fillvalue datatype is changed to follow the CF
+bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr) {
+
+    bool ret_value = true;
+    // We only check 8-bit and 16-bit integers. 
+    switch(attr->getType()) {
+        case H5CHAR:
+        {
+            signed char final_fill_value = *((signed char*)((void*)(&(attr->getValue()[0]))));
+            if(var_dtype == H5UCHAR) {
+                if(final_fill_value < 0) 
+                    ret_value = false;
+            }
+            return ret_value;
+
+        }
+        case H5INT16:
+        {
+            short final_fill_value = *((short*)((void*)(&(attr->getValue()[0]))));
+            if(var_dtype == H5UCHAR) {
+                if(final_fill_value >255 || final_fill_value <0) 
+                    ret_value = false;
+            }
+            // No need to check the var_dtype==H5CHAR case since it is mapped to int16.
+            else if(var_dtype == H5UINT16) {
+                if(final_fill_value <0)
+                    ret_value = false;
+            }
+            return ret_value;
+        }
+        case H5UINT16:
+        {
+            unsigned short final_fill_value = *((unsigned short*)((void*)(&(attr->getValue()[0]))));
+            if(var_dtype == H5UCHAR) {
+                if(final_fill_value >255) 
+                    ret_value = false;
+            }
+            else if(var_dtype == H5INT16) {
+                if(final_fill_value >32767)
+                    ret_value = false;
+            }
+            return ret_value;
+ 
+        }
+        // We are supposed to check the case when the datatype of fillvalue is unsigned char.
+        // However, since the variable type signed char is always mapped to int16, so there 
+        // will never be an overflow case(the signed char case is the only possible one). 
+        // Still the data producer should not do this. We will not check this in the handler.KY 2016-03-04
+#if 0
+        case H5UCHAR:
+        {
+            unsigned char final_fill_value = *((unsigned char*)((void*)(&(attr->getValue()[0]))));
+            if(var_dtype == H5CHAR){ 
+                if(final_fill_value >127)  
+                    ret_value = false; 
+            }
+            return ret_value;
+        }
+#endif
+
+        case H5UCHAR:
+        case H5INT32:
+        case H5UINT32:
+        default:
+            return ret_value;
+    }
+    
+
+
+}
 // Leave the old code for the time being. KY 2015-05-07
 #if 0
 void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,const HDF5CF::Var* var) {

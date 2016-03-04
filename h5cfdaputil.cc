@@ -178,9 +178,6 @@ HDF5CFDAPUtil::get_mem_dtype(H5DataType dtype,size_t mem_dtype_size ) {
     return ((H5INT16 == dtype) && (1 == mem_dtype_size))?H5CHAR:dtype;
 }
 
-
-// Need to add another routine to check the valid range of the _FillValue attribute. TOOODDOOO
-// following the code at h5commoncfdap.cc.
 string
 HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
 {

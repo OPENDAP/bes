@@ -103,6 +103,23 @@ H5.EnableAddPathAttrs=true
 # are not used.
 H5.EnableDropLongString=true
 
+# We find that occassionally NASA HDF5 products may have the attribute_FillValue datatype 
+# dfferent than the variable datatype. This violates the CF conventions. So the handler
+# corrects the FillValue datatype to be the corresponding variable datatype. However, the
+# original value of the fillvalue may fall out of the range of the variable datatype.
+# An example, var dtype: 'unsigned char';  original fillvalue dtype: 'signed char';
+# original fill value: -127 is out of the range of "unsigned char". 
+# If such a case occurs, we believe this is a data producer's mistake and should fail the service
+# and let the data center reports this issue back to the data producer. 
+# However, this may only occur for one or two variables and the data center may not 
+# want to discontinue the data service. So we provide the following BES keys to give the
+# flexibility to the data center to continue the service and may use NcML to patch the 
+# wrong fillvalue until the data producer corrects it in the new release.
+# By default, the key FillValueCheck is true. If the fillvalue is out of the range of the variable type, 
+# DAP service stops. To ignore the fillvalue check, set this key to false. The service is normal but
+# the _Fillvalue of some variables may be wrong. netCDF-Java clients may not access the data correctly.
+H5.EnableFillValueCheck=true
+
 
 # This BES key must be set to false for the real service. Set it to true 
 # will generate a DAS output that lists the ignored HDF5 objects and attributes

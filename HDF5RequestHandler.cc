@@ -91,6 +91,7 @@ bool HDF5RequestHandler::_keep_var_leading_underscore = false;
 bool HDF5RequestHandler::_check_name_clashing         = false;
 bool HDF5RequestHandler::_add_path_attrs              = false;
 bool HDF5RequestHandler::_drop_long_string            = false;
+bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 
 
@@ -116,6 +117,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _check_name_clashing         = check_beskeys("H5.EnableCheckNameClashing");
     _add_path_attrs              = check_beskeys("H5.EnableAddPathAttrs");
     _drop_long_string            = check_beskeys("H5.EnableDropLongString");
+    _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
 
 #if 0
