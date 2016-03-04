@@ -72,7 +72,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      //cache map variables.
      static map<std::string,libdap::DAS> das_cache;
      static map<std::string,libdap::DDS> dds_cache;
-     static map<std::string,libdap::DAS> data_dds_cache;
+     static map<std::string,libdap::DataDDS> data_dds_cache;
 
      // BES keys
      static bool _use_memcache;

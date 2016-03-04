@@ -81,7 +81,7 @@ extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 // Cache map variables.
 map<string,DAS> HDF5RequestHandler::das_cache;
 map<string,DDS> HDF5RequestHandler::dds_cache;
-map<string,DAS> HDF5RequestHandler::data_dds_cache;
+map<string,DataDDS> HDF5RequestHandler::data_dds_cache;
 
 bool HDF5RequestHandler::_use_memcache                = false;
 bool HDF5RequestHandler::_usecf                       = false;
@@ -406,35 +406,17 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
 
-    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
-    hid_t fileid    = -1;
-    hid_t cf_fileid = -1;
-
-
-    string filename = dhi.container->access();
 
     if(true ==_usecf) { 
        
-        // STOP HERE.
         if(true == _pass_fileid)
             return hdf5_build_data_with_IDs(dhi);
-
-        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        if (cf_fileid < 0){
-            throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-        }
-
     }
-    else {
-        // Obtain the HDF5 file ID. 
-        fileid = get_fileid(filename.c_str());
-        if (fileid < 0) {
-            throw BESNotFoundError(string("hdf5_build_data: ")
-                               + "Could not open hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-        }
-    }
+
+    string filename = dhi.container->access();
+    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
+    hid_t fileid    = -1;
+    hid_t cf_fileid = -1;
 
     BESDEBUG("h5","Building DataDDS without passing file IDs. "<<endl);
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -456,6 +438,33 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 #endif
         DataDDS* dds = bdds->get_dds();
         dds->filename(filename);
+        if(true == _use_memcache) {
+            BESDEBUG("h5", "Using the DataDDS cache" << endl);
+            map<string, DataDDS>::iterator data_dds_cache_iter = data_dds_cache.find(filename);
+            if (data_dds_cache_iter != data_dds_cache.end()) {
+                BESDEBUG("h5", "Found DataDDS in the DataDDS cache" << endl);
+                *dds = data_dds_cache_iter->second;
+                bdds->set_constraint(dhi);
+                bdds->clear_container();
+                return true;
+            }
+        }
+        if(true == _usecf) {
+            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if(cf_fileid < 0){
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                                   + filename, __FILE__, __LINE__);
+            }
+        }
+        else {
+            // Obtain the HDF5 file ID. 
+            fileid = get_fileid(filename.c_str());
+            if (fileid < 0) {
+                throw BESNotFoundError(string("hdf5_build_data: ")
+                                   + "Could not open hdf5 file: "
+                                   + filename, __FILE__, __LINE__);
+            }
+        }
 
         // DataDDS *dds = bdds->get_dds();
         if(true == _usecf) { 
@@ -500,6 +509,12 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         Ancillary::read_ancillary_das( *das, filename ) ;
 
         dds->transfer_attributes(das);
+        if (true == _use_memcache) {
+            // Use this because DDS doesn't have a no-arg ctor which
+            // map::operator[] requires. jhrg 2/18/16
+            data_dds_cache.insert(pair<string, DataDDS>(filename, *dds));
+        }
+
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
 
