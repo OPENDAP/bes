@@ -116,7 +116,8 @@ H5.EnableDropLongString=true
 # flexibility to the data center to continue the service and may use NcML to patch the 
 # wrong fillvalue until the data producer corrects it in the new release.
 # By default, the key FillValueCheck is true. If the fillvalue is out of the range of the variable type, 
-# DAP service stops. To ignore the fillvalue check, set this key to false. The service is normal but
+# DAP service stops. 
+# **To ignore the fillvalue check**, set this key to false. The service runs normally but
 # the _Fillvalue of some variables may be wrong. netCDF-Java clients may not access the data correctly.
 H5.EnableFillValueCheck=true
 

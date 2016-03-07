@@ -246,9 +246,12 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
     H5DataType var_dtype = var->getType();
     if(true == HDF5RequestHandler::get_fillvalue_check()) {
         if(false == is_fvalue_valid(var_dtype,attr)) {
-            string msg = "The value of <" + attr->getNewName()  + "> of variable <" + var->getNewName();
-            msg += "> is out of the range.";
-            throw InternalErr(__FILE__,__LINE__,msg);
+            string msg = "The attribute value is out of the range.\n";
+            msg += "The variable name: "+var->getNewName()+"\n";
+            msg += "The attribute name: " + attr->getNewName()+"\n" ;
+            msg += "The error occurs inside the gen_dap_special_oneobj_das function in h5commoncfdap.cc.";
+            throw InternalErr(msg);
+            //throw InternalErr(__FILE__,__LINE__,msg);
         }
     }
     string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(),0,(void*)(&(attr->getValue()[0])));

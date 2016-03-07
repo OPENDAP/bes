@@ -255,6 +255,9 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
 
+# Fillvalue out of range.
+AT_BESCMD_RESPONSE_TEST([t_invalid_fvalue.h5.das.bescmd])
+
 
 # Test simple HDF-EOS5 cases.
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.das.bescmd])
