@@ -318,7 +318,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
     BaseType *dsbt = 0;
     try {
         gr = new HDFGrid(sds.name, dataset);
-        gr->add_var(ar, array); // note: gr now manages ar
+        gr->add_var(ar, libdap::array); // note: gr now manages ar
         delete ar;
 
         // create dimension scale HDFArrays (i.e., maps) and
