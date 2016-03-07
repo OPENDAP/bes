@@ -83,6 +83,8 @@
 #include <sys/time.h>
 //#endif
 
+bool check_beskeys(const string);
+
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
 
@@ -105,6 +107,43 @@ void close_hdf4_fileid(const int sdfd,const int fileid,HDFSP::File*h4file);
 bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool rw_flag);
 bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string & hdf4_filename);
 
+// CF key
+bool HDF4RequestHandler::_usecf                    = false;
+
+// Keys to tune the performance -general
+bool HDF4RequestHandler::_pass_fileid              = false;
+bool HDF4RequestHandler::_disable_structmeta       = false;
+bool HDF4RequestHandler::_enable_special_eos       = false;
+bool HDF4RequestHandler::_disable_scaleoffset_comp = false;
+bool HDF4RequestHandler::_disable_ecsmetadata_min  = false;
+bool HDF4RequestHandler::_disable_ecsmetadata_all  = false;
+
+
+// Keys to tune the performance - cache
+bool HDF4RequestHandler::_enable_eosgeo_cachefile  = false;
+bool HDF4RequestHandler::_enable_data_cachefile    = false;
+bool HDF4RequestHandler::_enable_metadata_cachefile= false;
+
+// Keys to handle vdata and vgroups
+bool HDF4RequestHandler::_enable_hybrid_vdata              = false;
+bool HDF4RequestHandler::_enable_ceres_vdata               = false;
+bool HDF4RequestHandler::_enable_vdata_attr                = false;
+bool HDF4RequestHandler::_enable_vdata_desc_attr           = false;
+bool HDF4RequestHandler::_disable_vdata_nameclashing_check = false;
+bool HDF4RequestHandler::_enable_vgroup_attr               = false;
+
+// Misc. keys
+bool HDF4RequestHandler::_enable_check_modis_geo_file      = false;
+bool HDF4RequestHandler::_enable_swath_grid_attr           = false;
+bool HDF4RequestHandler::_enable_ceres_merra_short_name    = false;
+bool HDF4RequestHandler::_enable_check_scale_offset_type   = false;
+
+// Cache path,prefix and size
+string HDF4RequestHandler::_cache_latlon_path              ="";
+string HDF4RequestHandler::_cache_latlon_prefix            ="";
+unsigned long HDF4RequestHandler::_cache_latlon_size       =0;
+string HDF4RequestHandler::_cache_metadata_path            ="";
+
 HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	BESRequestHandler(name) {
 	add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
@@ -116,6 +155,63 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 //#endif
 	add_handler(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
 	add_handler(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
+
+        _usecf = check_beskeys("H4.EnableCF");
+
+        // The following keys are only effective when usecf is true.
+        // Keys to tune the performance -general
+        _pass_fileid                       = check_beskeys("H4.EnablePassFileID");
+        _disable_structmeta                = check_beskeys("H4.DisableStructMetaAttr");
+        _enable_special_eos                = check_beskeys("H4.EnableSpecialEOS");
+        _disable_scaleoffset_comp          = check_beskeys("H4.DisableScaleOffsetComp");
+        _disable_ecsmetadata_min           = check_beskeys("H4.DisableECSMetaDataMin");
+        _disable_ecsmetadata_all           = check_beskeys("H4.DisableECSMetaDataAll");
+
+
+        // Keys to tune the performance - cache
+        _enable_eosgeo_cachefile           = check_beskeys("H4.EnableEOSGeoCacheFile");
+        _enable_data_cachefile             = check_beskeys("H4.EnableDataCacheFile");
+        _enable_metadata_cachefile         = check_beskeys("H4.EnableMetaDataCacheFile");
+
+        // Keys to handle vdata and vgroups
+        _enable_hybrid_vdata               = check_beskeys("H4.EnableHybridVdata");
+        _enable_ceres_vdata                = check_beskeys("H4.EnableCERESVdata");
+        _enable_vdata_attr                 = check_beskeys("H4.EnableVdata_to_Attr");
+        _enable_vdata_desc_attr            = check_beskeys("H4.EnableVdataDescAttr");
+        _disable_vdata_nameclashing_check  = check_beskeys("H4.DisableVdataNameclashingCheck");
+        _enable_vgroup_attr                = check_beskeys("H4.EnableVgroupAttr");
+
+        // Misc. keys
+        _enable_check_modis_geo_file       = check_beskeys("H4.EnableCheckMODISGeoFile");
+        _enable_swath_grid_attr            = check_beskeys("H4.EnableSwathGridAttr");
+        _enable_ceres_merra_short_name     = check_beskeys("H4.EnableCERESMERRAShortName");
+        _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
+
+#if 0
+
+if(true == _usecf) cerr<<"usecf is true"<<endl;
+else cerr<<"usecf is false"<<endl;
+if(true == _pass_fileid) cerr<<"pass_fileid is true"<<endl;
+else cerr<<"pass_fileid is false"<<endl;
+if(true == _disable_structmeta) cerr<<"disable_structmeta is true"<<endl;
+else cerr<<"disable_structmeta is false"<<endl;
+
+
+if(true == _enable_special_eos) cerr<<"enable_special_eos is true"<<endl;
+else cerr<<"enable_special_eos is false"<<endl;
+
+if(true == _disable_scaleoffset_comp) cerr<<"disable_scaleoffset_comp is true"<<endl;
+else cerr<<"disable_scaleoffset_comp is false"<<endl;
+
+if(true == _disable_ecsmetadata_min) cerr<<"disable_ecsmetadata_min is true"<<endl;
+else cerr<<"disable_ecsmetadata_min is  false"<<endl;
+
+if(true == _disable_ecsmetadata_all) cerr<<"disable_ecsmetadata_all is true"<<endl;
+else cerr<<"disable_ecsmetadata_all is  false"<<endl;
+
+
+#endif
+
 }
 
 HDF4RequestHandler::~HDF4RequestHandler() {
@@ -123,8 +219,8 @@ HDF4RequestHandler::~HDF4RequestHandler() {
 
 bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
-    bool found = false;
-    bool usecf = false;
+//    bool found = false;
+//    bool usecf = false;
 
 //#if 0
     BESStopWatch sw;
@@ -132,6 +228,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
         sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
 //#endif
 
+#if 0
     string key="H4.EnableCF";
     string doset;
 
@@ -145,8 +242,9 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             usecf = true;
         }
     }
+#endif
 
-    if(true == usecf) {
+    if(true == _usecf) {
 
         // Build DAP response only based on the HDF4 SD interfaces. Doing this 
         // way will save the use of other library open calls. Other library open 
@@ -183,7 +281,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
         string accessed = dhi.container->access();
          
-        if (true == usecf) {
+        if (true == _usecf) {
 
             int32 sdfd    = -1;
             int32 fileid  = -1;
@@ -287,8 +385,9 @@ cerr<<"Don't output ecs metadata "<<endl;
 
 bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
-    bool found = false;
-    bool usecf = false;
+
+//    bool found = false;
+//    bool usecf = false;
 
 //#if 0
     BESStopWatch sw;
@@ -296,6 +395,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
                 sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
 //#endif
 
+#if 0
     string key="H4.EnableCF";
     string doset;
 
@@ -308,8 +408,9 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
             usecf = true;
         }
     }
+#endif
 
-    if(true == usecf) {
+    if(true == _usecf) {
         // Build DAP response only based on the HDF4 SD interfaces. Doing this 
         // way will save the use of other library open calls. Other library open 
         // calls  may be expensive
@@ -355,7 +456,7 @@ gettimeofday(&start_time,NULL);
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
-        if (true == usecf) {
+        if (true == _usecf) {
 
             int32 sdfd   = -1;
             int32 fileid = -1;
@@ -476,8 +577,8 @@ cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<
 
 bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
-    bool found = false;
-    bool usecf = false;
+//    bool found = false;
+//    bool usecf = false;
 
 //#if 0
     BESStopWatch sw;
@@ -485,13 +586,14 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         sw.start("HDF4RequestHandler::hdf4_build_data", dhi.data[REQUEST_ID]);
 //#endif
 
-    string key="H4.EnableCF";
-    string doset;
+ //   string key="H4.EnableCF";
+//    string doset;
 
     int32 sdfd   = -1;
     int32 fileid = -1;
 
 
+#if 0
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
     if( true == found )
     {
@@ -502,11 +604,12 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
             usecf = true;
         }
     }
+#endif
 
     // Since passing file IDs requires to use the derived class and it
     // causes the management of code structure messy, we first handle this with
     // another method.
-    if(true == usecf) {
+    if(true == _usecf) {
         // Build DAP response only based on the HDF4 SD interfaces. Doing this 
         // way will save the use of other library open calls. Other library open 
         // calls  may be expensive
@@ -526,14 +629,16 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
             BESDEBUG("h4", "Coming to read the data of AIRS level 3 or level 2 products." << endl);
 
-            if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID")) 
+            //if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID")) 
+            if(true == _pass_fileid) 
                 return hdf4_build_data_cf_sds_with_IDs(dhi);
             else 
                 return hdf4_build_data_cf_sds(dhi);
 
         }
 
-        if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
+        //if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
+        if(true == _pass_fileid)
             return hdf4_build_data_with_IDs(dhi);
 
     }
@@ -559,7 +664,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
-        if (true == usecf) {
+        if (true == _usecf) {
 
              HDFSP::File *h4file = NULL;
 
@@ -607,8 +712,13 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
                 // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
                 // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
                 bool ecs_metadata = true;
+#if 0
                 if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
                     || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+                    ecs_metadata = false;
+#endif
+                if((true == _disable_ecsmetadata_min) 
+                    || (true == _disable_ecsmetadata_all)) 
                     ecs_metadata = false;
 
                 read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
@@ -869,10 +979,13 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
         string dds_filename;
 
         // Check if the EnableMetaData key is set. 
+#if 0
         string check_enable_mcache_key="H4.EnableMetaDataCacheFile";
         bool turn_on_enable_mcache_key= false;
         turn_on_enable_mcache_key = HDFCFUtil::check_beskeys(check_enable_mcache_key);
         if(true == turn_on_enable_mcache_key) {// the EnableMetaData key is set
+#endif
+        if(true == _enable_metadata_cachefile) {// the EnableMetaData key is set
 
             // Check if the metadata cache directory key is set.
             string md_cache_dir;
@@ -1330,15 +1443,18 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     DAS das;
 
+#if 0
     bool found = false;
     bool usecf = false;
 
     string key="H4.EnableCF";
     string doset;
+#endif
 
     int32 sdfd   = -1;
     int32 fileid = -1;
 
+#if 0
     // Check if CF option is turned on. 
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
     if( true == found )
@@ -1350,10 +1466,11 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             usecf = true;
         }
     }
+#endif
     // Since passing file IDs requires to use the derived class and it
     // causes the management of code structure messy, we first handle this with
     // another method.
-    if(true == usecf) {
+    if(true == _usecf) {
        
         if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
             return hdf4_build_dmr_with_IDs(dhi);
@@ -1363,7 +1480,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     try {
 
-        if (true == usecf) {
+        if (true == _usecf) {
 
             HDFSP::File *h4file = NULL;
 
@@ -1887,6 +2004,24 @@ bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string &
     return dds_set_cache;
 
 }
+
+bool check_beskeys(const string key) {
+
+    bool found = false;
+    string doset ="";
+    const string dosettrue ="true";
+    const string dosetyes = "yes";
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( dosettrue == doset  || dosetyes == doset )
+            return true;
+    }
+    return false;
+
+}
+
 
 #if 0
 void test_func(HDFSP::File**h4file) {

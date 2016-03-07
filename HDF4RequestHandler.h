@@ -35,6 +35,7 @@ using std::string;
 #include "BESRequestHandler.h"
 
 class HDF4RequestHandler:public BESRequestHandler {
+
   private:
     static string _cachedir;
     static bool hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi);
@@ -45,6 +46,44 @@ class HDF4RequestHandler:public BESRequestHandler {
 //#ifdef USE_DAP4
     static bool hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi);
 //#endif
+
+    //BES keys - check the file h4.conf.in for descriptions
+    //Key to turn on the CF option
+    static bool _usecf;
+
+    // Keys to tune the performance -general
+    static bool _pass_fileid;
+    static bool _disable_structmeta;
+    static bool _enable_special_eos;
+    static bool _disable_scaleoffset_comp;
+    static bool _disable_ecsmetadata_min;
+    static bool _disable_ecsmetadata_all;
+    
+    // Keys to tune the performance - cache
+    static bool _enable_eosgeo_cachefile;
+    static bool _enable_data_cachefile;
+    static bool _enable_metadata_cachefile;
+
+   // Keys to handle vdata and vgroups
+   static bool _enable_hybrid_vdata;
+   static bool _enable_ceres_vdata;
+   static bool _enable_vdata_attr;
+   static bool _enable_vdata_desc_attr;
+   static bool _disable_vdata_nameclashing_check;
+   static bool _enable_vgroup_attr;
+
+  // Misc. keys
+  static bool _enable_check_modis_geo_file;
+  static bool _enable_swath_grid_attr;
+  static bool _enable_ceres_merra_short_name;
+  static bool _enable_check_scale_offset_type;
+
+  static string _cache_latlon_path;
+  static string _cache_latlon_prefix;
+  static unsigned long _cache_latlon_size;
+
+  static string _cache_metadata_path;
+   
   public:
     HDF4RequestHandler(const string & name);
     virtual ~ HDF4RequestHandler(void);
@@ -57,6 +96,42 @@ class HDF4RequestHandler:public BESRequestHandler {
 //#endif
     static bool hdf4_build_help(BESDataHandlerInterface & dhi);
     static bool hdf4_build_version(BESDataHandlerInterface & dhi);
+
+    // CF key
+    static bool get_usecf() { return _usecf; }
+
+    // Keys to tune the performance -general
+    static bool get_pass_fileid() { return _pass_fileid; }
+    static bool get_disable_structmeta() { return _disable_structmeta; }
+    static bool get_enable_special_eos() { return _enable_special_eos; }
+    static bool get_disable_scaleoffset_comp() { return _disable_scaleoffset_comp; }
+    static bool get_disable_ecsmetadata_min() { return _disable_ecsmetadata_min; }
+    static bool get_disable_ecsmetadata_all() { return _disable_ecsmetadata_all; }
+
+    // Keys to tune the performance - cache
+    static bool get_enable_eosgeo_cachefile() { return _enable_eosgeo_cachefile;}
+    static bool get_enable_data_cachefile() { return _enable_data_cachefile;}
+    static bool get_enable_metadata_cachefile() { return _enable_metadata_cachefile;}
+
+    // Keys to handle vdata and vgroups
+    static bool get_enable_hybrid_vdata() { return _enable_hybrid_vdata; }
+    static bool get_enable_ceres_vdata() { return _enable_ceres_vdata; }
+    static bool get_enable_vdata_attr() { return _enable_vdata_attr; }
+    static bool get_enable_vdata_desc_attr() { return _enable_vdata_desc_attr; }
+    static bool get_disable_vdata_nameclashing_check() { return _disable_vdata_nameclashing_check;}
+    static bool get_enable_vgroup_attr() {return _enable_vgroup_attr;}
+
+    // Misc. keys
+    static bool get_enable_check_modis_geo_file() { return _enable_check_modis_geo_file; }
+    static bool get_enable_swath_grid_attr() { return _enable_swath_grid_attr;}
+    static bool get_enable_ceres_merra_short_name() { return _enable_ceres_merra_short_name;}
+    static bool get_enable_check_scale_offset_type() { return _enable_check_scale_offset_type;}
+
+    static string get_cache_latlon_path() {return _cache_latlon_path; }
+    static string get_cache_latlon_prefix() {return _cache_latlon_prefix;}
+    static unsigned long get_cache_latlon_size() { return _cache_latlon_size; }
+    static string get_cache_metadata_path() { return _cache_metadata_path;}
+
 };
 
 
