@@ -31,6 +31,8 @@
 #include <fcntl.h>
 #include <cerrno>
 #include <unistd.h>
+#include <iostream>
+#include <sstream>
 
 //#undef USE_DAP4 
 //#define USE_DAP4 1
@@ -84,6 +86,8 @@
 //#endif
 
 bool check_beskeys(const string);
+string get_beskeys_str(const string);
+int get_cachekey_int(const string);
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
@@ -186,6 +190,8 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
         _enable_swath_grid_attr            = check_beskeys("H4.EnableSwathGridAttr");
         _enable_ceres_merra_short_name     = check_beskeys("H4.EnableCERESMERRAShortName");
         _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
+
+        // Cache path etc. 
 
 #if 0
 
@@ -2023,6 +2029,30 @@ bool check_beskeys(const string key) {
 }
 
 
+string get_beskeys_str(const string key) {
+
+    bool found = false;
+    string doset ="";
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    return doset;
+
+}
+
+int get_cachekey_int(const string key) {
+
+    bool found = false;
+    int ret_value = 0;
+    string doset ="";
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found ) {
+        istringstream iss(doset);
+        iss >>ret_value;
+    }
+    return ret_value;
+
+}
 #if 0
 void test_func(HDFSP::File**h4file) {
 cerr<<"OK to pass pointer of a NULL pointer "<<endl;
