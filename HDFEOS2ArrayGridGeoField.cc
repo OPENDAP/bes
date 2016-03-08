@@ -594,7 +594,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     BESH4Cache *llcache = BESH4Cache::get_instance();
                     llcache->write_cached_data(cache_fpath,(xdim+ydim)*sizeof(double),latlon_all);
 
-//                    if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim))) {
+//                    if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim))) 
 #if 0
                     if(HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim)*sizeof(double))) {
                         if(remove(cache_fpath.c_str()) !=0) {
@@ -660,6 +660,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         }
 
+//MOVE this into the use_cache block.
         // Some longitude values need to be corrected.
         if (speciallon && fieldtype == 2) {
             CorSpeLon (&latlon[0], nelms);
