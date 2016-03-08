@@ -78,10 +78,14 @@ class HDF4RequestHandler:public BESRequestHandler {
   static bool _enable_ceres_merra_short_name;
   static bool _enable_check_scale_offset_type;
 
+  static bool _cache_latlon_path_exist;
   static string _cache_latlon_path;
+  static bool _cache_latlon_prefix_exist;
   static string _cache_latlon_prefix;
-  static unsigned long _cache_latlon_size;
+  static bool _cache_latlon_size_exist;
+  static long _cache_latlon_size;
 
+  static bool _cache_metadata_path_exist;
   static string _cache_metadata_path;
    
   public:
@@ -127,9 +131,16 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool get_enable_ceres_merra_short_name() { return _enable_ceres_merra_short_name;}
     static bool get_enable_check_scale_offset_type() { return _enable_check_scale_offset_type;}
 
+    static bool get_cache_latlon_path_exist() { return _cache_latlon_path_exist; }
     static string get_cache_latlon_path() {return _cache_latlon_path; }
+
+    static bool get_cache_latlon_prefix_exist() { return _cache_latlon_prefix_exist; }
     static string get_cache_latlon_prefix() {return _cache_latlon_prefix;}
-    static unsigned long get_cache_latlon_size() { return _cache_latlon_size; }
+
+    static bool get_cache_latlon_size_exist() { return _cache_latlon_size_exist; }
+    static long get_cache_latlon_size() { return _cache_latlon_size; }
+
+    static bool get_cache_metadata_path_exist() { return _cache_metadata_path_exist; }
     static string get_cache_metadata_path() { return _cache_metadata_path;}
 
 };

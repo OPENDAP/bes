@@ -86,8 +86,8 @@
 //#endif
 
 bool check_beskeys(const string);
-string get_beskeys_str(const string);
-int get_cachekey_int(const string);
+bool get_beskeys(const string,string &);
+//int get_cachekey_int(const string);
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
@@ -143,9 +143,13 @@ bool HDF4RequestHandler::_enable_ceres_merra_short_name    = false;
 bool HDF4RequestHandler::_enable_check_scale_offset_type   = false;
 
 // Cache path,prefix and size
+bool HDF4RequestHandler::_cache_latlon_path_exist          =false;
 string HDF4RequestHandler::_cache_latlon_path              ="";
+bool HDF4RequestHandler::_cache_latlon_prefix_exist        =false;
 string HDF4RequestHandler::_cache_latlon_prefix            ="";
-unsigned long HDF4RequestHandler::_cache_latlon_size       =0;
+bool HDF4RequestHandler::_cache_latlon_size_exist          =false;
+long HDF4RequestHandler::_cache_latlon_size       =0;
+bool HDF4RequestHandler::_cache_metadata_path_exist        =false;
 string HDF4RequestHandler::_cache_metadata_path            ="";
 
 HDF4RequestHandler::HDF4RequestHandler(const string & name) :
@@ -192,8 +196,20 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
         _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
 
         // Cache path etc. 
+        _cache_latlon_path_exist           =get_beskeys("HDF4.Cache.latlon.path",_cache_latlon_path);
+        _cache_latlon_prefix_exist         =get_beskeys("HDF4.Cache.latlon.prefix",_cache_latlon_prefix);
+        string temp_cache_latlon_size;
+        _cache_latlon_size_exist           =get_beskeys("HDF4.Cache.latlon.size",temp_cache_latlon_size);
+        if(_cache_latlon_size_exist == true) {
+            istringstream iss(temp_cache_latlon_size);
+            iss >> _cache_latlon_size;
+        }
+
+        _cache_metadata_path_exist        =get_beskeys("H4.Cache.metadata.path",_cache_metadata_path);
 
 #if 0
+if(true == _enable_eosgeo_cachefile)
+cerr<<"EOS GeoCache is true "<<endl;
 
 if(true == _usecf) cerr<<"usecf is true"<<endl;
 else cerr<<"usecf is false"<<endl;
@@ -215,9 +231,44 @@ else cerr<<"disable_ecsmetadata_min is  false"<<endl;
 if(true == _disable_ecsmetadata_all) cerr<<"disable_ecsmetadata_all is true"<<endl;
 else cerr<<"disable_ecsmetadata_all is  false"<<endl;
 
+if(true == _cache_latlon_path_exist) {
+cerr<<"latlon cache path exists"<<endl;
+cerr<<"latlon cache path is "<< _cache_latlon_path <<endl;
+
+}
+else {
+cerr<<"latlon cache path doesn't exist"<<endl;
+cerr<<"size of latlon cache path is "<<_cache_latlon_path.size() <<endl;
+}
+if(true == _cache_latlon_prefix_exist) {
+cerr<<"latlon cache prefix exists"<<endl;
+cerr<<"latlon cache prefix is "<< _cache_latlon_prefix <<endl;
+
+}
+else {
+cerr<<"latlon cache prefix doesn't exist"<<endl;
+cerr<<"size of latlon cache prefix is "<<_cache_latlon_prefix.size() <<endl;
+}
+if(true == _cache_latlon_size_exist) {
+cerr<<"latlon cache size exists"<<endl;
+cerr<<"latlon cache size is "<< _cache_latlon_size <<endl;
+
+}
+else {
+cerr<<"latlon cache size doesn't exist"<<endl;
+cerr<<"latlon cache size is "<<_cache_latlon_size <<endl;
+}
+if(true == _cache_metadata_path_exist) {
+cerr<<" metadata cache path exists"<<endl;
+cerr<<" metadata cache path is "<< _cache_metadata_path <<endl;
+
+}
+else {
+cerr<<"metadata cache path doesn't exist"<<endl;
+cerr<<"metadata cache path size is "<<_cache_metadata_path.size() <<endl;
+}
 
 #endif
-
 }
 
 HDF4RequestHandler::~HDF4RequestHandler() {
@@ -332,7 +383,8 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             }
             
             try {
-                bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+                //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+                bool ecs_metadata = !(_disable_ecsmetadata_all);
 #if 0
 if(ecs_metadata == true)
 cerr<<"output ecs metadata "<<endl;
@@ -507,7 +559,8 @@ gettimeofday(&start_time,NULL);
             }
  
             try {
-                bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+                //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+                bool ecs_metadata = !(_disable_ecsmetadata_all);
                 read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
                 Ancillary::read_ancillary_das(*das, accessed);
 
@@ -875,10 +928,13 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
         // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
         bool ecs_metadata = true;
+#if 0
         if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
             || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+#endif
+        if((true == _disable_ecsmetadata_min) 
+                 || (true == _disable_ecsmetadata_all))
             ecs_metadata = false;
-               
 
         read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
         //read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,true);
@@ -993,16 +1049,18 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 #endif
         if(true == _enable_metadata_cachefile) {// the EnableMetaData key is set
 
-            // Check if the metadata cache directory key is set.
+
+#if 0
             string md_cache_dir;
-            string key = "H4.Cache.metadata.path";
             bool found = false;
+            string key = "H4.Cache.metadata.path";
             TheBESKeys::TheKeys()->get_value(key,md_cache_dir,found);
-            if(true == found) {// the metadata.path key is set
+#endif
+            if(true == _cache_metadata_path_exist) {// the metadata.path key is set
 
                 // Create DAS and DDS cache file names
-                das_filename = md_cache_dir + "/" + base_file_name +"_das";
-                dds_filename = md_cache_dir + "/" + base_file_name +"_dds";
+                das_filename = _cache_metadata_path + "/" + base_file_name +"_das";
+                dds_filename = _cache_metadata_path + "/" + base_file_name +"_dds";
 
                 // When the returned value das_set_cache is false, read DAS from the cache file.
                 // Otherwise, do nothing.
@@ -1122,18 +1180,25 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
         bool das_set_cache = false;
         bool das_get_cache = false;
         string das_filename;
+#if 0
         string check_enable_mcache_key="H4.EnableMetaDataCacheFile";
         bool turn_on_enable_mcache_key= false;
         turn_on_enable_mcache_key = HDFCFUtil::check_beskeys(check_enable_mcache_key);
         if(true == turn_on_enable_mcache_key) { // find the metadata cache key.
+#endif
+        if(true == _enable_metadata_cachefile) { // find the metadata cache key.
+#if 0
             string md_cache_dir;
             string key = "H4.Cache.metadata.path";
             bool found = false;
             TheBESKeys::TheKeys()->get_value(key,md_cache_dir,found);
             if(true == found) { // Also find the metadata cache.
+#endif
+            if(true == _cache_metadata_path_exist) {
 
                 // Create the DAS cache file name.
-                das_filename = md_cache_dir + "/" + base_file_name +"_das";
+                //das_filename = md_cache_dir + "/" + base_file_name +"_das";
+                das_filename = _cache_metadata_path + "/" + base_file_name +"_das";
 
                 // Read the DAS from the cached file, if das_set_cache is false.
                 // When the das_set_cache is true, need to create a das cache file.
@@ -1161,7 +1226,8 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 #endif
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+            //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+            bool ecs_metadata = !(_disable_ecsmetadata_all);
                
             read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
             Ancillary::read_ancillary_das(*das, accessed);
@@ -1278,8 +1344,12 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
             // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
             // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
             bool ecs_metadata = true;
+#if 0
             if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
                 || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+#endif
+            if((true == _disable_ecsmetadata_min) 
+                    || (true == _disable_ecsmetadata_all))
                 ecs_metadata = false;
                
             read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
@@ -1380,8 +1450,12 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
         // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
         // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
         bool ecs_metadata = true;
+#if 0
         if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
             || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+#endif
+        if((true == _disable_ecsmetadata_min) 
+            || (true == _disable_ecsmetadata_all)) 
             ecs_metadata = false;
                
         read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
@@ -1478,7 +1552,8 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     // another method.
     if(true == _usecf) {
        
-        if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
+        //if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
+        if(true == _pass_fileid)
             return hdf4_build_dmr_with_IDs(dhi);
 
     }
@@ -1536,9 +1611,13 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             // people can use BES key to turn on the ECS metadata, so this is okay.
             // KY 2014-10-23
             bool ecs_metadata = true;
+#if 0
             if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
                 || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
-                ecs_metadata = false;
+#endif
+            if((true == _disable_ecsmetadata_min) 
+                || (true == _disable_ecsmetadata_all)) 
+               ecs_metadata = false;
                
             try {
 
@@ -1704,8 +1783,12 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     // people can use BES key to turn on the ECS metadata, so this is okay.
     // KY 2014-10-23
     bool ecs_metadata = true;
+#if 0
     if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
        || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+#endif
+    if((true == _disable_ecsmetadata_min) 
+        || (true == _disable_ecsmetadata_all)) 
         ecs_metadata = false;
                
     try {
@@ -2028,17 +2111,16 @@ bool check_beskeys(const string key) {
 
 }
 
-
-string get_beskeys_str(const string key) {
+bool get_beskeys(const string key,string &key_value) {
 
     bool found = false;
-    string doset ="";
 
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    return doset;
+    TheBESKeys::TheKeys()->get_value( key, key_value, found ) ;
+    return found;
 
 }
 
+#if 0
 int get_cachekey_int(const string key) {
 
     bool found = false;
@@ -2053,6 +2135,7 @@ int get_cachekey_int(const string key) {
     return ret_value;
 
 }
+#endif
 #if 0
 void test_func(HDFSP::File**h4file) {
 cerr<<"OK to pass pointer of a NULL pointer "<<endl;

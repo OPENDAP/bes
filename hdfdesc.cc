@@ -89,6 +89,7 @@
 #include <BESDebug.h>
 #include <BESLog.h>
 
+#include "HDF4RequestHandler.h"
 // DODS/HDF includes for the default option only
 #include "hcstream.h"
 #include "hdfclass.h"
@@ -761,11 +762,14 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
         return 5; 
         //return false; 
 
+#if 0
     string check_enable_spec_eos_key="H4.EnableSpecialEOS";
     bool turn_on_enable_spec_eos_key= false;
     turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
+#endif
 
-    if(true == turn_on_enable_spec_eos_key) {
+    //if(true == turn_on_enable_spec_eos_key) {
+    if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
         string grid_name;
         int ret_val = check_special_eosfile(filename,grid_name,sdfd,fileid); 
@@ -890,11 +894,14 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fil
     // each vdata field to a DAP array. However, this may cause the generation of many DAP fields. So
     // we use the BES keys for users to turn on/off as they choose. By default, the key is turned on. KY 2012-6-26
     
+#if 0
     string check_hybrid_vdata_key="H4.EnableHybridVdata";
     bool turn_on_hybrid_vdata_key = false;
     turn_on_hybrid_vdata_key = HDFCFUtil::check_beskeys(check_hybrid_vdata_key);
+#endif
 
-    if( true == turn_on_hybrid_vdata_key) {
+    //if( true == turn_on_hybrid_vdata_key) {
+    if( true == HDF4RequestHandler::get_enable_hybrid_vdata()) {
         for(vector<HDFSP::VDATA *>::const_iterator i = f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
             if(false == (*i)->getTreatAsAttrFlag()){
                 for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
@@ -934,9 +941,11 @@ bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fil
     // Remember the file pointer 
     *fpptr = f;
 
+#if 0
     string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
     bool turn_on_enable_check_scale_offset_key= false;
     turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
+#endif
     
     // First Added non-HDFEOS2 SDS attributes.
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
@@ -1003,7 +1012,8 @@ bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fil
         //       if yes, check if scale_factor and add_offset attribute types are the same; 
         //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
         // (CF requires the type of scale_factor and add_offset the same). 
-        if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+        //if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+        if (true == HDF4RequestHandler::get_enable_check_scale_offset_type() && at !=NULL)  
             HDFCFUtil::correct_scale_offset_type(at); 
 
     }
@@ -1182,10 +1192,13 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     }
 
     // We will check if the handler wants to turn on the special EOS key checking
+#if 0
     string check_enable_spec_eos_key="H4.EnableSpecialEOS";
     bool turn_on_enable_spec_eos_key= false;
     turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
-    if(true == turn_on_enable_spec_eos_key) {
+#endif
+    //if(true == turn_on_enable_spec_eos_key) {
+    if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
         string grid_name;
         int ret_val = check_special_eosfile(filename,grid_name,sdfd,fileid); 
@@ -1337,6 +1350,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
         }
     }
 
+#if 0
     string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
     bool turn_on_disable_scale_comp_key= false;
     turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
@@ -1344,6 +1358,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
     bool turn_on_enable_check_scale_offset_key= false;
     turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
+#endif
 
     try {
 
@@ -1440,7 +1455,9 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                         it++;
                     }
 
-                    if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                    //if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                    if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && 
+                        (true == HDF4RequestHandler::get_disable_scaleoffset_comp())) 
                         HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename), true, newfname,sotype);
                     else {
 
@@ -1471,7 +1488,8 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 //       if yes, check if scale_factor and add_offset attribute types are the same;
                 //          if no, make add_offset's datatype be the same as the datatype of scale_factor.
                 // (cf requires the type of scale_factor and add_offset the same).
-                if (true == turn_on_enable_check_scale_offset_key && at!=NULL) 
+                //if (true == turn_on_enable_check_scale_offset_key && at!=NULL) 
+                if (true == HDF4RequestHandler::get_enable_check_scale_offset_type() && at!=NULL) 
                     HDFCFUtil::correct_scale_offset_type(at);
 
             }
@@ -1576,7 +1594,9 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                         it++;
                     }
 
-                    if((false == is_modis_l1b) && (false == gridname_change_valid_range) &&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                    //if((false == is_modis_l1b) && (false == gridname_change_valid_range) &&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                    if((false == is_modis_l1b) && (false == gridname_change_valid_range) &&(false == has_Key_attr) && 
+                       (true == HDF4RequestHandler::get_disable_scaleoffset_comp())) 
                         HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename),false,newfname,sotype);
                     else {
 
@@ -1610,7 +1630,8 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 //       if yes, check if scale_factor and add_offset attribute types are the same; 
                 //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
                 // (CF requires the type of scale_factor and add_offset the same). 
-                if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+                //if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+                if (true == HDF4RequestHandler::get_enable_check_scale_offset_type() && at !=NULL)  
                     HDFCFUtil::correct_scale_offset_type(at); 
 
                 field_counter++;
@@ -1644,11 +1665,14 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
         // This cause a problem for a MOD13C2 file, So turn it off temporarily. KY 2010-6-29
         if(false == tempstrflag) {
 
+#if 0
             string check_disable_smetadata_key ="H4.DisableStructMetaAttr";
             bool is_check_disable_smetadata = false;
             is_check_disable_smetadata = HDFCFUtil::check_beskeys(check_disable_smetadata_key);
+#endif
 
-            if (false == is_check_disable_smetadata) {
+            //if (false == is_check_disable_smetadata) {
+            if (false == HDF4RequestHandler::get_disable_structmeta() ) {
                 write_ecsmetadata(das, cf, "StructMetadata");
             }
         }
@@ -1666,11 +1690,14 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     try {
         
         // Check if swath or grid object (like vgroup) attributes should be mapped to DAP2. If yes, start mapping.
+ #if 0
         string check_enable_sg_attr_key="H4.EnableSwathGridAttr";
         bool turn_on_enable_sg_attr_key= false;
         turn_on_enable_sg_attr_key = HDFCFUtil::check_beskeys(check_enable_sg_attr_key);
+#endif
 
-        if(true == turn_on_enable_sg_attr_key) {
+        //if(true == turn_on_enable_sg_attr_key) {
+        if(true == HDF4RequestHandler::get_enable_swath_grid_attr()) {
 
             // MAP grid attributes  to DAS.
             for (int i = 0; i < (int) f->getGrids().size(); i++) {
@@ -1868,12 +1895,15 @@ bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid,
 
     // Read Vdata fields.
     // To speed up the performance for handling CERES data, we turn off some CERES vdata fields, this should be resumed in the future version with BESKeys.
+#if 0
     string check_ceres_vdata_key="H4.EnableCERESVdata";
     bool turn_on_ceres_vdata_key= false;
     turn_on_ceres_vdata_key = HDFCFUtil::check_beskeys(check_ceres_vdata_key);
+#endif
 
     bool output_vdata_flag = true;  
-    if (false == turn_on_ceres_vdata_key && 
+    //if (false == turn_on_ceres_vdata_key && 
+    if (false == HDF4RequestHandler::get_enable_ceres_vdata() && 
         (CER_AVG == f->getSPType() ||
          CER_ES4 == f->getSPType() ||
          CER_SRB == f->getSPType() ||
@@ -1932,12 +1962,15 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
     *fpptr = f;
 
     // Check if mapping vgroup attribute key is turned on, if yes, mapping vgroup attributes.
+#if 0
     string check_enable_vg_attr_key="H4.EnableVgroupAttr";
     bool turn_on_enable_vg_attr_key= false;
     turn_on_enable_vg_attr_key = HDFCFUtil::check_beskeys(check_enable_vg_attr_key);
+#endif
 
 
-    if(true == turn_on_enable_vg_attr_key ) {
+    //if(true == turn_on_enable_vg_attr_key ) {
+    if(true == HDF4RequestHandler::get_enable_vgroup_attr()) {
 
         // Obtain vgroup attributes if having vgroup attributes.
         vector<HDFSP::AttrContainer *>vg_container = f->getVgattrs();
@@ -2009,11 +2042,14 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         else if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
                 ((*i)->getName().compare(0, 14, "structmetadata" )== 0)){
 
+#if 0
             string check_disable_smetadata_key ="H4.DisableStructMetaAttr";
             bool is_check_disable_smetadata = false;
             is_check_disable_smetadata = HDFCFUtil::check_beskeys(check_disable_smetadata_key);
+#endif
 
-            if (false == is_check_disable_smetadata) {
+            //if (false == is_check_disable_smetadata) {
+            if (false == HDF4RequestHandler::get_disable_structmeta()) {
 
                 string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
 
@@ -2331,9 +2367,11 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
     // For NASA products, add missing CF attributes if possible
     HDFCFUtil::add_missing_cf_attrs(f,das);
 
+#if 0
     string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
     bool turn_on_enable_check_scale_offset_key= false;
     turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
+#endif
 
     // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
     // with the variable datatype. Correct the fillvalue datatype if necessary. 
@@ -2355,7 +2393,8 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         //       if yes, check if scale_factor and add_offset attribute types are the same; 
         //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
         // (CF requires the type of scale_factor and add_offset the same). 
-        if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+        //if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+        if (true == HDF4RequestHandler::get_enable_check_scale_offset_type() && at !=NULL)  
             HDFCFUtil::correct_scale_offset_type(at); 
     }
 

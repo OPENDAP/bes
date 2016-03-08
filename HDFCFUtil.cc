@@ -21,6 +21,7 @@
 #include "HDFFloat32.h"
 #include "HDFFloat64.h"
 #include "HDFStr.h"
+#include "HDF4RequestHandler.h"
 //
 using namespace std;
 using namespace libdap;
@@ -789,13 +790,16 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
         dimmaps.push_back(tempdimmap);
     }
 
+#if 0
     string check_modis_geofile_key ="H4.EnableCheckMODISGeoFile";
     bool check_geofile_key = false;
     check_geofile_key = HDFCFUtil::check_beskeys(check_modis_geofile_key);
+#endif
 
     // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
     // Will check if the check modis_geo_location file key is turned on.
-    if((origdimmaps.size() != 0) && (true == check_geofile_key) ) {
+    //if((origdimmaps.size() != 0) && (true == check_geofile_key) ) {
+    if((origdimmaps.size() != 0) && (true == HDF4RequestHandler::get_enable_check_modis_geo_file()) ) {
 
         // Has to use C-style since basename and dirname are not C++ routines.
         char*tempcstr;
@@ -2642,12 +2646,14 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
  
 void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,const string& filename) {
 
-
-    string check_ceres_merra_short_name_key="H4.EnableCERESMERRAShortName";
-    bool turn_on_ceres_merra_short_name_key= false;
     string base_filename = filename.substr(filename.find_last_of("/")+1);
 
+#if 0 
+    string check_ceres_merra_short_name_key="H4.EnableCERESMERRAShortName";
+    bool turn_on_ceres_merra_short_name_key= false;
+
     turn_on_ceres_merra_short_name_key = HDFCFUtil::check_beskeys(check_ceres_merra_short_name_key);
+#endif
 
     bool merra_is_eos2 = false;
     if(0== (base_filename.compare(0,5,"MERRA"))) {
@@ -2666,7 +2672,8 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
         }
     }
 
-    if (true == turn_on_ceres_merra_short_name_key && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
+    //if (true == turn_on_ceres_merra_short_name_key && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
+    if (true == HDF4RequestHandler::get_enable_ceres_merra_short_name() && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
         || CER_CDAY == f->getSPType() || CER_CGEO == f->getSPType() 
         || CER_SYN == f->getSPType() || CER_ZAVG == f->getSPType()
         || CER_AVG == f->getSPType() || (true == merra_is_eos2))) {
@@ -2695,10 +2702,12 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
     // the attributes of vdata and vdata fields will be outputed to DAS. Otherwise, these attributes will
     // not outputed to DAS. The key will be turned off by default to shorten the DAP output. KY 2012-09-18
 
+#if 0
     string check_vdata_desc_key="H4.EnableVdataDescAttr";
     bool turn_on_vdata_desc_key= false;
 
     turn_on_vdata_desc_key = HDFCFUtil::check_beskeys(check_vdata_desc_key);
+#endif
 
     string VDdescname = "hdf4_vd_desc";
     string VDdescvalue = "This is an HDF4 Vdata.";
@@ -2707,12 +2716,15 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
     string VDfieldattrprefix ="Vdata_field_attr_";
 
     // To speed up the performance for handling CERES data, we turn off some CERES vdata fields, this should be resumed in the future version with BESKeys.
+#if 0
     string check_ceres_vdata_key="H4.EnableCERESVdata";
     bool turn_on_ceres_vdata_key= false;
     turn_on_ceres_vdata_key = HDFCFUtil::check_beskeys(check_ceres_vdata_key);
+#endif
                 
     bool output_vdata_flag = true;
-    if (false == turn_on_ceres_vdata_key && 
+    //if (false == turn_on_ceres_vdata_key && 
+    if (false == HDF4RequestHandler::get_enable_ceres_vdata() && 
         (CER_AVG == f->getSPType() || 
          CER_ES4 == f->getSPType() ||   
          CER_SRB == f->getSPType() ||
@@ -2728,7 +2740,8 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
             if(!at)
                 at = das.add_table((*i)->getNewName(),new AttrTable);
  
-            if (true == turn_on_vdata_desc_key) {
+            //if (true == turn_on_vdata_desc_key) {
+            if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
                 // Add special vdata attributes
                 bool emptyvddasflag = true;
                 if(!((*i)->getAttributes().empty())) emptyvddasflag = false;
@@ -2767,7 +2780,8 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
             if(false == ((*i)->getTreatAsAttrFlag())){ 
 
-                if (true == turn_on_vdata_desc_key) {
+                //if (true == turn_on_vdata_desc_key) {
+                if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
 
                     //NOTE: for vdata field, we assume that no special characters are found. We need to escape the special characters when the data type is char. 
                     // We need to create a DAS container for each field so that the attributes can be put inside.
@@ -2870,7 +2884,8 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                     }
 
          
-                    if (true == turn_on_vdata_desc_key) {
+                    //if (true == turn_on_vdata_desc_key) {
+                    if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
                         for(vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
 
                             if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){

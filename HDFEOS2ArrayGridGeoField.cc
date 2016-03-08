@@ -26,6 +26,7 @@
 #include<unistd.h>
 
 #include "BESH4MCache.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 
@@ -45,9 +46,12 @@ HDFEOS2ArrayGridGeoField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArrayGridGeoField read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
 
     // Currently The latitude and longitude rank from HDF-EOS2 grid must be either 1-D or 2-D.
@@ -139,21 +143,33 @@ HDFEOS2ArrayGridGeoField::read ()
         // Cache
         // Check if a BES key H4.EnableEOSGeoCacheFile is true, if yes, we will check
         // if a lat/lon cache file exists and if we can read lat/lon from this file.
+
+#if 0
         string check_eos_geo_cache_key = "H4.EnableEOSGeoCacheFile";
         bool enable_eos_geo_cache_key = false;
         enable_eos_geo_cache_key = HDFCFUtil::check_beskeys(check_eos_geo_cache_key);
+#endif
 
-        if(true == enable_eos_geo_cache_key) {
+        //if(true == enable_eos_geo_cache_key) {
+        if(true == HDF4RequestHandler::get_enable_eosgeo_cachefile()) {
 
+//cerr<<"geo cache is true "<<endl;
             use_cache = true;
             BESH4Cache *llcache = BESH4Cache::get_instance();
 
             // Here we have a sanity check for the cached parameters:Cached directory,file prefix and cached directory size.
             // Supposedly Hyrax BES cache feature should check this and the code exists. However, the
             // current hyrax 1.9.7 doesn't provide this feature. KY 2014-10-24
+#if 0
             string bescachedir= llcache->getCacheDirFromConfig();
             string bescacheprefix = llcache->getCachePrefixFromConfig();
-            unsigned int cachesize = llcache->getCacheSizeFromConfig();
+            unsigned long cachesize = llcache->getCacheSizeFromConfig();
+#endif
+//#if 0
+            string bescachedir = HDF4RequestHandler::get_cache_latlon_path();
+            string bescacheprefix = HDF4RequestHandler::get_cache_latlon_prefix();
+            long cachesize = HDF4RequestHandler::get_cache_latlon_size();
+//#endif
 
             if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
@@ -189,7 +205,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 }
             }
 
-            string cache_fname=llcache->getCachePrefixFromConfig();
+            //string cache_fname=llcache->getCachePrefixFromConfig();
+            string cache_fname=HDF4RequestHandler::get_cache_latlon_prefix();
 
             intn r = -1;
             r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
