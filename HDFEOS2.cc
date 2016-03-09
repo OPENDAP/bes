@@ -19,6 +19,7 @@
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2.h"
+#include "HDF4RequestHandler.h"
 
 // Names to be searched by
 //   get_geodim_x_name()
@@ -805,8 +806,16 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
         if(((int)lowright[0]>180000000) && ((int)upleft[0]>-1)) {
             // We can only handle geographic projection now.
             // This is the only case we can handle.
-            if(projectioncode == GCTP_GEO) // Will handle when data is read.
+            if(projectioncode == GCTP_GEO) {// Will handle when data is read.
                 lonfield->speciallon = true;
+                // When HDF-EOS2 cache is involved, we have to also set the 
+                // speciallon flag for the latfield since the cache file
+                // includes both lat and lon fields, and even the request 
+                // is only to generate the lat field, the lon field also needs to 
+                // be updated to write the proper cache. KY 2016-03-16 
+                if(HDF4RequestHandler::get_enable_eosgeo_cachefile() == true) 
+                    latfield->speciallon = true;
+            }
         }
 
         // Some MODIS MCD files don't follow standard format for lat/lon (DDDMMMSSS);

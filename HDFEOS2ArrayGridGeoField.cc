@@ -652,6 +652,13 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 else
                     num_item_expected = xdim*ydim*2;
 
+                // Some longitude values need to be corrected.
+                if (speciallon && fieldtype == 2) {
+                    CorSpeLon (&latlon[0], nelms);
+                    // The longitude values changed in the cache file is implemented in CalculateLatLon.
+                }
+
+
                 BESH4Cache *llcache = BESH4Cache::get_instance();
                 llcache->write_cached_data(cache_fpath,num_item_expected*sizeof(double),latlon_all);
 
@@ -662,9 +669,11 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
 //MOVE this into the use_cache block.
         // Some longitude values need to be corrected.
+#if 0
         if (speciallon && fieldtype == 2) {
             CorSpeLon (&latlon[0], nelms);
         }
+#endif
 
         set_value ((dods_float64 *) &latlon[0], nelms);
 
@@ -1668,7 +1677,14 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                 for(int i = 0; i<ydim;i++)
                     latlon_all[i] = temp_lat[i];
 
-                for(int i = 0; i<xdim;i++)
+                // Longitude values for the simple projections are mapped to 0 to 360 and we need to map them between -180 and 180.
+                // The routine need to be called before the latlon_all to make sure the longitude value is changed. 
+                // KY 2016-03-09, HFVHANDLER-301
+                if(speciallon == true) {//Must also apply to the latitude case since the lat/lon is stored in one cached file
+                    CorSpeLon(&temp_lon[0],xdim);
+                }
+
+                for(int i = 0; i<xdim;i++) 
                     latlon_all[i+ydim] = temp_lon[i];
 
             }
@@ -1688,9 +1704,14 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                 for(int i = 0; i<ydim;i++)
                     latlon_all[i] = temp_lat[i];
 
+                // Longitude values for the simple projections are mapped to 0 to 360 and we need to map them between -180 and 180.
+                // The routine need to be called before the latlon_all to make sure the longitude value is changed. 
+                // KY 2016-03-09, HFVHANDLER-301
+                if(speciallon == true) //Must also apply to the latitude case since the lat/lon is stored in one cached file
+                    CorSpeLon(&temp_lon[0],xdim);
+
                 for(int i = 0; i<xdim;i++)
                     latlon_all[i+ydim] = temp_lon[i];
-
 
             }
         }
