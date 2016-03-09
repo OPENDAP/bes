@@ -172,12 +172,12 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
             BESDEBUG("func", "DapFunctionResultPromoter::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
             fdds->add_var(bt);
         }
-        return fdds;
+        // return fdds;
     }
     else {
         BESDEBUG("func", "DapFunctionResultPromoter::promote_function_output_structures() - Nothing in DDS to promote." << endl);
         // Otherwise do nothing to alter the DDS
-        return fdds;
     }
+    return fdds;
 }
 #endif
