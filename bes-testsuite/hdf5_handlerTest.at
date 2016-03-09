@@ -210,8 +210,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_vl_string_cstr.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_vl_string_cstr.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_vl_string_cstr.h5.ddx.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_space_zero.h5.das.bescmd])
-#Wait until receiving the info. from JG about the index handling of expr. constraint.
-#AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_space_zero.h5.data.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_space_zero.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_space_zero.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_space_zero.h5.ddx.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_space_null.h5.das.bescmd])
@@ -455,9 +454,9 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dmr.bescmd])
 
-# The data field names are duplicate. Comment out and wait for ticket to be fixed.
 # https://opendap.atlassian.net/browse/HR-68 
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
+# May update this later.
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
