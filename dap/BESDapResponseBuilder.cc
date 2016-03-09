@@ -99,6 +99,7 @@
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+#include "DapFunctionResultPromoter.h"
 
 using namespace std;
 using namespace libdap;
@@ -557,6 +558,8 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
+
+#if 0
 /**
  * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
  * false otherwise.
@@ -643,6 +646,7 @@ static DDS *promote_function_output_structure(DDS *fdds)
         return fdds;
     }
 }
+#endif
 
 /** This function formats and prints an ASCII representation of a
  DDS on stdout. Either an entire DDS or a constrained DDS may be sent.
@@ -716,7 +720,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-        fdds = promote_function_output_structure(/*&*/fdds);
+        fdds = DapFunctionResultPromoter::promote_function_output_structures(/*&*/fdds);
 
         conditional_timeout_cancel();
 
@@ -990,7 +994,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // result) will be sent.
         fdds->mark_all(false);
 
-        fdds = promote_function_output_structure(fdds);
+        fdds = DapFunctionResultPromoter::promote_function_output_structures(fdds);
 
         eval.parse_constraint(get_ce(), *fdds);
 
@@ -1112,7 +1116,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // result) will be sent.
         fdds->mark_all(false);
 
-        fdds = promote_function_output_structure(fdds);
+        fdds = DapFunctionResultPromoter::promote_function_output_structures(fdds);
 
         eval.parse_constraint(d_dap2ce, *fdds);
 
