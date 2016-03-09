@@ -162,13 +162,16 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
             }
         }
         // Drop Promoted Containers
-        for(libdap::BaseType *bt : droppedContainers) {
+
+        for(std::vector<libdap::BaseType *>::iterator it=droppedContainers.begin(); it != droppedContainers.end(); ++it) {
+            libdap::BaseType *bt = *it;
             BESDEBUG("func", "DapFunctionResultPromoter::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
             fdds->del_var(bt->name());
         }
 
         // Add (copied) promoted variables to top-level of DDS
-        for(libdap::BaseType *bt : upVars) {
+        for( std::vector<libdap::BaseType *>::iterator it = upVars.begin(); it != upVars.end(); it ++) {
+            libdap::BaseType *bt = *it;
             BESDEBUG("func", "DapFunctionResultPromoter::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
             fdds->add_var(bt);
         }
