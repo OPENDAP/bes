@@ -17,6 +17,7 @@
 #include "HDFCFUtil.h"
 #include "HDFEOS2Array_RealField.h"
 #include "dodsutil.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 
@@ -28,10 +29,13 @@ HDFEOS2Array_RealField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2_Array_RealField read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
 
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
     vector<int>offset;
@@ -127,9 +131,12 @@ HDFEOS2Array_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+#if 0
     string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
     bool turn_on_disable_scale_comp_key= false;
     turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
+#endif
+    
 
     bool is_modis_l1b = false;
     if("MODIS_SWATH_Type_L1B" == swathname)
@@ -230,7 +237,8 @@ HDFEOS2Array_RealField::read ()
     // USE a try-catch block to release the resources.
     try {
         if((false == is_modis_l1b) && (false == is_modis_vip)
-           &&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key))
+           &&(false == has_Key_attr) && (true == HDF4RequestHandler::get_disable_scaleoffset_comp()))
+           //&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key))
             write_dap_data_disable_scale_comp(gridid,nelms,&offset32[0],&count32[0],&step32[0]);
         else 
             write_dap_data_scale_comp(gridid,nelms,offset32,count32,step32);
@@ -275,9 +283,12 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
              "coming to HDFEOS2Array_RealField write_dap_data_scale_comp "
              <<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Define function pointers to handle both grid and swath
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
@@ -2148,12 +2159,15 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 
 void HDFEOS2Array_RealField::close_fileid(const int gsfileid, const int sdfileid) {
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
 
 
-    if(true == isgeofile || false == check_pass_fileid_key) {
+    //if(true == isgeofile || false == check_pass_fileid_key) {
+    if(true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
 
         if(sdfileid != -1)
             SDend(sdfileid);

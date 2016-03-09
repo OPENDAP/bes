@@ -16,6 +16,7 @@
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2CFStrField.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 
@@ -26,10 +27,13 @@ HDFEOS2CFStrField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2CFStrField read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
 
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
     // Note that one dimensional character array is one string,
     // so the rank for character arrays should be rank from string+1 
     // offset32,step32 and count32 will be new subsetting parameters for

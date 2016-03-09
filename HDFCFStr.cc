@@ -37,6 +37,7 @@
 #include "HDFCFStr.h"
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
+#include "HDF4RequestHandler.h"
 
 
 HDFCFStr::HDFCFStr(const int this_h4fd, int32 sds_field_ref,const string &h4_filename,const string &sds_varname,const string &sds_varnewname, bool is_h4_vdata) 
@@ -61,9 +62,12 @@ bool HDFCFStr::read()
 {
 
     BESDEBUG("h4","Coming to HDFCFStr read "<<endl);
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // SDS
     if(false == is_vdata) {

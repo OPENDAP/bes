@@ -84,7 +84,7 @@ struct HDFCFUtil
     /// For example, One may find a line H4.EnableCF=true at h4.conf.in.
     /// That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
 
-    static bool check_beskeys(const std::string& key);
+    //static bool check_beskeys(const std::string& key);
 
     /// From a string separated by a separator to a list of string,
     /// for example, split "ab,c" to {"ab","c"}

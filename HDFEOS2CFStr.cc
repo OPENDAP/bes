@@ -17,6 +17,7 @@
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2CFStr.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 
@@ -49,9 +50,12 @@ HDFEOS2CFStr::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2CFStr read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
 
     int32 (*openfunc) (char *, intn);

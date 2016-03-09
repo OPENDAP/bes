@@ -37,6 +37,7 @@
 #include "HDFCFUtil.h"
 #include "HDFSP.h"
 #include "dodsutil.h"
+#include "HDF4RequestHandler.h"
 
 const char *_BACK_SLASH= "/";
 
@@ -2373,16 +2374,19 @@ throw (Exception)
     // Using the BES KEY for people to choose to map the vdata to attribute for a smaller number of record.
     // KY 2012-6-26 
   
+#if 0
     string check_vdata_to_attr_key="H4.EnableVdata_to_Attr";
     bool turn_on_vdata_to_attr_key = false;
 
     turn_on_vdata_to_attr_key = HDFCFUtil::check_beskeys(check_vdata_to_attr_key);
+#endif
 
     // The reason to add this flag is if the number of record is too big, the DAS table is too huge to allow some clients to work.
     // Currently if the number of record is >=10; one vdata field is mapped to a DAP variable.
     // Otherwise, it is mapped to a DAP attribute.
 
-    if (num_record <= 10 && true == turn_on_vdata_to_attr_key)
+    //if (num_record <= 10 && true == turn_on_vdata_to_attr_key)
+    if (num_record <= 10 && true == HDF4RequestHandler::get_enable_vdata_attr())
         vdata->TreatAsAttrFlag = true;
     else
         vdata->TreatAsAttrFlag = false;
@@ -3688,12 +3692,15 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
     // or set the H4.EnableCERESMERRAShortName=false
     // KY 2012-6-27
 
+#if 0
     string check_ceres_short_name_key="H4.EnableCERESMERRAShortName";
     bool turn_on_ceres_short_name_key= false;
         
     turn_on_ceres_short_name_key = HDFCFUtil::check_beskeys(check_ceres_short_name_key);
+#endif
 
-    if (true == turn_on_ceres_short_name_key && (file->sptype == CER_ES4 || file->sptype == CER_SRB
+    //if (true == turn_on_ceres_short_name_key && (file->sptype == CER_ES4 || file->sptype == CER_SRB
+    if (true == HDF4RequestHandler::get_enable_ceres_merra_short_name() && (file->sptype == CER_ES4 || file->sptype == CER_SRB
         || file->sptype == CER_CDAY || file->sptype == CER_CGEO
         || file->sptype == CER_SYN || file->sptype == CER_ZAVG
         || file->sptype == CER_AVG)) {
@@ -3946,12 +3953,16 @@ File::handle_vdata() throw(Exception) {
     // to add performance burden, I won't consider the nameclashing check between SDS and Vdata fields. KY 2012-6-28
     // 
 
+#if 0
     string check_disable_vdata_nameclashing_key="H4.DisableVdataNameclashingCheck";
     bool turn_on_disable_vdata_nameclashing_key = false;
 
     turn_on_disable_vdata_nameclashing_key = HDFCFUtil::check_beskeys(check_disable_vdata_nameclashing_key);
+#endif
 
-    if (false == turn_on_disable_vdata_nameclashing_key) {
+
+    //if (false == turn_on_disable_vdata_nameclashing_key) {
+    if (false == HDF4RequestHandler::get_disable_vdata_nameclashing_check()) {
 
         vector<string> tempvdatafieldnamelist;
 

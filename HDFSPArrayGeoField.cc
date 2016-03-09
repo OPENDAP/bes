@@ -18,6 +18,7 @@
 #include "InternalErr.h"
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 #define SIGNED_BYTE_TO_INT32 1
@@ -205,9 +206,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                                 int32 * step32, int nelms)
 {
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
+
     int32 sdid = -1;
 
     if(false == check_pass_fileid_key) {
@@ -541,9 +547,14 @@ HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32,
                                 int32 * step32, int nelms)
 {
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
+
     int32 sdid = -1;
 
     if(false == check_pass_fileid_key) {
@@ -655,9 +666,14 @@ void
 HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                                 int32 * step32, int nelms)
 {
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
+
     int32 sdid = -1;
 
     if(false == check_pass_fileid_key) {
@@ -970,9 +986,14 @@ void
 HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
 {
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
+
     int32 sdid = -1;
 
     if(false == check_pass_fileid_key) {
@@ -1397,9 +1418,13 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                                    int32 * step32, int nelms)
 {
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
+
     int32 sdid = -1;
 
     if(false == check_pass_fileid_key) {
@@ -1522,9 +1547,14 @@ void
 HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
                                   int32 * step32, int nelms)
 {
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
+
     int32 sdid = -1;
 
     if(false == check_pass_fileid_key) {

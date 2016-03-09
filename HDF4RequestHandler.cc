@@ -1090,7 +1090,8 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+            //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
+            bool ecs_metadata = !(_disable_ecsmetadata_all);
 #if 0
         bool ecs_metadata = true;
         if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
@@ -1304,11 +1305,16 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
         bool dds_das_get_cache = false;
         string das_filename;
         string dds_filename;
+
+#if 0
         string check_enable_mcache_key="H4.EnableMetaDataCacheFile";
-        bool turn_on_enable_mcache_key= false;
+        bool _disable_ecsmetadata_allturn_on_enable_mcache_key= false;
         turn_on_enable_mcache_key = HDFCFUtil::check_beskeys(check_enable_mcache_key);
         if(true == turn_on_enable_mcache_key) {
+#endif
+        if(true == _enable_metadata_cachefile) {
 
+#if 0
             string md_cache_dir;
             string key = "H4.Cache.metadata.path";
             bool found = false;
@@ -1321,6 +1327,15 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
                 // So we create a different DAS file. This can be optimized in the future if necessary.
                 das_filename = md_cache_dir + "/" + base_file_name +"_das_dd";
                 dds_filename = md_cache_dir + "/" + base_file_name +"_dds";
+#endif
+            if(true == _cache_metadata_path_exist) {
+                BESDEBUG("h4", "H4.Cache.metadata.path key is set and metadata cache key is set." << endl);
+
+                // Notice, since the DAS output may be different between DAS/DDS service and DataDDS service.
+                // See comments about ecs_metadata below.
+                // So we create a different DAS file. This can be optimized in the future if necessary.
+                das_filename = _cache_metadata_path + "/" + base_file_name +"_das_dd";
+                dds_filename = _cache_metadata_path + "/" + base_file_name +"_dds";
 
                 // If das_set_cache is true, data is read from the DAS cache.
                 das_set_cache = rw_das_cache_file(das_filename,das,false);

@@ -32,6 +32,7 @@ using namespace libdap;
 // a key and will do some operations. Otherwise, will do different operations.
 // For example, One may find a line H4.EnableCF=true at h4.conf.in.
 // That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
+#if 0
 bool 
 HDFCFUtil::check_beskeys(const string& key) {
 
@@ -49,6 +50,7 @@ HDFCFUtil::check_beskeys(const string& key) {
     return false;
 
 }
+#endif
 
 /**
  * Copied from stack overflow because valgrind finds the code

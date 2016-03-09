@@ -23,6 +23,7 @@
 #include "BESDebug.h"
 #include <BESLog.h>
 #include "HDFEOS2ArraySwathDimMapField.h"
+#include "HDF4RequestHandler.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 using namespace std;
@@ -32,9 +33,13 @@ HDFEOS2ArraySwathDimMapField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathDimMapField read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
     vector<int>offset;
@@ -213,12 +218,15 @@ HDFEOS2ArraySwathDimMapField::read ()
     bool is_modis1b = false;
     if("MODIS_SWATH_Type_L1B" == swathname) 
         is_modis1b = true;
+#if 0
     string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
     bool turn_on_disable_scale_comp_key= false;
     turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
+#endif
 
     try {
-        if(true == turn_on_disable_scale_comp_key && false== is_modis1b) 
+        //if(true == turn_on_disable_scale_comp_key && false== is_modis1b) 
+        if(true == HDF4RequestHandler::get_disable_scaleoffset_comp() && false== is_modis1b) 
             write_dap_data_disable_scale_comp(swathid,nelms,offset32,count32,step32);
         else
             write_dap_data_scale_comp(swathid,nelms,offset32,count32,step32);
@@ -605,11 +613,14 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                                                         vector<int32>& offset32, 
                                                         vector<int32>& count32,
                                                         vector<int32>& step32) {
-    
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
   // Define function pointers to handle both grid and swath
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
@@ -1566,11 +1577,14 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
 
 void HDFEOS2ArraySwathDimMapField::close_fileid(const int32 swfileid, const int32 sdfileid) {
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
 
-    if(true == isgeofile || false == check_pass_fileid_key) {
+    //if(true == isgeofile || false == check_pass_fileid_key) {
+    if(true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
 
         if(sdfileid != -1)
             SDend(sdfileid);

@@ -15,6 +15,7 @@
 #include <BESDebug.h>
 #include "BESInternalError.h"
 #include "HDFCFUtil.h"
+#include "HDF4RequestHandler.h"
 
 //#include "BESH4MCache.h"
 #include "dodsutil.h"
@@ -43,9 +44,11 @@ HDFSPArray_RealField::read ()
     // Cache
     // Check if a BES key H4.EnableDataCacheFile is true, if yes, we will check
     // if we can read the data from this file.
+#if 0
     string check_data_cache_key = "H4.EnableDataCacheFile";
     bool enable_check_data_cache_key = false;
     enable_check_data_cache_key = HDFCFUtil::check_beskeys(check_data_cache_key);
+#endif
 
     bool data_from_cache = false;
     bool data_to_cache = false;
@@ -58,16 +61,24 @@ HDFSPArray_RealField::read ()
     }
 
     string cache_fpath;
-    if(true == enable_check_data_cache_key) {
+    //if(true == enable_check_data_cache_key) {
+    if(true == HDF4RequestHandler::get_enable_data_cachefile()) {
 
         BESH4Cache *llcache = BESH4Cache::get_instance();
 
         // Here we have a sanity check for the cached parameters:Cached directory,file prefix and cached directory size.
         // Supposedly Hyrax BES cache feature should check this and the code exists. However, the
         // current hyrax 1.9.7 doesn't provide this feature. KY 2014-10-24
+#if 0
         string bescachedir= llcache->getCacheDirFromConfig();
         string bescacheprefix = llcache->getCachePrefixFromConfig();
         unsigned int cachesize = llcache->getCacheSizeFromConfig();
+#endif
+
+        // Make it simple, the data cache parameters also shares with the HDF-EOS2 grid lat/lon cache
+        string bescachedir = HDF4RequestHandler::get_cache_latlon_path();
+        string bescacheprefix = HDF4RequestHandler::get_cache_latlon_prefix();
+        long cachesize = HDF4RequestHandler::get_cache_latlon_size();
 
         if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0))
             throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
@@ -85,18 +96,17 @@ HDFSPArray_RealField::read ()
                             err_mesg = err_mesg + " can NOT be read,written or executable.";
                             throw InternalErr(__FILE__,__LINE__,err_mesg);
                         }
-
                 }
                 else {
                         string err_mesg="The cached directory " + bescachedir;
                         err_mesg = err_mesg + " is not a directory.";
                         throw InternalErr(__FILE__,__LINE__,err_mesg);
-
                 }
             }
         }
 
-        string cache_fname=HDFCFUtil::obtain_cache_fname(llcache->getCachePrefixFromConfig(),filename,name());
+        //string cache_fname=HDFCFUtil::obtain_cache_fname(llcache->getCachePrefixFromConfig(),filename,name());
+        string cache_fname=HDFCFUtil::obtain_cache_fname(bescacheprefix,filename,name());
         cache_fpath = bescachedir + "/"+ cache_fname;
         
         int total_elems = 1;
@@ -145,9 +155,12 @@ HDFSPArray_RealField::read ()
 
      }
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
@@ -178,10 +191,14 @@ HDFSPArray_RealField::read ()
     else {
         // This code will make sure that the file ID is not passed when H4.EnableMetaDataCacheFile key is set.
         // We will wait to see if Hyrax core supports the cache and then make improvement. KY 2015-04-30
+#if 0
         string check_enable_mcache_key="H4.EnableMetaDataCacheFile";
         bool turn_on_enable_mcache_key= false;
         turn_on_enable_mcache_key = HDFCFUtil::check_beskeys(check_enable_mcache_key);
-        if(true == turn_on_enable_mcache_key) {
+#endif
+
+        //if(true == turn_on_enable_mcache_key) {
+        if(true == HDF4RequestHandler::get_enable_metadata_cachefile()) {
 
             sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
             if (sdid < 0) {

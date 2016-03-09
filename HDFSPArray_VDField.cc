@@ -18,6 +18,7 @@
 #include "InternalErr.h"
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 #define SIGNED_BYTE_TO_INT32 1
@@ -29,9 +30,12 @@ HDFSPArray_VDField::read ()
 
     BESDEBUG("h4","Coming to HDFSPArray_VDField read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declaration of offset,count and step
     vector<int>offset;

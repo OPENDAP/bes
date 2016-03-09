@@ -17,6 +17,7 @@
 #include <debug.h>
 #include "InternalErr.h"
 #include "BESDebug.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 #define SIGNED_BYTE_TO_INT32 1
@@ -27,9 +28,13 @@ HDFEOS2ArraySwathGeoField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoField read "<<endl);
 
+#if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+
+    bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
     vector<int>offset;
