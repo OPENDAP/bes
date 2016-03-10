@@ -25,7 +25,8 @@
 # See also hdf4_hadnler.cf.at file.
 #
 # Author: Hyo-Kyung Lee (hyoklee@hdfgroup.org)
-# Last Update: Mar 6, 2014
+#         MuQun Yang(myang6@hdfgroup.org)
+# Last Update: Mar 10, 2016
 # -----------------------------------------------------------------------------
 AT_INIT([bes.conf besstandalone getdap])
 # AT_COPYRIGHT([])
@@ -38,7 +39,7 @@ m4_define([_AT_BESCMD_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2 || true], [], [stdout], [stderr])
+# AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
@@ -49,7 +50,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
+# AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
