@@ -120,6 +120,8 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
  */
 libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libdap::DDS *fdds)
 {
+    fdds->print_das(cerr);
+
     // Look in the top level of the DDS for a promotable member - i.e. a member
     // variable that is a collection and whose name ends with "_unwrap"
     bool found_promotable_member = false;
@@ -154,6 +156,7 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
 
 
         libdap::DDS *temp_dds = new libdap::DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
+
 
         std::vector<libdap::BaseType *> upVars;
         std::vector<libdap::BaseType *> droppedContainers;
@@ -217,6 +220,7 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
         // Otherwise do nothing to alter the DDS
     }
 
+    fdds->print_das(cerr);
 
     return fdds;
 }
