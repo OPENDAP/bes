@@ -76,7 +76,7 @@
 #include "HDF4_DMR.h"
 //#endif 
 
-#include "HDFCFUtil.h"
+//#include "HDFCFUtil.h"
 #include "HDFFloat32.h"
 #include "HDFSPArray_RealField.h"
 

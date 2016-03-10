@@ -29,7 +29,7 @@ public:
     virtual ~BESH4Cache() {}
 
 
-    static unsigned long getCacheSizeFromConfig();
+    static long getCacheSizeFromConfig();
     static string getCachePrefixFromConfig();
     static string getCacheDirFromConfig();
 

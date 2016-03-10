@@ -15,6 +15,7 @@
 #include "BESInternalError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
+#include "HDF4RequestHandler.h"
 
 using namespace std;
 
@@ -23,8 +24,9 @@ const string BESH4Cache::PATH_KEY   = "HDF4.Cache.latlon.path";
 const string BESH4Cache::PREFIX_KEY = "HDF4.Cache.latlon.prefix";
 const string BESH4Cache::SIZE_KEY   = "HDF4.Cache.latlon.size";
 
-unsigned long BESH4Cache::getCacheSizeFromConfig(){
+long BESH4Cache::getCacheSizeFromConfig(){
 
+#if 0
     bool found;
     string size;
     unsigned long size_in_megabytes = 0;
@@ -40,11 +42,24 @@ unsigned long BESH4Cache::getCacheSizeFromConfig(){
         BESDEBUG("cache", msg);
         throw BESInternalError(msg , __FILE__, __LINE__);
     }
-    return size_in_megabytes;
+#endif
+
+    if(HDF4RequestHandler::get_cache_latlon_size_exist() == true) {
+        BESDEBUG("cache", "In BESH4Cache::getCacheSize(): Located BES key " <<
+                        SIZE_KEY<< "=" << HDF4RequestHandler::get_cache_latlon_size() << endl);
+        return HDF4RequestHandler::get_cache_latlon_size();
+    }
+    else {
+        string msg = "[ERROR] BESH4Cache::getCacheSize() - The BES Key " + SIZE_KEY + " is not set! It MUST be set to utilize the HDF4 cache. ";
+        BESDEBUG("cache", msg);
+        throw BESInternalError(msg , __FILE__, __LINE__);
+    }
+        
 }                       
         
 string BESH4Cache::getCachePrefixFromConfig(){
 
+#if 0
     bool found;
     string prefix = "";
     TheBESKeys::TheKeys()->get_value( PREFIX_KEY, prefix, found ) ;
@@ -60,11 +75,25 @@ string BESH4Cache::getCachePrefixFromConfig(){
     }
     
     return prefix; 
+#endif
+
+    if(HDF4RequestHandler::get_cache_latlon_prefix_exist() == true) {
+        BESDEBUG("cache", "In BESH4Cache::getCachePrefix(): Located BES key " <<
+                        PREFIX_KEY<< "=" << HDF4RequestHandler::get_cache_latlon_prefix() << endl);
+        return HDF4RequestHandler::get_cache_latlon_prefix();
+    }
+    else {
+        string msg = "[ERROR] BESH4Cache::getCachePrefix() - The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the HDF4 cache. ";            
+        BESDEBUG("cache", msg);
+        throw BESInternalError(msg , __FILE__, __LINE__);
+    }
+
 }
 
 
 string BESH4Cache::getCacheDirFromConfig(){
 
+#if 0
     bool found;
 
     string cacheDir = "";
@@ -79,6 +108,20 @@ string BESH4Cache::getCacheDirFromConfig(){
         throw BESInternalError(msg , __FILE__, __LINE__);
     }
     return cacheDir;
+#endif
+
+    if(HDF4RequestHandler::get_cache_latlon_path_exist() == true) {
+        BESDEBUG("cache", "In BESH4Cache::getCacheDirFromConfig(): Located BES key " <<
+                        PATH_KEY<< "=" << HDF4RequestHandler::get_cache_latlon_path() << endl);
+        return HDF4RequestHandler::get_cache_latlon_path();
+    }
+    else {
+        string msg = "[ERROR] BESH4Cache::getCachePrefix() - The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the HDF4 cache. ";            
+        BESDEBUG("cache", msg);
+        throw BESInternalError(msg , __FILE__, __LINE__);
+    }
+
+   
 }
 
 BESH4Cache::BESH4Cache(){
@@ -87,7 +130,8 @@ BESH4Cache::BESH4Cache(){
 
     string cacheDir = getCacheDirFromConfig();
     string prefix = getCachePrefixFromConfig();
-    unsigned long size_in_megabytes = getCacheSizeFromConfig();
+    long size_in_megabytes = getCacheSizeFromConfig();
+    
 
     BESDEBUG("cache", "BESH4Cache() - Cache config params: " << cacheDir << ", " << prefix << ", " << size_in_megabytes << endl);
 
