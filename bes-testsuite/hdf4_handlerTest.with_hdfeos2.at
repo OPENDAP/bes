@@ -164,7 +164,9 @@ AT_BESCMD_RESPONSE_TEST([testvs5.hdf.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([testvs5.hdf.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs5.hdf.data.bescmd])
 
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data1.bescmd])
+# Comment this out since CF option doesn't support GR and the
+# no variables will be generated.
+#AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data1.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data1.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds3.hdf.data1.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs1.hdf.data1.bescmd])
