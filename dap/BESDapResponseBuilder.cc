@@ -720,6 +720,16 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        // This next step utilizes a well known static method (so really it's a function;),
+        // DapFunctionResultPromoter::promote_function_output_structures() to look for
+        // one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // This is in support of a hack around the current API where functions may only
+        // return a single object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // DapFunctionResultPromoter::promote_function_output_structures()
         fdds = DapFunctionResultPromoter::promote_function_output_structures(/*&*/fdds);
 
         conditional_timeout_cancel();
@@ -994,6 +1004,16 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // result) will be sent.
         fdds->mark_all(false);
 
+        // This next step utilizes a well known static method (so really it's a function;),
+        // DapFunctionResultPromoter::promote_function_output_structures() to look for
+        // one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // This is in support of a hack around the current API where functions may only
+        // return a single object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // DapFunctionResultPromoter::promote_function_output_structures()
         fdds = DapFunctionResultPromoter::promote_function_output_structures(fdds);
 
         eval.parse_constraint(get_ce(), *fdds);
@@ -1116,6 +1136,16 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // result) will be sent.
         fdds->mark_all(false);
 
+        // This next step utilizes a well known static method (so really it's a function;),
+        // DapFunctionResultPromoter::promote_function_output_structures() to look for
+        // one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // This is in support of a hack around the current API where functions may only
+        // return a single object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // DapFunctionResultPromoter::promote_function_output_structures()
         fdds = DapFunctionResultPromoter::promote_function_output_structures(fdds);
 
         eval.parse_constraint(d_dap2ce, *fdds);

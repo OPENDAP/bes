@@ -164,31 +164,32 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
             if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
 
                 // Once we promote the members we need to drop the parent collection
-                // but we can't do that while we're iterating over it's contents
+                // but we can't do that while we're iterating over its contents
                 // so we'll cache the reference for later.
                 droppedContainers.push_back(collection);
 
                 BESDEBUG("func", "DapFunctionResultPromoter::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
 
-                // So we're going to 'flatten this structure' and return its fields
+                // We're going to 'flatten this structure' and return its fields
                 libdap::Structure::Vars_iter vi;
                 for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
                     BESDEBUG("func", "DapFunctionResultPromoter::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
 
                     libdap::BaseType *origVar = *vi;
 
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    // This performs a deep copy on origVar (ouch!)
-                    // @TODO Fix the libdap API to allow this operation without
-                    // the copy/delete bits.
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // This performs a deep copy on origVar (ouch!), and we do it because in the current
+                    // libdap API, when we delete parent structure the variable will be deleted too.
+                    // Because we can't pluck a variable out of a DAP object without deleting it.
+                    // @TODO Fix the libdap API to allow this operation without the copy/delete bits.
                     libdap::BaseType *newVar = origVar->ptr_duplicate();
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                    // This ensures that the variables semantics are consistent
+                    // This ensures that the variable's semantics are consistent
                     // with a top level variable.
                     newVar->set_parent(0);
 
-                    // Add the new vars to the list of stuff to add back to the dataset.
+                    // Add the new variable to the list of stuff to add back to the dataset.
                     upVars.push_back(newVar);
                 }
             }
