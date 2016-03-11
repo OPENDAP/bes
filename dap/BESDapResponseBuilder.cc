@@ -724,8 +724,8 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         // DapFunctionResultPromoter::promote_function_output_structures() to look for
         // one or more top level Structures whose name indicates (by way of ending with
         // "_uwrap") that their contents should be promoted (aka moved) to the top level.
-        // This is in support of a hack around the current API where functions may only
-        // return a single object and not a collection of objects. The name suffix
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
         // "_unwrap" is used as a signal from the function to the the various response
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
@@ -1008,8 +1008,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // DapFunctionResultPromoter::promote_function_output_structures() to look for
         // one or more top level Structures whose name indicates (by way of ending with
         // "_uwrap") that their contents should be promoted (aka moved) to the top level.
-        // This is in support of a hack around the current API where functions may only
-        // return a single object and not a collection of objects. The name suffix
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
         // "_unwrap" is used as a signal from the function to the the various response
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
@@ -1140,8 +1140,8 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // DapFunctionResultPromoter::promote_function_output_structures() to look for
         // one or more top level Structures whose name indicates (by way of ending with
         // "_uwrap") that their contents should be promoted (aka moved) to the top level.
-        // This is in support of a hack around the current API where functions may only
-        // return a single object and not a collection of objects. The name suffix
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
         // "_unwrap" is used as a signal from the function to the the various response
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
