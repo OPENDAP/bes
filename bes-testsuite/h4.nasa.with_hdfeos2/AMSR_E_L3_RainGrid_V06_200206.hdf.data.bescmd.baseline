@@ -1,0 +1,5 @@
+The data:
+Float32 TbOceanRain[Latitude = 3][Longitude = 3] = {{-1, -1, -1},{293, 475, 31},{-1, -1, -1}};
+Float64 Latitude[Latitude = 3] = {67.5, 2.5, -62.5};
+Float64 Longitude[Longitude = 3] = {2.5, 177.5, 352.5};
+
