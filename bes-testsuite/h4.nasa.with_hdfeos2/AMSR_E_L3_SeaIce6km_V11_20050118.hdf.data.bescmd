@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
     <setContext name="dap_format">dap2</setContext>
-    <setContainer name="AMSR_E_L3_SeaIce6km_V11_20050118.hdf" space="catalog">/data/AMSR_E_L3_SeaIce6km_V11_20050118.hdf</setContainer>
+    <setContainer name=" AMSR_E_L3_SeaIce6km_V11_20050118.hdf" space="catalog">/data/AMSR_E_L3_SeaIce6km_V11_20050118.hdf</setContainer>
     <define name="d">
-	<container name="AMSR_E_L3_SeaIce6km_V11_20050118.hdf" />
+	<container name=" AMSR_E_L3_SeaIce6km_V11_20050118.hdf" />
+        <constraint>SI_06km_NH_89V_ASC[0:895:1791][0:607:1215],Latitude[0:895:1791][0:607:1215],Longitude[0:895:1791][0:607:1215],
+                    SI_06km_SH_89V_ASC[0:663:1327][0:631:1263],Latitude_1[0:663:1327][0:631:1263],Longitude_1[0:663:1327][0:631:1263]</constraint>
     </define>
     <get type="dods" definition="d" />
 </request>

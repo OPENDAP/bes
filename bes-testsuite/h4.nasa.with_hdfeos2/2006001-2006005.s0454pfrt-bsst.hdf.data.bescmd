@@ -4,7 +4,7 @@
     <setContainer name="2006001-2006005.s0454pfrt-bsst.hdf" space="catalog">/data/2006001-2006005.s0454pfrt-bsst.hdf</setContainer>
     <define name="d">
 	<container name="2006001-2006005.s0454pfrt-bsst.hdf" />
-	     <constraint>bsst[0:400:4095][0:400:8191],lat[0:1:4095],lon[0:500:8191]</constraint>
+	     <constraint>bsst[0:2047:4095][0:4095:8191],lat[0:2047:4095],lon[0:4095:8191]</constraint>
     </define>
     <get type="dods" definition="d" />
 </request>
