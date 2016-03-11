@@ -1,9 +1,10 @@
-// FONcUtils.h
+// -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of BES Netcdf File Out Module
+// This file is part of the BES, a component 
+// of the Hyrax Data Server
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2016 OPeNDAP, Inc.
+// Authors: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,18 +20,11 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef DapFunctionResultPromoter_h_
-#define DapFunctionResultPromoter_h_ 1
+#ifndef DapFunctionUtils_h_
+#define DapFunctionUtils_h_ 1
 
 #include <string>
 using std::string;
@@ -43,10 +37,7 @@ using std::string;
  * This class includes static functions to help with the conversion of
  * an OPeNDAP DataDDS object into a netcdf file.
  */
-class DapFunctionResultPromoter {
-public:
-    static libdap::DDS *promote_function_output_structures(libdap::DDS *fdds);
-};
+libdap::DDS *promote_function_output_structures(libdap::DDS *fdds);
 
-#endif // DapFunctionResultPromoter_h_
+#endif // DapFunctionUtils_h_
 

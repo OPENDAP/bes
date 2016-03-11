@@ -1,6 +1,30 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES, a component
+// of the Hyrax Data Server
+
+// Copyright (c) 2016 OPeNDAP, Inc.
+// Authors: Nathan Potter <ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#include "DapFunctionResultPromoter.h"
+
+#include "DapFunctionUtils.h"
 #include "Structure.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -38,7 +62,7 @@
  * *_unwrap have been removed and their members 'promoted' up to the new
  * DDS's top level scope.
  */
-libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libdap::DDS *fdds)
+libdap::DDS *DapFunctionUtils::promote_function_output_structures(libdap::DDS *fdds)
 {
     // Look in the top level of the DDS for a promotable member - i.e. a member
     // variable that is a collection and whose name ends with "_unwrap"
@@ -47,7 +71,7 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
         libdap::Structure *collection = dynamic_cast<libdap::Structure *>(*di);
         if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
             found_promotable_member = true;
-            BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
         }
     }
 
@@ -65,11 +89,11 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
         for (libdap::DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
             libdap::Structure *collection = dynamic_cast<libdap::Structure *>(*di);
             if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
-                BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
+                BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
                // So we're going to 'flatten this structure' and return its fields
                 libdap::Structure::Vars_iter vi;
                 for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
-                    BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
+                    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
                     temp_dds->add_var(*vi); // better to use add_var_nocopy(*vi); need to modify libdap?
                 }
             }
@@ -81,7 +105,7 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
         return temp_dds;
     }
     else {
-        BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Nothing in DDS to promote." << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Nothing in DDS to promote." << endl);
         // Otherwise do nothing to alter the DDS
         return fdds;
     }
@@ -118,16 +142,16 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
  * *_unwrap have been removed and their members 'promoted' up to the new
  * DDS's top level scope.
  */
-libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libdap::DDS *fdds)
+libdap::DDS *promote_function_output_structures(libdap::DDS *fdds)
 {
-    BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - BEGIN" << endl);
+    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - BEGIN" << endl);
 
     if (BESISDEBUG(DEBUG_KEY)){
         ostream *ost = BESDebug::GetStrm();
-        BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
         fdds->print(*ost);
         *ost << endl;
-        BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
         fdds->print_das(*ost);
         *ost << endl;
     }
@@ -139,7 +163,7 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
         libdap::Structure *collection = dynamic_cast<libdap::Structure *>(*di);
         if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
             found_promotable_member = true;
-            BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
         }
     }
 
@@ -181,12 +205,12 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
                 // so we'll cache the reference for later.
                 droppedContainers.push_back(collection);
 
-                BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
+                BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
 
                 // We're going to 'flatten this structure' and return its fields
                 libdap::Structure::Vars_iter vi;
                 for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
-                    BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
+                    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
 
                     libdap::BaseType *origVar = *vi;
 
@@ -211,7 +235,7 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
 
         for(std::vector<libdap::BaseType *>::iterator it=droppedContainers.begin(); it != droppedContainers.end(); ++it) {
             libdap::BaseType *bt = *it;
-            BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
 
             // Delete the Container variable and ALL of it's children.
             // @TODO Wouldn't it be nice if at this point it had no children? I think so too.
@@ -221,26 +245,26 @@ libdap::DDS *DapFunctionResultPromoter::promote_function_output_structures(libda
         // Add (copied) promoted variables to top-level of DDS
         for( std::vector<libdap::BaseType *>::iterator it = upVars.begin(); it != upVars.end(); it ++) {
             libdap::BaseType *bt = *it;
-            BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
             fdds->add_var(bt);
         }
     }
     else {
-        BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - Nothing in DDS to promote." << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Nothing in DDS to promote." << endl);
         // Otherwise do nothing to alter the DDS
     }
 
     if (BESISDEBUG(DEBUG_KEY)){
         ostream *ost = BESDebug::GetStrm();
-        BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
         fdds->print(*ost);
         *ost << endl;
-        BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
         fdds->print_das(*ost);
         *ost << endl;
     }
 
-    BESDEBUG(DEBUG_KEY, "DapFunctionResultPromoter::promote_function_output_structures() - END" << endl);
+    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - END" << endl);
 
     return fdds;
 }
