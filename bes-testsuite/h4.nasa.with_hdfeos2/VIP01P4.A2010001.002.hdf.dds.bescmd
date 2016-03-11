@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="VIP01P4.A2010001.002" space="catalog">/data/VIP01P4.A2010001.002.hdf</setContainer>
+    <define name="d">
+	<container name="VIP01P4.A2010001.002" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

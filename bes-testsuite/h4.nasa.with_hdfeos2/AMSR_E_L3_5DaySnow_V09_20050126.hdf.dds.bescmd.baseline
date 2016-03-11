@@ -1,0 +1,10 @@
+Dataset {
+    Byte SWE_NorthernPentad[YDim = 721][XDim = 721];
+    Byte Flags_NorthernPentad[YDim = 721][XDim = 721];
+    Float64 Latitude[YDim = 721][XDim = 721];
+    Float64 Longitude[YDim = 721][XDim = 721];
+    Byte SWE_SouthernPentad[YDim_1 = 721][XDim_1 = 721];
+    Byte Flags_SouthernPentad[YDim_1 = 721][XDim_1 = 721];
+    Float64 Latitude_1[YDim_1 = 721][XDim_1 = 721];
+    Float64 Longitude_1[YDim_1 = 721][XDim_1 = 721];
+} AMSR_E_L3_5DaySnow_V09_20050126.hdf;

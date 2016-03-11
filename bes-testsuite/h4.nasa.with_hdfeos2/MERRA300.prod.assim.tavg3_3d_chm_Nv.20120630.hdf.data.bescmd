@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf" space="catalog">/data/MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf</setContainer>
+    <define name="d">
+	<container name="MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf" />
+                <constraint>MFXC[0:3:7][0:35:71][0:1:180][0:269:539],XDim[0:269:539],YDim[0:180:360],Height[0:35:71],TIME[0:3:7],XDim_EOS[0:269:539],YDim_EOS[0:180:360],Height_EOS[0:35:71],Time[0:3:7]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

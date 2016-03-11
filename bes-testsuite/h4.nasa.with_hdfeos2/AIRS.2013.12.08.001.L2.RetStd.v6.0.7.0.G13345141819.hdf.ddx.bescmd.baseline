@@ -1,0 +1,3882 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="AIRS.2013.12.08.001.L2.RetStd.v6.0.7.0.G13345141819.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+        <Attribute name="identifier_product_doi" type="String">
+            <value>10.5067/AQUA/AIRS/DATA201</value>
+        </Attribute>
+        <Attribute name="identifier_product_doi_authority" type="String">
+            <value>http://dx.doi.org/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AIRS.2013.12.08.001.L2.RetStd.v6.0.7.0.G13345141819.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2013-12-11T19:18:23.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Day&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Unspecified&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTCLOUDCOVER" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                                <value>61</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Surface Skin Temperature&quot;</value>
+                            <value>&quot;Surface Air Temperature&quot;</value>
+                            <value>&quot;Atmospheric Temperature&quot;</value>
+                            <value>&quot;Water Vapor Mass Mixing Ratio&quot;</value>
+                            <value>&quot;Total Precipitable Water Vapor&quot;</value>
+                            <value>&quot;Ozone Volume Mixing Ratio&quot;</value>
+                            <value>&quot;Total Ozone Burden&quot;</value>
+                            <value>&quot;Spectral IR Surface Emissivities&quot;</value>
+                            <value>&quot;Spectral IR Surf Bidirect Reflectivity&quot;</value>
+                            <value>&quot;MW Surface Brightness&quot;</value>
+                            <value>&quot;MW Emissivity&quot;</value>
+                            <value>&quot;Total Cloud Water&quot;</value>
+                            <value>&quot;Cloud Top Temperature&quot;</value>
+                            <value>&quot;Cloud Top Pressure&quot;</value>
+                            <value>&quot;Effective Cloud Fraction&quot;</value>
+                            <value>&quot;Geopotential Heights&quot;</value>
+                            <value>&quot;Geopotential Height of Surface&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="STARTORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>61683</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2013-12-07&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;23:31:28.912175Z&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>31.0722713470459</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="STOPORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>61683</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>6</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AIRX2RET&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>500</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;ftp://airsl1.gesdisc.eosdis.nasa.gov///ftp/data/s4pa/Aqua_AIRS_Level1/AIRABRAD.005/2013/342/AIRS.2013.12.08.001.L1B.AMSU_Rad.v5.0.0.0.G13343154221.hdf&quot;</value>
+                        <value>&quot;
+          ftp://airsl1.gesdisc.eosdis.nasa.gov///ftp/data/s4pa/Aqua_AIRS_Level1/AIRIBRAD.005/2013/342/AIRS.2013.12.08.001.L1B.AIRS_Rad.v5.0.22.0.G13343160350.hdf&quot;</value>
+                        <value>&quot;
+          ftp://airsl1.gesdisc.eosdis.nasa.gov///ftp/data/s4pa/Aqua_AIRS_Level1/AIRVBRAD.005/2013/342/AIRS.2013.12.08.001.L1B.VIS_Rad.v5.0.0.0.G13343160901.hdf&quot;</value>
+                        <value>&quot;ftp://localhost///ftp/data/s4pa/.5kNTX5B9SOGXxsFi/NOAA_Ancillary/AVI3_ANH/2013/341/gblav.PGrbF03.131207.18z.hdf&quot;</value>
+                        <value>&quot;
+          ftp://localhost///ftp/data/s4pa/.5kNTX5B9SOGXxsFi/NOAA_Ancillary/AVI6_ANH/2013/341/gblav.PGrbF06.131207.18z.hdf&quot;</value>
+                        <value>&quot;ftp://localhost///ftp/data/s4pa/.5kNTX5B9SOGXxsFi/NOAA_Ancillary/AVI9_ANH/2013/341/gblav.PGrbF09.131207.18z.hdf&quot;</value>
+                        <value>&quot;
+          ftp://localhost///ftp/data/s4pa/.5kNTX5B9SOGXxsFi/NOAA_Ancillary/AVI3_ANH/2013/342/gblav.PGrbF03.131208.00z.hdf&quot;</value>
+                        <value>&quot;ftp://localhost///ftp/data/s4pa/.5kNTX5B9SOGXxsFi/NOAA_Ancillary/AVI6_ANH/2013/342/gblav.PGrbF06.131208.00z.hdf&quot;</value>
+                        <value>&quot;
+          ftp://localhost///ftp/data/s4pa/.5kNTX5B9SOGXxsFi/NOAA_Ancillary/AVI9_ANH/2013/342/gblav.PGrbF09.131208.00z.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2b.trcoef.airs.2002.08.30.v11.2.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2b.trcoef.airs.2003.11.19.v11.2.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.trcoef.amsu.v5.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.trcoef.hsb.v4.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2h.ncep_clim.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.uars_clim.v1.1.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2h.angle_adj_coef.2002.05.04.v8.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.F.error_est.v1.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.tuning.amsu.v9.7.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.tuning.hsb.v9.6.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.tuning.airs.v11.1.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.solar_rad.2002.08.30.v11.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.solar_rad.2003.11.19.v11.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cloud_avg.2002.08.30.v11.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cloud_avg.2003.11.19.v11.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2b.CCI_coefs.v5.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.M.cov100av.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.M.weight.hsb.v1.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.chan_prop.2002.08.30.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2002.09.17.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2002.10.22.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2003.01.10.v9.5.3.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.chan_prop.2003.11.19.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2004.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2005.03.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2005.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.chan_prop.2006.01.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2006.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2007.01.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2007.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.chan_prop.2008.01.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2008.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2009.01.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2009.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.chan_prop.2010.01.26.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2010.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2011.01.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2011.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.chan_prop.2011.10.09.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2011.10.10.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2012.01.21.v9.5.3.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2012.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.F.coef_olr.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.masuda.v2.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.F.model_err.AH.v8.4.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.F.ir-mwqc.coef_err_est.v4.0.8.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.err_lim.v1.2.4.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cloud_phase.v1.0.2.txt&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.eigvec_allang.solang.nf.v2.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.rcoef.solang.v2.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.cld.regcoef.noamsu.2002.08.30.v8.1.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.I.cld.regcoef.noam45.2002.08.30.v8.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.freq.eigvec.2002.08.30.v8.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.ang_pc.v2.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.cldreg.eigvec_allang.2002.08.30.v8.1.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.namelist.2002.05.04.v6.31.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.clr.regcoef.noam45.2002.08.30.v8.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.I.surface_regression.2002.08.30.v8.2.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2h.sccnn_coef.v3.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1C.airs_model_shift.2002.08.30.v1.0.1.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1C.airs_model_shift.2003.11.19.v1.0.1.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1C.airs_clean_param.v2.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1C.airs_replace_stat.v1.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1C.airs_pca.v2.2.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1C.airs_resample.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2002.08.30.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2002.09.17.v9.6.2.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2002.10.22.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2003.01.10.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2003.11.19.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2004.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2005.03.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2005.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2006.01.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2006.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2007.01.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2007.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2008.01.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2008.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2009.01.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2009.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2010.01.26.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2010.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2011.01.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2011.07.01.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2011.10.09.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2011.10.10.v9.6.2.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_cfg.2012.01.21.v9.6.2.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_focal_plane_map.v2.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.spectral_feature.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.non_linear_corr.v2.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.polarization_corr.v1.1.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.non_linear_corr.2002.08.30.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.non_linear_corr.2002.10.22.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.non_linear_corr.2003.01.10.v3.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.non_linear_corr.2003.11.19.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.polarization_corr.2002.08.30.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.polarization_corr.2002.10.22.v3.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.polarization_corr.2003.01.10.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.polarization_corr.2003.11.19.v3.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_qa.2002.05.04.v9.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_qa.2002.07.09.v9.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L1B.airs_qa.2002.08.30.v9.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_qa.2002.09.17.v9.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L1B.airs_qa.2002.10.22.v9.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.chan_prop.2012.07.01.v9.5.3.anc&quot;</value>
+                        <value>&quot;idl_setup.ksh&quot;</value>
+                        <value>&quot;
+          IDL_STARTUP&quot;</value>
+                        <value>&quot;libsarta_d4s.so&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.set1.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.set2.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.set3.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.set4.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.sarta.set5.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.set6.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.set7.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.co2.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.so2.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.sarta.hno3.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.n2o.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.optran.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.therm.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.fx.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.sarta.pref_trace.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.solar_data.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.setnte.v1.0.5.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.sarta.tunmlt.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d010.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d020.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d030.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d040.v1.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d050.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d060.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d070.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d080.v1.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d090.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d100.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d110.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d120.v1.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d130.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d140.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d150.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d160.v1.0.0.anc&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d170.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.IR_mix1_d180.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2b.co_clim.v4.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/SNDR_PEATE_smoothness_clim_v04.txt&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/L2.cirrus.channels.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/L2.cirrus.atmosphere.v1.0.0.anc&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008001.041.2009068171115.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008032.041.2009068171047.gz.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/MYD11C3.A2008061.041.2009075162150.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008092.041.2009084131139.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008122.041.2009092131159.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008153.041.2009103040042.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008183.041.2009107022854.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008214.041.2009118211712.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008245.041.2009127083043.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008275.041.2009134095828.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008306.041.2009140230709.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/MYD11C3.A2008336.041.2009148180107.gz.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.01.01.L3.RetStd031.v5.6.5.14.2008_Land.X10258143820.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.02.01.L3.RetStd028.v5.4.15.43.2008_Land.X10028153057.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.03.01.L3.RetStd031.v5.4.15.43.2008_Land.X10028154401.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.04.01.L3.RetStd030.v5.4.15.43.2008_Land.X10028160637.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.05.01.L3.RetStd031.v5.7.6.20.2008_Land.X11073160805.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.06.01.L3.RetStd030.v5.4.15.43.2008_Land.X10028163345.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.07.01.L3.RetStd031.v5.7.6.20.2008_Land.X11073162316.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.08.01.L3.RetStd031.v5.4.15.43.2008_Land.X10028165939.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.09.01.L3.RetStd030.v5.4.15.43.2008_Land.X10028171303.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.10.01.L3.RetStd031.v5.4.15.43.2007_Land.X10028173748.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.11.01.L3.RetStd030.v5.4.15.43.2007_Land.X10028174843.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.12.01.L3.RetStd031.v5.4.15.43.2008_Land.X10028172553.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.01.01.L3.RetStd031.v5.6.5.14.2008_Sea.X10258144215.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.02.01.L3.RetStd028.v5.4.15.43.2008_Sea.X10028153457.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.03.01.L3.RetStd031.v5.4.15.43.2008_Sea.X10028154754.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.04.01.L3.RetStd030.v5.4.15.43.2008_Sea.X10028161126.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.05.01.L3.RetStd031.v5.7.6.20.2008_Sea.X11073161241.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.06.01.L3.RetStd030.v5.4.15.43.2008_Sea.X10028163740.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.07.01.L3.RetStd031.v5.7.6.20.2008_Sea.X11073162809.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.08.01.L3.RetStd031.v5.4.15.43.2008_Sea.X10028170400.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.09.01.L3.RetStd030.v5.4.15.43.2008_Sea.X10028171655.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.10.01.L3.RetStd031.v5.4.15.43.2007_Sea.X10028174108.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.11.01.L3.RetStd030.v5.4.15.43.2007_Sea.X10028175212.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.12.01.L3.RetStd031.v5.4.15.43.2008_Sea.X10028172954.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.01.01.L3.RetStd031.v5.6.5.13.2008_All.X10258093244.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.02.01.L3.RetStd028.v5.4.15.43.2008_All.X10028152635.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.03.01.L3.RetStd031.v5.4.15.43.2008_All.X10028153939.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.04.01.L3.RetStd030.v5.4.15.43.2008_All.X10028160056.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.05.01.L3.RetStd031.v5.7.6.20.2008_All.X11073160251.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.06.01.L3.RetStd030.v5.4.15.43.2008_All.X10028162923.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.07.01.L3.RetStd031.v5.7.6.20.2008_All.X11073161800.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.08.01.L3.RetStd031.v5.4.15.43.2008_All.X10028165511.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.09.01.L3.RetStd030.v5.4.15.43.2008_All.X10028170837.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.10.01.L3.RetStd031.v5.4.15.43.2007_All.X10028173406.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.11.01.L3.RetStd030.v5.4.15.43.2007_All.X10028174458.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.12.01.L3.RetStd031.v5.4.15.43.2008_All.X10028172123.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.01.01.L3.RetSup031.v5.6.5.14.2008_Land.X10258144038.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.02.01.L3.RetSup028.v5.4.15.43.2008_Land.X10028153327.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.03.01.L3.RetSup031.v5.4.15.43.2008_Land.X10028154625.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.04.01.L3.RetSup030.v5.4.15.43.2008_Land.X10028160933.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.05.01.L3.RetSup031.v5.7.6.20.2008_Land.X11073161037.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.06.01.L3.RetSup030.v5.4.15.43.2008_Land.X10028163610.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.07.01.L3.RetSup031.v5.7.6.20.2008_Land.X11073162558.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.08.01.L3.RetSup031.v5.4.15.43.2008_Land.X10028170224.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.09.01.L3.RetSup030.v5.4.15.43.2008_Land.X10028171526.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.10.01.L3.RetSup031.v5.4.15.43.2007_Land.X10028173950.hdf&quot;</value>
+                        <value>&quot;
+          ../AiL2/6.0.7.0/pge/static/AIRS.2005.11.01.L3.RetSup030.v5.4.15.43.2007_Land.X10028175052.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.12.01.L3.RetSup031.v5.4.15.43.2008_Land.X10028172821.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.01.01.L3.RetSup031.v5.6.5.14.2008_Sea.X10258144453.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.02.01.L3.RetSup028.v5.4.15.43.2008_Sea.X10028153753.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.03.01.L3.RetSup031.v5.4.15.43.2008_Sea.X10028155042.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.04.01.L3.RetSup030.v5.4.15.43.2008_Sea.X10028161419.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.05.01.L3.RetSup031.v5.7.6.20.2008_Sea.X11073161548.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.06.01.L3.RetSup030.v5.4.15.43.2008_Sea.X10028164028.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.07.01.L3.RetSup031.v5.7.6.20.2008_Sea.X11073163127.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.08.01.L3.RetSup031.v5.4.15.43.2008_Sea.X10028170656.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.09.01.L3.RetSup030.v5.4.15.43.2008_Sea.X10028171943.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.10.01.L3.RetSup031.v5.4.15.43.2007_Sea.X10028174333.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.11.01.L3.RetSup030.v5.4.15.43.2007_Sea.X10028175441.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.12.01.L3.RetSup031.v5.4.15.43.2008_Sea.X10028173244.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.01.01.L3.RetSup031.v5.6.5.20.2008_All.X10264161556.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.02.01.L3.RetSup028.v5.4.15.43.2008_All.X10028152938.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.03.01.L3.RetSup031.v5.4.15.43.2008_All.X10028154241.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.04.01.L3.RetSup030.v5.4.15.43.2008_All.X10028160348.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.05.01.L3.RetSup031.v5.7.6.20.2008_All.X11073160610.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.06.01.L3.RetSup030.v5.4.15.43.2008_All.X10028163226.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.07.01.L3.RetSup031.v5.7.6.20.2008_All.X11073162120.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.08.01.L3.RetSup031.v5.4.15.43.2008_All.X10028165821.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.09.01.L3.RetSup030.v5.4.15.43.2008_All.X10028171145.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.10.01.L3.RetSup031.v5.4.15.43.2007_All.X10028173644.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.11.01.L3.RetSup030.v5.4.15.43.2007_All.X10028174738.hdf&quot;</value>
+                        <value>&quot;../AiL2/6.0.7.0/pge/static/AIRS.2005.12.01.L3.RetSup031.v5.4.15.43.2008_All.X10028172430.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-133.011123657227</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-162.588882446289</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-56.6475563049316</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-32.7981452941895</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ZONEIDENTIFIERCLASS" type="Container">
+                        <Attribute name="ZONEIDENTIFIER" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Other Grid System&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2013-12-08&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:11:23.000000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2013-12-08&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:05:23.000000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;6.0.7.0&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                        <value>&quot;21&quot;</value>
+                        <value>&quot;22&quot;</value>
+                        <value>&quot;23&quot;</value>
+                        <value>&quot;24&quot;</value>
+                        <value>&quot;25&quot;</value>
+                        <value>&quot;26&quot;</value>
+                        <value>&quot;27&quot;</value>
+                        <value>&quot;28&quot;</value>
+                        <value>&quot;29&quot;</value>
+                        <value>&quot;30&quot;</value>
+                        <value>&quot;31&quot;</value>
+                        <value>&quot;32&quot;</value>
+                        <value>&quot;33&quot;</value>
+                        <value>&quot;34&quot;</value>
+                        <value>&quot;35&quot;</value>
+                        <value>&quot;36&quot;</value>
+                        <value>&quot;37&quot;</value>
+                        <value>&quot;38&quot;</value>
+                        <value>&quot;39&quot;</value>
+                        <value>&quot;40&quot;</value>
+                        <value>&quot;41&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;HSB Channel 1&quot;</value>
+                            <value>&quot;HSB Channel 2&quot;</value>
+                            <value>&quot;HSB Channel 3&quot;</value>
+                            <value>&quot;HSB Channel 4&quot;</value>
+                            <value>&quot;HSB Channel 5&quot;</value>
+                            <value>&quot;AMSU-A Channel 3&quot;</value>
+                            <value>&quot;AMSU-A Channel 4&quot;</value>
+                            <value>&quot;AMSU-A Channel 5&quot;</value>
+                            <value>&quot;AMSU-A Channel 6&quot;</value>
+                            <value>&quot;AMSU-A Channel 7&quot;</value>
+                            <value>&quot;AMSU-A Channel 8&quot;</value>
+                            <value>&quot;AMSU-A Channel 9&quot;</value>
+                            <value>&quot;AMSU-A Channel 10&quot;</value>
+                            <value>&quot;AMSU-A Channel 11&quot;</value>
+                            <value>&quot;AMSU-A Channel 12&quot;</value>
+                            <value>&quot;AMSU-A Channel 13&quot;</value>
+                            <value>&quot;AMSU-A Channel 14&quot;</value>
+                            <value>&quot;AMSU-A Channel 15&quot;</value>
+                            <value>&quot;AMSU-A Channel 1&quot;</value>
+                            <value>&quot;AMSU-A Channel 2&quot;</value>
+                            <value>&quot;M1a Detector Array&quot;</value>
+                            <value>&quot;M1b Detector Array&quot;</value>
+                            <value>&quot;M2a Detector Array&quot;</value>
+                            <value>&quot;M2b Detector Array&quot;</value>
+                            <value>&quot;M3 Detector Array&quot;</value>
+                            <value>&quot;M4a Detector Array&quot;</value>
+                            <value>&quot;M4b Detector Array&quot;</value>
+                            <value>&quot;M4c Detector Array&quot;</value>
+                            <value>&quot;M4d Detector Array&quot;</value>
+                            <value>&quot;M5 Detector Array&quot;</value>
+                            <value>&quot;M6 Detector Array&quot;</value>
+                            <value>&quot;M7 Detector Array&quot;</value>
+                            <value>&quot;M8 Detector Array&quot;</value>
+                            <value>&quot;M9 Detector Array&quot;</value>
+                            <value>&quot;M10 Detector Array&quot;</value>
+                            <value>&quot;M11 Detector Array&quot;</value>
+                            <value>&quot;M12 Detector Array&quot;</value>
+                            <value>&quot;VNIR Channel 1&quot;</value>
+                            <value>&quot;VNIR Channel 2&quot;</value>
+                            <value>&quot;VNIR Channel 3&quot;</value>
+                            <value>&quot;VNIR Channel 4&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="OPERATIONMODE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                        <value>&quot;21&quot;</value>
+                        <value>&quot;22&quot;</value>
+                        <value>&quot;23&quot;</value>
+                        <value>&quot;24&quot;</value>
+                        <value>&quot;25&quot;</value>
+                        <value>&quot;26&quot;</value>
+                        <value>&quot;27&quot;</value>
+                        <value>&quot;28&quot;</value>
+                        <value>&quot;29&quot;</value>
+                        <value>&quot;30&quot;</value>
+                        <value>&quot;31&quot;</value>
+                        <value>&quot;32&quot;</value>
+                        <value>&quot;33&quot;</value>
+                        <value>&quot;34&quot;</value>
+                        <value>&quot;35&quot;</value>
+                        <value>&quot;36&quot;</value>
+                        <value>&quot;37&quot;</value>
+                        <value>&quot;38&quot;</value>
+                        <value>&quot;39&quot;</value>
+                        <value>&quot;40&quot;</value>
+                        <value>&quot;41&quot;</value>
+                        <value>&quot;42&quot;</value>
+                        <value>&quot;43&quot;</value>
+                        <value>&quot;44&quot;</value>
+                        <value>&quot;45&quot;</value>
+                        <value>&quot;46&quot;</value>
+                        <value>&quot;47&quot;</value>
+                        <value>&quot;48&quot;</value>
+                        <value>&quot;49&quot;</value>
+                        <value>&quot;50&quot;</value>
+                        <value>&quot;51&quot;</value>
+                        <value>&quot;52&quot;</value>
+                        <value>&quot;53&quot;</value>
+                        <value>&quot;54&quot;</value>
+                        <value>&quot;55&quot;</value>
+                        <value>&quot;56&quot;</value>
+                        <value>&quot;57&quot;</value>
+                        <value>&quot;58&quot;</value>
+                        <value>&quot;59&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                            <value>&quot;42&quot;</value>
+                            <value>&quot;43&quot;</value>
+                            <value>&quot;44&quot;</value>
+                            <value>&quot;45&quot;</value>
+                            <value>&quot;46&quot;</value>
+                            <value>&quot;47&quot;</value>
+                            <value>&quot;48&quot;</value>
+                            <value>&quot;49&quot;</value>
+                            <value>&quot;50&quot;</value>
+                            <value>&quot;51&quot;</value>
+                            <value>&quot;52&quot;</value>
+                            <value>&quot;53&quot;</value>
+                            <value>&quot;54&quot;</value>
+                            <value>&quot;55&quot;</value>
+                            <value>&quot;56&quot;</value>
+                            <value>&quot;57&quot;</value>
+                            <value>&quot;58&quot;</value>
+                            <value>&quot;59&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;NumBadData&quot;</value>
+                            <value>&quot;NumSpecialData&quot;</value>
+                            <value>&quot;NumProcessData&quot;</value>
+                            <value>&quot;NumMissingData&quot;</value>
+                            <value>&quot;NumTotalData&quot;</value>
+                            <value>&quot;NumLandSurface&quot;</value>
+                            <value>&quot;NumOceanSurface&quot;</value>
+                            <value>&quot;NumFpe&quot;</value>
+                            <value>&quot;ScanLineCount&quot;</value>
+                            <value>&quot;AIRSGranuleNumber&quot;</value>
+                            <value>&quot;OrbitPath&quot;</value>
+                            <value>&quot;SP_STARTING_PATH&quot;</value>
+                            <value>&quot;SP_STARTING_ROW&quot;</value>
+                            <value>&quot;SP_ENDING_ROW&quot;</value>
+                            <value>&quot;NumGeoQA&quot;</value>
+                            <value>&quot;NumSunGlint&quot;</value>
+                            <value>&quot;LonGranuleCen&quot;</value>
+                            <value>&quot;LatGranuleCen&quot;</value>
+                            <value>&quot;LocTimeGranuleCen&quot;</value>
+                            <value>&quot;NodeType&quot;</value>
+                            <value>&quot;VersionRetrieval&quot;</value>
+                            <value>&quot;NumBadL1B&quot;</value>
+                            <value>&quot;NumBadL1BAMSU&quot;</value>
+                            <value>&quot;NumBadL1BHSB&quot;</value>
+                            <value>&quot;NumBadL1BAIRS&quot;</value>
+                            <value>&quot;NumBadL1BVIS&quot;</value>
+                            <value>&quot;NumNoPsurfGuess&quot;</value>
+                            <value>&quot;NumNoTuning&quot;</value>
+                            <value>&quot;NumNoAngCorr&quot;</value>
+                            <value>&quot;NumPrecipMW&quot;</value>
+                            <value>&quot;NumCloudIceMW&quot;</value>
+                            <value>&quot;NumClearMW&quot;</value>
+                            <value>&quot;NumClearIR&quot;</value>
+                            <value>&quot;NumMWStratIrRetOnly&quot;</value>
+                            <value>&quot;NumRetInvalid&quot;</value>
+                            <value>&quot;MoonInViewMWCount&quot;</value>
+                            <value>&quot;NumNoHSB&quot;</value>
+                            <value>&quot;NumNoAMSUA&quot;</value>
+                            <value>&quot;NumNoAIRS&quot;</value>
+                            <value>&quot;NumNoVis&quot;</value>
+                            <value>&quot;DCRCount&quot;</value>
+                            <value>&quot;PopCount&quot;</value>
+                            <value>&quot;PhotoCalibrationOn&quot;</value>
+                            <value>&quot;AIRSMode&quot;</value>
+                            <value>&quot;PercentHighContrast&quot;</value>
+                            <value>&quot;NumBadIRScans&quot;</value>
+                            <value>&quot;NumBadIROffsetChans&quot;</value>
+                            <value>&quot;NumBadIRGainChans&quot;</value>
+                            <value>&quot;NumBadIRSpecChans&quot;</value>
+                            <value>&quot;NumIRPopChans&quot;</value>
+                            <value>&quot;NumBadIRSceneChans&quot;</value>
+                            <value>&quot;NumHighNoiseIRChans&quot;</value>
+                            <value>&quot;NumBadAIRSTelemChans&quot;</value>
+                            <value>&quot;NumSO2FOVs&quot;</value>
+                            <value>&quot;ProductGenerationFacility&quot;</value>
+                            <value>&quot;AIRSRunTag&quot;</value>
+                            <value>&quot;ProductGenerationHostInformation&quot;</value>
+                            <value>&quot;identifier_product_doi&quot;</value>
+                            <value>&quot;identifier_product_doi_authority&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                            <value>&quot;42&quot;</value>
+                            <value>&quot;43&quot;</value>
+                            <value>&quot;44&quot;</value>
+                            <value>&quot;45&quot;</value>
+                            <value>&quot;46&quot;</value>
+                            <value>&quot;47&quot;</value>
+                            <value>&quot;48&quot;</value>
+                            <value>&quot;49&quot;</value>
+                            <value>&quot;50&quot;</value>
+                            <value>&quot;51&quot;</value>
+                            <value>&quot;52&quot;</value>
+                            <value>&quot;53&quot;</value>
+                            <value>&quot;54&quot;</value>
+                            <value>&quot;55&quot;</value>
+                            <value>&quot;56&quot;</value>
+                            <value>&quot;57&quot;</value>
+                            <value>&quot;58&quot;</value>
+                            <value>&quot;59&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                                <value>&quot;18&quot;</value>
+                                <value>&quot;19&quot;</value>
+                                <value>&quot;20&quot;</value>
+                                <value>&quot;21&quot;</value>
+                                <value>&quot;22&quot;</value>
+                                <value>&quot;23&quot;</value>
+                                <value>&quot;24&quot;</value>
+                                <value>&quot;25&quot;</value>
+                                <value>&quot;26&quot;</value>
+                                <value>&quot;27&quot;</value>
+                                <value>&quot;28&quot;</value>
+                                <value>&quot;29&quot;</value>
+                                <value>&quot;30&quot;</value>
+                                <value>&quot;31&quot;</value>
+                                <value>&quot;32&quot;</value>
+                                <value>&quot;33&quot;</value>
+                                <value>&quot;34&quot;</value>
+                                <value>&quot;35&quot;</value>
+                                <value>&quot;36&quot;</value>
+                                <value>&quot;37&quot;</value>
+                                <value>&quot;38&quot;</value>
+                                <value>&quot;39&quot;</value>
+                                <value>&quot;40&quot;</value>
+                                <value>&quot;41&quot;</value>
+                                <value>&quot;42&quot;</value>
+                                <value>&quot;43&quot;</value>
+                                <value>&quot;44&quot;</value>
+                                <value>&quot;45&quot;</value>
+                                <value>&quot;46&quot;</value>
+                                <value>&quot;47&quot;</value>
+                                <value>&quot;48&quot;</value>
+                                <value>&quot;49&quot;</value>
+                                <value>&quot;50&quot;</value>
+                                <value>&quot;51&quot;</value>
+                                <value>&quot;52&quot;</value>
+                                <value>&quot;53&quot;</value>
+                                <value>&quot;54&quot;</value>
+                                <value>&quot;55&quot;</value>
+                                <value>&quot;56&quot;</value>
+                                <value>&quot;57&quot;</value>
+                                <value>&quot;58&quot;</value>
+                                <value>&quot;59&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;45&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;172&quot;</value>
+                                <value>&quot;172&quot;</value>
+                                <value>&quot;147&quot;</value>
+                                <value>&quot;161&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;-150&quot;</value>
+                                <value>&quot;-45&quot;</value>
+                                <value>&quot;857&quot;</value>
+                                <value>&quot;Ascending&quot;</value>
+                                <value>&quot;6.0.7.0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;29&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;158&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;Operate&quot;</value>
+                                <value>&quot;43.88&quot;</value>
+                                <value>&quot;100&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;21&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;G&quot;</value>
+                                <value>&quot;13345141819&quot;</value>
+                                <value>&quot;ac9.gesdisc.eosdis.nasa.gov Linux 2.6.32-358.11.1.el6.x86_64 #1_SMP_Wed_Jun_12_03:34:52_UTC_2013 x86_64&quot;</value>
+                                <value>&quot;10.5067/AQUA/AIRS/DATA201&quot;</value>
+                                <value>&quot;http://dx.doi.org/&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="GeoTrack">
+        <Attribute name="long_name" type="String">
+            <value>Along-track</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>None</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>I2</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+    </Array>
+    <Array name="GeoXTrack">
+        <Attribute name="long_name" type="String">
+            <value>Across-track</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>None</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>I2</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="satzen">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="satazi">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="solzen">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="solazi">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="sun_glint_distance">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="topog">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="topog_err">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="landFrac">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="landFrac_err">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="latAIRS">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="AIRSTrack">
+        <Attribute name="long_name" type="String">
+            <value>Along-track subspot</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>None</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>I1</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="AIRSTrack" size="3"/>
+    </Array>
+    <Array name="AIRSXTrack">
+        <Attribute name="long_name" type="String">
+            <value>Across-track subspot</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>None</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>I1</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="lonAIRS">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="PSurfStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="PSurfStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="nSurfStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="PBest">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="PGood">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="nBestStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="nGoodStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="TSurfStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="TSurfStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="TSurfStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="numHingeSurf">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="freqEmis">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude HingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="HingeSurf" size="100"/>
+    </Array>
+    <Array name="HingeSurf">
+        <Attribute name="long_name" type="String">
+            <value>Frequency</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>cm^-1</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>F6.1</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="HingeSurf" size="100"/>
+    </Array>
+    <Array name="emisIRStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude HingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="HingeSurf" size="100"/>
+    </Array>
+    <Array name="emisIRStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude HingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="HingeSurf" size="100"/>
+    </Array>
+    <Array name="emisIRStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude HingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="HingeSurf" size="100"/>
+    </Array>
+    <Array name="TAirStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="StdPressureLev">
+        <Attribute name="long_name" type="String">
+            <value>Pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>F7.2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="TAirStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="TAirStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="TSurfAir">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="TSurfAir_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="TSurfAirErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="Temp_dof">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRSat">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OPressureLay">
+        <Attribute name="long_name" type="String">
+            <value>Mid-layer pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>F7.2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRSat_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRSatLevStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OPressureLev">
+        <Attribute name="long_name" type="String">
+            <value>Pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>F7.2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRSatLevStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRSatSurf">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRSatSurf_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRSat_liquid">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRSat_liquid_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRSatLevStd_liquid">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRSatLevStd_liquid_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRSatSurf_liquid">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRSatSurf_liquid_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="PTropopause">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="PTropopause_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="T_Tropopause">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="T_Tropopause_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totH2OStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totH2OStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totH2OStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="H2OMMRLevStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRLevStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRLevStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="H2OMMRSurf">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRSurf_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2OMMRSurfErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="num_H2O_Func">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="H2O_verticality">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OFunc</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OFunc" size="11"/>
+    </Array>
+    <Array name="H2O_dof">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="RelHum">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="RelHum_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="RelHumSurf">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="RelHumSurf_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="RelHum_liquid">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="RelHum_liquid_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude H2OPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="H2OPressureLev" size="15"/>
+    </Array>
+    <Array name="RelHumSurf_liquid">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="RelHumSurf_liquid_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="GP_Tropopause">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="GP_Tropopause_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="GP_Height">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="GP_Height_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="GP_Surface">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="GP_Surface_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CldFrcTot">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CldFrcTot_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CldFrcStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="Cloud">
+        <Attribute name="long_name" type="String">
+            <value>Cloud layers in order of increasing pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>None</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>I1</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="CldFrcStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="CldFrcStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="PCldTop">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="PCldTop_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="PCldTopErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="TCldTop">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="TCldTop_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="TCldTopErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack Cloud</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+        <dimension name="Cloud" size="2"/>
+    </Array>
+    <Array name="nCld">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="totO3Std">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totO3Std_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totO3StdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="O3VMRStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLay" size="28"/>
+    </Array>
+    <Array name="StdPressureLay">
+        <Attribute name="long_name" type="String">
+            <value>Mid-layer pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>F7.2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="StdPressureLay" size="28"/>
+    </Array>
+    <Array name="O3VMRStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLay" size="28"/>
+    </Array>
+    <Array name="O3VMRStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLay</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLay" size="28"/>
+    </Array>
+    <Array name="O3VMRLevStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="O3VMRLevStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="O3VMRLevStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="num_O3_Func">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="O3_verticality">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude O3Func</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="O3Func" size="9"/>
+    </Array>
+    <Array name="O3_dof">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CO_total_column">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CO_total_column_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="COVMRLevStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="COVMRLevStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="COVMRLevStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="num_CO_Func">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CO_verticality">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude COFunc</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="COFunc" size="9"/>
+    </Array>
+    <Array name="CO_dof">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CH4_total_column">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CH4_total_column_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CH4VMRLevStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="CH4VMRLevStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="CH4VMRLevStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="num_CH4_Func">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CH4_verticality_10func">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude CH4Func</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="CH4Func" size="10"/>
+    </Array>
+    <Array name="CH4_dof">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="olr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="olr_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="olr3x3">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="olr3x3_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="olr_err">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="clrolr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="clrolr_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="clrolr_err">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="ftptgeoqa">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt32">
+            <value>4294967295</value>
+        </Attribute>
+        <UInt32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="zengeoqa">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="demgeoqa">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="dust_flag">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AIRSTrack AIRSXTrack</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="AIRSTrack" size="3"/>
+        <dimension name="AIRSXTrack" size="3"/>
+    </Array>
+    <Array name="all_spots_avg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="retrieval_type">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="SurfClass">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="TAirMWOnlyStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="TAirMWOnlyStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="MWSurfClass">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="sfcTbMWStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude MWHingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="MWHingeSurf" size="7"/>
+    </Array>
+    <Array name="MWHingeSurf">
+        <Attribute name="long_name" type="String">
+            <value>Frequency</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>GHz</value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <value>F6.2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="MWHingeSurf" size="7"/>
+    </Array>
+    <Array name="sfcTbMWStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude MWHingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="MWHingeSurf" size="7"/>
+    </Array>
+    <Array name="EmisMWStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude MWHingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="MWHingeSurf" size="7"/>
+    </Array>
+    <Array name="EmisMWStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude MWHingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="MWHingeSurf" size="7"/>
+    </Array>
+    <Array name="EmisMWStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude MWHingeSurf</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="MWHingeSurf" size="7"/>
+    </Array>
+    <Array name="totH2OMWOnlyStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totH2OMWOnlyStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="GP_Height_MWOnly">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="GP_Height_MWOnly_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude StdPressureLev</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+        <dimension name="StdPressureLev" size="28"/>
+    </Array>
+    <Array name="MW_ret_used">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totCldH2OStd">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totCldH2OStd_QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="totCldH2OStdErr">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="GeoTrack" size="45"/>
+        <dimension name="GeoXTrack" size="30"/>
+    </Array>
+    <Array name="CH4Func">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="CH4Func" size="10"/>
+    </Array>
+    <Array name="COFunc">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="COFunc" size="9"/>
+    </Array>
+    <Array name="H2OFunc">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="H2OFunc" size="11"/>
+    </Array>
+    <Array name="O3Func">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="O3Func" size="9"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="2A23.20120925.84650.7" space="catalog">/data/2A23.20120925.84650.7.hdf</setContainer>
+     <define name="d">
+ 	<container name="2A23.20120925.84650.7">
+            <constraint>
+ScanTime_Year[0:4622:9246],ScanTime_Month[0:4622:9246],ScanTime_DayOfMonth[0:4622:9246],ScanTime_Hour[0:4622:9246],ScanTime_Minute[0:4622:9246],ScanTime_Second[0:4622:9246],ScanTime_MilliSecond[0:4622:9246],ScanTime_DayOfYear[0:4622:9246],scanTime_sec[0:4622:9246],Latitude[0:4622:9246][0:23:48],Longitude[0:4622:9246][0:23:48],scanStatus_missing[0:4622:9246],scanStatus_validity[0:4622:9246],scanStatus_qac[0:4622:9246],scanStatus_geoQuality[0:4622:9246],scanStatus_dataQuality[0:4622:9246],scanStatus_SCorientation[0:4622:9246],scanStatus_acsMode[0:4622:9246],scanStatus_yawUpdateS[0:4622:9246],scanStatus_prMode[0:4622:9246],scanStatus_prStatus1[0:4622:9246],scanStatus_prStatus2[0:4622:9246],scanStatus_FractionalGranuleNumber[0:4622:9246],navigation_scPosX[0:4622:9246],navigation_scPosY[0:4622:9246],navigation_scPosZ[0:4622:9246],navigation_scVelX[0:4622:9246],navigation_scVelY[0:4622:9246],navigation_scVelZ[0:4622:9246],navigation_scLat[0:4622:9246],navigation_scLon[0:4622:9246],navigation_scAlt[0:4622:9246],navigation_scAttRoll[0:4622:9246],navigation_scAttPitch[0:4622:9246],navigation_scAttYaw[0:4622:9246],navigation_SensorOrientationMatrix[0:4622:9246][0:1:2][0:1:2],navigation_greenHourAng[0:4622:9246],rainFlag[0:4622:9246][0:23:48],rainType[0:4622:9246][0:23:48],shallowRain[0:4622:9246][0:23:48],status[0:4622:9246][0:23:48],binBBpeak[0:4622:9246][0:23:48],HBB[0:4622:9246][0:23:48],BBintensity[0:4622:9246][0:23:48],freezH[0:4622:9246][0:23:48],stormH[0:4622:9246][0:23:48],spare[0:4622:9246][0:23:48],BBboundary[0:4622:9246][0:23:48][0:1:1],BBwidth[0:4622:9246][0:23:48],BBstatus[0:4622:9246][0:23:48],fakeDim2[0:1:2],fakeDim4[0:1:1]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

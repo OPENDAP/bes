@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="3B43.20130901.7" space="catalog">/data/3B43.20130901.7.hdf</setContainer>
+     <define name="d">
+ 	<container name="3B43.20130901.7">
+            <constraint>
+precipitation[0:719:1439][0:199:399],relativeError[0:719:1439][0:199:399],gaugeRelativeWeighting[0:719:1439][0:199:399],nlon[0:719:1439],nlat[0:199:399]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

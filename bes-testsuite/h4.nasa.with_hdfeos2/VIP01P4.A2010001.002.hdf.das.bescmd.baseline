@@ -1,0 +1,381 @@
+Attributes {
+    CMG_0_05_Deg_NDVI {
+        String coordinates "Latitude Longitude";
+        String units "VI";
+        String long_name "Normalize Differential Vegetation Index";
+        Int16 orig_scale_factor 10000;
+        Float32 _FillValue -13000;
+        Float32 valid_min -1.000000000;
+        Float32 valid_max 1.000000000;
+    }
+    CMG_0_05_Deg_EVI2 {
+        String coordinates "Latitude Longitude";
+        String units "VI";
+        String long_name "Enhanced Vegetation Index";
+        Int16 orig_scale_factor 10000;
+        Float32 _FillValue -13000;
+        Float32 valid_min -1.000000000;
+        Float32 valid_max 1.000000000;
+    }
+    CMG_0_05_Deg_VI_Quality {
+        String coordinates "Latitude Longitude";
+        String valid_range "0, 65535";
+        Int16 scale_factor 1;
+        String units "bit field";
+        String long_name "VI Quality";
+        String Legend "
+Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+
+Bit	Description
+13-15	Land/Water Flag;
+	000 -- shallow ocean
+	001 -- land
+	010 -- ocean costlines and lake shorelines
+	011 -- shallow inland water
+	100 -- ephemeral water
+	101 -- deep inland water
+	110 -- continental/moderate ocean
+	111 -- deep ocean 
+
+12	View Angle > 30;
+	1 -- yes,  0 -- no
+
+11	Sun Zenith Angle > 85;
+	1 -- yes,  0 -- no
+
+10	Sun Zenith Angle > 75;
+	1 -- yes,  0 -- no
+
+8-9	Gap Fill Status;
+	00 not gap filled
+	01 interpolated
+	10 long term average
+	11 not set
+	
+7	Snow/Ice estimated;
+	1 -- yes,  0 -- no
+
+6	Snow/Ice Flag;
+	1 -- yes,  0 -- no
+
+5	Aerosol estimated;
+	1 -- yes,  0 -- no
+
+3-4	Aerosol Quantity;
+	00 -- climatology
+	01 -- low
+	10 -- average
+	11 -- high
+
+2	Cloud Shadow;
+	1 -- yes,  0 -- no
+
+0-1	Cloud State;
+	00 -- clear
+	01 -- cloudy
+	10 -- mixed
+	11 -- not set, assumed clear
+";
+        UInt16 _FillValue 0;
+    }
+    CMG_0_05_Deg_Pixel_Reliability {
+        String coordinates "Latitude Longitude";
+        String valid_range "-2, 6";
+        Int16 scale_factor 1;
+        String units "N/A";
+        String long_name "Pixel Reliability";
+        String legend "
+ Legend:
+  0 Ideal Data, Good and Useful
+  1 Good to Marginal
+  2 Marginal to Questionable
+  3 Snow
+  4 Cloud
+  5 Estimated
+  6 NODATA
+  7 LTAVG
+ -1 Ocean
+ -2 Antartica";
+        Int32 _FillValue -1;
+    }
+    CMG_0_05_Deg_RED {
+        String coordinates "Latitude Longitude";
+        String units "reflectance";
+        String long_name "CMG 0.05 Deg RED";
+        String bandwidth "620 - 670 nm";
+        Int16 orig_scale_factor 10000;
+        Float32 _FillValue -28672;
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.000000000;
+    }
+    CMG_0_05_Deg_NIR {
+        String coordinates "Latitude Longitude";
+        String units "reflectance";
+        String long_name "CMG 0.05 Deg NIR";
+        String bandwidth "841 - 876 nm";
+        Int16 orig_scale_factor 10000;
+        Float32 _FillValue -28672;
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.000000000;
+    }
+    CMG_0_05_Deg_BLUE {
+        String coordinates "Latitude Longitude";
+        String units "reflectance";
+        String long_name "CMG 0.05 Deg BLUE";
+        String bandwidth "459 - 479 nm";
+        Int16 orig_scale_factor 10000;
+        Float32 _FillValue -28672;
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.000000000;
+    }
+    CMG_0_05_Deg_MIR {
+        String coordinates "Latitude Longitude";
+        String units "reflectance";
+        String long_name "CMG 0.05 Deg MIR";
+        String bandwidth "2105 - 2155 nm";
+        Int16 orig_scale_factor 10000;
+        Float32 _FillValue -28672;
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.000000000;
+    }
+    CMG_0_05_Deg_SZA {
+        String coordinates "Latitude Longitude";
+        String units "degrees";
+        String long_name "CMG 0.05 Deg SZA";
+        Int16 orig_scale_factor 100;
+        Float32 _FillValue 0;
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 180.0000000;
+    }
+    CMG_0_05_Deg_VZA {
+        String coordinates "Latitude Longitude";
+        String units "degrees";
+        String long_name "CMG 0.05 Deg VZA";
+        Int16 orig_scale_factor 100;
+        Float32 _FillValue 0;
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 180.0000000;
+    }
+    CMG_0_05_Deg_RAA {
+        String coordinates "Latitude Longitude";
+        String units "degrees";
+        String long_name "CMG 0.05 Deg RAA";
+        Int16 orig_scale_factor 100;
+        Float32 _FillValue 0;
+        Float32 valid_min -180.0000000;
+        Float32 valid_max 180.0000000;
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.15";
+        String atname1 "GROUP  = INVENTORYMETADATA
+  GROUPTYPE = MASTERGROUP
+  GROUP  = ECSDATAGRANULE
+    OBJECT = LOCALGRANULEID
+      NUM_VAL = 1
+      VALUE = \"VIP01P4.A2010001.002.hdf\"
+    END_OBJECT = LOCALGRANULEID
+    OBJECT = PRODUCTIONDATETIME
+      NUM_VAL = 1
+      VALUE = \"2012-06-14T22:32:35.000Z\"
+    END_OBJECT = PRODUCTIONDATETIME
+    OBJECT = REPROCESSINGACTUAL
+      NUM_VAL = 1
+      VALUE = \"reprocessed\"
+    END_OBJECT = REPROCESSINGACTUAL
+    OBJECT = LOCALVERSIONID
+      NUM_VAL = 1
+      VALUE = \"1.2.1\"
+    END_OBJECT = LOCALVERSIONID
+  END_GROUP = ECSDATAGRANULE
+  GROUP = MEASUREDPARAMETER
+    OBJECT = MEASUREDPARAMETERCONTAINER
+      CLASS = \"1\"
+      GROUP = QASTATS
+        CLASS = \"1\"
+
+        OBJECT = QAPERCENTGOODUSEFUL
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.044850\"
+        END_OBJECT = QAPERCENTGOODUSEFUL
+
+        OBJECT = QAPERCENTGOODMARGINAL
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.065565\"
+        END_OBJECT = QAPERCENTGOODMARGINAL
+
+        OBJECT = QAPERCENTMARGINAL
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.081231\"
+        END_OBJECT = QAPERCENTMARGINAL
+
+        OBJECT = QAPERCENTSNOW
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.096255\"
+        END_OBJECT = QAPERCENTSNOW
+
+        OBJECT = QAPERCENTCLOUD
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.000000\"
+        END_OBJECT = QAPERCENTCLOUD
+
+        OBJECT = QAPERCENTESTIMATED
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.492039\"
+        END_OBJECT = QAPERCENTESTIMATED
+
+        OBJECT = QAPERCENTNODATA
+          NUM_VAL = 1
+          CLASS = \"1\"
+          VALUE = \"0.220059\"
+        END_OBJECT = QAPERCENTNODATA
+
+
+      END_GROUP = QASTATS
+    END_OBJECT = MEASUREDPARAMETERCONTAINER
+  END_GROUP = MEASUREDPARAMETER
+  GROUP = COLLECTIONDESCRIPTIONCLASS
+    OBJECT = VERSIONID
+      NUM_VAL = 1
+      VALUE = 5
+    END_OBJECT = VERSIONID
+    OBJECT = SHORTNAME
+      NUM_VAL = 1
+      VALUE = \"VIP30P4\"
+    END_OBJECT = SHORTNAME
+  END_GROUP = COLLECTIONDESCRIPTIONCLASS
+  GROUP = INPUTGRANULE
+    OBJECT = INPUTPOINTER
+      NUM_VAL = 2
+      VALUE = \"VIP01P2.A2010001.002.hdf\"
+    END_OBJECT = INPUTPOINTER
+  END_GROUP = INPUTGRANULE
+  GROUP = SPATIALDOMAINCONTAINER
+    GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+      GROUP = BOUNDINGRECTANGLE
+        OBJECT = EASTBOUNDINGCOORDINATE
+          NUM_VAL = 1
+          VALUE = 180.0
+        END_OBJECT = EASTBOUNDINGCOORDINATE
+        OBJECT = WESTBOUNDINGCOORDINATE
+          NUM_VAL = 1
+          VALUE = -180.0
+        END_OBJECT = WESTBOUNDINGCOORDINATE
+        OBJECT = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL = 1
+          VALUE = -90.0
+        END_OBJECT = SOUTHBOUNDINGCOORDINATE
+        OBJECT = NORTHBOUNDINGCOORDINATE
+          NUM_VAL = 1
+          VALUE = 90.0
+        END_OBJECT = NORTHBOUNDINGCOORDINATE
+      END_GROUP = BOUNDINGRECTANGLE
+    END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+    GROUP = GRANULELOCALITY
+      OBJECT = LOCALITYVALUE
+        NUM_VAL = 1
+        VALUE = \"Global\"
+      END_OBJECT = LOCALITYVALUE
+    END_GROUP = GRANULELOCALITY
+  END_GROUP = SPATIALDOMAINCONTAINER
+  GROUP = RANGEDATETIME
+    OBJECT = RANGEENDINGDATE
+      NUM_VAL = 1
+      VALUE = \"2010-1-1\"
+    END_OBJECT = RANGEENDINGDATE
+    OBJECT = RANGEENDINGTIME
+      NUM_VAL = 1
+      VALUE = \"23:59:59\"
+    END_OBJECT = RANGEENDINGTIME
+    OBJECT = RANGEBEGINNINGDATE
+      NUM_VAL = 1
+      VALUE = \"2010-1-1\"
+    END_OBJECT = RANGEBEGINNINGDATE
+    OBJECT = RANGEBEGINNINGTIME
+      NUM_VAL = 1
+      VALUE = \"00:00:00\"
+    END_OBJECT = RANGEBEGINNINGTIME
+  END_GROUP = RANGEDATETIME
+  GROUP = PGEVERSIONCLASS
+    OBJECT = PGEVERSION
+      NUM_VAL = 1
+      VALUE = \"5.2.2\"
+    END_OBJECT = PGEVERSION
+  END_GROUP    
+END_GROUP = PGEVERSIONCLASS
+END_GROUP = INVENTORYMETADATA
+
+GROUP = ARCHIVEDMETADATA
+  GROUPTYPE = MASTERGROUP
+  OBJECT = ALGORITHMPACKAGENAME
+    NUM_VAL = 1
+    VALUE = \"VIPLAB_CONT_V2\"
+  END_OBJECT = ALGORITHMPACKAGENAME
+  OBJECT = ALGORITHMPACKAGEVERSION
+    NUM_VAL = 1
+    VALUE = \"1\"
+  END_OBJECT = ALGORITHMPACKAGEVERSION
+  OBJECT = PROCESSINGCENTER
+    NUM_VAL = 1
+    VALUE = \"VIPLAB\"
+  END_OBJECT = PROCESSINGCENTER
+  OBJECT = INPUTFILENAME
+    NUM_VAL = 1
+    VALUE = \"VIP01P2.A2010001.002.hdf\"
+  END_OBJECT = INPUTFILENAME
+  OBJECT = SEAPROCESSED
+    NUM_VAL = 1
+    VALUE = \"No\"
+  END_OBJECT = SEAPROCESSED
+  OBJECT = PROCESSINGENVIRONMENT
+    NUM_VAL = 1
+    VALUE = \"Linux i686 Intel(R) Pentium(R) III CPU family GNU/Linux\"
+  END_OBJECT = PROCESSINGENVIRONMENT
+  OBJECT = DESCRREVISION
+    NUM_VAL = 1
+    VALUE = \"1.0\"
+  END_OBJECT = DESCRREVISION
+  OBJECT = SCIENCEQUALITYFLAGEXPLANATION
+   NUM_VAL = 1
+   CLASS = \"13\"
+   VALUE = \"See http://vip.arizona.edu/documentation/esdr/?3004\"
+  END_OBJECT = SCIENCEQUALITYFLAGEXPLANATION
+  OBJECT = GLOBALGRIDCOLUMNS
+    NUM_VAL = 1
+    VALUE = -1
+  END_OBJECT = GLOBALGRIDCOLUMNS
+  OBJECT = GLOBALGRIDROWS
+    NUM_VAL = 1
+    VALUE = -1
+  END_OBJECT = GLOBALGRIDROWS
+  OBJECT = NUMBEROFDAYS
+    NUM_VAL = 1
+    VALUE = 1
+  END_OBJECT = NUMBEROFDAYS
+  OBJECT = GEOANYABNORMAL
+    NUM_VAL = 1
+    VALUE = \"False\"
+  END_OBJECT = GEOANYABNORMAL
+  OBJECT = GEOESTMAXRMSERROR
+    NUM_VAL = 1
+    VALUE = -1.0
+  END_OBJECT = GEOESTMAXRMSERROR
+END_GROUP = ARCHIVEDMETADATA
+END
+END
+";
+    }
+}

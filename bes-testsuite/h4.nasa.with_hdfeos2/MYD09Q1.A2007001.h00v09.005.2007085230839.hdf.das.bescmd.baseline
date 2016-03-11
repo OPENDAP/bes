@@ -1,0 +1,504 @@
+Attributes {
+    sur_refl_b01 {
+        String coordinates "Latitude Longitude";
+        Int16 _FillValue -28672;
+        String long_name "Surface_reflectance_for_band_1";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float32 scale_factor 0.00010000000000000000;
+        Float32 add_offset 0.000000000;
+        String grid_mapping "MOD_Grid_250m_Surface_Reflectance_eos_cf_projection";
+    }
+    sur_refl_b02 {
+        String coordinates "Latitude Longitude";
+        Int16 _FillValue -28672;
+        String long_name "Surface_reflectance_for_band_2";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float32 scale_factor 0.00010000000000000000;
+        Float32 add_offset 0.000000000;
+        String grid_mapping "MOD_Grid_250m_Surface_Reflectance_eos_cf_projection";
+    }
+    sur_refl_qc_250m {
+        String coordinates "Latitude Longitude";
+        UInt16 _FillValue 65535;
+        String long_name "Surface_reflectance_250m_quality_control_flags";
+        String units "bit field";
+        UInt16 valid_range 0, 32767;
+        String QA_bitmap_index "
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     spare (unused); 
+	14     different orbit from 500 m;
+	       1 -- yes
+	       0 -- no
+	13     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	12     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	8-11   band 2 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector; data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	4-7    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	2-3    cloud state;
+	       00 -- clear
+	       01 -- cloudy
+	       10 -- mixed
+	       11 -- not set, assumed clear
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+";
+        String grid_mapping "MOD_Grid_250m_Surface_Reflectance_eos_cf_projection";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection for grid MOD_Grid_250m_Surface_Reflectance";
+        String units "km";
+        String _CoordinateAxisType "GeoY";
+    }
+    XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection for grid MOD_Grid_250m_Surface_Reflectance";
+        String units "km";
+        String _CoordinateAxisType "GeoX";
+    }
+    MOD_Grid_250m_Surface_Reflectance_eos_cf_projection {
+        String grid_mapping_name "sinusoidal";
+        Float64 longitude_of_central_meridian 0.0;
+        Float64 earth_radius 6371007.181;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD09Q1.A2007001.h00v09.005.2007085230839.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-03-26T23:08:39.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Day";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.7";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Always Passed";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua for the product Science Quality status.";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 9;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MYD09A1";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "2007-01-01", "2007-01-01", "2007-01-02", "2007-01-03", "2007-01-03", "2007-01-04", "2007-01-05", "2007-01-05", "2007-01-06", "2007-01-07", "2007-01-08";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "00:50:35.616089", "23:54:57.945856", "01:33:50.955233", "00:38:13.257265", "23:42:35.525707", "01:21:28.530076", "00:25:51.362526", "23:30:15.147140", "01:09:08.261923", "00:13:32.066746", "00:56:48.933180";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        Int32 VALUE 24797, 24811, 24812, 24826, 24840, 24841, 24855, 24869, 24870, 24884, 24899;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        Float64 VALUE 11.1313720804449, 25.0395458080256, 0.318188500976232, 14.2265769233089, 28.1352075213126, 3.41390268318096, 17.3202857048792, 31.2226855601178, 6.50093617439026, 20.403354406985, 9.58419720045959;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD09Q1";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 100;
+                    String VALUE "MYD09GQ.A2007001.h00v09.005.2007019173741.hdf", "MYD09GQ.A2007002.h00v09.005.2007020080008.hdf", "MYD09GQ.A2007003.h00v09.005.2007020201300.hdf", "MYD09GQ.A2007004.h00v09.005.2007022064814.hdf", "MYD09GQ.A2007005.h00v09.005.2007022193130.hdf", "
+          MYD09GQ.A2007006.h00v09.005.2007024052510.hdf", "MYD09GQ.A2007007.h00v09.005.2007024084418.hdf", "MYD09GQ.A2007008.h00v09.005.2007025173013.hdf", "MYD09GA.A2007001.h00v09.005.2007019173741.hdf", "MYD09GA.A2007002.h00v09.005.2007020080008.hdf", "
+          MYD09GA.A2007003.h00v09.005.2007020201300.hdf", "MYD09GA.A2007004.h00v09.005.2007022064814.hdf", "MYD09GA.A2007005.h00v09.005.2007022193130.hdf", "MYD09GA.A2007006.h00v09.005.2007024052510.hdf", "MYD09GA.A2007007.h00v09.005.2007024084418.hdf", "
+          MYD09GA.A2007008.h00v09.005.2007025173013.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 179.92847338047, -179.999951699336, -169.991725713781, -169.920139762593;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -9.99897818038112, 0.00681924280906993, -5.67120187203562e-06, -9.99094976958277;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 1, 2, 3, 4;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-01-08";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-01-01";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.8";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Aqua";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "10", "11", "9";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "10", "11", "9";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "HORIZONTALTILENUMBER", "VERTICALTILENUMBER", "TileID", "PROCESSVERSION", "QAPERCENTPOOROUTPUT250MBAND1", "QAPERCENTPOOROUTPUT250MBAND2", "RESOLUTIONBANDS1AND2";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "10", "11", "9";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "10", "11", "9";
+                            String VALUE "0", "0", "0", "9", "0", "9", "51000009", "5.0.7", "0", "0", "250";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "2015";
+            }
+            BOUNDINGRECTANGLE {
+                NORTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -2.12661101602446e-15;
+                }
+                SOUTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -9.99999999910197;
+                }
+                EASTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -169.991666651401;
+                }
+                WESTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -179.999999983835;
+                }
+            }
+            GEOANYABNORMAL {
+                Int32 NUM_VAL 1;
+                String VALUE "False";
+            }
+            GEOESTMAXRMSERROR {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 75.0;
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Aqua Surface Reflectance 8-Day L3 Global 250m SIN Grid";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            SYSTEMFILENAME {
+                Int32 NUM_VAL 100;
+                String VALUE "MYD09GQ.A2007001.h00v09.005.2007019173741.hdf", "MYD09GQ.A2007002.h00v09.005.2007020080008.hdf", "MYD09GQ.A2007003.h00v09.005.2007020201300.hdf", "MYD09GQ.A2007004.h00v09.005.2007022064814.hdf", "MYD09GQ.A2007005.h00v09.005.2007022193130.hdf", "
+        MYD09GQ.A2007006.h00v09.005.2007024052510.hdf", "MYD09GQ.A2007007.h00v09.005.2007024084418.hdf", "MYD09GQ.A2007008.h00v09.005.2007025173013.hdf", "MYD09GA.A2007001.h00v09.005.2007019173741.hdf", "MYD09GA.A2007002.h00v09.005.2007020080008.hdf", "
+        MYD09GA.A2007003.h00v09.005.2007020201300.hdf", "MYD09GA.A2007004.h00v09.005.2007022064814.hdf", "MYD09GA.A2007005.h00v09.005.2007022193130.hdf", "MYD09GA.A2007006.h00v09.005.2007024052510.hdf", "MYD09GA.A2007007.h00v09.005.2007024084418.hdf", "
+        MYD09GA.A2007008.h00v09.005.2007025173013.hdf";
+            }
+            NUMBEROFGRANULES {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 8;
+            }
+            GRANULEDAYNIGHTFLAG {
+                Int32 NUM_VAL 32;
+                String VALUE "Day", "Day", "Day", "Day", "Day", "Day", "Day", "Day";
+            }
+            GRANULEDAYOFYEAR {
+                Int32 NUM_VAL 32;
+                String VALUE "1", "2", "3", "4", "5", "6", "7", "8";
+            }
+            GRANULEBEGINNINGDATETIME {
+                Int32 NUM_VAL 32;
+                String VALUE "2007-01-01T01:35:00.000000Z", "2007-01-02T00:40:00.000000Z", "2007-01-03T01:20:00.000000Z", "2007-01-04T00:25:00.000000Z", "2007-01-05T01:10:00.000000Z", "2007-01-06T00:15:00.000000Z", "2007-01-07T01:00:00.000000Z", "2007-01-08T01:40:00.000000Z";
+            }
+            GRANULEENDINGDATETIME {
+                Int32 NUM_VAL 32;
+                String VALUE "2007-01-01T01:45:00.000000Z", "2007-01-02T02:25:00.000000Z", "2007-01-03T01:30:00.000000Z", "2007-01-04T02:15:00.000000Z", "2007-01-05T01:20:00.000000Z", "2007-01-06T02:00:00.000000Z", "2007-01-07T01:05:00.000000Z", "2007-01-08T01:50:00.000000Z";
+            }
+            NUMBEROFORBITS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 11;
+            }
+            CHARACTERISTICBINANGULARSIZE250M {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 7.5;
+            }
+            CHARACTERISTICBINSIZE250M {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 231.656358263889;
+            }
+            DATACOLUMNS250M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 4800;
+            }
+            DATAROWS250M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 4800;
+            }
+            GLOBALGRIDCOLUMNS250M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 172800;
+            }
+            GLOBALGRIDROWS250M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 86400;
+            }
+            NADIRDATARESOLUTION250M {
+                Int32 NUM_VAL 1;
+                String VALUE "250m";
+            }
+            CHARACTERISTICBINANGULARSIZE500M {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 15.0;
+            }
+            CHARACTERISTICBINSIZE500M {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 463.312716527778;
+            }
+            DATACOLUMNS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2400;
+            }
+            DATAROWS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2400;
+            }
+            GLOBALGRIDCOLUMNS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 86400;
+            }
+            GLOBALGRIDROWS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 43200;
+            }
+            NADIRDATARESOLUTION500M {
+                Int32 NUM_VAL 1;
+                String VALUE "500m";
+            }
+            QUALITYCLASSPERCENTAGE250MBAND1 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9;
+            }
+            QUALITYCLASSPERCENTAGE250MBAND2 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9;
+            }
+            PERCENTDIFFERENTORBIT250M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            PERCENTPROCESSED {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            PERCENTLAND {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            PERCENTCLOUDY {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            PERCENTSHADOW {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            PERCENTLOWSUN {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            PERCENTLANDSEAMASKCLASS {
+                Int32 NUM_VAL 8;
+                Float64 VALUE 0, 0, 0, 0, 0, 0, 0, 9;
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "IRIX64 mtvs1 6.5 10070055 IP35";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.1";
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+    }
+}
