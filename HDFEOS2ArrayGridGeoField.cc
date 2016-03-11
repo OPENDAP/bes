@@ -652,28 +652,18 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 else
                     num_item_expected = xdim*ydim*2;
 
-                // Some longitude values need to be corrected.
-                if (speciallon && fieldtype == 2) {
-                    CorSpeLon (&latlon[0], nelms);
-                    // The longitude values changed in the cache file is implemented in CalculateLatLon.
-                }
-
-
                 BESH4Cache *llcache = BESH4Cache::get_instance();
                 llcache->write_cached_data(cache_fpath,num_item_expected*sizeof(double),latlon_all);
 
             }
+
+            // The longitude values changed in the cache file is implemented in CalculateLatLon.
+            // Some longitude values need to be corrected.
+            if (speciallon && fieldtype == 2) 
+                CorSpeLon(&latlon[0], nelms);
             detachfunc(gridid);
             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         }
-
-//MOVE this into the use_cache block.
-        // Some longitude values need to be corrected.
-#if 0
-        if (speciallon && fieldtype == 2) {
-            CorSpeLon (&latlon[0], nelms);
-        }
-#endif
 
         set_value ((dods_float64 *) &latlon[0], nelms);
 
