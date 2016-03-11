@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
     <setContext name="dap_format">dap2</setContext>
-    <setContainer name="AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104.hdf" space="catalog">/data/AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104.hdf</setContainer>
+    <setContainer name="AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104" space="catalog">/data/AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104.hdf</setContainer>
     <define name="d">
-	<container name="AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104.hdf" />
+	<container name="AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104" />
     </define>
     <get type="das" definition="d" />
 </request>
