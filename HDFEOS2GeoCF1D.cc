@@ -33,7 +33,10 @@ bool HDFEOS2GeoCF1D::read()
     vector<double> val;
     val.resize(tnumelm);
 
-    double step_v = (evalue - svalue)/((tnumelm-1)*1000);
+    //HFRHANDLER-303, the number of element represents cells according
+    //to the data scientist at LP DAAC.
+    //double step_v = (evalue - svalue)/((tnumelm-1)*1000);
+    double step_v = (evalue - svalue)/(tnumelm*1000);
 //    double newsvalue = svalue/1000;
     val[0] = svalue/1000;
     for(int i = 1;i<tnumelm; i++)
