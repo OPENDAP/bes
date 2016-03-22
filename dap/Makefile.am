@@ -22,7 +22,7 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = . unit-tests
+SUBDIRS = . unit-tests tests
 
 # These tests depend on dapreader, which is built after this code.
 # jhrg 3/17/15. 

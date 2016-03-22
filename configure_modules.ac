@@ -714,6 +714,7 @@ AC_CONFIG_FILES([Makefile
 		 dap/Makefile
 		 dap/unit-tests/Makefile
 		 dap/unit-tests/test_config.h
+		 dap/tests/Makefile
 
 		 dapreader/Makefile
 		 dapreader/tests/Makefile

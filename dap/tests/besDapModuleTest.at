@@ -21,3 +21,6 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggreg
 # AggregationServer puts the aggregated values. Instead, the result is 
 # TestSequence's stock 5 rows.
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_sequence_dods.bescmd],[aggregation])
+
+AT_BESCMD_RESPONSE_TEST([function_result_unwrap_dds.bescmd],[moo])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([function_result_unwrap_dods.bescmd],[moo])
