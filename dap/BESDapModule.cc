@@ -133,12 +133,9 @@ void BESDapModule::initialize(const string &modname)
 #endif
 
 
-
-
-
-    BESDEBUG("dap", "    adding DAP Utility Function(s)" << endl);
-    DapFunctionUtils *dfu = new DapFunctionUtils();
-    libdap::ServerFunctionsList::TheList()->add_function(dfu);
+    BESDEBUG("dap", "    adding DAP Utility Function 'wrapitup'()" << endl);
+    WrapItUp *wiu = new WrapItUp();
+    libdap::ServerFunctionsList::TheList()->add_function(wiu);
 
 
 	BESDEBUG("dap", "    adding dap debug context" << endl);

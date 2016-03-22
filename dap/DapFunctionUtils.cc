@@ -277,13 +277,6 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
 
     libdap::Structure *dapResult = new libdap::Structure(wrap_name);
 
-#if 0
-    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Creating response object called "<< dapResult->name() << endl);
-
-    libdap::Str *message = new libdap::Str("promoted_message");
-    message->set_value("This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.");
-    dapResult->add_var_nocopy(message);
-#else
 
     if(argc>0){
         BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Attempting to return arguments bundled into "<< wrap_name << endl);
@@ -304,6 +297,20 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
         }
     }
     else {
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Creating response object called "<< dapResult->name() << endl);
+
+        libdap::Str *message = new libdap::Str("promoted_message");
+        message->set_value("This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.");
+        dapResult->add_var_nocopy(message);
+
+        // Mark String as read and queue for transmission
+        message->set_read_p(true);
+        message->set_send_p(true);
+
+
+
+#if 0
+
         BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Placing variables from DDS into "<< wrap_name << endl);
 
         for (libdap::DDS::Vars_citer vi = dds.var_begin(), ve = dds.var_end(); vi != ve ; ++vi) {
@@ -320,10 +327,15 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
             dapResult->add_var(origVar);
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
-    }
-
 
 #endif
+
+    }
+
+    // Mark dapResult Structure as read and queue for transmission
+    dapResult->set_read_p(true);
+    dapResult->set_send_p(true);
+
 
     *btpp = dapResult;
 

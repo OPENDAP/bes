@@ -43,12 +43,12 @@ void promote_function_output_structures(libdap::DDS *fdds);
 void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 
 
-class DapFunctionUtils: public libdap::ServerFunction {
+class WrapItUp: public libdap::ServerFunction {
 
 private:
 
 public:
-    DapFunctionUtils()
+    WrapItUp()
 {
         setName("wrapitup");
         setDescriptionString(
@@ -59,7 +59,7 @@ public:
         setFunction(wrapitup);
         setVersion("1.0");
 }
-    virtual ~DapFunctionUtils()
+    virtual ~WrapItUp()
     {
     }
 
