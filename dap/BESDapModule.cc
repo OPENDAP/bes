@@ -69,6 +69,10 @@ using std::endl;
 #include "BESExceptionManager.h"
 #include "BESDapError.h"
 
+#include "DapFunctionUtils.h"
+#include "ServerFunctionsList.h"
+
+
 void BESDapModule::initialize(const string &modname)
 {
 	BESDEBUG("dap", "Initializing DAP Modules:" << endl);
@@ -128,8 +132,21 @@ void BESDapModule::initialize(const string &modname)
         BESAggFactory::TheFactory()->add_handler("sequence.aggregation", BESDapSequenceAggregationServer::NewBESDapSequenceAggregationServer);
 #endif
 
+
+
+
+
+    BESDEBUG("dap", "    adding DAP Utility Function(s)" << endl);
+    DapFunctionUtils *dfu = new DapFunctionUtils();
+    libdap::ServerFunctionsList::TheList()->add_function(dfu);
+
+
 	BESDEBUG("dap", "    adding dap debug context" << endl);
 	BESDebug::Register("dap");
+
+
+
+
 
 	BESDEBUG("dap", "Done Initializing DAP Modules:" << endl);
 }

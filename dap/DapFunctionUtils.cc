@@ -24,6 +24,9 @@
 
 
 
+#include "Str.h"
+#include "BaseType.h"
+#include "DDS.h"
 #include "DapFunctionUtils.h"
 #include "Structure.h"
 #include "BESDebug.h"
@@ -137,12 +140,12 @@ libdap::DDS *DapFunctionUtils::promote_function_output_structures(libdap::DDS *f
  * unwrapped and something else when they want this code to leave the Structure as
  * it is.
  *
- * @param fdds The source DDS - look for Structures here
+ * @param dds The source DDS - look for Structures here
  * @return A new DDS with new instances such that the Structures named
  * *_unwrap have been removed and their members 'promoted' up to the new
  * DDS's top level scope.
  */
-libdap::DDS *promote_function_output_structures(libdap::DDS *fdds)
+void promote_function_output_structures(libdap::DDS *fdds)
 {
     BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - BEGIN" << endl);
 
@@ -187,9 +190,6 @@ libdap::DDS *promote_function_output_structures(libdap::DDS *fdds)
         //
         // Assumption: add_var_nocopy() has the contract that the container to which
         // the var is added will eventually delete the var.
-
-
-        libdap::DDS *temp_dds = new libdap::DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
 
 
         std::vector<libdap::BaseType *> upVars;
@@ -265,7 +265,61 @@ libdap::DDS *promote_function_output_structures(libdap::DDS *fdds)
     }
 
     BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - END" << endl);
-
-    return fdds;
 }
+
+
+
+void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) {
+
+    std::string wrap_name="thing_to_unwrap";
+
+    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - BEGIN" << endl);
+
+    libdap::Structure *dapResult = new libdap::Structure(wrap_name);
+
+#if 1
+    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Creating response object called "<< wrap_name << endl);
+
+    libdap::Str *message = new libdap::Str("promoted_message");
+    message->set_value("This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.");
+    dapResult->add_var_nocopy(message);
+#else
+
+    if(argc>0){
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Attempting to return arguments bundled into "<< wrap_name << endl);
+
+        for(int i=0; i<argc ; i++){
+            libdap::BaseType *bt = argv[i];
+            bt->read();
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding  "<< bt->name() << endl);
+            dapResult->add_var_nocopy(bt->ptr_duplicate());
+        }
+    }
+    else {
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Placing variables in DDS into "<< wrap_name << endl);
+
+        for (libdap::DDS::Vars_citer vi = dds.var_begin(), ve = dds.var_end(); vi != ve ; ++vi) {
+
+            libdap::BaseType *origVar = *vi;
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding (copying)  "<< origVar->name() << endl);
+            origVar->read();
+           // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // This performs a deep copy on origVar (ouch!), and we do it because in the current
+            // libdap API, when we delete parent structure the variable will be deleted too.
+            // Because we can't pluck a variable out of a DAP object without deleting it.
+            // @TODO Fix the libdap API to allow this operation without the copy/delete bits.
+            dapResult->add_var(origVar);
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+    }
+
+
+#endif
+
+    *btpp = dapResult;
+
+    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - END" << endl);
+}
+
+
 #endif

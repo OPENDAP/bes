@@ -30,6 +30,8 @@
 using std::string;
 
 #include <DDS.h>
+#include <ServerFunction.h>
+#include "BESAbstractModule.h"
 
 /** @brief Utilities used to help in the return of an OPeNDAP DataDDS
  * object as a netcdf file
@@ -37,7 +39,33 @@ using std::string;
  * This class includes static functions to help with the conversion of
  * an OPeNDAP DataDDS object into a netcdf file.
  */
-libdap::DDS *promote_function_output_structures(libdap::DDS *fdds);
+void promote_function_output_structures(libdap::DDS *fdds);
+void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+
+
+class DapFunctionUtils: public libdap::ServerFunction {
+
+private:
+
+public:
+    DapFunctionUtils()
+{
+        setName("wrapitup");
+        setDescriptionString(
+            ((string)"This function returns a Structure whose name will invoke the '_unwrap' content activity"));
+        setUsageString("wrapitup()");
+        setRole("http://services.opendap.org/dap4/server-side-function/dap_function_utils/wrapitup");
+        setDocUrl("http://docs.opendap.org/index.php/DapUtilFunctions");
+        setFunction(wrapitup);
+        setVersion("1.0");
+}
+    virtual ~DapFunctionUtils()
+    {
+    }
+
+};
+
+
 
 #endif // DapFunctionUtils_h_
 

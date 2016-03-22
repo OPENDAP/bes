@@ -730,7 +730,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
         // promote_function_output_structures()
-        fdds = promote_function_output_structures(/*&*/fdds);
+        promote_function_output_structures(/*&*/fdds);
 
         conditional_timeout_cancel();
 
@@ -1014,7 +1014,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
         // promote_function_output_structures()
-        fdds = promote_function_output_structures(fdds);
+        promote_function_output_structures(fdds);
 
         eval.parse_constraint(get_ce(), *fdds);
 
@@ -1146,7 +1146,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
         // promote_function_output_structures()
-        fdds = promote_function_output_structures(fdds);
+        promote_function_output_structures(fdds);
 
         eval.parse_constraint(d_dap2ce, *fdds);
 
