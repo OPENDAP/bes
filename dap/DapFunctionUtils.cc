@@ -277,8 +277,8 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
 
     libdap::Structure *dapResult = new libdap::Structure(wrap_name);
 
-#if 1
-    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Creating response object called "<< wrap_name << endl);
+#if 0
+    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Creating response object called "<< dapResult->name() << endl);
 
     libdap::Str *message = new libdap::Str("promoted_message");
     message->set_value("This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.");
@@ -290,20 +290,29 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
 
         for(int i=0; i<argc ; i++){
             libdap::BaseType *bt = argv[i];
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Reading  "<< bt->name() << endl);
             bt->read();
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding  "<< bt->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding a copy of "<< bt->name() << " to " << dapResult->name() << endl);
+
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // This performs a deep copy on bt (ouch!), and we do it because in the current
+            // libdap API, when we delete parent structure the variable will be deleted too.
+            // Because we can't pluck a variable out of a DAP object without deleting it.
+            // @TODO Fix the libdap API to allow this operation without the copy/delete bits.
             dapResult->add_var_nocopy(bt->ptr_duplicate());
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
     }
     else {
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Placing variables in DDS into "<< wrap_name << endl);
+        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Placing variables from DDS into "<< wrap_name << endl);
 
         for (libdap::DDS::Vars_citer vi = dds.var_begin(), ve = dds.var_end(); vi != ve ; ++vi) {
 
             libdap::BaseType *origVar = *vi;
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding (copying)  "<< origVar->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Reading "<< origVar->name() << endl);
             origVar->read();
-           // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding a copy of "<< origVar->name()<< " to " << dapResult->name()  << endl);
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // This performs a deep copy on origVar (ouch!), and we do it because in the current
             // libdap API, when we delete parent structure the variable will be deleted too.
             // Because we can't pluck a variable out of a DAP object without deleting it.
