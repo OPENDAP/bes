@@ -267,11 +267,32 @@ void promote_function_output_structures(libdap::DDS *fdds)
     BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - END" << endl);
 }
 
-
-
+/**
+ *  @brief Wraps the passed arguments (argv) in a Structure
+ *  whose name "thing_to_unwrap" meets the criteria for function
+ *  result promotion in a Transmitter. The criteria is expected to
+ *  be: The Structure name ends with "_unwrap".
+ *  If parameters are not provided then wrapitup() will make
+ *  a structure with the above name and put a String variable into it.
+ *
+ * @param argc Count of the function's arguments
+ * @param argv Array of pointers to the functions arguments
+ * @param dds Reference to the DDS object for the complete dataset.
+ * This holds pointers to all of the variables and attributes in the
+ * dataset.
+ * @param btpp Return the function result in an instance of BaseType
+ * referenced by this pointer to a pointer. We could have used a
+ * BaseType reference, instead of pointer to a pointer, but we didn't.
+ * This is a value-result parameter.
+ *
+ * @return void
+ *
+ * @exception Error Thrown If the Array is not a one dimensional
+ * array.
+ **/
 void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) {
 
-    std::string wrap_name="thing_to_unwrap";
+    std::string wrap_name=dds.get_dataset_name()+"_unwrap";
 
     BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - BEGIN" << endl);
 
