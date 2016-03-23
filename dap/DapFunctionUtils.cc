@@ -44,64 +44,30 @@ void promote_atributes_to_global(libdap::Structure *sourceObj, libdap::DDS *fdds
 
     libdap::AttrTable sourceAttrTable = sourceObj->get_attr_table();
 
-    BESDEBUG(DEBUG_KEY, "DFU::promote_atributes_to_global() - function_result_global_attrTable " << endl << sourceAttrTable);
-
-    BESDEBUG(DEBUG_KEY, "DFU::promote_atributes_to_global() - ddsAttrTable " << endl << fdds->get_attr_table());
-
     libdap::AttrTable::Attr_iter endIt = sourceAttrTable.attr_end();
     libdap::AttrTable::Attr_iter it;
     for (it = sourceAttrTable.attr_begin(); it != endIt; ++it) {
         std::string childName = sourceAttrTable.get_name(it);
         bool childIsContainer = sourceAttrTable.is_container(it);
-        BESDEBUG(DEBUG_KEY, "DFU::promote_global_attributes() - Processing attribute " << childName << endl );
-
+        BESDEBUG(DEBUG_KEY, "DFU::promote_atributes_to_global() - Processing attribute " << childName << endl );
         if (childIsContainer) {
-
-            BESDEBUG(DEBUG_KEY, "DFU::promote_global_attributes() - " << childName << " is a Container" << endl );
             libdap::AttrTable* pClonedAttrTable = new libdap::AttrTable(*sourceAttrTable.get_attr_table(it));
             fdds->get_attr_table().append_container(pClonedAttrTable, childName);
-
-            BESDEBUG(DEBUG_KEY,
-                "DFU::promote_global_attributes() - Added a deep copy of attribute table '" << childName << "' to the DDS:" <<  endl << fdds->get_attr_table() << endl);
         }
         else {
             string type = sourceAttrTable.get_type(it);
             vector<string>* pAttrTokens = sourceAttrTable.get_attr_vector(it);
-            BESDEBUG(DEBUG_KEY,
-            "DFU::promote_global_attributes() - Adding attribute '" << type << " "<< childName << "' to the DDS." << endl);
             // append_attr makes a copy of the vector, so we don't have to do so here.
             fdds->get_attr_table().append_attr(childName, type, pAttrTokens);
         }
     }
-#if 0
-    if (BESISDEBUG(DEBUG_KEY)){
-        ostream *ost = BESDebug::GetStrm();
-        *ost << "DFU::promote_global_attributes() - DDS " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl;
-        fdds->print(*ost);
-        *ost << endl;
-        *ost << "DFU::promote_global_attributes() - DAS " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl;
-        fdds->print_das(*ost);
-        *ost << endl;
-        *ost << "DFU::promote_global_attributes() - DDX " << endl << endl << "<<<<<<<<<< DDX >>>>>>>>>>" << endl;
-        fdds->print_xml(*ost,true);
-        *ost << endl;
-        *ost << "DFU::promote_global_attributes() - DDS::AttrTable " << endl << endl;
-        *ost << fdds->get_attr_table() << endl;
-       *ost << endl;
-        *ost << endl;
-
-    }
-#endif
-
-
 }
 
 
 /**
- * For an Structure in the given DDS, if that Structure's name ends with
- * "_unwrap" take each variable from the structure and 'promote it to the
- * top level of the DDS. !!This function deletes the DDS passed to it. The
- * caller is responsible for deleting the returned DDS.!!
+ * @brief For a Structure in the given DDS, if that Structure's name ends with
+ * "_unwrap" take each variable from the structure and 'promote it' to the
+ * top level of the DDS.
  *
  * @note Here we remove top-level Structure variables that have been added by server
  * functions which return multiple values. This will necessarily be a hack since
@@ -129,131 +95,71 @@ void promote_function_output_structures(libdap::DDS *fdds)
 {
     BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - BEGIN" << endl);
 
-    if (BESISDEBUG(DEBUG_KEY)){
-        ostream *ost = BESDebug::GetStrm();
-        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
-        fdds->print(*ost);
-        *ost << endl;
-        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
-        fdds->print_das(*ost);
-        *ost << endl;
-    }
+    // Dump pointers to the values here temporarily... If we had methods in libdap
+    // that could be used to access the underlying erase() and insert() methods, we
+    // could skip the (maybe expensive) copy operations I use below. What we would
+    // need are ways to delete a Structure/Constructor without calling delete on its
+    // fields and ways to call vector::erase() and vector::insert(). Some of this
+    // exists, but it's not quite enough.
+    //
+    // Proposal: Make it so that the Structure/Constructor has a release() method
+    // that allows you take the members out of the instance with the contract
+    // that "The released members will be deleted deleted so that the
+    // Structure/Constructor object only need to drop it's reference to them".
+    // With that in place we might then be able to manipulate the DAP objects
+    // without excessive copying. We can use add_var_nocopy() to put things in,
+    // and we can use release() to pull things out.
+    //
+    // Assumption: add_var_nocopy() has the contract that the container to which
+    // the var is added will eventually delete the var.
 
+    std::vector<libdap::BaseType *> upVars;
+    std::vector<libdap::BaseType *> droppedContainers;
+    for (libdap::DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
 
-#if 0
-    // Look in the top level of the DDS for a promotable member - i.e. a member
-    // variable that is a collection and whose name ends with "_unwrap"
-    bool found_promotable_member = false;
-    for (libdap::DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de && !found_promotable_member; ++di) {
         libdap::Structure *collection = dynamic_cast<libdap::Structure *>(*di);
         if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
-            found_promotable_member = true;
-            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
-        }
-    }
-
-    // If we found one or more promotable member variables, promote them.
-    if (found_promotable_member) {
-#endif
-
-        // Dump pointers to the values here temporarily... If we had methods in libdap
-        // that could be used to access the underlying erase() and insert() methods, we
-        // could skip the (maybe expensive) copy operations I use below. What we would
-        // need are ways to delete a Structure/Constructor without calling delete on its
-        // fields and ways to call vector::erase() and vector::insert(). Some of this
-        // exists, but it's not quite enough.
-        //
-        // Proposal: Make it so that the Structure/Constructor has a release() method
-        // that allows you take the members out of the instance with the contract
-        // that "The released members will be deleted deleted so that the
-        // Structure/Constructor object only need to drop it's reference to them".
-        // With that in place we might then be able to manipulate the DAP objects
-        // without excessive copying. We can use add_var_nocopy() to put things in,
-        // and we can use release() to pull things out.
-        //
-        // Assumption: add_var_nocopy() has the contract that the container to which
-        // the var is added will eventually delete the var.
-
-        std::vector<libdap::BaseType *> upVars;
-        std::vector<libdap::BaseType *> droppedContainers;
-        for (libdap::DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
-
-            libdap::Structure *collection = dynamic_cast<libdap::Structure *>(*di);
-
-            if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
-
-                // Once we promote the members we need to drop the parent collection
-                // but we can't do that while we're iterating over its contents
-                // so we'll cache the reference for later.
-                droppedContainers.push_back(collection);
-
-                BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
-
-
-                promote_atributes_to_global(collection,fdds);
-
-
-                // We're going to 'flatten this structure' and return its fields
-                libdap::Structure::Vars_iter vi;
-                for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
-                    BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
-
-                    libdap::BaseType *origVar = *vi;
-
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    // This performs a deep copy on origVar (ouch!), and we do it because in the current
-                    // libdap API, when we delete parent structure the variable will be deleted too.
-                    // Because we can't pluck a variable out of a DAP object without deleting it.
-                    // @TODO Fix the libdap API to allow this operation without the copy/delete bits.
-                    libdap::BaseType *newVar = origVar->ptr_duplicate();
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-                    // This ensures that the variable's semantics are consistent
-                    // with a top level variable.
-                    newVar->set_parent(0);
-
-                    // Add the new variable to the list of stuff to add back to the dataset.
-                    upVars.push_back(newVar);
-                }
-
+            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
+            // Once we promote the members we need to drop the parent collection
+            // but we can't do that while we're iterating over its contents
+            // so we'll cache the reference for later.
+            droppedContainers.push_back(collection);
+            // Promote the structures attributes to the DDS AttrTable.
+            promote_atributes_to_global(collection,fdds);
+            // We're going to 'flatten this structure' and return its fields
+            libdap::Structure::Vars_iter vi;
+            for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
+                libdap::BaseType *origVar = *vi;
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // This performs a deep copy on origVar (ouch!), and we do it because in the current
+                // libdap API, when we delete parent structure the variable will be deleted too.
+                // Because we can't pluck a variable out of a DAP object without deleting it.
+                // @TODO Fix the libdap API to allow this operation without the copy/delete bits.
+                libdap::BaseType *newVar = origVar->ptr_duplicate();
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // This ensures that the variable's semantics are consistent
+                // with a top level variable.
+                newVar->set_parent(0);
+                // Add the new variable to the list of stuff to add back to the dataset.
+                upVars.push_back(newVar);
             }
         }
-        // Drop Promoted Containers
-
-        for(std::vector<libdap::BaseType *>::iterator it=droppedContainers.begin(); it != droppedContainers.end(); ++it) {
-            libdap::BaseType *bt = *it;
-            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
-
-            // Delete the Container variable and ALL of it's children.
-            // @TODO Wouldn't it be nice if at this point it had no children? I think so too.
-            fdds->del_var(bt->name());
-        }
-
-        // Add (copied) promoted variables to top-level of DDS
-        for( std::vector<libdap::BaseType *>::iterator it = upVars.begin(); it != upVars.end(); it ++) {
-            libdap::BaseType *bt = *it;
-            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
-            fdds->add_var(bt);
-        }
-#if 0
-    if (BESISDEBUG(DEBUG_KEY)){
-        ostream *ost = BESDebug::GetStrm();
-        *ost << "DFU::promote_function_output_structures() - DDS " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl;
-        fdds->print(*ost);
-        *ost << endl;
-        *ost << "DFU::promote_function_output_structures() - DAS " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl;
-        fdds->print_das(*ost);
-        *ost << endl;
-        *ost << "DFU::promote_function_output_structures() - DDX " << endl << endl << "<<<<<<<<<< DDX >>>>>>>>>>" << endl;
-        fdds->print_xml(*ost,true);
-        *ost << endl;
-        *ost << "DFU::promote_function_output_structures() - DDS::AttrTable " << endl << endl;
-        *ost << fdds->get_attr_table() << endl;
-       *ost << endl;
-        *ost << endl;
-
     }
-#endif
+    // Drop Promoted Containers
+    for(std::vector<libdap::BaseType *>::iterator it=droppedContainers.begin(); it != droppedContainers.end(); ++it) {
+        libdap::BaseType *bt = *it;
+        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
+        // Delete the Container variable and ALL of it's children.
+        // @TODO Wouldn't it be nice if at this point it had no children? I think so too.
+        fdds->del_var(bt->name());
+    }
+
+    // Add (copied) promoted variables to top-level of DDS
+    for( std::vector<libdap::BaseType *>::iterator it = upVars.begin(); it != upVars.end(); it ++) {
+        libdap::BaseType *bt = *it;
+        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
+        fdds->add_var(bt);
+    }
 
     BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - END" << endl);
 }
@@ -307,6 +213,13 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
             dapResult->add_var_nocopy(bt->ptr_duplicate());
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
+        libdap::AttrTable &globals = dds.get_attr_table();
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Copying Global Attributes" << endl << globals << endl);
+
+        libdap::AttrTable *newDatasetAttrTable = new libdap::AttrTable(globals);
+        dapResult->set_attr_table(*newDatasetAttrTable);
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Result Structure attrs: " << endl << dapResult->get_attr_table() << endl);
+
     }
     else {
         BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Creating response object called "<< dapResult->name() << endl);
