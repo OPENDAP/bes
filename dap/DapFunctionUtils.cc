@@ -36,7 +36,65 @@
 
 #define DEBUG_KEY "func"
 
+/**
+ * @brief Copies the passed Structure's Attributes into the global AttrTable in
+ * the passed DDS.
+ */
+void promote_atributes_to_global(libdap::Structure *sourceObj, libdap::DDS *fdds){
 
+    libdap::AttrTable sourceAttrTable = sourceObj->get_attr_table();
+
+    BESDEBUG(DEBUG_KEY, "DFU::promote_atributes_to_global() - function_result_global_attrTable " << endl << sourceAttrTable);
+
+    BESDEBUG(DEBUG_KEY, "DFU::promote_atributes_to_global() - ddsAttrTable " << endl << fdds->get_attr_table());
+
+    libdap::AttrTable::Attr_iter endIt = sourceAttrTable.attr_end();
+    libdap::AttrTable::Attr_iter it;
+    for (it = sourceAttrTable.attr_begin(); it != endIt; ++it) {
+        std::string childName = sourceAttrTable.get_name(it);
+        bool childIsContainer = sourceAttrTable.is_container(it);
+        BESDEBUG(DEBUG_KEY, "DFU::promote_global_attributes() - Processing attribute " << childName << endl );
+
+        if (childIsContainer) {
+
+            BESDEBUG(DEBUG_KEY, "DFU::promote_global_attributes() - " << childName << " is a Container" << endl );
+            libdap::AttrTable* pClonedAttrTable = new libdap::AttrTable(*sourceAttrTable.get_attr_table(it));
+            fdds->get_attr_table().append_container(pClonedAttrTable, childName);
+
+            BESDEBUG(DEBUG_KEY,
+                "DFU::promote_global_attributes() - Added a deep copy of attribute table '" << childName << "' to the DDS:" <<  endl << fdds->get_attr_table() << endl);
+        }
+        else {
+            string type = sourceAttrTable.get_type(it);
+            vector<string>* pAttrTokens = sourceAttrTable.get_attr_vector(it);
+            BESDEBUG(DEBUG_KEY,
+            "DFU::promote_global_attributes() - Adding attribute '" << type << " "<< childName << "' to the DDS." << endl);
+            // append_attr makes a copy of the vector, so we don't have to do so here.
+            fdds->get_attr_table().append_attr(childName, type, pAttrTokens);
+        }
+    }
+#if 0
+    if (BESISDEBUG(DEBUG_KEY)){
+        ostream *ost = BESDebug::GetStrm();
+        *ost << "DFU::promote_global_attributes() - DDS " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl;
+        fdds->print(*ost);
+        *ost << endl;
+        *ost << "DFU::promote_global_attributes() - DAS " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl;
+        fdds->print_das(*ost);
+        *ost << endl;
+        *ost << "DFU::promote_global_attributes() - DDX " << endl << endl << "<<<<<<<<<< DDX >>>>>>>>>>" << endl;
+        fdds->print_xml(*ost,true);
+        *ost << endl;
+        *ost << "DFU::promote_global_attributes() - DDS::AttrTable " << endl << endl;
+        *ost << fdds->get_attr_table() << endl;
+       *ost << endl;
+        *ost << endl;
+
+    }
+#endif
+
+
+}
 
 
 /**
@@ -81,6 +139,8 @@ void promote_function_output_structures(libdap::DDS *fdds)
         *ost << endl;
     }
 
+
+#if 0
     // Look in the top level of the DDS for a promotable member - i.e. a member
     // variable that is a collection and whose name ends with "_unwrap"
     bool found_promotable_member = false;
@@ -94,6 +154,7 @@ void promote_function_output_structures(libdap::DDS *fdds)
 
     // If we found one or more promotable member variables, promote them.
     if (found_promotable_member) {
+#endif
 
         // Dump pointers to the values here temporarily... If we had methods in libdap
         // that could be used to access the underlying erase() and insert() methods, we
@@ -128,57 +189,10 @@ void promote_function_output_structures(libdap::DDS *fdds)
 
                 BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
 
-                libdap::AttrTable function_result_global_attrTable = collection->get_attr_table();
 
-                BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - function_result_global_attrTable " << endl << function_result_global_attrTable);
+                promote_atributes_to_global(collection,fdds);
 
-                // top_level_attrTable = new libdap::AttrTable(function_result_global_attrTable);
 
-                libdap::AttrTable ddsAttrTable = fdds->get_attr_table();
-                BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - ddsAttrTable " << endl << ddsAttrTable);
-
-                libdap::AttrTable::Attr_iter endIt = function_result_global_attrTable.attr_end();
-                libdap::AttrTable::Attr_iter it;
-                for (it = function_result_global_attrTable.attr_begin(); it != endIt; ++it) {
-                    std::string name = function_result_global_attrTable.get_name(it);
-                    BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Processing attribute " << name << endl );
-
-                    if (function_result_global_attrTable.is_container(it)) {
-
-                        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - " << name << " is a Container" << endl );
-
-                       libdap::AttrTable* pOrigAttrContainer = function_result_global_attrTable.get_attr_table(it);
-                        if(pOrigAttrContainer == NULL){
-                            throw BESInternalError("Expected non-null AttrTable for the attribute container: " + name, __FILE__, __LINE__ );
-                        }
-
-#if 0
-                        libdap::AttrTable* pClonedAttrTable = new libdap::AttrTable(*pOrigAttrContainer);
-                        pClonedAttrTable->set_is_global_attribute(true);
-#else
-                        libdap::AttrTable* pClonedAttrTable = new libdap::AttrTable();
-                        pClonedAttrTable->set_name(name);
-                        pClonedAttrTable->set_is_global_attribute(true);
-                        std::vector<std::string> *values = new std::vector<string>();
-                        values->push_back("This is the message");
-                        values->push_back("that I want you to see.");
-                        pClonedAttrTable->append_attr("test_attr", "String", values);
-#endif
-
-                        ddsAttrTable.append_container(pClonedAttrTable, name);
-
-                        BESDEBUG(DEBUG_KEY,
-                            "DFU::promote_function_output_structures() - Added a deep copy of attribute table '" << name << "' to the DDS:" <<  endl << *pClonedAttrTable << endl);
-                    }
-                    else {
-                        string type = function_result_global_attrTable.get_type(it);
-                        vector<string>* pAttrTokens = function_result_global_attrTable.get_attr_vector(it);
-                        BESDEBUG(DEBUG_KEY,
-                        "DFU::promote_function_output_structures() - Adding attribute '" << type << " "<< name << "' to the DDS." << endl);
-                        // append_attr makes a copy of the vector, so we don't have to do so here.
-                        ddsAttrTable.append_attr(name, type, pAttrTokens);
-                    }
-                }
                 // We're going to 'flatten this structure' and return its fields
                 libdap::Structure::Vars_iter vi;
                 for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
@@ -221,12 +235,7 @@ void promote_function_output_structures(libdap::DDS *fdds)
             BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
             fdds->add_var(bt);
         }
-    }
-    else {
-        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Nothing in DDS to promote." << endl);
-        // Otherwise do nothing to alter the DDS
-    }
-
+#if 0
     if (BESISDEBUG(DEBUG_KEY)){
         ostream *ost = BESDebug::GetStrm();
         *ost << "DFU::promote_function_output_structures() - DDS " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl;
@@ -235,7 +244,16 @@ void promote_function_output_structures(libdap::DDS *fdds)
         *ost << "DFU::promote_function_output_structures() - DAS " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl;
         fdds->print_das(*ost);
         *ost << endl;
+        *ost << "DFU::promote_function_output_structures() - DDX " << endl << endl << "<<<<<<<<<< DDX >>>>>>>>>>" << endl;
+        fdds->print_xml(*ost,true);
+        *ost << endl;
+        *ost << "DFU::promote_function_output_structures() - DDS::AttrTable " << endl << endl;
+        *ost << fdds->get_attr_table() << endl;
+       *ost << endl;
+        *ost << endl;
+
     }
+#endif
 
     BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - END" << endl);
 }
