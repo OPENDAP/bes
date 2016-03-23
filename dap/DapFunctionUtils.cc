@@ -31,6 +31,7 @@
 #include "Structure.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESInternalError.h"
 
 
 #define DEBUG_KEY "func"
@@ -68,14 +69,14 @@
  */
 void promote_function_output_structures(libdap::DDS *fdds)
 {
-    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - BEGIN" << endl);
+    BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - BEGIN" << endl);
 
     if (BESISDEBUG(DEBUG_KEY)){
         ostream *ost = BESDebug::GetStrm();
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
+        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
         fdds->print(*ost);
         *ost << endl;
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
+        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
         fdds->print_das(*ost);
         *ost << endl;
     }
@@ -87,7 +88,7 @@ void promote_function_output_structures(libdap::DDS *fdds)
         libdap::Structure *collection = dynamic_cast<libdap::Structure *>(*di);
         if (collection && BESUtil::endsWith(collection->name(), "_unwrap")) {
             found_promotable_member = true;
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Found promotable member variable in the DDS: " << collection->name() << endl);
         }
     }
 
@@ -112,7 +113,6 @@ void promote_function_output_structures(libdap::DDS *fdds)
         // Assumption: add_var_nocopy() has the contract that the container to which
         // the var is added will eventually delete the var.
 
-
         std::vector<libdap::BaseType *> upVars;
         std::vector<libdap::BaseType *> droppedContainers;
         for (libdap::DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
@@ -126,12 +126,63 @@ void promote_function_output_structures(libdap::DDS *fdds)
                 // so we'll cache the reference for later.
                 droppedContainers.push_back(collection);
 
-                BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
+                BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Promoting members of collection '" << collection->name() << "'" << endl);
 
+                libdap::AttrTable function_result_global_attrTable = collection->get_attr_table();
+
+                BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - function_result_global_attrTable " << endl << function_result_global_attrTable);
+
+                // top_level_attrTable = new libdap::AttrTable(function_result_global_attrTable);
+
+                libdap::AttrTable ddsAttrTable = fdds->get_attr_table();
+                BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - ddsAttrTable " << endl << ddsAttrTable);
+
+                libdap::AttrTable::Attr_iter endIt = function_result_global_attrTable.attr_end();
+                libdap::AttrTable::Attr_iter it;
+                for (it = function_result_global_attrTable.attr_begin(); it != endIt; ++it) {
+                    std::string name = function_result_global_attrTable.get_name(it);
+                    BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Processing attribute " << name << endl );
+
+                    if (function_result_global_attrTable.is_container(it)) {
+
+                        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - " << name << " is a Container" << endl );
+
+                       libdap::AttrTable* pOrigAttrContainer = function_result_global_attrTable.get_attr_table(it);
+                        if(pOrigAttrContainer == NULL){
+                            throw BESInternalError("Expected non-null AttrTable for the attribute container: " + name, __FILE__, __LINE__ );
+                        }
+
+#if 0
+                        libdap::AttrTable* pClonedAttrTable = new libdap::AttrTable(*pOrigAttrContainer);
+                        pClonedAttrTable->set_is_global_attribute(true);
+#else
+                        libdap::AttrTable* pClonedAttrTable = new libdap::AttrTable();
+                        pClonedAttrTable->set_name(name);
+                        pClonedAttrTable->set_is_global_attribute(true);
+                        std::vector<std::string> *values = new std::vector<string>();
+                        values->push_back("This is the message");
+                        values->push_back("that I want you to see.");
+                        pClonedAttrTable->append_attr("test_attr", "String", values);
+#endif
+
+                        ddsAttrTable.append_container(pClonedAttrTable, name);
+
+                        BESDEBUG(DEBUG_KEY,
+                            "DFU::promote_function_output_structures() - Added a deep copy of attribute table '" << name << "' to the DDS:" <<  endl << *pClonedAttrTable << endl);
+                    }
+                    else {
+                        string type = function_result_global_attrTable.get_type(it);
+                        vector<string>* pAttrTokens = function_result_global_attrTable.get_attr_vector(it);
+                        BESDEBUG(DEBUG_KEY,
+                        "DFU::promote_function_output_structures() - Adding attribute '" << type << " "<< name << "' to the DDS." << endl);
+                        // append_attr makes a copy of the vector, so we don't have to do so here.
+                        ddsAttrTable.append_attr(name, type, pAttrTokens);
+                    }
+                }
                 // We're going to 'flatten this structure' and return its fields
                 libdap::Structure::Vars_iter vi;
                 for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
-                    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
+                    BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Promoting variable '" << (*vi)->name() << "' ptr: " << *vi << endl);
 
                     libdap::BaseType *origVar = *vi;
 
@@ -150,13 +201,14 @@ void promote_function_output_structures(libdap::DDS *fdds)
                     // Add the new variable to the list of stuff to add back to the dataset.
                     upVars.push_back(newVar);
                 }
+
             }
         }
         // Drop Promoted Containers
 
         for(std::vector<libdap::BaseType *>::iterator it=droppedContainers.begin(); it != droppedContainers.end(); ++it) {
             libdap::BaseType *bt = *it;
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
+            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Deleting Promoted Collection '" << bt->name() << "' ptr: " << bt << endl);
 
             // Delete the Container variable and ALL of it's children.
             // @TODO Wouldn't it be nice if at this point it had no children? I think so too.
@@ -166,26 +218,26 @@ void promote_function_output_structures(libdap::DDS *fdds)
         // Add (copied) promoted variables to top-level of DDS
         for( std::vector<libdap::BaseType *>::iterator it = upVars.begin(); it != upVars.end(); it ++) {
             libdap::BaseType *bt = *it;
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
+            BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
             fdds->add_var(bt);
         }
     }
     else {
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - Nothing in DDS to promote." << endl);
+        BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Nothing in DDS to promote." << endl);
         // Otherwise do nothing to alter the DDS
     }
 
     if (BESISDEBUG(DEBUG_KEY)){
         ostream *ost = BESDebug::GetStrm();
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl);
+        *ost << "DFU::promote_function_output_structures() - DDS " << endl << endl << "<<<<<<<<<< DDS >>>>>>>>>>" << endl;
         fdds->print(*ost);
         *ost << endl;
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl);
+        *ost << "DFU::promote_function_output_structures() - DAS " << endl << endl << "<<<<<<<<<< DAS >>>>>>>>>>" << endl;
         fdds->print_das(*ost);
         *ost << endl;
     }
 
-    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::promote_function_output_structures() - END" << endl);
+    BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - END" << endl);
 }
 
 /**
@@ -215,19 +267,19 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
 
     std::string wrap_name=dds.get_dataset_name()+"_unwrap";
 
-    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - BEGIN" << endl);
+    BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - BEGIN" << endl);
 
     libdap::Structure *dapResult = new libdap::Structure(wrap_name);
 
 
     if(argc>0){
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Attempting to return arguments bundled into "<< wrap_name << endl);
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Attempting to return arguments bundled into "<< wrap_name << endl);
 
         for(int i=0; i<argc ; i++){
             libdap::BaseType *bt = argv[i];
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Reading  "<< bt->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Reading  "<< bt->name() << endl);
             bt->read();
-            BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Adding a copy of "<< bt->name() << " to " << dapResult->name() << endl);
+            BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Adding a copy of "<< bt->name() << " to " << dapResult->name() << endl);
 
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // This performs a deep copy on bt (ouch!), and we do it because in the current
@@ -239,7 +291,7 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
         }
     }
     else {
-        BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - Creating response object called "<< dapResult->name() << endl);
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - Creating response object called "<< dapResult->name() << endl);
 
         libdap::Str *message = new libdap::Str("promoted_message");
         message->set_value("This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.");
@@ -258,5 +310,5 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
 
     *btpp = dapResult;
 
-    BESDEBUG(DEBUG_KEY, "DapFunctionUtils::wrapitup() - END" << endl);
+    BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - END" << endl);
 }
