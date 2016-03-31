@@ -24,3 +24,4 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggreg
 
 AT_BESCMD_RESPONSE_TEST([bescmd/function_result_unwrap_dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/function_result_unwrap_dods.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/function_result_unwrap_dap.bescmd)

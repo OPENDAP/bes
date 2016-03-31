@@ -17,7 +17,7 @@ BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/dap
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|xml)$;
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
