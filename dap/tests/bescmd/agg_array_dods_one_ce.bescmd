@@ -4,9 +4,9 @@
 
     <setContext name="dap_explicit_containers">yes</setContext>
 
-    <setContainer name="c1" space="catalog">/data/dap2/fnoc1.data</setContainer>
-    <setContainer name="c2" space="catalog">/data/dap2/fnoc1.data</setContainer>
-    <setContainer name="c3" space="catalog">/data/dap2/fnoc1.data</setContainer>
+    <setContainer name="c1" space="catalog">/data/fnoc.dods</setContainer>
+    <setContainer name="c2" space="catalog">/data/fnoc.dods</setContainer>
+    <setContainer name="c3" space="catalog">/data/fnoc.dods</setContainer>
 
     <define name="d">
 		<container name="c1"/>

@@ -1,0 +1,3 @@
+The data:
+String promoted_message = "This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.";
+
