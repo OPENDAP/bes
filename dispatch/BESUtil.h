@@ -117,6 +117,9 @@ public:
 					     BESUtil::url &url_parts ) ;
     static string		url_create( BESUtil::url &url_parts ) ;
     static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
+
+    static bool endsWith(std::string const &fullString, std::string const &ending);
+
 } ;
 
 #endif // E_BESUtil_h

@@ -99,6 +99,7 @@
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+#include "DapFunctionUtils.h"
 
 using namespace std;
 using namespace libdap;
@@ -557,6 +558,8 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
+
+#if 0
 /**
  * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
  * false otherwise.
@@ -643,6 +646,7 @@ static DDS *promote_function_output_structure(DDS *fdds)
         return fdds;
     }
 }
+#endif
 
 /** This function formats and prints an ASCII representation of a
  DDS on stdout. Either an entire DDS or a constrained DDS may be sent.
@@ -716,7 +720,17 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-        fdds = promote_function_output_structure(/*&*/fdds);
+        // This next step utilizes a well known static method (so really it's a function;),
+        // promote_function_output_structures() to look for
+        // one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // promote_function_output_structures()
+        promote_function_output_structures(/*&*/fdds);
 
         conditional_timeout_cancel();
 
@@ -990,7 +1004,17 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // result) will be sent.
         fdds->mark_all(false);
 
-        fdds = promote_function_output_structure(fdds);
+        // This next step utilizes a well known static method (so really it's a function;),
+        // promote_function_output_structures() to look for
+        // one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // promote_function_output_structures()
+        promote_function_output_structures(fdds);
 
         eval.parse_constraint(get_ce(), *fdds);
 
@@ -1112,7 +1136,17 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // result) will be sent.
         fdds->mark_all(false);
 
-        fdds = promote_function_output_structure(fdds);
+        // This next step utilizes a well known static method (so really it's a function;),
+        // promote_function_output_structures() to look for
+        // one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // promote_function_output_structures()
+        promote_function_output_structures(fdds);
 
         eval.parse_constraint(d_dap2ce, *fdds);
 
