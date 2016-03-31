@@ -23,18 +23,22 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
+#include <D4RValue.h>
+#include <DMR.h>
+#include <DDS.h>
+#include <BaseType.h>
+#include <Str.h>
+#include <Structure.h>
+#include <D4Group.h>
 
-#include "Str.h"
-#include "BaseType.h"
-#include "DDS.h"
+#include <BESDebug.h>
+#include <BESUtil.h>
+#include <BESInternalError.h>
+
 #include "DapFunctionUtils.h"
-#include "Structure.h"
-#include "BESDebug.h"
-#include "BESUtil.h"
-#include "BESInternalError.h"
 
 
-#define DEBUG_KEY "func"
+#define DEBUG_KEY "functions"
 
 /**
  * @brief Copies the passed Structure's Attributes into the global AttrTable in
@@ -164,6 +168,65 @@ void promote_function_output_structures(libdap::DDS *fdds)
     BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - END" << endl);
 }
 
+
+
+libdap::BaseType *wrapitup_worker(vector<libdap::BaseType*> argv, libdap::AttrTable globals) {
+
+    BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - BEGIN" << endl);
+
+    std::string wrap_name="thing_to_unwrap";
+    libdap::Structure *dapResult = new libdap::Structure(wrap_name);
+    int argc = argv.size();
+    if(argc>0){
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Attempting to return arguments bundled into "<< wrap_name << endl);
+
+        for(int i=0; i<argc ; i++){
+            libdap::BaseType *bt = argv[i];
+            BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Reading  "<< bt->name() << endl);
+            bt->read();
+            BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Adding a copy of "<< bt->name() << " to " << dapResult->name() << endl);
+
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // This performs a deep copy on bt (ouch!), and we do it because in the current
+            // libdap API, when we delete parent structure the variable will be deleted too.
+            // Because we can't pluck a variable out of a DAP object without deleting it.
+            // @TODO Fix the libdap API to allow this operation without the copy/delete bits.
+            dapResult->add_var_nocopy(bt->ptr_duplicate());
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Copying Global Attributes" << endl << globals << endl);
+
+        libdap::AttrTable *newDatasetAttrTable = new libdap::AttrTable(globals);
+        dapResult->set_attr_table(*newDatasetAttrTable);
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Result Structure attrs: " << endl << dapResult->get_attr_table() << endl);
+
+    }
+    else {
+        BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Creating response object called "<< dapResult->name() << endl);
+
+        libdap::Str *message = new libdap::Str("promoted_message");
+        message->set_value("This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.");
+        dapResult->add_var_nocopy(message);
+
+        // Mark String as read and queue for transmission
+        message->set_read_p(true);
+        message->set_send_p(true);
+
+    }
+
+    // Mark dapResult Structure as read and queue for transmission
+    dapResult->set_read_p(true);
+    dapResult->set_send_p(true);
+
+
+
+    BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - END" << endl);
+    return dapResult;
+
+}
+
+
+
 /**
  *  @brief Wraps the passed arguments (argv) in a Structure
  *  whose name "thing_to_unwrap" meets the criteria for function
@@ -187,6 +250,7 @@ void promote_function_output_structures(libdap::DDS *fdds)
  * @exception Error Thrown If the Array is not a one dimensional
  * array.
  **/
+#if 0
 void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) {
 
     std::string wrap_name=dds.get_dataset_name()+"_unwrap";
@@ -243,3 +307,43 @@ void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::Base
 
     BESDEBUG(DEBUG_KEY, "DFU::wrapitup() - END" << endl);
 }
+#endif
+
+
+void function_dap2_wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp)
+{
+    BESDEBUG(DEBUG_KEY, "function_dap2_wrapitup() - BEGIN" << endl);
+
+    BESDEBUG(DEBUG_KEY, "function_dap2_wrapitup() - Building argument vector for wrapitup_worker()" << endl);
+    vector<libdap::BaseType*> args;
+    for(int i=0; i< argc; i++){
+        libdap::BaseType *bt = argv[i];
+        BESDEBUG(DEBUG_KEY, "function_dap2_wrapitup() - Adding argument: "<< bt->name() << endl);
+        args.push_back(bt);
+    }
+
+    *btpp = wrapitup_worker(args,dds.get_attr_table());
+
+    BESDEBUG(DEBUG_KEY, "function_dap2_wrapitup() - END (result: "<< (*btpp)->name() << ")" << endl);
+    return;
+}
+
+
+libdap::BaseType *function_dap4_wrapitup(libdap::D4RValueList *dvl_args, libdap::DMR &dmr){
+
+    BESDEBUG(DEBUG_KEY, "function_dap4_wrapitup() - Building argument vector for wrapitup_worker()" << endl);
+    vector<libdap::BaseType*> args;
+    for(unsigned int i=0; i< dvl_args->size(); i++){
+        libdap::BaseType * bt = dvl_args->get_rvalue(i)->value(dmr);
+        BESDEBUG(DEBUG_KEY, "function_dap4_wrapitup() - Adding argument: "<< bt->name() << endl);
+        args.push_back(bt);
+    }
+
+
+    libdap::BaseType *result = wrapitup_worker(args, dmr.root()->get_attr_table());
+
+    BESDEBUG(DEBUG_KEY, "function_dap4_wrapitup() - END (result: "<< result->name() << ")" << endl);
+    return result;
+
+}
+

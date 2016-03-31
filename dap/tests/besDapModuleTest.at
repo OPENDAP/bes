@@ -22,6 +22,10 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggreg
 # TestSequence's stock 5 rows.
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_sequence_dods.bescmd],[aggregation])
 
+# Test the "_unwrap" Structure naming convention.
 AT_BESCMD_RESPONSE_TEST([bescmd/function_result_unwrap_dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/function_result_unwrap_dods.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/function_result_unwrap_dap.bescmd)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/function_result_unwrap_dap.bescmd, xfail)
+
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/dap4_ce_function-01.bescmd, xfail)

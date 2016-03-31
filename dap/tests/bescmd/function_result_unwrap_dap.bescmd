@@ -8,7 +8,7 @@
   <bes:setContainer name="catalogContainer" space="catalog">/data/fnoc.dap</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      <bes:constraint>wrapitup()</bes:constraint>
+      <bes:dap4function>wrapitup()</bes:dap4function>
     </bes:container>
   </bes:define>
   <bes:get type="dap" definition="d1" />

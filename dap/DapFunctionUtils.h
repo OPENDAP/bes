@@ -40,7 +40,8 @@ using std::string;
  * an OPeNDAP DataDDS object into a netcdf file.
  */
 void promote_function_output_structures(libdap::DDS *fdds);
-void wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+void function_dap2_wrapitup(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_dap4_wrapitup(libdap::D4RValueList *dvl_args, libdap::DMR &dmr);
 
 
 class WrapItUp: public libdap::ServerFunction {
@@ -56,7 +57,8 @@ public:
         setUsageString("wrapitup()");
         setRole("http://services.opendap.org/dap4/server-side-function/dap_function_utils/wrapitup");
         setDocUrl("http://docs.opendap.org/index.php/DapUtilFunctions");
-        setFunction(wrapitup);
+        setFunction(function_dap2_wrapitup);
+        setFunction(function_dap4_wrapitup);
         setVersion("1.0");
 }
     virtual ~WrapItUp()
