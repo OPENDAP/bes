@@ -714,6 +714,8 @@ AC_CONFIG_FILES([Makefile
 		 dap/Makefile
 		 dap/unit-tests/Makefile
 		 dap/unit-tests/test_config.h
+		 dap/tests/Makefile
+		 dap/tests/atlocal
 
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
@@ -737,6 +739,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
+AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
 
 dnl Output files if building the modules too
