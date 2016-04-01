@@ -22,7 +22,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "DapFunctionUtils.h"
+#include "config.h"
 
 #include <D4RValue.h>
 #include <DMR.h>
@@ -36,7 +36,7 @@
 #include <BESUtil.h>
 #include <BESInternalError.h>
 
-
+#include "DapFunctionUtils.h"
 
 #define DEBUG_KEY "functions"
 
