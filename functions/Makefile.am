@@ -8,6 +8,14 @@ AM_CXXFLAGS =
 
 AUTOMAKE_OPTIONS = foreign check-news
 
+if DAP_MODULES
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+else
+AM_CPPFLAGS = $(BES_CPPFLAGS)
+LIBADD = $(BES_DAP_LIBS)
+endif
+
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 # ./configure --disable-shared CXXFLAGS=...
@@ -19,6 +27,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
+
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=functions
+M_VER=1.1.0
+
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = . unit-tests tests
 
@@ -44,7 +58,8 @@ LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
 MakeMaskFunction.cc DilateArrayFunction.cc \
 BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc \
 TabularSequence.cc BBoxFunction.cc RoiFunction.cc roi_util.cc \
-BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc functions_util.cc
+BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc functions_util.cc \
+DapFunctionsRequestHandler.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
@@ -52,12 +67,14 @@ GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h \
 MakeMaskFunction.h DilateArrayFunction.h \
 BindNameFunction.h BindShapeFunction.h TabularFunction.h \
 TabularSequence.h BBoxFunction.h RoiFunction.h roi_util.h \
-BBoxUnionFunction.h Odometer.h MaskArrayFunction.h functions_util.h
+BBoxUnionFunction.h Odometer.h MaskArrayFunction.h functions_util.h \
+DapFunctionsRequestHandler.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
-libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+# libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 libfunctions_module_la_LDFLAGS = -avoid-version -module 
-libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+# libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libfunctions_module_la_LIBADD = $(LIBADD)
 
 # Don't install the headers for this kind of module.
 pkginclude_HEADERS = $(HDRS) 
