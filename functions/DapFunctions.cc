@@ -57,6 +57,9 @@ void DapFunctions::initialize(const string &modname)
 {
     BESDEBUG( "dap_functions", "Initializing DAP Functions:" << endl );
 
+    // Add this module to the Request Handler List so that it can respond
+    // to version and help requests. Note the matching code to remove the
+    // handler from the list in the terminate() method.
     BESRequestHandlerList::TheList()->add_handler(modname, new DapFunctionsRequestHandler(modname));
 
     libdap::ServerFunctionsList::TheList()->add_function(new GridFunction());

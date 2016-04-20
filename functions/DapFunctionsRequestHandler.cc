@@ -25,13 +25,12 @@
 
 #include "config.h"
 
-#include "BESResponseHandler.h"
-#include "BESResponseNames.h"
-#include "BESDataHandlerInterface.h"
-#include "BESVersionInfo.h"
-#include "BESDataNames.h"
+#include "BESResponseHandler.h"     // Used to access the DataHandlerInterface
+#include "BESResponseNames.h"       // for {HELP,VER}_RESPONSE constants
+#include "BESDataHandlerInterface.h" // Used to get the Info object
+#include "BESVersionInfo.h"         // Includes BESInfo too
 
-#include "TheBESKeys.h"
+#include "TheBESKeys.h"             // A BES Key can be used to supply help info
 
 #include "DapFunctionsRequestHandler.h"
 
