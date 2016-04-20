@@ -849,9 +849,6 @@ AM_COND_IF([DAP_MODULES],
 	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh], 
 		[chmod +x modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh])
 
-	AC_CONFIG_FILES([modules/fileout_gdal/tests/generate_data_baseline.sh], 
-		[chmod +x modules/fileout_gdal/tests/generate_data_baseline.sh])
-	
 	AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh],
 	   [chmod +x modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh])
     AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_data_baseline.sh],
