@@ -381,6 +381,7 @@ string BESDapResponseCache::get_cache_file_name(const string &resourceId, bool m
                 BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() resourceId: " << resourceId << endl);
 
                 if(cachedResourceId.compare(resourceId) == 0){
+                    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() FOUND matching cache file: " << cache_file_name << endl);
                     done = true;
                 }
             }
@@ -407,7 +408,7 @@ string BESDapResponseCache::get_cache_file_name(const string &resourceId, bool m
     }
 
 
-    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() cache_file_name: " << cache_file_name << endl);
+    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() USING cache_file_name: " << cache_file_name << endl);
 
 
     return cache_file_name;
