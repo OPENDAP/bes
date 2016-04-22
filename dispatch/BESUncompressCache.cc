@@ -47,7 +47,7 @@ unsigned long BESUncompressCache::getCacheSizeFromConfig()
     }
     else {
         string msg = "[ERROR] BESUncompressCache::getCacheSize() - The BES Key " + SIZE_KEY
-            + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
+            + " is not set! It MUST be set to utilize the decompression cache. ";
         BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
@@ -62,7 +62,7 @@ string BESUncompressCache::getCacheDirFromConfig()
 
     if (!found) {
         string msg = "[ERROR] BESUncompressCache::getSubDirFromConfig() - The BES Key " + DIR_KEY
-            + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
+            + " is not set! It MUST be set to utilize the decompression cache. ";
         BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
@@ -80,7 +80,7 @@ string BESUncompressCache::getCachePrefixFromConfig()
     }
     else {
         string msg = "[ERROR] BESUncompressCache::getResultPrefix() - The BES Key " + PREFIX_KEY
-            + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
+            + " is not set! It MUST be set to utilize the decompression cache. ";
         BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }

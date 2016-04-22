@@ -202,7 +202,7 @@ public:
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			// TODO Stat the cache file to check it's size
 			delete cache_dds;
 		}
@@ -228,7 +228,7 @@ public:
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			delete cache_dds; cache_dds = 0;
 
 			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
@@ -239,7 +239,7 @@ public:
 			//cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			// There are nine variables in test.05.ddx
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
@@ -286,7 +286,7 @@ public:
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			delete cache_dds; cache_dds = 0;
 
 			// This reads the dataset from the cache, but unlike the previous test,
@@ -295,7 +295,7 @@ public:
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			// There are nine variables in test.05.ddx
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
@@ -327,7 +327,6 @@ public:
 	{
 		DBG(cerr << "cache_and_read_a_response3() - BEGIN" << endl);
 
-		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
 		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
@@ -337,7 +336,7 @@ public:
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#b#u");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16027921743317432956_0");
 			ostringstream oss;
 			DDS::Vars_iter i = cache_dds->var_begin();
 			while (i != cache_dds->var_end()) {
@@ -357,7 +356,7 @@ public:
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#b#u");
+			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16027921743317432956_0");
 			// There are nine variables in test.05.ddx but two in the CE used here and
 			// the response cached was constrained.
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 2);

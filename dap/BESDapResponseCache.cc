@@ -339,6 +339,80 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
     return fdds;
 }
 
+string BESDapResponseCache::get_cache_file_name(const string &resourceId, bool mangle){
+
+    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name()  resourceId: '" << resourceId << "'" << endl);
+    std::hash<std::string> str_hash;
+    size_t hashValue = str_hash(resourceId);
+    std::stringstream ss;
+    ss << hashValue;
+    string hashed_id = ss.str();
+    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name()  hashed_id: '" << hashed_id << "'" << endl);
+
+    string baseName =  BESFileLockingCache::get_cache_file_name(hashed_id, mangle);
+    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name()  baseName: '" << baseName << "'" << endl);
+
+
+    string cache_file_name;
+    string cache_id_file_name;
+    unsigned long suffix_counter = 0;
+    bool done = false;
+    while(!done){
+        stringstream cfname;
+        cfname << baseName << "_" << suffix_counter++;
+        cache_file_name = cfname.str();
+        cfname << ".id";
+        cache_id_file_name = cfname.str();
+
+        BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() evaluating candidate cache_file_name: " << cache_file_name << endl);
+        BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() evaluating candidate cache_id_file_name: " << cache_id_file_name << endl);
+
+        unsigned long long size = 0;
+        struct stat buf;
+        if (stat(cache_file_name.c_str(), &buf) == 0) {
+            size = buf.st_size;
+            // Checking for associated id file.
+            if (stat(cache_id_file_name.c_str(), &buf) == 0) {
+                std::ifstream t(cache_id_file_name);
+                std::stringstream ss;
+                ss << t.rdbuf();
+                string cachedResourceId = ss.str();
+                BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() cachedResourceId: " << cachedResourceId << endl);
+                BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() resourceId: " << resourceId << endl);
+
+                if(cachedResourceId.compare(resourceId) == 0){
+                    done = true;
+                }
+            }
+            else {
+                throw BESInternalError("Unable to stat cache id file "+cache_id_file_name+" message: " + strerror(errno), __FILE__,__LINE__);
+            }
+        }
+        else {
+            if(errno == ENOENT){
+                BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() Cache file " << cache_file_name << " does not yet exist." << endl);
+                // Create id file
+                std::ofstream ofs(cache_id_file_name);
+                ofs << resourceId;
+                ofs.close();
+                BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() Created ID file " << cache_id_file_name << endl);
+              // We don't create the cache file because we don't need to.
+                done = true;
+            }
+            else {
+                throw BESInternalError("Unable to stat cache file "+cache_file_name+" message: " + strerror(errno), __FILE__,__LINE__);
+            }
+        }
+
+    }
+
+
+    BESDEBUG("cache", "BESDapResponseCache::get_cache_file_name() cache_file_name: " << cache_file_name << endl);
+
+
+    return cache_file_name;
+
+}
 DDS *
 BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb,
         ConstraintEvaluator *eval, string &cache_token)
@@ -349,12 +423,12 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
 
     // Build the response_id. Since the response conent is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
-    string response_id = dds.filename() + "#" + constraint;
+    std::string response_id = dds.filename() + "#" + constraint;
 
     // Get the cache filename for this thing.
     string cache_file_name = get_cache_file_name(response_id, /*mangle*/true);
 
-	BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " cache_file_name: " << cache_file_name << endl);
+	BESDEBUG("dap_response_cache","BESDapResponseCache::cache_dataset() cache_file_name: " << cache_file_name << endl);
     int fd;
     try {
         // If the object in the cache is not valid, remove it. The read_lock will

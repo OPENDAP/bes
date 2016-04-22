@@ -103,6 +103,8 @@ public:
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
+
+    virtual string get_cache_file_name(const string &src, bool mangle = true);
 };
 
 #endif // _bes_dap_response_cache_h
