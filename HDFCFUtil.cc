@@ -1651,7 +1651,10 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
         //at->append_attr("long_name","String","y coordinate" );
         string long_name="y coordinate of projection for grid "+ gdset->getName();
         at->append_attr("long_name","String",long_name);
-        at->append_attr("units","string","km");
+        // Change this to meter.
+        at->append_attr("units","string","meter");
+        //at->append_attr("units","string","km");
+        
         at->append_attr("_CoordinateAxisType","string","GeoY");
 
         at = das.get_table(dim1name);
@@ -1662,7 +1665,10 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
         //at->append_attr("long_name","String","x coordinate");
         long_name="x coordinate of projection for grid "+ gdset->getName();
         at->append_attr("long_name","String",long_name);
-        at->append_attr("units","string","km");
+         
+        // change this to meter.
+        at->append_attr("units","string","meter");
+        //at->append_attr("units","string","km");
         at->append_attr("_CoordinateAxisType","string","GeoX");
         
         // Add the attributes for the dummy projection variable.

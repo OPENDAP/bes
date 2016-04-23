@@ -1262,7 +1262,7 @@
             <value>y coordinate of projection for grid MOD_Grid_250m_Surface_Reflectance</value>
         </Attribute>
         <Attribute name="units" type="String">
-            <value>km</value>
+            <value>meter</value>
         </Attribute>
         <Attribute name="_CoordinateAxisType" type="String">
             <value>GeoY</value>
@@ -1278,7 +1278,7 @@
             <value>x coordinate of projection for grid MOD_Grid_250m_Surface_Reflectance</value>
         </Attribute>
         <Attribute name="units" type="String">
-            <value>km</value>
+            <value>meter</value>
         </Attribute>
         <Attribute name="_CoordinateAxisType" type="String">
             <value>GeoX</value>
