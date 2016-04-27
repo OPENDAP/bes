@@ -48,7 +48,6 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 #
 # H5.IgnoreUnknownTypes = true
 
-H5.EnableMemCache = false
 #
 # EnableCF: Handle HDF data to follow the CF conventions
 #   (true,yes|false,no, defaults to false)

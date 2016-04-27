@@ -79,11 +79,15 @@ extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
 // Cache map variables.
+// Leave here for future investigation
+#if 0
 map<string,DAS> HDF5RequestHandler::das_cache;
 map<string,DDS> HDF5RequestHandler::dds_cache;
 map<string,DataDDS> HDF5RequestHandler::data_dds_cache;
+#endif
 
-bool HDF5RequestHandler::_use_memcache                = false;
+//bool HDF5RequestHandler::_use_memcache                = false;
+//
 bool HDF5RequestHandler::_usecf                       = false;
 bool HDF5RequestHandler::_pass_fileid                 = false;
 bool HDF5RequestHandler::_disable_structmeta          = false;
@@ -107,7 +111,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 
-    _use_memcache                = check_beskeys("H5.EnableMemCache");
+    //_use_memcache                = check_beskeys("H5.EnableMemCache");
     _usecf                       = check_beskeys("H5.EnableCF");
 
     // The following keys are only effective when usecf is true.
@@ -187,6 +191,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
+#if 0
         // Check if the mem_cache is set 
         if(true == _use_memcache) {
 
@@ -199,6 +204,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                 return true;
             }
         }
+#endif
         if (true == _usecf) {
 
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -226,8 +232,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
              
         Ancillary::read_ancillary_das( *das, filename ) ;
 
-        if(true == _use_memcache) 
-            das_cache[filename] = *das;
+        //if(true == _use_memcache) 
+        //    das_cache[filename] = *das;
         bdas->clear_container() ;
     }
     catch(InternalErr & e) {
@@ -279,6 +285,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
+#if 0
         if(true == _use_memcache) {
 
             BESDEBUG("h5", "Using the DDS mem_cache" << endl);
@@ -291,6 +298,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
                 return true;
             }
         }
+#endif
 
         // For the time being, not mess up CF's fileID with Default's fileID
         if(true == _usecf) {
@@ -350,6 +358,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         dds->transfer_attributes(das);
 
+#if 0
         if(true == _use_memcache) {
 
             // Use this because DDS doesn't have a no-arg ctor which
@@ -357,6 +366,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
             dds_cache.insert(pair<string, DDS>(filename, *dds));
 
         }
+#endif
 
         bdds->set_constraint( dhi ) ;
 
@@ -440,6 +450,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 #endif
         DataDDS* dds = bdds->get_dds();
         dds->filename(filename);
+
+#if 0
         if(true == _use_memcache) {
             BESDEBUG("h5", "Using the DataDDS cache" << endl);
             map<string, DataDDS>::iterator data_dds_cache_iter = data_dds_cache.find(filename);
@@ -451,6 +463,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
                 return true;
             }
         }
+#endif
+
         if(true == _usecf) {
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
             if(cf_fileid < 0){
@@ -511,11 +525,13 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         Ancillary::read_ancillary_das( *das, filename ) ;
 
         dds->transfer_attributes(das);
+#if 0
         if (true == _use_memcache) {
             // Use this because DDS doesn't have a no-arg ctor which
             // map::operator[] requires. jhrg 2/18/16
             data_dds_cache.insert(pair<string, DataDDS>(filename, *dds));
         }
+#endif
 
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
