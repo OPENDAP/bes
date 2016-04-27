@@ -18,6 +18,9 @@ lex.*.cc
 *.log
 *.trs
 
+# OS-X Finder spore...
+*.DS_Store
+
 .dirstamp
 
 Makefile
