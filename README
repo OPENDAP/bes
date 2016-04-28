@@ -36,6 +36,24 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.3.3
+----------------------------
+CF option:
+- HDF5 Scalar dataset reading
+  All atomic HDF5 scalar dataset are supported. In previous versions, only string scalar dataset is supported. 
+- Unlimited dimension  
+  Now the client that understands the unlimited dimension can correctly retrieve this information. 
+- 0-size attribute 
+  0-size attribute will be ignored. This case was not considered in the previous versions.
+- empty array reading
+  Update the way to check if the array index is valid. This will assure that the empty array reading doesn't fail. 
+- _FillValue checking
+  Both _FillValue range and datatype are checked. 
+  Sometimes the data producers will provide the wrong value and the wrong datatype. In the previous versions,
+  the handler only corrects the datatype if the _FillValue type is not the same as the variable type. 
+
+
+
 What's new for version 2.3.2
 ----------------------------
 CF option:
