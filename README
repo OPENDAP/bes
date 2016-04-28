@@ -1,3 +1,16 @@
+Updated for version 3.12.1(April 29 2016)
+  1) Improve the calculation of XDim and YDim for the sinusoidal projection.
+  2) Improve the handling of BES keys by moving the initialization of BES keys to the Handler constructor.
+  3) Bug Fixes: 
+     (1) Remove the character dot(.) when the _FillValue is NaN
+     In the previous version, the character dot(.) was added at the end of NaN. This prevents the NetCDF Java clients to access the DAS. 
+     (2) Correct the (0,360) longitude value when the HDF-EOS2 EnableEOSGeoCacheFile is turned on. 
+     Some HDF-EOS2 products make the longitude range from 0 to 360. When the HDF-EOS2 lat/lon cache is on, the longtiude values were not retrieved
+     correctly in the previous versions. This was discovered by testing an AMSR-E product when updating the testsuite for the handler.
+  
+  Note for version 3.12.0: no new features or bug fixes for version 3.12.0. Only several warnings are removed. 
+  The version is accidently bumped from 3.11.7 to 3.12.0.
+  
 Updated for version 3.11.7 (15 September 2015)
   New Features:
   1) We added 1-D coordinate variables and CF grid_mapping attributes for HDF-EOS2 grid with Sinusoidal projection. 
