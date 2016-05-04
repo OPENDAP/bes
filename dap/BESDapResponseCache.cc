@@ -26,6 +26,7 @@
 
 //#define DODS_DEBUG
 
+#include <unistd.h>
 #include <sys/stat.h>
 
 #include <iostream>
@@ -350,8 +351,6 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
     return fdds;
 }
 
-
-
 #if 0
 string BESDapResponseCache::get_cache_file_name(const string &resourceId, bool mangle){
 
@@ -430,21 +429,18 @@ string BESDapResponseCache::get_cache_file_name(const string &resourceId, bool m
 }
 #endif
 
-
 DDS *
 BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb,
         ConstraintEvaluator *eval, string &cache_token)
 {
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
-    DDS *fdds;
+    DDS *fdds = NULL;
     int fd, fd_id;
-
-    fdds = NULL;
 
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
-    std::string resourceId = dds.filename() + "#" + constraint;
+    string resourceId = dds.filename() + "#" + constraint;
 
     try {
 
@@ -454,10 +450,10 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
         // Get the cache filename for this resourceId
         BESDEBUG("cache", "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
 
-        // Get a has function for strings
+        // Get a hash function for strings
         std::hash<std::string> str_hash;
 
-        // Use the has function to hash the resourceId.
+        // Use the hash function to hash the resourceId.
         size_t hashValue = str_hash(resourceId);
         std::stringstream ss;
         ss << hashValue;
@@ -468,7 +464,6 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
         // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
         string baseName =  BESFileLockingCache::get_cache_file_name(hashed_id, true);
         BESDEBUG("cache", "BESDapResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
-
 
         // Begin cache collision avoidance.
         unsigned long suffix_counter = 0;
@@ -486,7 +481,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_id_file_name: " << cache_id_file_name << endl);
 
             // Do the cache file and it's id file exist?
-            if (get_read_lock(cache_file_name, fd) && get_read_lock(cache_id_file_name,fd_id)) {
+            if (get_read_lock(cache_file_name, fd) && get_read_lock(cache_id_file_name, fd_id)) {
                 // Yes they do...
 
                 // So we need to READ the contents of the ID file into a string.
@@ -504,7 +499,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                     // WooHoo Cache Hit!
                     BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (1st test) for: " << cache_file_name << endl);
                     fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
-                   done = true;
+                    done = true;
                 }
 
                 unlock_and_close(cache_id_file_name);
@@ -595,7 +590,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                     // WooHoo Cache Hit!
                     BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (1st test) for: " << cache_file_name << endl);
                     fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
-                   done = true;
+                    done = true;
                 }
 
                 unlock_and_close(cache_id_file_name);
@@ -604,100 +599,13 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             else {
                 throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
             }
+
             cache_token = cache_file_name;  // Set this value-result parameter
             unlock_cache();
         }
 
         BESDEBUG("cache", "BESDapResponseCache::cache_dataset() USING cache_file_name: " << cache_file_name << endl);
         return fdds;
-
-#if 0
-
-        //################## get_cache_file_name() ##########################
-        cache_file_name = get_cache_file_name(resourceId,true);
-
-        BESDEBUG("dap_response_cache","BESDapResponseCache::cache_dataset() cache_file_name: " << cache_file_name << endl);
-       // If the object in the cache is not valid, remove it. The read_lock will
-        // then fail and the code will drop down to the create_and_lock() call.
-        // is_valid() tests for a non-zero object and for d_dateset newer than
-        // the cached object.
-        if (!is_valid(cache_file_name, dds.filename()))
-        	purge_file(cache_file_name);
-
-
-        if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Cache hit (1) for: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
-        }
-        else if (create_and_lock(cache_file_name, fd)) {
-            // If here, the cache_file_name could not be locked for read access;
-            // try to build it. First make an empty file and get an exclusive lock on it.
-            BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Caching " << cache_file_name << ", constraint: " << constraint << endl);
-
-            fdds = new DDS(dds);
-            eval->parse_constraint(constraint, *fdds);
-
-            if (eval->function_clauses()) {
-                DDS *temp_fdds = eval->eval_function_clauses(*fdds);
-                delete fdds;
-                fdds = temp_fdds;
-            }
-
-            ofstream data_stream(cache_file_name.c_str());
-            if (!data_stream) {
-                throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
-            }
-
-            string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
-
-            // Use a ConstraintEvaluator that has not parsed a CE so the code can use
-            // the send method(s)
-            ConstraintEvaluator eval;
-
-            // Setting the version to 3.2 causes send_data_ddx to write the MIME headers that
-            // the cache expects.
-            fdds->set_dap_version("3.2");
-
-            // This is a bit of a hack, but it effectively uses ResponseBuilder to write the
-            // cached object/response without calling the machinery in one of the send_*()
-            // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
-            // CE, which is not necessary and will alter the values of the send_p property
-            // of the DDS's variables.
-            set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain,
-                    last_modified_time(rb->get_dataset_name()));
-            //data_stream << flush;
-            rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
-            //data_stream << flush;
-
-            data_stream << CRLF << "--" << boundary << "--" << CRLF;
-            data_stream.close();
-
-            // Change the exclusive lock on the new file to a shared lock. This keeps
-            // other processes from purging the new file and ensures that the reading
-            // process can use it.
-            exclusive_to_shared_lock(fd);
-
-            // Now update the total cache size info and purge if needed. The new file's
-            // name is passed into the purge method because this process cannot detect its
-            // own lock on the file.
-            unsigned long long size = update_cache_info(cache_file_name);
-            if (cache_too_big(size)) update_and_purge(cache_file_name);
-        }
-        // get_read_lock() returns immediately if the file does not exist,
-        // but blocks waiting to get a shared lock if the file does exist.
-        else if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " cache hit (2) for: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
-        }
-        else {
-            throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
-        }
-        cache_token = cache_file_name;  // Set this value-result parameter
-
-        unlock_cache();
-        return fdds;
-#endif
-
     }
     catch (...) {
         BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Caught exception, unlocking cache and re-throwing." << endl);
