@@ -447,7 +447,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
     DDS *fdds = NULL;
-    int fd, fd_id;
+    int fd;
 
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
@@ -456,7 +456,6 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
     try {
 
         string cache_file_name; //  = get_cache_file_name(resourceId, /*mangle*/true);
-        string cache_id_file_name;
 
         // Get the cache filename for this resourceId
         BESDEBUG("cache", "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
@@ -485,23 +484,21 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             stringstream cfname;
             cfname << baseName << "_" << suffix_counter++;
             cache_file_name = cfname.str();
-            cfname << ".id";
-            cache_id_file_name = cfname.str();
+            //cfname << ".id";
+            //cache_id_file_name = cfname.str();
 
             BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
-            BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_id_file_name: " << cache_id_file_name << endl);
+            //BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_id_file_name: " << cache_id_file_name << endl);
 
             // Do the cache file and it's id file exist?
-            if (get_read_lock(cache_file_name, fd) && get_read_lock(cache_id_file_name, fd_id)) {
+            if (get_read_lock(cache_file_name, fd)) {
                 // Yes they do...
 
                 // So we need to READ the contents of the ID file into a string.
-                std::ifstream t(cache_id_file_name);
-                std::stringstream ss;
-                ss << t.rdbuf();
-                t.close();
+                std::ifstream cache_file_istream(cache_file_name);
+                string cachedResourceId;
+                std::getline (cache_file_istream,cachedResourceId);
 
-                string cachedResourceId = ss.str();
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() cachedResourceId: " << cachedResourceId << endl);
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() resourceId: " << resourceId << endl);
 
@@ -509,24 +506,25 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                 if(cachedResourceId.compare(resourceId) == 0){
                     // WooHoo Cache Hit!
                     BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (1st test) for: " << cache_file_name << endl);
-                    fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
+                    fdds = get_cached_data_ddx(cache_file_istream, &factory, dds.filename());
                     done = true;
                 }
 
-                unlock_and_close(cache_id_file_name);
                 unlock_and_close(cache_file_name);
             }
-            else if (create_and_lock(cache_file_name, fd) && create_and_lock(cache_id_file_name, fd_id) ) {
+            else if (create_and_lock(cache_file_name, fd) ) {
                 // If here, the cache_file_name could not be locked for read access;
                 // try to build it. First make an empty files and get an exclusive lock on them.
                 BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Caching " << cache_file_name << ", constraint: " << constraint << endl);
 
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Cache file " << cache_file_name << " does not yet exist." << endl);
                 // Create id file
-                std::ofstream ofs(cache_id_file_name);
-                ofs << resourceId;
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Created ID file " << cache_id_file_name << endl);
-
+                std::ofstream cache_file_ostream(cache_file_name);
+                if (!cache_file_ostream) {
+                    throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
+                }
+                cache_file_ostream << resourceId << endl;
+                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Created Cache file " << cache_file_name << endl);
 
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Caching DAP Object " << endl);
                 fdds = new DDS(dds);
@@ -538,10 +536,6 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                     fdds = temp_fdds;
                 }
 
-                ofstream data_stream(cache_file_name.c_str());
-                if (!data_stream) {
-                    throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
-                }
 
                 string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
 
@@ -558,20 +552,19 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                 // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
                 // CE, which is not necessary and will alter the values of the send_p property
                 // of the DDS's variables.
-                set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain,
+                set_mime_multipart(cache_file_ostream, boundary, start, dods_data_ddx, x_plain,
                         last_modified_time(rb->get_dataset_name()));
                 //data_stream << flush;
-                rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
+                rb->serialize_dap2_data_ddx(cache_file_ostream, *fdds, eval, boundary, start);
                 //data_stream << flush;
 
-                data_stream << CRLF << "--" << boundary << "--" << CRLF;
-                data_stream.close();
+                cache_file_ostream << CRLF << "--" << boundary << "--" << CRLF;
+                cache_file_ostream.close();
 
                 // Change the exclusive locks on the new files to a shared lock. This keeps
                 // other processes from purging the new files and ensures that the reading
                 // process can use it.
                 exclusive_to_shared_lock(fd);
-                exclusive_to_shared_lock(fd_id);
 
                 // Now update the total cache size info and purge if needed. The new file's
                 // name is passed into the purge method because this process cannot detect its
@@ -583,16 +576,14 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             }
             // get_read_lock() returns immediately if the file does not exist,
             // but blocks waiting to get a shared lock if the file does exist.
-            else if (get_read_lock(cache_file_name, fd) && get_read_lock(cache_id_file_name,fd_id)) {
+            else if (get_read_lock(cache_file_name, fd)) {
                 BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (2nd test) for: " << cache_file_name << endl);
 
                 // So we need to READ the contents of the ID file into a string.
-                std::ifstream t(cache_id_file_name);
-                std::stringstream ss;
-                ss << t.rdbuf();
-                t.close();
+                std::ifstream cache_file_istream(cache_file_name);
+                string cachedResourceId;
+                std::getline (cache_file_istream,cachedResourceId);
 
-                string cachedResourceId = ss.str();
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() cachedResourceId: " << cachedResourceId << endl);
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() resourceId: " << resourceId << endl);
 
@@ -600,11 +591,10 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                 if(cachedResourceId.compare(resourceId) == 0){
                     // WooHoo Cache Hit!
                     BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (1st test) for: " << cache_file_name << endl);
-                    fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
+                    fdds = get_cached_data_ddx(cache_file_istream, &factory, dds.filename());
                     done = true;
                 }
 
-                unlock_and_close(cache_id_file_name);
                 unlock_and_close(cache_file_name);
             }
             else {
