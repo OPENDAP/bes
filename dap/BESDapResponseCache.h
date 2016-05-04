@@ -58,6 +58,7 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
     void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
+    void read_data_from_cache(ifstream &data, libdap::DDS *fdds);
     libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory,
         const std::string &dataset);
 

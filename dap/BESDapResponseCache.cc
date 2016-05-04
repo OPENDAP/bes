@@ -247,7 +247,6 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
 
     return true;
 }
-
 /**
  * Read the data from the saved response document.
  *
@@ -264,6 +263,22 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
     BESDEBUG("dap_response_cache", "BESDapResponseCache::read_data_from_cache() -  Opening cache file: " << cache_file_name << endl);
 
     ifstream data(cache_file_name.c_str());
+    read_data_from_cache(data,fdds);
+}
+
+/**
+ * Read the data from the saved response document.
+ *
+ * @note this method is made of code copied from Connect (process_data(0)
+ * but this copy assumes it is reading a DDX with data written using the
+ * code in ResponseCache::cache_data_ddx().
+ *
+ * @param data The input stream
+ * @parma fdds Load this DDS object with the variables, attributes and
+ * data values from the cached DDS.
+ */
+void BESDapResponseCache::read_data_from_cache(ifstream &data, DDS *fdds)
+{
 
     // Rip off the MIME headers from the response if they are present
     string mime = get_next_mime_header(data);
