@@ -495,7 +495,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                 unlock_and_close(cache_id_file_name);
                 unlock_and_close(cache_file_name);
             }
-            else if (create_and_lock(cache_file_name, fd) && create_and_lock(cache_file_name, fd_id) ) {
+            else if (create_and_lock(cache_file_name, fd) && create_and_lock(cache_id_file_name, fd_id) ) {
                 // If here, the cache_file_name could not be locked for read access;
                 // try to build it. First make an empty files and get an exclusive lock on them.
                 BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Caching " << cache_file_name << ", constraint: " << constraint << endl);
@@ -562,7 +562,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             }
             // get_read_lock() returns immediately if the file does not exist,
             // but blocks waiting to get a shared lock if the file does exist.
-            else if (get_read_lock(cache_file_name, fd)) {
+            else if (get_read_lock(cache_file_name, fd) && get_read_lock(cache_id_file_name,fd_id)) {
                 BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (2nd test) for: " << cache_file_name << endl);
 
                 // So we need to READ the contents of the ID file into a string.
@@ -585,8 +585,6 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
 
                 unlock_and_close(cache_id_file_name);
                 unlock_and_close(cache_file_name);
-
-                fdds = get_cached_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
             }
             else {
                 throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
