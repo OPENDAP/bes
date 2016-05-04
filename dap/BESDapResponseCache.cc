@@ -52,10 +52,6 @@
 #include "BESLog.h"
 #include "BESDebug.h"
 
-#ifdef NDEBUG
-#undef BESDEBUG
-#define BESDEBUG(stream, stuff)
-#endif
 
 #define CRLF "\r\n"
 
