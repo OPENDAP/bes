@@ -62,6 +62,9 @@ private:
     libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory,
         const std::string &dataset);
 
+    libdap::DDS *get_cached_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
+
+
     friend class ResponseCacheTest;
     friend class StoredResultTest;
 
