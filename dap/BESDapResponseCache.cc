@@ -330,12 +330,24 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
         const string &filename)
 {
     BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Reading cache for " << cache_file_name << endl);
+    ifstream cached_data(cache_file_name.c_str());
+    return get_cached_data_ddx(cached_data, factory, filename);
+
+}
+/**
+ * Read data from cache. Allocates a new DDS using the given factory.
+ *
+ */
+DDS *
+BESDapResponseCache::get_cached_data_ddx(ifstream &cached_data, BaseTypeFactory *factory,
+        const string &filename)
+{
 
     DDS *fdds = new DDS(factory);
 
     fdds->filename(filename);
 
-    read_data_from_cache(cache_file_name, fdds);
+    read_data_from_cache(cached_data, fdds);
 
     fdds->set_factory(0);
 
