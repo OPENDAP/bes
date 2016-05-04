@@ -280,7 +280,6 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
  */
 void BESDapResponseCache::read_data_from_cache(ifstream &data, DDS *fdds)
 {
-
     // Rip off the MIME headers from the response if they are present
     string mime = get_next_mime_header(data);
     while (!mime.empty()) {

@@ -892,7 +892,6 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
 
                 BESDEBUG("cache", "BESFileLockingCache::update_and_purge() - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl );
             }
-
         }
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
