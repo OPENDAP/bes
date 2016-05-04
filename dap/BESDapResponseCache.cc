@@ -447,7 +447,6 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
     DDS *fdds = NULL;
-    int fd;
 
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
@@ -484,135 +483,145 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             stringstream cfname;
             cfname << baseName << "_" << suffix_counter++;
             cache_file_name = cfname.str();
-            //cfname << ".id";
-            //cache_id_file_name = cfname.str();
 
-            BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
+            BESDEBUG("cache", "BESDapResponseCache::cache_dataset() - Evaluating candidate cache_file_name: " << cache_file_name << endl);
             //BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_id_file_name: " << cache_id_file_name << endl);
 
             // Do the cache file and it's id file exist?
-            if (get_read_lock(cache_file_name, fd)) {
-                // Yes they do...
-
-                // So we need to READ the contents of the ID file into a string.
-                std::ifstream cache_file_istream(cache_file_name);
-                string cachedResourceId;
-                std::getline (cache_file_istream,cachedResourceId);
-
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() cachedResourceId: " << cachedResourceId << endl);
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() resourceId: " << resourceId << endl);
-
-                // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
-                if(cachedResourceId.compare(resourceId) == 0){
-                    // WooHoo Cache Hit!
-                    BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (1st test) for: " << cache_file_name << endl);
-                    fdds = get_cached_data_ddx(cache_file_istream, &factory, dds.filename());
-                    done = true;
-                }
-
-                unlock_and_close(cache_file_name);
+            if (load_from_cache(dds,resourceId,cache_file_name,&fdds)) {
+                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
+                done = true;
             }
-            else if (create_and_lock(cache_file_name, fd) ) {
-                // If here, the cache_file_name could not be locked for read access;
-                // try to build it. First make an empty files and get an exclusive lock on them.
-                BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Caching " << cache_file_name << ", constraint: " << constraint << endl);
-
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Cache file " << cache_file_name << " does not yet exist." << endl);
-                // Create id file
-                std::ofstream cache_file_ostream(cache_file_name);
-                if (!cache_file_ostream) {
-                    throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
-                }
-                cache_file_ostream << resourceId << endl;
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Created Cache file " << cache_file_name << endl);
-
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() Caching DAP Object " << endl);
-                fdds = new DDS(dds);
-                eval->parse_constraint(constraint, *fdds);
-
-                if (eval->function_clauses()) {
-                    DDS *temp_fdds = eval->eval_function_clauses(*fdds);
-                    delete fdds;
-                    fdds = temp_fdds;
-                }
-
-
-                string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
-
-                // Use a ConstraintEvaluator that has not parsed a CE so the code can use
-                // the send method(s)
-                ConstraintEvaluator eval;
-
-                // Setting the version to 3.2 causes send_data_ddx to write the MIME headers that
-                // the cache expects.
-                fdds->set_dap_version("3.2");
-
-                // This is a bit of a hack, but it effectively uses ResponseBuilder to write the
-                // cached object/response without calling the machinery in one of the send_*()
-                // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
-                // CE, which is not necessary and will alter the values of the send_p property
-                // of the DDS's variables.
-                set_mime_multipart(cache_file_ostream, boundary, start, dods_data_ddx, x_plain,
-                        last_modified_time(rb->get_dataset_name()));
-                //data_stream << flush;
-                rb->serialize_dap2_data_ddx(cache_file_ostream, *fdds, eval, boundary, start);
-                //data_stream << flush;
-
-                cache_file_ostream << CRLF << "--" << boundary << "--" << CRLF;
-                cache_file_ostream.close();
-
-                // Change the exclusive locks on the new files to a shared lock. This keeps
-                // other processes from purging the new files and ensures that the reading
-                // process can use it.
-                exclusive_to_shared_lock(fd);
-
-                // Now update the total cache size info and purge if needed. The new file's
-                // name is passed into the purge method because this process cannot detect its
-                // own lock on the file.
-                unsigned long long size = update_cache_info(cache_file_name);
-                if (cache_too_big(size)) update_and_purge(cache_file_name);
-
+            else if (write_dataset_to_cache(dds,resourceId, constraint, eval,cache_file_name, rb, &fdds) ) {
+                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() - Data successfully written to cache file: " << cache_file_name << endl);
                 done = true;
             }
             // get_read_lock() returns immediately if the file does not exist,
             // but blocks waiting to get a shared lock if the file does exist.
-            else if (get_read_lock(cache_file_name, fd)) {
-                BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (2nd test) for: " << cache_file_name << endl);
-
-                // So we need to READ the contents of the ID file into a string.
-                std::ifstream cache_file_istream(cache_file_name);
-                string cachedResourceId;
-                std::getline (cache_file_istream,cachedResourceId);
-
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() cachedResourceId: " << cachedResourceId << endl);
-                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() resourceId: " << resourceId << endl);
-
-                // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
-                if(cachedResourceId.compare(resourceId) == 0){
-                    // WooHoo Cache Hit!
-                    BESDEBUG("cache", __PRETTY_FUNCTION__ << " Cache hit (1st test) for: " << cache_file_name << endl);
-                    fdds = get_cached_data_ddx(cache_file_istream, &factory, dds.filename());
-                    done = true;
-                }
-
-                unlock_and_close(cache_file_name);
+            else if (load_from_cache(dds,resourceId,cache_file_name,&fdds)) {
+                BESDEBUG("cache", "BESDapResponseCache::cache_dataset() - On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
+                done = true;
             }
             else {
-                throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
+               throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
             }
 
             cache_token = cache_file_name;  // Set this value-result parameter
-            unlock_cache();
+            //unlock_cache();
         }
 
         BESDEBUG("cache", "BESDapResponseCache::cache_dataset() USING cache_file_name: " << cache_file_name << endl);
+        fdds->print_constrained(cerr);
         return fdds;
     }
     catch (...) {
-        BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Caught exception, unlocking cache and re-throwing." << endl);
+        BESDEBUG("dap_response_cache","BESDapResponseCache::cache_dataset() -  Caught exception, unlocking cache and re-throwing." << endl);
         // I think this call is not needed. jhrg 10/23/12
-        unlock_cache();
+        //unlock_cache();
         throw;
     }
+}
+
+
+bool BESDapResponseCache::load_from_cache(DDS &dds, string resourceId, string cache_file_name,  DDS **fdds)
+{
+    bool success = false;
+    int fd;
+
+    if(get_read_lock(cache_file_name, fd)){
+        // So we need to READ the first line of the file into a string
+        // because we know it's the resourceID of the thing in the cache.
+        std::ifstream cache_file_istream(cache_file_name);
+        string cachedResourceId;
+        std::getline (cache_file_istream,cachedResourceId);
+
+        BESDEBUG("cache", "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId << endl);
+        BESDEBUG("cache", "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
+
+        // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
+        if(cachedResourceId.compare(resourceId) == 0){
+            // WooHoo Cache Hit!
+            BaseTypeFactory factory;
+            *fdds = get_cached_data_ddx(cache_file_istream, &factory, dds.filename());
+            success = true;
+        }
+
+        unlock_and_close(cache_file_name);
+    }
+    BESDEBUG("cache", "BESDapResponseCache::load_from_cache() - Cache " << (success?"HIT":"MISS") << " for: " << cache_file_name << endl);
+
+    return success;
+
+}
+
+bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, string constraint, ConstraintEvaluator *eval, string cache_file_name,  BESDapResponseBuilder *rb, DDS **fdds)
+{
+    bool success = false;
+    int fd;
+
+    if (create_and_lock(cache_file_name, fd) ) {
+        // If here, the cache_file_name could not be locked for read access;
+        // try to build it. First make an empty files and get an exclusive lock on them.
+        BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() -  Caching " << cache_file_name << ", constraint: " << constraint << endl);
+
+        BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() - Cache file " << cache_file_name << " does not yet exist." << endl);
+        // Create id file
+        std::ofstream cache_file_ostream(cache_file_name);
+        if (!cache_file_ostream) {
+            throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
+        }
+        cache_file_ostream << resourceId << endl;
+        BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
+
+        BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() - Caching DAP Object " << endl);
+        *fdds = new DDS(dds);
+        eval->parse_constraint(constraint, **fdds);
+
+        if (eval->function_clauses()) {
+            DDS *temp_fdds = eval->eval_function_clauses(**fdds);
+            delete *fdds;
+            *fdds = temp_fdds;
+        }
+
+
+        string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
+
+        // Use a ConstraintEvaluator that has not parsed a CE so the code can use
+        // the send method(s)
+        ConstraintEvaluator eval;
+
+        // Setting the version to 3.2 causes send_data_ddx to write the MIME headers that
+        // the cache expects.
+        (*fdds)->set_dap_version("3.2");
+
+        // This is a bit of a hack, but it effectively uses ResponseBuilder to write the
+        // cached object/response without calling the machinery in one of the send_*()
+        // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
+        // CE, which is not necessary and will alter the values of the send_p property
+        // of the DDS's variables.
+        set_mime_multipart(cache_file_ostream, boundary, start, dods_data_ddx, x_plain,
+                last_modified_time(rb->get_dataset_name()));
+        //data_stream << flush;
+        rb->serialize_dap2_data_ddx(cache_file_ostream, **fdds, eval, boundary, start);
+        //data_stream << flush;
+
+        cache_file_ostream << CRLF << "--" << boundary << "--" << CRLF;
+        cache_file_ostream.close();
+
+        // Change the exclusive locks on the new files to a shared lock. This keeps
+        // other processes from purging the new files and ensures that the reading
+        // process can use it.
+        exclusive_to_shared_lock(fd);
+
+        // Now update the total cache size info and purge if needed. The new file's
+        // name is passed into the purge method because this process cannot detect its
+        // own lock on the file.
+        unsigned long long size = update_cache_info(cache_file_name);
+        if (cache_too_big(size)) update_and_purge(cache_file_name);
+
+        success = true;
+    }
+    return success;
+
 }
 

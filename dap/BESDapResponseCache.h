@@ -64,6 +64,10 @@ private:
 
     libdap::DDS *get_cached_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
+    bool write_dataset_to_cache(libdap::DDS &dds, string resourceId, string constraint, libdap::ConstraintEvaluator *eval, string cache_file_name,  BESDapResponseBuilder *rb, libdap::DDS **fdds);
+
+    bool load_from_cache(libdap::DDS &dds, string resourceId, string cache_file_name, libdap::DDS **fdds);
+
 
     friend class ResponseCacheTest;
     friend class StoredResultTest;
