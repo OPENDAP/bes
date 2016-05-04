@@ -39,7 +39,7 @@
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRStreamUnMarshaller.h>
-//<XDRFileUnMarshaller.h>
+
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
@@ -484,11 +484,8 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             stringstream cfname;
             cfname << baseName << "_" << suffix_counter++;
             cache_file_name = cfname.str();
-            //cfname << ".id";
-            //cache_id_file_name = cfname.str();
 
             BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
-            //BESDEBUG("cache", "BESDapResponseCache::cache_dataset() evaluating candidate cache_id_file_name: " << cache_id_file_name << endl);
 
             // Do the cache file and it's id file exist?
             if (get_read_lock(cache_file_name, fd)) {

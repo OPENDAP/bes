@@ -55,7 +55,7 @@
 
 //#define DODS_DEBUG
 #define CLEAR_LOCAL_DATA
-#undef FUNCTION_CACHING
+#define FUNCTION_CACHING 1
 #undef USE_LOCAL_TIMEOUT_SCHEME
 
 #include <DAS.h>
