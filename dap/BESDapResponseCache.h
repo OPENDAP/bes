@@ -28,6 +28,8 @@
 #include <string>
 #include "BESFileLockingCache.h"
 
+#define DATA_MARK "--DATA"
+
 class BESDapResponseBuilder;
 
 namespace libdap {

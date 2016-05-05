@@ -235,7 +235,6 @@ public:
 			// Force read from the cache file
 			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
 
-		    libdap::DDS *get_cached_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
 			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
@@ -244,7 +243,11 @@ public:
 			CPPUNIT_ASSERT(cache_dds);
 			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			// There are nine variables in test.05.ddx
-			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
+			int var_count = cache_dds->var_end() - cache_dds->var_begin() ;
+
+	        DBG(cerr << "cache_and_read_a_response() - var_count: "<< var_count << endl);
+
+			CPPUNIT_ASSERT(var_count == 9);
 
 			ostringstream oss;
 			DDS::Vars_iter i = cache_dds->var_begin();
