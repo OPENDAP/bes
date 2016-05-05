@@ -59,18 +59,14 @@ private:
     BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
-    void read_data_from_cache(ifstream &data, libdap::DDS *fdds);
-    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory,
-        const std::string &dataset);
 
+    void read_data_from_cache(ifstream &data, libdap::DDS *fdds);
     libdap::DDS *get_cached_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
     bool write_dataset_to_cache(libdap::DDS &dds, string resourceId, string constraint,
         libdap::ConstraintEvaluator *eval, string cache_file_name, libdap::DDS **fdds);
 
     bool load_from_cache(libdap::DDS &dds, string resourceId, string cache_file_name, libdap::DDS **fdds);
-
 
     friend class ResponseCacheTest;
     friend class StoredResultTest;

@@ -84,7 +84,8 @@ public:
 
     void setUp() {
     	DBG(cerr << "setUp() - BEGIN" << endl);
-		DBG(BESDebug::SetUp("cerr,all"));
+    	if (bes_debug)
+    	    BESDebug::SetUp("cerr,all");
 
     	string cid;
     	test_dds = new DDS(&ttf);
@@ -219,31 +220,35 @@ public:
 	{
 		DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
 		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
+		    // This code is here to load the DataDDX response into the cache if it is not
+		    // there already. If it is there, it reads it from the cache.
 			DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
+
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
+			int var_count = cache_dds->var_end() - cache_dds->var_begin();
+			CPPUNIT_ASSERT(var_count == 9);
+
 			delete cache_dds; cache_dds = 0;
 
-			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
-			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
+			ifstream token_stream(token.c_str());
+			if (!token_stream)
+			    CPPUNIT_FAIL("Cache token " + token + " could not be opened");
+			string resource_id;
+			getline(token_stream, resource_id);
+			DBG(cerr << "Resource Id from cache file: " << resource_id << endl);
 
-
-			// The code cannot unlock the file because get_cached_dap2_data_ddx()
-			// does not lock the cached item.
-			//cache->unlock_and_close(token);
+			cache_dds = cache->get_cached_data_ddx(token_stream, &ttf, "test.05");
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#16877844200208667996_0");
 			// There are nine variables in test.05.ddx
-			int var_count = cache_dds->var_end() - cache_dds->var_begin() ;
+			var_count = cache_dds->var_end() - cache_dds->var_begin() ;
 
 	        DBG(cerr << "cache_and_read_a_response() - var_count: "<< var_count << endl);
 
