@@ -253,18 +253,17 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
 
 
 /**
- * Read the data from the saved response document.
+ * Read data from cache. Allocates a new DDS using the given factory.
  *
- * @note this method is made of code copied from Connect (process_data(0)
- * but this copy assumes it is reading a DDX with data written using the
- * code in ResponseCache::cache_data_ddx().
- *
- * @param data The input stream
- * @parma fdds Load this DDS object with the variables, attributes and
- * data values from the cached DDS.
  */
-void BESDapResponseCache::read_data_from_cache(ifstream &data, DDS *fdds)
+DDS *
+BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *factory, const string &dataset_name)
 {
+    DDS *fdds = new DDS(factory);
+
+    fdds->filename(dataset_name);
+
+
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  BEGIN" << endl);
 
     // Parse the DDX; throw an exception on error.
@@ -274,7 +273,7 @@ void BESDapResponseCache::read_data_from_cache(ifstream &data, DDS *fdds)
     // Return the CID for the matching data part
     string data_cid; // Not used. jhrg 5/5/16
     try {
-        ddx_parser.intern_stream(data, fdds, data_cid, DATA_MARK);
+        ddx_parser.intern_stream(cached_data, fdds, data_cid, DATA_MARK);
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Parsed DDX." << endl);
     }
     catch (Error &e) {
@@ -284,26 +283,13 @@ void BESDapResponseCache::read_data_from_cache(ifstream &data, DDS *fdds)
 
     // Now read the data
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Reading Data." << endl);
-    XDRStreamUnMarshaller um(data);
+    XDRStreamUnMarshaller um(cached_data);
     for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
         (*i)->deserialize(um, fdds);
     }
 
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
-}
 
-/**
- * Read data from cache. Allocates a new DDS using the given factory.
- *
- */
-DDS *
-BESDapResponseCache::get_cached_data_ddx(ifstream &cached_data, BaseTypeFactory *factory, const string &filename)
-{
-    DDS *fdds = new DDS(factory);
-
-    fdds->filename(filename);
-
-    read_data_from_cache(cached_data, fdds);
 
     fdds->set_factory(0);
 
@@ -345,10 +331,12 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
         string hashed_id = ss.str();
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  hashed_id: '" << hashed_id << "'" << endl);
 
-        // USe the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
+        // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
         // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
         string baseName =  BESFileLockingCache::get_cache_file_name(hashed_id, true);
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
+
+        string dataset_name = dds.filename();
 
         // Begin cache collision avoidance.
         unsigned long suffix_counter = 0;
@@ -363,7 +351,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
 
             // Do the cache file and it's id file exist?
-            if (load_from_cache(dds,resourceId,cache_file_name,&fdds)) {
+            if (load_from_cache(dataset_name,resourceId,cache_file_name,&fdds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
                 done = true;
             }
@@ -373,7 +361,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
             }
             // get_read_lock() returns immediately if the file does not exist,
             // but blocks waiting to get a shared lock if the file does exist.
-            else if (load_from_cache(dds,resourceId,cache_file_name,&fdds)) {
+            else if (load_from_cache(dataset_name,resourceId,cache_file_name,&fdds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
                 done = true;
             }
@@ -398,7 +386,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
 }
 
 
-bool BESDapResponseCache::load_from_cache(DDS &dds, string resourceId, string cache_file_name,  DDS **fdds)
+bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
 {
     bool success = false;
     int fd;
@@ -417,10 +405,9 @@ bool BESDapResponseCache::load_from_cache(DDS &dds, string resourceId, string ca
         if(cachedResourceId.compare(resourceId) == 0){
             // WooHoo Cache Hit!
             BaseTypeFactory factory;
-            *fdds = get_cached_data_ddx(cache_file_istream, &factory, dds.filename());
+            *fdds = read_data_ddx(cache_file_istream, &factory, dataset_name);
             success = true;
         }
-
         unlock_and_close(cache_file_name);
     }
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache " << (success?"HIT":"MISS") << " for: " << cache_file_name << endl);

@@ -236,17 +236,15 @@ public:
 
 			delete cache_dds; cache_dds = 0;
 
-			// Force read from the cache file
-			ifstream token_stream(token.c_str());
-			if (!token_stream)
-			    CPPUNIT_FAIL("Cache token " + token + " could not be opened");
-			string resource_id;
-			getline(token_stream, resource_id);
-			DBG(cerr << "Resource Id from cache file: " << resource_id << endl);
 
-			cache_dds = cache->get_cached_data_ddx(token_stream, &ttf, "test.05");
+            bool ret = cache->load_from_cache("test.05",test_dds->filename()+"#", token, &cache_dds);
 
+            // True if it worked
+            CPPUNIT_ASSERT(ret);
+
+            // Better not be null!
 			CPPUNIT_ASSERT(cache_dds);
+
 			// There are nine variables in test.05.ddx
 			var_count = cache_dds->var_end() - cache_dds->var_begin() ;
 
@@ -272,6 +270,22 @@ public:
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
 	    	// cache->delete_instance();
+
+
+
+
+            //cache->load_from_cache("test.05",test_dds->d_filename(), token, *cache_dds);
+
+			//bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
+
+
+
+
+
+
+
+
+
 
 		}
 		catch (Error &e) {
