@@ -196,7 +196,7 @@ public:
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
 			cache->unlock_and_close(token);
 
@@ -223,7 +223,7 @@ public:
 		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
-			DDS *cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -234,6 +234,9 @@ public:
 			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
 			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
+
+		    libdap::DDS *get_cached_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
+
 			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
 			//cache->unlock_and_close(token);
@@ -281,7 +284,7 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -291,7 +294,7 @@ public:
 
 			// This reads the dataset from the cache, but unlike the previous test,
 			// does so using the public interface.
-			cache_dds = cache->cache_dataset(*test_dds, "", rb, &eval, token);
+			cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
@@ -331,7 +334,7 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *cache_dds = cache->cache_dataset(*test_dds, "b,u", rb, &eval, token);
+			DDS *cache_dds = cache->cache_dataset(*test_dds, "b,u", &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -352,7 +355,7 @@ public:
 			delete cache_dds; cache_dds = 0;
 			oss.str("");
 
-			cache_dds = cache->cache_dataset(*test_dds, "b,u", rb, &eval, token);
+			cache_dds = cache->cache_dataset(*test_dds, "b,u", &eval, token);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
