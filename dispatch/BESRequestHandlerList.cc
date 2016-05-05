@@ -177,6 +177,9 @@ void BESRequestHandlerList::execute_each(BESDataHandlerInterface &dhi)
  * object, i.e. doesn't handle the response type, then simply move on to the
  * next. No exception is thrown in this case.
  *
+ * @note This method is currently _only_ used by the help and version
+ * requests. jhrg 2/23/16
+ *
  * @param dhi data handler interface that contains the necessary information
  * to fill in the response object.
  * @see BESDataHandlerInterface
@@ -204,6 +207,8 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
  * interface. It is up to this request handlers method for the specified
  * response object type to fill in the response object. It can iterate over
  * the containers in the data handler interface, for example.
+ *
+ * @note This method is not currently used. jhrg 2/23/16
  *
  * @param dhi data handler interface that contains the necessary information
  * to fill in the response object

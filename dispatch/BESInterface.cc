@@ -124,7 +124,7 @@ static void register_signal_handler()
 
 #if USE_SIGWAIT
 
-// If the BES is changed so that the plan build here is run in a child thread,
+// If the BES is changed so that the plan built here is run in a child thread,
 // then we can have a much more flexible signal catching scheme, including catching
 // the alarm signal used for the timeout. It's not possible to throw from a child
 // thread to a parent thread, but if the parent thread sees that SIGALRM is

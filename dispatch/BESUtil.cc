@@ -785,3 +785,20 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 
 	return newPath;
 }
+
+
+
+/**
+ * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
+ * false otherwise.
+ */
+bool BESUtil::endsWith(std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare(fullString.length() - ending.length(),ending.length(), ending));
+    }
+    else {
+        return false;
+    }
+}
+
+

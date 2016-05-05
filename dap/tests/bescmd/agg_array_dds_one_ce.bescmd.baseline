@@ -8,4 +8,4 @@ Dataset {
     Structure {
         Int16 u[time_a = 1][lat = 2][lon = 21];
     } c3;
-} fnoc1.data;
+} fnoc.dods;

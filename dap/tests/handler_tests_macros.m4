@@ -1,5 +1,5 @@
 #
-# These macros represent the best way I've found to incorporate builiding baselines
+# These macros represent the best way I've found to incorporate building baselines
 # into autotest testsuites. Until Hyrax/BES has a comprehensive way to make these
 # kinds of tests - using a single set of macros from one source, copy this into
 # the places it's needed and hack. If substantial changes are needed, try to copy
@@ -131,7 +131,7 @@ dnl AT_CHECK (commands, [status = `0'], [stdout = `'], [stderr = `'], [run-if-fa
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
 dnl output of besstandalone is a netcdf3 file. The binary stream is read using
-dnl ncdump and the output of that is compared to a baseline. Of couse, this
+dnl ncdump and the output of that is compared to a baseline. Of course, this
 dnl requires ncdump be accessible.
 
 m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
@@ -170,14 +170,15 @@ m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
 ])
     
 m4_define([AT_BESCMD_RESPONSE_TEST],
-[_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])])
+[_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
+])
 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
-[_AT_BESCMD_PATTERN_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+[_AT_BESCMD_PATTERN_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
 
 m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
-[_AT_BESCMD_ERROR_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+[_AT_BESCMD_ERROR_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],

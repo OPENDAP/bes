@@ -22,7 +22,7 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = . unit-tests
+SUBDIRS = . unit-tests tests
 
 # These tests depend on dapreader, which is built after this code.
 # jhrg 3/17/15. 
@@ -52,7 +52,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapResponseBuilder.cc \
 	BESDapResponseCache.cc \
 	BESStoredDapResultCache.cc \
-	BESDapNullAggregationServer.cc
+	BESDapNullAggregationServer.cc \
+	DapFunctionUtils.cc
 	
 # Unused: BESDapSequenceAggregationServer.cc
 
@@ -78,7 +79,8 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponseBuilder.h \
 	BESDapResponseCache.h \
 	BESStoredDapResultCache.h \
-	BESDapNullAggregationServer.h
+	BESDapNullAggregationServer.h \
+	DapFunctionUtils.h
 	
 # Unused: BESDapSequenceAggregationServer.h
 
