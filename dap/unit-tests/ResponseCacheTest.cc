@@ -247,9 +247,7 @@ public:
 
 			// There are nine variables in test.05.ddx
 			var_count = cache_dds->var_end() - cache_dds->var_begin() ;
-
 	        DBG(cerr << "cache_and_read_a_response() - var_count: "<< var_count << endl);
-
 			CPPUNIT_ASSERT(var_count == 9);
 
 			ostringstream oss;
@@ -270,22 +268,6 @@ public:
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
 	    	// cache->delete_instance();
-
-
-
-
-            //cache->load_from_cache("test.05",test_dds->d_filename(), token, *cache_dds);
-
-			//bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
-
-
-
-
-
-
-
-
-
 
 		}
 		catch (Error &e) {
