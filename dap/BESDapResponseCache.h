@@ -64,7 +64,8 @@ private:
 
     libdap::DDS *get_cached_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
-    bool write_dataset_to_cache(libdap::DDS &dds, string resourceId, string constraint, libdap::ConstraintEvaluator *eval, string cache_file_name,  BESDapResponseBuilder *rb, libdap::DDS **fdds);
+    bool write_dataset_to_cache(libdap::DDS &dds, string resourceId, string constraint,
+        libdap::ConstraintEvaluator *eval, string cache_file_name, libdap::DDS **fdds);
 
     bool load_from_cache(libdap::DDS &dds, string resourceId, string cache_file_name, libdap::DDS **fdds);
 
@@ -105,7 +106,7 @@ public:
     }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
-    virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
+    virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint,
         libdap::ConstraintEvaluator *eval, std::string &cache_token);
 
     static string getCacheDirFromConfig();

@@ -441,8 +441,7 @@ string BESDapResponseCache::get_cache_file_name(const string &resourceId, bool m
 #endif
 
 DDS *
-BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb,
-        ConstraintEvaluator *eval, string &cache_token)
+BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, ConstraintEvaluator *eval, string &cache_token)
 {
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
@@ -491,7 +490,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
                 done = true;
             }
-            else if (write_dataset_to_cache(dds,resourceId, constraint, eval,cache_file_name, rb, &fdds) ) {
+            else if (write_dataset_to_cache(dds,resourceId, constraint, eval,cache_file_name, &fdds) ) {
                 BESDEBUG("cache", "BESDapResponseCache::cache_dataset() - Data successfully written to cache file: " << cache_file_name << endl);
                 done = true;
             }
@@ -553,7 +552,18 @@ bool BESDapResponseCache::load_from_cache(DDS &dds, string resourceId, string ca
 
 }
 
-bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, string constraint, ConstraintEvaluator *eval, string cache_file_name,  BESDapResponseBuilder *rb, DDS **fdds)
+/**
+ *
+ * @param dds
+ * @param resourceId
+ * @param constraint
+ * @param eval
+ * @param cache_file_name
+ * @param fdds Value-result parameter; The cached DDS is return via this.
+ * @return
+ */
+bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, string constraint,
+    ConstraintEvaluator *eval, string cache_file_name, DDS **fdds)
 {
     bool success = false;
     int fd;
@@ -563,7 +573,6 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, st
         // try to build it. First make an empty files and get an exclusive lock on them.
         BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() -  Caching " << cache_file_name << ", constraint: " << constraint << endl);
 
-        BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() - Cache file " << cache_file_name << " does not yet exist." << endl);
         // Create id file
         std::ofstream cache_file_ostream(cache_file_name);
         if (!cache_file_ostream) {
@@ -572,7 +581,6 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, st
         cache_file_ostream << resourceId << endl;
         BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
 
-        BESDEBUG("cache", "BESDapResponseCache::write_dataset_to_cache() - Caching DAP Object " << endl);
         *fdds = new DDS(dds);
         eval->parse_constraint(constraint, **fdds);
 
@@ -582,7 +590,7 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, st
             *fdds = temp_fdds;
         }
 
-
+#if 0
         string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
 
         // Use a ConstraintEvaluator that has not parsed a CE so the code can use
@@ -600,11 +608,25 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, st
         // of the DDS's variables.
         set_mime_multipart(cache_file_ostream, boundary, start, dods_data_ddx, x_plain,
                 last_modified_time(rb->get_dataset_name()));
+
         //data_stream << flush;
         rb->serialize_dap2_data_ddx(cache_file_ostream, **fdds, eval, boundary, start);
-        //data_stream << flush;
+#endif
+        (*fdds)->print_xml_writer(cache_file_ostream, true, "");
 
+        XDRStreamMarshaller m(cache_file_ostream);
+
+        // Send all variables in the current projection (send_p()).
+        for (DDS::Vars_iter i = (*fdds)->var_begin(); i != (*fdds)->var_end(); i++) {
+            if ((*i)->send_p()) {
+                (*i)->serialize(*eval, **fdds, m, false);
+            }
+        }
+
+        //data_stream << flush;
+#if 0
         cache_file_ostream << CRLF << "--" << boundary << "--" << CRLF;
+#endif
         cache_file_ostream.close();
 
         // Change the exclusive locks on the new files to a shared lock. This keeps
@@ -619,8 +641,10 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, st
         if (cache_too_big(size)) update_and_purge(cache_file_name);
 
         success = true;
-    }
-    return success;
 
+        unlock_and_close(cache_file_name);
+    }
+
+    return success;
 }
 
