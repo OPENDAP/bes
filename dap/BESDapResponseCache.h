@@ -62,8 +62,8 @@ private:
 
     libdap::DDS *read_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
-    bool write_dataset_to_cache(libdap::DDS &dds, string resourceId, string constraint,
-        libdap::ConstraintEvaluator *eval, string cache_file_name, libdap::DDS **fdds);
+    bool write_dataset_to_cache(libdap::DDS &dds, const string &resourceId, const string &constraint,
+        libdap::ConstraintEvaluator *eval, const string &cache_file_name, libdap::DDS **fdds);
 
     bool load_from_cache(const string dataset_filename, const string resourceId, const string cache_file_name,  libdap::DDS **fdds);
 

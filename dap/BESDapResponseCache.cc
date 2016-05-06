@@ -54,8 +54,7 @@
 #include "BESLog.h"
 #include "BESDebug.h"
 
-#define DEBUG_KEY "cache"
-
+#define DEBUG_KEY "response_cache"
 
 #define CRLF "\r\n"
 
@@ -264,7 +263,6 @@ BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *facto
 
     fdds->filename(dataset_name);
 
-
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  BEGIN" << endl);
 
     // Parse the DDX; throw an exception on error.
@@ -290,7 +288,6 @@ BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *facto
     }
 
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
-
 
     fdds->set_factory(0);
 
@@ -371,11 +368,10 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
             }
 
             cache_token = cache_file_name;  // Set this value-result parameter
-            //unlock_cache();
         }
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << "for resource ID: " << resourceId << endl);
-        //fdds->print_constrained(cerr);
+
         return fdds;
     }
     catch (...) {
@@ -426,8 +422,8 @@ bool BESDapResponseCache::load_from_cache(const string dataset_name, const strin
  * @param fdds Value-result parameter; The cached DDS is return via this.
  * @return
  */
-bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, string constraint,
-    ConstraintEvaluator *eval, string cache_file_name, DDS **fdds)
+bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, const string &resourceId, const string &constraint,
+    ConstraintEvaluator *eval, const string &cache_file_name, DDS **result_dds)
 {
     bool success = false;
     int fd;
@@ -445,29 +441,30 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, string resourceId, st
         cache_file_ostream << resourceId << endl;
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
 
-        *fdds = new DDS(dds);
-        eval->parse_constraint(constraint, **fdds);
+        eval->parse_constraint(constraint, dds);
 
         if (eval->function_clauses()) {
-            DDS *temp_fdds = eval->eval_function_clauses(**fdds);
-            delete *fdds;
-            *fdds = temp_fdds;
+            *result_dds = eval->eval_function_clauses(dds);
         }
 
-        (*fdds)->print_xml_writer(cache_file_ostream, true, "");
+        (*result_dds)->print_xml_writer(cache_file_ostream, true, "");
 
         cache_file_ostream << DATA_MARK << endl;
 
-        XDRStreamMarshaller m(cache_file_ostream);
+        // Define the scope of the StreamMarshaller because for some types it will use
+        // a child thread to send data and it's dtor will wait for that thread to complete.
+        // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
+        {
+            XDRStreamMarshaller m(cache_file_ostream);
 
-        // Send all variables in the current projection (send_p()).
-        for (DDS::Vars_iter i = (*fdds)->var_begin(); i != (*fdds)->var_end(); i++) {
-            if ((*i)->send_p()) {
-                (*i)->serialize(*eval, **fdds, m, false);
+            for (DDS::Vars_iter i = (*result_dds)->var_begin(); i != (*result_dds)->var_end(); i++) {
+                if ((*i)->send_p()) {
+                    (*i)->serialize(*eval, **result_dds, m, false);
+                }
             }
         }
 
-        cache_file_ostream.close();
+        // Removed jhrg 5/6/16 cache_file_ostream.close();
 
         // Change the exclusive locks on the new files to a shared lock. This keeps
         // other processes from purging the new files and ensures that the reading
