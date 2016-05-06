@@ -272,8 +272,9 @@ BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *facto
     // Return the CID for the matching data part
     string data_cid; // Not used. jhrg 5/5/16
     try {
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Ready to parse DDX. stream position: "<< cached_data.tellg() << endl);
         ddx_parser.intern_stream(cached_data, fdds, data_cid, DATA_MARK);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Parsed DDX." << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Parsed DDX. stream position: "<< cached_data.tellg() << endl);
     }
     catch (Error &e) {
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() - [ERROR] DDX Parser Error: " << e.get_error_message() << endl);
@@ -287,7 +288,6 @@ BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *facto
         (*i)->deserialize(um, fdds);
     }
 
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
 
     fdds->set_factory(0);
 
@@ -298,6 +298,8 @@ BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *facto
         (*i)->set_read_p(true);
         (*i++)->set_send_p(true);
     }
+
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
 
     return fdds;
 }
@@ -393,14 +395,21 @@ bool BESDapResponseCache::load_from_cache(const string dataset_name, const strin
         // because we know it's the resourceID of the thing in the cache.
         std::ifstream cache_file_istream(cache_file_name);
         string cachedResourceId;
+
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream.tellg()  << " bytes read: "<< cache_file_istream.gcount()<< endl);
+
         std::getline (cache_file_istream,cachedResourceId);
 
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId <<
+                " length: " << cachedResourceId.length()<< endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream.tellg() << endl);
+
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
 
         // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
         if(cachedResourceId.compare(resourceId) == 0){
             // WooHoo Cache Hit!
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache Hit!" << endl);
             BaseTypeFactory factory;
             *fdds = read_data_ddx(cache_file_istream, &factory, dataset_name);
             success = true;
