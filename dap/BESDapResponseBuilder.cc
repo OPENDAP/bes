@@ -366,13 +366,6 @@ void BESDapResponseBuilder::establish_timeout(ostream &) const
 /**
  * @deprecated Use timeout_off() instead.
  */
-void BESDapResponseBuilder::remove_timeout() const
-{
-#if USE_LOCAL_TIMEOUT_SCHEME
-    alarm(0);
-#endif
-}
-
 static string::size_type find_closing_paren(const string &ce, string::size_type pos)
 {
     // Iterate over the string finding all ( or ) characters until the matching ) is found.
@@ -953,6 +946,13 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true.
  @return void */
+void BESDapResponseBuilder::remove_timeout() const
+{
+#if USE_LOCAL_TIMEOUT_SCHEME
+    alarm(0);
+#endif
+}
+
 void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval,
     bool with_mime_headers)
 {
@@ -1032,7 +1032,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 
 #if FUNCTION_CACHING
         // This means: if we are not supposed to store the result, then serialize it.
-        if (!store_dap2_result(data_stream, dds, eval)) {
+        if (!store_dap2_result(data_stream, *fdds, eval)) {
             serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
 

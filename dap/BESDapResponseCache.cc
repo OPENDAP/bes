@@ -35,6 +35,7 @@
 #include <sstream>
 
 #include <DDS.h>
+#include <DataDDS.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
@@ -188,18 +189,18 @@ BESDapResponseCache *
 BESDapResponseCache::get_instance()
 {
     if (d_instance == 0) {
-        if (dir_exists(getCacheDirFromConfig())) {
             try {
-                d_instance = new BESDapResponseCache();
+                if (dir_exists(getCacheDirFromConfig())) {
+                    d_instance = new BESDapResponseCache();
 #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
+                    atexit(delete_instance);
 #endif
+                }
             }
             catch (BESInternalError &bie) {
                 BESDEBUG(DEBUG_KEY,
                         "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
             }
-        }
     }
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::get_instance() - d_instance: " << d_instance << endl);
 
@@ -259,7 +260,7 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
 DDS *
 BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *factory, const string &dataset_name)
 {
-    DDS *fdds = new DDS(factory);
+    DDS *fdds = new DataDDS(factory);
 
     fdds->filename(dataset_name);
 
@@ -350,7 +351,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
 
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
 
-            // Do the cache file and it's id file exist?
+            // Does the cache file exist?
             if (load_from_cache(dataset_name,resourceId,cache_file_name,&fdds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
                 done = true;
