@@ -174,13 +174,13 @@ public:
 		string token;
 		try {
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
+			token = cache->cache_dataset(&test_dds, "", &eval);
 			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
 			cache->unlock_and_close(token);
 
-			CPPUNIT_ASSERT(cache_dds);
+			CPPUNIT_ASSERT(test_dds);
 
-			delete cache_dds;
+			//delete cache_dds;
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
@@ -202,17 +202,18 @@ public:
 		try {
 		    // This code is here to load the DataDDX response into the cache if it is not
 		    // there already. If it is there, it reads it from the cache.
-			DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
+		    token = cache->cache_dataset(&test_dds, "", &eval);
+			//DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 
-			CPPUNIT_ASSERT(cache_dds);
-			int var_count = cache_dds->var_end() - cache_dds->var_begin();
+			CPPUNIT_ASSERT(test_dds);
+			int var_count = test_dds->var_end() - test_dds->var_begin();
 			CPPUNIT_ASSERT(var_count == 9);
 
-			delete cache_dds; cache_dds = 0;
+			//delete cache_dds; cache_dds = 0;
 
-            bool ret = cache->load_from_cache("test.05",test_dds->filename()+"#", token, &cache_dds);
+            bool ret = cache->load_from_cache("test.05", test_dds->filename()+"#", token, &cache_dds);
 
             // True if it worked
             CPPUNIT_ASSERT(ret);

@@ -47,8 +47,7 @@ class BESDapResponseCache: public BESFileLockingCache {
 private:
 
     static BESDapResponseCache *d_instance;
-    static void delete_instance()
-    {
+    static void delete_instance() {
         delete d_instance;
         d_instance = 0;
     }
@@ -62,8 +61,8 @@ private:
 
     libdap::DDS *read_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
-    bool write_dataset_to_cache(libdap::DDS &dds, const string &resourceId, const string &constraint,
-        libdap::ConstraintEvaluator *eval, const string &cache_file_name, libdap::DDS **fdds);
+    bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
+        libdap::ConstraintEvaluator *eval, const string &cache_file_name);
 
     bool load_from_cache(const string dataset_filename, const string resourceId, const string cache_file_name,  libdap::DDS **fdds);
 
@@ -103,13 +102,12 @@ public:
     }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
-    virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint,
-        libdap::ConstraintEvaluator *eval, std::string &cache_token);
+    virtual std::string cache_dataset(libdap::DDS **dds, const std::string &constraint,
+        libdap::ConstraintEvaluator *eval);//, std::string &cache_token);
 
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
-
 };
 
 #endif // _bes_dap_response_cache_h

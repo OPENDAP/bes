@@ -516,7 +516,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
         if (responseCache) {
-            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, &func_eval, cache_token);
+            cache_token = responseCache->cache_dataset(dds, d_btp_func_ce, &func_eval);
         }
         else {
             func_eval.parse_constraint(d_btp_func_ce, dds);
@@ -987,8 +987,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 #endif
 
         if (responseCache) {
-            BESDEBUG("dap",
-                "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
             fdds = responseCache->cache_dataset(dds, get_btp_func_ce(), &func_eval, cache_token);
         }
         else {

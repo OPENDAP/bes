@@ -304,20 +304,17 @@ BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *facto
     return fdds;
 }
 
-DDS *
-BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, ConstraintEvaluator *eval, string &cache_token)
+string
+BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, ConstraintEvaluator *eval) //, string &cache_token)
 {
     // These are used for the cached or newly created DDS object
-    BaseTypeFactory factory;
-    DDS *fdds = NULL;
+    // BaseTypeFactory factory;
 
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
-    string resourceId = dds.filename() + "#" + constraint;
+    string resourceId = (*dds)->filename() + "#" + constraint;
 
     try {
-        string cache_file_name; //  = get_cache_file_name(resourceId, /*mangle*/true);
-
         // Get the cache filename for this resourceId
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
 
@@ -336,12 +333,15 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
         string baseName =  BESFileLockingCache::get_cache_file_name(hashed_id, true);
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
 
-        string dataset_name = dds.filename();
+        string dataset_name = (*dds)->filename();
+
+        DDS *fdds = NULL;
+        string cache_file_name; //  = get_cache_file_name(resourceId, /*mangle*/true);
 
         // Begin cache collision avoidance.
         unsigned long suffix_counter = 0;
         bool done = false;
-        while(!done){
+        while (!done) {
 
             // Build cache_file_name and cache_id_file_name from baseName
             stringstream cfname;
@@ -351,17 +351,17 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
 
             // Does the cache file exist?
-            if (load_from_cache(dataset_name,resourceId,cache_file_name,&fdds)) {
+            if (load_from_cache(dataset_name, resourceId, cache_file_name, &fdds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
                 done = true;
             }
-            else if (write_dataset_to_cache(dds,resourceId, constraint, eval,cache_file_name, &fdds) ) {
+            else if (write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name) ) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully written to cache file: " << cache_file_name << endl);
                 done = true;
             }
             // get_read_lock() returns immediately if the file does not exist,
             // but blocks waiting to get a shared lock if the file does exist.
-            else if (load_from_cache(dataset_name,resourceId,cache_file_name,&fdds)) {
+            else if (load_from_cache(dataset_name, resourceId, cache_file_name, &fdds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
                 done = true;
             }
@@ -369,12 +369,13 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
                throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
             }
 
-            cache_token = cache_file_name;  // Set this value-result parameter
+            //cache_token = cache_file_name;  // Set this value-result parameter
         }
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << "for resource ID: " << resourceId << endl);
 
-        return fdds;
+        *dds = fdds;
+        return cache_file_name;
     }
     catch (...) {
         BESDEBUG(DEBUG_KEY,"BESDapResponseCache::cache_dataset() -  Caught exception, unlocking cache and re-throwing." << endl);
@@ -384,13 +385,12 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, Constrain
     }
 }
 
-
 bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
 {
     bool success = false;
     int fd;
 
-    if(get_read_lock(cache_file_name, fd)){
+    if (get_read_lock(cache_file_name, fd)) {
         // So we need to READ the first line of the file into a string
         // because we know it's the resourceID of the thing in the cache.
         std::ifstream cache_file_istream(cache_file_name);
@@ -398,22 +398,23 @@ bool BESDapResponseCache::load_from_cache(const string dataset_name, const strin
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream.tellg()  << " bytes read: "<< cache_file_istream.gcount()<< endl);
 
-        std::getline (cache_file_istream,cachedResourceId);
+        std::getline(cache_file_istream, cachedResourceId);
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId <<
-                " length: " << cachedResourceId.length()<< endl);
+                " length: " << cachedResourceId.length() << endl);
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream.tellg() << endl);
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
 
         // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
-        if(cachedResourceId.compare(resourceId) == 0){
+        if (cachedResourceId.compare(resourceId) == 0) {
             // WooHoo Cache Hit!
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache Hit!" << endl);
             BaseTypeFactory factory;
             *fdds = read_data_ddx(cache_file_istream, &factory, dataset_name);
             success = true;
         }
+
         unlock_and_close(cache_file_name);
     }
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache " << (success?"HIT":"MISS") << " for: " << cache_file_name << endl);
@@ -431,8 +432,8 @@ bool BESDapResponseCache::load_from_cache(const string dataset_name, const strin
  * @param fdds Value-result parameter; The cached DDS is return via this.
  * @return
  */
-bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, const string &resourceId, const string &constraint,
-    ConstraintEvaluator *eval, const string &cache_file_name, DDS **result_dds)
+bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resourceId, const string &constraint,
+    ConstraintEvaluator *eval, const string &cache_file_name)
 {
     bool success = false;
     int fd;
@@ -450,13 +451,15 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, const string &resourc
         cache_file_ostream << resourceId << endl;
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
 
-        eval->parse_constraint(constraint, dds);
+        eval->parse_constraint(constraint, **dds);
 
         if (eval->function_clauses()) {
-            *result_dds = eval->eval_function_clauses(dds);
+            DDS *result_dds = eval->eval_function_clauses(**dds);
+            delete *dds; *dds = 0;
+            *dds = result_dds;
         }
 
-        (*result_dds)->print_xml_writer(cache_file_ostream, true, "");
+        (*dds)->print_xml_writer(cache_file_ostream, true, "");
 
         cache_file_ostream << DATA_MARK << endl;
 
@@ -466,9 +469,9 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS &dds, const string &resourc
         {
             XDRStreamMarshaller m(cache_file_ostream);
 
-            for (DDS::Vars_iter i = (*result_dds)->var_begin(); i != (*result_dds)->var_end(); i++) {
+            for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
                 if ((*i)->send_p()) {
-                    (*i)->serialize(*eval, **result_dds, m, false);
+                    (*i)->serialize(*eval, **dds, m, false);
                 }
             }
         }
