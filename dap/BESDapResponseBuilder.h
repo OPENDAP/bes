@@ -154,7 +154,7 @@ public:
 	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
-	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
+	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
 
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);

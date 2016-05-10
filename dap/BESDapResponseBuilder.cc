@@ -885,7 +885,7 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
  *
  * FIXME Comment is probably wrong jhrg 10/20/15
  */
-void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
+void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS **dds, ConstraintEvaluator &eval,
     const string &boundary, const string &start, bool ce_eval)
 {
     BESDEBUG("dap", __PRETTY_FUNCTION__ << " BEGIN" << endl);
@@ -905,7 +905,7 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
 
     // Send constrained DDX with a data blob reference.
     // FIXME Comment CID passed but ignored jhrg 10/20/15
-    dds.print_xml_writer(out, true, cid);
+    (*dds)->print_xml_writer(out, true, cid);
 
     // write the data part mime headers here
     set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
@@ -916,9 +916,9 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
 
 
     // Send all variables in the current projection (send_p()).
-    for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+    for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
-            (*i)->serialize(eval, dds, m, ce_eval);
+            (*i)->serialize(eval, **dds, m, ce_eval);
 #ifdef CLEAR_LOCAL_DATA
             (*i)->clear_local_data();
 #endif
