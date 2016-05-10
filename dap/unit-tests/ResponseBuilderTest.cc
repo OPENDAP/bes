@@ -777,8 +777,7 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(store_dap2_result_test);
     CPPUNIT_TEST(store_dap4_result_test);
 #endif
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ResponseBuilderTest);
