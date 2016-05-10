@@ -359,7 +359,7 @@ public:
 
             ConstraintEvaluator ce;
 
-            drb->send_dds(oss, *dds, ce);
+            drb->send_dds(oss, &dds, ce);
 
             DBG(cerr << "DDS: " << oss.str() << endl);
 
@@ -378,7 +378,7 @@ public:
         ConstraintEvaluator ce;
 
         try {
-            drb->send_ddx(oss, *dds, ce);
+            drb->send_ddx(oss, &dds, ce);
 
             DBG(cerr << "DDX: " << oss.str() << endl);
 
@@ -419,7 +419,7 @@ public:
             (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
-            drb->send_dap2_data(oss, *test_05_dds, ce, false);
+            drb->send_dap2_data(oss, &test_05_dds, ce, false);
 
             string candidateResponseDoc = oss.str();
 
@@ -447,7 +447,7 @@ public:
 
         try {
             oss.str("");
-            drb->send_dap2_data(oss, *test_05_dds, ce, false);
+            drb->send_dap2_data(oss, &test_05_dds, ce, false);
 
             string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
@@ -714,7 +714,7 @@ public:
 
             ConstraintEvaluator ce;
             DBG(cerr << "invoke_server_side_function_test() - Calling BESDapResponseBuilder.send_dap2_data()" << endl);
-            drb6->send_dap2_data(oss, *dds, ce);
+            drb6->send_dap2_data(oss, &dds, ce);
 
             DBG(cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
 
