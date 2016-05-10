@@ -86,16 +86,14 @@ public:
     	if (bes_debug)
     	    BESDebug::SetUp("cerr,response_cache");
 
-    	string cid;
+    	string cid; // This is an unused value-result parameter. jhrg 5/10/16
     	test_dds = new DDS(&ttf);
     	dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_dds, cid);
 
     	// for these tests, set the filename to the dataset_name. ...keeps the cache names short
     	test_dds->filename(test_dds->get_dataset_name());
 
-    	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "DDS Name: " << test_dds->get_dataset_name() << endl);
-    	DBG(cerr << "Intern CID: " << cid << endl);
 
     	clean_cache_dir(d_response_cache);
 
@@ -203,15 +201,12 @@ public:
 		    // This code is here to load the DataDDX response into the cache if it is not
 		    // there already. If it is there, it reads it from the cache.
 		    token = cache->cache_dataset(&test_dds, "", &eval);
-			//DDS *cache_dds = cache->cache_dataset(*test_dds, "", &eval, token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 
 			CPPUNIT_ASSERT(test_dds);
 			int var_count = test_dds->var_end() - test_dds->var_begin();
 			CPPUNIT_ASSERT(var_count == 9);
-
-			//delete cache_dds; cache_dds = 0;
 
             bool ret = cache->load_from_cache("test.05", test_dds->filename()+"#", token, &test_dds);
 
