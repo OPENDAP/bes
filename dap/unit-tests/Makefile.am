@@ -70,8 +70,7 @@ ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDapResponseCache.o .
 ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(AM_LDADD) 
 
 ResponseCacheTest_SOURCES = ResponseCacheTest.cc  $(TEST_SRC)
-ResponseCacheTest_OBJS = ../BESDapResponseBuilder.o ../BESDapResponseCache.o \
-../BESStoredDapResultCache.o   ../DapFunctionUtils.o
+ResponseCacheTest_OBJS = ../BESDapResponseCache.o ../BESStoredDapResultCache.o ../DapFunctionUtils.o
 ResponseCacheTest_LDADD = $(ResponseCacheTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)

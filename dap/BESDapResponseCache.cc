@@ -335,14 +335,14 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
 
         string dataset_name = (*dds)->filename();
 
-        DDS *fdds = NULL;
+
         string cache_file_name; //  = get_cache_file_name(resourceId, /*mangle*/true);
 
         // Begin cache collision avoidance.
         unsigned long suffix_counter = 0;
         bool done = false;
         while (!done) {
-
+            DDS *ret_dds = NULL;
             // Build cache_file_name and cache_id_file_name from baseName
             stringstream cfname;
             cfname << baseName << "_" << suffix_counter++;
@@ -351,8 +351,9 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
 
             // Does the cache file exist?
-            if (load_from_cache(dataset_name, resourceId, cache_file_name, &fdds)) {
+            if (load_from_cache(dataset_name, resourceId, cache_file_name, &ret_dds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
+                *dds = ret_dds;
                 done = true;
             }
             else if (write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name) ) {
@@ -361,8 +362,9 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
             }
             // get_read_lock() returns immediately if the file does not exist,
             // but blocks waiting to get a shared lock if the file does exist.
-            else if (load_from_cache(dataset_name, resourceId, cache_file_name, &fdds)) {
+            else if (load_from_cache(dataset_name, resourceId, cache_file_name, &ret_dds)) {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
+                *dds = ret_dds;
                 done = true;
             }
             else {
@@ -374,7 +376,7 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << "for resource ID: " << resourceId << endl);
 
-        *dds = fdds;
+
         return cache_file_name;
     }
     catch (...) {
