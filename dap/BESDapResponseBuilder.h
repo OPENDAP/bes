@@ -140,18 +140,18 @@ public:
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
 	virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
-	virtual void send_das(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
+	virtual void send_das(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
-	virtual void send_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
+	virtual void send_dds(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
-	virtual void serialize_dap2_data_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void serialize_dap2_data_dds(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool ce_eval = true);
-	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
-	virtual void send_ddx(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
 	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
