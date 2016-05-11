@@ -711,7 +711,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
 
-        DataDDS *dds = bdds->get_dds();
+        DDS *dds = bdds->get_dds();
 
         // Not sure why keep the following line, it is not used.
         //ConstraintEvaluator & ce = bdds->get_ce();
@@ -836,7 +836,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
                                 __FILE__, __LINE__);
     }
     catch (...) {
-        string s = "unknown exception caught building HDF4 DataDDS";
+        string s = "unknown exception caught building DAP2 Data Response from an HDF4 data resource";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
     }
 
@@ -998,7 +998,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 #else
         close_hdf4_fileid(sdfd,fileid,h4file);
 #endif
-        string s = "unknown exception caught building HDF4 DataDDS";
+        string s = "unknown exception caught building DAP2 data response from an HDF4 data resource";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
     }
 
@@ -1286,7 +1286,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
 
-        DataDDS *dds = bdds->get_dds();
+        DDS *dds = bdds->get_dds();
 
         string accessed = dhi.container->access();
         dds->filename(accessed);

@@ -18,7 +18,7 @@
 #include "HdfEosDef.h"
 #endif
 
-#include <DataDDS.h>
+#include <DDS.h>
 #include <InternalErr.h>
 
 using namespace libdap;
@@ -37,7 +37,7 @@ using namespace libdap;
  * destructor closes the file.
  *
  */
-class HDF4DDS : public DataDDS {
+class HDF4DDS : public DDS {
 private:
     int sdfd;
     int fileid;
@@ -53,9 +53,9 @@ private:
     }
 
 public:
-    HDF4DDS(DataDDS *ddsIn) : DataDDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    HDF4DDS(DDS *ddsIn) : DDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
 
-    HDF4DDS(const HDF4DDS &rhs) : DataDDS(rhs) {
+    HDF4DDS(const HDF4DDS &rhs) : DDS(rhs) {
         m_duplicate(rhs);
     }
 
