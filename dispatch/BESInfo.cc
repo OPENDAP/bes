@@ -227,14 +227,14 @@ void BESInfo::add_exception(BESError &e, const string &admin)
     add_tag("Type", stype.str());
     add_tag("Message", e.get_message());
     add_tag("Administrator", admin);
-#ifdef BES_DEVELOPER
+
     begin_tag( "Location" );
     add_tag( "File", e.get_file() );
     ostringstream sline;
     sline << e.get_line();
     add_tag( "Line", sline.str() );
     end_tag( "Location" );
-#endif
+
     end_tag("BESError");
 }
 
