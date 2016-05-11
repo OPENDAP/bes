@@ -500,6 +500,7 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
         cache_file_ostream << DATA_MARK << endl;
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote data mark to ostream." << endl);
 
+        ConstraintEvaluator new_ce;
         // Define the scope of the StreamMarshaller because for some types it will use
         // a child thread to send data and it's dtor will wait for that thread to complete.
         // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
@@ -510,7 +511,7 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
             for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
                 if ((*i)->send_p()) {
                     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serializing "<< (*i)->name() << endl);
-                    (*i)->serialize(*eval, **dds, m, false);
+                    (*i)->serialize(new_ce, **dds, m, false);
                 }
             }
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization END." << endl);
