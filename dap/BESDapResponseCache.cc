@@ -26,6 +26,7 @@
 
 //#define DODS_DEBUG
 
+#include <cstdio>
 #include <unistd.h>
 #include <sys/stat.h>
 
@@ -39,7 +40,8 @@
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
-#include <XDRStreamUnMarshaller.h>
+//#include <XDRStreamUnMarshaller.h>
+#include <XDRFileUnMarshaller.h>
 
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
@@ -251,59 +253,6 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
     return true;
 }
 
-
-/**
- * Read data from cache. Allocates a new DDS using the given factory.
- *
- */
-DDS *
-BESDapResponseCache::read_data_ddx(ifstream &cached_data, BaseTypeFactory *factory, const string &dataset_name)
-{
-    DDS *fdds = new DataDDS(factory);
-
-    fdds->filename(dataset_name);
-
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  BEGIN" << endl);
-
-    // Parse the DDX; throw an exception on error.
-    DDXParser ddx_parser(fdds->get_factory());
-
-    // Parse the DDX, reading up to and including the next boundary.
-    // Return the CID for the matching data part
-    string data_cid; // Not used. jhrg 5/5/16
-    try {
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Ready to parse DDX. stream position: "<< cached_data.tellg() << endl);
-        ddx_parser.intern_stream(cached_data, fdds, data_cid, DATA_MARK);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Parsed DDX. stream position: "<< cached_data.tellg() << endl);
-    }
-    catch (Error &e) {
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() - [ERROR] DDX Parser Error: " << e.get_error_message() << endl);
-        throw;
-    }
-
-    // Now read the data
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Reading Data." << endl);
-    XDRStreamUnMarshaller um(cached_data);
-    for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
-        (*i)->deserialize(um, fdds);
-    }
-
-
-    fdds->set_factory(0);
-
-    // mark everything as read. And 'to send.' That is, make sure that when a response
-    // is retrieved from the cache, all of the variables are marked as 'to be sent.'
-    DDS::Vars_iter i = fdds->var_begin();
-    while (i != fdds->var_end()) {
-        (*i)->set_read_p(true);
-        (*i++)->set_send_p(true);
-    }
-
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
-
-    return fdds;
-}
-
 string
 BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, ConstraintEvaluator *eval) //, string &cache_token)
 {
@@ -387,6 +336,59 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     }
 }
 
+/**
+ * Read data from cache. Allocates a new DDS using the given factory.
+ *
+ */
+DDS *
+BESDapResponseCache::read_data_ddx(FILE *cached_data /*ifstream &cached_data*/, BaseTypeFactory *factory, const string &dataset_name)
+{
+    DDS *fdds = new DataDDS(factory);
+
+    fdds->filename(dataset_name);
+
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  BEGIN" << endl);
+
+    // Parse the DDX; throw an exception on error.
+    DDXParser ddx_parser(fdds->get_factory());
+
+    // Parse the DDX, reading up to and including the next boundary.
+    // Return the CID for the matching data part
+    string data_cid; // Not used. jhrg 5/5/16
+    try {
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Ready to parse DDX. stream position: "<< /*cached_data.tellg() <<*/ endl);
+        ddx_parser.intern_stream(cached_data, fdds, data_cid, DATA_MARK);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Parsed DDX. stream position: "<< /*cached_data.tellg() <<*/ endl);
+    }
+    catch (Error &e) {
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() - [ERROR] DDX Parser Error: " << e.get_error_message() << endl);
+        throw;
+    }
+
+    // Now read the data
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Reading Data." << endl);
+    //XDRStreamUnMarshaller um(cached_data);
+    XDRFileUnMarshaller um(cached_data);
+    for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
+        (*i)->deserialize(um, fdds);
+    }
+
+
+    fdds->set_factory(0);
+
+    // mark everything as read. And 'to send.' That is, make sure that when a response
+    // is retrieved from the cache, all of the variables are marked as 'to be sent.'
+    DDS::Vars_iter i = fdds->var_begin();
+    while (i != fdds->var_end()) {
+        (*i)->set_read_p(true);
+        (*i++)->set_send_p(true);
+    }
+
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
+
+    return fdds;
+}
+
 bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
 {
     bool success = false;
@@ -395,16 +397,22 @@ bool BESDapResponseCache::load_from_cache(const string dataset_name, const strin
     if (get_read_lock(cache_file_name, fd)) {
         // So we need to READ the first line of the file into a string
         // because we know it's the resourceID of the thing in the cache.
-        std::ifstream cache_file_istream(cache_file_name);
+
+        // *** std::ifstream cache_file_istream(cache_file_name);
+        FILE *cache_file_istream = fopen(cache_file_name.c_str(), "r");
+
         string cachedResourceId;
 
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream.tellg()  << " bytes read: "<< cache_file_istream.gcount()<< endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream  << /*.tellg()  << " bytes read: "<< cache_file_istream.gcount()<<*/ endl);
 
-        std::getline(cache_file_istream, cachedResourceId);
+        // *** std::getline(cache_file_istream, cachedResourceId);
+        char line[4096];
+        fgets(line, sizeof(line), cache_file_istream);
+        cachedResourceId.assign(line);
+        cachedResourceId.pop_back();
 
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId <<
-                " length: " << cachedResourceId.length() << endl);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream.tellg() << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId << " length: " << cachedResourceId.length() << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< /*cache_file_istream.tellg() <<*/ endl);
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
 
@@ -418,6 +426,8 @@ bool BESDapResponseCache::load_from_cache(const string dataset_name, const strin
         }
 
         unlock_and_close(cache_file_name);
+        fclose(cache_file_istream);
+
     }
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache " << (success?"HIT":"MISS") << " for: " << cache_file_name << endl);
 

@@ -59,7 +59,8 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 
-    libdap::DDS *read_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
+    ///*** libdap::DDS *read_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
+    libdap::DDS *read_data_ddx(FILE *cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
     bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
         libdap::ConstraintEvaluator *eval, const string &cache_file_name);
