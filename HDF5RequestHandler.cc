@@ -448,15 +448,15 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         
         hdds->setHDF5Dataset(cf_fileid);
 #endif
-        DataDDS* dds = bdds->get_dds();
+        DDS* dds = bdds->get_dds();
         dds->filename(filename);
 
 #if 0
         if(true == _use_memcache) {
-            BESDEBUG("h5", "Using the DataDDS cache" << endl);
+            BESDEBUG("h5", "Using the DDS cache" << endl);
             map<string, DataDDS>::iterator data_dds_cache_iter = data_dds_cache.find(filename);
             if (data_dds_cache_iter != data_dds_cache.end()) {
-                BESDEBUG("h5", "Found DataDDS in the DataDDS cache" << endl);
+                BESDEBUG("h5", "Found DDS in the DDS cache" << endl);
                 *dds = data_dds_cache_iter->second;
                 bdds->set_constraint(dhi);
                 bdds->clear_container();
@@ -482,7 +482,6 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
             }
         }
 
-        // DataDDS *dds = bdds->get_dds();
         if(true == _usecf) { 
 
             // This is the CF option
@@ -529,7 +528,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         if (true == _use_memcache) {
             // Use this because DDS doesn't have a no-arg ctor which
             // map::operator[] requires. jhrg 2/18/16
-            data_dds_cache.insert(pair<string, DataDDS>(filename, *dds));
+            data_dds_cache.insert(pair<string, DDS>(filename, *dds));
         }
 #endif
 
