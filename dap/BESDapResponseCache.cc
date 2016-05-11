@@ -253,6 +253,25 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
     return true;
 }
 
+
+
+string BESDapResponseCache::getResourceId(DDS *dds, const string &constraint){
+    return dds->filename() + "#" + constraint;
+}
+
+bool BESDapResponseCache::canBeCached(DDS *dds, string constraint){
+
+    bool canCache = true;
+    string resourceId = getResourceId(dds,constraint);
+
+    if(resourceId.length() > 4095)
+        canCache = false;
+
+    return canCache;
+}
+
+
+
 string
 BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, ConstraintEvaluator *eval) //, string &cache_token)
 {

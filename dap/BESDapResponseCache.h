@@ -59,6 +59,8 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 
+    std::string getResourceId(libdap::DDS *dds, const std::string &constraint);
+
     ///*** libdap::DDS *read_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
     libdap::DDS *read_data_ddx(FILE *cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
 
@@ -106,9 +108,11 @@ public:
     virtual std::string cache_dataset(libdap::DDS **dds, const std::string &constraint,
         libdap::ConstraintEvaluator *eval);//, std::string &cache_token);
 
+    virtual bool canBeCached(libdap::DDS *dds, std::string constraint);
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
+
 };
 
 #endif // _bes_dap_response_cache_h

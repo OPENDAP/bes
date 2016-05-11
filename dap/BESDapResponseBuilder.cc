@@ -514,12 +514,13 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
         ConstraintEvaluator func_eval;
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
-        if (responseCache) {
-            cache_token = responseCache->cache_dataset(dds, d_btp_func_ce, &func_eval);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            cache_token = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
 
         }
         else {
-            func_eval.parse_constraint(d_btp_func_ce, **dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
             delete *dds; *dds = 0;
             *dds = fdds;
@@ -693,11 +694,12 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
 
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
-        if (responseCache) {
-            string foo = responseCache->cache_dataset(dds, d_btp_func_ce, &func_eval);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
-            func_eval.parse_constraint(d_btp_func_ce, **dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
             delete *dds; *dds = 0;
             *dds = fdds;
@@ -984,14 +986,15 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         responseCache = BESDapResponseCache::get_instance();
 #endif
 
-        if (responseCache) {
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache has been found. Utilizing cache now..." << endl);
-            string foo = responseCache->cache_dataset(dds, get_btp_func_ce(), &func_eval);
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache utilization complete." << endl);
        }
         else {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache not found; (re)calculating" << endl);
-            func_eval.parse_constraint(get_btp_func_ce(), **dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
             delete *dds; *dds = 0;
             *dds = fdds;
@@ -1117,11 +1120,12 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
         responseCache = BESDapResponseCache::get_instance();
 #endif
 
-        if (responseCache) {
-            string foo = responseCache->cache_dataset(dds, d_btp_func_ce, &func_eval);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
-            func_eval.parse_constraint(d_btp_func_ce, **dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
             delete *dds; *dds = 0;
             *dds = fdds;
