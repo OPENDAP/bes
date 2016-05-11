@@ -72,7 +72,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.action_name = DATA_RESPONSE_STR;
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    DataDDS *dds = new DataDDS(NULL, "virtual");
+    DDS *dds = new DDS(NULL, "virtual");
     BESDataDDSResponse *bdds = new BESDataDDSResponse(dds);
 
     // Set the DAP protocol version requested by the client. 2/25/11 jhrg

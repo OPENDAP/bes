@@ -34,7 +34,7 @@
 #define I_BESDataDDSResponse 1
 
 #include "BESDapResponse.h"
-#include "DataDDS.h"
+#include "DDS.h"
 #include "ConstraintEvaluator.h"
 
 using namespace libdap ;
@@ -44,10 +44,10 @@ using namespace libdap ;
 class BESDataDDSResponse : public BESDapResponse
 {
 private:
-    DataDDS *			_dds;
+    DDS *			        _dds;
     ConstraintEvaluator		_ce;
 public:
-    				BESDataDDSResponse(DataDDS * dds)
+    				BESDataDDSResponse(DDS * dds)
 				    : BESDapResponse(), _dds(dds) {} 
     
     virtual			~BESDataDDSResponse();
@@ -61,10 +61,10 @@ public:
      * Set the response object's DDS. The caller should probably
      * free the existing DDS object before calling this method.
      */
-    void set_dds(DataDDS *ddsIn) { _dds = ddsIn; }
+    void set_dds(DDS *ddsIn) { _dds = ddsIn; }
 
 
-    DataDDS *			get_dds() { return _dds; }
+    DDS *			get_dds() { return _dds; }
     ConstraintEvaluator &	get_ce() { return _ce; }
 };
 

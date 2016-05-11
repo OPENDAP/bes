@@ -203,8 +203,7 @@ private:
 
         BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
         rb.send_dap2_data(dhi.get_output_stream(), &dds, ce, print_mime);
-        // FIXME I don't think that this is correct, this cast...
-        bdds->set_dds((DataDDS *)dds);
+        bdds->set_dds(dds);
    }
 };
 
