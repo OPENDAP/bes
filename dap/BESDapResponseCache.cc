@@ -475,7 +475,7 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
         // a child thread to send data and it's dtor will wait for that thread to complete.
         // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
         {
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Writing data START" << endl);
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization BEGIN" << endl);
             XDRStreamMarshaller m(cache_file_ostream);
 
             for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
@@ -484,7 +484,7 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
                     (*i)->serialize(*eval, **dds, m, false);
                 }
             }
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Writing data END." << endl);
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization END." << endl);
         }
 
         // Removed jhrg 5/6/16 cache_file_ostream.close();
