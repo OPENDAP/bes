@@ -521,7 +521,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
         else {
             func_eval.parse_constraint(d_btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
-            delete *dds;
+            delete *dds; *dds = 0;
             *dds = fdds;
         }
 
@@ -699,7 +699,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
         else {
             func_eval.parse_constraint(d_btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
-            delete *dds;
+            delete *dds; *dds = 0;
             *dds = fdds;
         }
 
@@ -992,7 +992,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
             func_eval.parse_constraint(get_btp_func_ce(), **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
-            delete *dds;
+            delete *dds; *dds = 0;
             *dds = fdds;
         }
 
@@ -1122,7 +1122,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
         else {
             func_eval.parse_constraint(d_btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
-            delete *dds;
+            delete *dds; *dds = 0;
             *dds = fdds;
         }
 
