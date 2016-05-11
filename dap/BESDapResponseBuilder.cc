@@ -985,11 +985,12 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 #endif
 
         if (responseCache) {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache has been found. Utilizing cache now..." << endl);
             string foo = responseCache->cache_dataset(dds, get_btp_func_ce(), &func_eval);
-        }
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache utilization complete." << endl);
+       }
         else {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache not found; (re)calculating" << endl);
             func_eval.parse_constraint(get_btp_func_ce(), **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
             delete *dds; *dds = 0;

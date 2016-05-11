@@ -454,28 +454,37 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
 
         eval->parse_constraint(constraint, **dds);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - The constraint expression has been parsed." << endl);
 
         if (eval->function_clauses()) {
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Found function clauses in the constraint expression. Evaluating..." << endl);
             DDS *result_dds = eval->eval_function_clauses(**dds);
-            delete *dds; *dds = 0;
+            delete *dds;
+            *dds = 0;
             *dds = result_dds;
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Function evaluation complete." << endl);
         }
 
         (*dds)->print_xml_writer(cache_file_ostream, true, "");
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote DDX to ostream.." << endl);
 
         cache_file_ostream << DATA_MARK << endl;
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote data mark to ostream." << endl);
 
         // Define the scope of the StreamMarshaller because for some types it will use
         // a child thread to send data and it's dtor will wait for that thread to complete.
         // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
         {
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Writing data START" << endl);
             XDRStreamMarshaller m(cache_file_ostream);
 
             for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
                 if ((*i)->send_p()) {
+                    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serializing "<< (*i)->name() << endl);
                     (*i)->serialize(*eval, **dds, m, false);
                 }
             }
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Writing data END." << endl);
         }
 
         // Removed jhrg 5/6/16 cache_file_ostream.close();
