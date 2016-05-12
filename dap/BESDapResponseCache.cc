@@ -360,13 +360,13 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
  *
  */
 DDS *
-BESDapResponseCache::read_data_ddx(FILE *cached_data /*ifstream &cached_data*/, BaseTypeFactory *factory, const string &dataset_name)
+BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, const string &dataset_name)
 {
     DDS *fdds = new DataDDS(factory);
 
     fdds->filename(dataset_name);
 
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  BEGIN" << endl);
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  BEGIN" << endl);
 
     // Parse the DDX; throw an exception on error.
     DDXParser ddx_parser(fdds->get_factory());
@@ -375,17 +375,17 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data /*ifstream &cached_data*/, 
     // Return the CID for the matching data part
     string data_cid; // Not used. jhrg 5/5/16
     try {
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Ready to parse DDX. stream position: "<< /*cached_data.tellg() <<*/ endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Ready to parse DDX. " << endl);
         ddx_parser.intern_stream(cached_data, fdds, data_cid, DATA_MARK);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Parsed DDX. stream position: "<< /*cached_data.tellg() <<*/ endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Parsed DDX." << endl);
     }
     catch (Error &e) {
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() - [ERROR] DDX Parser Error: " << e.get_error_message() << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() - [ERROR] DDX Parser Error: " << e.get_error_message() << endl);
         throw;
     }
 
     // Now read the data
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  Reading Data." << endl);
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Reading Data." << endl);
     //XDRStreamUnMarshaller um(cached_data);
     XDRFileUnMarshaller um(cached_data);
     for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
@@ -403,7 +403,7 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data /*ifstream &cached_data*/, 
         (*i++)->set_send_p(true);
     }
 
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_from_cache() -  END." << endl);
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  END." << endl);
 
     return fdds;
 }
