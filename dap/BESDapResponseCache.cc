@@ -36,7 +36,6 @@
 #include <sstream>
 
 #include <DDS.h>
-#include <DataDDS.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
@@ -341,7 +340,7 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
         //cache_token = cache_file_name;  // Set this value-result parameter
     }
 
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << "for resource ID: " << resourceId << endl);
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << " for resource ID: " << resourceId << endl);
 
 
     return cache_file_name;
@@ -354,7 +353,7 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
 DDS *
 BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, const string &dataset_name)
 {
-    DDS *fdds = new DataDDS(factory);
+    DDS *fdds = new DDS(factory);
 
     fdds->filename(dataset_name);
 
@@ -381,6 +380,7 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, 
     //XDRStreamUnMarshaller um(cached_data);
     XDRFileUnMarshaller um(cached_data);
     for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Deserializing variable "<< (*i)->name() << endl);
         (*i)->deserialize(um, fdds);
     }
 
@@ -495,12 +495,12 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
             cache_file_ostream << DATA_MARK << endl;
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote data mark to ostream." << endl);
 
-            ConstraintEvaluator new_ce;
             // Define the scope of the StreamMarshaller because for some types it will use
             // a child thread to send data and it's dtor will wait for that thread to complete.
             // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
             {
                 BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization BEGIN" << endl);
+                ConstraintEvaluator new_ce;
                 XDRStreamMarshaller m(cache_file_ostream);
 
                 for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
