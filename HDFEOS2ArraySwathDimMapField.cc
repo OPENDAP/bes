@@ -435,14 +435,16 @@ HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (vector < T >
                 }
                 else {
                     int32 i1 = 0;
-                    int32 i2 = 0;
+                    int32 i2 = (i<=0)?1:0;
                     int32 j1 = 0;
                     int32 j2 = 0; 
 
+#if 0
                     if (i <= 0) {
-                        i1 = 0;
+                        //i1 = 0;
                         i2 = 1;
                     }
+#endif
                     if ((unsigned int) i + 1 >= v.size ()) {
                         i1 = v.size () - 2;
                         i2 = v.size () - 1;

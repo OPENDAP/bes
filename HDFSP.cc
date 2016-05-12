@@ -284,6 +284,7 @@ throw (Exception)
         throw2 ("Cannot start vdata/vgroup interface", path);
     }
 
+    if(file != NULL) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
     try {
 
         // Retrieve extra SDS info.
@@ -298,6 +299,7 @@ throw (Exception)
     catch(...) {
         delete file;
         throw;
+    }
     }
          
     return file;
@@ -441,7 +443,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                         }
 
                         // If the field name matches CERES's specific field name"LOCALGRANULEID"
-                        if (!strcmp (fieldname, CERE_META_FIELD_NAME)) {
+                        else if (!strcmp (fieldname, CERE_META_FIELD_NAME)) {
 
                             int32 fieldsize = -1; 
                             int32 nelms = -1;
@@ -494,30 +496,32 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             }
 
                             // Assign the corresponding special product indicator we supported for CF
-                            if (!strncmp(databuf, CER_AVG_NAME,strlen (CER_AVG_NAME)))
-                                file->sptype = CER_AVG;
-                            else if (!strncmp
-                                     (databuf, CER_ES4_NAME,strlen(CER_ES4_NAME)))
-                                file->sptype = CER_ES4;
-                            else if (!strncmp
-                                     (databuf, CER_CDAY_NAME,strlen (CER_CDAY_NAME)))
-                                file->sptype = CER_CDAY;
-                            else if (!strncmp
-                                     (databuf, CER_CGEO_NAME,strlen (CER_CGEO_NAME)))
-                                file->sptype = CER_CGEO;
-                            else if (!strncmp
-                                     (databuf, CER_SRB_NAME,strlen (CER_SRB_NAME)))
-                                file->sptype = CER_SRB;
-                            else if (!strncmp
-                                     (databuf, CER_SYN_NAME,strlen (CER_SYN_NAME)))
-                                file->sptype = CER_SYN;
-                            else if (!strncmp
-                                     (databuf, CER_ZAVG_NAME,
-                                      strlen (CER_ZAVG_NAME)))
-                                file->sptype = CER_ZAVG;
-                            else;
+                            if(databuf !=NULL) {//Just make coverity happy
+                                if (!strncmp(databuf, CER_AVG_NAME,strlen (CER_AVG_NAME)))
+                                    file->sptype = CER_AVG;
+                                else if (!strncmp
+                                         (databuf, CER_ES4_NAME,strlen(CER_ES4_NAME)))
+                                    file->sptype = CER_ES4;
+                                else if (!strncmp
+                                         (databuf, CER_CDAY_NAME,strlen (CER_CDAY_NAME)))
+                                    file->sptype = CER_CDAY;
+                                else if (!strncmp
+                                         (databuf, CER_CGEO_NAME,strlen (CER_CGEO_NAME)))
+                                    file->sptype = CER_CGEO;
+                                else if (!strncmp
+                                         (databuf, CER_SRB_NAME,strlen (CER_SRB_NAME)))
+                                    file->sptype = CER_SRB;
+                                else if (!strncmp
+                                         (databuf, CER_SYN_NAME,strlen (CER_SYN_NAME)))
+                                    file->sptype = CER_SYN;
+                                else if (!strncmp
+                                             (databuf, CER_ZAVG_NAME,
+                                          strlen (CER_ZAVG_NAME)))
+                                    file->sptype = CER_ZAVG;
+                                else;
 
-                            free (databuf);
+                                free (databuf);
+                            }
                         }
                     }
                 }
@@ -650,7 +654,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 Vdetach (vgroup_id);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            memset(full_path,'\0',MAX_FULL_PATH_LEN);
+            else
+                memset(full_path,'\0',MAX_FULL_PATH_LEN);
             
             // Obtain the full path of this vgroup
             strncpy (full_path,_BACK_SLASH,strlen(_BACK_SLASH));
@@ -664,7 +669,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+            else 
+                memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
             strncpy(cfull_path,full_path,strlen(full_path));
 
             // Loop all vgroup objects
@@ -764,7 +770,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                             throw;
                         }
 
-                        vdataobj->newname = full_path +vdataobj->name;
+                        if(full_path != NULL)//Make coverity happy since it doesn't understand the throw macro
+                            vdataobj->newname = full_path +vdataobj->name;
 
                         //We want to map fields of vdata with more than 10 records to DAP variables
                         // and we need to add the path and vdata name to the new vdata field name
@@ -806,8 +813,10 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 //Ignore the handling of SDS objects. They are handled elsewhere. 
                 else;
             }
-            free (full_path);
-            free (cfull_path);
+            if(full_path != NULL)
+                free (full_path);
+            if(cfull_path != NULL)
+                free (cfull_path);
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
@@ -1856,6 +1865,7 @@ throw (Exception)
                 throw3 ("SDattrinfo failed ", "SDS name ", sds_name);
             }
 
+           if(attr != NULL) {//Make coverity happy(it doesn't understand the throw macro.
             string tempname (attr_name);
             attr->name = tempname;
             tempname = HDFCFUtil::get_CF_string(tempname);
@@ -1864,14 +1874,17 @@ throw (Exception)
             attr->count = attr_value_count;
             attr->value.resize (attr_value_count * DFKNTsize (attr->type));
             if (SDreadattr (sds_id, attrindex, &attr->value[0]) == -1) {
+                string temp_field_name = field->name;
+                string temp_attr_name = attr->name;
                 delete attr;
                 delete sd;
                 delete field;
                 SDendaccess (sds_id);
                 throw5 ("read SDS attribute failed ", "Field name ",
-                         field->name, " Attribute name ", attr->name);
+                         temp_field_name, " Attribute name ", temp_attr_name);
             }
             field->attrs.push_back (attr);
+           }
         }
         SDendaccess (sds_id);
         sd->sdfields.push_back (field);
@@ -1888,6 +1901,7 @@ throw (Exception)
             delete sd;
             throw3 ("SDattrinfo failed ", "SD id ", sdfd);
         }
+       if(attr != NULL) {//Make coverity happy because it doesn't understand throw3
         std::string tempname (attr_name);
         attr->name = tempname;
 
@@ -1903,6 +1917,7 @@ throw (Exception)
                      attr_name);
         }
         sd->attrs.push_back (attr);
+       }
     }
 
     return sd;
@@ -1976,14 +1991,14 @@ throw (Exception)
     // number of lone vgroups
     int32 num_of_lones =  -1; 
 
-    int32 num_gobjects;
+    int32 num_gobjects = 0;
 
     // Object reference and tag pair. Key to find an HDF4 object
     int32 obj_ref = 0;
     int32 obj_tag = 0;
 
     // Temporary index.
-    int i;
+    int i = 0;
 
     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
     // Documented in a jira ticket HFRHANDLER-168.
@@ -1993,11 +2008,11 @@ throw (Exception)
     //std::string full_path;
 
     // full path of an object
-    char *full_path;
+    char *full_path = NULL;
    // char full_path[MAX_FULL_PATH_LEN];
 
     // copy of the full path
-    char *cfull_path;
+    char *cfull_path = NULL;
 //    char cfull_path[MAX_FULL_PATH_LEN];
 
     // Obtain a SD instance
@@ -2005,7 +2020,8 @@ throw (Exception)
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL) {
-        delete sd;
+        if(sd != NULL)
+            delete sd;
         throw2 ("SDfileinfo failed ", sdfd);
     }
 
@@ -2015,7 +2031,8 @@ throw (Exception)
         sds_id = SDselect (sdfd, sds_index);
 
         if (sds_id == FAIL) {
-            delete sd;
+            if(sd != NULL)
+                delete sd;
             // We only need to close SDS ID. SD ID will be closed when 
             // the destructor is called.
             SDendaccess (sds_id);
@@ -2024,7 +2041,8 @@ throw (Exception)
 
         sds_ref = SDidtoref (sds_id);
         if (sds_ref == FAIL) {
-            delete sd;
+            if(sd != NULL)
+                delete sd;
             SDendaccess (sds_id);
             throw3 ("Cannot obtain SDS reference number", " SDS ID is ",
                      sds_id);
@@ -2041,7 +2059,8 @@ throw (Exception)
 
     num_of_lones = Vlone (fileid, NULL, 0);
     if (num_of_lones == FAIL){
-        delete sd;
+        if(sd != NULL)
+            delete sd;
         throw3 ("Fail to obtain lone vgroup number", "file id is", fileid);
     }
 
@@ -2057,7 +2076,8 @@ throw (Exception)
         // the buffer ref_array.
         num_of_lones = Vlone (fileid, &ref_array[0], num_of_lones);
         if (num_of_lones == FAIL) {
-            delete sd;
+            if(sd != NULL)
+                delete sd;
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", fileid);
         }
@@ -2069,21 +2089,24 @@ throw (Exception)
             // Attach to the current vgroup 
             vgroup_id = Vattach (fileid, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
-                delete sd;
+                if(sd != NULL)
+                    delete sd;
                 throw3 ("Vattach failed ", "Reference number is ",
                          ref_array[lone_vg_number]);
             }
 
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
-                delete sd;
+                if(sd != NULL)
+                    delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
             }
 
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
-                delete sd;
+                if(sd != NULL)
+                    delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
             }
@@ -2103,7 +2126,8 @@ throw (Exception)
             // Obtain the number of objects of this vgroup
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
-                delete sd;
+                if(sd != NULL)
+                    delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
@@ -2120,23 +2144,27 @@ throw (Exception)
             
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
-                delete sd;
+                if(sd!= NULL)
+                    delete sd;
                 Vdetach (vgroup_id);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-
-            memset(full_path,'\0',MAX_FULL_PATH_LEN);
+            else 
+                memset(full_path,'\0',MAX_FULL_PATH_LEN);
             strncpy(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
             strncat(full_path, vgroup_name,strlen(vgroup_name));
 
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == NULL) {
-                delete sd;
+                if(sd != NULL)
+                    delete sd;
                 Vdetach (vgroup_id);
-                free (full_path);
+                if(full_path != NULL)
+                    free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+            else 
+                memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
             strncpy (cfull_path, full_path,strlen(full_path));
 
             // Loop all objects in this vgroup
@@ -2144,10 +2172,13 @@ throw (Exception)
 
                 // Obtain the object reference and tag of this object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
-                    delete sd;
+                    if(sd != NULL)
+                        delete sd;
                     Vdetach (vgroup_id);
-                    free (full_path);
-                    free (cfull_path);
+                    if(full_path != NULL)
+                        free (full_path);
+                    if(cfull_path != NULL)
+                        free (cfull_path);
                     throw5 ("Vgettagref failed ", "vgroup_name is ",
                              vgroup_name, " reference number is ", obj_ref);
                 }
@@ -2176,13 +2207,16 @@ throw (Exception)
                 // Do nothing for other objects
                 else;
             }
-            free (full_path);
-            free (cfull_path);
+            if(full_path != NULL)
+                free (full_path);
+            if(cfull_path != NULL)
+                free (cfull_path);
 
             status = Vdetach (vgroup_id);
 
             if (status == FAIL) {
-                delete sd;
+                if(sd != NULL)
+                    delete sd;
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
         }//end of the for loop
@@ -2427,7 +2461,8 @@ throw (Exception)
                      vdata->name, " index is ", i);
         }
 
-        field->name = fieldname;
+        if(fieldname !=NULL) // Only make coverity happy
+            field->name = fieldname;
         field->newname = HDFCFUtil::get_CF_string(field->name);
         field->type = fieldtype;
         field->order = fieldorder;
@@ -2442,38 +2477,48 @@ throw (Exception)
 
             field->value.resize (num_record * fieldsize);
             if (VSseek (vdata_id, 0) == FAIL) {
-                delete field;
-                delete vdata;
+                if(field != NULL)
+                    delete field;
+                if(vdata != NULL)
+                    delete vdata;
                 throw5 ("vdata ", vdata_name, "field ", fieldname,
                         " VSseek failed.");
             }
 
             if (VSsetfields (vdata_id, fieldname) == FAIL) {
-                delete field;
-                delete vdata;
+                if(field != NULL)
+                    delete field;
+                if(vdata != NULL)
+                    delete vdata;
                 throw3 ("vdata field ", fieldname, " VSsetfields failed.");
             }
 
             if (VSread
                 (vdata_id, (uint8 *) & field->value[0], num_record,
                  FULL_INTERLACE) == FAIL){
-                delete field;
-                delete vdata;
+                if(field != NULL)
+                    delete field;
+                if(vdata != NULL)
+                    delete vdata;
                 throw3 ("vdata field ", fieldname, " VSread failed.");
             }
 
         }
 
+       if(field != NULL) {// Coverity doesn't know the throw macro. See if this makes it happy.
         try {
             // Read field attributes
             field->ReadAttributes (vdata_id, i);
         }
         catch(...) {
-            delete field;
-            delete vdata;
+            if(field != NULL)
+                delete field;
+            if(vdata != NULL)
+                delete vdata;
             throw;
         }
         vdata->vdfields.push_back (field);
+       }
     }
 
     try {
@@ -2533,9 +2578,11 @@ throw (Exception)
 
             // Checking and handling the special characters for the vdata attribute name.
             string tempname(attr_name);
-            attr->name = tempname;
-            attr->newname = HDFCFUtil::get_CF_string(attr->name);
-            attr->value.resize (attrsize);
+            if(attr != NULL) {
+                attr->name = tempname;
+                attr->newname = HDFCFUtil::get_CF_string(attr->name);
+                attr->value.resize (attrsize);
+            }
 	    if (VSgetattr (vdata_id, _HDF_VDATA, i, &attr->value[0]) == FAIL) {
                 delete attr;
                 throw5 ("VSgetattr failed ", "vdata id is ", vdata_id,
@@ -2593,6 +2640,7 @@ throw (Exception)
                          fieldindex, " attr index is ", i);
             }
 
+           if(attr != NULL) { // Make coverity happy since it doesn't understand throw5.
             string tempname(attr_name);
             attr->name = tempname;
 
@@ -2606,6 +2654,7 @@ throw (Exception)
                          fieldindex, " attr index is ", i);
             }
             attrs.push_back (attr);
+           }
         }
     }
 }
@@ -2640,17 +2689,20 @@ File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
         int value_size = value_size_32;
 
 	string tempname (attr_name);
-        attr->name = tempname;
-        tempname = HDFCFUtil::get_CF_string(tempname);
-        attr->newname = tempname;
-        attr->value.resize (value_size);
+        if(attr != NULL) {// See if I can make coverity happy
+            attr->name = tempname;
+            tempname = HDFCFUtil::get_CF_string(tempname);
+            attr->newname = tempname;
+            attr->value.resize (value_size);
 
         status_n = Vgetattr(vgroup_id,(intn)attr_index,&attr->value[0]);
         if(status_n == FAIL) {
-            delete attr;
+            if(attr!=NULL)
+                delete attr;
             throw3("Vgetattr failed. ","The attribute name is ",attr->name);
         }
         vg_attr->attrs.push_back(attr);
+        }
     }
 
     if(vg_attr !=NULL)
@@ -2708,10 +2760,10 @@ throw (Exception)
     char vgroup_class[VGNAMELENMAX*4];
 
     // Full path of an object
-    char *full_path;
+    char *full_path = NULL;
 
     // Copy of a full path of an object
-    char *cfull_path;
+    char *cfull_path = NULL;
 
     // SD interface ID
     int32 sd_id;
@@ -2793,10 +2845,11 @@ throw (Exception)
                 Vdetach (vgroup_id);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-
-            memset(full_path,'\0',MAX_FULL_PATH_LEN);
-            strncpy (full_path,_BACK_SLASH,strlen(_BACK_SLASH));
-            strncat(full_path,vgroup_name,strlen(vgroup_name));
+            else {// Not necessary, however this will make coverity scan happy.
+                memset(full_path,'\0',MAX_FULL_PATH_LEN);
+                strncpy (full_path,_BACK_SLASH,strlen(_BACK_SLASH));
+                strncat(full_path,vgroup_name,strlen(vgroup_name));
+            }
             try {
                 ReadVgattrs(vgroup_id,full_path);
 
@@ -2814,8 +2867,10 @@ throw (Exception)
                 free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
-            strncpy (cfull_path, full_path,strlen(full_path));
+            else { // Not necessary, however this will make coverity scan happy.
+                memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+                strncpy (cfull_path, full_path,strlen(full_path));
+            }
 
             // Loop all vgroup objects
             for (int i = 0; i < num_gobjects; i++) {
@@ -2957,10 +3012,16 @@ throw (Exception)
 
                     // We need to obtain the SDS index; also need to store the new name(object name + full_path).
                     if (this->sd->refindexlist.find (obj_ref) !=
-                    sd->refindexlist.end ())
-                        this->sd->sdfields[this->sd->refindexlist[obj_ref]]->newname =
+                    sd->refindexlist.end ()) {
+                        // coverity cannot recognize the macro of throw(throw1,2,3..), so
+                        // it claims that full_path is freed. The coverity is wrong. 
+                        // To make coverity happy, here I will have a check.
+                        if(full_path != NULL) {
+                              this->sd->sdfields[this->sd->refindexlist[obj_ref]]->newname =
                               full_path +
                               this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
+                        }
+                    }
                     else {
                         Vdetach (vgroup_id);
                         free (full_path);
@@ -2971,8 +3032,10 @@ throw (Exception)
                 }
                 else;
             }
-            free (full_path);
-            free (cfull_path);
+            if(full_path != NULL)
+                free (full_path);
+            if(cfull_path != NULL)
+                free (cfull_path);
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
@@ -3041,8 +3104,9 @@ throw (Exception)
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
+    else 
+        memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
 
-    memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
     vgroup_pid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_pid == FAIL) {
         free (cfull_path);
@@ -3125,7 +3189,8 @@ throw (Exception)
                         vdataobj = VDATA::Read (vdata_id, obj_ref);
                     }
                     catch(...) {
-                        free (cfull_path);
+                        if(cfull_path !=NULL)
+                            free (cfull_path);
                         Vdetach (vgroup_pid);
                         throw;
                     }
@@ -3221,8 +3286,8 @@ throw (Exception)
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
-
-    memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+    else 
+        memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
 
     vgroup_cid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_cid == FAIL) {
@@ -3323,7 +3388,8 @@ throw (Exception)
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
-    memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+    else 
+        memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
 
     vgroup_cid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_cid == FAIL) {
@@ -4509,21 +4575,23 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                          k != (*i)->getDimensions ().end (); ++k) {
 
                         if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                            nthrsh_zo = new SDField();
-                            nthrsh_zo->name = nthrsh_zo_name;
-                            nthrsh_zo->rank = 1;
-                            nthrsh_zo->type = DFNT_FLOAT32;
-                            nthrsh_zo->fieldtype = 6;
+                            if(nthrsh_zo == NULL) {// Not necessary for this product, this only makes coverity scan happy.
+                                nthrsh_zo = new SDField();
+                                nthrsh_zo->name = nthrsh_zo_name;
+                                nthrsh_zo->rank = 1;
+                                nthrsh_zo->type = DFNT_FLOAT32;
+                                nthrsh_zo->fieldtype = 6;
 
-                            nthrsh_zo->newname = nthrsh_zo->name ;
-                            Dimension *dim =
-                                    new Dimension (nthrsh_zo->name, (*k)->getSize (), 0);
-                            nthrsh_zo->dims.push_back(dim);
+                                nthrsh_zo->newname = nthrsh_zo->name ;
+                                Dimension *dim =
+                                        new Dimension (nthrsh_zo->name, (*k)->getSize (), 0);
+                                nthrsh_zo->dims.push_back(dim);
 
-                            dim = new Dimension(nthrsh_zo->name,(*k)->getSize(),0);
-                            nthrsh_zo->correcteddims.push_back(dim);
+                                dim = new Dimension(nthrsh_zo->name,(*k)->getSize(),0);
+                                nthrsh_zo->correcteddims.push_back(dim);
 
-                            ZOflag = true;
+                                ZOflag = true;
+                            }
  
                         }
                     }
@@ -4539,21 +4607,23 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                          k != (*i)->getDimensions ().end (); ++k) {
 
                         if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                            nthrsh_srt = new SDField();
-                            nthrsh_srt->name = nthrsh_srt_name;
-                            nthrsh_srt->rank = 1;
-                            nthrsh_srt->type = DFNT_FLOAT32;
-                            nthrsh_srt->fieldtype = 6;
+                            if(nthrsh_srt == NULL) { // Not necessary for this product, this only makes coverity scan happy.
+                                nthrsh_srt = new SDField();
+                                nthrsh_srt->name = nthrsh_srt_name;
+                                nthrsh_srt->rank = 1;
+                                nthrsh_srt->type = DFNT_FLOAT32;
+                                nthrsh_srt->fieldtype = 6;
 
-                            nthrsh_srt->newname = nthrsh_srt->name ;
-                            Dimension *dim =
-                                    new Dimension (nthrsh_srt->name, (*k)->getSize (), 0);
-                            nthrsh_srt->dims.push_back(dim);
+                                nthrsh_srt->newname = nthrsh_srt->name ;
+                                Dimension *dim =
+                                     new Dimension (nthrsh_srt->name, (*k)->getSize (), 0);
+                                nthrsh_srt->dims.push_back(dim);
 
-                            dim = new Dimension(nthrsh_srt->name,(*k)->getSize(),0);
-                            nthrsh_srt->correcteddims.push_back(dim);
+                            	dim = new Dimension(nthrsh_srt->name,(*k)->getSize(),0);
+                            	nthrsh_srt->correcteddims.push_back(dim);
 
-                            SRTflag = true;
+                            	SRTflag = true;
+                            }
  
                         }
                     }
@@ -4568,22 +4638,23 @@ File::PrepareTRMML3S_V7() throw(Exception) {
 
                         if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
 
-                            nthrsh_hb = new SDField();
-                            nthrsh_hb->name = nthrsh_hb_name;
-                            nthrsh_hb->rank = 1;
-                            nthrsh_hb->type = DFNT_FLOAT32;
-                            nthrsh_hb->fieldtype = 6;
+                            if(nthrsh_hb == NULL) {// Not necessary for this product, only makes coverity scan happy.
+                                nthrsh_hb = new SDField();
+                                nthrsh_hb->name = nthrsh_hb_name;
+                                nthrsh_hb->rank = 1;
+                                nthrsh_hb->type = DFNT_FLOAT32;
+                                nthrsh_hb->fieldtype = 6;
 
-                            nthrsh_hb->newname = nthrsh_hb->name ;
-                            Dimension *dim =
-                                    new Dimension (nthrsh_hb->name, (*k)->getSize (), 0);
-                            nthrsh_hb->dims.push_back(dim);
+                                nthrsh_hb->newname = nthrsh_hb->name ;
+                                Dimension *dim =
+                                        new Dimension (nthrsh_hb->name, (*k)->getSize (), 0);
+                                nthrsh_hb->dims.push_back(dim);
 
-                            dim = new Dimension(nthrsh_hb->name,(*k)->getSize(),0);
-                            nthrsh_hb->correcteddims.push_back(dim);
+                                dim = new Dimension(nthrsh_hb->name,(*k)->getSize(),0);
+                                nthrsh_hb->correcteddims.push_back(dim);
 
-                            HBflag = true;
- 
+                                HBflag = true;
+                            }
                         }
                     }
                 }
@@ -4842,8 +4913,8 @@ throw (Exception)
     std::string temppath;
 
     int32 tempdimsize1, tempdimsize2;
-    SDField *longitude;
-    SDField *latitude;
+    SDField *longitude = NULL;
+    SDField *latitude = NULL;
 
     // Create a temporary map from the dimension size to the dimension name
     std::set < int32 > tempdimsizeset;
@@ -4881,49 +4952,59 @@ throw (Exception)
                 ((*i)->getCorrectedDimensions ())[0]->getName ();
             tempnewdimname2 =
                 ((*i)->getCorrectedDimensions ())[1]->getName ();
+     
+            // TRMM level 2 version 6 only has one geolocation field.
+            // So latitude and longitude are only assigned once. 
+            // However, coverity scan doesn't know this and complain about
+            // the re-allocation of latitude and longitude that may cause the
+            // potential resource leaks.  KY 2015-05-12
+            if(latitude == NULL) {
 
-            latitude = new SDField ();
-            latitude->name = "latitude";
-            latitude->rank = 2;
-            latitude->fieldref = (*i)->fieldref;
-            latitude->type = (*i)->getType ();
-            temppath = (*i)->newname.substr ((*i)->name.size ());
-            latitude->newname = latitude->name + temppath;
-            latitude->fieldtype = 1;
-            latitude->rootfieldname = "geolocation";
+                latitude = new SDField ();
+                latitude->name = "latitude";
+                latitude->rank = 2;
+                latitude->fieldref = (*i)->fieldref;
+                latitude->type = (*i)->getType ();
+                temppath = (*i)->newname.substr ((*i)->name.size ());
+                latitude->newname = latitude->name + temppath;
+                latitude->fieldtype = 1;
+                latitude->rootfieldname = "geolocation";
 
-            Dimension *dim = new Dimension (tempdimname1, tempdimsize1, 0);
+                Dimension *dim = new Dimension (tempdimname1, tempdimsize1, 0);
 
-            latitude->dims.push_back (dim);
+                latitude->dims.push_back (dim);
 
-            dim = new Dimension (tempdimname2, tempdimsize2, 0);
-            latitude->dims.push_back (dim);
+                dim = new Dimension (tempdimname2, tempdimsize2, 0);
+                latitude->dims.push_back (dim);
 
-            dim = new Dimension (tempnewdimname1, tempdimsize1, 0);
-            latitude->correcteddims.push_back (dim);
+                dim = new Dimension (tempnewdimname1, tempdimsize1, 0);
+                latitude->correcteddims.push_back (dim);
 
-            dim = new Dimension (tempnewdimname2, tempdimsize2, 0);
-            latitude->correcteddims.push_back (dim);
+                dim = new Dimension (tempnewdimname2, tempdimsize2, 0);
+                latitude->correcteddims.push_back (dim);
+            }
 
-            longitude = new SDField ();
-            longitude->name = "longitude";
-            longitude->rank = 2;
-            longitude->fieldref = (*i)->fieldref;
-            longitude->type = (*i)->getType ();
-            longitude->newname = longitude->name + temppath;
-            longitude->fieldtype = 2;
-            longitude->rootfieldname = "geolocation";
+            if(longitude == NULL) {
+                longitude = new SDField ();
+                longitude->name = "longitude";
+                longitude->rank = 2;
+                longitude->fieldref = (*i)->fieldref;
+                longitude->type = (*i)->getType ();
+                longitude->newname = longitude->name + temppath;
+                longitude->fieldtype = 2;
+                longitude->rootfieldname = "geolocation";
 
-            dim = new Dimension (tempdimname1, tempdimsize1, 0);
-            longitude->dims.push_back (dim);
-            dim = new Dimension (tempdimname2, tempdimsize2, 0);
-            longitude->dims.push_back (dim);
+                Dimension *dim = new Dimension (tempdimname1, tempdimsize1, 0);
+                longitude->dims.push_back (dim);
+                dim = new Dimension (tempdimname2, tempdimsize2, 0);
+                longitude->dims.push_back (dim);
 
-            dim = new Dimension (tempnewdimname1, tempdimsize1, 0);
-            longitude->correcteddims.push_back (dim);
+                dim = new Dimension (tempnewdimname1, tempdimsize1, 0);
+                longitude->correcteddims.push_back (dim);
 
-            dim = new Dimension (tempnewdimname2, tempdimsize2, 0);
-            longitude->correcteddims.push_back (dim);
+                dim = new Dimension (tempnewdimname2, tempdimsize2, 0);
+                longitude->correcteddims.push_back (dim);
+            }
 
         }
         else {
@@ -5001,46 +5082,50 @@ throw (Exception)
                 // KY 2010-7-13
                 if ((*k)->getSize () == 1440 && (*k)->getType () == 0) {//No dimension scale
 
-                    longitude = new SDField ();
-                    longitude->name = "longitude";
-                    longitude->rank = 1;
-                    longitude->type = DFNT_FLOAT32;
-                    longitude->fieldtype = 2;
+                    if(longitude == NULL) { // Not necessary for this product, only makes coverity happy.
+                        longitude = new SDField ();
+                        longitude->name = "longitude";
+                        longitude->rank = 1;
+                        longitude->type = DFNT_FLOAT32;
+                        longitude->fieldtype = 2;
 
-                    longitude->newname = longitude->name + temppath;
-                    Dimension *dim =
-                        new Dimension ((*k)->getName (), (*k)->getSize (), 0);
-                    longitude->dims.push_back (dim);
-                    tempnewdimname2 = (*k)->getName ();
+                        longitude->newname = longitude->name + temppath;
+                        Dimension *dim =
+                            new Dimension ((*k)->getName (), (*k)->getSize (), 0);
+                        longitude->dims.push_back (dim);
+                        tempnewdimname2 = (*k)->getName ();
 
-                    dim =
-                        new Dimension ((*k)->getName (), (*k)->getSize (), 0);
-                    longitude->correcteddims.push_back (dim);
-                    lonflag++;
+                        dim =
+                            new Dimension ((*k)->getName (), (*k)->getSize (), 0);
+                        longitude->correcteddims.push_back (dim);
+                        lonflag++;
+                    }
                 }
 
                 if ((*k)->getSize () == 400 && (*k)->getType () == 0) {
 
-                    latitude = new SDField ();
-                    latitude->name = "latitude";
-                    latitude->rank = 1;
-                    latitude->type = DFNT_FLOAT32;
-                    latitude->fieldtype = 1;
-                    latitude->newname = latitude->name + temppath;
-                    Dimension *dim =
-                        new Dimension ((*k)->getName (), (*k)->getSize (), 0);
-                    latitude->dims.push_back (dim);
-                    tempnewdimname1 = (*k)->getName ();
+                    if(latitude == NULL) {
+                        latitude = new SDField ();
+                        latitude->name = "latitude";
+                        latitude->rank = 1;
+                        latitude->type = DFNT_FLOAT32;
+                        latitude->fieldtype = 1;
+                        latitude->newname = latitude->name + temppath;
+                        Dimension *dim =
+                            new Dimension ((*k)->getName (), (*k)->getSize (), 0);
+                        latitude->dims.push_back (dim);
+                        tempnewdimname1 = (*k)->getName ();
 
-                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                    // Leave here just as a reference.
-                    // std::string uniquedimname = (*k)->getName() +temppath;
-                    //  tempnewdimname1 = uniquedimname;
-                    //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                    dim =
-                         new Dimension ((*k)->getName (), (*k)->getSize (), 0);
-                    latitude->correcteddims.push_back (dim);
-                    latflag++;
+                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
+                        // Leave here just as a reference.
+                        // std::string uniquedimname = (*k)->getName() +temppath;
+                        //  tempnewdimname1 = uniquedimname;
+                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
+                        dim =
+                             new Dimension ((*k)->getName (), (*k)->getSize (), 0);
+                        latitude->correcteddims.push_back (dim);
+                        latflag++;
+                    }
                 }
             }
 
@@ -5130,47 +5215,51 @@ throw (Exception)
                 // KY 2010-7-13
                 if ((*k)->getSize () == 360 && (*k)->getType () == 0) {//No dimension scale
 
-                    longitude = new SDField ();
-                    longitude->name = "longitude";
-                    longitude->rank = 1;
-                    longitude->type = DFNT_FLOAT32;
-                    longitude->fieldtype = 2;
+                    if(longitude == NULL) {
+                        longitude = new SDField ();
+                        longitude->name = "longitude";
+                        longitude->rank = 1;
+                        longitude->type = DFNT_FLOAT32;
+                        longitude->fieldtype = 2;
 
-                    longitude->newname = longitude->name ;
-                    Dimension *dim =
-                        new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                    longitude->dims.push_back (dim);
-                    tempnewdimname2 = longitude->name; 
+                        longitude->newname = longitude->name ;
+                        Dimension *dim =
+                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
+                        longitude->dims.push_back (dim);
+                        tempnewdimname2 = longitude->name; 
 
-                    dim =
-                        new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                    longitude->correcteddims.push_back (dim);
-                    lonflag = true;
+                        dim =
+                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
+                        longitude->correcteddims.push_back (dim);
+                        lonflag = true;
+                    }
                 }
 
                 if ((*k)->getSize () == 180 && (*k)->getType () == 0) {
 
-                    latitude = new SDField ();
-                    latitude->name = "latitude";
-                    latitude->rank = 1;
-                    latitude->type = DFNT_FLOAT32;
-                    latitude->fieldtype = 1;
-                    latitude->newname = latitude->name ;
-                    Dimension *dim =
-                        new Dimension (latitude->getName (), (*k)->getSize (), 0);
+                    if(latitude == NULL) {
+                        latitude = new SDField ();
+                        latitude->name = "latitude";
+                        latitude->rank = 1;
+                        latitude->type = DFNT_FLOAT32;
+                        latitude->fieldtype = 1;
+                        latitude->newname = latitude->name ;
+                        Dimension *dim =
+                            new Dimension (latitude->getName (), (*k)->getSize (), 0);
 
-                    latitude->dims.push_back (dim);
-                    tempnewdimname1 = latitude->getName ();
+                        latitude->dims.push_back (dim);
+                        tempnewdimname1 = latitude->getName ();
 
-                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                    // Leave here just as a reference.
-                    // std::string uniquedimname = (*k)->getName() +temppath;
-                    //  tempnewdimname1 = uniquedimname;
-                    //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                    dim =
-                         new Dimension (latitude->getName (), (*k)->getSize (), 0);
-                    latitude->correcteddims.push_back (dim);
-                    latflag = true;
+                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
+                        // Leave here just as a reference.
+                        // std::string uniquedimname = (*k)->getName() +temppath;
+                        //  tempnewdimname1 = uniquedimname;
+                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
+                        dim =
+                             new Dimension (latitude->getName (), (*k)->getSize (), 0);
+                        latitude->correcteddims.push_back (dim);
+                        latflag = true;
+                    }
                 }
             
 
@@ -5273,72 +5362,79 @@ throw (Exception)
                 // KY 2010-7-13
                 if ((*k)->getSize () == 720 && (*k)->getType () == 0) {//No dimension scale
 
-                    longitude = new SDField ();
-                    longitude->name = "longitude";
-                    longitude->rank = 1;
-                    longitude->type = DFNT_FLOAT32;
-                    longitude->fieldtype = 2;
+                    // TRMM only has one longitude and latitude. The following if only makes coverity happy.
+                    if(longitude == NULL) {
+                        longitude = new SDField ();
+                        longitude->name = "longitude";
+                        longitude->rank = 1;
+                        longitude->type = DFNT_FLOAT32;
+                        longitude->fieldtype = 2;
 
-                    longitude->newname = longitude->name ;
-                    Dimension *dim =
-                        new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                    longitude->dims.push_back (dim);
-                    tempnewdimname2 = longitude->name; 
+                        longitude->newname = longitude->name ;
+                        Dimension *dim =
+                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
+                        longitude->dims.push_back (dim);
+                        tempnewdimname2 = longitude->name; 
 
-                    dim =
-                        new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                    longitude->correcteddims.push_back (dim);
-                    lonflag = true;
+                        dim =
+                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
+                        longitude->correcteddims.push_back (dim);
+                        lonflag = true;
+                    }
                 }
 
                 if ((*k)->getSize () == 148 && (*k)->getType () == 0) {
 
-                    latitude = new SDField ();
-                    latitude->name = "latitude";
-                    latitude->rank = 1;
-                    latitude->type = DFNT_FLOAT32;
-                    latitude->fieldtype = 1;
-                    latitude->newname = latitude->name ;
-                    Dimension *dim =
-                        new Dimension (latitude->getName (), (*k)->getSize (), 0);
+                    if(latitude == NULL) {
+                        latitude = new SDField ();
+                        latitude->name = "latitude";
+                        latitude->rank = 1;
+                        latitude->type = DFNT_FLOAT32;
+                        latitude->fieldtype = 1;
+                        latitude->newname = latitude->name ;
+                        Dimension *dim =
+                            new Dimension (latitude->getName (), (*k)->getSize (), 0);
 
-                    latitude->dims.push_back (dim);
-                    tempnewdimname1 = latitude->getName ();
+                        latitude->dims.push_back (dim);
+                        tempnewdimname1 = latitude->getName ();
 
-                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                    // Leave here just as a reference.
-                    // std::string uniquedimname = (*k)->getName() +temppath;
-                    //  tempnewdimname1 = uniquedimname;
-                    //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                    dim =
-                         new Dimension (latitude->getName (), (*k)->getSize (), 0);
-                    latitude->correcteddims.push_back (dim);
-                    latflag = true;
+                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
+                        // Leave here just as a reference.
+                        // std::string uniquedimname = (*k)->getName() +temppath;
+                        //  tempnewdimname1 = uniquedimname;
+                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
+                        dim =
+                             new Dimension (latitude->getName (), (*k)->getSize (), 0);
+                        latitude->correcteddims.push_back (dim);
+                        latflag = true;
+                    }
                 }
 
                 if ((*k)->getSize () == 19 && (*k)->getType () == 0) {
 
-                    height = new SDField ();
-                    height->name = "height";
-                    height->rank = 1;
-                    height->type = DFNT_FLOAT32;
-                    height->fieldtype = 6;
-                    height->newname = height->name ;
-                    Dimension *dim =
-                        new Dimension (height->getName (), (*k)->getSize (), 0);
+                    if(height == NULL) {
+                        height = new SDField ();
+                        height->name = "height";
+                        height->rank = 1;
+                        height->type = DFNT_FLOAT32;
+                        height->fieldtype = 6;
+                        height->newname = height->name ;
+                        Dimension *dim =
+                            new Dimension (height->getName (), (*k)->getSize (), 0);
 
-                    height->dims.push_back (dim);
-                    tempnewdimname3 = height->getName ();
+                        height->dims.push_back (dim);
+                        tempnewdimname3 = height->getName ();
 
-                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                    // Leave here just as a reference.
-                    // std::string uniquedimname = (*k)->getName() +temppath;
-                    //  tempnewdimname1 = uniquedimname;
-                    //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                    dim =
-                         new Dimension (height->getName (), (*k)->getSize (), 0);
-                    height->correcteddims.push_back (dim);
-                    heiflag = true;
+                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
+                        // Leave here just as a reference.
+                        // std::string uniquedimname = (*k)->getName() +temppath;
+                        //  tempnewdimname1 = uniquedimname;
+                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
+                        dim =
+                             new Dimension (height->getName (), (*k)->getSize (), 0);
+                        height->correcteddims.push_back (dim);
+                        heiflag = true;
+                    }
                 }
 
 
@@ -5531,11 +5627,13 @@ throw (Exception)
 
     Dimension *dim = new Dimension (num_lon_name, num_lon, 0);
 
-    longitude->dims.push_back (dim);
+    if(longitude != NULL) // make coverity happy
+        longitude->dims.push_back (dim);
 
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     dim = new Dimension (num_lon_name, num_lon, 0);
-    longitude->correcteddims.push_back (dim);
+    if(longitude != NULL) 
+        longitude->correcteddims.push_back (dim);
 
     // Latitude
     SDField *latitude = new SDField ();
@@ -5553,18 +5651,22 @@ throw (Exception)
     }
             
     dim = new Dimension (num_lat_name, num_lat, 0);
-    latitude->dims.push_back (dim);
+    if(latitude != NULL) 
+        latitude->dims.push_back (dim);
 
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     dim = new Dimension (num_lat_name, num_lat, 0);
-    latitude->correcteddims.push_back (dim);
+    if(latitude != NULL) 
+        latitude->correcteddims.push_back (dim);
 
     // The dimension names of the SDS are fakeDim, so need to change them to dimension names of latitude and longitude
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
         if ((*i)->getRank () != 2) {
-            delete latitude;
-            delete longitude;
+            if(latitude !=NULL)
+                delete latitude;
+            if(longitude !=NULL)
+                delete longitude;
             throw3 ("The lat/lon rank must be 2", (*i)->getName (),
                     (*i)->getRank ());
         }

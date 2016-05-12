@@ -770,6 +770,11 @@ namespace HDFEOS2
                     {
                         return this->lowright;
                     }
+                protected:
+                    Info() {
+                        xdim = -1;
+                        ydim = -1;
+                    }
 
                 protected:
                     int32 xdim;
@@ -823,6 +828,15 @@ namespace HDFEOS2
                         return this->origin;
                     }
 
+                protected:
+                    Projection() {
+                        code = -1;
+                        zone = -1;
+                        sphere = -1;
+                        pix    = -1;
+                        origin = -1;
+
+                    }
                 protected:
                     int32 code;
                     int32 zone;
@@ -921,6 +935,8 @@ namespace HDFEOS2
                 GridDataset (const std::string & name)
                     : Dataset (name), calculated (0), ownllflag (false), iscoard (false)
                 {
+                    latfield = NULL;
+                    lonfield = NULL;
                 }
 
             protected:
