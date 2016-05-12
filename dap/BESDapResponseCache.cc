@@ -282,77 +282,69 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     // glue them together to get a unique id for the response.
     string resourceId = (*dds)->filename() + "#" + constraint;
 
-    try {
-        // Get the cache filename for this resourceId
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
+    // Get the cache filename for this resourceId
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
 
-        // Get a hash function for strings
-        std::hash<std::string> str_hash;
+    // Get a hash function for strings
+    std::hash<std::string> str_hash;
 
-        // Use the hash function to hash the resourceId.
-        size_t hashValue = str_hash(resourceId);
-        std::stringstream ss;
-        ss << hashValue;
-        string hashed_id = ss.str();
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  hashed_id: '" << hashed_id << "'" << endl);
+    // Use the hash function to hash the resourceId.
+    size_t hashValue = str_hash(resourceId);
+    std::stringstream ss;
+    ss << hashValue;
+    string hashed_id = ss.str();
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  hashed_id: '" << hashed_id << "'" << endl);
 
-        // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
-        // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
-        string baseName =  BESFileLockingCache::get_cache_file_name(hashed_id, true);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
+    // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
+    // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
+    string baseName =  BESFileLockingCache::get_cache_file_name(hashed_id, true);
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
 
-        string dataset_name = (*dds)->filename();
+    string dataset_name = (*dds)->filename();
 
 
-        string cache_file_name; //  = get_cache_file_name(resourceId, /*mangle*/true);
+    string cache_file_name; //  = get_cache_file_name(resourceId, /*mangle*/true);
 
-        // Begin cache collision avoidance.
-        unsigned long suffix_counter = 0;
-        bool done = false;
-        while (!done) {
-            DDS *ret_dds = NULL;
-            // Build cache_file_name and cache_id_file_name from baseName
-            stringstream cfname;
-            cfname << baseName << "_" << suffix_counter++;
-            cache_file_name = cfname.str();
+    // Begin cache collision avoidance.
+    unsigned long suffix_counter = 0;
+    bool done = false;
+    while (!done) {
+        DDS *ret_dds = NULL;
+        // Build cache_file_name and cache_id_file_name from baseName
+        stringstream cfname;
+        cfname << baseName << "_" << suffix_counter++;
+        cache_file_name = cfname.str();
 
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() evaluating candidate cache_file_name: " << cache_file_name << endl);
 
-            // Does the cache file exist?
-            if (load_from_cache(dataset_name, resourceId, cache_file_name, &ret_dds)) {
-                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
-                *dds = ret_dds;
-                done = true;
-            }
-            else if (write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name) ) {
-                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully written to cache file: " << cache_file_name << endl);
-                done = true;
-            }
-            // get_read_lock() returns immediately if the file does not exist,
-            // but blocks waiting to get a shared lock if the file does exist.
-            else if (load_from_cache(dataset_name, resourceId, cache_file_name, &ret_dds)) {
-                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
-                *dds = ret_dds;
-                done = true;
-            }
-            else {
-               throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
-            }
-
-            //cache_token = cache_file_name;  // Set this value-result parameter
+        // Does the cache file exist?
+        if (load_from_cache(dataset_name, resourceId, cache_file_name, &ret_dds)) {
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully loaded from cache file: " << cache_file_name << endl);
+            *dds = ret_dds;
+            done = true;
+        }
+        else if (write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name) ) {
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - Data successfully written to cache file: " << cache_file_name << endl);
+            done = true;
+        }
+        // get_read_lock() returns immediately if the file does not exist,
+        // but blocks waiting to get a shared lock if the file does exist.
+        else if (load_from_cache(dataset_name, resourceId, cache_file_name, &ret_dds)) {
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() - On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
+            *dds = ret_dds;
+            done = true;
+        }
+        else {
+           throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
         }
 
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << "for resource ID: " << resourceId << endl);
+        //cache_token = cache_file_name;  // Set this value-result parameter
+    }
+
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset() Used cache_file_name: " << cache_file_name << "for resource ID: " << resourceId << endl);
 
 
-        return cache_file_name;
-    }
-    catch (...) {
-        BESDEBUG(DEBUG_KEY,"BESDapResponseCache::cache_dataset() -  Caught exception, unlocking cache and re-throwing." << endl);
-        // I think this call is not needed. jhrg 10/23/12
-        //unlock_cache();
-        throw;
-    }
+    return cache_file_name;
 }
 
 /**
@@ -474,65 +466,90 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
         // try to build it. First make an empty files and get an exclusive lock on them.
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() -  Caching " << cache_file_name << ", constraint: " << constraint << endl);
 
-        // Create id file
+        // Get an output stream directed at the locked cache file
         std::ofstream cache_file_ostream(cache_file_name);
         if (!cache_file_ostream) {
             throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
         }
-        cache_file_ostream << resourceId << endl;
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
 
-        eval->parse_constraint(constraint, **dds);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - The constraint expression has been parsed." << endl);
+        // Do The Stuff
+        try {
+            cache_file_ostream << resourceId << endl;
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Created Cache file " << cache_file_name << endl);
 
-        if (eval->function_clauses()) {
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Found function clauses in the constraint expression. Evaluating..." << endl);
-            DDS *result_dds = eval->eval_function_clauses(**dds);
-            delete *dds;
-            *dds = 0;
-            *dds = result_dds;
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Function evaluation complete." << endl);
-        }
+            eval->parse_constraint(constraint, **dds);
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - The constraint expression has been parsed." << endl);
 
-        (*dds)->print_xml_writer(cache_file_ostream, true, "");
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote DDX to ostream.." << endl);
-
-        cache_file_ostream << DATA_MARK << endl;
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote data mark to ostream." << endl);
-
-        ConstraintEvaluator new_ce;
-        // Define the scope of the StreamMarshaller because for some types it will use
-        // a child thread to send data and it's dtor will wait for that thread to complete.
-        // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
-        {
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization BEGIN" << endl);
-            XDRStreamMarshaller m(cache_file_ostream);
-
-            for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
-                if ((*i)->send_p()) {
-                    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serializing "<< (*i)->name() << endl);
-                    (*i)->serialize(new_ce, **dds, m, false);
-                }
+            if (eval->function_clauses()) {
+                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Found function clauses in the constraint expression. Evaluating..." << endl);
+                DDS *result_dds = eval->eval_function_clauses(**dds);
+                delete *dds;
+                *dds = 0;
+                *dds = result_dds;
+                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Function evaluation complete." << endl);
             }
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization END." << endl);
+
+            (*dds)->print_xml_writer(cache_file_ostream, true, "");
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote DDX to ostream.." << endl);
+
+            cache_file_ostream << DATA_MARK << endl;
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Wrote data mark to ostream." << endl);
+
+            ConstraintEvaluator new_ce;
+            // Define the scope of the StreamMarshaller because for some types it will use
+            // a child thread to send data and it's dtor will wait for that thread to complete.
+            // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
+            {
+                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization BEGIN" << endl);
+                XDRStreamMarshaller m(cache_file_ostream);
+
+                for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
+                    if ((*i)->send_p()) {
+                        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serializing "<< (*i)->name() << endl);
+                        (*i)->serialize(new_ce, **dds, m, false);
+                    }
+                }
+                BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Serialization END." << endl);
+            }
+            // Removed jhrg 5/6/16 cache_file_ostream.close();
+
+            // Change the exclusive locks on the new files to a shared lock. This keeps
+            // other processes from purging the new files and ensures that the reading
+            // process can use it.
+            exclusive_to_shared_lock(fd);
+
+            // Now update the total cache size info and purge if needed. The new file's
+            // name is passed into the purge method because this process cannot detect its
+            // own lock on the file.
+            unsigned long long size = update_cache_info(cache_file_name);
+            if (cache_too_big(size)) update_and_purge(cache_file_name);
+
+            success = true;
+
+            unlock_and_close(cache_file_name);
+
+        }
+        catch(...){
+            // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Caught ERROR - There was a problem caching resourceId: "<< resourceId << endl);
+
+            // Close the cache file stream
+            cache_file_ostream.close();
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Closed output stream. "<< endl);
+
+            // And once it's closed, get rid of the cache file
+            this->purge_file(cache_file_name);
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Purged cache file:  "<< cache_file_name << endl);
+
+            // Unlock the cache
+            unlock_and_close(cache_file_name);
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Unlocked and closed cache."<< endl);
+
+            // And finally re-throw the error.
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Re-throwing ERROR."<< endl);
+            throw;
         }
 
-        // Removed jhrg 5/6/16 cache_file_ostream.close();
-
-        // Change the exclusive locks on the new files to a shared lock. This keeps
-        // other processes from purging the new files and ensures that the reading
-        // process can use it.
-        exclusive_to_shared_lock(fd);
-
-        // Now update the total cache size info and purge if needed. The new file's
-        // name is passed into the purge method because this process cannot detect its
-        // own lock on the file.
-        unsigned long long size = update_cache_info(cache_file_name);
-        if (cache_too_big(size)) update_and_purge(cache_file_name);
-
-        success = true;
-
-        unlock_and_close(cache_file_name);
     }
 
     return success;
