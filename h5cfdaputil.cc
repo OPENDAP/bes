@@ -66,7 +66,8 @@ string HDF5CFDAPUtil::escattr(string s)
     const string ESCQUOTE = ESC + QUOTE;
 
     // escape \ with a second backslash
-    string::size_type ind = 0;
+    //string::size_type ind = 0;
+    size_t ind = 0;
     while ((ind = s.find(ESC, ind)) != s.npos) {
         s.replace(ind, 1, DOUBLE_ESC);
         ind += DOUBLE_ESC.length();

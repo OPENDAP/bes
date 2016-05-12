@@ -379,7 +379,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     if(f->HaveUnlimitedDim() == true) {
 //cerr<<"coming to unlimited " <<endl;
 
-        AttrTable*at;
+        AttrTable*at = NULL;
         // Currently there is no way for DAP to present the unlimited dimension info.
         // when there are no dimension names. So don't create DODS_EXTRA even if
         // there is a unlimited dimension in the file for now. KY 2016-02-18

@@ -53,6 +53,7 @@ Var::Var(Var *var) {
     rank  = var->rank;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
+    unsupported_attr_dspace = var->unsupported_attr_dspace;
     unsupported_dspace = var->unsupported_dspace;
     dimnameflag = var->dimnameflag;
     
