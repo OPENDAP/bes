@@ -421,6 +421,11 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data, const string &dataset_name
     for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Deserializing variable "<< (*i)->name() << endl);
         (*i)->deserialize(um, fdds);
+        if(BESDebug::IsSet(DEBUG_KEY)){
+            (*i)->print_val(*BESDebug::GetStrm());
+            *BESDebug::GetStrm() << endl;
+        }
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Variable "<< (*i)->name() << " has been deserialized." << endl);
     }
 
     // mark everything as read. And 'to send.' That is, make sure that when a response
