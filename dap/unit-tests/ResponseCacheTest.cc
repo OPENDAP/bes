@@ -210,11 +210,8 @@ public:
 			int var_count = test_dds->var_end() - test_dds->var_begin();
 			CPPUNIT_ASSERT(var_count == 9);
 
-            bool ret = cache->load_from_cache("test.05", test_dds->filename()+"#", token, &test_dds);
-
-            // True if it worked
-            CPPUNIT_ASSERT(ret);
-
+			test_dds = cache->load_from_cache(/*"test.05", */test_dds->filename()+"#", token);//, &test_dds);
+			test_dds->filename("test.05");
             // Better not be null!
 			CPPUNIT_ASSERT(test_dds);
 
