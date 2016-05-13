@@ -8,8 +8,17 @@ Updated for version 3.12.1(April 29 2016)
      Some HDF-EOS2 products make the longitude range from 0 to 360. When the HDF-EOS2 lat/lon cache is on, the longtiude values were not retrieved
      correctly in the previous versions. This was discovered by testing an AMSR-E product when updating the testsuite for the handler.
   
-  Note for version 3.12.0: no new features or bug fixes for version 3.12.0. Only several warnings are removed. 
-  The version is accidently bumped from 3.11.7 to 3.12.0.
+  [Known Issues]
+
+  1) DataCache may not work on MacOS for rare cases.
+     On MacOS system that is not configured to be case-sensitive(using diskutil info to check your OS),
+     when the DataCache is turned on, two legal variable names like TIME and Time will be the same if they are also used     for file names. The handler also checks the array size. If their array sizes are also the same, one can find
+     one cached variable(Time) is used for both variable Time and TIME; thus causes the data inconsistency issue. 
+     Given that the DataCache feature is turned on by default and the usage of this feature is only on Linux, 
+     the handler just documents this as an known issue. 
+
+  2) Note for version 3.12.0: no new features or bug fixes for version 3.12.0. Only several warnings are removed. 
+  The version was accidently bumped from 3.11.7 to 3.12.0.
   
 Updated for version 3.11.7 (15 September 2015)
   New Features:
