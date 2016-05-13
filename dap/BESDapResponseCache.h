@@ -61,8 +61,7 @@ private:
 
     std::string getResourceId(libdap::DDS *dds, const std::string &constraint);
 
-    ///*** libdap::DDS *read_data_ddx(ifstream &cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
-    libdap::DDS *read_data_ddx(FILE *cached_data, libdap::BaseTypeFactory *factory, const string &dataset);
+    libdap::DDS *read_data_ddx(FILE *cached_data, /*libdap::BaseTypeFactory *factory,*/ const string &dataset);
 
     bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
         libdap::ConstraintEvaluator *eval, const string &cache_file_name);

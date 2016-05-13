@@ -252,8 +252,6 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
     return true;
 }
 
-
-
 string BESDapResponseCache::getResourceId(DDS *dds, const string &constraint){
     return dds->filename() + "#" + constraint;
 }
@@ -269,10 +267,8 @@ bool BESDapResponseCache::canBeCached(DDS *dds, string constraint){
     return canCache;
 }
 
-
-
 string
-BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, ConstraintEvaluator *eval) //, string &cache_token)
+BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, ConstraintEvaluator *eval)
 {
     // These are used for the cached or newly created DDS object
     // BaseTypeFactory factory;
@@ -346,14 +342,57 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     return cache_file_name;
 }
 
+bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
+{
+    bool success = false;
+    int fd;
+
+    if (get_read_lock(cache_file_name, fd)) {
+        // So we need to READ the first line of the file into a string
+        // because we know it's the resourceID of the thing in the cache.
+
+        FILE *cache_file_istream = fopen(cache_file_name.c_str(), "r");
+
+        string cachedResourceId;
+
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream  << /*.tellg()  << " bytes read: "<< cache_file_istream.gcount()<<*/ endl);
+
+        char line[4096];
+        fgets(line, sizeof(line), cache_file_istream);
+        cachedResourceId.assign(line);
+        cachedResourceId.pop_back();
+
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId << " length: " << cachedResourceId.length() << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< /*cache_file_istream.tellg() <<*/ endl);
+
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
+
+        // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
+        if (cachedResourceId.compare(resourceId) == 0) {
+            // WooHoo Cache Hit!
+            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache Hit!" << endl);
+
+            *fdds = read_data_ddx(cache_file_istream, dataset_name);
+            success = true;
+        }
+
+        unlock_and_close(cache_file_name);
+        fclose(cache_file_istream);
+    }
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache " << (success?"HIT":"MISS") << " for: " << cache_file_name << endl);
+
+    return success;
+}
+
 /**
  * Read data from cache. Allocates a new DDS using the given factory.
  *
  */
 DDS *
-BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, const string &dataset_name)
+BESDapResponseCache::read_data_ddx(FILE *cached_data, const string &dataset_name)
 {
-    DDS *fdds = new DDS(factory);
+    BaseTypeFactory factory;
+    DDS *fdds = new DDS(&factory);
 
     fdds->filename(dataset_name);
 
@@ -377,72 +416,23 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, 
 
     // Now read the data
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Reading Data." << endl);
-    //XDRStreamUnMarshaller um(cached_data);
+
     XDRFileUnMarshaller um(cached_data);
-    for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
+    for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Deserializing variable "<< (*i)->name() << endl);
         (*i)->deserialize(um, fdds);
     }
 
-
-    fdds->set_factory(0);
-
     // mark everything as read. And 'to send.' That is, make sure that when a response
     // is retrieved from the cache, all of the variables are marked as 'to be sent.'
-    DDS::Vars_iter i = fdds->var_begin();
-    while (i != fdds->var_end()) {
+    for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
         (*i)->set_read_p(true);
-        (*i++)->set_send_p(true);
+        (*i)->set_send_p(true);
     }
 
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  END." << endl);
 
     return fdds;
-}
-
-bool BESDapResponseCache::load_from_cache(const string dataset_name, const string resourceId, const string cache_file_name,  DDS **fdds)
-{
-    bool success = false;
-    int fd;
-
-    if (get_read_lock(cache_file_name, fd)) {
-        // So we need to READ the first line of the file into a string
-        // because we know it's the resourceID of the thing in the cache.
-
-        // *** std::ifstream cache_file_istream(cache_file_name);
-        FILE *cache_file_istream = fopen(cache_file_name.c_str(), "r");
-
-        string cachedResourceId;
-
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< cache_file_istream  << /*.tellg()  << " bytes read: "<< cache_file_istream.gcount()<<*/ endl);
-
-        // *** std::getline(cache_file_istream, cachedResourceId);
-        char line[4096];
-        fgets(line, sizeof(line), cache_file_istream);
-        cachedResourceId.assign(line);
-        cachedResourceId.pop_back();
-
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId << " length: " << cachedResourceId.length() << endl);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() -  stream position: "<< /*cache_file_istream.tellg() <<*/ endl);
-
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
-
-        // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
-        if (cachedResourceId.compare(resourceId) == 0) {
-            // WooHoo Cache Hit!
-            BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache Hit!" << endl);
-            BaseTypeFactory factory;
-            *fdds = read_data_ddx(cache_file_istream, &factory, dataset_name);
-            success = true;
-        }
-
-        unlock_and_close(cache_file_name);
-        fclose(cache_file_istream);
-
-    }
-    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache " << (success?"HIT":"MISS") << " for: " << cache_file_name << endl);
-
-    return success;
 }
 
 /**
