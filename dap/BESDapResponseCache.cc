@@ -382,6 +382,11 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, 
     for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Deserializing variable "<< (*i)->name() << endl);
         (*i)->deserialize(um, fdds);
+        if(BESDebug::IsSet(DEBUG_KEY)){
+            (*i)->print_val(*BESDebug::GetStrm());
+            *BESDebug::GetStrm() << endl;
+        }
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Variable "<< (*i)->name() << " has been deserialized." << endl);
     }
 
 
@@ -391,8 +396,11 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data, BaseTypeFactory *factory, 
     // is retrieved from the cache, all of the variables are marked as 'to be sent.'
     DDS::Vars_iter i = fdds->var_begin();
     while (i != fdds->var_end()) {
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Marking variable "<< (*i)->name() << " as read." << endl);
         (*i)->set_read_p(true);
-        (*i++)->set_send_p(true);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Marking variable "<< (*i)->name() << " to send." << endl);
+        (*i)->set_send_p(true);
+        i++;
     }
 
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  END." << endl);

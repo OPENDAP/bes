@@ -866,10 +866,13 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     // is set. Otherwise it does nothing.
     conditional_timeout_cancel();
 
-
     // Send all variables in the current projection (send_p())
     for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
+            if(BESDebug::IsSet("dap")){
+                (*i)->print_val(*BESDebug::GetStrm());
+                *BESDebug::GetStrm() << endl;
+            }
             (*i)->serialize(eval, **dds, m, ce_eval);
 #ifdef CLEAR_LOCAL_DATA
             (*i)->clear_local_data();
@@ -979,7 +982,6 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         // Define a local ce evaluator so that the clause from the function parse
         // won't get treated like selection clauses later on when serialize is called
         // on the DDS (fdds)
-        ConstraintEvaluator func_eval;
         BESDapResponseCache *responseCache = 0;
 
 #if FUNCTION_CACHING
@@ -989,11 +991,13 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache has been found. Utilizing cache now..." << endl);
+            ConstraintEvaluator func_eval;
             string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache utilization complete." << endl);
        }
         else {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache not found; (re)calculating" << endl);
+            ConstraintEvaluator func_eval;
             func_eval.parse_constraint(btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);
             delete *dds; *dds = 0;
@@ -1156,7 +1160,6 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         conditional_timeout_cancel();
-
 
         (*dds)->print_xml_writer(out, true, "");
 
