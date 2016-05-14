@@ -28,6 +28,7 @@
 #include <string>
 
 #define DAP_PROTOCOL_VERSION "3.2"
+#undef STORE_DAP2_RESULT_FEATURE
 
 class BESDapResponseCache;
 
@@ -75,7 +76,9 @@ protected:
 
 	void initialize();
 
+#if STORE_DAP2_RESULT_FEATURE
 	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
+#endif
 
 	void send_dap4_data_using_ce(std::ostream &out, libdap::DMR &dmr, bool with_mime_headersr);
 
@@ -162,6 +165,7 @@ public:
 	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true);
 
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
+
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
 };
 

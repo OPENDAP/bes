@@ -41,6 +41,7 @@
 #include <XDRStreamMarshaller.h>
 //#include <XDRStreamUnMarshaller.h>
 #include <XDRFileUnMarshaller.h>
+#include <Sequence.h>   // We have to special-case these; see read_data_ddx()
 
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
@@ -435,10 +436,6 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data)
     for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Deserializing variable "<< (*i)->name() << endl);
         (*i)->deserialize(um, fdds);
-        if(BESDebug::IsSet(DEBUG_KEY)){
-            (*i)->print_val(*BESDebug::GetStrm());
-            *BESDebug::GetStrm() << endl;
-        }
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  Variable "<< (*i)->name() << " has been deserialized." << endl);
     }
 
@@ -447,6 +444,15 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data)
     for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
         (*i)->set_read_p(true);
         (*i)->set_send_p(true);
+
+        // For Sequences, deserialize() will update the 'current row number,' which
+        // is the correct behavior but which will also confuse serialize(). Reset the
+        // current row number here so serialize() can start working from row 0. jhrg 5/13/16
+        // FIXME Make this recursive
+        if ((*i)->type() == dods_sequence_c) {
+            static_cast<Sequence*>(*i)->reset_row_number();
+            //static_cast<Sequence*>(*i)->set_synthesized_p(true);
+        }
     }
 
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  END." << endl);

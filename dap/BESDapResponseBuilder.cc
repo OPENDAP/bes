@@ -55,7 +55,6 @@
 
 //#define DODS_DEBUG
 #define CLEAR_LOCAL_DATA
-#define FUNCTION_CACHING 1
 #undef USE_LOCAL_TIMEOUT_SCHEME
 
 #include <DAS.h>
@@ -751,6 +750,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
     out << flush;
 }
 
+#if STORE_DAP2_RESULT_FEATURE
 /**
  * Should this result be returned using the asynchronous response mechanism?
  * Look at the 'store_result' property and see if the code should return this
@@ -845,6 +845,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     return true;
 
 }
+#endif
 
 /**
  * Build/return the BLOB part of the DAP2 data response.
@@ -869,10 +870,6 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     // Send all variables in the current projection (send_p())
     for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
-            if(BESDebug::IsSet("dap")){
-                (*i)->print_val(*BESDebug::GetStrm());
-                *BESDebug::GetStrm() << endl;
-            }
             (*i)->serialize(eval, **dds, m, ce_eval);
 #ifdef CLEAR_LOCAL_DATA
             (*i)->clear_local_data();
@@ -984,9 +981,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         // on the DDS (fdds)
         BESDapResponseCache *responseCache = 0;
 
-#if FUNCTION_CACHING
         responseCache = BESDapResponseCache::get_instance();
-#endif
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
@@ -994,6 +989,12 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
             ConstraintEvaluator func_eval;
             string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache utilization complete." << endl);
+
+            // FIXME
+            (*(*dds)->var_begin())->print_val(cerr);
+
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache end cached var print." << endl);
+
        }
         else {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache not found; (re)calculating" << endl);
@@ -1037,12 +1038,11 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
-#if FUNCTION_CACHING
+#if STORE_DAP2_RESULT_FEATURE
         // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, **dds, eval)) {
             serialize_dap2_data_dds(data_stream, dds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
-
 #else
         serialize_dap2_data_dds(data_stream, dds, eval, true /* was 'false'. jhrg 3/10/15 */);
 #endif
@@ -1065,10 +1065,14 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
+#if STORE_DAP2_RESULT_FEATURE
         // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, **dds, eval)) {
             serialize_dap2_data_dds(data_stream, dds, eval);
         }
+#else
+        serialize_dap2_data_dds(data_stream, dds, eval);
+#endif
     }
 
     data_stream << flush;
@@ -1120,9 +1124,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
         ConstraintEvaluator func_eval;
         BESDapResponseCache *responseCache = 0;
 
-#if FUNCTION_CACHING
         responseCache = BESDapResponseCache::get_instance();
-#endif
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
@@ -1163,11 +1165,8 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
 
         (*dds)->print_xml_writer(out, true, "");
 
-#if FUNCTION_CACHING
         if (responseCache)
             responseCache->unlock_and_close(cache_token);
-#endif
-
     }
     else {
         eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
@@ -1394,4 +1393,3 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 
     return false;
 }
-
