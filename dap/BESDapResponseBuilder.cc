@@ -907,7 +907,7 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS **dds, Con
     string cid = string(&uuid[0]) + "@" + string(&domain[0]);
 
     // Send constrained DDX with a data blob reference.
-    // FIXME Comment CID passed but ignored jhrg 10/20/15
+    // Note: CID passed but ignored jhrg 10/20/15
     (*dds)->print_xml_writer(out, true, cid);
 
     // write the data part mime headers here
@@ -985,19 +985,13 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache has been found. Utilizing cache now..." << endl);
             ConstraintEvaluator func_eval;
             string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache utilization complete." << endl);
-
-            // FIXME
+#if 0
             (*(*dds)->var_begin())->print_val(cerr);
-
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache end cached var print." << endl);
-
-       }
+#endif
+        }
         else {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BESDapResponseCache not found; (re)calculating" << endl);
             ConstraintEvaluator func_eval;
             func_eval.parse_constraint(btp_func_ce, **dds);
             DDS *fdds = func_eval.eval_function_clauses(**dds);

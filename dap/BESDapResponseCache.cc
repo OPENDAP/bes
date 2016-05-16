@@ -447,10 +447,9 @@ BESDapResponseCache::read_data_ddx(FILE *cached_data)
         // For Sequences, deserialize() will update the 'current row number,' which
         // is the correct behavior but which will also confuse serialize(). Reset the
         // current row number here so serialize() can start working from row 0. jhrg 5/13/16
-        // FIXME Make this recursive
+        // Note: Now uses the recursive version of reset_row_number. jhrg 5/16/16
         if ((*i)->type() == dods_sequence_c) {
-            static_cast<Sequence*>(*i)->reset_row_number();
-            //static_cast<Sequence*>(*i)->set_synthesized_p(true);
+            static_cast<Sequence*>(*i)->reset_row_number(true);
         }
     }
 
@@ -565,7 +564,6 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() - Re-throwing ERROR."<< endl);
             throw;
         }
-
     }
 
     return success;

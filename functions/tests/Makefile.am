@@ -55,7 +55,13 @@ $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/packag
 
 check-local: atconfig atlocal $(TESTSUITE)
 	@echo "Run tests with an empty cache"
+	-rm -rf dap_cache/*
+	@test `ls -1 dap_cache/ | wc -l` -eq 0
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@test `ls -1 dap_cache/ | wc -l` -eq 44
+	@echo "Run tests with a full cache"
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@test `ls -1 dap_cache/ | wc -l` -eq 44
 	-rm -rf dap_cache/*
 	
 clean-local:
