@@ -47,6 +47,7 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
 
+#include "CacheTypeFactory.h"
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
 #include "BESInternalError.h"
@@ -280,9 +281,6 @@ bool BESDapResponseCache::canBeCached(DDS *dds, string constraint){
 string
 BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, ConstraintEvaluator *eval)
 {
-    // These are used for the cached or newly created DDS object
-    // BaseTypeFactory factory;
-
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
     string resourceId = (*dds)->filename() + "#" + constraint;
@@ -408,7 +406,8 @@ BESDapResponseCache::load_from_cache(const string &resourceId, const string &cac
 DDS *
 BESDapResponseCache::read_data_ddx(FILE *cached_data)
 {
-    BaseTypeFactory factory;
+    // Build a CachedSequence; all other types are as BaseTypeFactory builds
+    CacheTypeFactory factory;
     DDS *fdds = new DDS(&factory);
 
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::read_data_ddx() -  BEGIN" << endl);
