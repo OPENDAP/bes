@@ -35,6 +35,10 @@
 #include <fstream>
 #include <sstream>
 
+#ifdef HAVE_TR1_FUNCTIONAL
+#include <tr1/functional>
+#endif
+
 #include <DDS.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
@@ -60,6 +64,14 @@
 #define DEBUG_KEY "response_cache"
 
 #define CRLF "\r\n"
+
+#ifdef HAVE_TR1_FUNCTIONAL
+#define HASH_OBJ std::tr1::hash
+#else
+#define HASH_OBJ std::hash
+#endif
+
+
 
 using namespace std;
 using namespace libdap;
@@ -263,12 +275,17 @@ string BESDapResponseCache::getResourceId(DDS *dds, const string &constraint)
     return dds->filename() + "#" + constraint;
 }
 
+
 bool BESDapResponseCache::can_be_cached(DDS *dds, const string &constraint)
 {
+    bool can_be_cached = true;
+
     if (constraint.length() + dds->filename().size() > max_cacheable_ce_len)
-        return false;
-    else
-        return true;
+        can_be_cached = false;
+
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::canBeCached()  The request " << (can_be_cached?"CAN":"CANNOT") << " be cached." << endl);
+
+    return can_be_cached;
 }
 
 /**
@@ -291,7 +308,7 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
 
     // Get a hash function for strings
-    std::hash<std::string> str_hash;
+    HASH_OBJ<std::string> str_hash;
 
     // Use the hash function to hash the resourceId.
     size_t hashValue = str_hash(resourceId);
@@ -383,7 +400,11 @@ BESDapResponseCache::load_from_cache(const string &resource_id, const string &ca
 
         FILE *cache_file_istream = fopen(cache_file_name.c_str(), "r");
 
+<<<<<<< HEAD
         string cached_resource_id;
+=======
+        string tmp, cachedResourceId;
+>>>>>>> 0b11ff4fe67c6cf94fe8c78878dfcb22d1272fb7
 
 #if 1
         char line[max_cacheable_ce_len];
@@ -391,8 +412,13 @@ BESDapResponseCache::load_from_cache(const string &resource_id, const string &ca
         char line[resource_id.size()+1];
 #endif
         fgets(line, sizeof(line), cache_file_istream);
+<<<<<<< HEAD
         cached_resource_id.assign(line);
         cached_resource_id.pop_back();
+=======
+        tmp.assign(line);
+        cachedResourceId = tmp.substr(0, tmp.size()-1);
+>>>>>>> 0b11ff4fe67c6cf94fe8c78878dfcb22d1272fb7
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cached_resource_id: " << cached_resource_id << endl);
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resource_id << endl);
@@ -497,8 +523,8 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() -  Caching " << cache_file_name << ", constraint: " << constraint << endl);
 
         // Get an output stream directed at the locked cache file
-        std::ofstream cache_file_ostream(cache_file_name);
-        if (!cache_file_ostream) {
+        std::ofstream cache_file_ostream(cache_file_name.c_str());
+        if (!cache_file_ostream.is_open()) {
             throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
         }
 
