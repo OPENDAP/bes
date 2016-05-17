@@ -278,6 +278,8 @@ bool BESDapResponseCache::canBeCached(DDS *dds, string constraint){
     if(resourceId.length() > 4095)
         canCache = false;
 
+    BESDEBUG(DEBUG_KEY, "BESDapResponseCache::canBeCached()  The request " << (canCache?"CAN":"CANNOT") << " be cached." << endl);
+
     return canCache;
 }
 
