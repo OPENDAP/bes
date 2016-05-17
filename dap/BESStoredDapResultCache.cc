@@ -597,6 +597,8 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
             // If here, the cache_file_name could not be locked for read access;
             // try to build it. First make an empty file and get an exclusive lock on it.
             BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - cache_file_name " << cache_file_name << ", constraint: " << constraint << endl);
+
+#if 0    // I shut this off because we know that the constraint and functions have already been evaluated - ndp
             DDS *fdds;
 
             fdds = new DDS(dds);
@@ -607,8 +609,9 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
             	delete fdds;
             	fdds = temp_fdds;
             }
+#endif
 
-            ofstream data_stream(cache_file_name.c_str());
+           ofstream data_stream(cache_file_name.c_str());
             if (!data_stream)
             	throw InternalErr(__FILE__, __LINE__, "Could not open '" + cache_file_name + "' to write cached response.");
 
@@ -620,7 +623,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
 
             // Setting the version to 3.2 causes send_data_ddx to write the MIME headers that
             // the cache expects.
-            fdds->set_dap_version("3.2");
+            dds.set_dap_version("3.2");
 
             // This is a bit of a hack, but it effectively uses ResponseBuilder to write the
             // cached object/response without calling the machinery in one of the send_*()
@@ -629,7 +632,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
             // of the DDS's variables.
 			set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
 			//data_stream << flush;
-			rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
+			rb->serialize_dap2_data_ddx(data_stream, (DDS**)&dds, eval, boundary, start);
 			//data_stream << flush;
 
 			data_stream << CRLF << "--" << boundary << "--" << CRLF;
@@ -647,10 +650,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
             unsigned long long size = update_cache_info(cache_file_name);
             if (cache_too_big(size))
             	update_and_purge(cache_file_name);
-            /**
-             * FIXME I think we need to delete this here, before we close and unlock the cache.
-             */
-        	delete fdds;
+
         }
         // get_read_lock() returns immediately if the file does not exist,
         // but blocks waiting to get a shared lock if the file does exist.

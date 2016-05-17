@@ -71,7 +71,7 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // Create the DDS.
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
+    DDS *dds = new DDS( NULL, "virtual" ) ;
     BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
     _response = bdds ;
 

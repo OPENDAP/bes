@@ -55,7 +55,6 @@
 
 //#define DODS_DEBUG
 #define CLEAR_LOCAL_DATA
-#undef FUNCTION_CACHING
 #undef USE_LOCAL_TIMEOUT_SCHEME
 
 #include <DAS.h>
@@ -366,13 +365,6 @@ void BESDapResponseBuilder::establish_timeout(ostream &) const
 /**
  * @deprecated Use timeout_off() instead.
  */
-void BESDapResponseBuilder::remove_timeout() const
-{
-#if USE_LOCAL_TIMEOUT_SCHEME
-    alarm(0);
-#endif
-}
-
 static string::size_type find_closing_paren(const string &ce, string::size_type pos)
 {
     // Iterate over the string finding all ( or ) characters until the matching ) is found.
@@ -492,7 +484,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_head
  * @param constrained Should the result be constrained
  * @param with_mime_headers Should MIME headers be sent to out?
  */
-void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained,
+void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool constrained,
     bool with_mime_headers)
 {
 #if USE_LOCAL_TIMEOUT_SCHEME
@@ -505,7 +497,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
 
         conditional_timeout_cancel();
 
-        dds.print_das(out);
+        (*dds)->print_das(out);
         out << flush;
 
         return;
@@ -517,42 +509,44 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
-        DDS *fdds = 0;
         string cache_token = "";
         ConstraintEvaluator func_eval;
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
-        if (responseCache) {
-            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            cache_token = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
+
         }
         else {
-            func_eval.parse_constraint(d_btp_func_ce, dds);
-            fdds = func_eval.eval_function_clauses(dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
+            DDS *fdds = func_eval.eval_function_clauses(**dds);
+            delete *dds; *dds = 0;
+            *dds = fdds;
         }
 
         if (with_mime_headers)
-            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         conditional_timeout_cancel();
 
 
-        fdds->print_das(out);
+        (*dds)->print_das(out);
 
         if (responseCache)
         	responseCache->unlock_and_close(cache_token);
 
-        delete fdds;
     }
     else {
-        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
-            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         conditional_timeout_cancel();
 
 
-        dds.print_das(out);
+        (*dds)->print_das(out);
     }
 
     out << flush;
@@ -666,17 +660,17 @@ static DDS *promote_function_output_structure(DDS *fdds)
  @param with_mime_headers If true (default) send MIME headers.
  @return void
  @see DDS */
-void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained,
+void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool constrained,
     bool with_mime_headers)
 {
     if (!constrained) {
         if (with_mime_headers)
-            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         conditional_timeout_cancel();
 
 
-        dds.print(out);
+        (*dds)->print(out);
         out << flush;
         return;
     }
@@ -695,30 +689,33 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
         string cache_token = "";
-        DDS *fdds = 0;
         ConstraintEvaluator func_eval;
 
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
-        if (responseCache) {
-            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
-            func_eval.parse_constraint(d_btp_func_ce, dds);
-            fdds = func_eval.eval_function_clauses(dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
+            DDS *fdds = func_eval.eval_function_clauses(**dds);
+            delete *dds; *dds = 0;
+            *dds = fdds;
         }
+
 
         // Server functions might mark variables to use their read()
         // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
-        fdds->mark_all(false);
+        (*dds)->mark_all(false);
 
-        eval.parse_constraint(d_dap2ce, *fdds);
+        eval.parse_constraint(d_dap2ce, **dds);
 
         if (with_mime_headers)
-            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         // This next step utilizes a well known static method (so really it's a function;),
         // promote_function_output_structures() to look for
@@ -730,33 +727,30 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
         // promote_function_output_structures()
-        promote_function_output_structures(/*&*/fdds);
+        promote_function_output_structures(*dds);
 
         conditional_timeout_cancel();
 
 
-        fdds->print_constrained(out);
+        (*dds)->print_constrained(out);
 
-        if (responseCache)
-        	responseCache->unlock_and_close(cache_token);
-
-        delete fdds;
     }
     else {
-        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
-            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),(*dds)->get_dap_version());
 
         conditional_timeout_cancel();
 
 
-        dds.print_constrained(out);
+        (*dds)->print_constrained(out);
     }
 
     out << flush;
 }
 
+#if STORE_DAP2_RESULT_FEATURE
 /**
  * Should this result be returned using the asynchronous response mechanism?
  * Look at the 'store_result' property and see if the code should return this
@@ -851,18 +845,19 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     return true;
 
 }
+#endif
 
 /**
  * Build/return the BLOB part of the DAP2 data response.
  */
-void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool ce_eval)
+void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool ce_eval)
 {
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESDapResponseBuilder::serialize_dap2_data_dds", "");
 
     BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - BEGIN" << endl);
 
-    dds.print_constrained(out);
+    (*dds)->print_constrained(out);
     out << "Data:\n";
     out << flush;
 
@@ -872,11 +867,10 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, Cons
     // is set. Otherwise it does nothing.
     conditional_timeout_cancel();
 
-
     // Send all variables in the current projection (send_p())
-    for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+    for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
-            (*i)->serialize(eval, dds, m, ce_eval);
+            (*i)->serialize(eval, **dds, m, ce_eval);
 #ifdef CLEAR_LOCAL_DATA
             (*i)->clear_local_data();
 #endif
@@ -894,7 +888,7 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, Cons
  *
  * FIXME Comment is probably wrong jhrg 10/20/15
  */
-void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
+void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS **dds, ConstraintEvaluator &eval,
     const string &boundary, const string &start, bool ce_eval)
 {
     BESDEBUG("dap", __PRETTY_FUNCTION__ << " BEGIN" << endl);
@@ -913,8 +907,8 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
     string cid = string(&uuid[0]) + "@" + string(&domain[0]);
 
     // Send constrained DDX with a data blob reference.
-    // FIXME Comment CID passed but ignored jhrg 10/20/15
-    dds.print_xml_writer(out, true, cid);
+    // Note: CID passed but ignored jhrg 10/20/15
+    (*dds)->print_xml_writer(out, true, cid);
 
     // write the data part mime headers here
     set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
@@ -925,9 +919,9 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
 
 
     // Send all variables in the current projection (send_p()).
-    for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+    for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
-            (*i)->serialize(eval, dds, m, ce_eval);
+            (*i)->serialize(eval, **dds, m, ce_eval);
 #ifdef CLEAR_LOCAL_DATA
             (*i)->clear_local_data();
 #endif
@@ -953,7 +947,14 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true.
  @return void */
-void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval,
+void BESDapResponseBuilder::remove_timeout() const
+{
+#if USE_LOCAL_TIMEOUT_SCHEME
+    alarm(0);
+#endif
+}
+
+void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, ConstraintEvaluator &eval,
     bool with_mime_headers)
 {
     BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BEGIN"<< endl);
@@ -975,26 +976,27 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
         string cache_token = "";
-        DDS *fdds = 0;
         // Define a local ce evaluator so that the clause from the function parse
         // won't get treated like selection clauses later on when serialize is called
         // on the DDS (fdds)
-        ConstraintEvaluator func_eval;
         BESDapResponseCache *responseCache = 0;
 
-#if FUNCTION_CACHING
         responseCache = BESDapResponseCache::get_instance();
-#endif
 
-        if (responseCache) {
-            BESDEBUG("dap",
-                "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
-            fdds = responseCache->cache_dataset(dds, get_btp_func_ce(), this, &func_eval, cache_token);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            ConstraintEvaluator func_eval;
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
+#if 0
+            (*(*dds)->var_begin())->print_val(cerr);
+#endif
         }
         else {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
-            func_eval.parse_constraint(get_btp_func_ce(), dds);
-            fdds = func_eval.eval_function_clauses(dds);
+            ConstraintEvaluator func_eval;
+            func_eval.parse_constraint(btp_func_ce, **dds);
+            DDS *fdds = func_eval.eval_function_clauses(**dds);
+            delete *dds; *dds = 0;
+            *dds = fdds;
         }
 
         // Server functions might mark variables to use their read()
@@ -1002,7 +1004,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
-        fdds->mark_all(false);
+        (*dds)->mark_all(false);
 
         // This next step utilizes a well known static method (so really it's a function;),
         // promote_function_output_structures() to look for
@@ -1014,57 +1016,57 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
         // promote_function_output_structures()
-        promote_function_output_structures(fdds);
+        promote_function_output_structures(*dds);
 
-        eval.parse_constraint(get_ce(), *fdds);
+        eval.parse_constraint(get_ce(), **dds);
 
-        fdds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
+        (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        if (fdds->get_response_limit() != 0 && fdds->get_request_size(true) > fdds->get_response_limit()) {
-            string msg = "The Request for " + long_to_string(dds.get_request_size(true) / 1024)
+        if ((*dds)->get_response_limit() != 0 && (*dds)->get_request_size(true) > (*dds)->get_response_limit()) {
+            string msg = "The Request for " + long_to_string((*dds)->get_request_size(true) / 1024)
                 + "KB is too large; requests for this user are limited to "
-                + long_to_string(dds.get_response_limit() / 1024) + "KB.";
+                + long_to_string((*dds)->get_response_limit() / 1024) + "KB.";
             throw Error(msg);
         }
 
         if (with_mime_headers)
-            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
-#if FUNCTION_CACHING
+#if STORE_DAP2_RESULT_FEATURE
         // This means: if we are not supposed to store the result, then serialize it.
-        if (!store_dap2_result(data_stream, dds, eval)) {
-            serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
+        if (!store_dap2_result(data_stream, **dds, eval)) {
+            serialize_dap2_data_dds(data_stream, dds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
-
-        if (responseCache)
-            responseCache->unlock_and_close(cache_token);
 #else
-        serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
+        serialize_dap2_data_dds(data_stream, dds, eval, true /* was 'false'. jhrg 3/10/15 */);
 #endif
 
-        delete fdds;
     }
     else {
         BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Simple constraint" << endl);
 
-        eval.parse_constraint(get_ce(), dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(get_ce(), **dds); // Throws Error if the ce doesn't parse.
 
-        dds.tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
+        (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        if (dds.get_response_limit() != 0 && dds.get_request_size(true) > dds.get_response_limit()) {
-            string msg = "The Request for " + long_to_string(dds.get_request_size(true) / 1024)
+        if ((*dds)->get_response_limit() != 0 && (*dds)->get_request_size(true) > (*dds)->get_response_limit()) {
+            string msg = "The Request for " + long_to_string((*dds)->get_request_size(true) / 1024)
                 + "KB is too large; requests for this user are limited to "
-                + long_to_string(dds.get_response_limit() / 1024) + "KB.";
+                + long_to_string((*dds)->get_response_limit() / 1024) + "KB.";
             throw Error(msg);
         }
 
         if (with_mime_headers)
-            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
+#if STORE_DAP2_RESULT_FEATURE
         // This means: if we are not supposed to store the result, then serialize it.
-        if (!store_dap2_result(data_stream, dds, eval)) {
+        if (!store_dap2_result(data_stream, **dds, eval)) {
             serialize_dap2_data_dds(data_stream, dds, eval);
         }
+#else
+        serialize_dap2_data_dds(data_stream, dds, eval);
+#endif
     }
 
     data_stream << flush;
@@ -1087,13 +1089,13 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
  @param out Destination
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true. */
-void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
+void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
     if (d_dap2ce.empty()) {
         if (with_mime_headers)
-            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
-        dds.print_xml_writer(out, false /*constrained */, "");
+        (*dds)->print_xml_writer(out, false /*constrained */, "");
         //dds.print(out);
         out << flush;
         return;
@@ -1113,20 +1115,20 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
         string cache_token = "";
-        DDS *fdds = 0;
         ConstraintEvaluator func_eval;
         BESDapResponseCache *responseCache = 0;
 
-#if FUNCTION_CACHING
         responseCache = BESDapResponseCache::get_instance();
-#endif
 
-        if (responseCache) {
-            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
-            func_eval.parse_constraint(d_btp_func_ce, dds);
-            fdds = func_eval.eval_function_clauses(dds);
+            func_eval.parse_constraint(btp_func_ce, **dds);
+            DDS *fdds = func_eval.eval_function_clauses(**dds);
+            delete *dds; *dds = 0;
+            *dds = fdds;
         }
 
         // Server functions might mark variables to use their read()
@@ -1134,7 +1136,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
-        fdds->mark_all(false);
+        (*dds)->mark_all(false);
 
         // This next step utilizes a well known static method (so really it's a function;),
         // promote_function_output_structures() to look for
@@ -1146,36 +1148,31 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         // builders and transmitters that the representation needs to be altered before
         // transmission, and that in fact is what happens in our friend
         // promote_function_output_structures()
-        promote_function_output_structures(fdds);
+        promote_function_output_structures(*dds);
 
-        eval.parse_constraint(d_dap2ce, *fdds);
+        eval.parse_constraint(d_dap2ce, **dds);
 
         if (with_mime_headers)
-            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         conditional_timeout_cancel();
 
+        (*dds)->print_xml_writer(out, true, "");
 
-        fdds->print_xml_writer(out, true, "");
-
-#if FUNCTION_CACHING
         if (responseCache)
             responseCache->unlock_and_close(cache_token);
-#endif
-
-        delete fdds;
     }
     else {
-        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
-            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         conditional_timeout_cancel();
 
 
         // dds.print_constrained(out);
-        dds.print_xml_writer(out, true, "");
+        (*dds)->print_xml_writer(out, true, "");
     }
 
     out << flush;
@@ -1390,4 +1387,3 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 
     return false;
 }
-

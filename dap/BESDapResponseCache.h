@@ -28,6 +28,8 @@
 #include <string>
 #include "BESFileLockingCache.h"
 
+#define DATA_MARK "--DATA:"
+
 class BESDapResponseBuilder;
 
 namespace libdap {
@@ -45,8 +47,7 @@ class BESDapResponseCache: public BESFileLockingCache {
 private:
 
     static BESDapResponseCache *d_instance;
-    static void delete_instance()
-    {
+    static void delete_instance() {
         delete d_instance;
         d_instance = 0;
     }
@@ -57,9 +58,18 @@ private:
     BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
-    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory,
-        const std::string &dataset);
+
+    std::string getResourceId(libdap::DDS *dds, const std::string &constraint);
+
+    libdap::DDS *read_data_ddx(FILE *cached_data/*, libdap::BaseTypeFactory *factory, const string &dataset*/);
+
+    bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
+        libdap::ConstraintEvaluator *eval, const string &cache_file_name);
+#if 0
+    bool load_from_cache(const string dataset_filename, const string resourceId, const string cache_file_name,  libdap::DDS **fdds);
+#endif
+    libdap::DDS *load_from_cache(/*const string &dataset_filename, */const string &resourceId, const string &cache_file_name);//,  libdap::DDS **fdds);
+
 
     friend class ResponseCacheTest;
     friend class StoredResultTest;
@@ -97,12 +107,14 @@ public:
     }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
-    virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
-        libdap::ConstraintEvaluator *eval, std::string &cache_token);
+    virtual std::string cache_dataset(libdap::DDS **dds, const std::string &constraint,
+        libdap::ConstraintEvaluator *eval);//, std::string &cache_token);
 
+    virtual bool canBeCached(libdap::DDS *dds, std::string constraint);
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
+
 };
 
 #endif // _bes_dap_response_cache_h

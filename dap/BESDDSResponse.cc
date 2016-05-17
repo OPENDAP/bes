@@ -37,8 +37,8 @@ BESDDSResponse::~BESDDSResponse()
     if (_dds) {
         // FIXME Should the BES be deleting stuff inside a DDS object? How does
         // the BES know this is not allocated on the stack?
-        if (_dds->get_factory())
-            delete _dds->get_factory();
+        //if (_dds->get_factory())
+        //    delete _dds->get_factory();
         delete _dds;
     }
 }

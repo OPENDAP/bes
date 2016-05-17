@@ -169,7 +169,8 @@ private:
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
-        rb.send_dds(dhi.get_output_stream(), *dds, ce, true, print_mime);
+        rb.send_dds(dhi.get_output_stream(), &dds, ce, true, print_mime);
+        bdds->set_dds(dds);
     }
 };
 
@@ -187,7 +188,7 @@ private:
             throw BESInternalError("cast error", __FILE__, __LINE__);
         }
 
-        DataDDS *dds = bdds->get_dds();
+        DDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
 
         dhi.first_container();
@@ -201,8 +202,9 @@ private:
         rb.set_store_result(dhi.data[STORE_RESULT]);
 
         BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
-        rb.send_dap2_data(dhi.get_output_stream(), *dds, ce, print_mime);
-    }
+        rb.send_dap2_data(dhi.get_output_stream(), &dds, ce, print_mime);
+        bdds->set_dds(dds);
+   }
 };
 
 class SendDDX: public Sender
@@ -228,7 +230,8 @@ private:
         BESDapResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
-        rb.send_ddx(dhi.get_output_stream(), *dds, ce, print_mime);
+        rb.send_ddx(dhi.get_output_stream(), &dds, ce, print_mime);
+        bdds->set_dds(dds);
     }
 };
 
