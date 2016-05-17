@@ -35,6 +35,10 @@
 #include <fstream>
 #include <sstream>
 
+#ifdef HAVE_TR1_FUNCTIONAL
+#include <tr1/functional>
+#endif
+
 #include <DDS.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
@@ -60,6 +64,14 @@
 #define DEBUG_KEY "response_cache"
 
 #define CRLF "\r\n"
+
+#ifdef HAVE_TR1_FUNCTIONAL
+#define HASH_OBJ std::tr1::hash
+#else
+#define HASH_OBJ std::hash
+#endif
+
+
 
 using namespace std;
 using namespace libdap;
@@ -289,7 +301,7 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     BESDEBUG(DEBUG_KEY, "BESDapResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
 
     // Get a hash function for strings
-    std::hash<std::string> str_hash;
+    HASH_OBJ<std::string> str_hash;
 
     // Use the hash function to hash the resourceId.
     size_t hashValue = str_hash(resourceId);
