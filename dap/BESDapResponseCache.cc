@@ -494,8 +494,8 @@ bool BESDapResponseCache::write_dataset_to_cache(DDS **dds, const string &resour
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::write_dataset_to_cache() -  Caching " << cache_file_name << ", constraint: " << constraint << endl);
 
         // Get an output stream directed at the locked cache file
-        std::ofstream cache_file_ostream(cache_file_name);
-        if (!cache_file_ostream) {
+        std::ofstream cache_file_ostream(cache_file_name.c_str());
+        if (!cache_file_ostream.is_open()) {
             throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
         }
 
