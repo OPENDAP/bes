@@ -64,6 +64,10 @@
 using namespace std;
 using namespace libdap;
 
+#if 1
+const unsigned int max_cacheable_ce_len = 4096;
+#endif
+
 BESDapResponseCache *BESDapResponseCache::d_instance = 0;
 const string BESDapResponseCache::PATH_KEY = "DAP.ResponseCache.path";
 const string BESDapResponseCache::PREFIX_KEY = "DAP.ResponseCache.prefix";
@@ -254,19 +258,17 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
     return true;
 }
 
-string BESDapResponseCache::getResourceId(DDS *dds, const string &constraint){
+string BESDapResponseCache::getResourceId(DDS *dds, const string &constraint)
+{
     return dds->filename() + "#" + constraint;
 }
 
-bool BESDapResponseCache::canBeCached(DDS *dds, string constraint){
-
-    bool canCache = true;
-    string resourceId = getResourceId(dds,constraint);
-
-    if(resourceId.length() > 4095)
-        canCache = false;
-
-    return canCache;
+bool BESDapResponseCache::can_be_cached(DDS *dds, const string &constraint)
+{
+    if (constraint.length() + dds->filename().size() > max_cacheable_ce_len)
+        return false;
+    else
+        return true;
 }
 
 /**
@@ -354,14 +356,23 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
 }
 
 /**
- * @brief
- * @param dataset_name
- * @param resourceId
- * @param cache_file_name
- * @return
+ * @brief Look for a cache hit; load a DDS and its associated data
+ *
+ * This private method compares the 'resource_id' value with the resource id
+ * in the named cache file. If they match, then this cache file contains
+ * the data we're after. In that case this code calls read_data_ddx() which
+ * allocates a new DDS object and reads its data from the cache file. If
+ * the two resource ids don't match, this method returns null.
+ *
+ * @param resourceId The resource id is a combination of the filename and the
+ * function call part of the CE that built the cached response.
+ * @param cache_file_name The name of a cache file that _may_ contain the correct
+ * response.
+ * @return A pointer to a newly allocated DDS that contains data if the cache file
+ * held the correct response, null otherwise.
  */
 DDS *
-BESDapResponseCache::load_from_cache(const string &resourceId, const string &cache_file_name)
+BESDapResponseCache::load_from_cache(const string &resource_id, const string &cache_file_name)
 {
     int fd; // unused
     DDS *cached_dds = 0;   // nullptr
@@ -372,18 +383,22 @@ BESDapResponseCache::load_from_cache(const string &resourceId, const string &cac
 
         FILE *cache_file_istream = fopen(cache_file_name.c_str(), "r");
 
-        string cachedResourceId;
+        string cached_resource_id;
 
-        char line[4096];
+#if 1
+        char line[max_cacheable_ce_len];
+#else
+        char line[resource_id.size()+1];
+#endif
         fgets(line, sizeof(line), cache_file_istream);
-        cachedResourceId.assign(line);
-        cachedResourceId.pop_back();
+        cached_resource_id.assign(line);
+        cached_resource_id.pop_back();
 
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cachedResourceId: " << cachedResourceId << endl);
-        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resourceId << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cached_resource_id: " << cached_resource_id << endl);
+        BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resource_id << endl);
 
         // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
-        if (cachedResourceId.compare(resourceId) == 0) {
+        if (cached_resource_id.compare(resource_id) == 0) {
             // WooHoo Cache Hit!
             BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - Cache Hit!" << endl);
 

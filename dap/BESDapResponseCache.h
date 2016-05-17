@@ -61,14 +61,11 @@ private:
 
     std::string getResourceId(libdap::DDS *dds, const std::string &constraint);
 
-    libdap::DDS *read_data_ddx(FILE *cached_data/*, libdap::BaseTypeFactory *factory, const string &dataset*/);
+    libdap::DDS *read_data_ddx(FILE *cached_data);
 
     bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
         libdap::ConstraintEvaluator *eval, const string &cache_file_name);
-#if 0
-    bool load_from_cache(const string dataset_filename, const string resourceId, const string cache_file_name,  libdap::DDS **fdds);
-#endif
-    libdap::DDS *load_from_cache(/*const string &dataset_filename, */const string &resourceId, const string &cache_file_name);//,  libdap::DDS **fdds);
+    libdap::DDS *load_from_cache(const string &resource_id, const string &cache_file_name);
 
 
     friend class ResponseCacheTest;
@@ -108,9 +105,9 @@ public:
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
     virtual std::string cache_dataset(libdap::DDS **dds, const std::string &constraint,
-        libdap::ConstraintEvaluator *eval);//, std::string &cache_token);
+        libdap::ConstraintEvaluator *eval);
 
-    virtual bool canBeCached(libdap::DDS *dds, std::string constraint);
+    virtual bool can_be_cached(libdap::DDS *dds, const std::string &constraint);
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();

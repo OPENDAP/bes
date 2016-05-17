@@ -514,7 +514,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
-        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+        if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
             cache_token = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
 
         }
@@ -694,7 +694,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
         BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
-        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+        if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
             string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
@@ -880,13 +880,14 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - END" << endl);
 }
 
+
 /**
  * Serialize a DAP3.2 DataDDX to the stream "out".
  * This was originally intended to be used for DAP4, now it is used to
  * store responses for the async response feature as well as response
  * caching for function results.
  *
- * FIXME Comment is probably wrong jhrg 10/20/15
+ * FIXME Remove this until Stored DAP2 Results are working again.
  */
 void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS **dds, ConstraintEvaluator &eval,
     const string &boundary, const string &start, bool ce_eval)
@@ -984,7 +985,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         responseCache = BESDapResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
-        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+        if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
             ConstraintEvaluator func_eval;
             string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
 #if 0
@@ -1121,7 +1122,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
         responseCache = BESDapResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
-        if (responseCache && responseCache->canBeCached(*dds,btp_func_ce)) {
+        if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
             string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
