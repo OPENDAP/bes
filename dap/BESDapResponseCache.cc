@@ -400,25 +400,15 @@ BESDapResponseCache::load_from_cache(const string &resource_id, const string &ca
 
         FILE *cache_file_istream = fopen(cache_file_name.c_str(), "r");
 
-<<<<<<< HEAD
         string cached_resource_id;
-=======
-        string tmp, cachedResourceId;
->>>>>>> 0b11ff4fe67c6cf94fe8c78878dfcb22d1272fb7
-
 #if 1
         char line[max_cacheable_ce_len];
 #else
         char line[resource_id.size()+1];
 #endif
         fgets(line, sizeof(line), cache_file_istream);
-<<<<<<< HEAD
         cached_resource_id.assign(line);
-        cached_resource_id.pop_back();
-=======
-        tmp.assign(line);
-        cachedResourceId = tmp.substr(0, tmp.size()-1);
->>>>>>> 0b11ff4fe67c6cf94fe8c78878dfcb22d1272fb7
+        cached_resource_id = cached_resource_id.substr(0, cached_resource_id.size()-1);
 
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - cached_resource_id: " << cached_resource_id << endl);
         BESDEBUG(DEBUG_KEY, "BESDapResponseCache::load_from_cache() - resourceId: " << resource_id << endl);
