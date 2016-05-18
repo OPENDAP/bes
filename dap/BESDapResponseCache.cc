@@ -335,9 +335,11 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     bool done = false;
     while (!done) {
 
-        if(suffix_counter > 50)
-            throw BESInternalError("Cache error! There are "<< suffix_counter <<" hash collisions for the resource '" << resourceId <<
-                    "' And that is a bad bad thing.", __FILE__, __LINE__);
+        if(suffix_counter > 50){
+            stringstream ss;
+            ss << "Cache error! There are " << suffix_counter <<" hash collisions for the resource '" << resourceId <<  "' And that is a bad bad thing.";
+            throw BESInternalError(ss.str(), __FILE__, __LINE__);
+        }
 
         DDS *ret_dds = NULL;
         // Build cache_file_name and cache_id_file_name from baseName
