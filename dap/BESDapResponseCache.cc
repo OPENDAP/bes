@@ -334,6 +334,11 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
     unsigned long suffix_counter = 0;
     bool done = false;
     while (!done) {
+
+        if(suffix_counter > 50)
+            throw BESInternalError("Cache error! There are "<< suffix_counter <<" hash collisions for the resource '" << resourceId <<
+                    "' And that is a bad bad thing.", __FILE__, __LINE__);
+
         DDS *ret_dds = NULL;
         // Build cache_file_name and cache_id_file_name from baseName
         stringstream cfname;
@@ -360,9 +365,6 @@ BESDapResponseCache::cache_dataset(DDS **dds, const string &constraint, Constrai
             ret_dds->filename(dataset_name);
             *dds = ret_dds;
             done = true;
-        }
-        else {
-           throw BESInternalError("Cache error! Unable to acquire DAP Response cache.", __FILE__, __LINE__);
         }
     }
 
