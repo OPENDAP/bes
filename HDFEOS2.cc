@@ -128,6 +128,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
 {
 
     File *file = new File(path);
+    if(file == NULL)
+        throw;
 //cerr <<"File is opened" <<endl;
 
     file->gridfd = mygridfd;
@@ -145,7 +147,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> gridlist;
     if (!Utility::ReadNamelist(file->path.c_str(), GDinqgrid, gridlist)) {
         delete file;
-        throw2("grid namelist", path);
+        throw;
+        //throw2("grid namelist", path);
     }
 
     try {
@@ -170,7 +173,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> swathlist;
     if (!Utility::ReadNamelist(file->path.c_str(), SWinqswath, swathlist)){
         delete file;
-        throw2("swath namelist", path);
+        throw;
+        //throw2("swath namelist", path);
     }
 
     try {
@@ -190,9 +194,10 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> pointlist;
     if (!Utility::ReadNamelist(file->path.c_str(), PTinqpoint, pointlist)){
         delete file;
-        throw2("point namelist", path);
+        throw;
+        //throw2("point namelist", path);
     }
-   if(file !=NULL) {//See if I can make coverity happy because it doesn't understand throw macro.
+   //if(file !=NULL) {//See if I can make coverity happy because it doesn't understand throw macro.
     for (vector<string>::const_iterator i = pointlist.begin();
          i != pointlist.end(); ++i)
         file->points.push_back(PointDataset::Read(-1, *i));
@@ -205,7 +210,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
         delete file;
         throw e;  
     }
-   }
+   //}
     return file;
 }
 
@@ -3276,6 +3281,8 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
         for (vector<string>::const_iterator i = fieldnames.begin();
             i != fieldnames.end(); ++i) {
             Field *field = new Field();
+            if(field == NULL)
+                throw;
             field->name = *i;
 
             // XXX: We assume the maximum number of dimension for an EOS field
@@ -3288,14 +3295,15 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          const_cast<char *>(field->name.c_str()),
                          &field->rank, dimsize, &field->type, dimlist)) == -1){
                 delete field;
-                throw3("field info", this->name, field->name);
+                throw;
+                //throw3("field info", this->name, field->name);
             }
             {
                 vector<string> dimnames;
 
                 // Split the dimension name list for a field
                 HDFCFUtil::Split(dimlist, ',', dimnames);
-               if(field != NULL) {// Coverity doesn't understand throw macros.See if coverity is happy.
+               //if(field != NULL) {// Coverity doesn't understand throw macros.See if coverity is happy.
                 if ((int)dimnames.size() != field->rank) {
                     delete field;
                     throw4("field rank", dimnames.size(), field->rank,
@@ -3305,7 +3313,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                     Dimension *dim = new Dimension(dimnames[k], dimsize[k]);
                     field->dims.push_back(dim);
                 }
-               }
+               //}
             }
 
             // Get fill value of a field
@@ -3653,16 +3661,19 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
     throw(Exception)
 {
     SwathDataset *swath = new SwathDataset(swathname);
+    if(swath == NULL)
+        throw;
 
     // Open this Swath object
     if ((swath->datasetid = SWattach(fd,
         const_cast<char *>(swathname.c_str())))
         == -1) {
         delete swath;
-        throw2("attach swath", swathname);
+        throw;
+        //throw2("attach swath", swathname);
     }
 
-    if(swath != NULL) {// See if I can make coverity happy.coverity doesn't know I call throw already.
+    //if(swath != NULL) {// See if I can make coverity happy.coverity doesn't know I call throw already.
 
     try {
 
@@ -3690,7 +3701,7 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
         delete swath;
         throw;
     }
-    }
+    //}
 
     return swath;
 }

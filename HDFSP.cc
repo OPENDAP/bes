@@ -257,6 +257,8 @@ throw (Exception)
 {
     // New File 
     File *file = new File (path);
+    if(file == NULL)
+        throw;
 //cerr<<"File is opened for HDF4 "<<endl;
 
 #if 0
@@ -284,7 +286,7 @@ throw (Exception)
         throw2 ("Cannot start vdata/vgroup interface", path);
     }
 
-    if(file != NULL) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
+    //if(file != NULL) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
     try {
 
         // Retrieve extra SDS info.
@@ -300,7 +302,7 @@ throw (Exception)
         delete file;
         throw;
     }
-    }
+    //}
          
     return file;
 }
@@ -652,7 +654,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                throw1 ("No enough memory to allocate the buffer.");
+                throw;
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -667,7 +670,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
                 free (full_path);
-                throw1 ("No enough memory to allocate the buffer.");
+                throw;
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -813,9 +817,9 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 //Ignore the handling of SDS objects. They are handled elsewhere. 
                 else;
             }
-            if(full_path != NULL)
+            //if(full_path != NULL)
                 free (full_path);
-            if(cfull_path != NULL)
+            //if(cfull_path != NULL)
                 free (cfull_path);
 
             status = Vdetach (vgroup_id);
@@ -2147,7 +2151,8 @@ throw (Exception)
                 if(sd!= NULL)
                     delete sd;
                 Vdetach (vgroup_id);
-                throw1 ("No enough memory to allocate the buffer.");
+                throw;
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -2161,7 +2166,8 @@ throw (Exception)
                 Vdetach (vgroup_id);
                 if(full_path != NULL)
                     free (full_path);
-                throw1 ("No enough memory to allocate the buffer.");
+                throw;
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -2207,9 +2213,9 @@ throw (Exception)
                 // Do nothing for other objects
                 else;
             }
-            if(full_path != NULL)
+            //if(full_path != NULL)
                 free (full_path);
-            if(cfull_path != NULL)
+            //if(cfull_path != NULL)
                 free (cfull_path);
 
             status = Vdetach (vgroup_id);
@@ -2429,36 +2435,46 @@ throw (Exception)
     for (int i = 0; i < num_field; i++) {
 
         VDField *field = new VDField ();
+
+        if(field == NULL) {
+            delete vdata;
+            throw;
+
+        }
         fieldsize = VFfieldesize (vdata_id, i);
         if (fieldsize == FAIL) {
+            string temp_vdata_name = vdata->name;
             delete field;
             delete vdata;
             throw5 ("For vdata field, VFfieldsize failed. ", "vdata name is ",
-                     vdata->name, " index is ", i);
+                     temp_vdata_name, " index is ", i);
         }
 
         fieldname = VFfieldname (vdata_id, i);
         if (fieldname == NULL) {
+            string temp_vdata_name = vdata->name;
             delete field;
             delete vdata;
             throw5 ("For vdata field, VFfieldname failed. ", "vdata name is ",
-                     vdata->name, " index is ", i);
+                     temp_vdata_name, " index is ", i);
         }
 
         fieldtype = VFfieldtype (vdata_id, i);
         if (fieldtype == FAIL) {
+            string temp_vdata_name = vdata->name;
             delete field;
             delete vdata;
             throw5 ("For vdata field, VFfieldtype failed. ", "vdata name is ",
-                     vdata->name, " index is ", i);
+                     temp_vdata_name, " index is ", i);
         }
 
         fieldorder = VFfieldorder (vdata_id, i);
         if (fieldorder == FAIL) {
+            string temp_vdata_name = vdata->name;
             delete field;
             delete vdata;
             throw5 ("For vdata field, VFfieldtype failed. ", "vdata name is ",
-                     vdata->name, " index is ", i);
+                     temp_vdata_name, " index is ", i);
         }
 
         if(fieldname !=NULL) // Only make coverity happy
@@ -2511,10 +2527,8 @@ throw (Exception)
             field->ReadAttributes (vdata_id, i);
         }
         catch(...) {
-            if(field != NULL)
-                delete field;
-            if(vdata != NULL)
-                delete vdata;
+            delete field;
+            delete vdata;
             throw;
         }
         vdata->vdfields.push_back (field);
@@ -2843,7 +2857,8 @@ throw (Exception)
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                throw1 ("No enough memory to allocate the buffer.");
+                throw;
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else {// Not necessary, however this will make coverity scan happy.
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -2865,7 +2880,8 @@ throw (Exception)
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
                 free (full_path);
-                throw1 ("No enough memory to allocate the buffer.");
+                throw;
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else { // Not necessary, however this will make coverity scan happy.
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -3032,10 +3048,10 @@ throw (Exception)
                 }
                 else;
             }
-            if(full_path != NULL)
-                free (full_path);
-            if(cfull_path != NULL)
-                free (cfull_path);
+            //if(full_path != NULL)
+            free (full_path);
+            //if(cfull_path != NULL)
+            free (cfull_path);
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
@@ -3189,8 +3205,7 @@ throw (Exception)
                         vdataobj = VDATA::Read (vdata_id, obj_ref);
                     }
                     catch(...) {
-                        if(cfull_path !=NULL)
-                            free (cfull_path);
+                        free (cfull_path);
                         Vdetach (vgroup_pid);
                         throw;
                     }
@@ -5612,6 +5627,8 @@ throw (Exception)
 
     // Longitude
     SDField *longitude = new SDField ();
+    if(longitude == NULL)
+        throw;
 
     longitude->name = "longitude";
     longitude->rank = 1;
@@ -5626,17 +5643,31 @@ throw (Exception)
     }
 
     Dimension *dim = new Dimension (num_lon_name, num_lon, 0);
+    if(dim == NULL) {
+        delete longitude;
+        throw;
+    }
 
-    if(longitude != NULL) // make coverity happy
-        longitude->dims.push_back (dim);
+    //if(longitude != NULL) 
+    //// make coverity happy
+    longitude->dims.push_back (dim);
 
+    dim = NULL;
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     dim = new Dimension (num_lon_name, num_lon, 0);
-    if(longitude != NULL) 
-        longitude->correcteddims.push_back (dim);
+    if(dim == NULL) {
+        delete longitude;
+        throw;
+    }
+    //if(longitude != NULL) 
+    longitude->correcteddims.push_back (dim);
 
     // Latitude
     SDField *latitude = new SDField ();
+    if(latitude == NULL) {
+        delete latitude;
+        throw;
+    }
     latitude->name = "latitude";
     latitude->rank = 1;
     latitude->type = DFNT_FLOAT32;
@@ -5650,23 +5681,36 @@ throw (Exception)
         throw3("The size of the dimension of the latitude ",latitude->name," is 0.");
     }
             
+    dim = NULL;
     dim = new Dimension (num_lat_name, num_lat, 0);
+    if( dim == NULL) {
+        delete longitude;
+        delete latitude;
+        throw;
+    }
+    
     if(latitude != NULL) 
         latitude->dims.push_back (dim);
 
+    dim = NULL;
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     dim = new Dimension (num_lat_name, num_lat, 0);
-    if(latitude != NULL) 
-        latitude->correcteddims.push_back (dim);
+    if(dim == NULL) {
+        delete longitude;
+        delete latitude;
+        throw;
+    }
+    //if(latitude != NULL) 
+    latitude->correcteddims.push_back (dim);
 
     // The dimension names of the SDS are fakeDim, so need to change them to dimension names of latitude and longitude
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
         if ((*i)->getRank () != 2) {
-            if(latitude !=NULL)
-                delete latitude;
-            if(longitude !=NULL)
-                delete longitude;
+            //if(latitude !=NULL)
+            delete latitude;
+            //if(longitude !=NULL)
+            delete longitude;
             throw3 ("The lat/lon rank must be 2", (*i)->getName (),
                     (*i)->getRank ());
         }
