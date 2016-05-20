@@ -41,6 +41,11 @@ DDSMemCache::~DDSMemCache()
     }
 }
 
+/**
+ * @brief Added a DDS to the cache and associate it with a key
+ * @param dds
+ * @param key
+ */
 void DDSMemCache::add(DDS *dds, const string &key)
 {
     ++d_count;
@@ -50,6 +55,10 @@ void DDSMemCache::add(DDS *dds, const string &key)
     cache.insert(cache_pair_t(d_count, new Entry(dds, key)));
 }
 
+/**
+ * @brief Remove the DDS associated with a key
+ * @param key
+ */
 void DDSMemCache::remove(const string &key)
 {
     index_t::iterator i = index.find(key);

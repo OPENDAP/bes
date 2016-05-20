@@ -39,6 +39,19 @@
 
 //namespace bes {
 
+/**
+ * @brief An in-memory cache for DDS objects
+ *
+ * This cache stores pointers to DDS objects in memory (not on a
+ * disk) and thus it is not a persistent cache. It provides no
+ * assurances regarding multi-process thread safety. Since the
+ * cache stores pointers, it assumes that some other part of the
+ * software has allocated the cached pointer and will be responsible
+ * for deleting it. The software using the cache is responsible for
+ * ensuring that the pointers in the cache reference valid objects
+ * (or that it doesn't matter if they don't...).
+ *
+ */
 class DDSMemCache {
 private:
     struct Entry {
@@ -73,6 +86,10 @@ public:
 
     virtual libdap::DDS *get_dds(const std::string &key);
 
+    /**
+     * @brief How many items are in the cache
+     * @return
+     */
     virtual unsigned int get_cache_size() const {
         assert(cache.size() == index.size());
         return cache.size();
@@ -80,6 +97,10 @@ public:
 
     virtual void purge(float fraction = 0.2);
 
+    /**
+     * @brief What is in the cache
+     * @param os
+     */
     virtual void dump(ostream &os) {
         os << "DDSMemCache" << endl;
         os << "Length of index: " << index.size() << endl;
