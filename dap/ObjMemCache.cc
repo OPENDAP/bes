@@ -84,7 +84,7 @@ void ObjMemCache::remove(const string &key)
  * @param cached_dds
  * @return
  */
-DapObj *ObjMemCache::get_obj(const string &key)
+DapObj *ObjMemCache::get(const string &key)
 {
     DapObj *cached_obj = 0;
 
@@ -125,7 +125,7 @@ DapObj *ObjMemCache::get_obj(const string &key)
  * @param key
  * @return
  */
-DapObj *ObjMemCache::extract_obj(const string &key)
+DapObj *ObjMemCache::extract(const string &key)
 {
     DapObj *cached_obj = 0;
 

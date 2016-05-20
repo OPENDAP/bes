@@ -84,14 +84,14 @@ public:
 
     virtual void remove(const std::string &key);
 
-    virtual libdap::DapObj *get_obj(const std::string &key);
-    virtual libdap::DapObj *extract_obj(const string &key);
+    virtual libdap::DapObj *get(const std::string &key);
+    virtual libdap::DapObj *extract(const string &key);
 
     /**
      * @brief How many items are in the cache
      * @return
      */
-    virtual unsigned int get_cache_size() const {
+    virtual unsigned int size() const {
         assert(cache.size() == index.size());
         return cache.size();
     }

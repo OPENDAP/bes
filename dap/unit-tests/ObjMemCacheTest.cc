@@ -155,9 +155,12 @@ public:
     void test_get_obj() {
         string name = "0_DDS";
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 1);
-        DDS *dds = static_cast<DDS*>(dds_cache->get_obj(name));
+
+        DDS *dds = static_cast<DDS*>(dds_cache->get(name));
+
         CPPUNIT_ASSERT(dds != 0);
         // check that the count is updated
+
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 11);
     }
 
