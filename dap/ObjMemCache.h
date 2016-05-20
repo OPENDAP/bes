@@ -20,14 +20,14 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 /*
- * DDSMemCache.h
+ * ObjMemCache.h
  *
  *  Created on: May 18, 2016
  *      Author: jimg
  */
 
-#ifndef DAP_DDSMEMCACHE_H_
-#define DAP_DDSMEMCACHE_H_
+#ifndef DAP_OBJMEMCACHE_H_
+#define DAP_OBJMEMCACHE_H_
 
 #include <time.h>
 #include <cassert>
@@ -35,7 +35,7 @@
 #include <string>
 #include <map>
 
-#include <DDS.h>
+#include <DapObj.h>
 
 //namespace bes {
 
@@ -52,39 +52,40 @@
  * (or that it doesn't matter if they don't...).
  *
  */
-class DDSMemCache {
+class ObjMemCache {
 private:
     struct Entry {
-        libdap::DDS *d_dds; // A weak pointer - we do not manage this storage
+        libdap::DapObj *d_obj; // A weak pointer - we do not manage this storage
         const std::string d_name;
 
         // We need the string so that we can delete the index entry easily
-        Entry(libdap::DDS *d, const std::string &n): d_dds(d), d_name(n) { }
+        Entry(libdap::DapObj *o, const std::string &n): d_obj(o), d_name(n) { }
         ~Entry() { }
     };
 
     unsigned int d_count;
 
-    typedef pair<unsigned int, Entry*> cache_pair_t;  // used by map::insert()
-    typedef map<unsigned int, Entry*> cache_t;
+    typedef std::pair<unsigned int, Entry*> cache_pair_t;  // used by map::insert()
+    typedef std::map<unsigned int, Entry*> cache_t;
     cache_t cache;
 
-    typedef pair<const std::string, unsigned int> index_pair_t;
-    typedef map<const std::string, unsigned int> index_t;
+    typedef std::pair<const std::string, unsigned int> index_pair_t;
+    typedef std::map<const std::string, unsigned int> index_t;
     index_t index;
 
     friend class DDSMemCacheTest;
 
 public:
-    DDSMemCache(): d_count(0) { }
+    ObjMemCache(): d_count(0) { }
 
-    virtual ~DDSMemCache();
+    virtual ~ObjMemCache();
 
-    virtual void add(libdap::DDS *dds, const std::string &key);
+    virtual void add(libdap::DapObj *obj, const std::string &key);
 
     virtual void remove(const std::string &key);
 
-    virtual libdap::DDS *get_dds(const std::string &key);
+    virtual libdap::DapObj *get_obj(const std::string &key);
+    virtual libdap::DapObj *extract_obj(const string &key);
 
     /**
      * @brief How many items are in the cache
@@ -102,7 +103,7 @@ public:
      * @param os
      */
     virtual void dump(ostream &os) {
-        os << "DDSMemCache" << endl;
+        os << "ObjMemCache" << endl;
         os << "Length of index: " << index.size() << endl;
         for(index_t::const_iterator it = index.begin(); it != index.end(); ++it)  {
             os << it->first << " --> " << it->second << endl;
@@ -117,4 +118,4 @@ public:
 
 // } namespace bes
 
-#endif /* DAP_DDSMEMCACHE_H_ */
+#endif /* DAP_OBJMEMCACHE_H_ */

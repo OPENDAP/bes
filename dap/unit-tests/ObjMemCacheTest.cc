@@ -23,8 +23,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "config.h"
-
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -36,7 +34,7 @@
 #include <GNURegex.h>
 #include <debug.h>
 
-#include "DDSMemCache.h"
+#include "ObjMemCache.h"
 
 static bool debug = false;
 static bool debug_2 = false;
@@ -52,7 +50,7 @@ using namespace libdap;
 
 class DDSMemCacheTest: public TestFixture {
 private:
-    DDSMemCache *dds_cache;
+    ObjMemCache *dds_cache;
     DDS *dds;
 
 public:
@@ -63,7 +61,7 @@ public:
     void setUp() {
         DBG2(cerr << "setUp() - BEGIN" << endl);
 
-        dds_cache = new DDSMemCache;
+        dds_cache = new ObjMemCache;
 
         // Load in 10 DDS*s and then purge
         BaseTypeFactory factory;
@@ -89,13 +87,13 @@ public:
     }
 
     void ctor_test() {
-        DDSMemCache empty_cache;
+        ObjMemCache empty_cache;
         DBG2(empty_cache.dump(cerr));
 
         CPPUNIT_ASSERT(empty_cache.cache.size() == 0);
         CPPUNIT_ASSERT(empty_cache.index.size() == 0);
 
-        DDSMemCache *empty_cache_ptr = new DDSMemCache;
+        ObjMemCache *empty_cache_ptr = new ObjMemCache;
         DBG2(empty_cache_ptr->dump(cerr));
 
         CPPUNIT_ASSERT(empty_cache_ptr->cache.size() == 0);
@@ -105,7 +103,7 @@ public:
     }
 
     void add_one_test() {
-        DDSMemCache *cache = new DDSMemCache;
+        ObjMemCache *cache = new ObjMemCache;
 
         const string name = "first DDS";
         BaseTypeFactory factory;
@@ -123,7 +121,7 @@ public:
     }
 
     void add_two_test() {
-        DDSMemCache *cache = new DDSMemCache;
+        ObjMemCache *cache = new ObjMemCache;
 
         BaseTypeFactory factory;
         DDS *dds = new DDS(&factory, "first DDS");
@@ -154,10 +152,10 @@ public:
         CPPUNIT_ASSERT(dds_cache->index.size() == 8);
     }
 
-    void test_get_dds() {
+    void test_get_obj() {
         string name = "0_DDS";
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 1);
-        DDS *dds = dds_cache->get_dds(name);
+        DDS *dds = static_cast<DDS*>(dds_cache->get_obj(name));
         CPPUNIT_ASSERT(dds != 0);
         // check that the count is updated
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 11);
@@ -185,7 +183,7 @@ public:
     CPPUNIT_TEST(add_one_test);
     CPPUNIT_TEST(add_two_test);
     CPPUNIT_TEST(purge_test);
-    CPPUNIT_TEST(test_get_dds);
+    CPPUNIT_TEST(test_get_obj);
     CPPUNIT_TEST(remove_test);
 
     CPPUNIT_TEST_SUITE_END();

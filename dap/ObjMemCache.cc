@@ -19,21 +19,25 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 /*
- * DDSMemCache.cc
+ * ObjMemCache.cc
  *
  *  Created on: May 18, 2016
  *      Author: jimg
  */
 
+
 #include "config.h"
-#include <DDSMemCache.h>
+
+#include <InternalErr.h>
+
+#include "ObjMemCache.h"
 
 // using namespace bes {
 
 using namespace std;
 using namespace libdap;
 
-DDSMemCache::~DDSMemCache()
+ObjMemCache::~ObjMemCache()
 {
     for (cache_t::iterator i = cache.begin(), e = cache.end(); i != e; ++i) {
         assert(i->second);
@@ -46,20 +50,20 @@ DDSMemCache::~DDSMemCache()
  * @param dds
  * @param key
  */
-void DDSMemCache::add(DDS *dds, const string &key)
+void ObjMemCache::add(DapObj *obj, const string &key)
 {
     ++d_count;
 
     index.insert(index_pair_t(key, d_count));
 
-    cache.insert(cache_pair_t(d_count, new Entry(dds, key)));
+    cache.insert(cache_pair_t(d_count, new Entry(obj, key)));
 }
 
 /**
  * @brief Remove the DDS associated with a key
  * @param key
  */
-void DDSMemCache::remove(const string &key)
+void ObjMemCache::remove(const string &key)
 {
     index_t::iterator i = index.find(key);
 
@@ -69,7 +73,7 @@ void DDSMemCache::remove(const string &key)
         cache_t::iterator c = cache.find(count);
         assert(c != cache.end());
         assert(c->second);  // should never cache a null ptr
-        delete c->second;   // delete the Entry*
+        delete c->second;   // delete the Entry*, but not the contained obj*
         cache.erase(c);
     }
 }
@@ -80,9 +84,9 @@ void DDSMemCache::remove(const string &key)
  * @param cached_dds
  * @return
  */
-DDS *DDSMemCache::get_dds(const string &key)
+DapObj *ObjMemCache::get_obj(const string &key)
 {
-    DDS *cached_dds = 0;
+    DapObj *cached_obj = 0;
 
     index_t::iterator i = index.find(key);
     if (i != index.end()) {
@@ -94,7 +98,7 @@ DDS *DDSMemCache::get_dds(const string &key)
             assert(c->second);
             // get the Entry and the DDS
             Entry *e = c->second;
-            cached_dds = e->d_dds;
+            cached_obj = e->d_obj;
 
             // now erase & reinsert the pair
             cache.erase(c);
@@ -113,7 +117,34 @@ DDS *DDSMemCache::get_dds(const string &key)
         index.insert(index_pair_t(key, d_count));
     }
 
-    return cached_dds;
+    return cached_obj;
+}
+
+/**
+ * @brief Extract (Get/Remove) the object associated with key
+ * @param key
+ * @return
+ */
+DapObj *ObjMemCache::extract_obj(const string &key)
+{
+    DapObj *cached_obj = 0;
+
+    index_t::iterator i = index.find(key);
+
+    if (i != index.end()) {
+        unsigned int count = i->second;
+        index.erase(i);
+        cache_t::iterator c = cache.find(count);
+        assert(c != cache.end());
+        assert(c->second);  // should never cache a null ptr
+
+        cached_obj = c->second->d_obj;
+
+        delete c->second;   // delete the Entry*, but not the contained obj*
+        cache.erase(c);
+    }
+
+    return cached_obj;
 }
 
 /**
@@ -121,7 +152,7 @@ DDS *DDSMemCache::get_dds(const string &key)
  *
  * @param fraction (default is 0.2)
  */
-void DDSMemCache::purge(float fraction)
+void ObjMemCache::purge(float fraction)
 {
     // Map are ordered using less by default, so the oldest entries are first
     size_t num_remove = cache.size() * fraction;
@@ -129,7 +160,7 @@ void DDSMemCache::purge(float fraction)
     cache_t::iterator c = cache.begin(), e = cache.end();
     for (unsigned int i = 0; i < num_remove && c != e; ++i) {
         const string name = c->second->d_name;
-        delete c->second;   // deletes the Entry, not the DDS that its internals point to
+        delete c->second;   // deletes the Entry, not the obj that its internals point to
         cache.erase(c);
         c = cache.begin();  // erase() invalidates the iterator
 

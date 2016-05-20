@@ -40,7 +40,7 @@ DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest DDSMemCacheTest
+UNIT_TESTS = ResponseBuilderTest ResponseCacheTest ObjMemCacheTest
 
 # Class not included in the dap module: SequenceAggregationServerTest
 
@@ -74,9 +74,9 @@ ResponseCacheTest_OBJS = ../BESDapResponseBuilder.o ../BESDapResponseCache.o \
 ../BESStoredDapResultCache.o   ../DapFunctionUtils.o
 ResponseCacheTest_LDADD = $(ResponseCacheTest_OBJS) $(AM_LDADD)
 
-DDSMemCacheTest_SOURCES = DDSMemCacheTest.cc
-DDSMemCacheTest_OBJS = ../DDSMemCache.o
-DDSMemCacheTest_LDADD = $(DDSMemCacheTest_OBJS) $(AM_LDADD)
+ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
+ObjMemCacheTest_OBJS = ../ObjMemCache.o
+ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(AM_LDADD)

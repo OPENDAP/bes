@@ -54,7 +54,7 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESStoredDapResultCache.cc \
 	BESDapNullAggregationServer.cc \
 	DapFunctionUtils.cc \
-	DDSMemCache.cc
+	ObjMemCache.cc
 	
 # Unused: BESDapSequenceAggregationServer.cc
 
@@ -82,7 +82,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESStoredDapResultCache.h \
 	BESDapNullAggregationServer.h \
 	DapFunctionUtils.h \
-	DDSMemCache.h
+	ObjMemCache.h
 	
 	
 # Unused: BESDapSequenceAggregationServer.h
