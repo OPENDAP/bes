@@ -41,27 +41,29 @@ DDSMemCache::~DDSMemCache()
     }
 }
 
-void DDSMemCache::add(DDS &dds, const string &key)
+void DDSMemCache::add(DDS *dds, const string &key)
 {
-    time_t t;
-    time(&t);
+    ++d_count;
 
-    index_t::iterator i = index.find(key);
-    i->second = t;
+    index.insert(index_pair_t(key, d_count));
 
-    cache_t::iterator c = cache.find(t);
-    c->second = new Entry(dds, key);
+    cache.insert(cache_pair_t(d_count, new Entry(dds, key)));
 }
 
 void DDSMemCache::remove(const string &key)
 {
+    cerr << __PRETTY_FUNCTION__ << " " << key << endl;
+    //cerr << "index[" << key << "]: " << index[key] << endl;
+
     index_t::iterator i = index.find(key);
+    cerr << "i != index.end(): " << (i != index.end()) << endl;
     if (i != index.end()) {
-        time_t timestamp = i->second;
+        cerr << "found" << endl;
+        unsigned int count = i->second;
 
-        index.erase(key);
+        index.erase(i);
 
-        cache_t::iterator c = cache.find(timestamp);
+        cache_t::iterator c = cache.find(count);
         if (c != cache.end()) {
             assert(c->second);  // should never cache a null ptr
             delete c->second;   // delete the Entry*
@@ -76,35 +78,30 @@ void DDSMemCache::remove(const string &key)
  * @param cached_dds
  * @return
  */
-bool DDSMemCache::get_dds(const string &key, DDS &cached_dds)
+DDS *DDSMemCache::get_dds(const string &key)
 {
+    DDS *cached_dds = 0;
+
     index_t::iterator i = index.find(key);
     if (i != index.end()) {
-        time_t orig_timestamp = i->second;
+        cache_t::iterator c = cache.find(i->second);
+        if (c != cache.end()) {
+            assert(c->second);
+            // get the Entry and the DDS
+            Entry *e = c->second;
+            cached_dds = e->d_dds;
 
-        if (orig_timestamp > 0) {
-            time_t new_timestamp;
-            time(&new_timestamp);
-            i->second = new_timestamp; // update the timestamp
-
-            cache_t::iterator c = cache.find(orig_timestamp);
-            if (c != cache.end()) {
-                assert(c->second);
-                // get the DDS
-                cached_dds = c->second->get_dds();
-
-                // now erase & reinsert the pair
-                pair<time_t, Entry*> p(new_timestamp, c->second);
-                // how expensive is this operation?
-                cache.erase(c);
-                cache.insert(p);
-
-                return true;
-            }
+            // now erase & reinsert the pair
+            cache.erase(c);
+            cache.insert(cache_pair_t(++d_count, e));
         }
+
+        // update the index
+        index.erase(i);
+        index.insert(index_pair_t(key, d_count));
     }
 
-    return false;
+    return cached_dds;
 }
 
 /**
@@ -116,11 +113,14 @@ void DDSMemCache::purge(float fraction)
 {
     // Map are ordered using less by default, so the oldest entries are first
     size_t num_remove = cache.size() * fraction;
+
     cache_t::iterator c = cache.begin(), e = cache.end();
     for (unsigned int i = 0; i < num_remove && c != e; ++i) {
-        const string &name = c->second->get_name();
-        delete c->second;
+        const string name = c->second->d_name;
+        delete c->second;   // deletes the Entry, not the DDS that its internals point to
         cache.erase(c);
+        c = cache.begin();  // erase() invalidates the iterator
+
         index_t::iterator pos = index.find(name);
         assert(pos != index.end());
         index.erase(pos);
