@@ -52,23 +52,16 @@ void DDSMemCache::add(DDS *dds, const string &key)
 
 void DDSMemCache::remove(const string &key)
 {
-    cerr << __PRETTY_FUNCTION__ << " " << key << endl;
-    //cerr << "index[" << key << "]: " << index[key] << endl;
-
     index_t::iterator i = index.find(key);
-    cerr << "i != index.end(): " << (i != index.end()) << endl;
+
     if (i != index.end()) {
-        cerr << "found" << endl;
         unsigned int count = i->second;
-
         index.erase(i);
-
         cache_t::iterator c = cache.find(count);
-        if (c != cache.end()) {
-            assert(c->second);  // should never cache a null ptr
-            delete c->second;   // delete the Entry*
-            cache.erase(c);
-        }
+        assert(c != cache.end());
+        assert(c->second);  // should never cache a null ptr
+        delete c->second;   // delete the Entry*
+        cache.erase(c);
     }
 }
 
@@ -85,6 +78,9 @@ DDS *DDSMemCache::get_dds(const string &key)
     index_t::iterator i = index.find(key);
     if (i != index.end()) {
         cache_t::iterator c = cache.find(i->second);
+        assert(c != cache.end());
+        // leave this second test in, but unless the cache is
+        // broken, it should never be false.
         if (c != cache.end()) {
             assert(c->second);
             // get the Entry and the DDS
@@ -94,6 +90,13 @@ DDS *DDSMemCache::get_dds(const string &key)
             // now erase & reinsert the pair
             cache.erase(c);
             cache.insert(cache_pair_t(++d_count, e));
+        }
+        else {
+            // I'm leaving the test and this exception in because getting
+            // a bad DDS will lead to a bug that is hard to figure out. Other
+            // parts of the code I'm assuming assert() calls are good enough.
+            // jhrg 5/20/16
+            throw InternalErr(__FILE__, __LINE__, "Memory cache consistency error.");
         }
 
         // update the index

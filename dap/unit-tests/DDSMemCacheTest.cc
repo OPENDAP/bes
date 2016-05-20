@@ -71,7 +71,7 @@ public:
 
         ostringstream oss;
         for (int i = 0; i < 10; ++i) {
-            oss << i << "_DDS" << ends;
+            oss << i << "_DDS";
             string name = oss.str();
             DBG2(cerr << "Adding name: " << name << endl);
             dds_cache->add(dds, name);
@@ -156,8 +156,11 @@ public:
 
     void test_get_dds() {
         string name = "0_DDS";
+        CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 1);
         DDS *dds = dds_cache->get_dds(name);
         CPPUNIT_ASSERT(dds != 0);
+        // check that the count is updated
+        CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 11);
     }
 
     void remove_test() {
