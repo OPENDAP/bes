@@ -65,14 +65,15 @@ public:
 
         // Load in 10 DDS*s and then purge
         BaseTypeFactory factory;
-        DDS *dds = new DDS(&factory, "empty_DDS");
+        auto_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
 
         ostringstream oss;
         for (int i = 0; i < 10; ++i) {
             oss << i << "_DDS";
             string name = oss.str();
             DBG2(cerr << "Adding name: " << name << endl);
-            dds_cache->add(dds, name);
+            // Need to add new pointers since the cache will delete them
+            dds_cache->add(new DDS(*dds.get()), name);
             oss.str("");
         }
 
@@ -107,9 +108,9 @@ public:
 
         const string name = "first DDS";
         BaseTypeFactory factory;
-        DDS *dds = new DDS(&factory, "first_DDS");
+        auto_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
 
-        cache->add(dds, name);
+        cache->add(new DDS(*dds.get()), name);
 
         DBG2(cache->dump(cerr));
 
@@ -117,7 +118,6 @@ public:
         CPPUNIT_ASSERT(cache->index.size() == 1);
 
         delete cache;
-        delete dds;
     }
 
     void add_two_test() {
@@ -135,8 +135,8 @@ public:
         CPPUNIT_ASSERT(cache->cache.size() == 2);
         CPPUNIT_ASSERT(cache->index.size() == 2);
 
-        delete dds;
-        delete dds2;
+        //delete dds;   the Cache will delete them, so we don't have to
+        //delete dds2;
         delete cache;
     }
 
@@ -144,7 +144,7 @@ public:
         CPPUNIT_ASSERT(dds_cache->cache.size() == 10);
         CPPUNIT_ASSERT(dds_cache->index.size() == 10);
 
-        dds_cache->purge();
+        dds_cache->purge(0.2);
 
         DBG2(dds_cache->dump(cerr));
 

@@ -28,6 +28,10 @@
 
 #include "config.h"
 
+#include <string>
+#include <map>
+
+#include <DapObj.h>
 #include <InternalErr.h>
 
 #include "ObjMemCache.h"
@@ -47,12 +51,21 @@ ObjMemCache::~ObjMemCache()
 
 /**
  * @brief Added a DDS to the cache and associate it with a key
- * @param dds
+ * Add the pointer to the cache, purging the cache of the least
+ * recently used items if the cache was initialized with a specific
+ * threshold value. If not, the caller must take care of calling
+ * the purge() method.
+ * @param obj
  * @param key
  */
 void ObjMemCache::add(DapObj *obj, const string &key)
 {
     ++d_count;
+
+    // if d_entries_threshold is zero, the caller handles calling
+    // purge.
+    if (d_entries_threshold && (d_count > d_entries_threshold))
+        purge(d_purge_threshold);
 
     index.insert(index_pair_t(key, d_count));
 
@@ -98,7 +111,7 @@ DapObj *ObjMemCache::get(const string &key)
             assert(c->second);
             // get the Entry and the DDS
             Entry *e = c->second;
-            cached_obj = e->d_obj;
+            cached_obj = e->d_obj;  // cached_obj == the return value
 
             // now erase & reinsert the pair
             cache.erase(c);
@@ -120,6 +133,7 @@ DapObj *ObjMemCache::get(const string &key)
     return cached_obj;
 }
 
+#if 0
 /**
  * @brief Extract (Get/Remove) the object associated with key
  * @param key
@@ -146,6 +160,7 @@ DapObj *ObjMemCache::extract(const string &key)
 
     return cached_obj;
 }
+#endif
 
 /**
  * @brief Purge the oldest elements

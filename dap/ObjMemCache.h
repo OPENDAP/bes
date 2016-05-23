@@ -29,7 +29,7 @@
 #ifndef DAP_OBJMEMCACHE_H_
 #define DAP_OBJMEMCACHE_H_
 
-#include <time.h>
+//#include <time.h>
 #include <cassert>
 
 #include <string>
@@ -40,16 +40,22 @@
 //namespace bes {
 
 /**
- * @brief An in-memory cache for DDS objects
+ * @brief An in-memory cache for DapObj (DAS, DDS, ...) objects
  *
- * This cache stores pointers to DDS objects in memory (not on a
+ * This cache stores pointers to DapObj objects in memory (not on
  * disk) and thus it is not a persistent cache. It provides no
- * assurances regarding multi-process thread safety. Since the
+ * assurances regarding multi-process or thread safety. Since the
  * cache stores pointers, it assumes that some other part of the
  * software has allocated the cached pointer and will be responsible
  * for deleting it. The software using the cache is responsible for
  * ensuring that the pointers in the cache reference valid objects
  * (or that it doesn't matter if they don't...).
+ *
+ * The cache implements a LRU purge policy, where when the purge()
+ * method is called, the oldest 20% of times are removed. When an
+ * item is accessed (add() or get()), it's access time is updated,
+ * so the LRU policy is also a low-budget frequency of use policy
+ * without actually keeping count of the total number of accesses.
  *
  */
 class ObjMemCache {
@@ -60,10 +66,12 @@ private:
 
         // We need the string so that we can delete the index entry easily
         Entry(libdap::DapObj *o, const std::string &n): d_obj(o), d_name(n) { }
-        ~Entry() { }
+        ~Entry() { delete d_obj; d_obj = 0;}
     };
 
     unsigned int d_count;
+    unsigned int d_entries_threshold;
+    float d_purge_threshold;
 
     typedef std::pair<unsigned int, Entry*> cache_pair_t;  // used by map::insert()
     typedef std::map<unsigned int, Entry*> cache_t;
@@ -76,7 +84,25 @@ private:
     friend class DDSMemCacheTest;
 
 public:
-    ObjMemCache(): d_count(0) { }
+    /**
+     * @brief Initialize the DapObj cache
+     * This constructor builds a cache that will require the
+     * caller manage the purge() operations.
+     * @see purge().
+     */
+    ObjMemCache(): d_count(0), d_entries_threshold(0), d_purge_threshold(0.2) { }
+
+    /**
+     * @brief Initialize the DapObj cache to use an item count threshold
+     * The purge() method will be automatically run whenever the threshold
+     * value is exceeded.
+     * @param entries_threashold Purge the cache when this number of
+     * items are exceeded.
+     * @param purge_threshold When purging items, remove this fraction of
+     * the LRU items (e.g., 0.2 --> the oldest 20% items are removed)
+     */
+    ObjMemCache(unsigned int entries_threshold, float purge_threshold): d_count(0),
+        d_entries_threshold(entries_threshold), d_purge_threshold(purge_threshold) { }
 
     virtual ~ObjMemCache();
 
@@ -85,8 +111,9 @@ public:
     virtual void remove(const std::string &key);
 
     virtual libdap::DapObj *get(const std::string &key);
+#if 0
     virtual libdap::DapObj *extract(const string &key);
-
+#endif
     /**
      * @brief How many items are in the cache
      * @return
@@ -96,7 +123,7 @@ public:
         return cache.size();
     }
 
-    virtual void purge(float fraction = 0.2);
+    virtual void purge(float fraction);
 
     /**
      * @brief What is in the cache
