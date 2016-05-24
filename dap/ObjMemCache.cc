@@ -55,8 +55,9 @@ ObjMemCache::~ObjMemCache()
  * recently used items if the cache was initialized with a specific
  * threshold value. If not, the caller must take care of calling
  * the purge() method.
- * @param obj
- * @param key
+ * @param obj Pointer to be cached; caller must copy the object if
+ * caching a copy of an object is desired
+ * @param key Associate this key with the cached object
  */
 void ObjMemCache::add(DapObj *obj, const string &key)
 {
@@ -73,7 +74,7 @@ void ObjMemCache::add(DapObj *obj, const string &key)
 }
 
 /**
- * @brief Remove the DDS associated with a key
+ * @brief Remove the object associated with a key
  * @param key
  */
 void ObjMemCache::remove(const string &key)
@@ -92,9 +93,8 @@ void ObjMemCache::remove(const string &key)
 }
 
 /**
- * @brief Get the cached item and return true or return false
+ * @brief Get the cached pointer
  * @param key
- * @param cached_dds
  * @return
  */
 DapObj *ObjMemCache::get(const string &key)
@@ -133,38 +133,8 @@ DapObj *ObjMemCache::get(const string &key)
     return cached_obj;
 }
 
-#if 0
-/**
- * @brief Extract (Get/Remove) the object associated with key
- * @param key
- * @return
- */
-DapObj *ObjMemCache::extract(const string &key)
-{
-    DapObj *cached_obj = 0;
-
-    index_t::iterator i = index.find(key);
-
-    if (i != index.end()) {
-        unsigned int count = i->second;
-        index.erase(i);
-        cache_t::iterator c = cache.find(count);
-        assert(c != cache.end());
-        assert(c->second);  // should never cache a null ptr
-
-        cached_obj = c->second->d_obj;
-
-        delete c->second;   // delete the Entry*, but not the contained obj*
-        cache.erase(c);
-    }
-
-    return cached_obj;
-}
-#endif
-
 /**
  * @brief Purge the oldest elements
- *
  * @param fraction (default is 0.2)
  */
 void ObjMemCache::purge(float fraction)

@@ -29,7 +29,6 @@
 #ifndef DAP_OBJMEMCACHE_H_
 #define DAP_OBJMEMCACHE_H_
 
-//#include <time.h>
 #include <cassert>
 
 #include <string>
@@ -43,19 +42,31 @@
  * @brief An in-memory cache for DapObj (DAS, DDS, ...) objects
  *
  * This cache stores pointers to DapObj objects in memory (not on
- * disk) and thus it is not a persistent cache. It provides no
- * assurances regarding multi-process or thread safety. Since the
- * cache stores pointers, it assumes that some other part of the
- * software has allocated the cached pointer and will be responsible
- * for deleting it. The software using the cache is responsible for
- * ensuring that the pointers in the cache reference valid objects
- * (or that it doesn't matter if they don't...).
+ * disk) and thus, it is not a persistent cache. It provides no
+ * assurances regarding multi-process or thread safety. Thus, the cache
+ * should only be used by a single process - if there are several
+ * BES processes, each should have their own copy of the cache.
+ *
+ * The cache stores pointers to objects, not objects themselves. The
+ * user of the cache must take care of copying objects that are added
+ * or accessed to/from the cache unless the lifetime of an pointer
+ * in the cache will suffice for the use at hand. for example, a cached
+ * DAS pointer can be passed to DDS::transfer_attributes(DAS *);
+ * there is no need to copy the underlying DAS. However, returning
+ * a DAS to the BES for serialization requires that a copy be made
+ * since the BES will delete the returned object.
  *
  * The cache implements a LRU purge policy, where when the purge()
  * method is called, the oldest 20% of times are removed. When an
  * item is accessed (add() or get()), it's access time is updated,
  * so the LRU policy is also a low-budget frequency of use policy
  * without actually keeping count of the total number of accesses.
+ * The size (number of items, not bytes) of the cache is examined
+ * for every add() call and purge() is called if a preset threshold
+ * is exceeded. The purge level (20% by default) can be configured.
+ *
+ * When an object is removed from the cache using remove() or purge(),
+ * it is deleted.
  *
  */
 class ObjMemCache {
@@ -64,8 +75,9 @@ private:
         libdap::DapObj *d_obj; // A weak pointer - we do not manage this storage
         const std::string d_name;
 
-        // We need the string so that we can delete the index entry easily
+        // We need the string so that we can erase the index entry easily
         Entry(libdap::DapObj *o, const std::string &n): d_obj(o), d_name(n) { }
+        // deleting an Entry deletes teh thing it references
         ~Entry() { delete d_obj; d_obj = 0;}
     };
 
@@ -78,6 +90,7 @@ private:
     cache_t cache;
 
     typedef std::pair<const std::string, unsigned int> index_pair_t;
+    // efficiency improvement - use an unordered_map when C++-11 is adopted
     typedef std::map<const std::string, unsigned int> index_t;
     index_t index;
 
@@ -87,7 +100,9 @@ public:
     /**
      * @brief Initialize the DapObj cache
      * This constructor builds a cache that will require the
-     * caller manage the purge() operations.
+     * caller manage the purge() operations. Setting the
+     * entries_threshold property to zero disables checking the
+     * cache size in add().
      * @see purge().
      */
     ObjMemCache(): d_count(0), d_entries_threshold(0), d_purge_threshold(0.2) { }
@@ -95,7 +110,7 @@ public:
     /**
      * @brief Initialize the DapObj cache to use an item count threshold
      * The purge() method will be automatically run whenever the threshold
-     * value is exceeded.
+     * value is exceeded and add() is called.
      * @param entries_threashold Purge the cache when this number of
      * items are exceeded.
      * @param purge_threshold When purging items, remove this fraction of
@@ -111,12 +126,10 @@ public:
     virtual void remove(const std::string &key);
 
     virtual libdap::DapObj *get(const std::string &key);
-#if 0
-    virtual libdap::DapObj *extract(const string &key);
-#endif
+
     /**
      * @brief How many items are in the cache
-     * @return
+     * @return The number of items in the cache
      */
     virtual unsigned int size() const {
         assert(cache.size() == index.size());
@@ -127,7 +140,7 @@ public:
 
     /**
      * @brief What is in the cache
-     * @param os
+     * @param os Dump info to this stream
      */
     virtual void dump(ostream &os) {
         os << "ObjMemCache" << endl;
