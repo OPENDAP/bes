@@ -64,15 +64,15 @@ endif
 
 TEST_SRC = test_utils.cc test_utils.h
 
-ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc ../CacheTypeFactory.h $(TEST_SRC)
+ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
 ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDapFunctionResponseCache.o \
 ../BESStoredDapResultCache.o ../DapFunctionUtils.o ../CachedSequence.o ../CacheTypeFactory.o \
-../../dispatch/BESFileLockingCache.o
+../CacheMarshaller.o ../CacheUnMarshaller.o ../../dispatch/BESFileLockingCache.o
 ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(AM_LDADD) 
 
 FunctionResponseCacheTest_SOURCES = FunctionResponseCacheTest.cc $(TEST_SRC)
 FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunctionUtils.o \
-../CachedSequence.o ../CacheTypeFactory.o
+../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o 
 FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
