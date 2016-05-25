@@ -750,7 +750,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
     out << flush;
 }
 
-#if STORE_DAP2_RESULT_FEATURE
+#ifdef DAP2_STORED_RESULTS
 /**
  * Should this result be returned using the asynchronous response mechanism?
  * Look at the 'store_result' property and see if the code should return this
@@ -880,7 +880,7 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - END" << endl);
 }
 
-
+#ifdef DAP2_STORED_RESULTS
 /**
  * Serialize a DAP3.2 DataDDX to the stream "out".
  * This was originally intended to be used for DAP4, now it is used to
@@ -931,6 +931,7 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS **dds, Con
 
     BESDEBUG("dap", __PRETTY_FUNCTION__ << " END" << endl);
 }
+#endif
 
 /** Send the data in the DDS object back to the client program. The data is
  encoded using a Marshaller, and enclosed in a MIME document which is all sent

@@ -391,6 +391,7 @@ public:
         }
     }
 
+#ifdef DAP2_STORED_RESULTS
     void store_dap2_result_test()
     {
 
@@ -505,8 +506,8 @@ public:
         TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, "");
     }
+#endif
 
-#if 1
     void store_dap4_result_test()
     {
 
@@ -665,7 +666,6 @@ public:
         TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, "");
     }
-#endif
 
     void escape_code_test()
     {
