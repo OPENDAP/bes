@@ -93,7 +93,7 @@
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
 #include "BESContextManager.h"
-#include "BESDapResponseCache.h"
+#include "BESDapFunctionResponseCache.h"
 #include "BESStoredDapResultCache.h"
 #include "BESUtil.h"
 #include "BESDebug.h"
@@ -511,7 +511,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
     if (!d_btp_func_ce.empty()) {
         string cache_token = "";
         ConstraintEvaluator func_eval;
-        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+        BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
@@ -691,7 +691,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
         string cache_token = "";
         ConstraintEvaluator func_eval;
 
-        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+        BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
@@ -980,9 +980,9 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         // Define a local ce evaluator so that the clause from the function parse
         // won't get treated like selection clauses later on when serialize is called
         // on the DDS (fdds)
-        BESDapResponseCache *responseCache = 0;
+        BESDapFunctionResponseCache *responseCache = 0;
 
-        responseCache = BESDapResponseCache::get_instance();
+        responseCache = BESDapFunctionResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
@@ -1117,9 +1117,9 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
     if (!d_btp_func_ce.empty()) {
         string cache_token = "";
         ConstraintEvaluator func_eval;
-        BESDapResponseCache *responseCache = 0;
+        BESDapFunctionResponseCache *responseCache = 0;
 
-        responseCache = BESDapResponseCache::get_instance();
+        responseCache = BESDapFunctionResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {

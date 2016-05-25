@@ -50,7 +50,7 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapErrorInfo.cc \
 	BESDapService.cc \
 	BESDapResponseBuilder.cc \
-	BESDapResponseCache.cc \
+	BESDapFunctionResponseCache.cc \
 	BESStoredDapResultCache.cc \
 	BESDapNullAggregationServer.cc \
 	DapFunctionUtils.cc \
@@ -79,7 +79,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapErrorInfo.h \
 	BESDapService.h \
 	BESDapResponseBuilder.h \
-	BESDapResponseCache.h \
+	BESDapFunctionResponseCache.h \
 	BESStoredDapResultCache.h \
 	BESDapNullAggregationServer.h \
 	DapFunctionUtils.h \

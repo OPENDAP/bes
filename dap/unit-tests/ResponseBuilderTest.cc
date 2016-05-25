@@ -71,7 +71,7 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
-#include "BESDapResponseCache.h"
+#include "BESDapFunctionResponseCache.h"
 #include "BESStoredDapResultCache.h"
 
 #include "test_utils.h"
@@ -272,9 +272,9 @@ public:
         d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
         DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-        TheBESKeys::TheKeys()->set_key(BESDapResponseCache::PATH_KEY, (string) TEST_SRC_DIR + "/response_cache");
-        TheBESKeys::TheKeys()->set_key(BESDapResponseCache::PREFIX_KEY, "dap_response");
-        TheBESKeys::TheKeys()->set_key(BESDapResponseCache::SIZE_KEY, "100");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, (string) TEST_SRC_DIR + "/response_cache");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, "dap_response");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "100");
 
         DBG2(cerr << "setUp() - END" << endl);
     }

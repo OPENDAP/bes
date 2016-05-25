@@ -113,7 +113,7 @@ protected:
 public:
 	virtual ~BESKeys();
 
-	string keys_file_name()
+	string keys_file_name() const
 	{
 		return _keys_file_name;
 	}

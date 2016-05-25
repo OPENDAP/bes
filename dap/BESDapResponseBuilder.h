@@ -30,7 +30,7 @@
 #define DAP_PROTOCOL_VERSION "3.2"
 #undef STORE_DAP2_RESULT_FEATURE
 
-class BESDapResponseCache;
+class BESDapFunctionResponseCache;
 
 namespace libdap {
     class ConstraintEvaluator;
