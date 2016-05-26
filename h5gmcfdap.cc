@@ -379,46 +379,46 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     if(f->HaveUnlimitedDim() == true) {
 //cerr<<"coming to unlimited " <<endl;
 
-        AttrTable*at;
         // Currently there is no way for DAP to present the unlimited dimension info.
         // when there are no dimension names. So don't create DODS_EXTRA even if
         // there is a unlimited dimension in the file for now. KY 2016-02-18
         if(cvars.size() >0){
-            at = das.get_table("DODS_EXTRA");
+            AttrTable* at = das.get_table("DODS_EXTRA");
             if (NULL == at)
                 at = das.add_table("DODS_EXTRA", new AttrTable);
-        } 
-        string unlimited_names;
+         
+            string unlimited_names;
 
-        for (it_cv = cvars.begin();
-            it_cv != cvars.end(); ++it_cv) {
+            for (it_cv = cvars.begin();
+                it_cv != cvars.end(); ++it_cv) {
 
-            bool has_unlimited_dim = false;
+                bool has_unlimited_dim = false;
 
-            // Check unlimited dimension names.
-            for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
-                 ird != (*it_cv)->getDimensions().end(); ++ird) {
+                // Check unlimited dimension names.
+                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                     ird != (*it_cv)->getDimensions().end(); ++ird) {
 
-                // Currently we only check one unlimited dimension, which is the most
-                // common case. When receiving the conventions from JG, will add
-                // the support of multi-unlimited dimension. KY 2016-02-09
-                if((*ird)->HaveUnlimitedDim() == true) {
-                    if(unlimited_names=="") {
-                       unlimited_names = (*ird)->getNewName();
-                       if(at !=NULL) 
-                            at->append_attr("Unlimited_Dimension","String",unlimited_names);
-                    }
-                    else {
-                        if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
-                            unlimited_names = unlimited_names+" "+(*ird)->getNewName();
-                            if(at !=NULL) 
-                                at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
+                    // Currently we only check one unlimited dimension, which is the most
+                    // common case. When receiving the conventions from JG, will add
+                    // the support of multi-unlimited dimension. KY 2016-02-09
+                    if((*ird)->HaveUnlimitedDim() == true) {
+                        if(unlimited_names=="") {
+                           unlimited_names = (*ird)->getNewName();
+                           if(at !=NULL) 
+                                at->append_attr("Unlimited_Dimension","String",unlimited_names);
+                        }
+                        else {
+                            if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
+                                unlimited_names = unlimited_names+" "+(*ird)->getNewName();
+                                if(at !=NULL) 
+                                    at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
+                            }
                         }
                     }
-                }
                     
-            }
+                }
 
+            }
         }
         // The following line will generate the string like "Band1 str1 str2".
         //if(unlimited_names!="") 
