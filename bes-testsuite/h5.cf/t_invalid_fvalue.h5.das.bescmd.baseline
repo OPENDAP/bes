@@ -11,6 +11,10 @@ The error occurs inside the gen_dap_special_oneobj_das function in h5commoncfdap
 Please report this to support@opendap.org
 </Message>
             <Administrator>admin.email.address@your.domain.name</Administrator>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>244</Line>
+            </Location>
         </BESError>
     </getDAS>
 </response>

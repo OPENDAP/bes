@@ -256,7 +256,8 @@ AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
 
 # Fillvalue out of range.
-AT_BESCMD_RESPONSE_TEST([t_invalid_fvalue.h5.das.bescmd])
+# Turn it off for the time being. See comments at hdf5_handlerTest.at
+#AT_BESCMD_RESPONSE_TEST([t_invalid_fvalue.h5.das.bescmd])
 
 
 # Test simple HDF-EOS5 cases.

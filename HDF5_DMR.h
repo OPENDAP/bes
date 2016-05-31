@@ -19,7 +19,7 @@
 //#undef USE_DAP4
 //#ifdef USE_DAP4
 #include <DMR.h>
-#include <InternalErr.h>
+//#include <InternalErr.h>
 
 using namespace libdap;
 

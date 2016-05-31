@@ -55,6 +55,7 @@ Var::Var(Var *var) {
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_attr_dspace = var->unsupported_attr_dspace;
     unsupported_dspace = var->unsupported_dspace;
+    unsupported_attr_dspace = var->unsupported_attr_dspace;
     dimnameflag = var->dimnameflag;
     
     for (vector<Attribute*>::iterator ira = var->attrs.begin();
