@@ -844,10 +844,11 @@ AM_COND_IF([DAP_MODULES],
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
 		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
-	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_metadata_baseline.sh], 
-		[chmod +x modules/netcdf_handler/bes-testsuite/generate_metadata_baseline.sh])
-	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh], 
-		[chmod +x modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh])
+dnl Removed 5/23/16 jhrg
+dnl	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_metadata_baseline.sh], 
+dnl		[chmod +x modules/netcdf_handler/bes-testsuite/generate_metadata_baseline.sh])
+dnl	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh], 
+dnl		[chmod +x modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh])
 
 	AC_CONFIG_FILES([modules/fileout_gdal/tests/generate_data_baseline.sh], 
 		[chmod +x modules/fileout_gdal/tests/generate_data_baseline.sh])
