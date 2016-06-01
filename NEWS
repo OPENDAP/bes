@@ -1,6 +1,8 @@
 News for version 2.3.3
 
-Updates since 2016-01-21, see the ChangeLog
+Updates since 2016-01-21, add the HDF5 scalar dataset reading and 
+unlimited dimension support for the CF option. 
+More information see the "What's new for version 2.3.3" under README.
 
 News for version 2.3.2
 
