@@ -1,3 +1,258 @@
+2016-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Removed InternalErr.h include Changes to be committed: 	modified:   HDF5_DMR.h
+
+2016-05-20  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	update another round to tackle the coverity check results.
+
+2016-05-13  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Update the testsuite to turn off the invalid fill value range check for the CF option. 
+	The output of this test relies on the line number of the source code.
+
+2016-05-10  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed baseline - Error message change
+	The BES now includes file and line no. information in the error
+	message.
+
+2016-04-28  kyang2014  <myang6@hdfgroup.org>
+
+	Modify README for the coming release.
+
+2016-04-27  kyang2014  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hdf5_handler_local
+
+	Remove the experimental memory cache code since it doesn't work. Move BES keys to the constructors.
+
+2016-03-09  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Added OS-X Finder files to .gitignore
+
+2016-03-07  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-187, update the .at files and configure files for the check of _FillValue range case.
+
+	Add the testing bescmd file to check the fillvalue range.
+
+2016-03-04  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	HFVHANDLER-187, Add new testing files to check whether the _fillvalue is out of range.
+
+2016-03-04  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-187, add the valid fillvalue range check if the datatype is not consistent with the variable datatype.
+
+2016-03-03  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	HFVHANDLER-184, adding the DataDDS cache.
+
+2016-03-03  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-187, adding some comments.
+
+	HFVHANDLER-184, adding the memory cache for DDS and DAS.
+
+2016-03-02  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-184, add the mem_cache key
+
+	HFVHANDER-184, pass the BES keys calculated at the HDF5RequestHandler constructor to the corresponding code that use these keys.
+
+2016-03-01  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-184, move BES keys to the constructors, still need to update the keys that used by several .cc files.
+
+2016-02-23  kyang2014  <myang6@hdfgroup.org>
+
+	Update .at files again. Forget the hard link DAP4 test.
+
+	remove a bescmd file checked-in by mistake.
+
+	Updating space-zero data bescmd baseline.
+
+2016-02-23  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Mis-copy the valgrind test. Now correct it.
+
+2016-02-23  kyang2014  <myang6@hdfgroup.org>
+
+	HR-68,LIBDAP-24, update hdf5_handlerTest.at and hdf5_handlerTest.valgrind.at. Make them consistent.
+
+	LIBDAP-22,LIBDAP-23,HFVHANDLER-155, HFVHANDLER-181; update the at files to reflect the fixes of int-8 value handling.
+
+	LIBDAP-22, <setContext name="dap_format">dap2</setContext> needs to be added for the DAP2 requests. Otherwise, the output may not be right.
+
+	For DAP4 requests,use DAP4 to replace DAP2 in the <setContext name="dap_format">dap4</setContext>.
+
+	For DAP4 requests,use DAP4 to replace DAP2 in the <setContext name="dap_format">dap4</setContext>.
+
+	LIBDAP-22, <setContext name="dap_format">dap4</setContext> needs to be added for the DAP4 requests. Otherwise, the output may not be right.
+
+	LIBDAP-23, LIBDAP-22, HFVHANDLER-181,HFVHANDLER-155, update the baseline files to reflect the bug fixes for int-8 dds and data output issues.
+
+	There is no ddx.bescmd file for d_int8.h5. Actually the ddx test is not necessary since dds and das cover it. So remove it.
+
+2016-02-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added a setContext element to a bescmd test file - corrects a problem
+	The test was returning a dataset that had an extra Structure level.
+
+2016-02-22  kyang2014  <myang6@hdfgroup.org>
+
+	Assume throw will be caught immediately by the catch. This is not true in h5get.cc around line 1188. Consquently memb_name is freed twice. Anyway, need to check if memb_name is NULL and then free the buffer.
+
+2016-02-21  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-105, change the type of size_t for the number of element to hsize_t.
+
+2016-02-19  kyang2014  <myang6@hdfgroup.org>
+
+	HDVHANDLER-183, fix the 0-length array handling and the format_constraint index checking.
+
+	HFVHANDLER-183, fix the format_constraint and 0-length array check
+
+	Add the 0-length array test.
+
+	Add the unlimited 0-length data baseline file.
+
+2016-02-18  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-155, adding HDF-EOS5 unlimited dimension tests.
+
+	HFVHANDLER-155, add HDF-EOS5 swath unlimited dimension baseline files.
+
+	HFVHANDLER-155, updating the baseline files for 1A GPM and GLAH files. Both of them have multi-unlimited dimensions.
+
+	 HFVHANDLER-178, make sure that the unlimited dimension information of HDF-EOS5 and general HDF5 that have dimension names is mapped to DAP.
+
+2016-02-17  kyang2014  <myang6@hdfgroup.org>
+
+	Add a new swath unlimited dimension c example code
+
+2016-02-16  Kent Yang  <myang6@hdfgroup.org>
+
+	Add an HDF-EOS5 unlimited dimension source code.
+
+2016-02-16  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-155, using set_value instead val2buf.
+
+	Remove cerr debugging info.
+
+	update the .at file.
+
+	HFVHANDLER-155, make sure signed-8bit integer data reading is correct. Update the .at files for testing.
+
+	Add signed-int8 bit testing bescmd files for the default option. Add scalar dataset testing bescmd files for the default option and the DAP4 support.
+
+2016-02-15  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Update DAP4 default NASA test baseline files.
+
+2016-02-15  kyang2014  <myang6@hdfgroup.org>
+
+	Add a debugging line for EOS5 code and update .at files and download.sh for the new version of HDF-EOS5 file.
+
+	Add new version of OMI level 2 HDF-EOS5 test file
+
+	Use new version of HDF-EOS5 file
+
+	Use a new version of HDF-EOS5 file
+
+	Use a new version
+
+	HFVHANDLER-76, add the <comment out> parser code to he5dds.yy and he5dds.lex to retrieve the maximum dimension name list of an HDF-EOS5 file. The reason to <comment out> is because the maximum dim. info.(unlimited dim.)  has been retrieved from the HDF5 APIs already. This info. is not necessary for the handler but leaving the code commented out in case for other usage.
+
+2016-02-12  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-156, add the error handling for possible scalar coordinate and special variable cases. They are not allowed.
+
+	HFVHANDLER-156, add the support of accessing HDF5 scalar datasets.
+
+	Add a new HDF5 testing file(scale dataset) and its python code.
+
+	Add new scalar dataset tests. The test is comprehensive, including all possible integer and floating-point datatype DAP2 supports.
+
+	New scalar dataset tests have been added. The t_int_scalar tests are redundant.
+
+2016-02-11  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-156, add the support of scalar datatype for the CF option. Re-arrange the organization of helper functions. Create two new files h5common.h and h5common.cc so that these functions can be used by both CF and default options. Also update the copyright year and the HDF group address.
+
+	Merge branch 'master' into hdf5_handler_local
+
+2016-02-11  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-156, support scalar datatype for the CF option.
+
+2016-02-11  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-156, add code to for Int32 and UInt16. More work needs to be done to tune the name.
+
+2016-02-11  Kent Yang  <myang6@hdfgroup.org>
+
+	Intermediate check-in to support scalar datatype
+
+2016-02-10  Kent Yang  <myang6@hdfgroup.org>
+
+	Starting the support of scalar atomic HDF5 datatype.
+
+2016-02-10  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-178, HFVHANDLER-180, update the testsuite for the files that have the unlimited dimensions.
+
+	HFVHANDLER-178, remove the old nc4 unlimited dim. bescmd files.
+
+	HFVHANDLER-178,HFVHANDLER-180, turn off the attribute when the attribute dimension size is 0. Also add the testing case for the netcdf-4 unlimited dimension.
+
+2016-02-09  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	HFVHANDLER-180, handle the case when the attribute dimension size is 0.
+
+2016-02-09  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-178,add the support of unlimited dimension: we need to handle the zero-length case. HFVHANDLER-180, 0-length attribute is very rare and unthinkable. Since it is legal in HDF5, I just add the support to turn it off when finding such a case. This is only the first round of testing.
+
+	HFVHANDLER-178, one more update for NASA file test for the support of unlimited dimensions.
+
+	HFVHANDLER-178, update the baseline files for some NASA file tests that have unlimited dimensions.
+
+	HFVHANDLER-178 - CF option: Add the support for the one unlimited dimension when the dimension name is available.
+
+2016-02-08  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Support unlimited dimensions. Check in code to retrieve the unlimited dimension information for General HDF5 products.
+
+2016-02-05  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-178, adding code to mark the unlimited dimension. May only record the unlimited dimension with a name in DODS attribute.
+
+	Add netCDF-4-like unlimited dimension bescmd files to the testsuite.
+
+2016-02-05  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-178, adding a flag to mark the HDF5 unlimited dimension, also check in two netCDF4-classic-like HDF5 files that have unlimited dimensions.
+
+2016-02-04  kyang2014  <myang6@hdfgroup.org>
+
+	ESDIS-510, make sure that DAS output doesn't add a . at the end of the nan or other (not a number) floating-point numbers. This is actually discovered by me to check why netCDF-java client removes all DAS attribute, and it turns out this nan. is the reason. Both HDF4 handler CF option, HDF5 handler default and CF options are fixed. This should fix the issue reported by DH from Unidata, who actually checked the issue reported by me.
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2016-01-21  kyang2014  <myang6@hdfgroup.org>
+
+	Fix the uninitialized variable and error handling issues detected by the coverity scan test.
+
+	HFVHANDLER-176, add DAP4 DMR tests(including valgrind) for NASA files.
 2016-01-21  kyang2014  <myang6@hdfgroup.org>
 
 	Fix the uninitialized variable and error handling issues detected by the coverity scan test.
