@@ -1,3 +1,245 @@
+2016-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Comments.
+
+	Merge pull request #24 from OPENDAP/mem_cache
+	Mem cache
+
+2016-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hashes for gdal_, hdf4_ and hdf5_handler submodules
+
+2016-05-24  James Gallagher  <jgallagher@opendap.org>
+
+	doc update
+
+2016-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	The ObjMemCache now frees all of the pointers it holds...
+	when it removes the item or when it's destructor is called.
+
+2016-05-20  James Gallagher  <jgallagher@opendap.org>
+
+	gitignore update
+
+	Simplified names for the ObjMemCache.
+
+	Changed DDSMemCache to ObjMemCache - a memory cache for DapObj
+	This memory cache does not copy objects or protect its users from
+	the referenced objects being deleted; the code using the cache must
+	handle ensuring that objects are valid (e.g., by copying them before
+	add() and after get() calls.
+
+	Added comments to the DDSMemCache
+
+	The DDSMemCache code is working and tested
+
+2016-05-19  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2016-05-18  James Gallagher  <jgallagher@opendap.org>
+
+	Added DDSMemCache to Makefile.am
+
+	Added DDSMemCache
+
+	new commits in hdf4 & 5
+
+2016-05-11  James Gallagher  <jgallagher@opendap.org>
+
+	The BES now includes line numbers for BESDapError throws.
+
+2016-05-10  James Gallagher  <jgallagher@opendap.org>
+
+	Updates in some handlers
+
+2016-04-22  Nathan Potter  <ndp@opendap.org>
+
+	commiting submodules
+
+2016-04-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2016-04-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #21 from OPENDAP/dap_tests
+	Dap tests!!
+
+2016-04-01  James Gallagher  <jgallagher@opendap.org>
+
+	Header includes reorganized.
+
+2016-04-01  Nathan Potter  <ndp@opendap.org>
+
+	Minor edit
+
+2016-03-31  Nathan Potter  <ndp@opendap.org>
+
+	bes/dap: Fixed test issues. Got dap4 tests started (completion
+	blokcked by outside bug). Make check passes.
+
+	DAP4 function unwrap test added.
+
+	DAP4 function unwrap test added.
+
+	bes/dap/ autotests working now. woot.
+
+2016-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added calls for dap/tests
+
+2016-03-31  Nathan Potter  <ndp@opendap.org>
+
+	Update handler_tests_macros.m4
+
+	Merge branch 'master' into dap_tests
+
+2016-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge pull request #20 from OPENDAP/function_metadata
+	Function metadata
+
+2016-03-23  Nathan Potter  <ndp@opendap.org>
+
+	Updated comments and clenaing up dev mess.
+
+	Global Attributes fixed for functions using _unwrap convention
+
+	Function metadata debugging.
+
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Trying to get bes/dap/tests working
+
+	Trying to get bes/dap/tests working
+
+	Cleaning up code for merge.
+
+	Cleaning up code for merge.
+
+	Merge branch 'master' into function_result_unwrapper
+
+	Comments...
+
+	Committing modules
+
+	Simplified wrapitup() API. Changed ServerFunction class name
+	to more appropo WrapItUp.
+
+	Small changes in wrapit() function
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Tests for function result promotion in transmitters. TEst
+	function wrapitup() added.
+
+	modules
+
+	Tests for function result promotion in transmitters. TEst
+	function wrapitup() added.
+
+2016-03-18  Nathan Potter  <ndp@opendap.org>
+
+	Changes...
+
+2016-03-11  Nathan Potter  <ndp@opendap.org>
+
+	Refactored function result promoter code to be a function and
+	not a method.
+
+	Adding required code dependency to bes/dap tests.
+
+	More informative debugging output.
+
+	Documentation update
+
+2016-03-10  Nathan Potter  <ndp@opendap.org>
+
+	Debugging statements
+
+	Documenttion
+
+	Documentation
+
+2016-03-09  Nathan Potter  <ndp@opendap.org>
+
+	Syntax correction
+
+	Syntax correction
+
+	Updated function result promoter, instrumentation, etc.
+
+2016-02-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added comment to XMLInterface's ctor
+
+	Added comment to RequestHandlerList::execute_all()
+
+2016-02-18  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting for dap/BESDASResponse.h
+	[ci skip]
+
+2016-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Patch for gcc-6 from Orion Poplawski.
+
+2016-02-09  Nathan Potter  <ndp@opendap.org>
+
+	Edits to bes.conf.in for clarity etc.
+
+	Edits to bes.conf.in for clarity etc.
+
+2016-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	I editied the bes.conf.in and dap.conf.in files
+	Fixed spelling and grammar; needs another set of eyes, however.
+	[ci skip]
+
+2016-02-05  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	tweking .gitignore
+
+2016-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	Update to ugrid module
+
+2016-02-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2016-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	dap-server updated
+
+	Merge branch 'master' into hyrax_release_1.13
+
+	Updates to modules and the generic tests macros for modules
+
+2016-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #18 from OPENDAP/BES-97
+	Bes 97
+
+	cleanup in dapreader - the new tests are better organized.
+
+2016-02-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added tests for zero_length_arrays
+
+2016-01-29  James Gallagher  <jgallagher@opendap.org>
+
+	Module hash updates
+
+	Merge pull request #16 from OPENDAP/besdebug_ndebug
+	Besdebug ndebug
+
 2016-01-26  James Gallagher  <jgallagher@opendap.org>
 
 	Module commit hash updates
