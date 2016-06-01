@@ -1,3 +1,141 @@
+2016-05-20  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Update the code according to the new coverity check. I deliberately change 
+	some macros like throw1 to just throw and see if coverity understands the 
+	throw and won't provide warnings for deleting the object before throwing.
+
+	Correct typos.
+
+2016-05-18  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting
+
+2016-05-13  Muqun (Kent) Yang  <myang6@idap.ad.hdfgroup.org>
+
+	Update the README file to document the potential data cache issue on MacOS case-insensitive system.
+
+	Add a sample BES shell script template for testing purposes.
+
+2016-05-12  kyang2014  <myang6@hdfgroup.org>
+
+	Update according to coverity scan. More than 90% of coverity scan for the 
+	HDF4/5 handlers are false-alarm because coverity doesn't understand the 
+	throw macro used in the handler.
+
+2016-04-28  kyang2014  <myang6@hdfgroup.org>
+
+	Update README for the coming release.
+
+2016-04-22  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	HFRHANDLER-304, change XDim and YDim values of Sinusodial projection from 
+	km to meter; the units are also changed.
+
+2016-03-11  kyang2014  <myang6@hdfgroup.org>
+
+	HFRHANDLER-301, when the cache is turned off, the result is wrong with the longitude. 
+	Fixed it to make sure the correction of longitude call occur no matter whether cache 
+	is turned off.
+
+	Update download.sh to fetch the NASA data files.
+
+	HFRHANDLER-303, the hdf4_handlerTest.with_hdfeos2.at was mistakenly replaced by the NASA tests. Recovered it.
+
+	HFRHANDLER-303, updating the calculation of YDim and XDim values.
+
+	HFRHANDLER-303, adding XDim and YDim data tests to reflect the request from LP DAAC.
+
+	HFVHANDLER-302, update the final at file.
+
+	Add valgrind at files.
+
+	Add data baseline files.
+
+	HFVHANDLER-302, changing data bescmd baseline files to reduce the package size.
+
+	Updating one bescmd file.
+
+	HFVHANDLER-302, Missing several bescmd files.
+
+	HFRHANDLER-302, forgot adding some bescmd and baseline files.
+
+	Add more NASA test files. The .at file is also updated.
+
+	Add more bescmd files
+
+2016-03-10  kyang2014  <myang6@hdfgroup.org>
+
+	Remove the gr data test for the CF option. The CF doesn't support gr.
+
+	Update the comments to generate new baseline files.
+
+2016-03-09  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	HFRHANDLER-300, move BES key routines to the constructor of the HDF4RequestHandler class.
+
+2016-03-09  kyang2014  <myang6@hdfgroup.org>
+
+	HFRHANDLER-300, using the Beskey function in the HDF4RequestHandler.cc constructor for more .cc files.
+
+	HFVHANDLER-301, correct the longitude value to be within -180 and 180 when the geo cache is turned on.
+
+2016-03-08  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-301, add a comment to fix the issue.
+
+	HFVHANDLER-300, using the BES keys from the ctors at several .cc files. More is coming.
+
+	HFVHANDLER-300, adding the download.sh to obtain the NASA files.
+
+	HFRHANDLER-300, adding AIRS version 6 to the NASA test.
+
+	HFRHANDLER-300, adding AIRS version 6 product to the NASA test.
+
+2016-03-07  kyang2014  <myang6@hdfgroup.org>
+
+	HFRHANDLER-300, add the helper function to obtain the string and int at the constructor.
+
+	HFRHANDLER-300, move BES keys to the constructor. Need to tackle the cache path, prefix etc. keys
+
+	Make the local branch consistent with the master branch Merge branch 'master' into hdf4_handler_local
+
+2016-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Patch for gcc-6 from Orion Poplawski
+
+2016-02-05  James Gallagher  <jgallagher@opendap.org>
+
+	Added a note about metadata caching overrding EnablePassFileID
+
+2016-02-04  kyang2014  <myang6@hdfgroup.org>
+
+	Trim the code to handle attributes.
+
+	HFRHANDLER-298, don't generate a . for infinite floating-point number in the DAP DAS.
+
+2016-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into hyrax_release_1.13
+
+2016-01-27  kyang2014  <myang6@hdfgroup.org>
+
+	InternalErr was misused in many of the .cc code. Often a throw is forgotten 
+	to be added before this function. Also use bes.with_hdfeos2.conf instead of 
+	bes.conf in the hdf4_handlerTest.nasa.with_hdfeos2.at to reflect the CF option 
+	being turned on.
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2016-01-07  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Update comments for BES cache keys
+
+2016-01-07  kyang2014  <myang6@hdfgroup.org>
+
+	update the description of BES cache keys
+	
 2016-01-07  myang6  <myang6@kituo.ad.hdfgroup.org>
 
 	Update comments for BES cache keys
@@ -8,11 +146,13 @@
 
 2015-11-20  root  <root@localhost.localdomain>
 
-	Add another sample HDF-EOS2 file grid_1_2d.hdf. This will be very handy for quick check of the HDF-EOS2 behavior.
+	Add another sample HDF-EOS2 file grid_1_2d.hdf. This will be very handy for 
+	quick check of the HDF-EOS2 behavior.
 
 2015-10-27  James Gallagher  <jgallagher@opendap.org>
 
 	Update for bes 3.16.0 release
+	
 2015-10-23  root  <root@localhost.localdomain>
 
 	This check-in removes some defects from the coverity scan. Most of
