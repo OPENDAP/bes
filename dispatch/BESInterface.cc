@@ -87,6 +87,15 @@ static volatile int timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
+// This function uses the static variables timeout_jump_valid and timeout_jump
+// The code looks at the value of BES.TimeOutInSeconds and/or the timeout
+// context sent in the current request and, if that is greater than zero,
+// uses that as the maximum amount of time for the request. The system alarm
+// is set and this function is registered as the handler. If timeout_jump_valid
+// is true, then it will use longjmp() (yes, really...) to end the request. Look
+// below in execute_request() for the call to setjump() to see how this works.
+// See the SIGWAIT code that's commented out below for an alternative impl.
+// jhrg 5/31/16
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
@@ -209,7 +218,7 @@ BESInterface::BESInterface(ostream *output_stream) :
     // Grab the BES Key for the timeout. Note that the Hyrax server generally
     // overrides this value using a 'context' that is set/sent by the OLFS.
     // Also note that a value of zero means no timeout, but that the context
-    // with override that too. jhrg 1/4/16
+    // can override that too. jhrg 1/4/16
     bool found;
     string timeout_key_value;
     TheBESKeys::TheKeys()->get_value(BES_TIMEOUT_KEY, timeout_key_value, found);

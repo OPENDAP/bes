@@ -1,3 +1,18 @@
+News for Version 3.17.1
+
+Added an in-memory cache that handlers can use to cache DDS, DMR, ...,
+objects. The handlers have to be modified to use this, but the
+performance benefits are potentially huge. See bes/dap/ObjMemCache and
+the netcdf_handler for the code and an example of its use.
+
+Server functions can now return multiple variables and have then
+appear as discrete things without being 'wrapped' in a parent
+Structure variable. They do this by using a structure name that ends
+with '_unwrap'. This means that server functions can return values in
+a way that is usable by clients built using the netcdf-library.
+
+Patch for gcc-6 from Orion Poplawski.
+
 News for Version 3.17.0
 
 BES Error responses now better reflect the actual errors - constraint 

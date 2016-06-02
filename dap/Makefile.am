@@ -53,7 +53,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapResponseCache.cc \
 	BESStoredDapResultCache.cc \
 	BESDapNullAggregationServer.cc \
-	DapFunctionUtils.cc
+	DapFunctionUtils.cc \
+	ObjMemCache.cc
 	
 # Unused: BESDapSequenceAggregationServer.cc
 
@@ -80,7 +81,9 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponseCache.h \
 	BESStoredDapResultCache.h \
 	BESDapNullAggregationServer.h \
-	DapFunctionUtils.h
+	DapFunctionUtils.h \
+	ObjMemCache.h
+	
 	
 # Unused: BESDapSequenceAggregationServer.h
 
@@ -95,7 +98,7 @@ pkgdata_DATA = dap_help.html dap_help.txt dap_help.xml
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dap.conf.in dap_help.html dap_help.txt dap_help.xml
+EXTRA_DIST = data dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
