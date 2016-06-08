@@ -72,10 +72,10 @@ fi
 #
 newClone=false
 
-if test ! -f "$HOME/libdap4/Makefile.am"
+if true # test ! -f "$HOME/libdap4/Makefile.am"
 then
     echo "Cloning libdap4..."
-    (cd $HOME && git clone https://github.com/opendap/libdap4)
+    (cd $HOME; rm -rf libdap4; git clone https://github.com/opendap/libdap4)
     echo "Cloned libdap4"
     newClone=true  
 fi     
