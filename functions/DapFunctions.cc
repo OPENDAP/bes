@@ -43,6 +43,7 @@
 #include "BBoxUnionFunction.h"
 #include "MaskArrayFunction.h"
 #include "DilateArrayFunction.h"
+#include "RangeFunction.h"
 
 #include "DapFunctions.h"
 
@@ -70,6 +71,8 @@ void DapFunctions::initialize(const string &)
 
     libdap::ServerFunctionsList::TheList()->add_function(new MaskArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new DilateArrayFunction());
+
+    libdap::ServerFunctionsList::TheList()->add_function(new RangeFunction());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
