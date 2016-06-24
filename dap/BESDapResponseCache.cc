@@ -163,19 +163,21 @@ BESDapResponseCache::BESDapResponseCache()
 BESDapResponseCache *
 BESDapResponseCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
+
     if (d_instance == 0) {
-        if (dir_exists(cache_dir)) {
-            try {
+        try {
+            if (dir_exists(cache_dir)) {
                 d_instance = new BESDapResponseCache(cache_dir, prefix, size);
 #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
 #endif
             }
-            catch (BESInternalError &bie) {
-                BESDEBUG("dap_response_cache",
-                        "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-            }
         }
+        catch (BESInternalError &bie) {
+            BESDEBUG("dap_response_cache",
+                    "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+        }
+
     }
     BESDEBUG("dap_response_cache", "BESDapResponseCache::get_instance(dir,prefix,size) - d_instance: " << d_instance << endl);
 
@@ -189,17 +191,18 @@ BESDapResponseCache *
 BESDapResponseCache::get_instance()
 {
     if (d_instance == 0) {
-        if (dir_exists(getCacheDirFromConfig())) {
-            try {
+        try {
+            if (dir_exists(getCacheDirFromConfig())) {
                 d_instance = new BESDapResponseCache();
 #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
 #endif
             }
-            catch (BESInternalError &bie) {
-                BESDEBUG("dap_response_cache",
-                        "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-            }
+        }
+        catch (BESInternalError &bie) {
+            BESDEBUG("dap_response_cache",
+                    "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            d_instance = 0;
         }
     }
     BESDEBUG("dap_response_cache", "BESDapResponseCache::get_instance() - d_instance: " << d_instance << endl);
