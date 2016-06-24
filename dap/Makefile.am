@@ -98,7 +98,7 @@ pkgdata_DATA = dap_help.html dap_help.txt dap_help.xml
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dap.conf.in dap_help.html dap_help.txt dap_help.xml
+EXTRA_DIST = data dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
