@@ -759,7 +759,8 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
            //depth_first(fileid,(char*)"/",root_grp,filename.c_str());
            //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
            if(true == use_dimscale) 
-                breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
+                //breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
+                breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),true);
            else 
                 depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
 

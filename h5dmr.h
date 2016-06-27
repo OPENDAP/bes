@@ -66,7 +66,8 @@ void read_objects_base_type(DMR & dmr, D4Group* d4_grp,const string & varname, c
 void read_objects_structure(DMR & dmr, D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
 
 string get_hardlink_dmr(hid_t, const string &);
-void get_softlink(D4Group* par_grp, hid_t, const char*, const string &, int,size_t);
+void get_softlink(D4Group* par_grp, hid_t,  const string &, int,size_t);
+//void get_softlink(D4Group* par_grp, hid_t, const char*, const string &, int,size_t);
 void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const string & full_path, BaseType* d4b,Structure * d4s,int flag);
 //#endif
 //void read_objects(DDS & dds, const string & varname, const string & filename);
