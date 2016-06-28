@@ -74,6 +74,7 @@ using namespace std;
 using namespace libdap;
 
 bool check_beskeys(const string);
+
 // For the CF option
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
@@ -124,28 +125,6 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
 
-#if 0
-
-if(true == usecf) cerr<<"usecf is true"<<endl;
-else cerr<<"usecf is false"<<endl;
-if(true == pass_fileid) cerr<<"pass_fileid is true"<<endl;
-else cerr<<"pass_fileid is false"<<endl;
-if(true == disable_structmeta) cerr<<"disable_structmeta is true"<<endl;
-else cerr<<"disable_structmeta is false"<<endl;
-
-
-if(true == keep_var_leading_underscore) cerr<<"keep_var_leading_underscore is true"<<endl;
-else cerr<<"keep_var_leading_underscore is false"<<endl;
-if(true == check_name_clashing) cerr<<"check_name_clashing is true"<<endl;
-else cerr<<"check_name_clashing is false"<<endl;
-if(true == add_path_attrs) cerr<<"add_path_attrs is true"<<endl;
-else cerr<<"add_path_attrs is false"<<endl;
-
-if(true == drop_long_string) cerr<<"drop_long_string is true"<<endl;
-else cerr<<"drop_long_string is false"<<endl;
-if(true == check_ignore_obj) cerr<<"check_ignore_obj is true"<<endl;
-else cerr<<"check_ignore_obj is false"<<endl;
-#endif
 
 }
 
@@ -156,26 +135,9 @@ HDF5RequestHandler::~HDF5RequestHandler()
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
 
-#if 0
-    bool found_key = false;
-    bool usecf = false;
-    string key = "H5.EnableCF";
-    string doset;
-#endif
-
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t cf_fileid = -1;
 
-#if 0
-    TheBESKeys::TheKeys()->get_value( key, doset, found_key ) ;
-
-    if(true ==found_key ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) 
-            usecf = true;
-    }
-#endif
-         
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
 
@@ -191,20 +153,6 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
-#if 0
-        // Check if the mem_cache is set 
-        if(true == _use_memcache) {
-
-            BESDEBUG("h5", "Using the memory DAS cache" << endl);
-            map<string, DAS>::iterator das_cache_iter = das_cache.find(filename);
-            if (das_cache_iter != das_cache.end()) {
-                BESDEBUG("h5", "Found DAS in the memory DAS cache" << endl);
-                *das = das_cache_iter->second;
-                bdas->clear_container();
-                return true;
-            }
-        }
-#endif
         if (true == _usecf) {
 
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -217,8 +165,6 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             H5Fclose(cf_fileid);
         }
         else {
-               // go to the default option
-//cerr<<"default option" <<endl;
             hid_t fileid = get_fileid(filename.c_str());
             if (fileid < 0) {
                 throw BESNotFoundError((string) "Could not open this hdf5 file: "
@@ -661,30 +607,8 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
     return true;
 }
 
-//#ifdef USE_DAP4
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
-
-#if 0
-    bool found = false;
-    bool usecf = false;
-
-    string key="H5.EnableCF";
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if(true == found )
-    {
-        // cerr<<"found it" <<endl;
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-            
-           // This is the CF option, go to the CF function
-            // cerr<<"go to CF option "<<endl;
-            usecf = true;
-        }
-    }    
-#endif
 
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -749,20 +673,17 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             }
 
             bool use_dimscale = check_dimscale(fileid);
-//if(true == use_dimscale)
-//    cerr<<"this file contains dimension scales."<<endl;
             dmr->set_name(name_path(filename));
             dmr->set_filename(name_path(filename));
 
             D4Group* root_grp = dmr->root();
 
-           //depth_first(fileid,(char*)"/",root_grp,filename.c_str());
-           //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
            if(true == use_dimscale) 
-                //breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
-                breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),true);
+                //breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),true);
+                breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),true);
            else 
-                depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
+                depth_first(fileid,(char*)"/",root_grp,filename.c_str());
+                //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
 
            close_fileid(fileid);
 

@@ -87,7 +87,8 @@ void map_h5_attrs_to_dap4(hid_t oid,D4Group* d4g,BaseType* d4b,Structure * d4s,i
 /// \see depth_first(hid_t pid, char *gname, DDS & dds, const char *fname) in h5dds.cc
 ///////////////////////////////////////////////////////////////////////////////
 
-bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname)
+//bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname)
+bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 {
     BESDEBUG("h5",
         ">depth_first() for dmr " 
@@ -210,7 +211,8 @@ bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char
                         par_grp->add_group_nocopy(tem_d4_cgroup);
 
                         // Continue searching the objects under this group
-                        depth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname);
+                        //depth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname);
+                        depth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname);
                     }
                     catch(...) {
                         H5Gclose(cgroup);
@@ -262,7 +264,8 @@ bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char
                 }
 
                 try {
-                    read_objects(dmr, par_grp, full_path_name, fname,dset_id);
+                    //read_objects(dmr, par_grp, full_path_name, fname,dset_id);
+                    read_objects(par_grp, full_path_name, fname,dset_id);
                 }
                 catch(...) {
                     H5Dclose(dset_id);
@@ -308,7 +311,8 @@ bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char
 
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
-bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
+//bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
+bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,bool use_dimscale)
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -372,6 +376,8 @@ bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const ch
         // Information of soft links are stored as attributes 
         if(linfo.type == H5L_TYPE_SOFT) { 
             slinkindex++;
+
+            // Size of a soft link value
             size_t val_size = linfo.u.val_size;
             get_softlink(par_grp,pid,&oname[0],slinkindex,val_size);
             //get_softlink(par_grp,pid,gname,&oname[0],slinkindex,val_size);
@@ -413,7 +419,8 @@ bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const ch
             }
 
             try {
-                read_objects(dmr, par_grp, full_path_name, fname,dset_id);
+                read_objects(par_grp, full_path_name, fname,dset_id);
+                //read_objects(dmr, par_grp, full_path_name, fname,dset_id);
             }
             catch(...) {
                 H5Dclose(dset_id);
@@ -501,7 +508,8 @@ bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const ch
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname,use_dimscale);
+                    breadth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale);
+                    //breadth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname,use_dimscale);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -549,14 +557,16 @@ bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const ch
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects(DMR & dmr, D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id)
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id)
+//read_objects(DMR & dmr, D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
 
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
-        read_objects_structure(dmr,d4_grp, varname, filename,dset_id);
+        read_objects_structure(d4_grp, varname, filename,dset_id);
+        //read_objects_structure(dmr,d4_grp, varname, filename,dset_id);
         break;
 
     case H5T_ARRAY:
@@ -565,7 +575,8 @@ read_objects(DMR & dmr, D4Group * d4_grp, const string &varname, const string &f
         throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
     }
     default:
-        read_objects_base_type(dmr, d4_grp,varname, filename,dset_id);
+        read_objects_base_type(d4_grp,varname, filename,dset_id);
+        //read_objects_base_type(dmr, d4_grp,varname, filename,dset_id);
         break;
     }
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
@@ -590,8 +601,10 @@ read_objects(DMR & dmr, D4Group * d4_grp, const string &varname, const string &f
 /////////////////////////////////////////////////////////////////////////////////
 //
 
+//void
+//read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
 void
-read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
+read_objects_base_type(D4Group * d4_grp,const string & varname,
                        const string & filename,hid_t dset_id)
 {
 
@@ -693,8 +706,10 @@ read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
 ///    \param dset_id HDF5 dataset ID
 ///    \throw error a string of error message to the dods interface.
 ///////////////////////////////////////////////////////////////////////////////
+//void
+//read_objects_structure(DMR & dmr, D4Group *d4_grp, const string & varname,
 void
-read_objects_structure(DMR & dmr, D4Group *d4_grp, const string & varname,
+read_objects_structure(D4Group *d4_grp, const string & varname,
                        const string & filename,hid_t dset_id)
 {
     // Obtain the relative path of the variable name under the leaf group
@@ -1023,7 +1038,6 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
 /// \param val_size value size
 /// \return void
 /// \remarks In case of error, it throws an exception
-///STOPPPP
 ///////////////////////////////////////////////////////////////////////////////
 void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int index, size_t val_size)
 {
@@ -1089,7 +1103,6 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 /// \return false if failed.
 /// \remarks In case of error, it returns a string of error message
 ///          to the DAP interface.
-/// \warning This is only a test, not supported in current version.
 ///////////////////////////////////////////////////////////////////////////////
 string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
     
@@ -1113,6 +1126,9 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
         BESDEBUG("h5", "dap4->get_hardlink_dmr() objno=" << objno << endl);
 
+        // Add this hard link to the map.
+        // obj_paths is a global variable defined at the beginning of this file.
+        // it is essentially a id to obj name map. See HDF5PathFinder.h.
         if (!obj_paths.add(objno, oname)) {
             return objno;
         }
