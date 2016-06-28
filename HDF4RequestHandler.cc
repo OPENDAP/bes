@@ -34,13 +34,9 @@
 #include <iostream>
 #include <sstream>
 
-//#undef USE_DAP4 
-//#define USE_DAP4 1
-//#ifdef USE_DAP4
 #include <DMR.h>
 #include <D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
-//#endif
 #include <mime_util.h>
 #include <InternalErr.h>
 #include <Ancillary.h>
@@ -72,9 +68,7 @@
 #include "HE2CF.h"
 #include "HDF4_DDS.h"
 
-//#ifdef USE_DAP4
 #include "HDF4_DMR.h"
-//#endif 
 
 //#include "HDFCFUtil.h"
 #include "HDFFloat32.h"
@@ -157,10 +151,8 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
 	add_handler(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
 	add_handler(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
-//#ifdef USE_DAP4
 	add_handler(DMR_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
 	add_handler(DAP4DATA_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
-//#endif
 	add_handler(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
 	add_handler(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
@@ -207,68 +199,6 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 
         _cache_metadata_path_exist        =get_beskeys("H4.Cache.metadata.path",_cache_metadata_path);
 
-#if 0
-if(true == _enable_eosgeo_cachefile)
-cerr<<"EOS GeoCache is true "<<endl;
-
-if(true == _usecf) cerr<<"usecf is true"<<endl;
-else cerr<<"usecf is false"<<endl;
-if(true == _pass_fileid) cerr<<"pass_fileid is true"<<endl;
-else cerr<<"pass_fileid is false"<<endl;
-if(true == _disable_structmeta) cerr<<"disable_structmeta is true"<<endl;
-else cerr<<"disable_structmeta is false"<<endl;
-
-
-if(true == _enable_special_eos) cerr<<"enable_special_eos is true"<<endl;
-else cerr<<"enable_special_eos is false"<<endl;
-
-if(true == _disable_scaleoffset_comp) cerr<<"disable_scaleoffset_comp is true"<<endl;
-else cerr<<"disable_scaleoffset_comp is false"<<endl;
-
-if(true == _disable_ecsmetadata_min) cerr<<"disable_ecsmetadata_min is true"<<endl;
-else cerr<<"disable_ecsmetadata_min is  false"<<endl;
-
-if(true == _disable_ecsmetadata_all) cerr<<"disable_ecsmetadata_all is true"<<endl;
-else cerr<<"disable_ecsmetadata_all is  false"<<endl;
-
-if(true == _cache_latlon_path_exist) {
-cerr<<"latlon cache path exists"<<endl;
-cerr<<"latlon cache path is "<< _cache_latlon_path <<endl;
-
-}
-else {
-cerr<<"latlon cache path doesn't exist"<<endl;
-cerr<<"size of latlon cache path is "<<_cache_latlon_path.size() <<endl;
-}
-if(true == _cache_latlon_prefix_exist) {
-cerr<<"latlon cache prefix exists"<<endl;
-cerr<<"latlon cache prefix is "<< _cache_latlon_prefix <<endl;
-
-}
-else {
-cerr<<"latlon cache prefix doesn't exist"<<endl;
-cerr<<"size of latlon cache prefix is "<<_cache_latlon_prefix.size() <<endl;
-}
-if(true == _cache_latlon_size_exist) {
-cerr<<"latlon cache size exists"<<endl;
-cerr<<"latlon cache size is "<< _cache_latlon_size <<endl;
-
-}
-else {
-cerr<<"latlon cache size doesn't exist"<<endl;
-cerr<<"latlon cache size is "<<_cache_latlon_size <<endl;
-}
-if(true == _cache_metadata_path_exist) {
-cerr<<" metadata cache path exists"<<endl;
-cerr<<" metadata cache path is "<< _cache_metadata_path <<endl;
-
-}
-else {
-cerr<<"metadata cache path doesn't exist"<<endl;
-cerr<<"metadata cache path size is "<<_cache_metadata_path.size() <<endl;
-}
-
-#endif
 }
 
 HDF4RequestHandler::~HDF4RequestHandler() {
@@ -276,30 +206,10 @@ HDF4RequestHandler::~HDF4RequestHandler() {
 
 bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
-//    bool found = false;
-//    bool usecf = false;
 
-//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
-//#endif
-
-#if 0
-    string key="H4.EnableCF";
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found )
-    {
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-
-           // This is the CF option, go to the CF function
-            usecf = true;
-        }
-    }
-#endif
 
     if(true == _usecf) {
 
@@ -444,29 +354,11 @@ cerr<<"Don't output ecs metadata "<<endl;
 bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
 
-//    bool found = false;
-//    bool usecf = false;
 
-//#if 0
     BESStopWatch sw;
         if (BESISDEBUG( TIMING_LOG ))
                 sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
-//#endif
 
-#if 0
-    string key="H4.EnableCF";
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found )
-    {
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-           // This is the CF option, go to the CF function
-            usecf = true;
-        }
-    }
-#endif
 
     if(true == _usecf) {
         // Build DAP response only based on the HDF4 SD interfaces. Doing this 
@@ -636,34 +528,14 @@ cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<
 
 bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
-//    bool found = false;
-//    bool usecf = false;
 
-//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_data", dhi.data[REQUEST_ID]);
-//#endif
 
- //   string key="H4.EnableCF";
-//    string doset;
 
     int32 sdfd   = -1;
     int32 fileid = -1;
-
-
-#if 0
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found )
-    {
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-
-           // This is the CF option, go to the CF function
-            usecf = true;
-        }
-    }
-#endif
 
     // Since passing file IDs requires to use the derived class and it
     // causes the management of code structure messy, we first handle this with
@@ -845,11 +717,9 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
 bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi) {
 
-//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_data_with_IDs", dhi.data[REQUEST_ID]);
-//#endif
 
     int32 sdfd   = -1;
     int32 fileid = -1;
@@ -1314,20 +1184,6 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
 #endif
         if(true == _enable_metadata_cachefile) {
 
-#if 0
-            string md_cache_dir;
-            string key = "H4.Cache.metadata.path";
-            bool found = false;
-            TheBESKeys::TheKeys()->get_value(key,md_cache_dir,found);
-            if(true == found) {
-                BESDEBUG("h4", "H4.Cache.metadata.path key is set and metadata cache key is set." << endl);
-
-                // Notice, since the DAS output may be different between DAS/DDS service and DataDDS service.
-                // See comments about ecs_metadata below.
-                // So we create a different DAS file. This can be optimized in the future if necessary.
-                das_filename = md_cache_dir + "/" + base_file_name +"_das_dd";
-                dds_filename = md_cache_dir + "/" + base_file_name +"_dds";
-#endif
             if(true == _cache_metadata_path_exist) {
                 BESDEBUG("h4", "H4.Cache.metadata.path key is set and metadata cache key is set." << endl);
 
@@ -1517,15 +1373,12 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 
     return true;
 }
-//#ifdef USE_DAP4
 bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 {
 
-//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_dmr", dhi.data[REQUEST_ID]);
-//#endif
 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
@@ -1538,30 +1391,9 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     DAS das;
 
-#if 0
-    bool found = false;
-    bool usecf = false;
-
-    string key="H4.EnableCF";
-    string doset;
-#endif
-
     int32 sdfd   = -1;
     int32 fileid = -1;
 
-#if 0
-    // Check if CF option is turned on. 
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found )
-    {
-        doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) {
-
-           // This is the CF option, go to the CF function
-            usecf = true;
-        }
-    }
-#endif
     // Since passing file IDs requires to use the derived class and it
     // causes the management of code structure messy, we first handle this with
     // another method.
@@ -1732,11 +1564,10 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
 bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) {
 
-//#if 0
     BESStopWatch sw;
         if (BESISDEBUG( TIMING_LOG ))
                 sw.start("HDF4RequestHandler::hdf4_build_dmr_with_IDs", dhi.data[REQUEST_ID]);
-//#endif
+
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
     // First step, build the 'full DDS'
@@ -1894,7 +1725,6 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
 
 }
 
-//#endif
 bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 	BESResponseObject *response = dhi.response_handler->get_response_object();
 	BESInfo *info = dynamic_cast<BESInfo *> (response);
@@ -1902,14 +1732,8 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
 	map < string, string > attrs;
-//#if 0
         attrs["name"] = MODULE_NAME ;
         attrs["version"] = MODULE_VERSION ;
-//#endif
-#if 0
-	attrs["name"] = PACKAGE_NAME;
-	attrs["version"] = PACKAGE_VERSION;
-#endif
 	list < string > services;
 	BESServiceRegistry::TheRegistry()->services_handled(HDF4_NAME, services);
 	if (services.size() > 0) {
