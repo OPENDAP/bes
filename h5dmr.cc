@@ -435,7 +435,49 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
         } 
     }
    
-    // Then HDF5 groups
+    // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
+ #if 0
+                 string grp_name = string(oname.begin(),oname.end()-1);
+
+            // Check the hard link loop and break the loop if it exists.
+            string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
+            if (oid == "") {
+                try {
+                    D4Group* tem_d4_cgroup = new D4Group(grp_name);
+
+                    // Map the HDF5 cgroup attributes to DAP4 group attributes.
+                    // Note the last flag of map_h5_attrs_to_dap4 must be 0 for the group attribute mapping.
+                    map_h5_attrs_to_dap4(cgroup,tem_d4_cgroup,NULL,NULL,0);
+
+                    // Add this new DAP4 group 
+                    par_grp->add_group_nocopy(tem_d4_cgroup);
+
+                    // Continue searching the objects under this group
+                    breadth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale);
+                    //breadth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname,use_dimscale);
+                }
+                catch(...) {
+                    H5Gclose(cgroup);
+                    throw;
+                }
+            }
+            else {
+                // This group has been visited.  
+                // Add the attribute table with the attribute name as HDF5_HARDLINK.
+                // The attribute value is the name of the group when it is first visited.
+                D4Group* tem_d4_cgroup = new D4Group(string(grp_name));
+
+                // Note attr_str_c is the DAP4 attribute string datatype
+                D4Attribute *d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+
+                d4_hlinfo->add_value(obj_paths.get_name(oid));
+                tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
+                par_grp->add_group_nocopy(tem_d4_cgroup);
+            }
+
+ #endif 
+
+    // Then HDF5 child groups
     for (hsize_t i = 0; i < nelems; i++) {
 
         // Obtain the object type, such as group or dataset. 
