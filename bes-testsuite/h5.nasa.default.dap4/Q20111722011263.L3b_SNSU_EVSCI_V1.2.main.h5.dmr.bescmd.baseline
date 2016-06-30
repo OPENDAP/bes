@@ -1,5 +1,74 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q20111722011263.L3b_SNSU_EVSCI_V1.2.main.h5">
+    <Attribute name="Product Name" type="String">
+        <Value>Q20111722011263.L3b_SNSU_EVSCI_V1.2.main</Value>
+    </Attribute>
+    <Attribute name="Title" type="String">
+        <Value> Level-3 Binned Data</Value>
+    </Attribute>
+    <Attribute name="Sensor" type="String">
+        <Value>Aquarius</Value>
+    </Attribute>
+    <Attribute name="Mission" type="String">
+        <Value>SAC-D Aquarius</Value>
+    </Attribute>
+    <Attribute name="Mission Characteristics" type="String">
+        <Value>Nominal orbit: inclination=98.0 (Sun-synchronous); node=6PM (ascending); eccentricity=&lt;0.002; altitude=657 km; ground speed=6.825 km/sec</Value>
+    </Attribute>
+    <Attribute name="Software Name" type="String">
+        <Value>L3BIN</Value>
+    </Attribute>
+    <Attribute name="Software ID" type="String">
+        <Value>3.36</Value>
+    </Attribute>
+    <Attribute name="Processing Time" type="String">
+        <Value>2012008150533000</Value>
+    </Attribute>
+    <Attribute name="Processing Control" type="String">
+        <Value>l3bin par=Q20111722011263.L3b_SNSU_EVSCI_V1.2.param</Value>
+    </Attribute>
+    <Attribute name="Start Year" type="Int16">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="Start Day" type="Int16">
+        <Value>240</Value>
+    </Attribute>
+    <Attribute name="Start Millisec" type="UInt32">
+        <Value>5497202</Value>
+    </Attribute>
+    <Attribute name="End Year" type="Int16">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="End Day" type="Int16">
+        <Value>241</Value>
+    </Attribute>
+    <Attribute name="End Millisec" type="UInt32">
+        <Value>412582</Value>
+    </Attribute>
+    <Attribute name="Latitude Units" type="String">
+        <Value>degrees North</Value>
+    </Attribute>
+    <Attribute name="Longitude Units" type="String">
+        <Value>degrees East</Value>
+    </Attribute>
+    <Attribute name="Northernmost Latitude" type="Float32">
+        <Value>84.5</Value>
+    </Attribute>
+    <Attribute name="Southernmost Latitude" type="Float32">
+        <Value>-65.5</Value>
+    </Attribute>
+    <Attribute name="Easternmost Latitude" type="Float32">
+        <Value>179.5</Value>
+    </Attribute>
+    <Attribute name="Westernmost Latitude" type="Float32">
+        <Value>-179.5</Value>
+    </Attribute>
+    <Attribute name="Data Bins" type="UInt32">
+        <Value>26468</Value>
+    </Attribute>
+    <Attribute name="Percent Data Bins" type="Float32">
+        <Value>64.16173553</Value>
+    </Attribute>
     <Group name="Level-3 Binned Data">
         <Structure name="BinIndex">
             <Int32 name="row_num"/>

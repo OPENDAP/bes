@@ -1,5 +1,110 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5">
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.5</Value>
+    </Attribute>
+    <Attribute name="GranuleID" type="String">
+        <Value>GOZ-Source-MLP_HCl_ev1-00_2005.nc4</Value>
+    </Attribute>
+    <Attribute name="ProductionDateTime" type="String">
+        <Value>2012-10-22T23:32:49.000000Z</Value>
+    </Attribute>
+    <Attribute name="identifier_product_DOI" type="String">
+        <Value>10.5067/MEASURES/GOZCARDS/DATA3001</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org/</Value>
+    </Attribute>
+    <Attribute name="Format" type="String">
+        <Value>NetCDF-4</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>2005-01-01</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value> 00:00:00.000000Z</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>2005-12-31</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>23:59:59.999999Z</Value>
+    </Attribute>
+    <Attribute name="ContactPersonName" type="String">
+        <Value>Lucien Froidevaux</Value>
+    </Attribute>
+    <Attribute name="ContactPersonRole" type="String">
+        <Value>MEaSUREs GOZCARDS PI</Value>
+    </Attribute>
+    <Attribute name="ContactPersonEmail" type="String">
+        <Value>Lucien.Froidevaux@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="ContactPersonAddress" type="String">
+        <Value>4800 Oak Grove Dr M/S 183-701, Pasadena, CA 91109</Value>
+    </Attribute>
+    <Attribute name="RelatedURL" type="String">
+        <Value>http://gozcards.jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="ObservationArea" type="String">
+        <Value>Global</Value>
+    </Attribute>
+    <Attribute name="ProcessingDate" type="String">
+        <Value>2012-10-22</Value>
+    </Attribute>
+    <Attribute name="ProcessingCenter" type="String">
+        <Value>Jet Propulsion Laboratory / California Institute of Technology</Value>
+    </Attribute>
+    <Attribute name="ProductGenerationAlgorithm" type="String">
+        <Value>Zonal average quantities from original source datasets.  See algorithm documentation at related MEaSUREs GOZCARDS website</Value>
+    </Attribute>
+    <Attribute name="ProductGenerationAlgorithmVersion" type="String">
+        <Value>ev1.00</Value>
+    </Attribute>
+    <Attribute name="ProductReference" type="String">
+        <Value>See algorithm documentation at related MEaSUREs GOZCARDS website</Value>
+    </Attribute>
+    <Attribute name="SouthBoundingCoordinate" type="Float32">
+        <Value>-90.</Value>
+    </Attribute>
+    <Attribute name="NorthBoundingCoordinate" type="Float32">
+        <Value>90.</Value>
+    </Attribute>
+    <Attribute name="LatitudeResolution" type="Float32">
+        <Value>10.</Value>
+    </Attribute>
+    <Attribute name="EastBoundingCoordinate" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="WestBoundingCoordinate" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="LongitudeResolution" type="Float32">
+        <Value>360.</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>GozSmlpHCl</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>GOZCARDS Source Data for Hydrogen Chloride Monthly Zonal Averages on a Geodetic Latitude and Pressure Grid</Value>
+    </Attribute>
+    <Attribute name="DataProduct" type="String">
+        <Value>Hydrogen Chloride</Value>
+    </Attribute>
+    <Attribute name="LatitudeType" type="String">
+        <Value>Geodetic</Value>
+    </Attribute>
+    <Attribute name="LevelType" type="String">
+        <Value>Pressure</Value>
+    </Attribute>
+    <Attribute name="TimeResolution" type="String">
+        <Value>Monthly</Value>
+    </Attribute>
+    <Attribute name="History" type="String">
+        <Value>2012-10-22T23:32:49.000000Z : Initial file creation</Value>
+    </Attribute>
+    <Attribute name="SizeBytesDataGranule" type="Int64">
+        <Value>435282</Value>
+    </Attribute>
     <Group name="HALOE">
         <Dimension name="time" size="12"/>
         <Dimension name="lev" size="25"/>

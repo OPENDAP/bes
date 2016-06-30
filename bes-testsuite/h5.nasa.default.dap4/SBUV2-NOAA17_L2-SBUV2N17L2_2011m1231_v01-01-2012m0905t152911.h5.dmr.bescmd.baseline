@@ -228,6 +228,162 @@
             <Value>The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).</Value>
         </Attribute>
     </Float64>
+    <Attribute name="AlgorithmVersion" type="String">
+        <Value>8.6</Value>
+    </Attribute>
+    <Attribute name="AuthorAffiliation" type="String">
+        <Value>NASA/GSFC</Value>
+    </Attribute>
+    <Attribute name="AuthorName" type="String">
+        <Value>P.K. Bhartia, et al.</Value>
+    </Attribute>
+    <Attribute name="CalibrationVersion" type="String">
+        <Value>C7</Value>
+    </Attribute>
+    <Attribute name="CloudPressureSource" type="String">
+        <Value>OMCLDRR Cloud-Pressure Climatology</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.0</Value>
+    </Attribute>
+    <Attribute name="CorrelationLength" type="Float32">
+        <Value>12.</Value>
+    </Attribute>
+    <Attribute name="DayNightFlag" type="String">
+        <Value>Day</Value>
+    </Attribute>
+    <Attribute name="EastBoundingCoordinate" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="InstrumentError" type="Float32">
+        <Value>0.009999999776</Value>
+    </Attribute>
+    <Attribute name="GranuleDay" type="Int32">
+        <Value>31</Value>
+    </Attribute>
+    <Attribute name="GranuleDayOfYear" type="Int32">
+        <Value>365</Value>
+    </Attribute>
+    <Attribute name="GranuleMonth" type="Int32">
+        <Value>12</Value>
+    </Attribute>
+    <Attribute name="GranuleYear" type="Int32">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="HDFVersion" type="String">
+        <Value>5-1.8.8</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>10.5067/MEASURES/OZONE/DATA207</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org/</Value>
+    </Attribute>
+    <Attribute name="InputFilesHDF" type="String">
+        <Value>v8111231.n17</Value>
+    </Attribute>
+    <Attribute name="InputFilesPMF" type="String">
+        <Value>table=/data2/sbuv2/tables_daumont2/n17/v8sbtable_multi.n17, dndx=/data2/sbuv2/tables_daumont2/n17/v8sbdndx.n17, mrgaprf=/home/huang/v8sbuv/Tables/mrgapprf.dat, aprioz=/home/huang/v8sbuv/Tables/O3_CLIM13_LF_v5.DAT, apritmp=/home/huang/v8sbuv/Tables/TM_CLIM13.DAT, aprf81=/home/huang/v8sbuv/Tables/v8std81.dat, coeffs=/data2/sbuv2/tables_daumont2/solar_daumont.dat, pmf=/data2/sbuv2/v9sbuv/n17_pmfv6s4h_c/Y2011/s20111231.n17v6, ozs=/data1/sbuv2/v8test_c7/v8pmf_n17s4h/v8111231.n17, detail=dump1/v811365_detail.n17, const=CONST.n17c7, report=v811365.rnt, terprs=/home/huang/v8sbuv/Tables/TERPRS.DAT, surfcat=/home/huang/v8sbuv/Tables/SURFCAT.DAT, snowice=/home/huang/v8sbuv/Tables/v8snocld/v8snowice, cldpres=/home/huang/v8sbuv/Tables/v9snocld/v9cldpres</Value>
+    </Attribute>
+    <Attribute name="InstrumentShortName" type="String">
+        <Value>SBUV2</Value>
+    </Attribute>
+    <Attribute name="LocalGranuleID" type="String">
+        <Value>SBUV2-NOAA17_L2-SBUV2N17L2_2011m1231_v01-01-2012m0905t152911.h5</Value>
+    </Attribute>
+    <Attribute name="LocalityValue" type="String">
+        <Value>Global</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>SBUV2/NOAA-17 Ozone (O3) Nadir Profile and Total Column Daily L2</Value>
+    </Attribute>
+    <Attribute name="NorthBoundingCoordinate" type="Float32">
+        <Value>50.3131485</Value>
+    </Attribute>
+    <Attribute name="NumTimes" type="Int32">
+        <Value>1051</Value>
+    </Attribute>
+    <Attribute name="OrbitMode" type="String">
+        <Value>D</Value>
+    </Attribute>
+    <Attribute name="ParameterName" type="String">
+        <Value>Nadir Profile and Total Column Ozone</Value>
+    </Attribute>
+    <Attribute name="PGEVersion" type="String">
+        <Value>0.1.2</Value>
+    </Attribute>
+    <Attribute name="PlatformShortName" type="String">
+        <Value>NOAA17</Value>
+    </Attribute>
+    <Attribute name="ProcessingCenter" type="String">
+        <Value>ACPS</Value>
+    </Attribute>
+    <Attribute name="ProcessLevel" type="String">
+        <Value>2</Value>
+    </Attribute>
+    <Attribute name="ProductionDateTimePMF" type="String">
+        <Value>2012-03-19T11:24:26.0EDT</Value>
+    </Attribute>
+    <Attribute name="ProductType" type="String">
+        <Value>L2 Daily Trajectory</Value>
+    </Attribute>
+    <Attribute name="ProfileO3APrioriError" type="Float32">
+        <Value>0.5</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>2011-12-31</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value>00:56:08</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>2012-01-01</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>00:46:32</Value>
+    </Attribute>
+    <Attribute name="ReflectivityWavelengthIndex" type="Int32">
+        <Value>11</Value>
+    </Attribute>
+    <Attribute name="ReflectivityWavelengthIndexHighSZA" type="Int32">
+        <Value>12</Value>
+    </Attribute>
+    <Attribute name="SensorShortName" type="String">
+        <Value>Double Monochromator</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>SBUV2N17L2</Value>
+    </Attribute>
+    <Attribute name="SnowIceSource" type="String">
+        <Value>Climatology</Value>
+    </Attribute>
+    <Attribute name="SouthBoundingCoordinate" type="Float32">
+        <Value>-81.63275146</Value>
+    </Attribute>
+    <Attribute name="StartOrbitNumber" type="Int32">
+        <Value>49467</Value>
+    </Attribute>
+    <Attribute name="StopOrbitNumber" type="Int32">
+        <Value>49482</Value>
+    </Attribute>
+    <Attribute name="TemperatureSource" type="String">
+        <Value>Climatology</Value>
+    </Attribute>
+    <Attribute name="TerrainPressureSource" type="String">
+        <Value>Climatology</Value>
+    </Attribute>
+    <Attribute name="VersionID" type="String">
+        <Value>1.01</Value>
+    </Attribute>
+    <Attribute name="VerticalCoordinate" type="String">
+        <Value>Pressure</Value>
+    </Attribute>
+    <Attribute name="WestBoundingCoordinate" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="ProductionDateTimeHDF" type="String">
+        <Value>2012-09-05T15:29:11.0EDT</Value>
+    </Attribute>
     <Group name="ANCILLARY_DATA">
         <Float32 name="CloudPressure">
             <Dim name="/nTimes"/>

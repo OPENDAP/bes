@@ -56,6 +56,198 @@
         <Dim name="/rgb"/>
         <Dim name="/eightbitcolor"/>
     </String>
+    <Attribute name="product_name" type="String">
+        <Value>S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc</Value>
+    </Attribute>
+    <Attribute name="instrument" type="String">
+        <Value>SeaWiFS</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>SeaWiFS Level-3 Standard Mapped Image</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Ocean Biology Processing Group (NASA/GSFC/OBPG)</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>Orbview-2</Value>
+    </Attribute>
+    <Attribute name="temporal_range" type="String">
+        <Value>other</Value>
+    </Attribute>
+    <Attribute name="processing_version" type="String">
+        <Value>2013.2NCDF</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>2014-06-21T18:09:36.000Z</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>smigen par=S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc.param</Value>
+    </Attribute>
+    <Attribute name="l2_flag_names" type="String">
+        <Value>ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>2003-02-28T18:30:48.000Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>2003-03-30T20:00:03.000Z</Value>
+    </Attribute>
+    <Attribute name="start_orbit_number" type="Int32">
+        <Value>29684</Value>
+    </Attribute>
+    <Attribute name="end_orbit_number" type="Int32">
+        <Value>30143</Value>
+    </Attribute>
+    <Attribute name="map_projection" type="String">
+        <Value>Equidistant Cylindrical</Value>
+    </Attribute>
+    <Attribute name="latitude_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="longitude_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>90.</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>-90.</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="Float32">
+        <Value>90.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="Float32">
+        <Value>-90.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="grid_mapping_name" type="String">
+        <Value>latitude_longitude</Value>
+    </Attribute>
+    <Attribute name="latitude_step" type="Float32">
+        <Value>0.08333333582</Value>
+    </Attribute>
+    <Attribute name="longitude_step" type="Float32">
+        <Value>0.08333333582</Value>
+    </Attribute>
+    <Attribute name="sw_point_latitude" type="Float32">
+        <Value>-89.95833588</Value>
+    </Attribute>
+    <Attribute name="sw_point_longitude" type="Float32">
+        <Value>-179.9583282</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="Int32">
+        <Value>9</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="Int32">
+        <Value>9</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>km</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>km</Value>
+    </Attribute>
+    <Attribute name="spatialResolution" type="String">
+        <Value>9 km</Value>
+    </Attribute>
+    <Attribute name="data_bins" type="Int32">
+        <Value>4273313</Value>
+    </Attribute>
+    <Attribute name="number_of_lines" type="Int32">
+        <Value>2160</Value>
+    </Attribute>
+    <Attribute name="number_of_columns" type="Int32">
+        <Value>4320</Value>
+    </Attribute>
+    <Attribute name="measure" type="String">
+        <Value>Mean</Value>
+    </Attribute>
+    <Attribute name="data_minimum" type="Float32">
+        <Value>0.001994000049</Value>
+    </Attribute>
+    <Attribute name="data_maximum" type="Float32">
+        <Value>96.49423218</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_minimum" type="Float32">
+        <Value>0.009999999776</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_maximum" type="Float32">
+        <Value>20.</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_type" type="String">
+        <Value>LOG</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_applied" type="String">
+        <Value>No</Value>
+    </Attribute>
+    <Attribute name="_lastModified" type="String">
+        <Value>2014-06-21T18:09:36.000Z</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NASA/GSFC OBPG</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>NetCDF Climate and Forecast (CF) Metadata Convenention</Value>
+    </Attribute>
+    <Attribute name="Metadata_Conventions" type="String">
+        <Value>Unidata Dataset Discovery v1.0</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>gov.nasa.gsfc.sci.oceandata</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>http://science.nasa.gov/earth-science/earth-science-data/data-information-policy/</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>NASA/GSFC/OBPG</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>NASA/GSFC/OBPG</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>data@oceancolor.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>data@oceancolor.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>http://oceandata.sci.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>http://oceandata.sci.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L3 Mapped</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>grid</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>Oceans &gt; Ocean Chemistry &gt; Chlorophyll; Oceans &gt; Ocean Optics &gt; Ocean Color</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
     <Group name="processing_control">
         <Attribute name="software_name" type="String">
             <Value>smigen</Value>
