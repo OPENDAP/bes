@@ -512,3 +512,5 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic.h5.dmr.bescmd])
 #netcdf4 enhanced compound
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 
+#group attributes(including the root)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])

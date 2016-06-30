@@ -54,7 +54,7 @@ using namespace libdap;
 #include <D4Group.h>
 #include <D4Attributes.h>
 
-bool depth_first(hid_t, char *,  D4Group* par_grp, const char *);
+//bool depth_first(hid_t, char *,  D4Group* par_grp, const char *);
 
 //bool breadth_first(hid_t, char *, DMR &, D4Group* par_grp, const char *,bool);
 bool breadth_first(hid_t, char *, D4Group* par_grp, const char *,bool);

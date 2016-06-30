@@ -71,6 +71,7 @@ static DS_t dt_inst;
 /// A function that map HDF5 attributes to DAP4
 void map_h5_attrs_to_dap4(hid_t oid,D4Group* d4g,BaseType* d4b,Structure * d4s,int flag);
 
+#if 0
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname)
 /// \param pid group id
@@ -290,6 +291,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
     BESDEBUG("h5", "<depth_first() for dmr" << endl);
     return true;
 }
+#endif
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
 /// \param pid group id
@@ -305,7 +307,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 /// \remarks will return error message to the DAP interface.
 /// \remarks The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 ///  So we use this search. In the future, we may just use the breadth_first search for all cases.??
-/// \see depth_first(hid_t pid, char *gname, DMR & dmr, const char *fname) in this file
+/// \see depth_first(hid_t pid, char *gname, DMR & dmr, const char *fname) in h5dds.cc
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -321,7 +323,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
         << " fname: " << fname
         << endl);
         
-  
     /// To keep track of soft links.
     int slinkindex = 0;
 
@@ -436,49 +437,51 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
     }
    
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
- #if 0
-                 string grp_name = string(oname.begin(),oname.end()-1);
-
-            // Check the hard link loop and break the loop if it exists.
-            string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
-            if (oid == "") {
-                try {
-                    D4Group* tem_d4_cgroup = new D4Group(grp_name);
-
-                    // Map the HDF5 cgroup attributes to DAP4 group attributes.
-                    // Note the last flag of map_h5_attrs_to_dap4 must be 0 for the group attribute mapping.
-                    map_h5_attrs_to_dap4(cgroup,tem_d4_cgroup,NULL,NULL,0);
-
-                    // Add this new DAP4 group 
-                    par_grp->add_group_nocopy(tem_d4_cgroup);
-
-                    // Continue searching the objects under this group
-                    breadth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale);
-                    //breadth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname,use_dimscale);
-                }
-                catch(...) {
-                    H5Gclose(cgroup);
-                    throw;
-                }
-            }
-            else {
-                // This group has been visited.  
-                // Add the attribute table with the attribute name as HDF5_HARDLINK.
-                // The attribute value is the name of the group when it is first visited.
-                D4Group* tem_d4_cgroup = new D4Group(string(grp_name));
-
-                // Note attr_str_c is the DAP4 attribute string datatype
-                D4Attribute *d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
-
-                d4_hlinfo->add_value(obj_paths.get_name(oid));
-                tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
-                par_grp->add_group_nocopy(tem_d4_cgroup);
-            }
-
- #endif 
+    map_h5_attrs_to_dap4(pid,par_grp,NULL,NULL,0);
 
     // Then HDF5 child groups
     for (hsize_t i = 0; i < nelems; i++) {
+
+        vector <char>oname;
+
+        // Query the length of object name.
+        oname_size =
+ 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+                (size_t)DODS_NAMELEN, H5P_DEFAULT);
+        if (oname_size <= 0) {
+            string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
+            msg += gname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Obtain the name of the object
+        oname.resize((size_t) oname_size + 1);
+
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+            (size_t)(oname_size+1), H5P_DEFAULT) < 0){
+            string msg =
+                    "h5_dmr handler: Error getting the hdf5 object name from the group: ";
+             msg += gname;
+                throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Check if it is the hard link or the soft link
+        H5L_info_t linfo;
+        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+            string msg = "hdf5 link name error from: ";
+            msg += gname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+            
+        // Information of soft links are handled already, the softlinks need to be ignored, otherwise
+        // the group it links will be mapped again in the block of if(obj_type == H5O_TYPE_GROUP) 
+        if(linfo.type == H5L_TYPE_SOFT) { 
+            continue;
+        }
+
+        // Ignore external links
+        if(linfo.type == H5L_TYPE_EXTERNAL) 
+            continue;
 
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
@@ -494,29 +497,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
 
         if(obj_type == H5O_TYPE_GROUP) {  
 
-            vector <char>oname;
-
-            // Query the length of object name.
-            oname_size =
- 	        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
-                                  (size_t)DODS_NAMELEN, H5P_DEFAULT);
-            if (oname_size <= 0) {
-                string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
-                msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            // Obtain the name of the object
-            oname.resize((size_t) oname_size + 1);
-
-            if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
-                (size_t)(oname_size+1), H5P_DEFAULT) < 0){
-                string msg =
-                    "h5_dmr handler: Error getting the hdf5 object name from the group: ";
-                msg += gname;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
             // Obtain the full path name
             string full_path_name =
                 string(gname) + string(oname.begin(),oname.end()-1) + "/";
@@ -531,8 +511,8 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
 
             hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
             if (cgroup < 0){
-	        throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
-	    }
+	            throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
+	        }
 
             string grp_name = string(oname.begin(),oname.end()-1);
 
@@ -541,10 +521,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
             if (oid == "") {
                 try {
                     D4Group* tem_d4_cgroup = new D4Group(grp_name);
-
-                    // Map the HDF5 cgroup attributes to DAP4 group attributes.
-                    // Note the last flag of map_h5_attrs_to_dap4 must be 0 for the group attribute mapping.
-                    map_h5_attrs_to_dap4(cgroup,tem_d4_cgroup,NULL,NULL,0);
 
                     // Add this new DAP4 group 
                     par_grp->add_group_nocopy(tem_d4_cgroup);

@@ -38,4 +38,7 @@
         <Dim name="/xc"/>
         <Dim name="/yc"/>
     </Float32>
+    <Attribute name="_nc3_strict" type="Int32">
+        <Value>1</Value>
+    </Attribute>
 </Dataset>

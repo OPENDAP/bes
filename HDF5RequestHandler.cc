@@ -677,13 +677,16 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             dmr->set_filename(name_path(filename));
 
             D4Group* root_grp = dmr->root();
+            breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
 
+#if 0
            if(true == use_dimscale) 
                 //breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),true);
                 breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),true);
            else 
                 depth_first(fileid,(char*)"/",root_grp,filename.c_str());
                 //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
+#endif
 
            close_fileid(fileid);
 
