@@ -339,7 +339,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
         if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                           || GPM_L1 == f->getProductType()) 
-            update_GPM_special_attrs(das,*it_v);
+            update_GPM_special_attrs(das,*it_v,false);
 
         
     }
@@ -358,7 +358,12 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             }
                     
         }
-    }
+        // Though CF doesn't allow _FillValue, still keep it to keep the original form.
+        if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
+                                          || GPM_L1 == f->getProductType()) 
+            update_GPM_special_attrs(das,*it_cv,true);
+
+   }
     for (it_spv = spvars.begin();
          it_spv != spvars.end(); ++it_spv) {
         if (false == ((*it_spv)->getAttributes().empty())) {
@@ -725,7 +730,7 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
 // a little bit when it changes to string representation. 
 // For example, -9999.9 becomes -9999.9000123. To reduce the misunderstanding,we
 // just add fillvalue in the string type here. KY 2014-04-02
-void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var) {
+void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
 
     if(H5FLOAT64 == var->getType() ||
        H5FLOAT32 == var->getType() ||
@@ -765,17 +770,21 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var) {
         }
 
         // Add the fill value
-        if (has_fillvalue != true ) {
+        if(false == is_cvar ) {
+
+            // Current versions of GPM don't add fillvalues. We add the fillvalue according to the document.
+            if (has_fillvalue != true ) {
             
-            if(H5FLOAT32 == var->getType()) 
-                at->append_attr("_FillValue","Float32","-9999.9");
-            else if(H5FLOAT64 == var->getType())
-                at->append_attr("_FillValue","Float64","-9999.9");
-            else if (H5INT16 == var->getType()) 
-                at->append_attr("_FillValue","Int16","-9999");
-            else if (H5CHAR == var->getType())// H5CHAR maps to DAP int16
-                at->append_attr("_FillValue","Int16","-99");
+                if(H5FLOAT32 == var->getType()) 
+                    at->append_attr("_FillValue","Float32","-9999.9");
+                else if(H5FLOAT64 == var->getType())
+                    at->append_attr("_FillValue","Float64","-9999.9");
+                else if (H5INT16 == var->getType()) 
+                    at->append_attr("_FillValue","Int16","-9999");
+                else if (H5CHAR == var->getType())// H5CHAR maps to DAP int16
+                    at->append_attr("_FillValue","Int16","-99");
         
+            }
         }
     }
 }

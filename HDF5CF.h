@@ -921,6 +921,7 @@ namespace HDF5CF
             bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values,const string &var_path) throw(Exception);
             void Add_VarPath_In_Coordinates_Attr(Var*,const string &);
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
+            void Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
             void Add_Aqu_Attrs() throw(Exception);
             void Add_SeaWiFS_Attrs() throw(Exception);

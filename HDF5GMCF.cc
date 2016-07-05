@@ -4871,7 +4871,6 @@ GMFile:: Add_GPM_Attrs() throw(Exception) {
     vector<HDF5CF::Attribute *>::const_iterator ira;
     const string attr_name_be_replaced = "CodeMissingValue";
     const string attr_new_name = "_FillValue";
-    const string attr_cor_fill_value = "-9999.9";
     const string attr2_name_be_replaced = "Units";
     const string attr2_new_name ="units";
 
@@ -4879,12 +4878,22 @@ GMFile:: Add_GPM_Attrs() throw(Exception) {
     // Create a function at HDF5CF.cc. use strtod,strtof,strtol etc. function to convert
     // string to the corresponding type.
     for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
+        bool has_fvalue_attr = false;
         for(ira = (*it_v)->attrs.begin(); ira!= (*it_v)->attrs.end();ira++) {
-            if((attr_name_be_replaced == (*ira)->name)) { 
-                if((*ira)->dtype == H5FSTRING) 
-                    Change_Attr_One_Str_to_Others((*ira),(*it_v));
-                (*ira)->name = attr_new_name;
-                (*ira)->newname = attr_new_name;
+            if((attr_new_name == (*ira)->name)) { 
+                has_fvalue_attr = true;
+                break;
+            }
+        }
+
+        if(false == has_fvalue_attr) {
+            for(ira = (*it_v)->attrs.begin(); ira!= (*it_v)->attrs.end();ira++) {
+                if((attr_name_be_replaced == (*ira)->name)) { 
+                    if((*ira)->dtype == H5FSTRING) 
+                        Change_Attr_One_Str_to_Others((*ira),(*it_v));
+                    (*ira)->name = attr_new_name;
+                    (*ira)->newname = attr_new_name;
+                }
             }
         }
 
@@ -4893,47 +4902,45 @@ GMFile:: Add_GPM_Attrs() throw(Exception) {
     
     for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
+        bool has_fvalue_attr = false;
 
         for(ira = (*irv)->attrs.begin(); ira!= (*irv)->attrs.end();ira++) {
 
-            if(attr_name_be_replaced == (*ira)->name) {
-                if((*ira)->dtype == H5FSTRING) 
-                    Change_Attr_One_Str_to_Others((*ira),(*irv));
-                (*ira)->name = attr_new_name;
-                (*ira)->newname = attr_new_name;
+            if(attr_new_name == (*ira)->name) {
+                has_fvalue_attr = true;
                 break;
             }
         }
-    
-      if(product_type == GPM_L1) {
-        if ((*irv)->cvartype == CV_EXIST) {
-
+        if(false == has_fvalue_attr) {
             for(ira = (*irv)->attrs.begin(); ira!= (*irv)->attrs.end();ira++) {
 
-                if(attr2_name_be_replaced == (*ira)->name) {
+                if(attr_name_be_replaced == (*ira)->name) {
+                    if((*ira)->dtype == H5FSTRING) 
+                        Change_Attr_One_Str_to_Others((*ira),(*irv));
+                    (*ira)->name = attr_new_name;
+                    (*ira)->newname = attr_new_name;
+                    break;
+                }
+            }
+        }
+        
+    
+        if(product_type == GPM_L1) {
 
-                    if((*irv)->name.find("Latitude") !=string::npos) {
+            if ((*irv)->cvartype == CV_EXIST) {
+                if((*irv)->name.find("Latitude") !=string::npos) {
+                    string unit_value = "degrees_north";
+                    Correct_GPM_L1_LatLon_units(*irv,unit_value);
 
-                        string unit_value = "degrees_north";
-                        (*ira)->value.clear();
-                        Add_Str_Attr(*ira,attr2_new_name,unit_value);
-                    //(*ira)->value.resize(unit_value.size());
-                    //copy(unit_value.begin(),unit_value.end(),(*ira)->value.begin());
-                    }
-
-                    else if((*irv)->name.find("Longitude") !=string::npos) {
-
-                        string unit_value = "degrees_east";
-                        (*ira)->value.clear();
-                        Add_Str_Attr(*ira,attr2_new_name,unit_value);
-                    //(*ira)->value.resize(unit_value.size());
-                    //copy(unit_value.begin(),unit_value.end(),(*ira)->value.begin());
-                    }
+                }
+                else if((*irv)->name.find("Longitude") !=string::npos) {
+                    string unit_value = "degrees_east";
+                    Correct_GPM_L1_LatLon_units(*irv,unit_value);
                 }
             } 
-        }
+        
 
-        else if ((*irv)->cvartype == CV_NONLATLON_MISS) {
+            else if ((*irv)->cvartype == CV_NONLATLON_MISS) {
             
             string comment;
             const string attrname = "comment";
@@ -5160,6 +5167,38 @@ GMFile:: Add_GPM_Attrs() throw(Exception) {
 #endif
 
 }
+
+// var must have names that contains either "Latitude" nor "Longitude".
+void 
+GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception) {
+
+    const string Unit_name = "Units";
+    const string unit_name ="units";
+
+    vector<HDF5CF::Attribute *>::iterator ira;
+    
+    // Delete "units"  and "Units"
+    for(ira = var->attrs.begin(); ira!= var->attrs.end();) {
+        if(unit_name == (*ira)->name) {
+            delete(*ira);
+            ira = var->attrs.erase(ira); 
+        }
+        else if(Unit_name == (*ira)->name) {
+            delete(*ira);
+            ira = var->attrs.erase(ira);
+        }
+        else 
+            ++ira;
+    }
+    // Add the correct units for Latitude and Longitude 
+    // Note: the reason we do this way, for some versions of GPM, units is degrees,
+    // rather than degrees_north.. So units also needs to be corrected to follow CF.
+    Attribute *attr = new Attribute();
+    Add_Str_Attr(attr,unit_name,unit_value);
+    var->attrs.push_back(attr);
+}
+
+
 
 // Add attributes for Aquarius products
 void 
