@@ -68,8 +68,13 @@ class HDF5GMCFSpecialCVArray:public Array {
         H5GCFProduct product_type;
         CVType cvartype;    
         
-        // GPM version 7 nlayer values are from the document
+        // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
         void obtain_gpm_l3_layer(int, vector<int>&,vector<int>&,vector<int>&);
+
+        // GPM version 4.0 nlayer values are from the document 
+        // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
+        void obtain_gpm_l3_layer2(int, vector<int>&,vector<int>&,vector<int>&);
+        
         void obtain_gpm_l3_hgt(int, vector<int>&,vector<int>&,vector<int>&);
         void obtain_gpm_l3_nalt(int, vector<int>&,vector<int>&,vector<int>&);
 

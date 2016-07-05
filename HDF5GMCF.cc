@@ -2704,7 +2704,7 @@ void GMFile::Handle_CVar_GPM_L3() throw(Exception){
                 GMcvar->cvartype = CV_LON_MISS;
             GMcvar->product_type = product_type;
         }   
-        else if (("nlayer" == itd->first && 28 == itd->second) ||
+        else if (("nlayer" == itd->first && (28 == itd->second || 19 == itd->second)) ||
                  ("hgt" == itd->first && 5 == itd->second) ||
                  ("nalt" == itd->first && 5 == itd->second)){
             GMcvar->name = itd->first;
