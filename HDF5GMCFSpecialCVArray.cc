@@ -64,6 +64,8 @@ bool HDF5GMCFSpecialCVArray::read()
     if (GPMS_L3 == product_type || GPMM_L3 == product_type) {
         if(varname=="nlayer" && 28 == tnumelm) 
             obtain_gpm_l3_layer(nelms,offset,step,count);
+        else if(varname=="nlayer" && 19 == tnumelm) 
+            obtain_gpm_l3_layer2(nelms,offset,step,count);
         else if(varname=="hgt" && 5 == tnumelm)
             obtain_gpm_l3_hgt(nelms,offset,step,count);
         else if(varname=="nalt" && 5 == tnumelm)
