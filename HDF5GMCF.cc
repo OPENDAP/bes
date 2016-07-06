@@ -41,6 +41,7 @@
 //#include <sstream>
 using namespace HDF5CF;
 
+// Copier function.
 GMCVar::GMCVar(Var*var) {
 
     newname = var->newname;
@@ -67,8 +68,6 @@ GMCVar::GMCVar(Var*var) {
     for (vector<Dimension*>::iterator ird = var->dims.begin();
         ird!=var->dims.end(); ++ird) {
         Dimension *dim = new Dimension((*ird)->size);
-//"h5","dim->name "<< (*ird)->name <<endl;
-//"h5","dim->newname "<< (*ird)->newname <<endl;
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dim->unlimited_dim = (*ird)->unlimited_dim;
@@ -119,6 +118,7 @@ GMCVar::GMCVar(GMCVar*cvar) {
 }
 #endif
 
+//Copier function of a special variable.
 GMSPVar::GMSPVar(Var*var) {
 
     fullpath = var->fullpath;
@@ -160,8 +160,9 @@ GMFile::GMFile(const char*path, hid_t file_id, H5GCFProduct product_type, GMPatt
 File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),ll2d_no_cv(false)
 {
 
-
 }
+
+// destructor
 GMFile::~GMFile() 
 {
 
@@ -179,6 +180,7 @@ GMFile::~GMFile()
 
 }
 
+// Get CF string
 string GMFile::get_CF_string(string s) {
 
     // HDF5 group or variable path always starts with '/'. When CF naming rule is applied,
@@ -189,16 +191,6 @@ string GMFile::get_CF_string(string s) {
         return File::get_CF_string(s);
     else if (General_Product == product_type &&  OTHERGMS == gproduct_pattern)  { 
 
-#if 0
-        string check_keepleading_underscore_key = "H5.KeepVarLeadingUnderscore";
-        bool bes_key_value = false;
-        try {
-            bes_key_value = HDF5CFDAPUtil::check_beskeys(check_keepleading_underscore_key);
-        }
-        catch (...) {
-            throw;
-        }
-#endif
         if(true == HDF5RequestHandler::get_keep_var_leading_underscore())
             return File::get_CF_string(s);
         else {
@@ -207,11 +199,13 @@ string GMFile::get_CF_string(string s) {
         }
     }
     else {
+        // The leading underscore should be removed from all supported products
         s.erase(0,1);
         return File::get_CF_string(s);
     }
 }
 
+// Retrieve all the HDF5 information.
 void GMFile::Retrieve_H5_Info(const char *path,
                               hid_t file_id, bool include_attr) throw (Exception) {
 
@@ -226,6 +220,10 @@ void GMFile::Retrieve_H5_Info(const char *path,
         File::Retrieve_H5_Info(path,file_id,include_attr);
 }
 
+// Update the product type. This is because the file structure may change across different versions of products
+// I need to handle them differently and still support different versions. The goal is to support two versions in a row.
+// Currently GPM level 3 is changed.
+// This routine should be called right after Retrieve_H5_Info.
 void GMFile::Update_Product_Type() throw(Exception) {
 
     if(GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) {
@@ -243,9 +241,13 @@ void GMFile::Update_Product_Type() throw(Exception) {
     }
 }
 
+// Retrieve HDF5 supported attribute values.
 void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
 
+    // General attributes
     File::Retrieve_H5_Supported_Attr_Values();
+
+    //Coordinate variable attributes 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
           ircv != this->cvars.end(); ++ircv) {
           
@@ -256,6 +258,8 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
             }
         }
     }
+
+    // Special variable attributes
     for (vector<GMSPVar *>::iterator irspv = this->spvars.begin();
           irspv != this->spvars.end(); ++irspv) {
           
@@ -267,6 +271,9 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
     }
 }
 
+// Adjust attribute values. Currently this is only for ACOS and OCO2.
+// Reason: DAP2 doesn't support 64-bit integer and they have 64-bit integer data
+// in these files. Chop them to two 32-bit integers following the data producer's information.
 void GMFile::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
 
     if (product_type == ACOS_L2S_OR_OCO2_L1B) {
@@ -283,6 +290,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
     } // if (product_type == ACOS_L2S_OR_OCO2_L1B)
 }
 
+// Unsupported datatype
 void GMFile:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     if(true == check_ignored) {
@@ -292,6 +300,7 @@ void GMFile:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
     Handle_GM_Unsupported_Dtype(include_attr);
 }
 
+// Unsupported datatype for general data products.
 void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
@@ -353,7 +362,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr) throw(Exception) {
     }// for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
 }
 
-
+// Datatype ignore information.
 void GMFile:: Gen_Unsupported_Dtype_Info(bool include_attr) {
 
     if(true == include_attr) {
@@ -367,7 +376,7 @@ void GMFile:: Gen_Unsupported_Dtype_Info(bool include_attr) {
 
 void GMFile:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception){
 
-        // First general variables(non-CV and non-special variable)
+        // First general variables(non-CV and non-special variable) that use dimension scales.
         if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern) 
            || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
           || (OBPG_L3 == this->product_type)) {
@@ -382,95 +391,96 @@ void GMFile:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception){
  
 }
 
+// Generate ignored object,attribute information for general supported products.
 void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
 
-       if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern)
-          || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
-          || (OBPG_L3 == this->product_type)) {
+    if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern)
+        || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
+        || (OBPG_L3 == this->product_type)) {
 
-            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                 irv != this->cvars.end(); ++irv) {
-                // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
-                // attribute REFERENCE_LIST is okay to ignore. No need to report.
-                bool is_ignored = ignored_dimscale_ref_list((*irv));
-                if (false == (*irv)->attrs.empty()) {
-                    if (true == (*irv)->unsupported_attr_dtype) {
-                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
-                            H5DataType temp_dtype = (*ira)->getType();
-                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
-                                // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
-                                // is okay to ignore if the variable has another attribute
-                                // CLASS="DIMENSION_SCALE"
-                                if (("DIMENSION_LIST" !=(*ira)->name) &&
-                                    (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
-                                    this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                            }
+        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+            irv != this->cvars.end(); ++irv) {
+            // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+            // attribute REFERENCE_LIST is okay to ignore. No need to report.
+            bool is_ignored = ignored_dimscale_ref_list((*irv));
+            if (false == (*irv)->attrs.empty()) {
+                if (true == (*irv)->unsupported_attr_dtype) {
+                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                        ira != (*irv)->attrs.end(); ++ira) {
+                        H5DataType temp_dtype = (*ira)->getType();
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                            // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                            // is okay to ignore if the variable has another attribute
+                            // CLASS="DIMENSION_SCALE"
+                            if (("DIMENSION_LIST" !=(*ira)->name) &&
+                                (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
-                    } // if (true == (*irv)->unsupported_attr_dtype) 
-                } // if (false == (*irv)->attrs.empty()) 
-            }    
+                    }
+                } // if (true == (*irv)->unsupported_attr_dtype) 
+            } // if (false == (*irv)->attrs.empty()) 
+        }// for(vector<GMCVar*>    
 
-            for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                 irv != this->spvars.end(); ++irv) {
-                // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
-                // attribute REFERENCE_LIST is okay to ignore. No need to report.
-                bool is_ignored = ignored_dimscale_ref_list((*irv));
-                if (false == (*irv)->attrs.empty()) {
-                    if (true == (*irv)->unsupported_attr_dtype) {
-                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
-                            H5DataType temp_dtype = (*ira)->getType();
-                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
-                                // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
-                                // is okay to ignore if the variable has another attribute
-                                // CLASS="DIMENSION_SCALE"
-                                if (("DIMENSION_LIST" !=(*ira)->name) &&
-                                    (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
-                                    this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                            }
+        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
+            irv != this->spvars.end(); ++irv) {
+            // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+            // attribute REFERENCE_LIST is okay to ignore. No need to report.
+            bool is_ignored = ignored_dimscale_ref_list((*irv));
+            if (false == (*irv)->attrs.empty()) {
+                if (true == (*irv)->unsupported_attr_dtype) {
+                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                        ira != (*irv)->attrs.end(); ++ira) {
+                        H5DataType temp_dtype = (*ira)->getType();
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                            // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                            // is okay to ignore if the variable has another attribute
+                            // CLASS="DIMENSION_SCALE"
+                            if (("DIMENSION_LIST" !=(*ira)->name) &&
+                                (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
-                    } // if (true == (*irv)->unsupported_attr_dtype)
-                } // if (false == (*irv)->attrs.empty())  
-            }    
-        }
-
-        else {
+                    }
+                } // if (true == (*irv)->unsupported_attr_dtype)
+            } // if (false == (*irv)->attrs.empty())  
+        }// for(vector<GMSPVar*>    
+    }// if((General_Product == ......)
+    else {
  
-            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                 irv != this->cvars.end(); ++irv) {
-                if (false == (*irv)->attrs.empty()) {
-                    if (true == (*irv)->unsupported_attr_dtype) {
-                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
-                            H5DataType temp_dtype = (*ira)->getType();
-                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+            irv != this->cvars.end(); ++irv) {
+            if (false == (*irv)->attrs.empty()) {
+                if (true == (*irv)->unsupported_attr_dtype) {
+                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                        ira != (*irv)->attrs.end(); ++ira) {
+                        H5DataType temp_dtype = (*ira)->getType();
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                            }
                         }
                     }
                 }
-            }// for (vector<GMCVar *>::iterator irv = this->cvars.begin() STOP adding end logic comments
+            }
+        }// for (vector<GMCVar *>::iterator irv = this->cvars.begin() STOP adding end logic comments
 
-            for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                 irv != this->spvars.end(); ++irv) {
-                if (false == (*irv)->attrs.empty()) {
-                    if (true == (*irv)->unsupported_attr_dtype) {
-                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
-                            H5DataType temp_dtype = (*ira)->getType();
-                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
-                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                            }
+        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
+            irv != this->spvars.end(); ++irv) {
+            if (false == (*irv)->attrs.empty()) {
+                if (true == (*irv)->unsupported_attr_dtype) {
+                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                        ira != (*irv)->attrs.end(); ++ira) {
+                        H5DataType temp_dtype = (*ira)->getType();
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                            this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
                 }
-           }
+            }
+        }// for(vector<GMSPVar *> 
 
-    }
+    }// else
 
 }
 
+// Unsupported data space
 void GMFile:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     if(true == check_ignored)
@@ -481,6 +491,7 @@ void GMFile:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
     
 }
 
+// Unsupported data space for general products
 void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
     if(true == this->unsupported_var_dspace) {

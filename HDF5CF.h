@@ -660,7 +660,7 @@ namespace HDF5CF
             void Adjust_Duplicate_FakeDim_Name(Dimension * dim)throw(Exception);
             void Insert_One_NameSizeMap_Element(string name,hsize_t size, bool unlimited) throw(Exception);
             void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,map<string,bool>&,string name,hsize_t size,bool unlimited) throw(Exception);
-            void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
+            //void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
 
             virtual string get_CF_string(string);
             virtual void Replace_Var_Info(Var* src, Var *target);
