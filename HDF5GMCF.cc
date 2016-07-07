@@ -565,10 +565,8 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
                     }
                 }
             }
-
         }// if(true == this->unsupported_var_attr_dspace)
     }// if(true == include_attr)
-
 
 }
 
@@ -578,22 +576,11 @@ void GMFile:: Gen_Unsupported_Dspace_Info() throw(Exception){
 
 }
 
+// Handle other unsupported objects
 void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
     File::Handle_Unsupported_Others(include_attr);
     if(true == this->check_ignored && true == include_attr) {
-
-#if 0
-        // Check the drop long string feature.
-        string check_droplongstr_key ="H5.EnableDropLongString";
-        bool is_droplongstr = false;
-        try {
-            is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-        }
-        catch(...) {
-            throw1("Check BES key H5.EnableDropLongString failed.");
-        }
-#endif
         if(true == HDF5RequestHandler::get_drop_long_string()){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                  irv != this->cvars.end(); ++irv) {
@@ -624,6 +611,8 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
         this->add_no_ignored_info();
 
 }
+
+// Add dimension names
 void GMFile::Add_Dim_Name() throw(Exception){
     
     switch(product_type) {
@@ -681,7 +670,6 @@ void GMFile::Add_Dim_Name_OBPG_L3() throw(Exception) {
 //Add Dim. Names for MeaSures SeaWiFS. Future: May combine with the handling of netCDF-4 products  
 void GMFile::Add_Dim_Name_Mea_SeaWiFS() throw(Exception){
 
-//cerr<<"coming to Add_Dim_Name_Mea_SeaWiFS"<<endl;
     
     pair<set<string>::iterator,bool> setret;
     if (Mea_SeaWiFS_L3 == product_type) 
@@ -701,7 +689,7 @@ void GMFile::Add_Dim_Name_Mea_SeaWiFS() throw(Exception){
         throw1("This product should have the dimension names, but no dimension names are found");
 }    
 
-
+// Handle Dimension scales for MEasUREs SeaWiFS and OZone.
 void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 throw(Exception){
 
@@ -987,14 +975,6 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
                 if ((*irv)->dims.size() != 1)
                     throw3("The coordinate variable", (*irv)->name," must be one dimension for the zonal average product");
                 ozonedimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,(*irv)->fullpath));
-#if 0
-            ((*irv)->dims[0])->name = (*irv)->name;
-            ((*irv)->dims[0])->newname = (*irv)->name;
-            pair<set<string>::iterator,bool> setret;
-            setret = dimnamelist.insert(((*irv)->dims[0])->name);
-            if (setret.second) 
-                Insert_One_NameSizeMap_Element(((*irv)->dims[0])->name,((*irv)->dims[0])->size);
-#endif
             }
         }// for (vector<Var *>::iterator irv = this->vars.begin(); ...
 
@@ -1070,7 +1050,6 @@ void GMFile::Add_Dim_Name_GPM()throw(Exception)
     pair<set<string>::iterator,bool> setret;
 
     // The commented code is for an old version of GPM products. May remove them later. KY 2015-06-16
-    // One GPM variable (sunVectorInBodyFrame) misses an element for DimensionNames attributes.
     // We need to create a fakedim name to fill in. To make the dimension name unique, we use a counter.
     // int dim_count = 0;
     // map<string,string> varname_to_fakedim;
@@ -1103,7 +1082,8 @@ void GMFile::Add_Dim_Name_GPM()throw(Exception)
                 for(unsigned int i = 0; i<ind_elems.size(); ++i) {
 
                     ((*irv)->dims)[i]->name = ind_elems[i];
-                    // Generate a dimension name is the dimension name is missing.
+
+                    // Generate a dimension name if the dimension name is missing.
                     // The routine will ensure that the fakeDim name is unique.
                     if(((*irv)->dims)[i]->name==""){ 
                         Add_One_FakeDim_Name(((*irv)->dims)[i]);
@@ -1203,7 +1183,6 @@ void GMFile::Add_Dim_Name_SMAP()throw(Exception){
         tempvarname = (*irv)->name;
         if ((tempvarname.size() > key.size())&& 
             (key == tempvarname.substr(tempvarname.size()-key.size(),key.size()))){
-//cerr<<"tempvarname " <<tempvarname <<endl;
             if ((*irv)->dims.size() !=2) 
                 throw1("Currently only 2D lat/lon is supported for SMAP");
             smapdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,smapdim0));
@@ -1270,7 +1249,7 @@ void GMFile::Add_Dim_Name_ACOS_L2S_OCO2_L1B()throw(Exception){
     } // for (vector<Var *>::iterator irv = this->vars.begin();
 }
 
-// Add dimension names for general products.
+// Add dimension names for general products. Read the descrption of Check_General_Product_Pattern() for different patterns we support.
 void GMFile::Add_Dim_Name_General_Product()throw(Exception){
 
     // Check attributes 
@@ -1291,9 +1270,9 @@ void GMFile::Add_Dim_Name_General_Product()throw(Exception){
 
 // We check four patterns under the General_Product category
 // 1. General products that uses HDF5 dimension scales following netCDF-4 data model
-// 2. General products that have 2-D lat/lon variables(variable names are used to identify the case) under the root group or
+// 2. General products that have 2-D lat/lon variables(lat/lon variable names are used to identify the case) under the root group or
 //    a special geolocation group
-// 3. General products that have 1-D lat/lon variables(variable names are used to identify the case) under the root group or
+// 3. General products that have 1-D lat/lon variables(lat/lon variable names are used to identify the case) under the root group or
 //    a special geolocation group
 // 4. General products that have some variables containing CF "coordinates" attributes. We can support some products if the "coordinates"
 //    attribute contains CF lat/lon units and the variable ranks are 2 or 1.  
@@ -1307,12 +1286,73 @@ void GMFile::Check_General_Product_Pattern() throw(Exception) {
 
 }
 
+// Check if this general product is netCDF4-like HDF5 file.
+// We only need to check "DIMENSION_LIST","CLASS" and CLASS values.
+bool GMFile::Check_Dimscale_General_Product_Pattern() throw(Exception) {
+
+    bool ret_value = false;
+    bool has_dimlist = false;
+    bool has_dimscalelist  = false;
+
+    // Check if containing the "DIMENSION_LIST" attribute;
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+          ira != (*irv)->attrs.end();ira++) {
+           if ("DIMENSION_LIST" == (*ira)->name) {
+                has_dimlist = true;
+                break;
+           }
+        }
+        if (true == has_dimlist)
+            break;
+    }
+
+    // Check if containing both the attribute "CLASS" and the attribute "REFERENCE_LIST" for the same variable.
+    // This is the dimension scale. 
+    // Actually "REFERENCE_LIST" is not necessary for a dimension scale dataset. If a dimension scale doesn't
+    // have a "REFERENCE_LIST", it is still valid. But no other variables use this dimension scale. We found
+    // such a case in a matched_airs_aqua product. KY 2012-12-03
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+
+
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+          ira != (*irv)->attrs.end();ira++) {
+            if ("CLASS" == (*ira)->name) {
+
+                Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
+                string class_value;
+                class_value.resize((*ira)->value.size());
+                copy((*ira)->value.begin(),(*ira)->value.end(),class_value.begin());
+
+                // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                // "DIMENSION_SCALE", which is 15.
+                if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                    has_dimscalelist = true;
+                    break;
+                }
+            }
+        }
+
+        if (true == has_dimscalelist)
+            break;
+        
+    }
+
+    if (true == has_dimlist && true == has_dimscalelist) {
+        this->gproduct_pattern = GENERAL_DIMSCALE;
+        ret_value = true;
+    }
+
+    return ret_value;
+}
+
 // If having 2-D latitude/longitude,set the general product pattern.
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" and "cell_lat,cell_lon"names.
 // The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
 bool GMFile::Check_LatLon2D_General_Product_Pattern() throw(Exception) {
 
-    // bool ret_value = Check_LatLonName_General_Product(2);
     bool ret_value = false;
  
     ret_value =  Check_LatLon2D_General_Product_Pattern_Name_Size("latitude","longitude");
@@ -1332,7 +1372,8 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern() throw(Exception) {
 
 }
 
-// Helper function for Check_LatLon2D_General_Product_Pattern
+// Helper function for Check_LatLon2D_General_Product_Pattern,we assume the lat and lon only present either under the root or
+// a specific group Geolocation.
 bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
 
     bool ret_value = false;
@@ -1398,25 +1439,11 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
 
 }
 
-#if 0
-// If having 1-D latitude/longitude,set the general product pattern.
-bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
-
-    bool ret_value = Check_LatLonName_General_Product(1);
-    if(true == ret_value)
-        this->gproduct_pattern = GENERAL_LATLON1D;
- 
-    return ret_value;
-
-}
-#endif
-
 // If having 1-D latitude/longitude,set the general product pattern.
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" and "cell_lat,cell_lon"names.
 // The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
 bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 
-    // bool ret_value = Check_LatLonName_General_Product(2);
     bool ret_value = false;
  
     ret_value =  Check_LatLon1D_General_Product_Pattern_Name_Size("latitude","longitude");
@@ -1436,10 +1463,11 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 }
 
 // Helper function for Check_LatLon1D_General_Product_Pattern.
+// We only check if the lat/lon etc. pairs are under "/" or "/Geolocation". Other cases can be easily added.
 bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
 
     bool ret_value = false;
-    short ll_flag = 0;
+    short ll_flag   = 0;
     size_t lat_size = 0;
     size_t lon_size = 0;
 
@@ -1519,7 +1547,7 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
 }
 
 // This function checks if this general product contains "coordinates" attributes in some variables
-// that can be handled CF friendly.
+// that can be used to handle CF friendly.
 bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception) {
 
     bool ret_value = false;
@@ -1541,6 +1569,7 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
         if((*irv)->rank >=2) {
             for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
                 ira !=(*irv)->attrs.end();++ira) {
+
                 // If having attribute "coordinates" for this variable, checking the values and 
                 // see if having lat/lon,latitude/longitude, Latitude/Longitude pairs.
                 if((*ira)->name == co_attrname) {
@@ -1577,7 +1606,7 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(E
 
                     if(true == coor_has_lat_flag && true == coor_has_lon_flag)
                         break;
-                }
+                }// end if((*ira)->name
             }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin()
             if(true == coor_has_lat_flag && true == coor_has_lon_flag) 
                 break;
@@ -1665,7 +1694,8 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
         //    else check if there is any variable that has the "coordinates" attribute and the "coordinates" attribute includes
         //    the paths of this lat/lon pair. If the dimensions of such a variable have two sizes that are equal to the size of the lat,
         //    this case is still qualfied for the category GENERAL_LATLON_COOR_ATTR.
-        //          
+        // NOTE: here we deliberately ignore the case when the rank of lat/lon is >2. In some recent developments, we find that
+        // there are 3D lat/lon and some tools like Panoply can visualize those data. So maybe we need to accept some 3D lat/lon in the futurei(KY 2016-07-07).        
         if(latloncv_candidate_pairs.size() >0) {
             int num_1d_rank = 0;
             int num_2d_rank = 0;
@@ -1848,7 +1878,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
         }
     }
            
-    // Check the size of the lon., if the size is not 1, see if having the same path one.
+    // Check the size of the lon., if the size is not 1, see if we can find the pair under the same group.
     if(lon_candidate_path.size() > 1) {
 
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
@@ -1929,7 +1959,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
 
 }
 
-// We need to make sure that one lat maps to one lon is the lat/lon pairs.
+// We need to make sure that one lat maps to one lon in the lat/lon pairs.
 // This routine removes the duplicate ones like (lat1,lon1) and (lat2,lon1).
 void GMFile::Build_unique_latlon_candidate() {
 
@@ -1949,6 +1979,7 @@ void GMFile::Build_unique_latlon_candidate() {
         latloncv_candidate_pairs.pop_back();
     }
 }
+// Leave the following code for the time being.
 #if 0
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" names.
 // This routine will check this case.
@@ -2122,6 +2153,8 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
     //int lat_dim0_index = 0;
     //int lat_dim1_index = 0;
 
+    // Now we need to change a dimension of a general variable that shares the same size of lat
+    // to the dimension name of the lat. 
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
         int lat_dim0_index = 0;
@@ -2181,7 +2214,6 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
         sfakedimindex  << i;
         string finaldimname = finaldimname_base + sfakedimindex.str();
         finaldimnamelist.insert(finaldimname);
-//cerr<<"finaldimname is "<<finaldimname <<endl;
     }
     
     // If the original tempdimnamelist is not the same as the finaldimnamelist,
@@ -2192,12 +2224,9 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
         set<string>:: iterator finalit = finaldimnamelist.begin();
         while(tempit != tempdimnamelist.end()) {
             tempdimname_to_finaldimname[*tempit] = *finalit;
-//cerr<<"tempdimname again "<<*tempit <<endl;
-//cerr<<"finalname again "<<*finalit <<endl;
             tempit++;
             finalit++;
         } 
-//cerr<<"dim name map size is "<<tempdimname_to_finaldimname.size() <<endl;
 
         // Change the dimension names of every variable to the final dimension name list.
         for (vector<Var *>::iterator irv = this->vars.begin();
@@ -2266,68 +2295,7 @@ void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() throw(Exceptio
     }
 }
 
-// Check if this general product is netCDF4-like HDF5 file.
-// We only need to check "DIMENSION_LIST","CLASS" and CLASS values.
-bool GMFile::Check_Dimscale_General_Product_Pattern() throw(Exception) {
-
-    bool ret_value = false;
-    bool has_dimlist = false;
-    bool has_dimscalelist  = false;
-
-    // Check if containing the "DIMENSION_LIST" attribute;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-          ira != (*irv)->attrs.end();ira++) {
-           if ("DIMENSION_LIST" == (*ira)->name) {
-                has_dimlist = true;
-                break;
-           }
-        }
-        if (true == has_dimlist)
-            break;
-    }
-
-    // Check if containing both the attribute "CLASS" and the attribute "REFERENCE_LIST" for the same variable.
-    // This is the dimension scale. 
-    // Actually "REFERENCE_LIST" is not necessary for a dimension scale dataset. If a dimension scale doesn't
-    // have a "REFERENCE_LIST", it is still valid. But no other variables use this dimension scale. We found
-    // such a case in a matched_airs_aqua product. KY 2012-12-03
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-
-
-        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-          ira != (*irv)->attrs.end();ira++) {
-            if ("CLASS" == (*ira)->name) {
-
-                Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
-                string class_value;
-                class_value.resize((*ira)->value.size());
-                copy((*ira)->value.begin(),(*ira)->value.end(),class_value.begin());
-
-                // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
-                // "DIMENSION_SCALE", which is 15.
-                if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
-                    has_dimscalelist = true;
-                    break;
-                }
-            }
-        }
-
-        if (true == has_dimscalelist)
-            break;
-        
-    }
-
-    if (true == has_dimlist && true == has_dimscalelist) {
-        this->gproduct_pattern = GENERAL_DIMSCALE;
-        ret_value = true;
-    }
-
-    return ret_value;
-}
-
+// For netCDF-4-like HDF5 products, we need to add the dimension scales.
 void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
 
     //cerr<<"coming to Add_Dim_Name_Dimscale_General_Product"<<endl;
@@ -2336,7 +2304,11 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
 
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
+
+        // Obtain all the dimension names for this variable
         Handle_UseDimscale_Var_Dim_Names_General_Product((*irv));
+
+        // Need to update dimenamelist and dimname_to_dimsize and dimname_to_unlimited maps for future use.
         for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
             ird !=(*irv)->dims.end();++ird) { 
             setret = dimnamelist.insert((*ird)->name);
@@ -2350,6 +2322,7 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
 
 }
 
+// Obtain dimension names for this variable when netCDF-4 model(using dimension scales) is followed.
 void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var) throw(Exception) {
 
     Attribute* dimlistattr = NULL;
@@ -2518,9 +2491,6 @@ throw (Exception){
         H5Tclose(amemtype_id);
         H5Aclose(attr_id);
         H5Dclose(dset_id);
-    
-       // if(vlbuf != NULL)
-        //  delete[] vlbuf;
     }
 
     catch(...) {
@@ -2540,8 +2510,6 @@ throw (Exception){
         if(dset_id != -1)
             H5Dclose(dset_id);
 
-        //if(vlbuf != NULL)
-         //   delete[] vlbuf;
 
         //throw1("Error in method GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone"); 
         throw;
@@ -2571,7 +2539,6 @@ void GMFile::Handle_CVar() throw(Exception){
     else if (Mea_SeaWiFS_L2 == this->product_type ||
         Mea_SeaWiFS_L3 == this->product_type) 
         Handle_CVar_Mea_SeaWiFS();
-
     else if (Aqu_L3 == this->product_type) 
         Handle_CVar_Aqu_L3(); 
     else if (OBPG_L3 == this->product_type)
@@ -2606,7 +2573,7 @@ void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
     // Latitude[Xdim][YDim] Longitude[Xdim][YDim], Latitude <->Xdim, Longitude <->YDim.
     // Make sure to build cf dimension names cfdimname = latpath+ the lat dimension name.
     // We want to save dimension names of Latitude and Longitude since 
-    // the Fake coordinate variables of these two dimensions should not be generated.
+    // the fake coordinate variables of these two dimensions should not be generated.
     // So we need to remember these dimension names.
     //string ll_dim0,ll_dim1;
     set<string> ll_dim_set;
@@ -2624,7 +2591,6 @@ void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
             this->cvars.push_back(GMcvar);
             delete(*irv);
             irv = this->vars.erase(irv);
-            //irv--;
         }
        
         if((*irv)->rank == 2 && (*irv)->name == "Longitude") {
@@ -2639,7 +2605,6 @@ void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
             this->cvars.push_back(GMcvar);
             delete(*irv);
             irv = this->vars.erase(irv);
-            //irv--;
         }
         else {
             ++irv;
@@ -2677,8 +2642,6 @@ cerr<<"dim name is "<<(*ird)->name <<endl;
             this->cvars.push_back(GMcvar);
         }
     }//for (map<string,hsize_t>::iterator itd = dimname_to_dimsize.begin(); ...
-
-    
 
 }
 
@@ -2735,7 +2698,6 @@ void GMFile::Handle_CVar_GPM_L3() throw(Exception){
             Create_Missing_CV(GMcvar,itd->first);
         this->cvars.push_back(GMcvar);
     }//for (map<string,hsize_t>::iterator itd = dimname_to_dimsize.begin(); ...
-
 }
 
 // Handle Coordinate variables for MeaSuRES SeaWiFS
@@ -3003,16 +2965,6 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
        } // for (vector<Var *>::iterator irv = this->vars.begin();
     } // for (set<string>::iterator irs = dimnamelist.begin();
 
-/// Comment out the following code because we are using a more general approach
-#if 0
-    // Will check if this file has 2-D lat/lon.If yes, update the CV.
-    string latname,lonname;
-    bool latlon_2d_cv = Check_2DLatLon_Dimscale(latname, lonname);
-    if( true == latlon_2d_cv) {
-        Update_2DLatLon_Dimscale_CV(latname,lonname);
-    }
-#endif
-
     // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     Update_M2DLatLon_Dimscale_CVs();
 
@@ -3036,15 +2988,12 @@ cerr<<"dimension name is "<<(*irs)<<endl;
 }
 
 
-// Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
+// Check if we have 2-D lat/lon CVs in a netCDF-4-like file, and if yes, add those to the CV list.
+// This routine is a really complicate one. There are 9 steps to generate right 2-D lat/lon CVs.  
 void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
     // If this is not a file that only includes 1-D lat/lon CVs
     if(false == Check_1DGeolocation_Dimscale()) {
-
-//if(iscoard == true)
-//cerr<<"COARD is true at the beginning of Update"<<endl;
-//cerr<<"File path is "<<this->path <<endl;
 
         // Define temporary vectors to store 1-D lat/lon CVs
         vector<GMCVar*> tempcvar_1dlat;
@@ -3254,12 +3203,10 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
 
     // If having 1-D lat/lon CVs, this is a good sign for only 1-D lat/lon CVs , 
     // just need to have a couple of checks.
-
     if(true == has_1d_lat_cv_flag ) {           
 
         if(true == has_1d_lon_cv_flag) {
 
-//cerr<<"BOTH 1-D lat/lon CVs are true "<<endl;
             // Come to the possible classic netCDF-4 case,
             if(0 == this->groups.size()) {
 
@@ -3415,7 +3362,7 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
 
 }
 
-// Obtain all 2-D lat/lon variables.
+// Obtain all 2-D lat/lon variables. We first check the lat/latitude/Latitude names, if not found, we check if CF lat/lon units are present.
 // Latitude variables are saved in the vector var_2dlat. Longitude variables are saved in the vector var_2dlon.
 // We also remember the index of these lat/lon in the original var vector.
 void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int> & latlon2d_path_to_index) {
@@ -3482,6 +3429,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
                                                      vector<GMCVar*> &cvar_1dlon,
                                                      map<string,int> &latlon2d_path_to_index) {
 
+    // First latitude at var_2dlat
     for(vector<Var *>::iterator irv = var_2dlat.begin();irv != var_2dlat.end();) {
         bool remove_2dlat = false;
         for(vector<GMCVar *>::iterator ircv = cvar_1dlat.begin();ircv != cvar_1dlat.end();++ircv) {
@@ -3504,6 +3452,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
             ++irv;
     }// for(vector<Var *>::iterator irv = var_2dlat.begin()
 
+    // Second longitude
     for(vector<Var *>::iterator irv = var_2dlon.begin();irv != var_2dlon.end();) {
         bool remove_2dlon = false;
         for(vector<GMCVar *>::iterator ircv = cvar_1dlon.begin();ircv != cvar_1dlon.end();++ircv) {
@@ -3791,7 +3740,8 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
 }
 
 //This function is for generating the coordinates attribute for the 2-D lat/lon.
-//It will check if this var can have the "coordinates" attribute that includes the 2-D lat/lon.
+//It will check if this var can keep its "coordinates" attribute rather than rebuilding it.
+//This function is used by Handle_Coor_Attr(). 
 bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
 
     bool ret_value = true;
@@ -3828,6 +3778,7 @@ bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
 }
                 
 // This function flattens the variable path in the "coordinates" attribute.
+// It is also used by Handle_Coor_Attr().
 bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
 
     string co_attrname = "coordinates";
@@ -3837,6 +3788,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
     char sc = ' ';
 
     for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
+
         // We only check the original attribute name
         // Remove the original "coordinates" attribute.
         if((*ira)->name == co_attrname) {
@@ -4214,7 +4166,7 @@ void GMFile::Handle_CVar_LatLon2D_General_Product() throw(Exception) {
 
 }
 
-// Routine used by other routines to handle coordinate variables for general HDF5 product 
+// Routine to handle coordinate variables for general HDF5 product 
 // that have either 1-D or 2-D lat/lon
 void GMFile::Handle_CVar_LatLon_General_Product() throw(Exception) {
 
@@ -4288,6 +4240,7 @@ void GMFile::Handle_CVar_OBPG_L3() throw(Exception) {
 
     if (GENERAL_DIMSCALE == this->gproduct_pattern)
             Handle_CVar_Dimscale_General_Product();
+
     // Change the CV Type of the corresponding CVs of lat and lon from CV_FILLINDEX to CV_LATMISS or CV_LONMISS
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
@@ -4467,33 +4420,29 @@ for (vector<Var*>::iterator irv2 = this->vars.begin();
 }
 #endif
 
-
 }
 
 // Adjust object names for GPM level 3 products
 void GMFile:: Adjust_GPM_L3_Obj_Name() throw(Exception) {
 
-//cerr<<"number of group is "<<this->groups.size() <<endl;
     string objnewname;
     // In this definition, root group is not considered as a group.
     if(this->groups.size() <= 1) {
-    for (vector<Var *>::iterator irv = this->vars.begin();
+        for (vector<Var *>::iterator irv = this->vars.begin();
                    irv != this->vars.end(); ++irv) {
-        objnewname =  HDF5CFUtil::obtain_string_after_lastslash((*irv)->newname);
-        if (objnewname !="") 
-           (*irv)->newname = objnewname;
-    }
+            objnewname =  HDF5CFUtil::obtain_string_after_lastslash((*irv)->newname);
+            if (objnewname !="") 
+                (*irv)->newname = objnewname;
+        }
     }
     else {
         for (vector<Var *>::iterator irv = this->vars.begin();
                    irv != this->vars.end(); ++irv) {
 //cerr<<"(*irv)->newname is "<<(*irv)->newname <<endl;
-        size_t grid_group_path_pos = ((*irv)->newname.substr(1)).find_first_of("/");
-        objnewname =  ((*irv)->newname).substr(grid_group_path_pos+2);
-        (*irv)->newname = objnewname;
-    }
-
-
+            size_t grid_group_path_pos = ((*irv)->newname.substr(1)).find_first_of("/");
+            objnewname =  ((*irv)->newname).substr(grid_group_path_pos+2);
+            (*irv)->newname = objnewname;
+        }
     }
 }
 
@@ -4537,8 +4486,10 @@ for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
 // Flatten object names. 
 void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
      
+    // General variables
     File::Flatten_Obj_Name(include_attr);
 
+    // Coordinate variables
     for (vector<GMCVar *>::iterator irv = this->cvars.begin();
              irv != this->cvars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
@@ -4547,8 +4498,6 @@ void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
                         ird != (*irv)->dims.end(); ++ird) { 
             (*ird)->newname = get_CF_string((*ird)->newname);
         }
-
-        
 
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
@@ -4559,6 +4508,7 @@ void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
 
     }
 
+    // Special variables
     for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
                 irv != this->spvars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
@@ -4608,17 +4558,19 @@ void GMFile::Handle_Obj_NameClashing(bool include_attr) throw(Exception) {
     //Handle_DimNameClashing();
 }
 
+// Name clashings for coordinate variables
 void GMFile::Handle_GMCVar_NameClashing(set<string> &objnameset ) throw(Exception) {
 
     GMHandle_General_NameClashing(objnameset,this->cvars);
 }
 
+// Name clashings for special variables(like 64-bit integer variables)
 void GMFile::Handle_GMSPVar_NameClashing(set<string> &objnameset ) throw(Exception) {
 
     GMHandle_General_NameClashing(objnameset,this->spvars);
 }
 
-// This routine handles attribute name clashings.
+// This routine handles attribute name clashings for coordinate variables.
 void GMFile::Handle_GMCVar_AttrNameClashing() throw(Exception) {
 
     set<string> objnameset;
@@ -4630,6 +4582,7 @@ void GMFile::Handle_GMCVar_AttrNameClashing() throw(Exception) {
     }
 }
 
+// Attribute name clashings for special variables
 void GMFile::Handle_GMSPVar_AttrNameClashing() throw(Exception) {
 
     set<string> objnameset;
@@ -4675,7 +4628,6 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
 
     // Now change the clashed elements to unique elements; 
     // Generate the set which has the same size as the original vector.
-
     for (ivs=clashnamelist.begin(); ivs!=clashnamelist.end(); ++ivs) {
         int clash_index = 1;
         string temp_clashname = *ivs +'_';
@@ -5179,12 +5131,12 @@ GMFile:: Add_GPM_Attrs() throw(Exception) {
 
 }
 
-// var must have names that contains either "Latitude" nor "Longitude".
+// For GPM level 1 data, var must have names that contains either "Latitude" nor "Longitude".
 void 
 GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception) {
 
     const string Unit_name = "Units";
-    const string unit_name ="units";
+    const string unit_name = "units";
 
     vector<HDF5CF::Attribute *>::iterator ira;
     
@@ -5381,6 +5333,7 @@ GMFile:: Add_SeaWiFS_Attrs() throw(Exception) {
     }// for (it_v = vars.begin(); ...
 }
 
+// Leave the following code for the time being
 #if 0
 // Handle the "coordinates" and "units" attributes of coordinate variables.
 void GMFile:: Handle_Coor_Attr() {
@@ -5547,23 +5500,16 @@ void GMFile:: Handle_Coor_Attr() {
            Add_Str_Attr(attr,unit_attrname,nonll_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
         }
-
         else if ((*ircv)->cvartype == CV_LAT_MISS) {
-//cerr<<"Should add new attribute "<<endl;
            Attribute * attr = new Attribute();
-//           float temp = -999.9;
-//           Add_One_Float_Attr(attr,unit_attrname,temp);
            Add_Str_Attr(attr,unit_attrname,lat_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
-//cerr<<"After adding new attribute "<<endl;
         }
-
         else if ((*ircv)->cvartype == CV_LON_MISS) {
            Attribute * attr = new Attribute();
            Add_Str_Attr(attr,unit_attrname,lon_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
         }
-
     } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin(); ...
    
     // No need to handle MeaSUREs SeaWiFS level 2 products
@@ -5585,7 +5531,7 @@ void GMFile:: Handle_Coor_Attr() {
     else if (true == iscoard) {
 
         // If we find that there are groups that should check the coordinates attribute of the variable. 
-        // We should flatten the path inside the coordinates..
+        // We should flatten the path inside the coordinates.(this is the case mainly for netcdf-4 2D lat/lon case)
         if(grp_cv_paths.size() >0) {
             for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
@@ -5622,7 +5568,7 @@ void GMFile:: Handle_Coor_Attr() {
 
             // We meet several products that miss the 2-D latitude and longitude CF units although they
             // have the CV names like latitude/longitude, we should double check this case,
-            // add add the correct CF units if possible. We will watch if this is the right way.
+            // and add the correct CF units if possible. We will watch if this is the right way.
             else if(true == Is_geolatlon((*ircv)->name,true))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
 
@@ -5632,11 +5578,10 @@ void GMFile:: Handle_Coor_Attr() {
     } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin()
     
     // If we find that there are groups that we should check the coordinates attribute of the variable under, 
-    // we should flatten the path inside the coordinates. Note this is for 2D-latlon CV case.
+    // we should flatten the path inside the coordinates. Note this is for 2D-latlon CV netCDF-4-like case.
     if(grp_cv_paths.size() >0) {
         for (vector<Var *>::iterator irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
-//cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
             if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) != grp_cv_paths.end()){ 
 
                 // Check the "coordinates" attribute and flatten the values. 
@@ -5651,7 +5596,7 @@ void GMFile:: Handle_Coor_Attr() {
     // Since iscoard is false up to this point, So the netCDF-4 like 2-D lat/lon case must fulfill if the program comes here.
     if(General_Product == this->product_type && GENERAL_DIMSCALE == this->gproduct_pattern) 
         has_ll2d_coords = true; 
-    else {// For other cases.
+    else {// For other cases. Need to see if there is a case. KY 2016-07-07
         string ll2d_dimname0,ll2d_dimname1;
         for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {
@@ -5739,7 +5684,6 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() throw(Exception){
 
     // Prepare 1) 2-D CVar(lat,lon) corresponding dimension name set.
     //         2) cfdim name to cvar name map(don't need to use a map, just a holder. It should be fine. 
-
 
     // "coordinates" attribute name and value.  We only need to provide this atttribute for variables that have 2-D lat/lon 
     string co_attrname = "coordinates";
@@ -5906,12 +5850,9 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() throw(Exception){
                     Attribute * attr = new Attribute();
                     Add_Str_Attr(attr,co_attrname,co_attrvalue);
                     (*irv)->attrs.push_back(attr);
-
                 }
             }
-            
         }
-
     }
 }
 
@@ -6041,6 +5982,7 @@ bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,c
     return ret_value;
 }
 
+// This is for the GENERAL_LATLON_COOR_ATTR pattern of General_Product.
 void GMFile::Add_VarPath_In_Coordinates_Attr(Var *var, const string &coor_value) {
 
     string new_coor_value;
