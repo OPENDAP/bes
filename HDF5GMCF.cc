@@ -6067,6 +6067,8 @@ GMFile::Handle_SpVar_Attr() throw(Exception) {
 
 }
 
+// We will create some temporary coordinate variables. The resource allocoated
+// for these variables need to be released.
 void 
 GMFile::release_standalone_GMCVar_vector(vector<GMCVar*>&tempgc_vars){
 
