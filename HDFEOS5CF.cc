@@ -37,6 +37,8 @@
 #include "HDF5CF.h"
 #include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
+#include "BESDebug.h"
+
 using namespace HDF5CF;
 
 // A constructor of EOS5CVar
@@ -94,6 +96,7 @@ EOS5CVar::EOS5CVar(Var*var) {
 void
 EOS5CFGrid::Update_Dimnamelist() {
 
+    BESDEBUG("h5","coming to Retrieve_H5_Info" <<endl);
 
     // If I put both "XDim" and "YDim" into one for loop, Mac g++ compiler 
     // gives segmentation fault, which doesn't make sense.
@@ -403,6 +406,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 // Adjust HDF-EOS5 dimension info.
 void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception) {
     
+    BESDEBUG("h5","coming to Adjust_EOS5Dim_Info" <<endl);
     // Condense redundant XDim, YDim in the grid/swath/za dimension list
     for (unsigned int i = 0; i <strmeta_info->swath_list.size();++i) {
         HE5Swath& he5s = strmeta_info->swath_list.at(i);
@@ -439,6 +443,7 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception) {
 // Adjust HDF-EOS5 dimension list. 
 void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Exception){
 
+    BESDEBUG("h5","Coming to Adjust_EOS5Dim_List"<<endl);
     // The negative dimension sizes are found in some HDF-EOS5 files.
     // We need to remove them.
     Remove_NegativeSizeDims(groupdimlist);
@@ -452,6 +457,7 @@ void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Exception
 //  We need to remove them.
 void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw(Exception){
 
+    BESDEBUG("h5","Coming to Remove_NegativeSizeDims" <<endl);
     vector <HE5Dim>:: iterator id;
 
     // We find one product has dimension with name:  Unlimited, size: -1; this dimension
@@ -472,6 +478,7 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw(Excep
 //  Condense redundant XDim, YDim in the grid/swath/za dimension list
 void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Exception){
 
+    BESDEBUG("h5","Coming to Condense_EOS5Dim_List"<<endl);
     set<int>xdimsizes;
     set<int>ydimsizes;
     pair<set<int>::iterator,bool> setret;
@@ -521,6 +528,7 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Excepti
 void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>& groupdimlist,const string & eos5_obj_name,EOS5Type eos5type) throw(Exception){
 
 
+    BESDEBUG("h5","Coming to Adjust_EOS5VarDim_Info"<<endl);
     set<string> dimnamelist;
     pair<set<string>::iterator,bool> setret;
     
@@ -598,6 +606,7 @@ void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>
 // Add EOS5 FIle information
 void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) throw(Exception) {
 
+   BESDEBUG("h5", "Coming to Add_EOS5File_Info"<<endl);
    string fslash_str="/";
    string grid_str ="/GRIDS/";
    string swath_str="/SWATHS/";
@@ -1412,6 +1421,7 @@ string EOS5File::Obtain_Var_EOS5Type_GroupName(Var*var,EOS5Type eos5type) throw(
    
     eostypename_end_pos = var->fullpath.find('/',eostypename_start_pos)-1;
     groupname = var->fullpath.substr(eostypename_start_pos,eostypename_end_pos-eostypename_start_pos+1);
+//cerr<<"groupname is "<<groupname <<endl;
 
     return groupname;
 }
@@ -1519,7 +1529,7 @@ void EOS5File::Handle_CVar() throw(Exception){
     bool is_augmented = Check_Augmentation_Status();
 
 #if 0
-if(is_augmented) "h5","The file is augmented "<<endl;
+if(is_augmented) cerr<<"The file is augmented "<<endl;
 else cerr<<"The file is not augmented "<<endl;
 #endif
 
@@ -1535,9 +1545,9 @@ else cerr<<"The file is not augmented "<<endl;
 #if 0
 for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); irv++) {
-"h5","EOS5CVar name "<<(*irv)->name <<endl;
-"h5","EOS5CVar dimension name "<< (*irv)->cfdimname <<endl;
-"h5","EOS5CVar new name "<<(*irv)->newname <<endl;
+cerr<<"EOS5CVar name "<<(*irv)->name <<endl;
+cerr<<"EOS5CVar dimension name "<< (*irv)->cfdimname <<endl;
+cerr<<"EOS5CVar new name "<<(*irv)->newname <<endl;
 }
 #endif
     
@@ -1846,6 +1856,7 @@ void EOS5File::Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid* cfgrid) throw(Exce
     set<string> tempvardimnamelist;
     tempvardimnamelist = cfgrid->vardimnames;
 
+
      // Handle Latitude and longitude
     bool use_own_latlon = false;
     if (true == cfgrid->has_1dlatlon) 
@@ -1857,6 +1868,7 @@ else "h5","use_own_latlon is false "<<endl;
 
     if (false == use_own_latlon) {
         bool use_eos5_latlon = false;
+//cerr<<"tempvardim set size "<<tempvardimnamelist.size() <<endl;
         use_eos5_latlon = Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(cfgrid,tempvardimnamelist);
 
         // If we cannot obtain lat/lon from the HDF-EOS5 library, no need to create other CVs. Simply return.
@@ -1865,7 +1877,7 @@ else "h5","use_own_latlon is false "<<endl;
     }
 
      // Else handling non-latlon grids
-//"h5","tempvardim set size "<<tempvardimnamelist.size() <<endl;
+//cerr<<"tempvardim set size "<<tempvardimnamelist.size() <<endl;
     Handle_NonLatLon_Grid_CVar(cfgrid,tempvardimnamelist);
 
 }
