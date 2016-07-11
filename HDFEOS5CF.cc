@@ -856,6 +856,7 @@ cerr<<"dimname to 1d varname "<< (*im2).first <<"=> "<<(*im2).second <<endl;
 
 }
 
+// Check if EOS5 Swath and Grid hold Latitude and Longitude fields.
 template<class T> 
 void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath,vector<HE5Var> &eos5varlist) throw (Exception){
 
@@ -925,7 +926,8 @@ void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath,vector<HE5Var> &e
     }// for (unsigned int i = 0; i < eos5varlist.size(); ++i)
 }
             
-
+// This function builds up the map from dimension names to coordinate variables
+// for non-latitude and longitude fields. 
 void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist,
                                              EOS5Type eos5type, 
                                              string groupname,
@@ -978,6 +980,7 @@ void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist,
         dnamesgeo1dvnames.erase(*itset);
 }
 
+// Adjust variable names.
 void EOS5File::Adjust_Var_NewName_After_Parsing() throw(Exception) {
 
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -996,15 +999,15 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw(Exception) {
     // Actually the newname is used to check if the we have the existing
     // third dimension coordinate variable. To avoid the check of
     // fullpath again, we will make newname to have the path and remove
-     // the grid and grid name before passing to DDS downstream. KY 2012-1-20
+    // the grid and grid name before passing to DDS downstream. KY 2012-1-20
     switch (vartype) {
         case GRID:  
         {
             eos5typestr = "/GRIDS/";
             string eos5_groupname = Obtain_Var_EOS5Type_GroupName(var,vartype); 
-//            var->newname = ((1 == num_grids)?var->name:
-//                          eos5typestr + eos5_groupname + fslash_str + var->name);
-              var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
+            // var->newname = ((1 == num_grids)?var->name:
+            //  eos5typestr + eos5_groupname + fslash_str + var->name);
+            var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
         }
         break;
         
@@ -1012,19 +1015,19 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw(Exception) {
         {
             eos5typestr = "/SWATHS/";
             string eos5_groupname = Obtain_Var_EOS5Type_GroupName(var,vartype); 
-//            var->newname = ((1 == num_swaths)?var->name:
-  //                         eos5typestr + eos5_groupname + fslash_str + var->name);
-              var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
-//"h5","var newname "<<var->newname <<endl;
+            //  var->newname = ((1 == num_swaths)?var->name:
+            //  eos5typestr + eos5_groupname + fslash_str + var->name);
+            var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
+            //"h5","var newname "<<var->newname <<endl;
         }
         break;
         case ZA:  
         {
             eos5typestr = "/ZAS/";
             string eos5_groupname = Obtain_Var_EOS5Type_GroupName(var,vartype); 
-   //         var->newname = ((1 == num_zas)?var->name:
-    //                       eos5typestr + eos5_groupname + fslash_str + var->name);
-              var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
+            //  var->newname = ((1 == num_zas)?var->name:
+            //  eos5typestr + eos5_groupname + fslash_str + var->name);
+            var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
         }
         break;
         case OTHERVARS: {
@@ -1041,6 +1044,7 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw(Exception) {
     } // switch(vartype)
 }
 
+// Get the HDF-EOS5 type: The type is either grids, swaths or zonal average
 EOS5Type EOS5File::Get_Var_EOS5_Type(Var* var) throw(Exception) {
 
     string EOS5GRIDPATH ="/HDFEOS/GRIDS";
@@ -1067,6 +1071,7 @@ EOS5Type EOS5File::Get_Var_EOS5_Type(Var* var) throw(Exception) {
 }
 
 
+// Add dimension information from the parseing info.
 void EOS5File::Add_Dim_Name( HE5Parser *strmeta_info) throw(Exception){
 
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -1151,6 +1156,7 @@ bool EOS5File::Obtain_Var_Dims(Var *var,HE5Parser * strmeta_info) throw(Exceptio
     return false;
 }
                
+// Set dimension info.(dimension names and sizes) to variables.
 template <class T> 
 bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var,
                             const string& groupname,int num_groups, EOS5Type eos5type) throw(Exception) {
@@ -1248,6 +1254,7 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var,
     return is_parsed;
 } 
 
+// Create unique dimension names. Se the comments below.
 template<class T>
 void EOS5File::Create_Unique_DimName(T*eos5data,set<string>& thisvar_dimname_set, 
                                      Dimension *dim,int num_groups, EOS5Type eos5type) throw(Exception){
