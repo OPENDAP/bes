@@ -1331,7 +1331,7 @@ void EOS5File::Create_Unique_DimName(T*eos5data,set<string>& thisvar_dimname_set
 }
 
 
-
+// Check all dim. names to see if this dim. size is used by another dim. name.
 template<class T>
 bool EOS5File::Check_All_DimNames(T* eos5data,string& dimname,hsize_t dimsize) {
 
@@ -1350,6 +1350,7 @@ bool EOS5File::Check_All_DimNames(T* eos5data,string& dimname,hsize_t dimsize) {
 }       
 
 
+// Get a unique name.
 void EOS5File::Get_Unique_Name(set<string> & nameset,string& dimname_candidate) throw(Exception){
 
     int clash_index =1;
@@ -1358,6 +1359,7 @@ void EOS5File::Get_Unique_Name(set<string> & nameset,string& dimname_candidate) 
     dimname_candidate = temp_clashname;
 }
 
+// We may need to generate a unique "fake" dim. name for dimensions that don't have any dimension names.
 template<class T>
 string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) throw(Exception) {
 
@@ -1385,7 +1387,7 @@ string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) throw(
     return added_dimname;
 }
 
-
+// Obtain the group name this variable belongs.
 string EOS5File::Obtain_Var_EOS5Type_GroupName(Var*var,EOS5Type eos5type) throw(Exception) {
 
     string EOS5GRIDPATH ="/HDFEOS/GRIDS";
@@ -1414,6 +1416,7 @@ string EOS5File::Obtain_Var_EOS5Type_GroupName(Var*var,EOS5Type eos5type) throw(
     return groupname;
 }
 
+// Check whether is field belongs to "Geolocation Fields" or "Data Fields"
 int EOS5File::Check_EOS5Swath_FieldType(Var*var) throw(Exception) {
 
     string geofield_relative_path = "/Geolocation Fields/"+var->name;
@@ -1457,7 +1460,7 @@ void EOS5File::Set_NonParse_Var_Dims(T*eos5data, Var* var,
     }
 }
 
-
+// Aura files don't use the CF attribute names for bunch of attributes. We need to make it right.
 void EOS5File::Check_Aura_Product_Status() throw(Exception) {
 
     // Aura files will put an attribute called InStrumentName under /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES
@@ -1509,8 +1512,10 @@ void EOS5File::Check_Aura_Product_Status() throw(Exception) {
 
 }
 
+// Handle Coordinate variables
 void EOS5File::Handle_CVar() throw(Exception){
 
+    // If this file is augmented.
     bool is_augmented = Check_Augmentation_Status();
 
 #if 0
@@ -1518,7 +1523,9 @@ if(is_augmented) "h5","The file is augmented "<<endl;
 else cerr<<"The file is not augmented "<<endl;
 #endif
 
+    // Handle coordinate variables for grids.
     if (this->eos5cfgrids.size() > 0) 
+
         Handle_Grid_CVar(is_augmented);
     if (this->eos5cfswaths.size() >0) 
         Handle_Swath_CVar(is_augmented);
