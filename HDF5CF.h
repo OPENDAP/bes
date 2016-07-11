@@ -912,35 +912,31 @@ namespace HDF5CF
  
             string get_CF_string(string s);
 
-            // The following two routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
+            // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
             bool Check_Var_2D_CVars(Var*) throw(Exception);
             bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
-
             void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception);
             bool Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception);
             bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values,const string &var_path) throw(Exception);
             void Add_VarPath_In_Coordinates_Attr(Var*,const string &);
+
+            // The following three routines handle the GPM CF-related attributes
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
             void Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
+
             void Add_Aqu_Attrs() throw(Exception);
             void Add_SeaWiFS_Attrs() throw(Exception);
             void Create_Missing_CV(GMCVar*,const string &) throw(Exception);
+
             bool Is_netCDF_Dimension(Var *var) throw(Exception);
 
-            //void add_ignored_info_attrs(bool is_grp,bool is_first);
-            //void add_ignored_info_objs(bool is_dim_related, bool is_first);
             void Gen_Unsupported_Dtype_Info(bool);
             void Gen_VarAttr_Unsupported_Dtype_Info()throw(Exception);
             void Gen_GM_VarAttr_Unsupported_Dtype_Info();
             void Gen_Unsupported_Dspace_Info() throw(Exception);
             void Handle_GM_Unsupported_Dtype(bool) throw(Exception);
             void Handle_GM_Unsupported_Dspace(bool) throw(Exception);
-            //bool ignored_var_transformed(Var* var);
-            //bool ignored_var_attr_transformed();
-            // bool ignored_GM_CVar_dimscale_ref_list(GMCVar* var);
-            // bool ignored_GM_SPVar_dimscale_ref_list(GMSPVar* var);
-
 
             void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
 

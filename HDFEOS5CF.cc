@@ -39,6 +39,7 @@
 #include "h5cfdaputil.h"
 using namespace HDF5CF;
 
+// A constructor of EOS5CVar
 EOS5CVar::EOS5CVar(Var*var) {
 
     newname = var->newname;
@@ -118,7 +119,7 @@ EOS5CFGrid::Update_Dimnamelist() {
  
 }
          
-
+// A destructor of EOS5File
 EOS5File::~EOS5File()
 {
     for (vector<EOS5CVar *>:: const_iterator i= this->cvars.begin(); i!=this->cvars.end(); ++i) 
@@ -135,8 +136,10 @@ EOS5File::~EOS5File()
         
 }
 
+// Helper function to make the name follow the CF conventions.
 string EOS5File::get_CF_string(string s) {
 
+    // We need to remove the first "/" from the full name.
     if (s[0] !='/') 
         return File::get_CF_string(s);
     else {
@@ -145,6 +148,7 @@ string EOS5File::get_CF_string(string s) {
     }
 }
 
+// Retrieve the HDF5 information for HDF-EOS5 
 void EOS5File::Retrieve_H5_Info(const char *path,
                               hid_t file_id, bool include_attr) throw (Exception) {
     // Since we need to check the attribute info in order to determine if the file is augmented to netCDF-4,
@@ -152,11 +156,14 @@ void EOS5File::Retrieve_H5_Info(const char *path,
     File::Retrieve_H5_Info(path,file_id,true);
 }
 
+// Retrieve the attribute values for the HDF-EOS5
 void EOS5File::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
 
     File::Retrieve_H5_Supported_Attr_Values();
     for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
           ircv != this->cvars.end(); ++ircv) {
+
+        // When the coordinate variables exist in the file, retrieve the attribute values.
         if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype)){
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) 
@@ -166,10 +173,12 @@ void EOS5File::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
     }
 }
 
+// Adjust attribute value
 void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
 
 }
 
+// Handle unsupported datatype
 void EOS5File:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     if(true == check_ignored) {
@@ -180,6 +189,7 @@ void EOS5File:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
     Handle_EOS5_Unsupported_Dtype(include_attr);
 }
 
+// Handle EOS5 unsupported datatype,add EOS5 coordinate variables
 void EOS5File:: Handle_EOS5_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
@@ -210,6 +220,8 @@ void EOS5File:: Handle_EOS5_Unsupported_Dtype(bool include_attr) throw(Exception
         }
     }
 }
+
+// Generate unsupported datatype information
 void EOS5File::  Gen_Unsupported_Dtype_Info(bool include_attr) {
 
     if(true == include_attr) {
@@ -222,45 +234,47 @@ void EOS5File::  Gen_Unsupported_Dtype_Info(bool include_attr) {
 
 }
 
+// Generate variable attribute datatype info.
 void EOS5File:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception){
 
+    // Dimension scale info for general variables
     Gen_DimScale_VarAttr_Unsupported_Dtype_Info();
-    //File::Gen_VarAttr_Unsupported_Dtype_Info();
+
+    // HDF-EOS5 variable attribute unsupported datatype 
     Gen_EOS5_VarAttr_Unsupported_Dtype_Info();
 
 }
 
 void EOS5File:: Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
 
-            for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
-                 irv != this->cvars.end(); ++irv) {
-                // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
-                // attribute REFERENCE_LIST is okay to ignore. No need to report.
-                bool is_ignored = ignored_dimscale_ref_list((*irv));
-                if (false == (*irv)->attrs.empty()) {
-                    if (true == (*irv)->unsupported_attr_dtype) {
-                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
-                            H5DataType temp_dtype = (*ira)->getType();
-                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
-                                // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
-                                // is okay to ignore if the variable has another attribute
-                                // CLASS="DIMENSION_SCALE"
-                                if (("DIMENSION_LIST" !=(*ira)->name) &&
-                                    (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
-                                    this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                            }
-                        }
+    for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
+        irv != this->cvars.end(); ++irv) {
+        // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+        // attribute REFERENCE_LIST is okay to ignore. No need to report.
+        bool is_ignored = ignored_dimscale_ref_list((*irv));
+        if (false == (*irv)->attrs.empty()) {
+            if (true == (*irv)->unsupported_attr_dtype) {
+                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                        // is okay to ignore if the variable has another attribute
+                        // CLASS="DIMENSION_SCALE"
+                        if (("DIMENSION_LIST" !=(*ira)->name) &&
+                            (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                            this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                     }
                 }
             }
-
-
+        }
+    }
 }
 
-
+// Handle unsupported data space.
 void EOS5File:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
+    // Generate unsupported info.
     if(true == check_ignored) {
         Gen_Unsupported_Dspace_Info();
     }
@@ -270,8 +284,8 @@ void EOS5File:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
  
 }
 
+// Handle EOS5 unsupported data space.
 void EOS5File:: Handle_EOS5_Unsupported_Dspace(bool include_attr) throw(Exception) {
-
  
     if (true == this->unsupported_var_dspace) {
         for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
@@ -279,11 +293,9 @@ void EOS5File:: Handle_EOS5_Unsupported_Dspace(bool include_attr) throw(Exceptio
             if (true == (*ircv)->unsupported_dspace) {
                 delete (*ircv);
                 ircv = this->cvars.erase(ircv);
-                //ircv--;
             }
             else {
                 ++ircv;
-
             }
         }
     }
@@ -309,15 +321,16 @@ void EOS5File:: Handle_EOS5_Unsupported_Dspace(bool include_attr) throw(Exceptio
             }
         }
     }
-
 }
 
+// Generating unsupported data space.
 void EOS5File:: Gen_Unsupported_Dspace_Info() throw(Exception) {
 
      File::Gen_Unsupported_Dspace_Info();
 
 }
 
+// Handle other unsupported EOS5 information
 void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
     // We cannot use the general routine from the base class since
@@ -325,19 +338,6 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
     // to DAS. The ignored ECS metadata variables should not be reported.
     //File::Handle_Unsupported_Others(include_attr);
     if(true == this->check_ignored && true == include_attr) {
-
-        // Check the drop long string feature.
-#if 0
-        string check_droplongstr_key ="H5.EnableDropLongString";
-        bool is_droplongstr = false;
-        try {
-            is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-        }
-        catch(...) {
-            throw1("Check H5.EnableDropLongString BES key failed");
-        }
-#endif
-       
 
         if(true == HDF5RequestHandler::get_drop_long_string()){
              for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
@@ -400,10 +400,10 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
 }
 
+// Adjust HDF-EOS5 dimension info.
 void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception) {
     
     // Condense redundant XDim, YDim in the grid/swath/za dimension list
-    
     for (unsigned int i = 0; i <strmeta_info->swath_list.size();++i) {
         HE5Swath& he5s = strmeta_info->swath_list.at(i);
         
@@ -419,7 +419,6 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception) {
     for (unsigned int i = 0; i <strmeta_info->grid_list.size();++i) {
 
         HE5Grid& he5g = strmeta_info->grid_list.at(i);
-//cerr<<"grid name is "<<he5g.name <<endl;
 
         Adjust_EOS5Dim_List(he5g.dim_list);
         for (unsigned int j = 0; j<he5g.data_var_list.size(); ++j) {
@@ -437,8 +436,11 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception) {
     }               
 }
 
+// Adjust HDF-EOS5 dimension list. 
 void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Exception){
 
+    // The negative dimension sizes are found in some HDF-EOS5 files.
+    // We need to remove them.
     Remove_NegativeSizeDims(groupdimlist);
 
     // Condense redundant XDim, YDim in the grid/swath/za dimension list
@@ -446,9 +448,12 @@ void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Exception
 
 }
 
+//  The negative dimension sizes are found in some HDF-EOS5 files.
+//  We need to remove them.
 void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw(Exception){
 
     vector <HE5Dim>:: iterator id;
+
     // We find one product has dimension with name:  Unlimited, size: -1; this dimension
     // will not be used by any variables. The "Unlimited" dimension is useful for extended
     // datasets when data is written. It is not useful for data accessing as far as I know.
@@ -457,7 +462,6 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw(Excep
     for (id = groupdimlist.begin(); id != groupdimlist.end(); ) {
         if ((*id).size <= 0) {
             id = groupdimlist.erase(id);
-            //id --;
         }
         else {
            ++id;
@@ -465,6 +469,7 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw(Excep
     }
 }
 
+//  Condense redundant XDim, YDim in the grid/swath/za dimension list
 void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Exception){
 
     set<int>xdimsizes;
@@ -477,7 +482,6 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Excepti
             setret = xdimsizes.insert((*id).size);
             if (false == setret.second) {
                 id = groupdimlist.erase(id);
-                //id--;
             }
             else if ("Xdim" == (*id).name) {
                 (*id).name = "XDim";
@@ -498,7 +502,6 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Excepti
             setret = ydimsizes.insert((*id).size);
             if (false == setret.second) {
                 id = groupdimlist.erase(id);
-                //id--;
             }
             else if ("Ydim" == (*id).name) {
                 (*id).name = "YDim";
@@ -514,7 +517,7 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Excepti
     }
 }
         
-
+// Adjust HDF-EOS5 Variable,dimension information.
 void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>& groupdimlist,const string & eos5_obj_name,EOS5Type eos5type) throw(Exception){
 
 
@@ -554,7 +557,7 @@ void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>
             string ori_dimname = he5d.name;
 
             he5d.name = temp_clashname;
-//cerr<<"HDF5 dim. name is "<<he5d.name <<endl;
+
             // We have to add this dim. to this  dim. list if this dim doesn't exist in the dim. list.
             bool dim_exist = false;
             for (unsigned int j = 0; j <groupdimlist.size();++j) {
@@ -565,6 +568,7 @@ void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>
                 }
             }
                     
+            // Add the new dim. to the dim. list
             if (false == dim_exist) {
                 ori_dimname = eos5_obj_name + "/" + ori_dimname;
                 string dup_dimname = eos5_obj_name + "/" + he5d.name;
@@ -581,16 +585,17 @@ void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>
                     dup_dimname = "/ZAS/"+dup_dimname;
                 }
 
+                // Need to remember the dimname and dupdimname relation in case the situation happens at other variables.
                 dimname_to_dupdimnamelist.insert(pair<string,string>(ori_dimname,dup_dimname));
                 groupdimlist.push_back(he5d);
             }
 
-            // cerr<<"groupdimlist size= "<<groupdimlist.size() <<endl;
         }//if(false == setret.second)
     }// for (unsigned int i = 0; i <vardimlist.size(); ++i)
 
 }
                 
+// Add EOS5 FIle information
 void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) throw(Exception) {
 
    string fslash_str="/";
