@@ -1209,7 +1209,8 @@ namespace HDF5CF
             void Handle_Za_CVar(bool) throw(Exception);
  
             bool Check_Augmentation_Status() throw(Exception);
-            bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
+            // Don't remove the following commented line!
+            //bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
             template<class T> bool Check_Augmented_Var_Candidate(T* , Var*, EOS5Type ) throw(Exception);
 
             template <class T>void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*,bool,int,int,int) throw(Exception);
