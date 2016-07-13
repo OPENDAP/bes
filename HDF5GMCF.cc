@@ -44,6 +44,7 @@ using namespace HDF5CF;
 // Copier function.
 GMCVar::GMCVar(Var*var) {
 
+    BESDEBUG("h5", "Coming to GMCVar()"<<endl);
     newname = var->newname;
     name = var->name;
     fullpath = var->fullpath;
@@ -121,6 +122,7 @@ GMCVar::GMCVar(GMCVar*cvar) {
 //Copier function of a special variable.
 GMSPVar::GMSPVar(Var*var) {
 
+    BESDEBUG("h5", "Coming to GMSPVar()"<<endl);
     fullpath = var->fullpath;
     rank  = var->rank;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
@@ -209,7 +211,7 @@ string GMFile::get_CF_string(string s) {
 void GMFile::Retrieve_H5_Info(const char *path,
                               hid_t file_id, bool include_attr) throw (Exception) {
 
-    // MeaSure SeaWiFS and Ozone need the attribute info. to build the dimension name list.
+    BESDEBUG("h5", "Coming to Retrieve_H5_Info()"<<endl);
     // GPM needs the attribute info. to obtain the lat/lon.
     // So set the include_attr to be true for these products.
     if (product_type == Mea_SeaWiFS_L2 || product_type == Mea_SeaWiFS_L3
@@ -226,6 +228,7 @@ void GMFile::Retrieve_H5_Info(const char *path,
 // This routine should be called right after Retrieve_H5_Info.
 void GMFile::Update_Product_Type() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Update_Product_Type()"<<endl);
     if(GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) {
 
         // Check Dimscale attributes 
@@ -243,6 +246,8 @@ void GMFile::Update_Product_Type() throw(Exception) {
 
 // Retrieve HDF5 supported attribute values.
 void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
+
+    BESDEBUG("h5", "Coming to Retrieve_H5_Supported_Attr_Values()"<<endl);
 
     // General attributes
     File::Retrieve_H5_Supported_Attr_Values();
@@ -276,6 +281,7 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
 // in these files. Chop them to two 32-bit integers following the data producer's information.
 void GMFile::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
 
+    BESDEBUG("h5", "Coming to Adjust_H5_Attr_Value()"<<endl);
     if (product_type == ACOS_L2S_OR_OCO2_L1B) {
         if (("Type" == attr->name) && (H5VSTRING == attr->dtype)) {
             string orig_attrvalues(attr->value.begin(),attr->value.end());
@@ -293,6 +299,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
 // Unsupported datatype
 void GMFile:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_Unsupported_Dtype()"<<endl);
     if(true == check_ignored) {
         Gen_Unsupported_Dtype_Info(include_attr);
     }
@@ -303,6 +310,7 @@ void GMFile:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 // Unsupported datatype for general data products.
 void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_GM_Unsupported_Dtype()"<<endl);
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
                 ircv != this->cvars.end(); ) {
         if (true == include_attr) {
@@ -365,6 +373,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr) throw(Exception) {
 // Datatype ignore information.
 void GMFile:: Gen_Unsupported_Dtype_Info(bool include_attr) {
 
+    BESDEBUG("h5", "GMFile::Coming to Gen_Unsupported_Dtype_Info()"<<endl);
     if(true == include_attr) {
 
         File::Gen_Group_Unsupported_Dtype_Info();
@@ -374,26 +383,29 @@ void GMFile:: Gen_Unsupported_Dtype_Info(bool include_attr) {
 
 }
 
+// Datatype ignored information for variable ttributes
 void GMFile:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception){
 
-        // First general variables(non-CV and non-special variable) that use dimension scales.
-        if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern) 
+     BESDEBUG("h5", "GMFile::Coming to Gen_Unsupported_Dtype_Info()"<<endl);
+    // First general variables(non-CV and non-special variable) that use dimension scales.
+    if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern) 
            || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
           || (OBPG_L3 == this->product_type)) {
-            Gen_DimScale_VarAttr_Unsupported_Dtype_Info();
-        }
+        Gen_DimScale_VarAttr_Unsupported_Dtype_Info();
+    }
          
-        else 
-            File::Gen_VarAttr_Unsupported_Dtype_Info();
+    else 
+        File::Gen_VarAttr_Unsupported_Dtype_Info();
 
-        // CV and special variables
-        Gen_GM_VarAttr_Unsupported_Dtype_Info();
+    // CV and special variables
+    Gen_GM_VarAttr_Unsupported_Dtype_Info();
  
 }
 
-// Generate ignored object,attribute information for general supported products.
+// Generate ignored object,attribute information for the CVs and special variables of general supported products.
 void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
 
+     BESDEBUG("h5", "GMFile::Coming to Gen_GM_VarAttr_Unsupported_Dtype_Info()"<<endl);
     if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern)
         || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
         || (OBPG_L3 == this->product_type)) {
@@ -483,6 +495,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
 // Unsupported data space
 void GMFile:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to GMFile:Handle_Unsupported_Dspace()"<<endl);
     if(true == check_ignored)
         Gen_Unsupported_Dspace_Info();
 
@@ -491,9 +504,10 @@ void GMFile:: Handle_Unsupported_Dspace(bool include_attr) throw(Exception) {
     
 }
 
-// Unsupported data space for general products
+// Unsupported data space for coordinate variables and special variables of general products
 void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to GMFile:Handle_GM_Unsupported_Dspace()"<<endl);
     if(true == this->unsupported_var_dspace) {
         for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
                 ircv != this->cvars.end(); ) {
@@ -570,6 +584,7 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
 
 }
 
+// Generate unsupported data space information
 void GMFile:: Gen_Unsupported_Dspace_Info() throw(Exception){
 
     File::Gen_Unsupported_Dspace_Info();
@@ -579,6 +594,7 @@ void GMFile:: Gen_Unsupported_Dspace_Info() throw(Exception){
 // Handle other unsupported objects
 void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to GMFile:Handle_Unsupported_Others()"<<endl);
     File::Handle_Unsupported_Others(include_attr);
     if(true == this->check_ignored && true == include_attr) {
         if(true == HDF5RequestHandler::get_drop_long_string()){
@@ -615,6 +631,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 // Add dimension names
 void GMFile::Add_Dim_Name() throw(Exception){
     
+    BESDEBUG("h5", "Coming to GMFile:Add_Dim_Name()"<<endl);
     switch(product_type) {
         case Mea_SeaWiFS_L2:
         case Mea_SeaWiFS_L3:
@@ -663,6 +680,7 @@ for (vector<Var*>::iterator irv2 = this->vars.begin();
 //Add Dim. Names for OBPG level 3 product
 void GMFile::Add_Dim_Name_OBPG_L3() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_OBPG_L3()"<<endl);
     // netCDF-4 like structure
     Add_Dim_Name_General_Product();
 }
@@ -670,7 +688,7 @@ void GMFile::Add_Dim_Name_OBPG_L3() throw(Exception) {
 //Add Dim. Names for MeaSures SeaWiFS. Future: May combine with the handling of netCDF-4 products  
 void GMFile::Add_Dim_Name_Mea_SeaWiFS() throw(Exception){
 
-    
+    BESDEBUG("h5", "Coming to Add_Dim_Name_Mea_SeaWiFS()"<<endl);
     pair<set<string>::iterator,bool> setret;
     if (Mea_SeaWiFS_L3 == product_type) 
         iscoard = true;
@@ -693,6 +711,7 @@ void GMFile::Add_Dim_Name_Mea_SeaWiFS() throw(Exception){
 void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 throw(Exception){
 
+    BESDEBUG("h5", "Coming to Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone()"<<endl);
     Attribute* dimlistattr = NULL;
     bool has_dimlist = false;
     bool has_class = false;
@@ -769,6 +788,7 @@ throw(Exception){
 void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*dimlistattr) 
 throw (Exception){
     
+    BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone()"<<endl);
     ssize_t objnamelen = -1;
     hobj_ref_t rbuf;
     //hvl_t *vlbuf = NULL;
@@ -890,6 +910,7 @@ throw (Exception){
 // Add MeaSURES OZone level 3Z dimension names
 void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_Mea_Ozonel3z()"<<endl);
     iscoard = true;
     bool use_dimscale = false;
 
@@ -1022,6 +1043,7 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
 // This is a special helper function for MeaSURES ozone products
 bool GMFile::check_cv(string & varname) throw(Exception) {
 
+     BESDEBUG("h5", "Coming to check_cv()"<<endl);
      const string lat_name ="Latitude";
      const string time_name ="Time";
      const string ratio_pressure_name ="MixingRatioPressureLevels";
@@ -1046,6 +1068,7 @@ bool GMFile::check_cv(string & varname) throw(Exception) {
 void GMFile::Add_Dim_Name_GPM()throw(Exception)
 {
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_GPM()"<<endl);
     // This is used to create a dimension name set.
     pair<set<string>::iterator,bool> setret;
 
@@ -1139,6 +1162,7 @@ void GMFile::Add_Dim_Name_GPM()throw(Exception)
 // Add Dimension names for Aquarius level 3 products
 void GMFile::Add_Dim_Name_Aqu_L3()throw(Exception)
 {
+    BESDEBUG("h5", "Coming to Add_Dim_Name_Aqu_L3()"<<endl);
     for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); irv++) {
         if ("l3m_data" == (*irv)->name) {
@@ -1167,6 +1191,7 @@ void GMFile::Add_Dim_Name_Aqu_L3()throw(Exception)
 // Add dimension names for SMAP(note: the SMAP may change their structures. The code may not apply to them.)
 void GMFile::Add_Dim_Name_SMAP()throw(Exception){
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_SMAP()"<<endl);
     string tempvarname ="";
     string key = "_lat";
     string smapdim0 ="YDim";
@@ -1233,7 +1258,8 @@ void GMFile::Add_Dim_Name_SMAP()throw(Exception){
 
 //Add dimension names for ACOS level2S or OCO2 level1B products
 void GMFile::Add_Dim_Name_ACOS_L2S_OCO2_L1B()throw(Exception){
-
+ 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_ACOS_L2S_OCO2_L1B()"<<endl);
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
 
@@ -1252,6 +1278,7 @@ void GMFile::Add_Dim_Name_ACOS_L2S_OCO2_L1B()throw(Exception){
 // Add dimension names for general products. Read the descrption of Check_General_Product_Pattern() for different patterns we support.
 void GMFile::Add_Dim_Name_General_Product()throw(Exception){
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_General_Product()"<<endl);
     // Check attributes 
     Check_General_Product_Pattern();
 
@@ -1278,6 +1305,7 @@ void GMFile::Add_Dim_Name_General_Product()throw(Exception){
 //    attribute contains CF lat/lon units and the variable ranks are 2 or 1.  
 void GMFile::Check_General_Product_Pattern() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_General_Product_Pattern()"<<endl);
     if(false == Check_Dimscale_General_Product_Pattern()) {
         if(false == Check_LatLon2D_General_Product_Pattern()) 
             if(false == Check_LatLon1D_General_Product_Pattern())
@@ -1290,6 +1318,7 @@ void GMFile::Check_General_Product_Pattern() throw(Exception) {
 // We only need to check "DIMENSION_LIST","CLASS" and CLASS values.
 bool GMFile::Check_Dimscale_General_Product_Pattern() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_Dimscale_General_Product_Pattern()"<<endl);
     bool ret_value = false;
     bool has_dimlist = false;
     bool has_dimscalelist  = false;
@@ -1353,6 +1382,7 @@ bool GMFile::Check_Dimscale_General_Product_Pattern() throw(Exception) {
 // The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
 bool GMFile::Check_LatLon2D_General_Product_Pattern() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_LatLon2D_General_Product_Pattern()"<<endl);
     bool ret_value = false;
  
     ret_value =  Check_LatLon2D_General_Product_Pattern_Name_Size("latitude","longitude");
@@ -1376,6 +1406,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern() throw(Exception) {
 // a specific group Geolocation.
 bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_LatLon2D_General_Product_Pattern_Name_Size()"<<endl);
     bool ret_value = false;
     short ll_flag = 0;
     vector<size_t>lat_size(2.0);
@@ -1444,6 +1475,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
 // The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
 bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_LatLon1D_General_Product_Pattern()"<<endl);
     bool ret_value = false;
  
     ret_value =  Check_LatLon1D_General_Product_Pattern_Name_Size("latitude","longitude");
@@ -1466,6 +1498,7 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 // We only check if the lat/lon etc. pairs are under "/" or "/Geolocation". Other cases can be easily added.
 bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_LatLon1D_General_Product_Pattern_Name_Size()"<<endl);
     bool ret_value = false;
     short ll_flag   = 0;
     size_t lat_size = 0;
@@ -1550,6 +1583,7 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
 // that can be used to handle CF friendly.
 bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()"<<endl);
     bool ret_value = false;
     string co_attrname = "coordinates";
     string co_attrvalue="";
@@ -1797,6 +1831,7 @@ cerr<<"This product is the coordinate type "<<endl;
 // Build 1-D latlon coordinate variables candidate for GENERAL_LATLON_COOR_ATTR.
 void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*> &lon_vec) {
 
+    BESDEBUG("h5", "Coming to Build_lat1D_latlon_candidate()"<<endl);
     set<string> lon_candidate_path;
     vector< pair<string,hsize_t> > lon_path_size_vec;
 
@@ -1857,6 +1892,7 @@ void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*> &lon_vec) 
 // Build >1D latlon coordinate variables candidate for GENERAL_LATLON_COOR_ATTR.
 void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec) {
 
+    BESDEBUG("h5", "Coming to Build_latg1D_latlon_candidate()"<<endl);
     set<string> lon_candidate_path;
 
     // We will check if the longitude shares the same dimensions of the latitude
@@ -1963,6 +1999,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
 // This routine removes the duplicate ones like (lat1,lon1) and (lat2,lon1).
 void GMFile::Build_unique_latlon_candidate() {
 
+    BESDEBUG("h5", "Coming to Build_unique_latlon_candidate()"<<endl);
     set<int> duplicate_index;
     for(int i= 0; i<latloncv_candidate_pairs.size();i++) {
         for(int j=i+1;j<latloncv_candidate_pairs.size();j++) {
@@ -2106,6 +2143,7 @@ bool GMFile::Check_LatLonName_General_Product(int ll_rank) throw(Exception) {
 // Add dimension names for the case that has 2-D lat/lon.
 void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_LatLon2D_General_Product()"<<endl);
     //cerr<<"coming to Add_Dim_Name_LatLon2D_General_Product "<<endl;
     // cerr<<"gp_latname is "<<gp_latname <<endl;
     // cerr<<"gp_lonname is "<<gp_lonname <<endl;
@@ -2278,6 +2316,7 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
 // 
 void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product()"<<endl);
     // Only need to add the fake dimension names
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
@@ -2298,6 +2337,7 @@ void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() throw(Exceptio
 // For netCDF-4-like HDF5 products, we need to add the dimension scales.
 void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_Dim_Name_Dimscale_General_Product()"<<endl);
     //cerr<<"coming to Add_Dim_Name_Dimscale_General_Product"<<endl;
     pair<set<string>::iterator,bool> setret;
     this->iscoard = true;
@@ -2325,6 +2365,7 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
 // Obtain dimension names for this variable when netCDF-4 model(using dimension scales) is followed.
 void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
     Attribute* dimlistattr = NULL;
     bool has_dimlist = false;
     bool has_dimclass   = false;
@@ -2393,6 +2434,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var) throw(Ex
 void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*dimlistattr) 
 throw (Exception){
     
+    BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
     ssize_t objnamelen = -1;
     hobj_ref_t rbuf;
     //hvl_t *vlbuf = NULL;
@@ -2520,6 +2562,7 @@ throw (Exception){
 // Handle coordinate variables
 void GMFile::Handle_CVar() throw(Exception){
 
+    BESDEBUG("h5", "GMFile:: Coming to Handle_CVar()"<<endl);
     // No coordinate variables are generated for ACOS_L2S or OCO2_L1B
     // Currently we support the three patterns for the general products:
     // 1) Dimensions follow HDF5 dimension scale specification
@@ -2556,6 +2599,7 @@ void GMFile::Handle_CVar() throw(Exception){
 // Handle GPM level 1 coordinate variables
 void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_CVar_GPM_L1()"<<endl);
 #if 0
     // Loop through the variable list to build the coordinates.
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -2648,6 +2692,7 @@ cerr<<"dim name is "<<(*ird)->name <<endl;
 // Handle coordinate variables for GPM level 3
 void GMFile::Handle_CVar_GPM_L3() throw(Exception){
 
+    BESDEBUG("h5", "Coming to Handle_CVar_GPM_L3()"<<endl);
     iscoard = true;
     //map<string,hsize_t>::iterator itd;
     
@@ -2703,6 +2748,7 @@ void GMFile::Handle_CVar_GPM_L3() throw(Exception){
 // Handle Coordinate variables for MeaSuRES SeaWiFS
 void GMFile::Handle_CVar_Mea_SeaWiFS() throw(Exception){
 
+    BESDEBUG("h5", "Coming to Handle_CVar_Mea_SeaWiFS()"<<endl);
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
 
@@ -2772,6 +2818,7 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() throw(Exception){
 // Handle Coordinate varibles for SMAP(Note: this may be subject to change since SMAP products may have new structures)
 void GMFile::Handle_CVar_SMAP() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_CVar_SMAP()"<<endl);
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
     string tempvarname;
@@ -2850,6 +2897,7 @@ void GMFile::Handle_CVar_SMAP() throw(Exception) {
 // Handle coordinate variables for Aquarius level 3 products
 void GMFile::Handle_CVar_Aqu_L3() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_CVar_Aqu_L3()"<<endl);
     iscoard = true;
     for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
@@ -2881,6 +2929,7 @@ void GMFile::Handle_CVar_Aqu_L3() throw(Exception) {
 //Handle coordinate variables for MeaSuRES Ozone products
 void GMFile::Handle_CVar_Mea_Ozone() throw(Exception){
 
+    BESDEBUG("h5", "Coming to Handle_CVar_Mea_Ozone()"<<endl);
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
 
@@ -2925,6 +2974,7 @@ void GMFile::Handle_CVar_Mea_Ozone() throw(Exception){
 // Handle coordinate variables for general products that use HDF5 dimension scales.
 void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_CVar_Dimscale_General_Product"<<endl);
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
 
@@ -2992,6 +3042,7 @@ cerr<<"dimension name is "<<(*irs)<<endl;
 // This routine is a really complicate one. There are 9 steps to generate right 2-D lat/lon CVs.  
 void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Update_M2DLatLon_Dimscale_CVs()"<<endl);
     // If this is not a file that only includes 1-D lat/lon CVs
     if(false == Check_1DGeolocation_Dimscale()) {
 
@@ -3163,6 +3214,7 @@ cerr<<(*i)->fullpath <<endl;
 // This function is introduced to avoid the performance penalty caused by handling the general 2-D lat/lon case.
 bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_1DGeolocation_Dimscale()"<<endl);
     bool has_only_1d_geolocation_cv = false;
     bool has_1d_lat_cv_flag = false;
     bool has_1d_lon_cv_flag = false;
@@ -3328,6 +3380,7 @@ cerr<<"Possibly has 2D lat/lon CVs. "<<endl;
 // This function should be used before generating any 2-D lat/lon CVs.
 void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon) {
 
+    BESDEBUG("h5", "Coming to Obtain_1DLatLon_CVs()"<<endl);
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {
 
@@ -3367,6 +3420,7 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
 // We also remember the index of these lat/lon in the original var vector.
 void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int> & latlon2d_path_to_index) {
 
+    BESDEBUG("h5", "Coming to Obtain_2DLatLon_Vars()"<<endl);
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
         if((*irv)->rank == 2) { 
@@ -3429,6 +3483,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
                                                      vector<GMCVar*> &cvar_1dlon,
                                                      map<string,int> &latlon2d_path_to_index) {
 
+    BESDEBUG("h5", "Coming to Obtain_2DLLVars_With_Dims_not_1DLLCVars()"<<endl);
     // First latitude at var_2dlat
     for(vector<Var *>::iterator irv = var_2dlat.begin();irv != var_2dlat.end();) {
         bool remove_2dlat = false;
@@ -3481,7 +3536,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
 void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,
                                        vector<Var*> &var_2dlon,
                                        map<string,int>& latlon2d_path_to_index) throw(Exception){
-
+    BESDEBUG("h5", "Coming to Obtain_2DLLCVar_Candidate()"<<endl);
     // First check 2-D lat, see if we have the corresponding 2-D lon(same dims, under the same group).
     // If no, remove that lat from the vector.
     vector<string> lon2d_group_paths;
@@ -3630,6 +3685,7 @@ cerr<<"2-D CV longitude name is "<<(*itv)->fullpath <<endl;
 // The group they belong to is the group candidate that the coordinates attribute of the variable under that group may be modified..
 void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_path_to_index){
 
+    BESDEBUG("h5", "Coming to Obtain_unique_2dCV()"<<endl);
     vector<bool> var_share_dims(var_ll.size(),false);
     
     for( int i = 0; i <var_ll.size();i++) {
@@ -3715,6 +3771,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
 // When promoting a 2-D lat or lon to a coordinate variable, we need to remove them from the general variable vector.
 void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Remove_2DLLCVar_Final_Candidate_from_Vars()"<<endl);
     //Sort the 2-D lat/lon var index according to the ascending order before removing the 2-D lat/lon vars
     sort(var2d_index.begin(),var2d_index.end());
     vector<Var *>::iterator it = this->vars.begin();
@@ -3744,6 +3801,7 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
 //This function is used by Handle_Coor_Attr(). 
 bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Check_Var_2D_CVars()"<<endl);
     bool ret_value = true;
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
@@ -3781,6 +3839,7 @@ bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
 // It is also used by Handle_Coor_Attr().
 bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Flatten_VarPath_In_Coordinates_Attr()"<<endl);
     string co_attrname = "coordinates";
     bool has_coor_attr = false;
     string orig_coor_value;
@@ -4154,6 +4213,7 @@ void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lon
 // Handle coordinate variables for general HDF5 products that have 1-D lat/lon
 void GMFile::Handle_CVar_LatLon1D_General_Product() throw(Exception) {
  
+    BESDEBUG("h5", "Coming to Handle_CVar_LatLon1D_General_Product()"<<endl);
     this->iscoard = true;
     Handle_CVar_LatLon_General_Product();
     
@@ -4162,6 +4222,7 @@ void GMFile::Handle_CVar_LatLon1D_General_Product() throw(Exception) {
 // Handle coordinate variables for general HDF5 products that have 2-D lat/lon
 void GMFile::Handle_CVar_LatLon2D_General_Product() throw(Exception) {
    
+    BESDEBUG("h5", "Coming to Handle_CVar_LatLon2D_General_Product()"<<endl);
     Handle_CVar_LatLon_General_Product();
 
 }
@@ -4170,6 +4231,7 @@ void GMFile::Handle_CVar_LatLon2D_General_Product() throw(Exception) {
 // that have either 1-D or 2-D lat/lon
 void GMFile::Handle_CVar_LatLon_General_Product() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_CVar_LatLon_General_Product()"<<endl);
     if((GENERAL_LATLON2D != this->gproduct_pattern) 
        && GENERAL_LATLON1D != this->gproduct_pattern)
         throw1("This function only supports latlon 1D or latlon 2D general products");
@@ -4238,6 +4300,7 @@ void GMFile::Handle_CVar_LatLon_General_Product() throw(Exception) {
 // Handle coordinate variables for OBPG level 3 
 void GMFile::Handle_CVar_OBPG_L3() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_CVar_OBPG_L3()"<<endl);
     if (GENERAL_DIMSCALE == this->gproduct_pattern)
             Handle_CVar_Dimscale_General_Product();
 
@@ -4315,6 +4378,8 @@ void GMFile::Handle_CVar_OBPG_L3() throw(Exception) {
 
 // Handle some special variables. Currently only GPM  and ACOS have these variables.
 void GMFile::Handle_SpVar() throw(Exception){
+
+    BESDEBUG("h5", "Coming to Handle_SpVar()"<<endl);
     if (ACOS_L2S_OR_OCO2_L1B == product_type) 
         Handle_SpVar_ACOS_OCO2();
     else if(GPM_L1 == product_type) {
@@ -4360,6 +4425,7 @@ void GMFile::Handle_SpVar() throw(Exception){
 // Handle special variables for ACOS.
 void GMFile::Handle_SpVar_ACOS_OCO2() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_SpVar_ACOS_OCO2()"<<endl);
     //The ACOS or OCO2 have 64-bit variables. DAP2 doesn't support 64-bit variables.
     // So we will not handle attributes yet.
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -4403,6 +4469,7 @@ void GMFile::Handle_SpVar_ACOS_OCO2() throw(Exception) {
 // the fullpath of objects.            
 void GMFile::Adjust_Obj_Name() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Adjust_Obj_Name()"<<endl);
     if(Mea_Ozone == product_type) 
         Adjust_Mea_Ozone_Obj_Name();
 
@@ -4425,6 +4492,7 @@ for (vector<Var*>::iterator irv2 = this->vars.begin();
 // Adjust object names for GPM level 3 products
 void GMFile:: Adjust_GPM_L3_Obj_Name() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Adjust_GPM_L3_Obj_Name()"<<endl);
     string objnewname;
     // In this definition, root group is not considered as a group.
     if(this->groups.size() <= 1) {
@@ -4449,6 +4517,7 @@ void GMFile:: Adjust_GPM_L3_Obj_Name() throw(Exception) {
 // Adjust object names for MeaSUREs OZone
 void GMFile:: Adjust_Mea_Ozone_Obj_Name() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Adjust_Mea_Ozone_Obj_Name()"<<endl);
     string objnewname;
     for (vector<Var *>::iterator irv = this->vars.begin();
                    irv != this->vars.end(); ++irv) {
@@ -4486,6 +4555,7 @@ for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
 // Flatten object names. 
 void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
      
+    BESDEBUG("h5", "GMFile::Coming to Flatten_Obj_Name()"<<endl);
     // General variables
     File::Flatten_Obj_Name(include_attr);
 
@@ -4543,6 +4613,7 @@ for (vector<Var*>::iterator irv2 = this->vars.begin();
 // all object names are unique.
 void GMFile::Handle_Obj_NameClashing(bool include_attr) throw(Exception) {
 
+    BESDEBUG("h5", "GMFile::Coming to Handle_Obj_NameClashing()"<<endl);
     // objnameset will be filled with all object names that we are going to check the name clashing.
     // For example, we want to see if there are any name clashings for all variable names in this file.
     // objnameset will include all variable names. If a name clashing occurs, we can figure out from the set operation immediately.
@@ -4573,6 +4644,7 @@ void GMFile::Handle_GMSPVar_NameClashing(set<string> &objnameset ) throw(Excepti
 // This routine handles attribute name clashings for coordinate variables.
 void GMFile::Handle_GMCVar_AttrNameClashing() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_GMCVar_AttrNameClashing()"<<endl);
     set<string> objnameset;
 
     for (vector<GMCVar *>::iterator irv = this->cvars.begin();
@@ -4585,6 +4657,7 @@ void GMFile::Handle_GMCVar_AttrNameClashing() throw(Exception) {
 // Attribute name clashings for special variables
 void GMFile::Handle_GMSPVar_AttrNameClashing() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_GMSPVar_AttrNameClashing()"<<endl);
     set<string> objnameset;
 
     for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
@@ -4600,6 +4673,7 @@ void GMFile::Handle_GMSPVar_AttrNameClashing() throw(Exception) {
 template<class T> void
 GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception){
 
+    BESDEBUG("h5", "Coming to GMHandle_General_NameClashing()"<<endl);
     pair<set<string>::iterator,bool> setret;
     set<string>::iterator iss;
 
@@ -4645,8 +4719,8 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
 // Handle dimension name clashings
 void GMFile::Handle_DimNameClashing() throw(Exception){
 
-//cerr<<"coming to DimNameClashing "<<endl;
 
+    BESDEBUG("h5", "GMFile: Coming to Handle_DimNameClashing()"<<endl);
     // ACOS L2S or OCO2 L1B products doesn't need the dimension name clashing check based on our current understanding. KY 2012-5-16
     if (ACOS_L2S_OR_OCO2_L1B == product_type) 
         return;
@@ -4711,6 +4785,7 @@ void GMFile::Handle_DimNameClashing() throw(Exception){
 // For COARDS, dim. names need to be the same as obj. names.
 void GMFile::Adjust_Dim_Name() throw(Exception){
 
+    BESDEBUG("h5", "GMFile:Coming to Adjust_Dim_Name()"<<endl);
 #if 0
     // Just for debugging
 for (vector<Var*>::iterator irv2 = this->vars.begin();
@@ -4772,6 +4847,7 @@ for (vector<Var*>::iterator irv2 = this->vars.begin();
 void 
 GMFile:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
 
+    BESDEBUG("h5", "GMFile::Coming to Add_Supplement_Attrs()"<<endl);
     if (General_Product == product_type || true == add_path) {
         File::Add_Supplement_Attrs(add_path);   
 
@@ -4830,6 +4906,7 @@ GMFile:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
 void 
 GMFile:: Add_GPM_Attrs() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_GPM_Attrs()"<<endl);
     vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::Attribute *>::const_iterator ira;
     const string attr_name_be_replaced = "CodeMissingValue";
@@ -5135,6 +5212,7 @@ GMFile:: Add_GPM_Attrs() throw(Exception) {
 void 
 GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Correct_GPM_L1_LatLon_units()"<<endl);
     const string Unit_name = "Units";
     const string unit_name = "units";
 
@@ -5167,6 +5245,7 @@ GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Ex
 void 
 GMFile:: Add_Aqu_Attrs() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_Aqu_Attrs()"<<endl);
     vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::Attribute *>::const_iterator ira;
 
@@ -5297,6 +5376,7 @@ GMFile:: Add_Aqu_Attrs() throw(Exception) {
 void 
 GMFile:: Add_SeaWiFS_Attrs() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Add_SeaWiFS_Attrs()"<<endl);
     // The fill value is -999.0. However, No _FillValue attribute is added.
     // So add it here. KY 2012-2-16
     const string fill_value_attr_name = "_FillValue";
@@ -5483,6 +5563,7 @@ void GMFile:: Handle_Coor_Attr() {
 // Handle the "coordinates" and "units" attributes of coordinate variables.
 void GMFile:: Handle_Coor_Attr() {
 
+    BESDEBUG("h5", "GMFile::Coming to Handle_Coor_Attr()"<<endl);
     string co_attrname = "coordinates";
     string co_attrvalue="";
     string unit_attrname = "units";
@@ -5673,6 +5754,7 @@ void GMFile:: Handle_Coor_Attr() {
 // Handle GPM level 1 coordiantes attributes.
 void GMFile:: Handle_GPM_l1_Coor_Attr() throw(Exception){
 
+    BESDEBUG("h5", "Coming to Handle_GPM_l1_Coor_Attr()"<<endl);
     // Build a map from CFdimname to 2-D lat/lon variable name, should be something like: aa_list[cfdimname]=s1_latitude .
     // Loop all variables
     // Inner loop: for all dims of a var
@@ -5859,6 +5941,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() throw(Exception){
 // This routine is for handling "coordinates" for the GENERAL_LATLON_COOR_ATTR pattern of General_Product.
 void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Handle_LatLon_With_CoordinateAttr_Coor_Attr()"<<endl);
     string co_attrname = "coordinates";
 
     // Loop through all rank >1 variables 
@@ -5890,6 +5973,7 @@ void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception) {
 // checked latlon_name_pairs for the GENERAL_LATLON_COOR_ATTR case.
 bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception) {
 
+    BESDEBUG("h5", "Coming to Coord_Match_LatLon_NameSize()"<<endl);
     bool ret_value =false;
     vector<string> coord_values_vec;
     char sep=' ';
@@ -5945,6 +6029,7 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exce
 //long as it is valid, we should add the path to this coordinates.
 bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,const string &var_path) throw(Exception){
 
+    BESDEBUG("h5", "Coming to Coord_Match_LatLon_NameSize_Same_Group()"<<endl);
     bool ret_value =false;
     vector<string> coord_values_vec;
     char sep=' ';
@@ -5985,6 +6070,7 @@ bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,c
 // This is for the GENERAL_LATLON_COOR_ATTR pattern of General_Product.
 void GMFile::Add_VarPath_In_Coordinates_Attr(Var *var, const string &coor_value) {
 
+    BESDEBUG("h5", "Coming to Add_VarPath_In_Coordinates_Attr()"<<endl);
     string new_coor_value;
     char sep =' ';
     string var_path = HDF5CFUtil::obtain_string_before_lastslash(var->fullpath) ;
@@ -6014,6 +6100,8 @@ void GMFile::Add_VarPath_In_Coordinates_Attr(Var *var, const string &coor_value)
 
 // Create Missing coordinate variables. Index numbers are used for these variables.
 void GMFile:: Create_Missing_CV(GMCVar *GMcvar, const string& dimname) throw(Exception) {
+
+    BESDEBUG("h5", "GMFile::Coming to Create_Missing_CV()"<<endl);
 
     GMcvar->name = dimname;
     GMcvar->newname = GMcvar->name;
