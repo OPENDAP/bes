@@ -75,6 +75,7 @@ yy_buffer_state *he5das_scan_string(const char *str);
 
 using namespace HDF5CF;
 
+// Map EOS5 to DAP DDS
 void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS mapping function map_eos5_cfdds  "<<endl);
@@ -90,18 +91,11 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
     // Read ECS metadata: merge them into one C++ string
     read_ecs_metadata(file_id,st_str,core_str,arch_str,xml_str, subset_str,product_str,other_str,st_only); 
     if(""==st_str) {
-//        H5Fclose(file_id);
         string msg =
             "unable to obtain the HDF-EOS5 struct metadata ";
         throw InternalErr(__FILE__, __LINE__, msg);
     }
      
-#if 0
-    string check_objnameclashing_key ="H5.EnableCheckNameClashing";
-    bool is_check_nameclashing = false;
-    is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
-#endif
-    
     bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
 
     EOS5File *f = NULL;
@@ -124,8 +118,8 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         he5dds_scan_string(st_str.c_str());
         he5ddsparse(&p);
         he5ddslex_destroy();
-//        p.print();
-// cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
+        //  p.print();
+        // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {
@@ -209,6 +203,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Adjust_Dim_Name();
         if(true == is_check_nameclashing)
            f->Handle_DimNameClashing();
+
         // We need to turn off the very long string in the TES file to avoid
         // the choking of netCDF Java tools. So this special variable routine
         // is listed at last. We may need to turn off this if netCDF can handle
@@ -221,6 +216,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         throw InternalErr(e.what());
     }
 
+    // Generate EOS5 DDS
     try {
         gen_eos5_cfdds(dds,f);
     }
@@ -234,6 +230,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         delete f;
 }
 
+// Map EOS5 to DAP DAS
 void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DAS mapping function map_eos5_cfdas  "<<endl);
@@ -248,25 +245,13 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
     read_ecs_metadata(file_id,st_str,core_str,arch_str,xml_str, subset_str,product_str,other_str,st_only); 
     if(""==st_str) {
-//        H5Fclose(file_id);
         string msg =
             "unable to obtain the HDF-EOS5 struct metadata ";
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-#if 0
-    string check_objnameclashing_key ="H5.EnableCheckNameClashing";
-    bool is_check_nameclashing = false;
-    is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
-#endif
-
     bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
 
-#if 0
-    string add_path_attrs_key = "H5.EnableAddPathAttrs";
-    bool is_add_path_attrs = false;
-    is_add_path_attrs = HDF5CFDAPUtil::check_beskeys(add_path_attrs_key);
-#endif
     bool is_add_path_attrs = HDF5RequestHandler::get_add_path_attrs();
 
     EOS5File *f = NULL;
@@ -287,8 +272,8 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
       
         he5ddsparse(&p);
         he5ddslex_destroy();
-//      p.print();
-// cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
+        //      p.print();
+        // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
 
         if (c.check_grids_unknown_parameters(&p)) {
             throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
@@ -302,6 +287,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
             throw InternalErr("The current project code is not supported");
         }
         c.set_grids_missing_pixreg_orig(&p);
+
         // cerr<<"after unknown parameters "<<endl;
 
         bool grids_mllcv = c.check_grids_multi_latlon_coord_vars(&p);
@@ -365,7 +351,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         throw InternalErr(e.what());
     }
 
-
+    // Generate DAS for the EOS5
     try {
         gen_eos5_cfdas(das,file_id,f);
     }
@@ -380,6 +366,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
 }
 
+// Generate DDS for the EOS5
 void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function gen_eos5_cfdds  "<<endl);
@@ -393,21 +380,22 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        // "h5","variable full path= "<< (*it_v)->getFullPath() <<endl;
+        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         gen_dap_onevar_dds(dds,*it_v,file_id,filename);
     }
 
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        // "h5","variable full path= "<< (*it_cv)->getFullPath() <<endl;
-//gen_dap_onevar_dds(dds,*it_v,filename);
+        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_oneeos5cvar_dds(dds,*it_cv,file_id,filename);
 
     }
 
 }
 
+//For EOS5, generate the ignored object info. for the CF option 
 void gen_eos5_cf_ignored_obj_info(DAS &das, HDF5CF::EOS5File *f) {
 
+    BESDEBUG("h5","Coming to gen_eos5_cf_ignored_obj_info()  "<<endl);
     AttrTable *at = das.get_table("Ignored_Object_Info");
     if (NULL == at)
         at = das.add_table("Ignored_Object_Info", new AttrTable);
@@ -417,9 +405,10 @@ void gen_eos5_cf_ignored_obj_info(DAS &das, HDF5CF::EOS5File *f) {
 
 }
 
-
+// Generate DDS for EOS5 coordinate variables
 void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t file_id, const string & filename) {
 
+    BESDEBUG("h5","Coming to gen_dap_oneeos5cvar_dds()  "<<endl);
     BaseType *bt = NULL;
 
     switch(cvar->getType()) {
@@ -610,7 +599,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
         
 }
 
-
+// Generate EOS5 DAS
 void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DAS generation function gen_eos5_cfdas  "<<endl);
@@ -832,9 +821,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     }
 
     // CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
-//#if 0
     if(f->HaveUnlimitedDim() == true) {
-//cerr<<"coming to unlimited " <<endl;
 
         AttrTable *at = das.get_table("DODS_EXTRA");
         if (NULL == at)
@@ -875,12 +862,10 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         //if(unlimited_names!="") 
          //   at->append_attr("Unlimited_Dimension","String",unlimited_names);
     }
-//#endif
-
 
 }
 
-
+// Read ECS metadata
 void read_ecs_metadata(hid_t s_file_id, 
                        string &total_strmeta_value,
                        string &total_coremeta_value,
@@ -891,6 +876,7 @@ void read_ecs_metadata(hid_t s_file_id,
                        string &total_othermeta_value,
                        bool s_st_only) {
 
+    BESDEBUG("h5","Coming to read_ecs_metadata()  "<<endl);
     string ecs_group = "/HDFEOS INFORMATION";
     hid_t ecs_grp_id = -1;
     if ((ecs_grp_id = H5Gopen(s_file_id, ecs_group.c_str(),H5P_DEFAULT))<0) {
@@ -910,7 +896,6 @@ void read_ecs_metadata(hid_t s_file_id,
             "h5_ecs_meta: unable to obtain the HDF5 group info. for ";
         msg +=ecs_group;
         H5Gclose(ecs_grp_id);
-      //  H5Fclose(s_file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -967,7 +952,6 @@ void read_ecs_metadata(hid_t s_file_id,
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
-//            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -978,7 +962,6 @@ void read_ecs_metadata(hid_t s_file_id,
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
- //           H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -989,7 +972,6 @@ void read_ecs_metadata(hid_t s_file_id,
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
-  //          H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -998,7 +980,6 @@ void read_ecs_metadata(hid_t s_file_id,
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
-   //         H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -1009,7 +990,6 @@ void read_ecs_metadata(hid_t s_file_id,
             string msg = "Cannot obtain the object info ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
-    //        H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -1017,7 +997,6 @@ void read_ecs_metadata(hid_t s_file_id,
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
-     //       H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
  
@@ -1040,7 +1019,6 @@ void read_ecs_metadata(hid_t s_file_id,
             if (false == strmeta_no_suffix) {
                 string msg = "StructMetadata/structmetadata without suffix should only appear once. ";
                 H5Gclose(ecs_grp_id);
-      //          H5Fclose(s_file_id);
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
 
@@ -1073,7 +1051,6 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
                 if (false == coremeta_no_suffix) {
                     string msg = "CoreMetadata/coremetadata without suffix should only appear once. ";
                     H5Gclose(ecs_grp_id);
-//                    H5Fclose(s_file_id);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
@@ -1142,7 +1119,6 @@ else "h5","archmeta data doesn't have the suffix" <<endl;
                 // it should not go into this loop anyway. throw an error.
                 if (false == submeta_no_suffix) {
                     H5Gclose(ecs_grp_id);
-//                    H5Fclose(s_file_id);
                     string msg = "submetadata/SubMetadata without suffix should only appear once. ";
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
@@ -1174,7 +1150,6 @@ else "h5","submeta data doesn't have the suffix" <<endl;
                 // it should not go into this loop anyway. throw an error.
                 if (false == xmlmeta_no_suffix) {
                     H5Gclose(ecs_grp_id);
- //                   H5Fclose(s_file_id);
                     string msg = "xmlmetadata/Xmlmetadata without suffix should only appear once. ";
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
@@ -1205,7 +1180,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 // it should not go into this loop anyway. throw an error.
                 if (!prometa_no_suffix) {
                     H5Gclose(ecs_grp_id);
-//                    H5Fclose(s_file_id);
                     string msg = "productmetadata/ProductMetadata without suffix should only appear once. ";
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
@@ -1235,7 +1209,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
     if (strmeta_num_total <= 0) {
         string msg = "hdf5 object name error from: ";
         H5Gclose(ecs_grp_id);
-//        H5Fclose(s_file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
 
         //     "h5","Struct Metadata doesn't exist."<<endl;
@@ -1289,7 +1262,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
     }
 
     // For all other metadata, we don't need to calculate the value, just append them.
-//    string total_othermeta_value ="";
+    //    string total_othermeta_value ="";
 
     // Now we want to retrieve the metadata value and combine them into one string.
     // Here we have to remember the location of every element of the metadata if
@@ -1320,7 +1293,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             string msg = "Cannot open HDF5 dataset  ";
             msg += s_oname[i];
             H5Gclose(ecs_grp_id);
-//            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -1329,7 +1301,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             msg += s_oname[i];
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
-//            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -1339,7 +1310,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
-//            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
         if ((s_nelms = H5Sget_simple_extent_npoints(s_space_id))<0) {
@@ -1349,7 +1319,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
-//            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
         if ((dtype_size = H5Tget_size(s_ty_id))==0) {
@@ -1360,7 +1329,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
-//           H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -1375,7 +1343,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
-//            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -1417,7 +1384,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
             else if (strmeta_value[strmeta_num]!="") {
                 string msg = "The structmeta value array at this index should be empty string  ";
                 H5Gclose(ecs_grp_id);
-//                H5Fclose(s_file_id);
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
         // assign the string vector to this value.
@@ -1436,7 +1402,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if (coremeta_num_total < 0) {
                         string msg = "There may be no coremetadata or coremetadata is not counted ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
 
                     }
@@ -1457,7 +1422,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     else if (coremeta_value[coremeta_num]!="") {
                         string msg = "The coremeta value array at this index should be empty string  ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
  
@@ -1472,7 +1436,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if (archmeta_num_total < 0) {
                         string msg = "There may be no archivemetadata or archivemetadata is not counted ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     try {
@@ -1487,7 +1450,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     else if (archmeta_value[archmeta_num]!="") {
                         string msg = "The archivemeta value array at this index should be empty string  ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
 
                     }
@@ -1501,7 +1463,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if (submeta_num_total < 0) {
                         string msg = "The subsetemeta value array at this index should be empty string  ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     try {
@@ -1516,7 +1477,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     else if (submeta_value[submeta_num]!="") {
                         string msg = "The submeta value array at this index should be empty string  ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                          // assign the string vector to this value.
@@ -1529,7 +1489,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if (prometa_num_total < 0) {
                         string msg = "There may be no productmetadata or productmetadata is not counted ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     try {
@@ -1544,7 +1503,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     else if (prometa_value[prometa_num]!="") {
                         string msg = "The productmeta value array at this index should be empty string  ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     // assign the string vector to this value.
@@ -1557,7 +1515,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if (xmlmeta_num_total < 0) {
                         string msg = "There may be no xmlmetadata or xmlmetadata is not counted ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     try {
@@ -1572,7 +1529,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     else if (xmlmeta_value[xmlmeta_num]!="") {
                         string msg = "The xmlmeta value array at this index should be empty string  ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     // assign the string vector to this value.
@@ -1585,7 +1541,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if (othermeta_num_total < 0) {
                         string msg = "There may be no othermetadata or other metadata is not counted ";
                         H5Gclose(ecs_grp_id);
-//                        H5Fclose(s_file_id);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
                     total_othermeta_value = total_othermeta_value + finstr;
@@ -1595,7 +1550,6 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 {
                      string msg = "Unsupported metadata type ";
                      H5Gclose(ecs_grp_id);
-//                     H5Fclose(s_file_id); 
                      throw InternalErr(__FILE__, __LINE__, msg);
                 }
             }
@@ -1658,6 +1612,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
     H5Gclose(ecs_grp_id);
 }
 
+// Helper function for read_ecs_metadata. Get the number after metadata.
 int get_metadata_num(const string & meta_str) {
 
     // The normal metadata names should be like coremetadata.0, coremetadata.1 etc.

@@ -38,6 +38,7 @@
 #include <sstream>
 
 #include <InternalErr.h>
+#include <BESDebug.h>
 
 #include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
@@ -54,8 +55,10 @@
 
 using namespace HDF5CF;
 
-
+// Generate DDS from one variable
 void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
+
+    BESDEBUG("h5","Coming to gen_dap_onevar_dds()  "<<endl);
 
     const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
@@ -197,8 +200,6 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
 #undef HANDLE_CASE
         }
 
-
-//cerr<<"coming to the variable "<<endl;
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
 
         HDF5CFArray *ar = NULL;
@@ -240,6 +241,7 @@ bool need_special_attribute_handling(const HDF5CF::Attribute* attr,const HDF5CF:
 // Currently we only handle the case when the datatype of _FillValue is not the same as the variable datatype.
 void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,const HDF5CF::Var* var) {
 
+    BESDEBUG("h5","Coming to gen_dap_special_oneobj_das()  "<<endl);
     if (attr->getCount() != 1) 
         throw InternalErr(__FILE__,__LINE__,"FillValue attribute can only have one element.");
 
@@ -261,6 +263,7 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
 // Check if this fillvalue is in the valid datatype range when the fillvalue datatype is changed to follow the CF
 bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr) {
 
+    BESDEBUG("h5","Coming to is_fvalue_valid()  "<<endl);
     bool ret_value = true;
     // We only check 8-bit and 16-bit integers. 
     switch(attr->getType()) {
@@ -399,9 +402,10 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
 }
 #endif
 
-
+// Generate DAS from one variable
 void gen_dap_oneobj_das(AttrTable*at,const HDF5CF::Attribute* attr, const HDF5CF::Var *var) {
 
+    BESDEBUG("h5","Coming to gen_dap_oneobj_das()  "<<endl);
     if ((H5FSTRING == attr->getType()) ||
         (H5VSTRING == attr->getType())) {
         gen_dap_str_attr(at,attr);
@@ -452,12 +456,7 @@ void gen_dap_oneobj_das(AttrTable*at,const HDF5CF::Attribute* attr, const HDF5CF
 
 void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr) {
 
-#if 0
-    string check_droplongstr_key ="H5.EnableDropLongString";
-    bool is_droplongstr = false;
-    is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-#endif
-
+    BESDEBUG("h5","Coming to gen_dap_str_attr()  "<<endl);
     const vector<size_t>& strsize = attr->getStrSize();
     unsigned int temp_start_pos = 0;
     for (unsigned int loc=0; loc < attr->getCount() ; loc++) {

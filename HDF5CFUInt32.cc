@@ -95,8 +95,6 @@ bool HDF5CFUInt32::read()
 
     return true;
 
-    //throw InternalErr(__FILE__, __LINE__,
-    //                  "Unimplemented read method called.");
 
 }
 

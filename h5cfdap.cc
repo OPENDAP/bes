@@ -43,6 +43,7 @@ void read_cfdas(DAS&, const string&,hid_t);
 void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
 
     BESDEBUG("h5","Coming to CF DDS read function read_cfdds "<<endl);
+
     // Set the DDS name be the file name
     dds.set_dataset_name(name_path(filename));
 
@@ -61,7 +62,6 @@ void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
 
     moduletype = check_module(fileid);
     if (moduletype == HDF_EOS5) {
-        // cerr<<"coming to HDF-EOS5 "<<endl;
         map_eos5_cfdds(dds,fileid, filename);
     }
 
@@ -72,7 +72,6 @@ void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
     }
 
     else { // handle HDF5 general product 
-        // cerr<<"coming to general HDF5"<<endl;
         map_gmh5_cfdds(dds,fileid, filename);
 
     }
@@ -97,7 +96,6 @@ void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
 
     moduletype = check_module(fileid);
     if (moduletype == HDF_EOS5) {
-        //cerr<<"coming to HDF-EOS5 "<<endl;
         map_eos5_cfdas(das,fileid, filename);
     }
 
@@ -108,10 +106,7 @@ void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
     }
 
     else { // handle HDF5 general product 
-        // cerr<<"coming to general HDF5"<<endl;
         map_gmh5_cfdas(das,fileid, filename);
-        // cerr<<"end of general HDF5 DAS"<<endl;
-     
     }
 
 }

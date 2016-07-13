@@ -127,13 +127,6 @@ bool HDF5CFStr::read()
 
     }
 
-    // Check if we should drop the long string
-#if 0
-    string check_droplongstr_key ="H5.EnableDropLongString";
-    bool is_droplongstr = false;
-    is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-#endif
-
     htri_t is_vlen_str = H5Tis_variable_str(dtypeid);
     if (is_vlen_str > 0) {
         size_t ty_size = H5Tget_size(memtype);
@@ -267,6 +260,13 @@ bool HDF5CFStr::read()
 
         throw InternalErr (__FILE__, __LINE__, "H5Tis_variable_str returns negative value" );
     } 
+
+    H5Tclose(memtype);
+    H5Tclose(dtypeid);
+    H5Sclose(dspace);
+    H5Dclose(dsetid);
+    H5Fclose(fileid);
+
 
     return true;
 }

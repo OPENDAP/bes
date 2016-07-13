@@ -37,25 +37,6 @@
 #include "h5cfdaputil.h"
 #include <math.h>
 
-#if 0
-bool HDF5CFDAPUtil::check_beskeys(const string key) {
-
-    bool found = false;
-    string doset ="";
-    const string dosettrue ="true";
-    const string dosetyes = "yes";
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( dosettrue == doset  || dosetyes == doset )
-            return true;
-    }
-    return false;
-
-}
-#endif
-
 
 string HDF5CFDAPUtil::escattr(string s)
 {
@@ -89,6 +70,7 @@ string HDF5CFDAPUtil::escattr(string s)
     return s;
 }
 
+// present the string in octal base.
 string
 HDF5CFDAPUtil::octstring(unsigned char val)
 {

@@ -70,7 +70,6 @@ bool HDF5CFInt16::read()
    
     hid_t dset_id = -1;
     dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
-
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
@@ -126,9 +125,6 @@ bool HDF5CFInt16::read()
     }
 
     return true;
-
-    //throw InternalErr(__FILE__, __LINE__,
-    //                  "Unimplemented read method called.");
 
 }
 
