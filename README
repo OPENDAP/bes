@@ -1,4 +1,4 @@
-Updated for version 3.12.1(April 29 2016)
+Updated for version 3.12.1(April 29 2016, Hyrax 1.13.1))
   1) Improve the calculation of XDim and YDim for the sinusoidal projection.
   2) Improve the handling of BES keys by moving the initialization of BES keys to the Handler constructor.
   3) Bug Fixes: 
@@ -22,7 +22,7 @@ Updated for version 3.12.1(April 29 2016)
   2) Note for version 3.12.0: no new features or bug fixes for version 3.12.0. Only several warnings are removed. 
   The version was accidently bumped from 3.11.7 to 3.12.0.
   
-Updated for version 3.11.7 (15 September 2015)
+Updated for version 3.11.7 (15 September 2015,Hyrax 1.13.0,1.12.2,1.12.1)
   New Features:
   1) We added 1-D coordinate variables and CF grid_mapping attributes for HDF-EOS2 grid with Sinusoidal projection. 
      This request is from LP DAAC.
@@ -40,7 +40,7 @@ Updated for version 3.11.7 (15 September 2015)
   need to be changed for your service.
   ******
 
-Updated for version 3.11.6 (15 November 2014)
+Updated for version 3.11.6 (15 November 2014,Hyrax 1.11.2,1.11.1,1.11.0,1.10.1,1.10.0)
         
   In this version, we added the following features:
 
@@ -66,7 +66,7 @@ Updated for version 3.11.6 (15 November 2014)
   You may need to read the information about BES keys in the file h4.conf.in to see if the default values 
   need to be changed for your service.
   
-Updated for version 3.11.5 (25 April 2014)
+Updated for version 3.11.5 (25 April 2014,Hyrax 1.9.7)
 
   In this version, we fix the following datatype mapping issues:
 
@@ -84,7 +84,7 @@ Updated for version 3.11.5 (25 April 2014)
   We also make turn on the H4.DisableStructMetaAttr key to be 'true'the default setting of h4.conf.in. This
   will improve the performance to generate DAS.  
 
-Updated for version 3.11.4 (1 April 2014)
+Updated for version 3.11.4 (1 April 2014,Hyrax 1.9.3)
 
   This version improves I/O by reducing the number of HDF4/HDF-EOS2 file open /
  close requests.
@@ -117,7 +117,7 @@ type.
 swath are dropped in DAS output. 
 
 
-Updated for version 3.11.3 (1 February 2014)
+Updated for version 3.11.3 (1 February 2014,Hyrax 1.9.2)
 
   This version optimizes handler for MOD08 M3 and AIRS version 6 products with 
 new BES keys. See the USAGE document for the new BES keys for details.
