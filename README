@@ -36,7 +36,7 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
-What's new for version 2.3.3
+What's new for version 2.3.3(Released with Hyrax 1.13.1)
 ----------------------------
 CF option:
 - HDF5 Scalar dataset reading
@@ -54,7 +54,7 @@ CF option:
 
 
 
-What's new for version 2.3.2
+What's new for version 2.3.2(Released with Hyrax 1.13.0)
 ----------------------------
 CF option:
 - By default, the leading underscore of a variable path is removed for all files. Although not recommended,
@@ -66,13 +66,13 @@ CF option:
 - Add the general support of netCDF-4-like HDF5 files that have 2-D lat/lon. This improvement makes TOMS MEaSURES product plot-able
   by CF tools such as Panoply. It will also support future potential products that follow netCDF generic data model.
 
-What's new for version 2.3.1
+What's new for version 2.3.1(Released with Hyrax 1.12.2)
 ----------------------------
 There are no new features added in this release. We improved the code quality by fixing
 a potential resource leaking issue and other misc. issues.
 
 
-What's new for version 2.3.0
+What's new for version 2.3.0(Released with Hyrax 1.12.1)
 ----------------------------
 Default option:
  -  Add the pure DAP4 support.
@@ -113,7 +113,7 @@ CF option:
     Please contact RedHat directly to speed up the release of new RPM packages through EPEL.
 
 
-What's new for version 2.2.3
+What's new for version 2.2.3(Hyrax 1.11.2, 1.11.1, 1.11.0,1.10.1 1.10.0)
 ----------------------------
 For the CF option: 
  -  Implement an option not to pass HDF5 file ID from DDS/DAS service to data service
@@ -141,7 +141,7 @@ For the CF option:
     Please contact RedHat directly to speed up the release of new RPM packages through EPEL.
 
 
-What's new for version 2.2.2
+What's new for version 2.2.2(Hyrax 1.9.7)
 ----------------------------
 For the CF option: 
  -  Improve file I/O by reducing the number of HDF5 file open/close 
