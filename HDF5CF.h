@@ -678,6 +678,11 @@ namespace HDF5CF
             bool Is_geolatlon(const string &var_name ,bool is_lat);
             bool has_latlon_cf_units(Attribute*attr, const string &varfullpath , bool is_lat);
 
+            // Check if a variable with a var name is under a specific group with groupname
+            // note: the variable's size at each dimension is also returned. The user must allocate the 
+            // memory for the dimension sizes(an array(vector is perferred).
+            bool is_var_under_group(const string &varname, const string &grpname,const int var_rank, vector<size_t> &var_size );
+
             virtual void Gen_Unsupported_Dtype_Info(bool) = 0;
             virtual void Gen_Unsupported_Dspace_Info() throw(Exception);
             void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception);

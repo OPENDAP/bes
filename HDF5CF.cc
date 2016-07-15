@@ -2052,6 +2052,37 @@ File:: Replace_Var_Attrs(Var *src, Var *target) {
 
 }              
 
+// Check if a variable with a var name is under a specific group with groupname
+// note: the variable's size at each dimension is also returned. The user must allocate the 
+// memory for the dimension sizes(an array(vector is perferred).
+bool 
+File::is_var_under_group(const string &varname, const string &grpname,const int var_rank, vector<size_t> & var_size ) {
+
+    bool ret_value = false;
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+
+        if((*irv)->rank == var_rank) {
+            if((*irv)->name == varname) {
+
+                // Obtain the variable path
+                string var_path =HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+
+                // Tackle only the root group or the name of the group as "/Geolocation"
+                if(grpname == var_path) {
+                    ret_value = true;
+                    for(int i = 0; i < var_rank; i++) 
+                        var_size[i] = (*irv)->getDimensions()[i]->size; 
+                    break;
+                }
+            }
+        } // if((*irv)->rank == var_rank)
+    } // for (vector<Var *>::iterator irv = this->vars.begin();
+
+    return ret_value;
+
+}
+
 // Add ignored page header info. Mainly a helper message.
 void 
 File:: add_ignored_info_page_header() {

@@ -1408,11 +1408,47 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
 
     BESDEBUG("h5", "Coming to Check_LatLon2D_General_Product_Pattern_Name_Size()"<<endl);
     bool ret_value = false;
-    short ll_flag = 0;
+    bool ll_flag =  false;
+
     vector<size_t>lat_size(2.0);
     vector<size_t>lon_size(2,0);
 
+    const string designed_group1 = "/";
+    const string designed_group2 = "/Geolocation/";
 
+    bool lat_flag_g1 = false;
+    bool lon_flag_g1 = false;
+    bool lat_flag_g2 = false;
+    bool lon_flag_g2 = false;
+
+
+    // This case allows to have both "lat and lon" under either group 1 or group 2 but on not both group 1 and 2.
+    // This case doesn't allow "lat" and "lon" under separate groups.
+    // Check if we have lat and lon at the only designated group,group 1 "/"
+    lat_flag_g1 = is_var_under_group(latname,designed_group1,2,lat_size);
+    lon_flag_g1 = is_var_under_group(lonname,designed_group1,2,lon_size);
+    if(lat_flag_g1 == true && lon_flag_g1 == true) {
+
+        // Make sure the group 2 doesn't have the lat/lon
+        lat_flag_g2 = is_var_under_group(latname,designed_group2,2,lat_size);
+        if(lat_flag_g2 == false) {
+            lon_flag_g2 = is_var_under_group(lonname,designed_group2,2,lon_size);
+            if(lon_flag_g2 == false)
+                ll_flag = true;
+        }
+    }
+    else if(lat_flag_g1 == false && lon_flag_g1 == false) {
+        lat_flag_g2 = is_var_under_group(latname,designed_group2,2,lat_size);
+        if(lat_flag_g2 == true) {
+            lon_flag_g2 = is_var_under_group(lonname,designed_group2,2,lon_size);
+            if(lon_flag_g2 == true)
+                ll_flag = true;
+        }
+    }
+
+   
+#if 0
+    
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
 
@@ -1426,6 +1462,8 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
                 // By doing this, we assume that the file has lat/lon either under the root or under the "Geolocation
                 // but not BOTH. The following code may generate wrong results if the file contains lat/lon under
                 // both the root and /Geolocation. This is documented in https://jira.hdfgroup.org/browse/HFVHANDLER-175
+                bool has_right_lat = false;
+                if("/" == lat_path || "/Geolocation/" == lat_path) 
                 if("/" == lat_path || "/Geolocation/" == lat_path) {
                     ll_flag++;
                     lat_size[0] = (*irv)->getDimensions()[0]->size; 
@@ -1446,9 +1484,12 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
         } // if((*irv)->rank == 2)
     } // for (vector<Var *>::iterator irv = this->vars.begin();
  
+#endif
+
     // Only when both lat/lon are found can we support this case.
     // Before that, we also need to check if the lat/lon shares the same dimensions.
-    if(2 == ll_flag) {
+    //if(2 == ll_flag) 
+    if(true == ll_flag) {
 
         bool latlon_size_match = true;
         for (int size_index = 0; size_index <lat_size.size();size_index++) {
@@ -1465,7 +1506,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
         }
 
     }
- 
+
     return ret_value;
 
 }
