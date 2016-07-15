@@ -2068,7 +2068,7 @@ File::is_var_under_group(const string &varname, const string &grpname,const int 
                 // Obtain the variable path
                 string var_path =HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
 
-                // Tackle only the root group or the name of the group as "/Geolocation"
+                // Check if we find the variable under this group
                 if(grpname == var_path) {
                     ret_value = true;
                     for(int i = 0; i < var_rank; i++) 

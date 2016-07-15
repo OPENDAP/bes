@@ -1429,14 +1429,14 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
     lon_flag_g1 = is_var_under_group(lonname,designed_group1,2,lon_size);
     if(lat_flag_g1 == true && lon_flag_g1 == true) {
 
-        // Make sure the group 2 doesn't have the lat/lon
+        // Make sure the group 2 "/Geolocation"  doesn't have the lat/lon
         lat_flag_g2 = is_var_under_group(latname,designed_group2,2,lat_size);
         if(lat_flag_g2 == false) {
             lon_flag_g2 = is_var_under_group(lonname,designed_group2,2,lon_size);
             if(lon_flag_g2 == false)
                 ll_flag = true;
         }
-    }
+    }// If the root doesn't have lat/lon, check the group 2 "/Geolocation".
     else if(lat_flag_g1 == false && lon_flag_g1 == false) {
         lat_flag_g2 = is_var_under_group(latname,designed_group2,2,lat_size);
         if(lat_flag_g2 == true) {
