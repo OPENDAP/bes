@@ -98,6 +98,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
+     static void get_dds_with_attributes(const string &filename, const string&container_name,libdap::DDS*dds);
 };
 
 #endif
