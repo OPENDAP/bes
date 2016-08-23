@@ -284,3 +284,7 @@ H5.EnableAddPathAttrs=true
 H5.EnableDropLongString=true
 H5.DisableStructMetaAttr=true
 H5.EnableFillValueCheck=true
+H5.CheckIgnoreObj=false
+H5.CacheEntries=100
+#H5.CachePurgeLevel=0.2
+
