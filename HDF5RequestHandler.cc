@@ -604,12 +604,25 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
 
+
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse &bes_dmr = dynamic_cast<BESDMRResponse &>(*response);
 
+    string filename = dhi.container->access();
+
     DMR *dmr = bes_dmr.get_dmr();
+
+    try {
+        DMR* cached_dmr_ptr = 0;
+        if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename)))) {
+            // copy the cached DMR into the BES response object
+            BESDEBUG(NC_NAME, "DMR Cached hit for : " << filename << endl);
+            *dmr = *cached_dmr_ptr; // Copy the referenced object
+        }
+        else {
+            //
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
  
@@ -617,7 +630,6 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     hid_t fileid = -1;
     hid_t cf_fileid = -1;
 
-    string filename = dhi.container->access();
 
     try {
         if(true ==_usecf) { 
@@ -685,6 +697,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
            close_fileid(fileid);
 
         }
+    }
     }
 
     catch(InternalErr & e) {
