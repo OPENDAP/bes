@@ -614,76 +614,75 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
     DMR *dmr = bes_dmr.get_dmr();
 
+    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
+    hid_t fileid = -1;
+    hid_t cf_fileid = -1;
+ 
     try {
+
         DMR* cached_dmr_ptr = 0;
         if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename)))) {
             // copy the cached DMR into the BES response object
-            BESDEBUG(NC_NAME, "DMR Cached hit for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, "DMR Cached hit for : " << filename << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
         }
         else {
             //
-    D4BaseTypeFactory MyD4TypeFactory;
-    dmr->set_factory(&MyD4TypeFactory);
+            D4BaseTypeFactory MyD4TypeFactory;
+            dmr->set_factory(&MyD4TypeFactory);
  
-    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
-    hid_t fileid = -1;
-    hid_t cf_fileid = -1;
-
-
-    try {
-        if(true ==_usecf) { 
+            if(true ==_usecf) { 
        
-            if(true == _pass_fileid)
-                return hdf5_build_dmr_with_IDs(dhi);
+                if(true == _pass_fileid)
+                    return hdf5_build_dmr_with_IDs(dhi);
 
-            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-            if (cf_fileid < 0){
-                throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                                   + filename, __FILE__, __LINE__);
-            }
+                cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                if (cf_fileid < 0){
+                	throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                    	               + filename, __FILE__, __LINE__);
+            	}
 
-            BaseTypeFactory factory;
-            DDS dds(&factory, name_path(filename), "3.2");
-            dds.filename(filename);
+            	BaseTypeFactory factory;
+            	DDS dds(&factory, name_path(filename), "3.2");
+            	dds.filename(filename);
 
-            DAS das;
+            	DAS das;
 
-            read_cfdds( dds,filename,cf_fileid);
-            if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
-                dds.print(cerr);
-                throw InternalErr(__FILE__, __LINE__,
-                                  "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
-            }
+            	read_cfdds( dds,filename,cf_fileid);
+            	if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
+                	dds.print(cerr);
+                	throw InternalErr(__FILE__, __LINE__,
+                    	              "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
+            	}	
 
-            read_cfdas(das,filename,cf_fileid);
-            Ancillary::read_ancillary_das( das, filename ) ;
+            	read_cfdas(das,filename,cf_fileid);
+            	Ancillary::read_ancillary_das( das, filename ) ;
 
-            dds.transfer_attributes(&das);
+            	dds.transfer_attributes(&das);
 
-            ////close the file ID.
-            if(cf_fileid !=-1)
-                H5Fclose(cf_fileid);
+            	////close the file ID.
+            	if(cf_fileid !=-1)
+                	H5Fclose(cf_fileid);
 
-            dmr->build_using_dds(dds);
+            	dmr->build_using_dds(dds);
 
-        }
-        else {
+        	}	
+        	else {
 
-            // Obtain the HDF5 file ID. 
-            fileid = get_fileid(filename.c_str());
-            if (fileid < 0) {
-                throw BESNotFoundError(string("hdf5_build_dmr: ")
-                                   + "Could not open hdf5 file: "
-                                   + filename, __FILE__, __LINE__);
-            }
+            	// Obtain the HDF5 file ID. 
+            	fileid = get_fileid(filename.c_str());
+            	if (fileid < 0) {
+                	throw BESNotFoundError(string("hdf5_build_dmr: ")
+                    	               + "Could not open hdf5 file: "
+                        	           + filename, __FILE__, __LINE__);
+            	}
 
-            bool use_dimscale = check_dimscale(fileid);
-            dmr->set_name(name_path(filename));
-            dmr->set_filename(name_path(filename));
+            	bool use_dimscale = check_dimscale(fileid);
+            	dmr->set_name(name_path(filename));
+            	dmr->set_filename(name_path(filename));
 
-            D4Group* root_grp = dmr->root();
-            breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
+            	D4Group* root_grp = dmr->root();
+            	breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
 
 #if 0
            if(true == use_dimscale) 
@@ -694,10 +693,16 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
 #endif
 
-           close_fileid(fileid);
+           	    close_fileid(fileid);
 
+            }
+
+            if (dmr_cache) {
+                // add a copy
+                BESDEBUG(HDF5_NAME, "DMR added to the cache for : " << filename << endl);
+                dmr_cache->add(new DMR(*dmr), filename);
+            }
         }
-    }
     }
 
     catch(InternalErr & e) {
