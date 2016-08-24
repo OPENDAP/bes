@@ -626,12 +626,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             BESDEBUG(HDF5_NAME, "DMR Cached hit for : " << filename << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
         }
-        else {
-            //
+        else {// No cache
+
             D4BaseTypeFactory MyD4TypeFactory;
             dmr->set_factory(&MyD4TypeFactory);
  
-            if(true ==_usecf) { 
+            if(true ==_usecf) {// CF option
        
                 if(true == _pass_fileid)
                     return hdf5_build_dmr_with_IDs(dhi);
@@ -666,15 +666,15 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
             	dmr->build_using_dds(dds);
 
-        	}	
-        	else {
+       	    }// if(true == _usecf)	
+            else {// default option
 
-            	// Obtain the HDF5 file ID. 
-            	fileid = get_fileid(filename.c_str());
-            	if (fileid < 0) {
-                	throw BESNotFoundError(string("hdf5_build_dmr: ")
-                    	               + "Could not open hdf5 file: "
-                        	           + filename, __FILE__, __LINE__);
+                // Obtain the HDF5 file ID. 
+                fileid = get_fileid(filename.c_str());
+                if (fileid < 0) {
+                    throw BESNotFoundError(string("hdf5_build_dmr: ")
+                       	                   + "Could not open hdf5 file: "
+                               	           + filename, __FILE__, __LINE__);
             	}
 
             	bool use_dimscale = check_dimscale(fileid);
@@ -693,17 +693,18 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
 #endif
 
-           	    close_fileid(fileid);
+           	close_fileid(fileid);
 
-            }
+            }// else (default option)
 
+            // If the cache is turned on, add the memory cache.
             if (dmr_cache) {
                 // add a copy
                 BESDEBUG(HDF5_NAME, "DMR added to the cache for : " << filename << endl);
                 dmr_cache->add(new DMR(*dmr), filename);
             }
-        }
-    }
+        }// else no cache
+    }// try
 
     catch(InternalErr & e) {
 
