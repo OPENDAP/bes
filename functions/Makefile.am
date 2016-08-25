@@ -34,17 +34,17 @@ M_VER=1.1.0
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-SUBDIRS = . unit-tests tests
+SUBDIRS = . unit-tests tests geo-functions
 
-# We use DIST_SUBDIRS because we want swath2grid to be part of the dist.
+# We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
 # However, since we use it we must list all of the subdirs we want; without
 # it, automake will automatically distribute all the stuff in SUBDIRS.
-DIST_SUBDIRS = unit-tests tests swath2grid
+DIST_SUBDIRS = unit-tests tests geo-functions
 
 if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code
 # until it has tests and supports DAP4
-# SUBDIRS +=  swath2grid 
+# SUBDIRS +=  geo-functions 
 endif
 
 lib_besdir=$(libdir)/bes

@@ -89,6 +89,7 @@ protected:
 protected:
     AbstractDataset();
     virtual CPLErr SetNativeCRS();
+    virtual CPLErr SetNativeCRS(string mktStr);
     virtual CPLErr SetGeoTransform();
     virtual CPLErr SetGDALDataset(const int isSimple = 0);
     virtual CPLErr SetMetaDataList(GDALDataset*);

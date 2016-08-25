@@ -186,12 +186,21 @@ const OGRSpatialReference& AbstractDataset::GetNativeCRS()
 
 CPLErr AbstractDataset::SetNativeCRS()
 {
-	char* wktStr = (char*) maptr_DS->GetProjectionRef();
+    char* wktStr = (char*) maptr_DS->GetProjectionRef();
+    return SetNativeCRS(wktStr);
+}
 
-	if (wktStr && OGRERR_NONE == mo_NativeCRS.importFromWkt(&wktStr))
-		return CE_None;
+CPLErr AbstractDataset::SetNativeCRS(string wktStr)
+{
+    string crsNameWktStr(wktStr);
+    char s[wktStr.length()+1];
+    strcpy(s,wktStr.c_str());
+    char *crsName =  s;
 
-	return CE_Failure;
+    if (!wktStr.length() && OGRERR_NONE == mo_NativeCRS.importFromWkt(&crsName))
+        return CE_None;
+
+    return CE_Failure;
 }
 
 /************************************************************************/

@@ -202,7 +202,78 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     return;
 }
 
+/**
+ * @todo The lat and lon arrays are passed in, but there's an assumption that the
+ * source data array and the two lat and lon arrays are the same shape. But the
+ * code does not actually test that.
+ *
+ * @todo Enable multiple bands paired with just the two lat/lon arrays? Not sure
+ * if that is a good idea...
+ */
+void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
+{
+    DBG(cerr << "Entering function_changeCRS..." << endl);
 
+    string functionName = "crs";
+
+    string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            + "<function name=\""+functionName+"\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#crs\">\n"
+            + "</function>\n";
+
+    if (argc == 0) {
+        Str *response = new Str("info");
+        response->set_value(info);
+        *btpp = response;
+        return;
+    }
+
+    if (argc != 5)
+        throw Error("The function "+functionName+"() requires five arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+
+    Array *src = dynamic_cast<Array*>(argv[0]);
+    if (!src)
+        throw Error("The first argument to "+functionName+"() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+
+    Array *lat = dynamic_cast<Array*>(argv[1]);
+    if (!lat)
+        throw Error("The second argument to "+functionName+"() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+
+    Array *lon = dynamic_cast<Array*>(argv[2]);
+    if (!lon)
+        throw Error("The third argument to "+functionName+"() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+
+    Str *nativeCrsName = dynamic_cast<Str*>(argv[3]);
+    if (!src)
+        throw Error("The fourth argument to "+functionName+"() must be a string identifying the native CRS of the data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+
+    Str *targetCrsName = dynamic_cast<Str*>(argv[4]);
+    if (!src)
+        throw Error("The fifth argument to "+functionName+"() must be a string identifying the target CRS. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+
+
+
+
+    // The args passed into the function using argv[] are deleted after the call.
+
+    DAP_Dataset ds(src, lat, lon);
+
+    try {
+        ds.InitialDataset(0);
+
+        *btpp = ds.GetDAPGrid();
+    }
+    catch (Error &e) {
+        DBG(cerr << "caught Error: " << e.get_error_message() << endl);
+        throw e;
+    }
+    catch(...) {
+        DBG(cerr << "caught unknown exception" << endl);
+        throw;
+    }
+
+    return;
+
+}
 
 
 
