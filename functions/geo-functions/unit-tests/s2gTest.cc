@@ -86,6 +86,8 @@ private:
     DDS * dds;
     TestTypeFactory btf;
     ConstraintEvaluator ce;
+    int dim_0_size;
+    int dim_1_size;
 
 
 public:
@@ -100,8 +102,8 @@ public:
         try {
 
 #if 1
-            int dim_0_size = 135;
-            int dim_1_size =  90;
+            dim_0_size = 135;
+            dim_1_size =  90;
 
             dds = new DDS(&btf);
             string dds_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DDS ;
@@ -121,10 +123,10 @@ public:
 
             DBG(cerr<<"setUp() - Synthesizing data values..."<< endl);
 
-            dods_float64 t_vals[dim_0_size][dim_1_size];
+            dods_float32 t_vals[dim_0_size][dim_1_size];
             for (int i = 0; i < dim_0_size; ++i)
                 for (int j = 0; j < dim_1_size; ++j)
-                    t_vals[i][j] = j + (i * 10);
+                    t_vals[i][j] = j + (i * 10.0);
             t.set_value(&t_vals[0][0], dim_0_size*dim_1_size);
             t.set_read_p(true);
 
@@ -198,7 +200,7 @@ public:
                 val = -5.0;
                 for (unsigned int j = 0; j < 10; ++j) {
                     DBG2(cerr << "loading in lon value: " << val << "' " << endl;)
-                    lon_vals[i][j] = val++;
+                    lon_vals[i][j] = val+=1.0;
 
                 }
             }
@@ -212,7 +214,7 @@ public:
                 val = -5.0;
                 for (unsigned int j = 0; j < 10; ++j) {
                     DBG2(cerr << "loading in lat value: " << val << "' " << endl;)
-                    lat_vals[i][j] = val++;
+                    lat_vals[i][j] = val+=1.0;
                 }
             }
             lat.set_value(&lat_vals[0][0], 100);
@@ -696,11 +698,11 @@ public:
             argv[2] = dds->var("lat");
 
             cerr << "Input values:" << endl;
-            dods_float64 t_vals[10][10];
+            dods_float32 t_vals[dim_0_size][dim_1_size];
             Array *a = static_cast<Array*>(argv[0]);
             a->value(&t_vals[0][0]);
-            for (int i = 0; i < 10; ++i) {
-                for (int j = 0; j < 10; ++j) {
+            for (int i = 0; i < dim_0_size; ++i) {
+                for (int j = 0; j < dim_1_size; ++j) {
                     cerr << "t[" << i << "][" << j << "]: " <<  t_vals[i][j] << endl;
                 }
             }
@@ -712,22 +714,22 @@ public:
             CPPUNIT_ASSERT(btp->name() == "t");
             CPPUNIT_ASSERT(btp->type() == dods_grid_c);
 
-            // Extract data; I know it's 10x16 from debugging output
-            dods_float64 values[10][16];
+            // Extract data; I know it's 135x154 from debugging output
+            dods_float64 values[135][154];
             Grid *g = static_cast<Grid*>(btp);
             g->get_array()->value(&values[0][0]);
 
             Grid::Map_iter m = g->map_begin();
-            dods_float64 lat[10];
+            dods_float64 lat[135];
             static_cast<Array*>(*m)->value(&lat[0]);
 
             ++m;
-            dods_float64 lon[16];
+            dods_float64 lon[154];
             static_cast<Array*>(*m)->value(&lon[0]);
 
             cerr << "Output values:" << endl;
-            for (int i = 0; i < 10; ++i) {
-                for (int j = 0; j < 16; ++j) {
+            for (int i = 0; i < 135; ++i) {
+                for (int j = 0; j < 154; ++j) {
                     cerr << "t[" << i << "][" << j << "] == lon: " << lon[j] << ", lat: " << lat[i] << " val: " << values[i][j] << endl;
                 }
             }
