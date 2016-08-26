@@ -693,9 +693,10 @@ public:
         DBG(cerr<<"grid_return_test() - BEGIN" << endl);
         try {
             BaseType *argv[3];
-            argv[0] = dds->var("t");
-            argv[1] = dds->var("lon");
-            argv[2] = dds->var("lat");
+            argv[0] = dds->var("BT_diff_SO2");
+            argv[1] = dds->var("Longitude");
+            argv[2] = dds->var("Latitude");
+
 
             cerr << "Input values:" << endl;
             dods_float32 t_vals[dim_0_size][dim_1_size];
