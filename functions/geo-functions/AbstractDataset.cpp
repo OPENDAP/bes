@@ -187,6 +187,7 @@ const OGRSpatialReference& AbstractDataset::GetNativeCRS()
 CPLErr AbstractDataset::SetNativeCRS()
 {
     char* wktStr = (char*) maptr_DS->GetProjectionRef();
+    cerr << "AbstractDataset::SetNativeCRS() - wktStr: " << wktStr << endl;
     return SetNativeCRS(wktStr);
 }
 

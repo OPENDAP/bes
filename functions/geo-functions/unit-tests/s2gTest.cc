@@ -32,6 +32,7 @@
 #define DODS_DEBUG
 //#define DODS_DEBUG2
 
+#include <GetOpt.h>
 #include "BaseType.h"
 #include "Array.h"
 #include "Grid.h"
@@ -42,6 +43,12 @@
 
 #include "util.h"
 #include "debug.h"
+
+static bool debug = false;
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+
+
 
 #define THREE_ARRAY_1_DDS "three_array_1.dds"
 #define THREE_ARRAY_1_DAS "three_array_1.das"
@@ -79,6 +86,8 @@ private:
     DDS * dds;
     TestTypeFactory btf;
     ConstraintEvaluator ce;
+
+
 public:
     s2gTest():dds(0)
     {}
@@ -87,7 +96,13 @@ public:
 
     void setUp()
     {
+        DBG(cerr<<"setUp() - BEGIN" << endl);
         try {
+
+#if 1
+            int dim_0_size = 135;
+            int dim_1_size =  90;
+
             dds = new DDS(&btf);
             string dds_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DDS ;
             dds->parse(dds_file);
@@ -96,6 +111,71 @@ public:
             das.parse(das_file);
             dds->transfer_attributes(&das);
 
+            DBG(cerr<<"setUp() - Loaded DDS:"<< endl);
+            DBG(dds->print_xml(stderr, false, "noBlob"));
+
+            // Load values into the array variables
+            Array & t = dynamic_cast < Array & >(*dds->var("BT_diff_SO2"));
+            Array & lon = dynamic_cast < Array & >(*dds->var("Longitude"));
+            Array & lat = dynamic_cast < Array & >(*dds->var("Latitude"));
+
+            DBG(cerr<<"setUp() - Synthesizing data values..."<< endl);
+
+            dods_float64 t_vals[dim_0_size][dim_1_size];
+            for (int i = 0; i < dim_0_size; ++i)
+                for (int j = 0; j < dim_1_size; ++j)
+                    t_vals[i][j] = j + (i * 10);
+            t.set_value(&t_vals[0][0], dim_0_size*dim_1_size);
+            t.set_read_p(true);
+
+            // Read real lat/lon values from a Level 1B file ascii dump
+            fstream input("three_array_1.txt", fstream::in);
+            if (input.eof() || input.fail())
+                throw Error("Could not open lat/lon data in SetUp.");
+            // Read a line of text to get to the start of the data.
+            string line;
+            getline(input, line);
+            if (input.eof() || input.fail())
+                throw Error("Could not read lat/lon data in SetUp.");
+
+            dods_float64 lon_vals[dim_0_size][dim_1_size];
+            for (int i = 0; i < dim_0_size; ++i) {
+                getline(input, line);
+                if (input.eof() || input.fail())
+                    throw Error("Could not read lon data from row " + long_to_string(i) + " in SetUp.");
+                vector<string> vals = split(line, ',');
+                for (unsigned int j = 1; j < vals.size(); ++j) {
+                    DBG2(cerr << "loading in lon value: " << vals[j] << "' " << atof(vals[j].c_str()) << endl;)
+                    lon_vals[i][j-1] = atof(vals[j].c_str());
+                }
+            }
+            lon.set_value(&lon_vals[0][0], dim_0_size*dim_1_size);
+            lon.set_read_p(true);
+
+            dods_float64 lat_vals[dim_0_size][dim_1_size];
+            for (int i = 0; i < dim_0_size; ++i) {
+                getline(input, line);
+                if (input.eof() || input.fail())
+                    throw Error("Could not read lat data from row " + long_to_string(i) + " in SetUp.");
+                vector<string> vals = split(line, ',');
+                for (unsigned int j = 1; j < vals.size(); ++j) {
+                    DBG2(cerr << "loading in lat value: " << vals[j] << "' " << atof(vals[j].c_str()) << endl;)
+                    lat_vals[i][j-1] = atof(vals[j].c_str());
+                }
+            }
+            lat.set_value(&lat_vals[0][0], dim_0_size*dim_1_size);
+            lat.set_read_p(true);
+#endif
+#if 0
+            dds = new DDS(&btf);
+            string dds_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DDS ;
+            dds->parse(dds_file);
+            DAS das;
+            string das_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DAS ;
+            das.parse(das_file);
+            dds->transfer_attributes(&das);
+
+            DBG(cerr<<"setUp() - Loaded DDS:"<< endl);
             DBG(dds->print_xml(stderr, false, "noBlob"));
 
             // Load values into the array variables
@@ -110,43 +190,38 @@ public:
             t.set_value(&t_vals[0][0], 100);
             t.set_read_p(true);
 
-            // Read real lat/lon values from a Level 1B file ascii dump
-            fstream input("AIRS_AQUA_L1B_BRIGHTNESS_20101026_1617.nc.gz.ascii.txt", fstream::in);
-            if (input.eof() || input.fail())
-                throw Error("Could not open lat/lon data in SetUp.");
-            // Read a line of text to get to the start of the data.
-            string line;
-            getline(input, line);
-            if (input.eof() || input.fail())
-                throw Error("Could not read lat/lon data in SetUp.");
+            double val=-5.0;
 
+            DBG(cerr<<"setUp() - Building lon array...\n");
             dods_float64 lon_vals[10][10];
-            for (int i = 0; i < 10; ++i) {
-                getline(input, line);
-                if (input.eof() || input.fail())
-                    throw Error("Could not read lon data from row " + long_to_string(i) + " in SetUp.");
-                vector<string> vals = split(line, ',');
-                for (unsigned int j = 1; j < vals.size(); ++j) {
-                    DBG2(cerr << "loading in lon value: " << vals[j] << "' " << atof(vals[j].c_str()) << endl;)
-                    lon_vals[i][j-1] = atof(vals[j].c_str());
+            for (unsigned i = 0; i < 10; ++i) {
+                val = -5.0;
+                for (unsigned int j = 0; j < 10; ++j) {
+                    DBG2(cerr << "loading in lon value: " << val << "' " << endl;)
+                    lon_vals[i][j] = val++;
+
                 }
             }
             lon.set_value(&lon_vals[0][0], 100);
             lon.set_read_p(true);
 
+            DBG(cerr<<"setUp() - Building lat array...\n");
+            val=-5.0;
             dods_float64 lat_vals[10][10];
             for (int i = 0; i < 10; ++i) {
-                getline(input, line);
-                if (input.eof() || input.fail())
-                    throw Error("Could not read lat data from row " + long_to_string(i) + " in SetUp.");
-                vector<string> vals = split(line, ',');
-                for (unsigned int j = 1; j < vals.size(); ++j) {
-                    DBG2(cerr << "loading in lat value: " << vals[j] << "' " << atof(vals[j].c_str()) << endl;)
-                    lat_vals[i][j-1] = atof(vals[j].c_str());
+                val = -5.0;
+                for (unsigned int j = 0; j < 10; ++j) {
+                    DBG2(cerr << "loading in lat value: " << val << "' " << endl;)
+                    lat_vals[i][j] = val++;
                 }
             }
             lat.set_value(&lat_vals[0][0], 100);
             lat.set_read_p(true);
+
+#endif
+
+
+
         }
 
         catch (Error & e) {
@@ -157,6 +232,9 @@ public:
             cerr << "SetUp (std::exception): " << e.what() << endl;
             throw;
         }
+
+        DBG(cerr<<"setUp() - END" << endl);
+
     }
 
     void tearDown()
@@ -174,42 +252,48 @@ public:
 
     void no_arguments_test()
     {
+        DBG(cerr<<"no_arguments_test() - BEGIN" << endl);
         try {
             BaseType *btp = 0;
             function_swath2array(0, 0, *dds, &btp);
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
-            DBG(cerr << e.get_error_message() << endl);
+            DBG(cerr << "[ERROR] " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"no_arguments_test() should not have failed");
         }
+        DBG(cerr<<"no_arguments_test() - END" << endl);
     }
 
     void array_return_test()
     {
+        DBG(cerr<<"array_return_test() - BEGIN" << endl);
         try {
             BaseType *argv[3];
-            argv[0] = dds->var("t");
-            argv[1] = dds->var("lon");
-            argv[2] = dds->var("lat");
+            argv[0] = dds->var("BT_diff_SO2");
+            argv[1] = dds->var("Longitude");
+            argv[2] = dds->var("Latitude");
 
             BaseType *btp = 0;
             function_swath2array(3, argv, *dds, &btp);
 
             DBG(cerr << "btp->name(): " << btp->name() << endl);
-            CPPUNIT_ASSERT(btp->name() == "t");
+            CPPUNIT_ASSERT(btp->name() == "BT_diff_SO2");
             CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-            // Extract data; I know it's 10x16 from debugging output
-            dods_float64 values[10][16];
+            // Extract data; I know it's 135x154 from debugging output
+            dods_float64 values[135][154];
             Array *a = static_cast<Array*>(btp);
             a->value(&values[0][0]);
         }
         catch (Error &e) {
-            DBG(cerr << e.get_error_message() << endl);
+
+            DBG(cerr << "[ERROR] " << e.get_error_message() << endl);
             CPPUNIT_FAIL("array_return_test");
         }
+        DBG(cerr<<"array_return_test() - END" << endl);
     }
+
 
 #if 0
     void one_argument_not_a_grid_test()
@@ -604,6 +688,7 @@ public:
 #endif
     void grid_return_test()
     {
+        DBG(cerr<<"grid_return_test() - BEGIN" << endl);
         try {
             BaseType *argv[3];
             argv[0] = dds->var("t");
@@ -648,21 +733,45 @@ public:
             }
         }
         catch (Error &e) {
-            DBG(cerr << e.get_error_message() << endl);
+            DBG(cerr << "[ERROR] " << e.get_error_message() << endl);
             CPPUNIT_FAIL("array_return_test");
         }
+        DBG(cerr<<"grid_return_test() - END" << endl);
     }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(s2gTest);
 
-int
-main( int, char** )
+int main(int argc, char*argv[])
 {
     CppUnit::TextTestRunner runner;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() );
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run( "", false ) ;
+    GetOpt getopt(argc, argv, "d");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        default:
+            break;
+        }
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            test = string("functions::ugrid::BindTest::") + argv[i++];
+
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
 
     return wasSuccessful ? 0 : 1;
 }

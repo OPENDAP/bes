@@ -1,10 +1,5 @@
-# three_array_1.dds
-#
-# Created on: Dec 12, 2012
-#     Author: jimg
-
 Dataset {
-    Float64 t[10][10];
-    Float64 lon[10][10];
-    Float64 lat[10][10];
-} three_array_1;
+    Float32 BT_diff_SO2[GeoTrack_L1B_AIRS_Science = 135][GeoXTrack_L1B_AIRS_Science = 90];
+    Float64 Longitude[GeoTrack_L1B_AIRS_Science = 135][GeoXTrack_L1B_AIRS_Science = 90];
+    Float64 Latitude[GeoTrack_L1B_AIRS_Science = 135][GeoXTrack_L1B_AIRS_Science = 90];
+} AIRS_AQUA_L1B_BRIGHTNESS_20101026_1617.nc;

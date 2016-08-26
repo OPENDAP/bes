@@ -89,7 +89,7 @@ namespace libdap {
  */
 void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-    DBG(cerr << "Entering function_swath2array..." << endl);
+    DBG(cerr << "function_swath2array() - BEGIN" << endl);
 
     // Use the same documentation for both swath2array and swath2grid
     string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
@@ -100,7 +100,8 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         Str *response = new Str("info");
         response->set_value(info);
         *btpp = response;
-        return;
+        DBG(cerr << "function_swath2array() - END (no args)" << endl);
+       return;
     }
 
     // TODO Add optional fourth arg that lets the caller say which datum to use;
@@ -130,13 +131,14 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         *btpp = ds.GetDAPArray();
     }
     catch (Error &e) {
-        DBG(cerr << "caught Error: " << e.get_error_message() << endl);
+        DBG(cerr << "function_swath2array() - Encountered libdap::Error   msg: '" << e.get_error_message() << "'" << endl);
         throw e;
     }
     catch(...) {
-        DBG(cerr << "caught unknown exception" << endl);
+        DBG(cerr << "function_swath2array() - Encountered unknown exception." << endl);
         throw;
     }
+    DBG(cerr << "function_swath2array() - END" << endl);
 
     return;
 }

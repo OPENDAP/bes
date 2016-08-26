@@ -157,7 +157,7 @@ CPLErr DAP_Dataset::InitialDataset(const int isSimple)
     if (CE_None != SetNativeCRS() || CE_None != SetGeoTransform())
         throw Error("Could not set the dataset native CRS or the GeoTransform.");
 
-    DBG(cerr << "Before SetGDALDataset" << endl);
+    DBG(cerr << "Calling SetGDALDataset()" << endl);
 
     if (CE_None != SetGDALDataset(isSimple)) {
         GDALClose(maptr_DS.release());
@@ -357,7 +357,7 @@ CPLErr DAP_Dataset::SetNativeCRS()
 
 CPLErr DAP_Dataset::SetGeoTransform()
 {
-    DBG(cerr << "In SetGeoTransform" << endl);
+    DBG(cerr << "SetGeoTransform() - BEGIN" << endl);
 
     // TODO Look at this; is this correct
     // Assume the array is two dimensional
@@ -368,8 +368,8 @@ CPLErr DAP_Dataset::SetGeoTransform()
     int nYSize = m_src->dimension_size(i + 1, true);
 #endif
     // Data are in row-major order, so the first dim is the Y-axis value
-    int nYSize = m_src->dimension_size(i, true);
-    int nXSize = m_src->dimension_size(i + 1, true);
+    int nXSize = m_src->dimension_size(i, true);
+    int nYSize = m_src->dimension_size(i + 1, true);
 
     mi_SrcImageXSize = nXSize;
     mi_SrcImageYSize = nYSize;
@@ -393,8 +393,8 @@ CPLErr DAP_Dataset::SetGeoTransform()
 
     mi_RectifiedImageYSize = (int) fabs((mdSrcGeoMaxY - mdSrcGeoMinY) / res) + 1;
 
-    DBG(cerr << "Source image size: " << nXSize << ", " << nYSize << endl);
-    DBG(cerr << "Rectified image size: " << mi_RectifiedImageXSize << ", " << mi_RectifiedImageYSize << endl);
+    DBG(cerr << "SetGeoTransform() - Source image size: " << nXSize << ", " << nYSize << endl);
+    DBG(cerr << "SetGeoTransform() - Rectified image size: " << mi_RectifiedImageXSize << ", " << mi_RectifiedImageYSize << endl);
 
     md_Geotransform[0] = mdSrcGeoMinX;
     md_Geotransform[1] = res;
@@ -403,6 +403,8 @@ CPLErr DAP_Dataset::SetGeoTransform()
     md_Geotransform[4] = 0;
     md_Geotransform[5] = -res;
     mb_GeoTransformSet = TRUE;
+
+    DBG(cerr << "SetGeoTransform() - END" << endl);
 
     return CE_None;
 }
@@ -424,7 +426,7 @@ CPLErr DAP_Dataset::SetGeoTransform()
 
 void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
 {
-    DBG(cerr << "In SetGeoBBoxAndGCPs" << endl);
+    DBG(cerr << "SetGeoBBoxAndGCPs() - BEGIN" << endl);
 
     // reuse the Dim_iter for both lat and lon arrays
     Array::Dim_iter i = m_lat->dim_begin();
@@ -434,8 +436,11 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
     int nLonXSize = m_lon->dimension_size(i, true);
     int nLonYSize = m_lon->dimension_size(i + 1, true);
 
+    DBG(cerr << "SetGeoBBoxAndGCPs() - nXSize: "<< nXSize << "  nLatXSize: " << nLatXSize << endl );
+    DBG(cerr << "SetGeoBBoxAndGCPs() - nYSize: "<< nYSize << "  nLatYSize: " << nLatYSize << endl );
+
     if (nXSize != nLatXSize || nLatXSize != nLonXSize || nYSize != nLatYSize || nLatYSize != nLonYSize)
-        throw Error("The size of latitude/longitude and data field does not match.");
+        throw Error("SetGeoBBoxAndGCPs() - The size of latitude/longitude and data field does not match.");
 
 #if 0
     /*
@@ -466,7 +471,7 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
     double *dataLat = extract_double_array(m_lat);
     double *dataLon = extract_double_array(m_lon);
 
-    DBG(cerr << "Past lat/lon data read" << endl);
+    DBG(cerr << "SetGeoBBoxAndGCPs() - Past lat/lon data read" << endl);
 
     try {
 
@@ -520,7 +525,7 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
     delete[] dataLat;
     delete[] dataLon;
 
-    DBG(cerr << "Leaving SetGeoBBoxAndGCPs" << endl);
+    DBG(cerr << "SetGeoBBoxAndGCPs() - BEGIN" << endl);
 }
 
 /************************************************************************/
@@ -535,15 +540,18 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
 
 CPLErr DAP_Dataset::SetGDALDataset(const int isSimple)
 {
-    DBG(cerr << "In SetGDALDataset" << endl);
+    DBG(cerr << "SetGDALDataset() - BEGIN" << endl);
 
     // NB: mi_RectifiedImageXSize & Y are set in SetGeoTransform()
     GDALDataType eBandType = GDT_Float64;
     // VRT, which was used in the original sample code, is not supported in this context, so I used MEM
-    GDALDriverH poDriver = GDALGetDriverByName("MEM");
+    string driverName = "MEM";
+    GDALDriverH poDriver = GDALGetDriverByName(driverName.c_str());
     if (!poDriver) {
-        throw Error("Failed to get MEM driver (" + string(CPLGetLastErrorMsg()) + ").");
+        throw Error("Failed to get '"+driverName+"' driver (" + string(CPLGetLastErrorMsg()) + ").");
     }
+    DBG(cerr << "SetGDALDataset() - Acquired '"+driverName+"' driver" << endl);
+
 
     GDALDataset* satDataSet = (GDALDataset*) GDALCreate(poDriver, "", mi_RectifiedImageXSize, mi_RectifiedImageYSize,
             1, eBandType, NULL);
@@ -551,18 +559,30 @@ CPLErr DAP_Dataset::SetGDALDataset(const int isSimple)
         GDALClose(poDriver);
         throw Error("Failed to create MEM dataSet (" + string(CPLGetLastErrorMsg()) + ").");
     }
+    DBG(cerr << "SetGDALDataset() - Created GDALDataset" << endl);
 
     GDALRasterBand *poBand = satDataSet->GetRasterBand(1);
     poBand->SetNoDataValue(md_MissingValue);
 
+    DBG(cerr << "SetGDALDataset() - Reading data" << endl);
     m_src->read();
     double *data = extract_double_array(m_src);
+    DBG(cerr << "SetGDALDataset() - Data read." << endl);
+
+
+    DBG(cerr << "SetGDALDataset() - Calling RasterIO(GF_Write,0,0,"<<
+            mi_RectifiedImageXSize<<","<< mi_RectifiedImageYSize<< ",data,"<<
+            mi_SrcImageXSize<< ","<< mi_SrcImageYSize << ","<< eBandType << ",0,0)" << endl);
+
+
     if (CE_None != poBand->RasterIO(GF_Write, 0, 0, mi_RectifiedImageXSize, mi_RectifiedImageYSize, data,
                     mi_SrcImageXSize, mi_SrcImageYSize, eBandType, 0, 0)) {
         GDALClose((GDALDatasetH) satDataSet);
-        throw Error("Failed to set satellite data band to MEM DataSet (" + string(CPLGetLastErrorMsg()) + ").");
+        throw Error("Failed to set satellite data band to '"+driverName+"' DataSet (" + string(CPLGetLastErrorMsg()) + ").");
     }
     delete[] data;
+    DBG(cerr << "SetGDALDataset() -  RasterIO call completed" << endl);
+
 
     //set GCPs for this VRTDataset
     if (CE_None != SetGCPGeoRef4VRTDataset(satDataSet)) {
@@ -570,14 +590,18 @@ CPLErr DAP_Dataset::SetGDALDataset(const int isSimple)
         throw Error("Could not georeference the virtual dataset (" + string(CPLGetLastErrorMsg()) + ").");
     }
 
-    DBG(cerr << "satDataSet: " << satDataSet << endl);
+    DBG(cerr << "SetGDALDataset() - satDataSet: " << satDataSet << endl);
 
     maptr_DS.reset(satDataSet);
 
-    if (isSimple)
-        return CE_None;
 
-    return RectifyGOESDataSet();
+    CPLErr err_code = CE_None;
+    if (!isSimple)
+        err_code = RectifyGOESDataSet();
+
+    DBG(cerr << "SetGDALDataset() - END" << endl);
+
+    return err_code;
 }
 
 /************************************************************************/
@@ -695,10 +719,11 @@ CPLErr DAP_Dataset::GetGeoMinMax(double geoMinMax[])
 
 CPLErr DAP_Dataset::RectifyGOESDataSet()
 {
-    DBG(cerr << "In RectifyGOESDataSet" << endl);
+    DBG(cerr << "RectifyGOESDataSet() - BEGIN" << endl);
 
     char *pszDstWKT;
     mo_NativeCRS.exportToWkt(&pszDstWKT);
+    DBG(cerr << "RectifyGOESDataSet(): pszDstWKT: '" << pszDstWKT << "'" << endl);
 
     GDALDriverH poDriver = GDALGetDriverByName("VRT"); // MEM
     GDALDataset* rectDataSet = (GDALDataset*) GDALCreate(poDriver, "", mi_RectifiedImageXSize, mi_RectifiedImageYSize,
@@ -706,22 +731,22 @@ CPLErr DAP_Dataset::RectifyGOESDataSet()
     if (NULL == rectDataSet) {
         GDALClose(poDriver);
         OGRFree(pszDstWKT);
-        throw Error("Failed to create \"MEM\" dataSet.");
+        throw Error("DAP_Dataset::RectifyGOESDataSet(): Failed to create \"MEM\" dataSet.");
     }
 
     rectDataSet->SetProjection(pszDstWKT);
     rectDataSet->SetGeoTransform(md_Geotransform);
 
-    DBG(cerr << "rectDataSet: " << rectDataSet << endl);
-    DBG(cerr << "satDataSet: " << maptr_DS.get() << endl);
+    DBG(cerr << "RectifyGOESDataSet(): rectDataSet: " << rectDataSet << endl);
+    DBG(cerr << "RectifyGOESDataSet(): satDataSet:  " << maptr_DS.get() << endl);
 
     // FIXME Magic value of 0.125
     if (CE_None != GDALReprojectImage(maptr_DS.get(), NULL, rectDataSet, pszDstWKT,
-            GRA_Lanczos /*GRA_NearestNeighbour*/, 0, 0.0/*0.125*/, NULL, NULL, NULL)) {
+            GRA_NearestNeighbour, 0, 0.125, NULL, NULL, NULL)) {
         GDALClose(rectDataSet);
         GDALClose(poDriver);
         OGRFree(pszDstWKT);
-        throw Error("Failed to re-project satellite data from GCP CRS to geographical CRS.");
+        throw Error("DAP_Dataset::RectifyGOESDataSet() - Failed to re-project satellite data from GCP CRS to geographical CRS.");
     }
 
     OGRFree(pszDstWKT);
@@ -729,7 +754,7 @@ CPLErr DAP_Dataset::RectifyGOESDataSet()
 
     maptr_DS.reset(rectDataSet);
 
-    DBG(cerr << "Leaving RectifyGOESDataSet" << endl);
+    DBG(cerr << "RectifyGOESDataSet() - END" << endl);
 
     return CE_None;
 }
