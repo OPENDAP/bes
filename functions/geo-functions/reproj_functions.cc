@@ -153,7 +153,7 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
  */
 void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-    DBG(cerr << "Entering function_swath2grid..." << endl);
+    DBG(cerr << "function_swath2grid() - BEGIN" << endl);
 
     string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
     		+ "<function name=\"swath2grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid\">\n"
@@ -188,18 +188,23 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     DAP_Dataset ds(src, lat, lon);
 
     try {
+        DBG(cerr << "function_swath2grid() - Calling DAP_Dataset::InitialDataset()"  << endl);
         ds.InitialDataset(0);
 
+        DBG(cerr << "function_swath2grid() - Calling DAP_Dataset::GetDAPGrid()"  << endl);
         *btpp = ds.GetDAPGrid();
+
     }
-    catch (Error &e) {
-        DBG(cerr << "caught Error: " << e.get_error_message() << endl);
+    catch (libdap::Error &e) {
+        DBG(cerr << "function_swath2grid() - Caught libdap::Error  msg:" << e.get_error_message() << endl);
         throw e;
     }
     catch(...) {
-        DBG(cerr << "caught unknown exception" << endl);
+        DBG(cerr << "function_swath2grid() - Caught unknown exception." << endl);
         throw;
     }
+
+    DBG(cerr << "function_swath2grid() - END" << endl);
 
     return;
 }
@@ -214,7 +219,7 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
  */
 void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-    DBG(cerr << "Entering function_changeCRS..." << endl);
+    DBG(cerr << "function_changeCRS() - BEGIN" << endl);
 
     string functionName = "crs";
 
@@ -272,6 +277,8 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         DBG(cerr << "caught unknown exception" << endl);
         throw;
     }
+
+    DBG(cerr << "function_changeCRS() - END" << endl);
 
     return;
 

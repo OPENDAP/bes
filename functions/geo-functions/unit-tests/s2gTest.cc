@@ -708,8 +708,11 @@ public:
                 }
             }
 
+            DBG(cerr<<"grid_return_test() - Calling function_swath2grid()" << endl);
+
             BaseType *btp = 0;
             function_swath2grid(3, argv, *dds, &btp);
+            DBG(cerr<<"grid_return_test() - Completed function_swath2grid()" << endl);
 
             DBG(cerr << "btp->name(): " << btp->name() << endl);
             CPPUNIT_ASSERT(btp->name() == "t");
