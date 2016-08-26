@@ -155,13 +155,13 @@ CPLErr DAP_Dataset::InitialDataset(const int isSimple)
 
     // Might break that operation out so the remap is a separate call
     if (CE_None != SetNativeCRS() || CE_None != SetGeoTransform())
-        throw Error("Could not set the dataset native CRS or the GeoTransform.");
+        throw Error("DAP_Dataset::InitialDataset() - Could not set the dataset native CRS or the GeoTransform.");
 
     DBG(cerr << "Calling SetGDALDataset()" << endl);
 
     if (CE_None != SetGDALDataset(isSimple)) {
         GDALClose(maptr_DS.release());
-        throw Error("Could not reproject the dataset.");
+        throw Error("DAP_Dataset::InitialDataset() - Could not re-project the dataset.");
     }
 
     return CE_None;
@@ -725,13 +725,14 @@ CPLErr DAP_Dataset::RectifyGOESDataSet()
     mo_NativeCRS.exportToWkt(&pszDstWKT);
     DBG(cerr << "RectifyGOESDataSet(): pszDstWKT: '" << pszDstWKT << "'" << endl);
 
-    GDALDriverH poDriver = GDALGetDriverByName("VRT"); // MEM
+    string driverName="VRT";
+    GDALDriverH poDriver = GDALGetDriverByName(driverName.c_str()); // VRT
     GDALDataset* rectDataSet = (GDALDataset*) GDALCreate(poDriver, "", mi_RectifiedImageXSize, mi_RectifiedImageYSize,
             maptr_DS->GetRasterCount(), maptr_DS->GetRasterBand(1)->GetRasterDataType(), NULL);
     if (NULL == rectDataSet) {
         GDALClose(poDriver);
         OGRFree(pszDstWKT);
-        throw Error("DAP_Dataset::RectifyGOESDataSet(): Failed to create \"MEM\" dataSet.");
+        throw Error("DAP_Dataset::RectifyGOESDataSet(): Failed to create \""+driverName+"\" dataSet.");
     }
 
     rectDataSet->SetProjection(pszDstWKT);
@@ -742,7 +743,7 @@ CPLErr DAP_Dataset::RectifyGOESDataSet()
 
     // FIXME Magic value of 0.125
     if (CE_None != GDALReprojectImage(maptr_DS.get(), NULL, rectDataSet, pszDstWKT,
-            GRA_NearestNeighbour, 0, 0.125, NULL, NULL, NULL)) {
+            GRA_Lanczos /*GRA_NearestNeighbour*/, 0, 0.0/*0.125*/, NULL, NULL, NULL)) {
         GDALClose(rectDataSet);
         GDALClose(poDriver);
         OGRFree(pszDstWKT);

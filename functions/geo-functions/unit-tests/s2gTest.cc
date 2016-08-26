@@ -126,7 +126,7 @@ public:
             dods_float32 t_vals[dim_0_size][dim_1_size];
             for (int i = 0; i < dim_0_size; ++i)
                 for (int j = 0; j < dim_1_size; ++j)
-                    t_vals[i][j] = j + (i * 10.0);
+                    t_vals[i][j] = ((double)j) + (i * 10.0);
             t.set_value(&t_vals[0][0], dim_0_size*dim_1_size);
             t.set_read_p(true);
 
