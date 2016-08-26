@@ -247,7 +247,7 @@ public:
     CPPUNIT_TEST_SUITE( s2gTest );
 
     CPPUNIT_TEST(no_arguments_test);
-    CPPUNIT_TEST(array_return_test);
+    // CPPUNIT_TEST(array_return_test);
     CPPUNIT_TEST(grid_return_test);
 
     CPPUNIT_TEST_SUITE_END();
