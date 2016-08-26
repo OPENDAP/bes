@@ -699,12 +699,12 @@ public:
 
 
             cerr << "Input values:" << endl;
-            dods_float32 t_vals[dim_0_size][dim_1_size];
+            dods_float32 data_vals[dim_0_size][dim_1_size];
             Array *a = static_cast<Array*>(argv[0]);
-            a->value(&t_vals[0][0]);
+            a->value(&data_vals[0][0]);
             for (int i = 0; i < dim_0_size; ++i) {
                 for (int j = 0; j < dim_1_size; ++j) {
-                    cerr << "t[" << i << "][" << j << "]: " <<  t_vals[i][j] << endl;
+                    cerr << "BT_diff_SO2[" << i << "][" << j << "]: " <<  data_vals[i][j] << endl;
                 }
             }
 
