@@ -59,18 +59,27 @@ std::string datasetInfo( GDALDataset  *poDataset){
 
     double        adfGeoTransform[6];
 
+    ss << "########## GDALDataset ##########"<< endl;
+
+    ss << "Description: " << poDataset->GetDescription() << endl;
+
     ss << "Driver: '"<<  poDataset->GetDriver()->GetDescription() << "' "<<  poDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME )<< endl;
 
     ss << "Size is: [" << poDataset->GetRasterXSize() << "][" << poDataset->GetRasterYSize() << "][" << poDataset->GetRasterCount() << "]"<< endl;
 
     if( poDataset->GetProjectionRef()  != NULL )
-        ss << "Projection is '" << poDataset->GetProjectionRef() << "'" << endl;
+        ss << "Projection Ref: '" << poDataset->GetProjectionRef() << "'" << endl;
+
+    ss << "GCPProjection: '" << poDataset->GetGCPProjection() << "'" << endl;
 
     if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
     {
-        ss << "Origin = (" << adfGeoTransform[0]<< "," <<  adfGeoTransform[3] << ")" << endl;
+        ss << "GeoTransform[6]: " << endl;
+        ss << "    Origin(0,3)    = (" << adfGeoTransform[0]<< "," <<  adfGeoTransform[3] << ")" << endl;
+        ss << "    PixelSize(1,5) = (" << adfGeoTransform[1] << "," <<  adfGeoTransform[5] << ")" << endl;
+        ss << "    Mysto(2,4)     = (" << adfGeoTransform[2] << "," <<  adfGeoTransform[4] << ")" << endl;
 
-        ss << "Pixel Size = (" << adfGeoTransform[1] << "," <<  adfGeoTransform[5] << ")" << endl;
+
     }
 
     return ss.str();
