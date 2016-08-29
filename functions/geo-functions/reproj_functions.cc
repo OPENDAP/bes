@@ -37,19 +37,7 @@
 
 #include <limits.h>
 
-#if 0
-#include <cstdlib>      // used by strtod()
-#include <cerrno>
-#include <cmath>
-#endif
 #include <iostream>
-#if 0
-#include <vector>
-#include <algorithm>
-#endif
-
-// #include <gdal.h>
-// #include <gdal_priv.h>
 
 #define DODS_DEBUG
 
@@ -65,17 +53,8 @@
 #include "DAP_Dataset.h"
 #include "reproj_functions.h"
 
-//  We wrapped VC++ 6.x strtod() to account for a short coming
-//  in that function in regards to "NaN".  I don't know if this
-//  still applies in more recent versions of that product.
-//  ROM - 12/2007
-#ifdef WIN32
-#include <limits>
-double w32strtod(const char *, char **);
-#endif
 
 using namespace std;
-//using namespace libdap;
 
 namespace libdap {
 
@@ -257,9 +236,6 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     if (!src)
         throw Error("The fifth argument to "+functionName+"() must be a string identifying the target CRS. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
-
-
-
     // The args passed into the function using argv[] are deleted after the call.
 
     DAP_Dataset ds(src, lat, lon);
@@ -269,7 +245,7 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 
         *btpp = ds.GetDAPGrid();
     }
-    catch (Error &e) {
+    catch(Error &e) {
         DBG(cerr << "caught Error: " << e.get_error_message() << endl);
         throw e;
     }
@@ -281,7 +257,6 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     DBG(cerr << "function_changeCRS() - END" << endl);
 
     return;
-
 }
 
 
