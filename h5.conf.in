@@ -47,6 +47,7 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 # ignored types simply don't show up in the output.
 #
 # H5.IgnoreUnknownTypes = true
+
 #
 # EnableCF: Handle HDF data to follow the CF conventions
 #   (true,yes|false,no, defaults to false)
@@ -101,9 +102,47 @@ H5.EnableAddPathAttrs=true
 # are not used.
 H5.EnableDropLongString=true
 
+# We find that occassionally NASA HDF5 products may have the attribute_FillValue datatype 
+# dfferent than the variable datatype. This violates the CF conventions. So the handler
+# corrects the FillValue datatype to be the corresponding variable datatype. However, the
+# original value of the fillvalue may fall out of the range of the variable datatype.
+# An example, var dtype: 'unsigned char';  original fillvalue dtype: 'signed char';
+# original fill value: -127 is out of the range of "unsigned char". 
+# If such a case occurs, we believe this is a data producer's mistake and should fail the service
+# and let the data center reports this issue back to the data producer. 
+# However, this may only occur for one or two variables and the data center may not 
+# want to discontinue the data service. So we provide the following BES keys to give the
+# flexibility to the data center to continue the service and may use NcML to patch the 
+# wrong fillvalue until the data producer corrects it in the new release.
+# By default, the key FillValueCheck is true. If the fillvalue is out of the range of the variable type, 
+# DAP service stops. 
+# **To ignore the fillvalue check**, set this key to false. The service runs normally but
+# the _Fillvalue of some variables may be wrong. netCDF-Java clients may not access the data correctly.
+H5.EnableFillValueCheck=true
+
 
 # This BES key must be set to false for the real service. Set it to true 
 # will generate a DAS output that lists the ignored HDF5 objects and attributes
 # during the mapping from HDF5 to DAP2.
 # Also this key should only be used when the H5.EnableCF key is set to true.
 H5.CheckIgnoreObj=false
+
+# Caching, this is "cloned" from the netCDF handler..
+#
+# The HDF5 handler can cache (in memory) many of the different
+# responses it builds. If the H5.CacheEntries value is zero, the cache
+# is turned off. Setting the H5.CacheEntries to a value greater than
+# zero enables caching in memory that number of responses. The cache
+# uses a LRU policy for purging old entries; tune its behavior by
+# changing the value and the CachePurgeLevel value below. Note that
+# this feature is on by default.
+
+H5.CacheEntries = 100
+
+# The H5.CachePurgeLevel key determines how much of the in-memory cache is
+# removed when it is purged. The value 0.2 (the default) configures the
+# software to remove the oldest 20% of items from the cache. You do not
+# need to edit this to use the cache since 0.2 is the default value.
+
+# H5.CachePurgeLevel = 0.2
+

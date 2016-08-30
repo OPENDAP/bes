@@ -428,6 +428,38 @@
         <String/>
         <dimension name="FakeDim2" size="1"/>
     </Array>
+    <Array name="Metadata_GapStartTime">
+        <Attribute name="Shape" type="String">
+            <value>Gap_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GapStartTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/GapStartTime</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim3" size="0"/>
+    </Array>
+    <Array name="Metadata_GapStopTime">
+        <Attribute name="Shape" type="String">
+            <value>Gap_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GapStopTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/GapStopTime</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim3" size="0"/>
+    </Array>
     <Array name="Metadata_GranulePointer">
         <Attribute name="Shape" type="String">
             <value>Scalar</value>
@@ -554,7 +586,7 @@
             <value>/Metadata/L2FullPhysicsInputPointer</value>
         </Attribute>
         <String/>
-        <dimension name="FakeDim3" size="10"/>
+        <dimension name="FakeDim4" size="10"/>
     </Array>
     <Array name="Metadata_L2FullPhysicsOperationsVersion">
         <Attribute name="Shape" type="String">
@@ -603,7 +635,7 @@
         </Attribute>
         <Int32/>
         <dimension name="FakeDim1" size="3"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="Metadata_NominalDay">
         <Attribute name="Shape" type="String">
@@ -1113,7 +1145,7 @@
             <value>/RetrievalResults/albedo_o2_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_albedo_strong_co2_fph">
         <Attribute name="Shape" type="String">
@@ -1129,7 +1161,7 @@
             <value>/RetrievalResults/albedo_strong_co2_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_albedo_weak_co2_fph">
         <Attribute name="Shape" type="String">
@@ -1145,7 +1177,7 @@
             <value>/RetrievalResults/albedo_weak_co2_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_co2_profile">
         <Attribute name="Shape" type="String">
@@ -1164,8 +1196,8 @@
             <value>/RetrievalResults/co2_profile</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_co2_profile_apriori">
         <Attribute name="Shape" type="String">
@@ -1184,8 +1216,8 @@
             <value>/RetrievalResults/co2_profile_apriori</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_co2_profile_uncert">
         <Attribute name="Shape" type="String">
@@ -1204,8 +1236,8 @@
             <value>/RetrievalResults/co2_profile_uncert</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_diverging_steps">
         <Attribute name="Shape" type="String">
@@ -1221,7 +1253,7 @@
             <value>/RetrievalResults/diverging_steps</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_dof_co2_profile">
         <Attribute name="Shape" type="String">
@@ -1237,7 +1269,7 @@
             <value>/RetrievalResults/dof_co2_profile</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_dof_full_vector">
         <Attribute name="Shape" type="String">
@@ -1253,7 +1285,7 @@
             <value>/RetrievalResults/dof_full_vector</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_exposure_index">
         <Attribute name="Shape" type="String">
@@ -1269,7 +1301,7 @@
             <value>/RetrievalResults/exposure_index</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_iterations">
         <Attribute name="Shape" type="String">
@@ -1285,7 +1317,7 @@
             <value>/RetrievalResults/iterations</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_master_quality_flag">
         <Attribute name="Shape" type="String">
@@ -1301,7 +1333,7 @@
             <value>/RetrievalResults/master_quality_flag</value>
         </Attribute>
         <String/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_num_active_levels">
         <Attribute name="Shape" type="String">
@@ -1317,7 +1349,7 @@
             <value>/RetrievalResults/num_active_levels</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_outcome_flag">
         <Attribute name="Shape" type="String">
@@ -1333,7 +1365,7 @@
             <value>/RetrievalResults/outcome_flag</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_retrieved_aerosol_aod_by_type">
         <Attribute name="Shape" type="String">
@@ -1349,7 +1381,7 @@
             <value>/RetrievalResults/retrieved_aerosol_aod_by_type</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
         <dimension name="FakeDim0" size="5"/>
     </Array>
     <Array name="RetrievalResults_retrieved_aerosol_aod_by_type_high">
@@ -1366,7 +1398,7 @@
             <value>/RetrievalResults/retrieved_aerosol_aod_by_type_high</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
         <dimension name="FakeDim0" size="5"/>
     </Array>
     <Array name="RetrievalResults_retrieved_aerosol_aod_by_type_low">
@@ -1383,7 +1415,7 @@
             <value>/RetrievalResults/retrieved_aerosol_aod_by_type_low</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
         <dimension name="FakeDim0" size="5"/>
     </Array>
     <Array name="RetrievalResults_retrieved_aerosol_aod_by_type_mid">
@@ -1400,7 +1432,7 @@
             <value>/RetrievalResults/retrieved_aerosol_aod_by_type_mid</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
         <dimension name="FakeDim0" size="5"/>
     </Array>
     <Array name="RetrievalResults_surface_pressure_apriori_fph">
@@ -1420,7 +1452,7 @@
             <value>/RetrievalResults/surface_pressure_apriori_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_surface_pressure_fph">
         <Attribute name="Shape" type="String">
@@ -1439,7 +1471,7 @@
             <value>/RetrievalResults/surface_pressure_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_surface_pressure_uncert_fph">
         <Attribute name="Shape" type="String">
@@ -1458,7 +1490,7 @@
             <value>/RetrievalResults/surface_pressure_uncert_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_vector_pressure_levels">
         <Attribute name="Shape" type="String">
@@ -1477,8 +1509,8 @@
             <value>/RetrievalResults/vector_pressure_levels</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_xco2">
         <Attribute name="Shape" type="String">
@@ -1497,7 +1529,7 @@
             <value>/RetrievalResults/xco2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_xco2_apriori">
         <Attribute name="Shape" type="String">
@@ -1516,7 +1548,7 @@
             <value>/RetrievalResults/xco2_apriori</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_xco2_avg_kernel">
         <Attribute name="Shape" type="String">
@@ -1532,8 +1564,8 @@
             <value>/RetrievalResults/xco2_avg_kernel</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_xco2_avg_kernel_norm">
         <Attribute name="Shape" type="String">
@@ -1549,8 +1581,8 @@
             <value>/RetrievalResults/xco2_avg_kernel_norm</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_xco2_pressure_weighting_function">
         <Attribute name="Shape" type="String">
@@ -1566,8 +1598,8 @@
             <value>/RetrievalResults/xco2_pressure_weighting_function</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim6" size="20"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim7" size="20"/>
     </Array>
     <Array name="RetrievalResults_xco2_uncert">
         <Attribute name="Shape" type="String">
@@ -1586,7 +1618,7 @@
             <value>/RetrievalResults/xco2_uncert</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_xco2_uncert_interf">
         <Attribute name="Shape" type="String">
@@ -1605,7 +1637,7 @@
             <value>/RetrievalResults/xco2_uncert_interf</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_xco2_uncert_noise">
         <Attribute name="Shape" type="String">
@@ -1624,7 +1656,7 @@
             <value>/RetrievalResults/xco2_uncert_noise</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_xco2_uncert_smooth">
         <Attribute name="Shape" type="String">
@@ -1643,7 +1675,7 @@
             <value>/RetrievalResults/xco2_uncert_smooth</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_altitude">
         <Attribute name="Shape" type="String">
@@ -1662,7 +1694,7 @@
             <value>/SoundingGeometry/sounding_altitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_altitude_max">
         <Attribute name="Shape" type="String">
@@ -1681,7 +1713,7 @@
             <value>/SoundingGeometry/sounding_altitude_max</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_altitude_min">
         <Attribute name="Shape" type="String">
@@ -1700,7 +1732,7 @@
             <value>/SoundingGeometry/sounding_altitude_min</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_altitude_stddev">
         <Attribute name="Shape" type="String">
@@ -1719,7 +1751,7 @@
             <value>/SoundingGeometry/sounding_altitude_stddev</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_altitude_uncert">
         <Attribute name="Shape" type="String">
@@ -1738,7 +1770,7 @@
             <value>/SoundingGeometry/sounding_altitude_uncert</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_aspect">
         <Attribute name="Shape" type="String">
@@ -1757,7 +1789,7 @@
             <value>/SoundingGeometry/sounding_aspect</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_at_angle">
         <Attribute name="Shape" type="String">
@@ -1776,7 +1808,7 @@
             <value>/SoundingGeometry/sounding_at_angle</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_at_angle_error">
         <Attribute name="Shape" type="String">
@@ -1795,7 +1827,7 @@
             <value>/SoundingGeometry/sounding_at_angle_error</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_azimuth">
         <Attribute name="Shape" type="String">
@@ -1814,7 +1846,7 @@
             <value>/SoundingGeometry/sounding_azimuth</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_ct_angle">
         <Attribute name="Shape" type="String">
@@ -1833,7 +1865,7 @@
             <value>/SoundingGeometry/sounding_ct_angle</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_ct_angle_error">
         <Attribute name="Shape" type="String">
@@ -1852,7 +1884,7 @@
             <value>/SoundingGeometry/sounding_ct_angle_error</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_glint_angle">
         <Attribute name="Shape" type="String">
@@ -1871,7 +1903,7 @@
             <value>/SoundingGeometry/sounding_glint_angle</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_land_fraction">
         <Attribute name="Shape" type="String">
@@ -1890,7 +1922,7 @@
             <value>/SoundingGeometry/sounding_land_fraction</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_latitude">
         <Attribute name="Shape" type="String">
@@ -1909,7 +1941,7 @@
             <value>/SoundingGeometry/sounding_latitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_latitude_geoid">
         <Attribute name="Shape" type="String">
@@ -1928,7 +1960,7 @@
             <value>/SoundingGeometry/sounding_latitude_geoid</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_longitude">
         <Attribute name="Shape" type="String">
@@ -1947,7 +1979,7 @@
             <value>/SoundingGeometry/sounding_longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_longitude_geoid">
         <Attribute name="Shape" type="String">
@@ -1966,7 +1998,7 @@
             <value>/SoundingGeometry/sounding_longitude_geoid</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_plane_fit_quality">
         <Attribute name="Shape" type="String">
@@ -1985,7 +2017,7 @@
             <value>/SoundingGeometry/sounding_plane_fit_quality</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_slope">
         <Attribute name="Shape" type="String">
@@ -2004,7 +2036,7 @@
             <value>/SoundingGeometry/sounding_slope</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_solar_azimuth">
         <Attribute name="Shape" type="String">
@@ -2023,7 +2055,7 @@
             <value>/SoundingGeometry/sounding_solar_azimuth</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_solar_zenith">
         <Attribute name="Shape" type="String">
@@ -2042,7 +2074,7 @@
             <value>/SoundingGeometry/sounding_solar_zenith</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingGeometry_sounding_zenith">
         <Attribute name="Shape" type="String">
@@ -2061,7 +2093,7 @@
             <value>/SoundingGeometry/sounding_zenith</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_acquisition_mode">
         <Attribute name="Shape" type="String">
@@ -2077,7 +2109,7 @@
             <value>/SoundingHeader/acquisition_mode</value>
         </Attribute>
         <String/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_cloud_flag">
         <Attribute name="Shape" type="String">
@@ -2093,7 +2125,7 @@
             <value>/SoundingHeader/cloud_flag</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim7" size="649"/>
+        <dimension name="FakeDim8" size="649"/>
     </Array>
     <Array name="SoundingHeader_ct_observation_points">
         <Attribute name="Shape" type="String">
@@ -2109,7 +2141,7 @@
             <value>/SoundingHeader/ct_observation_points</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_exposure_duration">
         <Attribute name="Shape" type="String">
@@ -2128,7 +2160,7 @@
             <value>/SoundingHeader/exposure_duration</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_gain_swir">
         <Attribute name="Shape" type="String">
@@ -2144,8 +2176,8 @@
             <value>/SoundingHeader/gain_swir</value>
         </Attribute>
         <String/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="SoundingHeader_glint_flag">
         <Attribute name="Shape" type="String">
@@ -2161,7 +2193,7 @@
             <value>/SoundingHeader/glint_flag</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_l2_packaging_qual_flag">
         <Attribute name="Shape" type="String">
@@ -2177,7 +2209,7 @@
             <value>/SoundingHeader/l2_packaging_qual_flag</value>
         </Attribute>
         <Byte/>
-        <dimension name="FakeDim7" size="649"/>
+        <dimension name="FakeDim8" size="649"/>
     </Array>
     <Array name="SoundingHeader_retrieval_index">
         <Attribute name="Shape" type="String">
@@ -2193,7 +2225,7 @@
             <value>/SoundingHeader/retrieval_index</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim7" size="649"/>
+        <dimension name="FakeDim8" size="649"/>
     </Array>
     <Array name="SoundingHeader_sounding_qual_flag">
         <Attribute name="Shape" type="String">
@@ -2209,7 +2241,7 @@
             <value>/SoundingHeader/sounding_qual_flag</value>
         </Attribute>
         <UInt32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_sounding_time_string">
         <Attribute name="Shape" type="String">
@@ -2225,7 +2257,7 @@
             <value>/SoundingHeader/sounding_time_string</value>
         </Attribute>
         <String/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_sounding_time_tai93">
         <Attribute name="Shape" type="String">
@@ -2244,7 +2276,7 @@
             <value>/SoundingHeader/sounding_time_tai93</value>
         </Attribute>
         <Float64/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_spike_noise_flag">
         <Attribute name="Shape" type="String">
@@ -2260,9 +2292,9 @@
             <value>/SoundingHeader/spike_noise_flag</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
         <dimension name="FakeDim1" size="3"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="SoundingHeader_zpd_saturation_flag">
         <Attribute name="Shape" type="String">
@@ -2278,9 +2310,9 @@
             <value>/SoundingHeader/zpd_saturation_flag</value>
         </Attribute>
         <Int16/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
         <dimension name="FakeDim1" size="3"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="SpacecraftGeometry_ground_track">
         <Attribute name="Minimum" type="Float32">
@@ -2305,7 +2337,7 @@
             <value>/SpacecraftGeometry/ground_track</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_relative_velocity">
         <Attribute name="Minimum" type="Float32">
@@ -2330,7 +2362,7 @@
             <value>/SpacecraftGeometry/relative_velocity</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_spacecraft_alt">
         <Attribute name="Minimum" type="Float32">
@@ -2355,7 +2387,7 @@
             <value>/SpacecraftGeometry/spacecraft_alt</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_spacecraft_lat">
         <Attribute name="Minimum" type="Float32">
@@ -2380,7 +2412,7 @@
             <value>/SpacecraftGeometry/spacecraft_lat</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_spacecraft_lon">
         <Attribute name="Minimum" type="Float32">
@@ -2405,7 +2437,7 @@
             <value>/SpacecraftGeometry/spacecraft_lon</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_x_pos">
         <Attribute name="Minimum" type="Float32">
@@ -2430,7 +2462,7 @@
             <value>/SpacecraftGeometry/x_pos</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_x_vel">
         <Attribute name="Minimum" type="Float32">
@@ -2455,7 +2487,7 @@
             <value>/SpacecraftGeometry/x_vel</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_y_pos">
         <Attribute name="Minimum" type="Float32">
@@ -2480,7 +2512,7 @@
             <value>/SpacecraftGeometry/y_pos</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_y_vel">
         <Attribute name="Minimum" type="Float32">
@@ -2505,7 +2537,7 @@
             <value>/SpacecraftGeometry/y_vel</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_z_pos">
         <Attribute name="Minimum" type="Float32">
@@ -2530,7 +2562,7 @@
             <value>/SpacecraftGeometry/z_pos</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpacecraftGeometry_z_vel">
         <Attribute name="Minimum" type="Float32">
@@ -2555,7 +2587,7 @@
             <value>/SpacecraftGeometry/z_vel</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_reduced_chi_squared_o2_fph">
         <Attribute name="Shape" type="String">
@@ -2571,7 +2603,7 @@
             <value>/SpectralParameters/reduced_chi_squared_o2_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_reduced_chi_squared_strong_co2_fph">
         <Attribute name="Shape" type="String">
@@ -2587,7 +2619,7 @@
             <value>/SpectralParameters/reduced_chi_squared_strong_co2_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_reduced_chi_squared_weak_co2_fph">
         <Attribute name="Shape" type="String">
@@ -2603,7 +2635,7 @@
             <value>/SpectralParameters/reduced_chi_squared_weak_co2_fph</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_relative_residual_mean_square_o2">
         <Attribute name="Shape" type="String">
@@ -2619,7 +2651,7 @@
             <value>/SpectralParameters/relative_residual_mean_square_o2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_relative_residual_mean_square_strong_co2">
         <Attribute name="Shape" type="String">
@@ -2635,7 +2667,7 @@
             <value>/SpectralParameters/relative_residual_mean_square_strong_co2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_relative_residual_mean_square_weak_co2">
         <Attribute name="Shape" type="String">
@@ -2651,7 +2683,7 @@
             <value>/SpectralParameters/relative_residual_mean_square_weak_co2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_residual_mean_square_o2">
         <Attribute name="Shape" type="String">
@@ -2670,7 +2702,7 @@
             <value>/SpectralParameters/residual_mean_square_o2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_residual_mean_square_strong_co2">
         <Attribute name="Shape" type="String">
@@ -2689,7 +2721,7 @@
             <value>/SpectralParameters/residual_mean_square_strong_co2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_residual_mean_square_weak_co2">
         <Attribute name="Shape" type="String">
@@ -2708,7 +2740,7 @@
             <value>/SpectralParameters/residual_mean_square_weak_co2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_signal_o2">
         <Attribute name="Shape" type="String">
@@ -2727,7 +2759,7 @@
             <value>/SpectralParameters/signal_o2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_signal_strong_co2">
         <Attribute name="Shape" type="String">
@@ -2746,7 +2778,7 @@
             <value>/SpectralParameters/signal_strong_co2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_signal_weak_co2">
         <Attribute name="Shape" type="String">
@@ -2765,7 +2797,7 @@
             <value>/SpectralParameters/signal_weak_co2</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SpectralParameters_snr_o2_l1b">
         <Attribute name="Shape" type="String">
@@ -2781,8 +2813,8 @@
             <value>/SpectralParameters/snr_o2_l1b</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="SpectralParameters_snr_strong_co2_l1b">
         <Attribute name="Shape" type="String">
@@ -2798,8 +2830,8 @@
             <value>/SpectralParameters/snr_strong_co2_l1b</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="SpectralParameters_snr_weak_co2_l1b">
         <Attribute name="Shape" type="String">
@@ -2815,8 +2847,8 @@
             <value>/SpectralParameters/snr_weak_co2_l1b</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim5" size="60"/>
-        <dimension name="FakeDim4" size="2"/>
+        <dimension name="FakeDim6" size="60"/>
+        <dimension name="FakeDim5" size="2"/>
     </Array>
     <Array name="Metadata_FirstSoundingId_Time">
         <Attribute name="Shape" type="String">
@@ -2896,7 +2928,7 @@
             <value>/RetrievalResults/sounding_id_reference</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="RetrievalResults_sounding_id_reference_Date">
         <Attribute name="Shape" type="String">
@@ -2912,7 +2944,7 @@
             <value>/RetrievalResults/sounding_id_reference</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="60"/>
     </Array>
     <Array name="SoundingHeader_sounding_id_Time">
         <Attribute name="Shape" type="String">
@@ -2928,7 +2960,7 @@
             <value>/SoundingHeader/sounding_id</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim7" size="649"/>
+        <dimension name="FakeDim8" size="649"/>
     </Array>
     <Array name="SoundingHeader_sounding_id_Date">
         <Attribute name="Shape" type="String">
@@ -2944,7 +2976,7 @@
             <value>/SoundingHeader/sounding_id</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim7" size="649"/>
+        <dimension name="FakeDim8" size="649"/>
     </Array>
     <dataBLOB href=""/>
 </Dataset>

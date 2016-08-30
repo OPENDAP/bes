@@ -133,8 +133,8 @@ BES.Catalog.catalog.Exclude=^\..*;
 # BES.Catalog.catalog.FollowSymLinks is for catalog requests and data
 # containers in the catalog and is used in conjunction with the
 # BES.Catalog.catalog.RootDirectory parameter above.
-BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=No
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
@@ -279,4 +279,6 @@ BES.DefaultResponseMethod=POST
 H5.EnableCF=false
 H5.EnableCheckNameClashing=false
 H5.EnableAddPathAttrs=false
-
+H5.CacheEntries=100
+#H5.CachePurgeLevel=0.2
+#

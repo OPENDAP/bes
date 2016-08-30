@@ -4,7 +4,7 @@
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //           MuQun Yang <myang6@hdfgroup.org>
 //
-// Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 ///
 /// All rights reserved.
 //

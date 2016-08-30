@@ -1,0 +1,22 @@
+netcdf nc4_unlimited {    
+dimensions:
+lat = 3, lon = 2, time = unlimited;
+variables:
+  int     lat(lat), lon(lon), time(time);
+  float   t(time,lat,lon);
+  double  p(time,lat,lon);
+  int     rh(time,lat,lon);
+  lat:units = "degrees_north";
+  lon:units = "degrees_east";
+  time:units = "seconds";
+  p:_FillValue = -9999.;
+  rh:_FillValue = -1;
+data:
+  lat   = 0, 10, 20;
+  lon   = -140, -118;
+  time  = 1;
+  t     = -10,-20,-30,-40,-50,-60;
+  p     = 1000,900,-9999.,700,600,500;
+  rh    = 50,40,35,20,-1,5;
+}
+

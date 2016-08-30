@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2013 The HDF Group
+/// Copyright (C) 2011-2016 The HDF Group
 ///
 /// All rights reserved.
 
@@ -169,22 +169,16 @@ HDFEOS5CFMissLLArray::format_constraint (int *offset, int *step, int *count)
                 int stride = dimension_stride (p, true);
                 int stop = dimension_stop (p, true);
 
+                // Check for illegal  constraint
+                if (start > stop) {
+                   ostringstream oss;
 
-                // Check for illegical  constraint
-                if (stride < 0 || start < 0 || stop < 0 || start > stop) {
-                        ostringstream oss;
-
-                        oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                                ":" << stride << ":" << stop << "]";
-                        throw Error (malformed_expr, oss.str ());
+                   oss << "Array/Grid hyperslab start point "<< start <<
+                         " is greater than stop point " <<  stop <<".";
+                   throw Error(malformed_expr, oss.str());
                 }
 
-                // Check for an empty constraint and use the whole dimension if so.
-                if (start == 0 && stop == 0 && stride == 0) {
-                        start = dimension_start (p, false);
-                        stride = dimension_stride (p, false);
-                        stop = dimension_stop (p, false);
-                }
+
 
                 offset[id] = start;
                 step[id] = stride;

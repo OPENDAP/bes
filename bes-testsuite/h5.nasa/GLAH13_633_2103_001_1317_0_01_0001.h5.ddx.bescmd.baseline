@@ -2387,6 +2387,15 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
     </Attribute>
     <Attribute name="BROWSE" type="Container"/>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>Data_1HZ_DS_UTCTime_1</value>
+            <value>Data_1HZ_Time_d_UTCTime_1</value>
+            <value>Data_40HZ_DS_DEMhiresArElv</value>
+            <value>Data_40HZ_DS_UTCTime_40</value>
+            <value>Data_40HZ_Time_d_UTCTime_40</value>
+        </Attribute>
+    </Attribute>
     <Array name="Data_40HZ_Reflectivity_d_reflctUC">
         <Attribute name="hertz" type="String">
             <value>40</value>

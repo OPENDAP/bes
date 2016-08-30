@@ -409,4 +409,7 @@ Attributes {
         String origname "Longitude";
         String fullnamepath "/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude";
     }
+    DODS_EXTRA {
+        String Unlimited_Dimension "FakeDim0";
+    }
 }

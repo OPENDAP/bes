@@ -31,7 +31,7 @@
 #define YYDEBUG 1
 // Uncomment the following line for debugging.
 //#define VERBOSE 
-// #define YYPARSE_PARAM he5parser
+//#define YYPARSE_PARAM he5parser
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -98,6 +98,8 @@ int  he5ddslex(void);
 
 %token DATA_TYPE 
 %token DIMENSION_LIST
+// UNCOMMENT OUT the line below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
+//%token MAX_DIMENSION_LIST 
 %token COMPRESSION_TYPE
 
 %token INT
@@ -157,6 +159,32 @@ data: // empty
             p->za_list.back().data_var_list.back().dim_list.push_back(d);
         }
     }
+// UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
+/*
+    else if(p->parser_state == 12){ // THis is parsing the MaxDimList. 
+        string a;
+        a = a.append($$);
+        HE5Dim d;
+        d.name = a;
+        d.size = 0;             
+
+        if(p->structure_state == HE5Parser::GRID) {
+            p->grid_list.back().data_var_list.back().max_dim_list.push_back(d);
+        }
+
+
+        if(p->structure_state == HE5Parser::SWATH) {
+            if(swath_is_geo_field == true)
+                p->swath_list.back().geo_var_list.back().max_dim_list.push_back(d);
+            else
+                p->swath_list.back().data_var_list.back().max_dim_list.push_back(d);
+        }
+
+        if(p->structure_state == HE5Parser::ZA) {
+            p->za_list.back().data_var_list.back().max_dim_list.push_back(d);
+        }
+    }
+*/
 }
 | FLOAT
 {
@@ -215,6 +243,32 @@ data: // empty
         }
     }
 
+// UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
+/*
+    else if(p->parser_state == 12){
+        string a;
+        a = a.append($$);
+        HE5Dim d;
+        d.name = a;
+        d.size = 0;             
+
+        if(p->structure_state == HE5Parser::GRID) {
+            p->grid_list.back().data_var_list.back().max_dim_list.push_back(d);
+        }
+
+
+        if(p->structure_state == HE5Parser::SWATH) {
+            if(swath_is_geo_field == true)
+                p->swath_list.back().geo_var_list.back().max_dim_list.push_back(d);
+            else
+                p->swath_list.back().data_var_list.back().max_dim_list.push_back(d);
+        }
+               
+        if(p->structure_state == HE5Parser::ZA) {
+            p->za_list.back().data_var_list.back().max_dim_list.push_back(d);
+        }
+    }
+*/
 
 }
 
@@ -226,6 +280,9 @@ attribute: attribute_grid_name
 | attribute_dimension_name
 | attribute_dimension_size
 | attribute_dimension_list
+
+// UNCOMMENT OUT the line below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
+//| attribute_max_dimension_list
 | attribute_data_field_name
 | attribute_geo_field_name
 | attribute_upperleft
@@ -357,8 +414,21 @@ attribute_dimension_list: DIMENSION_LIST
 '=' dataseq
 {
     ((HE5Parser*)(he5parser))->parser_state = 11;
-} 
+}
 ;
+// UNCOMMENT OUT the lines below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
+/*
+attribute_max_dimension_list: MAX_DIMENSION_LIST
+{
+    ((HE5Parser*)(he5parser))->parser_state = 12;
+} 
+'=' dataseq
+{
+    ((HE5Parser*)(he5parser))->parser_state = 13;
+}
+;
+*/
+
 
 attribute_data_field_name: DATA_FIELD_NAME '=' STR
 {
@@ -498,7 +568,7 @@ projection: PROJECTION '=' STR
 {
     HE5Parser* p = (HE5Parser*)he5parser;
 #ifdef VERBOSE  
-    "h5", "Got projection " << $3 << endl;
+    //"h5", "Got projection " << $3 << endl;
 #endif  
     HE5Grid *g = &p->grid_list.back();
     if(strncmp("HE5_GCTP_GEO", $3, 12)==0)

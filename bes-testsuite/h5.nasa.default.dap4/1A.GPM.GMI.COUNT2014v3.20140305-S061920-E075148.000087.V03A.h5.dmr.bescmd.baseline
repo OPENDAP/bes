@@ -3,6 +3,81 @@
     <String name="AlgorithmRuntimeInfo">
         <Dim size="1"/>
     </String>
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=;
+AlgorithmID=1AGMI;
+AlgorithmVersion=4.0;
+FileName=1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.HDF5;
+SatelliteName=GPM;
+InstrumentName=GMI;
+GenerationDateTime=2014-09-02T19:41:08.000Z;
+StartGranuleDateTime=2014-03-05T06:19:20.901Z;
+StopGranuleDateTime=2014-03-05T07:51:49.577Z;
+GranuleNumber=87;
+NumberOfSwaths=5;
+NumberOfGrids=0;
+GranuleStart=SOUTHERNMOST_LATITUDE;
+TimeInterval=ORBIT;
+ProcessingSystem=PPS;
+ProductVersion=V03A;
+EmptyGranule=NOT_EMPTY;
+MissingData=0;
+</Value>
+    </Attribute>
+    <Attribute name="InputRecord" type="String">
+        <Value>InputFileNames=GPM.GMIS.20140305.061735655_20140305.062233782.001.SCANRAW
+GPM.GMIS.20140305.062235657_20140305.062733783.001.SCANRAW
+GPM.GMIS.20140305.062735659_20140305.063233786.001.SCANRAW
+GPM.GMIS.20140305.063235660_20140305.063733787.001.SCANRAW
+GPM.GMIS.20140305.063735662_20140305.064233789.001.SCANRAW
+GPM.GMIS.20140305.064235664_20140305.064733790.001.SCANRAW
+GPM.GMIS.20140305.064735665_20140305.065233792.001.SCANRAW
+GPM.GMIS.20140305.065235668_20140305.065733795.001.SCANRAW
+GPM.GMIS.20140305.065735670_20140305.070233797.001.SCANRAW
+GPM.GMIS.20140305.070235672_20140305.070733799.001.SCANRAW
+GPM.GMIS.20140305.070735674_20140305.071233801.001.SCANRAW
+GPM.GMIS.20140305.071235675_20140305.071733802.001.SCANRAW
+GPM.GMIS.20140305.071735678_20140305.072233805.001.SCANRAW
+GPM.GMIS.20140305.072235680_20140305.072733804.001.SCANRAW
+GPM.GMIS.20140305.072735679_20140305.073233809.001.SCANRAW
+GPM.GMIS.20140305.073235684_20140305.073733811.001.SCANRAW
+GPM.GMIS.20140305.073735686_20140305.074233814.001.SCANRAW
+GPM.GMIS.20140305.074235688_20140305.074733817.001.SCANRAW
+GPM.GMIS.20140305.074735692_20140305.075233818.001.SCANRAW;
+InputAlgorithmVersions=n/a;
+InputGenerationDateTimes=n/a;
+</Value>
+    </Attribute>
+    <Attribute name="NavigationRecord" type="String">
+        <Value>LongitudeOnEquator=137.558093;
+UTCDateTimeOnEquator=2014-03-05T06:42:27.953Z;
+MeanSolarBetaAngle=45.827297;
+EphemerisFileName=GPMCORE.20140305.061920901_20140305.075149577.002.EPHEM.txt;
+AttitudeFileName=GPMCORE.20140305.061920901_20140305.075149577.003.ATT.txt;
+GeoControlFileName=Control_Parameters_GMI_20140817.V03A.txt;
+EphemerisSource=7_PVT_WITH_FALLBACK_AS_FLAGGED;
+AttitudeSource=1_ON_BOARD_CALCULATED_PITCH_ROLL_YAW;
+GeoToolkitVersion=V3.6  05.15.2014 for delivery;
+SensorAlignmentFirstRotationAngle=179.964996;
+SensorAlignmentSecondRotationAngle=0.004000;
+SensorAlignmentThirdRotationAngle=0.001000;
+SensorAlignmentFirstRotationAxis=1;
+SensorAlignmentSecondRotationAxis=2;
+SensorAlignmentThirdRotationAxis=3;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=bc;
+TKCodeBuildVersion=1;
+MetadataVersion=bc;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V1.1AGMI.blueprint.xml;
+BlueprintVersion=BV_40;
+TKIOVersion=3.60.4;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
     <Group name="gmi1aHeader">
         <UInt16 name="sampleRangeFile">
             <Dim size="7"/>

@@ -1,5 +1,72 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5">
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=10.5067/GPM/GMI/GPM/GPROF2A;
+AlgorithmID=2AGPROFGMI;
+AlgorithmVersion=S1V1-4.1406;
+FileName=2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.HDF5;
+SatelliteName=GPM;
+InstrumentName=GMI;
+GenerationDateTime=2014-09-22T17:02:14.000Z;
+StartGranuleDateTime=2014-09-21T00:20:02.000Z;
+StopGranuleDateTime=2014-09-21T01:52:34.000Z;
+GranuleNumber=003195;
+NumberOfSwaths=1;
+NumberOfGrids=0;
+GranuleStart=SOUTHERNMOST_LATITUDE;
+TimeInterval=ORBIT;
+ProcessingSystem=PPS;
+ProductVersion=V03C;
+EmptyGranule=NOT_EMPTY;
+MissingData=0;
+</Value>
+    </Attribute>
+    <Attribute name="InputRecord" type="String">
+        <Value>InputFileNames=1C-R.GPM.GMI.XCAL2014-N.20140921-S002001-E015234.003195.V03B.HDF5,GPM_IP_2AGPROF_GPM_GMI_20140921_3195_merge.bin (binary);
+InputAlgorithmVersions=2014-N-CO-REGv1.0;
+InputGenerationDateTimes=2014-09-21T08:48:15.000Z;
+</Value>
+    </Attribute>
+    <Attribute name="NavigationRecord" type="String">
+        <Value>LongitudeOnEquator=71.071056;
+UTCDateTimeOnEquator=2014-09-21T00:43:10.373Z;
+MeanSolarBetaAngle=-63.892107;
+EphemerisFileName=GPMCORE.20140921.002001309_20140921.015235550.001.EPHEM.txt;
+AttitudeFileName=GPMCORE.20140921.002001309_20140921.015235550.001.ATT.txt;
+GeoControlFileName=Control_Parameters_GMI_20140817.V03A.txt;
+EphemerisSource=7_PVT_WITH_FALLBACK_AS_FLAGGED;
+AttitudeSource=1_ON_BOARD_CALCULATED_PITCH_ROLL_YAW;
+GeoToolkitVersion=V3.6  05.15.2014 for delivery;
+SensorAlignmentFirstRotationAngle=179.964996;
+SensorAlignmentSecondRotationAngle=0.004000;
+SensorAlignmentThirdRotationAngle=0.001000;
+SensorAlignmentFirstRotationAxis=1;
+SensorAlignmentSecondRotationAxis=2;
+SensorAlignmentThirdRotationAxis=3;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=an;
+TKCodeBuildVersion=2;
+MetadataVersion=ao;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V1.2AGPROFGMI.blueprint.xml;
+BlueprintVersion=BV_34;
+TKIOVersion=3.60.4;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Attribute name="GprofInfo" type="String">
+        <Value>Satellite=GPM;
+Sensor=GMI;
+PreProcessorVersion=GMI_1406g;
+PostProcessorVersion=gprof2014PPS_pp_1_4_2;
+ProfileDatabaseFilename=GMI_V1-4;
+OriginalRadiometerFilename=1C-R.GPM.GMI.XCAL2014-N.20140921-S002001-E015234.003195.V03B.HDF5;
+ProfileStructureFlag=0;
+</Value>
+    </Attribute>
     <Group name="GprofDHeadr">
         <Byte name="speciesDescription">
             <Dim size="5"/>

@@ -2,7 +2,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -44,5 +44,5 @@ void gen_gmh5_cfdas(DAS &, HDF5CF::GMFile *);
 void gen_gmh5_cf_ignored_obj_info(DAS &, HDF5CF::GMFile *);
 void gen_dap_onegmcvar_dds(DDS &,const HDF5CF::GMCVar*,const hid_t, const string &);
 void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t, const string & filename);
-void update_GPM_special_attrs(DAS &, const HDF5CF::Var* var);
+void update_GPM_special_attrs(DAS &, const HDF5CF::Var* var,bool );
 #endif

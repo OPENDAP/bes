@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -37,6 +37,7 @@
 #include <BESDebug.h>
 
 #include "InternalErr.h"
+#include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
 #include "HDF5CFStr.h"
 #include <hdf5.h>
@@ -126,11 +127,6 @@ bool HDF5CFStr::read()
 
     }
 
-    // Check if we should drop the long string
-    string check_droplongstr_key ="H5.EnableDropLongString";
-    bool is_droplongstr = false;
-    is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-
     htri_t is_vlen_str = H5Tis_variable_str(dtypeid);
     if (is_vlen_str > 0) {
         size_t ty_size = H5Tget_size(memtype);
@@ -193,7 +189,7 @@ bool HDF5CFStr::read()
         // If the string size is longer than the current netCDF JAVA
         // string and the "EnableDropLongString" key is turned on,
         // No string is generated.
-        if (true == is_droplongstr) {
+        if (true == HDF5RequestHandler::get_drop_long_string()) {
             if( final_str.size() > NC_JAVA_STR_SIZE_LIMIT) 
                 final_str = "";
         }
@@ -248,7 +244,7 @@ bool HDF5CFStr::read()
         // If the string size is longer than the current netCDF JAVA
         // string and the "EnableDropLongString" key is turned on,
         // No string is generated.
-        if (true == is_droplongstr) {
+        if (true == HDF5RequestHandler::get_drop_long_string()) {
             if( trim_string.size() > NC_JAVA_STR_SIZE_LIMIT) 
                 trim_string = "";
         }
@@ -264,6 +260,13 @@ bool HDF5CFStr::read()
 
         throw InternalErr (__FILE__, __LINE__, "H5Tis_variable_str returns negative value" );
     } 
+
+    H5Tclose(memtype);
+    H5Tclose(dtypeid);
+    H5Sclose(dspace);
+    H5Dclose(dsetid);
+    H5Fclose(fileid);
+
 
     return true;
 }

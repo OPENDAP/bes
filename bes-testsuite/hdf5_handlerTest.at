@@ -153,6 +153,13 @@ AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_nocvs.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_za.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_za.h5.das.bescmd])
 
+#netcdf-4 1-D unlimited dimension tests(size = 0 and size .ne. 0)
+AT_BESCMD_RESPONSE_TEST([nc4_unlimited_0.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_unlimited_0.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc4_unlimited_0.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_unlimited_1.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_unlimited_1.h5.das.bescmd])
+
 
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
@@ -164,11 +171,10 @@ AT_BESCMD_RESPONSE_TEST([t_cf_2dll.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_cf_2dllz.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_cf_2dllz.h5.das.bescmd])
 
-# The current handler doesn't support scalar.
-# AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_int_scalar.h5.data.bescmd])
-# AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.dds.bescmd])
-# AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.ddx.bescmd])
+# The scalar support.
+AT_BESCMD_RESPONSE_TEST([t_scalar_dset.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_scalar_dset.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_scalar_dset.h5.dds.bescmd])
 
 # It loops forever.
 AT_BESCMD_RESPONSE_TEST([t_link_comment.h5.das.bescmd])
@@ -244,6 +250,15 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
 
+# Fillvalue out of range.
+# Turn off this test for the being because the new
+# change in the BES print out the line number of source code.
+# This is not desirable since the source code may change from
+# time to time and the line number may also get changed.
+# Given that this test case really rarely occurs and
+# we have a BES key to switch back and forth, the impact
+# should be minimum. KY 2016-05-12
+#AT_BESCMD_RESPONSE_TEST([t_invalid_fvalue.h5.das.bescmd])
 
 # Test simple HDF-EOS5 cases.
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.das.bescmd])
@@ -359,6 +374,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([za_2_2d_yz.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_2_2d_yz.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_2_2d_yz.h5.ddx.bescmd])
 
+#HDF-EOS5 unlimited reponse(>1 multi-dimensions)
+AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.ddx.bescmd])
+
+
 # Test subsetting.
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_0.bescmd])
@@ -371,6 +392,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_1.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])
 
+AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
 # Test default cases.
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_compound.h5.data.bescmd])
@@ -407,6 +429,17 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.ddx.bescmd])
 
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dds.bescmd])
+
+# The scalar support.
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dds.bescmd])
+
+
+
 #Default DAP4 test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_compound.h5.dap.bescmd])
@@ -430,15 +463,20 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dmr.bescmd])
 
-# The data field names are duplicate. Comment out and wait for ticket to be fixed.
 # https://opendap.atlassian.net/browse/HR-68 
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
+# May update this later.
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int64.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int64.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dmr.bescmd])
+
+#check int8-bit data
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_scalar_dset.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dap.bescmd])
@@ -474,3 +512,5 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic.h5.dmr.bescmd])
 #netcdf4 enhanced compound
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 
+#group attributes(including the root)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])

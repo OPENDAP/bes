@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2013 The HDF Group
+/// Copyright (C) 2011-2016 The HDF Group
 ///
 /// All rights reserved.
 
@@ -36,6 +36,7 @@
 #include <BESDebug.h>
 #include "InternalErr.h"
 
+#include "HDF5RequestHandler.h"
 #include "HDFEOS5CFSpecialCVArray.h"
 
 BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
@@ -46,9 +47,12 @@ BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 bool HDFEOS5CFSpecialCVArray::read(){
 
     BESDEBUG("h5","Coming to HDFEOS5CFSpecialCVArray read "<<endl);
+#if 0
     string check_pass_fileid_key_str="H5.EnablePassFileID";
     bool check_pass_fileid_key = false;
     check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
+#endif
+    bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     vector<int> offset;
     vector<int> count;

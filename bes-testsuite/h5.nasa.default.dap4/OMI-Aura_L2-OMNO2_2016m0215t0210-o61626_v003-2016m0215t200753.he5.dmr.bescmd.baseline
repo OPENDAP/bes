@@ -1,0 +1,2174 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2-OMNO2_2016m0215t0210-o61626_v003-2016m0215t200753.he5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES">
+                <Attribute name="InstrumentName" type="String">
+                    <Value>OMI</Value>
+                </Attribute>
+                <Attribute name="ProcessLevel" type="String">
+                    <Value>2A</Value>
+                </Attribute>
+                <Attribute name="PGEVersion" type="String">
+                    <Value>1.2.3.1</Value>
+                </Attribute>
+                <Attribute name="ProcessingSystem" type="String">
+                    <Value>OFFLINE</Value>
+                </Attribute>
+                <Attribute name="TAI93At0zOfGranule" type="Float64">
+                    <Value>729648009.</Value>
+                </Attribute>
+                <Attribute name="GranuleMonth" type="Int32">
+                    <Value>2</Value>
+                </Attribute>
+                <Attribute name="GranuleDay" type="Int32">
+                    <Value>15</Value>
+                </Attribute>
+                <Attribute name="GranuleYear" type="Int32">
+                    <Value>2016</Value>
+                </Attribute>
+                <Attribute name="NO2ColumnAmountHistogram" type="Int32">
+                    <Value>3332</Value>
+                    <Value>14526</Value>
+                    <Value>31438</Value>
+                    <Value>29474</Value>
+                    <Value>7689</Value>
+                    <Value>985</Value>
+                    <Value>4</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="CloudAlbedo" type="Float32">
+                    <Value>0.8000000119</Value>
+                </Attribute>
+                <Attribute name="SolarProductMissing" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="SolarProductOutOfDate" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="SolarIrradianceWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="BackupSolarProductUsed" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="ParametersInconsistent" type="Int32">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="RadianceParametersMissing" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="RadianceScienceQualityFlag" type="String">
+                    <Value>Not Investigated</Value>
+                </Attribute>
+                <Attribute name="IrradianceScienceQualityFlag" type="String">
+                    <Value>Not Investigated</Value>
+                </Attribute>
+                <Attribute name="CloudProductMissing" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="SolarIrradianceWavelengthRegistrationWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="WavelengthCalibrationMethod" type="String">
+                    <Value>assigned</Value>
+                </Attribute>
+                <Attribute name="QAPctSunGlint" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <Attribute name="QAPctEclipse" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctIrradianceWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctRadianceMissing" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctRadianceError" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="QAPctRadianceWarning" type="Int32">
+                    <Value>44</Value>
+                </Attribute>
+                <Attribute name="QAPctCloudDataError" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <Attribute name="QAPctCloudDataWarning" type="Int32">
+                    <Value>51</Value>
+                </Attribute>
+                <Attribute name="QAPctSnowIceDataError" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctSCDError" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctSCDWarning" type="Int32">
+                    <Value>2</Value>
+                </Attribute>
+                <Attribute name="QAPctIAMFError" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctIAMFWarning" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="QAPctIVCDError" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <Attribute name="QAPctIVCDWarning" type="Int32">
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="QAPctMeasMissing" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctMeasError" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctMeasWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctRebinned" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctSAA" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctSpacecraftManeuver" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctInstrumentSettingsError" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctCloudDataNotSynchronized" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctWavelengthRegistrationWarning" type="Int32">
+                    <Value>19</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfTableExtrapolation" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfTableValueProblem" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfProfileProblem" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfPollutedHighTerrain" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfLargeWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfSmallWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfStratWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctAmfTropWarning" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="QAPctVcdTooSmall" type="Int32">
+                    <Value>15</Value>
+                </Attribute>
+                <Attribute name="QAPctVcdTooLarge" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <Attribute name="UnpolFldNumberOfOrbits" type="Int32">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="UnpolFldOrbitList" type="Int32">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="OPF_fittingWindow" type="String">
+                    <Value>405.0, 465.0</Value>
+                </Attribute>
+                <Attribute name="OPF_fittingWindowColumnRange" type="String">
+                    <Value>0, 1200</Value>
+                </Attribute>
+                <Attribute name="OPF_level1ReadBufferSize" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="OPF_level2WriteBufferSize" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="OPF_fittingPolydegree" type="String">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="OPF_meritFunction" type="String">
+                    <Value>6 </Value>
+                </Attribute>
+                <Attribute name="OPF_interpolationMethod" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="OPF_amfAngleUpperLimit" type="String">
+                    <Value>88</Value>
+                </Attribute>
+                <Attribute name="OPF_NO2ReferenceTemperature" type="String">
+                    <Value>220</Value>
+                </Attribute>
+                <Attribute name="OPF_O3ReferenceTemperature" type="String">
+                    <Value>220</Value>
+                </Attribute>
+                <Attribute name="OPF_O2O2ReferenceTemperature" type="String">
+                    <Value>220</Value>
+                </Attribute>
+                <Attribute name="OPF_H2OReferenceTemperature" type="String">
+                    <Value>220</Value>
+                </Attribute>
+                <Attribute name="OPF_maxNSolarWavelengthsFlagged" type="String">
+                    <Value>20</Value>
+                </Attribute>
+                <Attribute name="OPF_maxNEarthWavelengthsFlagged" type="String">
+                    <Value>20</Value>
+                </Attribute>
+                <Attribute name="OPF_maxNEarthWavelengthsFlaggedMissing" type="String">
+                    <Value>20</Value>
+                </Attribute>
+                <Attribute name="OPF_maxSolarWavelnPrecision" type="String">
+                    <Value>999E39</Value>
+                </Attribute>
+                <Attribute name="OPF_maxEarthWavelnPrecision" type="String">
+                    <Value>999E39</Value>
+                </Attribute>
+                <Attribute name="OPF_maxScdPrecision" type="String">
+                    <Value>5E15</Value>
+                </Attribute>
+                <Attribute name="OPF_maxFitRms" type="String">
+                    <Value>5E-4</Value>
+                </Attribute>
+                <Attribute name="OPF_opfVersion" type="String">
+                    <Value>1.0</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSCD" type="String">
+                    <Value>5E13,    1E17</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsVCD" type="String">
+                    <Value>5E13,    1E17</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsAMF" type="String">
+                    <Value>1E-4,    1E4 </Value>
+                </Attribute>
+                <Attribute name="OPF_limitsEarthRad" type="String">
+                    <Value>0,       1E20</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSolarIrrad" type="String">
+                    <Value>0,       1E20</Value>
+                </Attribute>
+                <Attribute name="OPF_maxEarthRadPrecision" type="String">
+                    <Value>1E20</Value>
+                </Attribute>
+                <Attribute name="OPF_maxSolarIrradPrecision" type="String">
+                    <Value>1E20</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsLatitude" type="String">
+                    <Value>-90,      90</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsLongitude" type="String">
+                    <Value>-180,     180</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSZA" type="String">
+                    <Value>-90,      90</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSAZ" type="String">
+                    <Value>-180,     180</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsVZA" type="String">
+                    <Value>-90,      90</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsVAZ" type="String">
+                    <Value>-180,     180</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsRAZ" type="String">
+                    <Value>0,     180</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSurfaceHeigth" type="String">
+                    <Value>-9000,    9000</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSurfacePressure" type="String">
+                    <Value>100,    1200</Value>
+                </Attribute>
+                <Attribute name="OPF_limitsSurfaceAlbedo" type="String">
+                    <Value>0,       1</Value>
+                </Attribute>
+                <Attribute name="OPF_albedoSnow" type="String">
+                    <Value>0.6</Value>
+                </Attribute>
+                <Attribute name="OPF_albedoDefault" type="String">
+                    <Value>0.065</Value>
+                </Attribute>
+                <Attribute name="OPF_albedoLandThreshold" type="String">
+                    <Value>0.1</Value>
+                </Attribute>
+                <Attribute name="OPF_albedoWaterThreshold" type="String">
+                    <Value>0.1</Value>
+                </Attribute>
+                <Attribute name="OPF_albedoSeaIceNH" type="String">
+                    <Value>0.70, 0.73, 0.76, 0.80, 0.84, 0.78, 0.61, 0.61, 0.62, 0.68, 0.67, 0.71</Value>
+                </Attribute>
+                <Attribute name="OPF_albedoSeaIceSH" type="String">
+                    <Value>0.53, 0.50, 0.44, 0.60, 0.61, 0.64, 0.68, 0.76, 0.80, 0.83, 0.78, 0.66</Value>
+                </Attribute>
+                <Attribute name="OPF_maxSCDCovariance" type="String">
+                    <Value>1E20</Value>
+                </Attribute>
+                <Attribute name="OPF_maxSolarIrradianceAgeInDays" type="String">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="OPF_automaticQualityFailed" type="String">
+                    <Value>50</Value>
+                </Attribute>
+                <Attribute name="OPF_automaticQualitySuspect" type="String">
+                    <Value>20</Value>
+                </Attribute>
+                <Attribute name="OPF_wavelengthRegistrationLimit" type="String">
+                    <Value>0.01</Value>
+                </Attribute>
+                <Attribute name="OPF_wavelengthRegistrationFittingWindow" type="String">
+                    <Value>408.0, 423.0</Value>
+                </Attribute>
+                <Attribute name="OPF_intermediateProductWavelengths" type="String">
+                    <Value>300</Value>
+                </Attribute>
+                <Attribute name="OPF_UseWavelengthFitCoefficient" type="String">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="OPF_XTrackQualityFlagsErrorMask" type="String">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="PGE_Version_OMNO2B" type="String">
+                    <Value>1.2.1.0</Value>
+                </Attribute>
+                <Attribute name="Product_Version_OMNO2B" type="String">
+                    <Value>2.1.3</Value>
+                </Attribute>
+                <Attribute name="Product_Cycle_OMNO2B" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="InputPointer_OMNO2B" type="String">
+                    <Value>(&quot;OMNO2B.opf&quot;,&quot;OMI-Aura_L2A-OMNO2_2016m0215t0210-o61626_v003-2016m0215t082913.he5&quot;,&quot;OMI-Aura_L2-OMPIXCOR_2016m0215t0210-o61626_v003-2016m0215t080458.he5&quot;,&quot;DifferentialAmfProfiles.txt&quot;,&quot;gmiTPPm02.txt&quot;,&quot;gmiTMPm02.txt&quot;,&quot;gmiNO2m02.txt&quot;,&quot;gmiNO2COVm02.txt&quot;)</Value>
+                </Attribute>
+                <Attribute name="OPF_B_pressureTropopause" type="Float32">
+                    <Value>120.</Value>
+                </Attribute>
+                <Attribute name="OPF_B_temperatureNo2Fit" type="Float32">
+                    <Value>220.</Value>
+                </Attribute>
+                <Attribute name="OPF_B_cloudReflectivity" type="Float32">
+                    <Value>0.8000000119</Value>
+                </Attribute>
+                <Attribute name="OPF_B_maxCloudPresAboveTerrain" type="Float32">
+                    <Value>50.</Value>
+                </Attribute>
+                <Attribute name="OPF_B_minCloudPresBelowTpause" type="Float32">
+                    <Value>50.</Value>
+                </Attribute>
+                <Attribute name="PGE_Version_OMNO2" type="String">
+                    <Value>1.1.13.0</Value>
+                </Attribute>
+                <Attribute name="Product_Version_OMNO2" type="String">
+                    <Value>2.1.6</Value>
+                </Attribute>
+                <Attribute name="Product_Cycle_OMNO2" type="String">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="InputPointer_OMNO2" type="String">
+                    <Value>(&quot;OMNO2.opf&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0210-o61626_v003-2016m0215t033200.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0210-o61626_v003-2016m0215t033200.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1438-o61619_v003-2016m0214t172151.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1617-o61620_v003-2016m0214t172335.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1756-o61621_v003-2016m0214t191423.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1935-o61622_v003-2016m0214t204217.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t2113-o61623_v003-2016m0215t001713.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t2252-o61624_v003-2016m0215t021103.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0031-o61625_v003-2016m0215t033359.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0210-o61626_v003-2016m0215t033200.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0349-o61627_v003-2016m0215t052151.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0528-o61628_v003-2016m0215t070236.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0707-o61629_v003-2016m0215t083754.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0846-o61630_v003-2016m0215t114309.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t1025-o61631_v003-2016m0215t133002.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t1203-o61632_v003-2016m0215t134133.he5&quot;)</Value>
+                </Attribute>
+                <Attribute name="OPF_C_pressureTropopause" type="Float32">
+                    <Value>120.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_temperatureNo2Fit" type="Float32">
+                    <Value>220.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_cloudReflectivity" type="Int32">
+                    <Value>800</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nLon" type="Int32">
+                    <Value>360</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nLat" type="Int32">
+                    <Value>180</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nUnpolFldCoefs" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="OPF_C_lonStart" type="Float32">
+                    <Value>-180.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_lonEnd" type="Float32">
+                    <Value>180.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_latStart" type="Float32">
+                    <Value>-90.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_latEnd" type="Float32">
+                    <Value>90.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_latBandWidth" type="Float32">
+                    <Value>9.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_maxVcdForLatBand" type="Float32">
+                    <Value>1.000000027e+16</Value>
+                </Attribute>
+                <Attribute name="OPF_C_minVcdForLatBand" type="Float32">
+                    <Value>9.999999828e+12</Value>
+                </Attribute>
+                <Attribute name="OPF_C_latBandStdClamp" type="Float32">
+                    <Value>5.000000019e+13</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nStdUpperLimitForSmooth" type="Float32">
+                    <Value>2.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nStdLowerLimitForSmooth" type="Float32">
+                    <Value>-20.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nStdUpperThreshForVcd" type="Float32">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_nStdLowerThreshForVcd" type="Float32">
+                    <Value>0.</Value>
+                </Attribute>
+                <Attribute name="OPF_C_xTrackAnomalyCorrection" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="xTrackAnomaly" type="Float32">
+                    <Value>1.922753242e+15</Value>
+                    <Value>1.569640359e+15</Value>
+                    <Value>1.762668e+15</Value>
+                    <Value>-6.384007177e+14</Value>
+                    <Value>-3.541501183e+14</Value>
+                    <Value>2.685433671e+14</Value>
+                    <Value>2.897046709e+14</Value>
+                    <Value>1.090009013e+13</Value>
+                    <Value>-4.763730764e+14</Value>
+                    <Value>8.938326233e+14</Value>
+                    <Value>-1.093627523e+14</Value>
+                    <Value>-2.935067907e+14</Value>
+                    <Value>-3.518936499e+14</Value>
+                    <Value>4.197074254e+14</Value>
+                    <Value>-4.433426304e+13</Value>
+                    <Value>6.607860872e+13</Value>
+                    <Value>1.379732474e+15</Value>
+                    <Value>-5.746242114e+14</Value>
+                    <Value>5.341264279e+14</Value>
+                    <Value>-3.960013534e+14</Value>
+                    <Value>1.097577819e+15</Value>
+                    <Value>-5.85971515e+14</Value>
+                    <Value>-1.040480524e+15</Value>
+                    <Value>3.711087967e+14</Value>
+                    <Value>2.381897594e+14</Value>
+                    <Value>-1.595048043e+15</Value>
+                    <Value>-7.408641418e+14</Value>
+                    <Value>1.930485794e+14</Value>
+                    <Value>2.21095897e+15</Value>
+                    <Value>-4.215043323e+14</Value>
+                    <Value>2.403489469e+15</Value>
+                    <Value>2.666822503e+15</Value>
+                    <Value>1.559721132e+15</Value>
+                    <Value>2.588571421e+15</Value>
+                    <Value>1.228069126e+15</Value>
+                    <Value>-7.548893575e+14</Value>
+                    <Value>-5.477699284e+14</Value>
+                    <Value>-2.419576806e+15</Value>
+                    <Value>1.549189335e+15</Value>
+                    <Value>-1.009973371e+15</Value>
+                    <Value>-2.079369225e+15</Value>
+                    <Value>-2.921754851e+15</Value>
+                    <Value>-1.598907071e+15</Value>
+                    <Value>-1.917552842e+15</Value>
+                    <Value>-1.087270971e+14</Value>
+                    <Value>-3.414037291e+14</Value>
+                    <Value>3.151684583e+14</Value>
+                    <Value>-9.837450793e+14</Value>
+                    <Value>2.801290413e+14</Value>
+                    <Value>-3.513589265e+14</Value>
+                    <Value>6.154484124e+14</Value>
+                    <Value>-6.260210113e+14</Value>
+                    <Value>1.226820364e+15</Value>
+                    <Value>-2.350496552e+15</Value>
+                    <Value>-4.890894008e+14</Value>
+                    <Value>9.762734468e+14</Value>
+                    <Value>-1.387167599e+15</Value>
+                    <Value>6.248017775e+14</Value>
+                    <Value>-1.507843295e+15</Value>
+                    <Value>-6.862445058e+14</Value>
+                </Attribute>
+            </Group>
+        </Group>
+        <Group name="SWATHS">
+            <Group name="ColumnAmountNO2">
+                <Attribute name="NumTimes" type="Int32">
+                    <Value>1644</Value>
+                </Attribute>
+                <Attribute name="NumTimesSmallPixel" type="Int32">
+                    <Value>6488</Value>
+                </Attribute>
+                <Attribute name="VerticalCoordinate" type="String">
+                    <Value>Total Column</Value>
+                </Attribute>
+                <Attribute name="NumSWLevels" type="Int32">
+                    <Value>35</Value>
+                </Attribute>
+                <Group name="Data Fields">
+                    <UInt16 name="AlgorithmFlags">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Algorithm flags                                                                                                         </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits                                                                                                                 </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                    </UInt16>
+                    <UInt16 name="AmfQualityFlags">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Bit level AMF quality flags at ground pixel level</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                    </UInt16>
+                    <Float32 name="AmfStrat">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Stratospheric air mass factor                                                  </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfStratClear">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Stratospheric air mass factor for clear sky condition                          </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfStratCloudy">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Stratospheric air mass factor for cloudy condition                             </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfStratStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of stratospheric air mass factor                                     </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfTrop">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tropospheric air mass factor                                                   </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfTropClear">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tropospheric air mass factor for clear sky condition                           </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfTropCloudy">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tropospheric air mass factor for cloudy condition                              </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="AmfTropStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of tropospheric air mass factor                                      </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ChiSquaredOfFit">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Chi-squared diagnostics of DOAS fit</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int16 name="CloudFraction">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Effective cloud fraction</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="CloudFractionStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Effective cloud fraction precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="CloudPressure">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Effective cloud pressure</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="CloudPressureStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Effective cloud pressure precision</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="CloudRadianceFraction">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Fraction of the radiance from the cloudy part</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Float32 name="ColumnAmountNO2">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>NO2 vertical column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ColumnAmountNO2Std">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the NO2 vertical column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ColumnAmountNO2Strat">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>NO2 stratospheric column density                                                                                        </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2                                                                                                              </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ColumnAmountNO2StratStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the NO2 stratospheric column                                                                               </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2                                                                                                              </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ColumnAmountNO2Trop">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>NO2 tropospheric column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ColumnAmountNO2TropStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the NO2 tropospheric column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <UInt16 name="FitQualityFlags">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Bit level DOAS fit quality flags at ground pixel level</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </UInt16>
+                    <Byte name="InstrumentConfigurationId">
+                        <Dim size="1644"/>
+                        <Attribute name="_FillValue" type="Byte">
+                            <Value>255</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Byte">
+                            <Value>255</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Unique ID for instrument settings for current measurement</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Byte>
+                    <Byte name="MeasurementQualityFlags">
+                        <Dim size="1644"/>
+                        <Attribute name="_FillValue" type="Byte">
+                            <Value>255</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Byte">
+                            <Value>255</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Bit level quality flags at measurement level</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Byte>
+                    <Float32 name="PolynomialCoefficients">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Dim size="6"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Polynomial Coefficients</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="PolynomialCoefficientsStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Dim size="6"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the Polynomial Coefficients</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RingCoefficient">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Fitted amount of Ring effect</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RingCoefficientStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the fitted amount of Ring effect</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="RootMeanSquareErrorOfFit">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Root-Mean-Square error of DOAS fit</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>sr^-1</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ScatteringWeight">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Dim size="35"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scattering weight vertical profile                                                                                      </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits                                                                                                                 </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ScatteringWtPressure">
+                        <Dim size="35"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Scattering weight pressure                                                                                              </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa                                                                                                                     </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountH2O">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>H2O slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountH2OStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the H2O slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountNO2">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>NO2 slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountNO2Destriped">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2                                                                                                              </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Destriped slant column amount NO2                                                                                       </Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountNO2Std">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the NO2 slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountO2O2">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1e+47</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>O2-O2 slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountO2O2Std">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1e+47</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the O2-O2 slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountO3">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>O3 slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SlantColumnAmountO3Std">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the O3 slant column density</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>molec/cm^2</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SmallPixelRadiance">
+                        <Dim size="10"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Radiance of small pixel data column</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>photons/ (s.nm.cm^2.sr)</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int16 name="SmallPixelRadiancePointer">
+                        <Dim size="1644"/>
+                        <Dim size="2"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Offset and count of nTimesSmallPixel wrt nTimes</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="TerrainHeight">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Terrain height at for center co-ordinate of the ground pixel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="TerrainPressure">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Pressure of the center of the ground pixel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Int16 name="TerrainReflectivity">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Int16">
+                            <Value>-32767</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>0.001</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Reflectivity of the ground pixel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Int16>
+                    <Float32 name="TropopausePressure">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Tropopause pressure                                                            </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                    </Float32>
+                    <UInt16 name="VcdQualityFlags">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Vertical column density quality flags                                                                                   </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits                                                                                                                 </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                    </UInt16>
+                    <Float32 name="WavelengthRegistrationCheck">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Correction applied to the L1B wavelength assignment based on the position of Fraunhofer absorption lines</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="WavelengthRegistrationCheckStd">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Precision of the correction which was applied to the L1B wavelength assignment</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>nm</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Byte name="XTrackQualityFlags">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Byte">
+                            <Value>255</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Byte">
+                            <Value>255</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Across Track Quality Flags</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Byte>
+                </Group>
+                <Group name="Geolocation Fields">
+                    <Float32 name="FoV75CornerLatitude">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Dim size="4"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitudes of corners of the groundpixel                                                                                 </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg                                                                                                                     </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="FoV75CornerLongitude">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Dim size="4"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitudes of corners of the groundpixel                                                                                </Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg                                                                                                                     </Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific                                                                                                            </Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float32">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <UInt16 name="GroundPixelQualityFlags">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="UInt16">
+                            <Value>65535</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Ground Pixel Quality Flags</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </UInt16>
+                    <Float32 name="Latitude">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Latitude of the center of the groundpixel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Longitude of the center of the groundpixel</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="OrbitPhase">
+                        <Dim size="1644"/>
+                        <Attribute name="Units" type="String">
+                            <Value>NoUnits</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>The place of OMI in orbit</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SolarAzimuthAngle">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Solar azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-TES-Shared</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SolarZenithAngle">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Solar zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SpacecraftAltitude">
+                        <Dim size="1644"/>
+                        <Attribute name="Units" type="String">
+                            <Value>m</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Altitude above WGS84 ellipsoid</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-OMI-TES-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SpacecraftLatitude">
+                        <Dim size="1644"/>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Geodetic Latitude above WGS84 ellipsoid</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-OMI-TES-Shared</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="SpacecraftLongitude">
+                        <Dim size="1644"/>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Geodetic Longitude above WGS84 ellipsoid</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>HIRDLS-OMI-TES-Shared</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float64 name="Time">
+                        <Dim size="1644"/>
+                        <Attribute name="_FillValue" type="Float64">
+                            <Value>-1.2676506002282294e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float64">
+                            <Value>-1.2676506002282294e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Time at Start of Scan (s, TAI93)</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>s</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>Aura-Shared</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float32 name="ViewingAzimuthAngle">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Viewing azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="ViewingZenithAngle">
+                        <Dim size="1644"/>
+                        <Dim size="60"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="Units" type="String">
+                            <Value>deg</Value>
+                        </Attribute>
+                        <Attribute name="UniqueFieldDefinition" type="String">
+                            <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="MissingValue" type="Float32">
+                            <Value>-1.2676506e+30</Value>
+                        </Attribute>
+                        <Attribute name="ScaleFactor" type="Float64">
+                            <Value>1.</Value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="Title" type="String">
+                            <Value>Viewing zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="ArchivedMetadata.0"/>
+        <String name="CoreMetadata.0"/>
+        <String name="StructMetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.12</Value>
+        </Attribute>
+    </Group>
+</Dataset>

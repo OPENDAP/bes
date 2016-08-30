@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -48,7 +48,7 @@ struct HDF5CFDAPUtil {
     static string print_type(H5DataType h5type);
     static string print_attr(H5DataType h5type, int loc, void *vals);
     static void replace_double_quote(string &str);
-    static bool check_beskeys(const string key);
+//    static bool check_beskeys(const string key);
 
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
     /// that can be found at escaping.cc and escaping.h. i

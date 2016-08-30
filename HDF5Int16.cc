@@ -4,7 +4,7 @@
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Muqun Yang
 // <myang6@hdfgroup.org> 
 
-// Copyright (c) 2009-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2009-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -21,8 +21,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 // #define DODS_DEBUG
 
@@ -104,18 +104,20 @@ bool HDF5Int16::read()
 
     try {
       if(false == is_dap4()) {
-        //if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) 
-        if (get_dap_type(memtype,false) == "Int8") {//wrong, needs to be corrected
+        if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
 	    dods_int16 buf;
-	    dods_byte buf2; // wrong, needs to be corrected with signed int8 buffer.
+	    signed char buf2; // wrong, needs to be corrected with signed int8 buffer.
 	    get_data(dset_id, (void *) &buf2);
-	    buf = (signed char) buf2;
+//cerr<<"buf2 is "<<buf2 <<endl;
+	    buf = (short) buf2;
+//cerr<<"buf is "<<buf <<endl;
 	    set_read_p(true);
 	    set_value(buf);
+            //val2buf(&buf);
 
         }
 
-        if (get_dap_type(memtype,false) == "Int16") {
+        else if (get_dap_type(memtype,false) == "Int16") {
     	    dods_int16 buf;
 	    get_data(dset_id, (void *) &buf);
 

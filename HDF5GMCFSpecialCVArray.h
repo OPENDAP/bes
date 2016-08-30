@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2013 The HDF Group
+/// Copyright (C) 2011-2016 The HDF Group
 ///
 /// All rights reserved.
 
@@ -68,8 +68,13 @@ class HDF5GMCFSpecialCVArray:public Array {
         H5GCFProduct product_type;
         CVType cvartype;    
         
-        // GPM version 7 nlayer values are from the document
+        // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
         void obtain_gpm_l3_layer(int, vector<int>&,vector<int>&,vector<int>&);
+
+        // GPM version 4.0 nlayer values are from the document 
+        // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
+        void obtain_gpm_l3_layer2(int, vector<int>&,vector<int>&,vector<int>&);
+        
         void obtain_gpm_l3_hgt(int, vector<int>&,vector<int>&,vector<int>&);
         void obtain_gpm_l3_nalt(int, vector<int>&,vector<int>&,vector<int>&);
 

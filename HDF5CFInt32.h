@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -40,8 +40,12 @@
 using namespace libdap;
 
 class HDF5CFInt32:public Int32 {
+
+    private:
+        string filename;
     public:
         HDF5CFInt32(const string &n, const string &d);
+        HDF5CFInt32(const string &n, const string &d,const string &d_f);
         virtual ~ HDF5CFInt32();
         virtual BaseType *ptr_duplicate();
         virtual bool read();

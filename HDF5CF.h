@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2013 The HDF Group
+/// Copyright (C) 2011-2016 The HDF Group
 ///
 /// All rights reserved.
 
@@ -45,7 +45,7 @@
 #include <set>
 #include <list>
 #include "HDF5CFUtil.h"
-#include "h5cfdaputil.h"
+//#include "h5cfdaputil.h"
 #include "HDF5GCFProduct.h"
 #include "HE5Parser.h"
 
@@ -160,10 +160,16 @@ namespace HDF5CF
                 return this->newname;
             }
 
+        /// Has unlimited dimensions.
+        const bool HaveUnlimitedDim() const
+        { 
+            return unlimited_dim;
+        }
+
 
         protected:
 	    Dimension (hsize_t dimsize)
-		: size (dimsize),name(""),newname("")
+		: size (dimsize),name(""),newname(""),unlimited_dim(false)
 	    {
 	    }
 
@@ -171,6 +177,7 @@ namespace HDF5CF
 	    hsize_t size;
             string name;
             string newname;
+            bool unlimited_dim;
 
             friend class EOS5File;
             friend class GMFile;
@@ -257,6 +264,7 @@ namespace HDF5CF
                    dtype (H5UNSUPTYPE), 
                    rank (-1),
                    unsupported_attr_dtype(false),
+                   unsupported_attr_dspace(false),
                    unsupported_dspace(false),
                    dimnameflag(false)
 	    {
@@ -316,6 +324,7 @@ namespace HDF5CF
 	    H5DataType dtype;
 	    int rank;
             bool unsupported_attr_dtype;
+            bool unsupported_attr_dspace;
             bool unsupported_dspace;
             bool dimnameflag;
 
@@ -479,7 +488,7 @@ namespace HDF5CF
     class Group
     {
 	public:
-	    Group ():unsupported_attr_dtype(false)
+	    Group ():unsupported_attr_dtype(false),unsupported_attr_dspace(false)
 	    {
 	    }
 	    ~Group ();
@@ -510,6 +519,7 @@ namespace HDF5CF
 
 	    vector < Attribute * >attrs;
             bool unsupported_attr_dtype;
+            bool unsupported_attr_dspace;
 
 	    friend class File;
             friend class GMFile;
@@ -539,7 +549,7 @@ namespace HDF5CF
             virtual void Handle_Unsupported_Dtype(bool) throw(Exception);
                  
             /// Handle unsupported HDF5 dataspaces for datasets
-            virtual void Handle_Unsupported_Dspace() throw(Exception);
+            virtual void Handle_Unsupported_Dspace(bool) throw(Exception);
 
             /// Handle other unmapped objects/attributes
             virtual void Handle_Unsupported_Others(bool) throw(Exception);
@@ -604,6 +614,12 @@ namespace HDF5CF
                 return this->groups;
             }
 
+            /// Has unlimited dimensions.
+            const bool HaveUnlimitedDim() const
+            { 
+                return have_udim;
+            }
+
             /// Obtain the flag to see if ignored objects should be generated.
             virtual bool Get_IgnoredInfo_Flag() = 0;
 
@@ -617,7 +633,7 @@ namespace HDF5CF
         protected:
 
             void Retrieve_H5_Obj(hid_t grp_id,const char*gname, bool include_attr) throw(Exception);
-            void Retrieve_H5_Attr_Info(Attribute *,hid_t obj_id,const int j, bool& unsup_attr_dtype) throw(Exception);
+            void Retrieve_H5_Attr_Info(Attribute *,hid_t obj_id,const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace) throw(Exception);
             void Retrieve_H5_Attr_Value( Attribute *attr, string) throw (Exception);
 
             void Retrieve_H5_VarType(Var*,hid_t dset_id, const string& varname, bool &unsup_var_dtype) throw(Exception);
@@ -626,6 +642,9 @@ namespace HDF5CF
             void Handle_Group_Unsupported_Dtype() throw(Exception);
             void Handle_Var_Unsupported_Dtype() throw(Exception);
             void Handle_VarAttr_Unsupported_Dtype() throw(Exception);
+
+            void Handle_GroupAttr_Unsupported_Dspace() throw(Exception);
+            void Handle_VarAttr_Unsupported_Dspace() throw(Exception);
 
             void Gen_Group_Unsupported_Dtype_Info() throw(Exception);
             void Gen_Var_Unsupported_Dtype_Info() throw(Exception);
@@ -639,9 +658,9 @@ namespace HDF5CF
 
             void Add_One_FakeDim_Name(Dimension *dim) throw(Exception);
             void Adjust_Duplicate_FakeDim_Name(Dimension * dim)throw(Exception);
-            void Insert_One_NameSizeMap_Element(string name,hsize_t size) throw(Exception);
-            void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,string name,hsize_t size) throw(Exception);
-            void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
+            void Insert_One_NameSizeMap_Element(string name,hsize_t size, bool unlimited) throw(Exception);
+            void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,map<string,bool>&,string name,hsize_t size,bool unlimited) throw(Exception);
+            //void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
 
             virtual string get_CF_string(string);
             virtual void Replace_Var_Info(Var* src, Var *target);
@@ -658,6 +677,11 @@ namespace HDF5CF
             // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
             bool Is_geolatlon(const string &var_name ,bool is_lat);
             bool has_latlon_cf_units(Attribute*attr, const string &varfullpath , bool is_lat);
+
+            // Check if a variable with a var name is under a specific group with groupname
+            // note: the variable's size at each dimension is also returned. The user must allocate the 
+            // memory for the dimension sizes(an array(vector is perferred).
+            bool is_var_under_group(const string &varname, const string &grpname,const int var_rank, vector<size_t> &var_size );
 
             virtual void Gen_Unsupported_Dtype_Info(bool) = 0;
             virtual void Gen_Unsupported_Dspace_Info() throw(Exception);
@@ -690,9 +714,12 @@ namespace HDF5CF
                     unsupported_var_dtype(false),
                     unsupported_attr_dtype(false),
                     unsupported_var_dspace(false),
+                    unsupported_attr_dspace(false),
+                    unsupported_var_attr_dspace(false),
                     addeddimindex(0),
                     check_ignored(false),
-                    have_ignored(false)
+                    have_ignored(false),
+                    have_udim(false)
             {
 	    }
 
@@ -715,9 +742,15 @@ namespace HDF5CF
             bool unsupported_attr_dtype; 
 
             bool unsupported_var_dspace;
+            bool unsupported_attr_dspace;
+            bool unsupported_var_attr_dspace;
 
             set<string> dimnamelist;
+            //set<string>unlimited_dimnamelist;
             map<string,hsize_t> dimname_to_dimsize;
+          
+            // Unlimited dim. info
+            map<string,bool> dimname_to_unlimited;
 
             /// Handle added dimension names
             map<hsize_t,string> dimsize_to_fakedimname;
@@ -725,6 +758,7 @@ namespace HDF5CF
 
             bool check_ignored;
             bool have_ignored;
+            bool have_udim;
             string ignored_msg;
 
     };
@@ -761,7 +795,7 @@ namespace HDF5CF
             void Handle_Unsupported_Dtype(bool) throw(Exception);
 
             /// Handle unsupported HDF5 dataspaces for general HDF5 products
-            void Handle_Unsupported_Dspace() throw(Exception);
+            void Handle_Unsupported_Dspace(bool) throw(Exception);
  
             /// Handle other unmapped objects/attributes for general HDF5 products
             void Handle_Unsupported_Others(bool) throw(Exception);
@@ -883,34 +917,31 @@ namespace HDF5CF
  
             string get_CF_string(string s);
 
-            // The following two routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
+            // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
             bool Check_Var_2D_CVars(Var*) throw(Exception);
             bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
-
             void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception);
             bool Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception);
             bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values,const string &var_path) throw(Exception);
             void Add_VarPath_In_Coordinates_Attr(Var*,const string &);
+
+            // The following three routines handle the GPM CF-related attributes
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
+            void Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
+
             void Add_Aqu_Attrs() throw(Exception);
             void Add_SeaWiFS_Attrs() throw(Exception);
             void Create_Missing_CV(GMCVar*,const string &) throw(Exception);
+
             bool Is_netCDF_Dimension(Var *var) throw(Exception);
 
-            //void add_ignored_info_attrs(bool is_grp,bool is_first);
-            //void add_ignored_info_objs(bool is_dim_related, bool is_first);
             void Gen_Unsupported_Dtype_Info(bool);
             void Gen_VarAttr_Unsupported_Dtype_Info()throw(Exception);
             void Gen_GM_VarAttr_Unsupported_Dtype_Info();
             void Gen_Unsupported_Dspace_Info() throw(Exception);
             void Handle_GM_Unsupported_Dtype(bool) throw(Exception);
-            void Handle_GM_Unsupported_Dspace() throw(Exception);
-            //bool ignored_var_transformed(Var* var);
-            //bool ignored_var_attr_transformed();
-            // bool ignored_GM_CVar_dimscale_ref_list(GMCVar* var);
-            // bool ignored_GM_SPVar_dimscale_ref_list(GMSPVar* var);
-
+            void Handle_GM_Unsupported_Dspace(bool) throw(Exception);
 
             void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
 
@@ -963,6 +994,10 @@ namespace HDF5CF
             vector <string> dimnames;
             set <string> vardimnames;
             map <string,hsize_t>dimnames_to_dimsizes;
+         
+            // Unlimited dim. info
+            map <string,bool>dimnames_to_unlimited;
+
             map <hsize_t,string>dimsizes_to_dimnames;
             int addeddimindex;
         
@@ -997,6 +1032,10 @@ namespace HDF5CF
             vector <string> dimnames;
             set <string> vardimnames;
             map <string,hsize_t>dimnames_to_dimsizes;
+
+            // Unlimited dim. info
+            map <string,bool>dimnames_to_unlimited;
+             
             map <hsize_t,string>dimsizes_to_dimnames;
             int addeddimindex;
  
@@ -1020,6 +1059,9 @@ namespace HDF5CF
             vector <string> dimnames;
             set <string> vardimnames;
             map <string,hsize_t>dimnames_to_dimsizes;
+            // Unlimited dim. info
+            map <string,bool>dimnames_to_unlimited;
+
             map <hsize_t,string>dimsizes_to_dimnames;
             int addeddimindex;
 
@@ -1060,7 +1102,7 @@ namespace HDF5CF
             void Handle_Unsupported_Dtype(bool) throw(Exception);
 
             /// Handle unsupported HDF5 dataspaces for HDF-EOS5 products.
-            void Handle_Unsupported_Dspace() throw(Exception);
+            void Handle_Unsupported_Dspace(bool) throw(Exception);
 
             /// Handle other unmapped objects/attributes for HDF-EOS5 products
             void Handle_Unsupported_Others(bool) throw(Exception);
@@ -1172,7 +1214,8 @@ namespace HDF5CF
             void Handle_Za_CVar(bool) throw(Exception);
  
             bool Check_Augmentation_Status() throw(Exception);
-            bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
+            // Don't remove the following commented line!
+            //bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
             template<class T> bool Check_Augmented_Var_Candidate(T* , Var*, EOS5Type ) throw(Exception);
 
             template <class T>void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*,bool,int,int,int) throw(Exception);
@@ -1200,7 +1243,7 @@ namespace HDF5CF
             //bool ignored_var_attr_transformed();
            
             void Handle_EOS5_Unsupported_Dtype(bool) throw(Exception);
-            void Handle_EOS5_Unsupported_Dspace() throw(Exception);
+            void Handle_EOS5_Unsupported_Dspace(bool) throw(Exception);
             
             void Gen_Unsupported_Dtype_Info(bool);
             void Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception);

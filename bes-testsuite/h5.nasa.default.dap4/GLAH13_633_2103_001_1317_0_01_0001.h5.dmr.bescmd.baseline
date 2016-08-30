@@ -1,5 +1,257 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GLAH13_633_2103_001_1317_0_01_0001.h5">
+    <Attribute name="featureType" type="String">
+        <Value>timeSeries</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>GLAS/ICESat L2 Sea Ice Altimetry Data (HDF5)</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value>GLAH13 contains sea ice and open ocean elevations corrected for geodetic and atmospheric effects, calculated from algorithms fine-tuned for sea ice returns. Granules contain 14 orbits of data within a sea ice mask.</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>GLAH13 contains sea ice, open ocean, and iceberg elevations corrected for geodetic and atmospheric effects, calculated from algorithms fine-tuned for sea ice returns. Granules contain 14 orbits of data within the sea ice mask. Each GLAH13 file was created from an equivalent GLA13 binary file. The data used to create the GLAH13 values are contained in the equivalent GLAHxx files for the GLAxx files. See the provenance metadata for the creation of the GLA13.</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>http://nsidc.org/data/icesat/disclaimer.html</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>http://nsidc.org/data/docs/daac/glas_icesat_l1_l2_global_altimetry.gd.html (Guide Document for this product at NSIDC), http://nsidc.org/daac/icesat/index.html (GLAS Product page at NSIDC)</Value>
+    </Attribute>
+    <Attribute name="AccessConstraints" type="String">
+        <Value>Data may not be reproduced or distributed without including the CitationForExternalPublication for this product included in this Metadata. Data may not be distributed in an altered form without the written permission of the GLAS Science Team.</Value>
+    </Attribute>
+    <Attribute name="CitationforExternalPublication" type="String">
+        <Value>The data used in this study were produced by the GLAS Science Team at the ICESat Science Investigator-led Processing System (I-SIPS) at NASA/GSFC. The data archive site is the NSIDC DAAC.</Value>
+    </Attribute>
+    <Attribute name="contributor_role" type="String">
+        <Value>Data Originator, Investigator, Producer, Producer</Value>
+    </Attribute>
+    <Attribute name="contributor_name" type="String">
+        <Value>David W. Hancock (David.W.Hancock@nasa.gov), Bob E Schutz (schutz@utcsr.ae.utexas.edu), Jay Zwally (Jay.Zwally@nasa.gov), John P DiMarzio (John.P.Dimarzio.1@nasa.gov)</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>ICESat Science Investigator-led Processing System (I-SIPS)</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>David.W.Hancock@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>NSIDC User Services</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>nsidc@nsidc.org</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>http://nsidc.org/daac/icesat/index.html</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>Ice, Cloud, and Land Elevation Satellite (ICESat)</Value>
+    </Attribute>
+    <Attribute name="instrument" type="String">
+        <Value>Geoscience Laser Altimeter System (GLAS)</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>2</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>2012-11-30T11:57:15</Value>
+    </Attribute>
+    <Attribute name="spatial_coverage_type" type="String">
+        <Value>Horizontal</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>2011-06-18T03:43:47 glas_alt 6.0.1 GLA13_633_2103_001_1317_0_01_0001.DAT, 2012-11-30T11:57:15.000000Z GLA13_h5_convert Version 1.1 (November 2012) ./GLAH13_633_2103_001_1317_0_01_0001.H5</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="String">
+        <Value>-90.0</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="String">
+        <Value>90.0</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="String">
+        <Value>-180.0</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="String">
+        <Value>180.0</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>Earth Science &gt; Cryosphere &gt; Sea Ice &gt; Reflectance &gt; Laser Reflectance, Earth Science &gt; Cryosphere &gt; Sea Ice &gt; Sea Ice Elevation, Earth Science &gt; Oceans &gt; Sea Ice &gt; Reflectance &gt; Laser Reflectance, Earth Science &gt; Cryosphere &gt; Sea Ice &gt; Ice Roughness, Earth Science &gt; Oceans &gt; Sea Ice &gt; Ice Roughness, Earth Science &gt; Oceans &gt; Sea Ice &gt; Sea Ice Elevation</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>GCMD Science Keywords Version 6.0</Value>
+    </Attribute>
+    <Attribute name="standard_vocabulary_name" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Ice, Cloud, and Land Elevation Satellite (GLAS_HDF)</Value>
+    </Attribute>
+    <Attribute name="time_type" type="String">
+        <Value>UTC</Value>
+    </Attribute>
+    <Attribute name="date_type" type="String">
+        <Value>J2000</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>2003-10-19T06:38:15</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>2003-10-20T05:11:23</Value>
+    </Attribute>
+    <Attribute name="time_coverage_duration" type="String">
+        <Value>81280</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>Satellite Measurements</Value>
+    </Attribute>
+    <Attribute name="HDFVersion" type="String">
+        <Value>HDF5 1.8.9</Value>
+    </Attribute>
+    <Attribute name="identifier_product_type" type="String">
+        <Value>GLAH13</Value>
+    </Attribute>
+    <Attribute name="identifier_product_format_version" type="String">
+        <Value>1.0</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>National Aeronautics and Space Administration (NASA)</Value>
+    </Attribute>
+    <Attribute name="ReprocessingPlanned" type="String">
+        <Value>no further update anticipated</Value>
+    </Attribute>
+    <Attribute name="ReprocessingActual" type="String">
+        <Value>reprocessed</Value>
+    </Attribute>
+    <Attribute name="LocalGranuleID" type="String">
+        <Value>GLAH13_633_2103_001_1317_0_01_0001.H5</Value>
+    </Attribute>
+    <Attribute name="ProductionDateTime" type="String">
+        <Value>2012-11-30T11:57:15</Value>
+    </Attribute>
+    <Attribute name="LocalVersionID" type="String">
+        <Value>633</Value>
+    </Attribute>
+    <Attribute name="PGEVersion" type="String">
+        <Value>Version 1.1</Value>
+    </Attribute>
+    <Attribute name="OrbitNumber" type="String">
+        <Value>4160, 4161, 4162, 4163, 4164, 4165, 4166, 4167, 4168, 4169, 4170, 4171, 4172, 4173, 4174</Value>
+    </Attribute>
+    <Attribute name="StartOrbitNumber" type="String">
+        <Value>4160</Value>
+    </Attribute>
+    <Attribute name="StopOrbitNumber" type="String">
+        <Value> 4174</Value>
+    </Attribute>
+    <Attribute name="EquatorCrossingLongitude" type="String">
+        <Value>-160.64435, 175.15977, 150.96443, 126.76986, 102.57391, 78.377365, 54.18163, 29.986721, 5.792589, -18.40152, -42.596527, -66.791016, -90.98514, -115.1799, -139.37543</Value>
+    </Attribute>
+    <Attribute name="EquatorCrossingTime" type="String">
+        <Value>06:24:48, 08:01:27, 09:38:06, 11:14:46, 12:51:25, 14:28:04, 16:04:43, 17:41:22, 19:18:02, 20:54:41, 22:31:19, 00:07:58, 01:44:37, 03:21:18, 04:57:57</Value>
+    </Attribute>
+    <Attribute name="EquatorCrossingDate" type="String">
+        <Value>2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-19, 2003-10-20, 2003-10-20, 2003-10-20, 2003-10-20</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>GLAH13</Value>
+    </Attribute>
+    <Attribute name="VersionID" type="String">
+        <Value>33</Value>
+    </Attribute>
+    <Attribute name="InputPointer" type="String">
+        <Value>CTL00_000_20121130_2109393_01_gla13_h5_convert.ctl, tai-utc.dat, GLA13_633_2103_001_1317_0_01_0001.DAT, DsESDTGlGLAH13.033.desc</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value>06:38:15</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>05:11:23</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>2003-10-19</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>2003-10-20</Value>
+    </Attribute>
+    <Attribute name="PercentGroundHit" type="String">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="OrbitQuality" type="String">
+        <Value>6</Value>
+    </Attribute>
+    <Attribute name="Track" type="String">
+        <Value>1317, 1318, 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330, 1331</Value>
+    </Attribute>
+    <Attribute name="Instrument_State" type="String">
+        <Value>373338</Value>
+    </Attribute>
+    <Attribute name="Timing_Bias" type="String">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Timing_Drift" type="String">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="ReferenceOrbit" type="String">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="SP_ICE_PATH_NO" type="String">
+        <Value>4339, 4340, 4341, 4342, 4343, 4344, 4345, 4346, 4347, 4348, 4349, 4350, 4351, 4352, 4353</Value>
+    </Attribute>
+    <Attribute name="SP_ICE_GLAS_StartBlock" type="String">
+        <Value>NOT SET</Value>
+    </Attribute>
+    <Attribute name="SP_ICE_GLAS_EndBlock" type="String">
+        <Value>NOT SET</Value>
+    </Attribute>
+    <Attribute name="Cycle" type="String">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="Instance" type="String">
+        <Value>3</Value>
+    </Attribute>
+    <Attribute name="Range_Bias" type="String">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Instrument_State_Date" type="String">
+        <Value>2003-10-15</Value>
+    </Attribute>
+    <Attribute name="Instrument_State_Time" type="String">
+        <Value>03:58:54</Value>
+    </Attribute>
+    <Attribute name="Range_Bias_Date" type="String">
+        <Value>2003-10-15</Value>
+    </Attribute>
+    <Attribute name="Range_Bias_Time" type="String">
+        <Value>03:58:56</Value>
+    </Attribute>
+    <Attribute name="Timing_Bias_Date" type="String">
+        <Value>2003-10-15</Value>
+    </Attribute>
+    <Attribute name="Timing_Bias_Time" type="String">
+        <Value>03:58:56</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>10.5067/ICESAT/GLAS/DATA206</Value>
+    </Attribute>
+    <Attribute name="identifier_file_uuid" type="String">
+        <Value>6bffcd5c-a550-45e2-b2e0-688932d9aa72</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
     <Group name="Data_40HZ">
         <Dimension name="DS_DEMhiresArElv" size="9"/>
         <Dimension name="DS_UTCTime_40" size="449680"/>
