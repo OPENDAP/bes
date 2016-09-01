@@ -180,6 +180,8 @@ m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])
 ])
 
+dnl Simple pattern tests. The baseline file holds a set of patterns, one per line,
+dnl and the test will pass if any pattern matches with the test result. 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
 [_AT_BESCMD_PATTERN_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
