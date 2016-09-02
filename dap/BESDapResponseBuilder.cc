@@ -95,6 +95,13 @@
 #include "BESContextManager.h"
 #include "BESDapFunctionResponseCache.h"
 #include "BESStoredDapResultCache.h"
+
+#include "BESResponseObject.h"
+#include "BESDataDDSResponse.h"
+#include "BESDataHandlerInterface.h"
+#include "BESInternalFatalError.h"
+#include "BESDataNames.h"
+
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -968,17 +975,29 @@ void BESDapResponseBuilder::remove_timeout() const
  * that code. TBD. This method will not be used by CEDAR, so I've not included the
  * 'print_mime_headers' bool.
  *
- * @param obj The BESResponseObject
- * @param dhi The BESDataHandlerInterface
+ * @param obj The BESResponseObject. Holds the DDS for this request.
+ * @param dhi The BESDataHandlerInterface. Holds many parameters for this request.
  * @return The DDS* is returned where each variable marked to be sent is loaded with
- * data (as per the current constraint expression). If a Server function is part of
- * the CE, then a _different DDS* will be returned_ and the caller must test for that
- * and
+ * data (as per the current constraint expression).
  */
 libdap::DDS *
-BESDapResponseBuilder::intern_dap2_data(libdap::DDS *dds, libdap::ConstraintEvaluator &eval)
+BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESDEBUG("dap", "BESDapResponseBuilder::intern_dap2_data() - BEGIN"<< endl);
+
+    dhi.first_container();
+
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(obj);
+    if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
+
+    DDS *dds = bdds->get_dds();
+
+    set_dataset_name(dds->filename());
+    set_ce(dhi.data[POST_CONSTRAINT]);
+    set_async_accepted(dhi.data[ASYNC]);
+    set_store_result(dhi.data[STORE_RESULT]);
+
+    ConstraintEvaluator &eval = bdds->get_ce();
 
     // Split constraint into two halves; stores the function and non-function parts in this instance.
     split_ce(eval);
@@ -1006,13 +1025,18 @@ BESDapResponseBuilder::intern_dap2_data(libdap::DDS *dds, libdap::ConstraintEval
         else
 #endif
         {
-
             // Evaluate the function
             ConstraintEvaluator func_eval;
             func_eval.parse_constraint(d_btp_func_ce, *dds);
-            // This will overwrite the pointer, so the caller needs to test for that
-            // and delete as needed...
-            dds = func_eval.eval_function_clauses(*dds);
+            // bdds (BESResponseObject) manages the storage of the DDS* returned by
+            // get_dds(), so we delete that instance and then substitute the new DDS
+            // instance returned by eval_function_clauses(). bdds will delete that
+            // new instance sometime.
+            DDS *function_result_dds = func_eval.eval_function_clauses(*dds);
+            delete dds;
+            bdds->set_dds(function_result_dds);
+
+            dds = function_result_dds;  // simplify the following code; use 'dds'
         }
 
         // Server functions might mark (i.e. setting send_p) so variables will use their read()
@@ -1022,9 +1046,9 @@ BESDapResponseBuilder::intern_dap2_data(libdap::DDS *dds, libdap::ConstraintEval
         // result) will be sent.
         dds->mark_all(false);
 
-        // Look for
-        // one or more top level Structures whose name indicates (by way of ending with
+        // Look for one or more top level Structures whose name indicates (by way of ending with
         // "_uwrap") that their contents should be moved to the top level.
+        //
         // This is in support of a hack around the current API where server side functions
         // may only return a single DAP object and not a collection of objects. The name suffix
         // "_unwrap" is used as a signal from the function to the the various response

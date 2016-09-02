@@ -32,6 +32,8 @@
 #undef DAP2_STORED_RESULTS
 
 class BESDapFunctionResponseCache;
+class BESDataHandlerInterface;
+class BESResponseObject;
 
 namespace libdap {
     class ConstraintEvaluator;
@@ -156,7 +158,7 @@ public:
 			bool with_mime_headers = true);
 
 	// Added jhrg 9/1/16
-	virtual libdap::DDS *intern_dap2_data(libdap::DDS *dds, libdap::ConstraintEvaluator &eval);
+	virtual libdap::DDS *intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
 	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
