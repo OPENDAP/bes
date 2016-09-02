@@ -155,6 +155,9 @@ public:
 	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
+	// Added jhrg 9/1/16
+	virtual libdap::DDS *intern_dap2_data(libdap::DDS *dds, libdap::ConstraintEvaluator &eval);
+
 	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
