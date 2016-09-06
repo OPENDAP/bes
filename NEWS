@@ -1,3 +1,12 @@
+News for version 2.3.3
+
+Updates since 2016-01-21
+
+Add support for HDF5 scalar datasets and unlimited dimensions to
+the CF option.
+
+More information see the "What's new for version 2.3.3" under README.
+
 News for version 2.3.2
 
 Minor updates, see the ChangeLog
