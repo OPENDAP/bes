@@ -40,7 +40,7 @@ DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest ObjMemCacheTest
+UNIT_TESTS = ResponseBuilderTest FunctionResponseCacheTest ObjMemCacheTest
 
 # Class not included in the dap module: SequenceAggregationServerTest
 
