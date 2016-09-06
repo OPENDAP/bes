@@ -57,7 +57,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
 	CacheMarshaller.cc CacheUnMarshaller.cc
-
+	ObjMemCache.cc
+	
 # Unused: BESDapSequenceAggregationServer.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
@@ -87,6 +88,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
 	CacheMarshaller.h CacheUnMarshaller.h
+	ObjMemCache.h
 	
 	
 # Unused: BESDapSequenceAggregationServer.h
@@ -102,7 +104,7 @@ pkgdata_DATA = dap_help.html dap_help.txt dap_help.xml
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dap.conf.in dap_help.html dap_help.txt dap_help.xml
+EXTRA_DIST = data dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
