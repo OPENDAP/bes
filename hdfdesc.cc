@@ -1616,7 +1616,8 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 }
 
                 // Handle AMSR-E attributes
-                HDFCFUtil::handle_amsr_attrs(at);
+                if(at !=NULL) 
+                    HDFCFUtil::handle_amsr_attrs(at);
 
                 // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
                 // with the variable datatype. Correct the fillvalue datatype if necessary. 

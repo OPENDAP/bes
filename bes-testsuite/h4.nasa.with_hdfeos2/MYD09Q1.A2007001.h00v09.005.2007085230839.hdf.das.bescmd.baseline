@@ -86,13 +86,13 @@ Attributes {
     YDim {
         String standard_name "projection_y_coordinate";
         String long_name "y coordinate of projection for grid MOD_Grid_250m_Surface_Reflectance";
-        String units "km";
+        String units "meter";
         String _CoordinateAxisType "GeoY";
     }
     XDim {
         String standard_name "projection_x_coordinate";
         String long_name "x coordinate of projection for grid MOD_Grid_250m_Surface_Reflectance";
-        String units "km";
+        String units "meter";
         String _CoordinateAxisType "GeoX";
     }
     MOD_Grid_250m_Surface_Reflectance_eos_cf_projection {

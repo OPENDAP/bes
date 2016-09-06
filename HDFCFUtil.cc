@@ -1651,7 +1651,10 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
         //at->append_attr("long_name","String","y coordinate" );
         string long_name="y coordinate of projection for grid "+ gdset->getName();
         at->append_attr("long_name","String",long_name);
-        at->append_attr("units","string","km");
+        // Change this to meter.
+        at->append_attr("units","string","meter");
+        //at->append_attr("units","string","km");
+        
         at->append_attr("_CoordinateAxisType","string","GeoY");
 
         at = das.get_table(dim1name);
@@ -1662,7 +1665,10 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
         //at->append_attr("long_name","String","x coordinate");
         long_name="x coordinate of projection for grid "+ gdset->getName();
         at->append_attr("long_name","String",long_name);
-        at->append_attr("units","string","km");
+         
+        // change this to meter.
+        at->append_attr("units","string","meter");
+        //at->append_attr("units","string","km");
         at->append_attr("_CoordinateAxisType","string","GeoX");
         
         // Add the attributes for the dummy projection variable.
@@ -2058,7 +2064,7 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
             if(lonflag && !lonunitsflag){ // No "units" for latitude, add "units"
                 at->append_attr("units","String","degrees_east");
                 lonflag = false;
-                latunitsflag = false;
+                lonunitsflag = false;
                 llcheckoverflag++;
             }
             if(llcheckoverflag ==2) break;
@@ -2923,7 +2929,8 @@ string HDFCFUtil::escattr(string s)
 
 
     // escape \ with a second backslash
-    string::size_type ind = 0;
+    //string::size_type ind = 0;
+    size_t ind = 0;
     while ((ind = s.find(ESC, ind)) != s.npos) {
         s.replace(ind, 1, DOUBLE_ESC);
         ind += DOUBLE_ESC.length();
@@ -2931,14 +2938,20 @@ string HDFCFUtil::escattr(string s)
 
     // escape non-printing characters with octal escape
     ind = 0;
-    while ((ind = s.find_first_not_of(printable, ind)) != s.npos)
-        s.replace(ind, 1, ESC + octstring(s[ind]));
+    while ((ind = s.find_first_not_of(printable, ind)) != s.npos) {
+        // Comment out the following line since it wastes the CPU operation.
+        //if(ind >=0) // Make coverity happy,
+            s.replace(ind, 1, ESC + octstring(s[ind]));
+    }
 
     // escape " with backslash
     ind = 0;
     while ((ind = s.find(QUOTE, ind)) != s.npos) {
-        s.replace(ind, 1, ESCQUOTE);
-        ind += ESCQUOTE.length();
+        //comment out the following line since it wastes the CPU operation.
+        //if(ind >=0) {// Make coverity happy
+            s.replace(ind, 1, ESCQUOTE);
+            ind += ESCQUOTE.length();
+        //}
     }
 
     return s;
@@ -3558,6 +3571,9 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         temp_pointer = temp_pointer + sizeof(int);
 
         vector<int32>dimsizes;
+        if(sds_rank <=0) 
+            throw InternalErr (__FILE__, __LINE__,"SDS rank must be >0");
+             
         dimsizes.resize(sds_rank);
         for (int i = 0; i <sds_rank;i++) {
             dimsizes[i] = *((int *)(temp_pointer));

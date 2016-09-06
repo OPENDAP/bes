@@ -128,6 +128,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
 {
 
     File *file = new File(path);
+    if(file == NULL)
+        throw;
 //cerr <<"File is opened" <<endl;
 
     file->gridfd = mygridfd;
@@ -145,7 +147,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> gridlist;
     if (!Utility::ReadNamelist(file->path.c_str(), GDinqgrid, gridlist)) {
         delete file;
-        throw2("grid namelist", path);
+        throw;
+        //throw2("grid namelist", path);
     }
 
     try {
@@ -170,7 +173,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> swathlist;
     if (!Utility::ReadNamelist(file->path.c_str(), SWinqswath, swathlist)){
         delete file;
-        throw2("swath namelist", path);
+        throw;
+        //throw2("swath namelist", path);
     }
 
     try {
@@ -190,8 +194,10 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> pointlist;
     if (!Utility::ReadNamelist(file->path.c_str(), PTinqpoint, pointlist)){
         delete file;
-        throw2("point namelist", path);
+        throw;
+        //throw2("point namelist", path);
     }
+   //if(file !=NULL) {//See if I can make coverity happy because it doesn't understand throw macro.
     for (vector<string>::const_iterator i = pointlist.begin();
          i != pointlist.end(); ++i)
         file->points.push_back(PointDataset::Read(-1, *i));
@@ -204,6 +210,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
         delete file;
         throw e;  
     }
+   //}
     return file;
 }
 
@@ -280,6 +287,9 @@ void File::_find_geodim_names()
     for(size_t i = 0; i<sizeof(_geodim_y_names) / sizeof(const char *); i++)
         geodim_y_name_set.insert(_geodim_y_names[i]);
 
+    // The following code is only used for grid. It also causes the coverity unhappy
+    // for the code block for(size_t i=0; ;i++), so simplify it after this code block.
+#if 0
     const size_t gs = grids.size();
     const size_t ss = swaths.size();
     for(size_t i=0; ;i++)
@@ -304,7 +314,32 @@ void File::_find_geodim_names()
         // For performance, we're checking this for the first grid or swath
         break;
     }
-    if(_geodim_x_name.empty())
+#endif
+
+    const size_t gs = grids.size();
+    // For performance, we're checking this for the first grid 
+    if(gs >0)
+    {
+        Dataset *dataset=NULL;
+        dataset = static_cast<Dataset*>(grids[0]);
+
+        const vector<Dimension *>& dims = dataset->getDimensions();
+        for(vector<Dimension*>::const_iterator it = dims.begin();
+            it != dims.end(); ++it)
+        {
+            // Essentially this code will grab any dimension names that is
+            // NOT predefined "XDim","LonDim","nlon" for geodim_x_name;
+            // any dimension names that is NOT predefined "YDim","LatDim","nlat"
+            // for geodim_y_name. This is in theory not right. Given the
+            // fact that this works with the current HDF-EOS2 products and there
+            // will be no more HDF-EOS2 products. We will leave the code this way.
+            if(geodim_x_name_set.find((*it)->getName()) != geodim_x_name_set.end())
+                _geodim_x_name = (*it)->getName();
+            else if(geodim_y_name_set.find((*it)->getName()) != geodim_y_name_set.end())
+                _geodim_y_name = (*it)->getName();
+        }
+    }
+   if(_geodim_x_name.empty())
         _geodim_x_name = _geodim_x_names[0];
     if(_geodim_y_name.empty())
         _geodim_y_name = _geodim_y_names[0];
@@ -563,7 +598,8 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     }
 
     //Correct the unlimited dimension size.
-    if(true == missingfield_unlim_flag) {
+    bool temp_missingfield_unlim_flag = missingfield_unlim_flag;
+    if(true == temp_missingfield_unlim_flag) {
         for (vector<Field *>::const_iterator i =
              gdset->getDataFields().begin();
              i != gdset->getDataFields().end(); ++i) {
@@ -574,6 +610,8 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
                 if((*j)->getName() == (missingfield_unlim->getDimensions())[0]->getName()) {
                     if((*j)->getSize()!= 0) {
                         Dimension *dim = missingfield_unlim->getDimensions()[0];
+
+                        // The unlimited dimension size is updated.
                         dim->dimsize = (*j)->getSize();
                         missingfield_unlim_flag = false;
                         break;
@@ -2353,7 +2391,13 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
         }
 
         //Correct the unlimited dimension size.
-        if(true == missingfield_unlim_flag) {
+        // The code on the following is ok. 
+        // However, coverity is picky about changing the missingfield_unlim_flag in the middle.
+        // use a temporary variable for the if block.
+        // The following code correct the dimension size of unlimited dimension.
+
+        bool temp_missingfield_unlim_flag = missingfield_unlim_flag;
+        if(true == temp_missingfield_unlim_flag) {
              for (vector<Field *>::const_iterator j =
                 (*i)->getDataFields().begin();
                 j != (*i)->getDataFields().end(); ++j) {
@@ -2364,6 +2408,7 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
                     if((*k)->getName() == (missingfield_unlim->getDimensions())[0]->getName()) {
                         if((*k)->getSize()!= 0) {
                             Dimension *dim = missingfield_unlim->getDimensions()[0];
+                            // Correct the dimension size.
                             dim->dimsize = (*k)->getSize();
                             missingfield_unlim_flag = false;
                             break;
@@ -3236,6 +3281,8 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
         for (vector<string>::const_iterator i = fieldnames.begin();
             i != fieldnames.end(); ++i) {
             Field *field = new Field();
+            if(field == NULL)
+                throw;
             field->name = *i;
 
             // XXX: We assume the maximum number of dimension for an EOS field
@@ -3248,13 +3295,15 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          const_cast<char *>(field->name.c_str()),
                          &field->rank, dimsize, &field->type, dimlist)) == -1){
                 delete field;
-                throw3("field info", this->name, field->name);
+                throw;
+                //throw3("field info", this->name, field->name);
             }
             {
                 vector<string> dimnames;
 
                 // Split the dimension name list for a field
                 HDFCFUtil::Split(dimlist, ',', dimnames);
+               //if(field != NULL) {// Coverity doesn't understand throw macros.See if coverity is happy.
                 if ((int)dimnames.size() != field->rank) {
                     delete field;
                     throw4("field rank", dimnames.size(), field->rank,
@@ -3264,6 +3313,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                     Dimension *dim = new Dimension(dimnames[k], dimsize[k]);
                     field->dims.push_back(dim);
                 }
+               //}
             }
 
             // Get fill value of a field
@@ -3611,14 +3661,19 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
     throw(Exception)
 {
     SwathDataset *swath = new SwathDataset(swathname);
+    if(swath == NULL)
+        throw;
 
     // Open this Swath object
     if ((swath->datasetid = SWattach(fd,
         const_cast<char *>(swathname.c_str())))
         == -1) {
         delete swath;
-        throw2("attach swath", swathname);
+        throw;
+        //throw2("attach swath", swathname);
     }
+
+    //if(swath != NULL) {// See if I can make coverity happy.coverity doesn't know I call throw already.
 
     try {
 
@@ -3646,6 +3701,7 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
         delete swath;
         throw;
     }
+    //}
 
     return swath;
 }

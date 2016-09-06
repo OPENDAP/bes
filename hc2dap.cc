@@ -187,6 +187,8 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
     // construct HDFStructure
     HDFStructure *str = new HDFStructure(vg.name, dataset);
     bool nonempty = false;
+
+    // I think coverity is unreasonable on this one. The code is sound. KY 2016-05-12
     BaseType *bt = 0;
     try {
         // step through each tagref and copy its contents to DAP
