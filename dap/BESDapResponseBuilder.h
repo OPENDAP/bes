@@ -160,6 +160,10 @@ public:
 	// Added jhrg 9/1/16
 	virtual libdap::DDS *intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
+	// TODO jhrg 9/6/16
+	//
+	// virtual libdap::DMR *intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
 	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 

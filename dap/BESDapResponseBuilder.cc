@@ -967,7 +967,7 @@ void BESDapResponseBuilder::remove_timeout() const
  * Read data into the ResponseObject (a DAP2 DDS). Instead of serializing the data
  * as with send_dap2_data(), this uses the variables' intern_data() method to load
  * the variables so that a transmitter other than libdap::BaseType::serialize()
- * can be used (e.g., like AsciiTransmitter).
+ * can be used (e.g., AsciiTransmitter).
  *
  * @note Other versions of the methods here (e.g., send_dap2_data()) optionally
  * print MIME headers because this code was used in the past to build HTTP responses.
