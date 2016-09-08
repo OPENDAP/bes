@@ -28,6 +28,8 @@
 #include <vector>
 #include <string>
 
+#include <BESInternalError.h>
+
 #include "BESHandlerUtil.h"
 
 using namespace std;
