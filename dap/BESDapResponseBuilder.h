@@ -159,6 +159,7 @@ public:
 
 	// Added jhrg 9/1/16
 	virtual libdap::DDS *intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	virtual libdap::DDS *process_dap2_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
 	// TODO jhrg 9/6/16
 	//

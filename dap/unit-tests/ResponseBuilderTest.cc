@@ -75,6 +75,7 @@
 #include "BESStoredDapResultCache.h"
 
 #include "BESResponseObject.h"
+#include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
 #include "BESDataHandlerInterface.h"
 

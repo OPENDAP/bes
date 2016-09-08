@@ -97,6 +97,7 @@
 #include "BESStoredDapResultCache.h"
 
 #include "BESResponseObject.h"
+#include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
 #include "BESDataHandlerInterface.h"
 #include "BESInternalFatalError.h"
@@ -676,7 +677,6 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
 
         conditional_timeout_cancel();
 
-
         (*dds)->print(out);
         out << flush;
         return;
@@ -711,7 +711,6 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
             *dds = fdds;
         }
 
-
         // Server functions might mark variables to use their read()
         // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
@@ -738,9 +737,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
 
         conditional_timeout_cancel();
 
-
         (*dds)->print_constrained(out);
-
     }
     else {
         eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
@@ -749,7 +746,6 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),(*dds)->get_dap_version());
 
         conditional_timeout_cancel();
-
 
         (*dds)->print_constrained(out);
     }
@@ -961,6 +957,82 @@ void BESDapResponseBuilder::remove_timeout() const
 #if USE_LOCAL_TIMEOUT_SCHEME
     alarm(0);
 #endif
+}
+
+/**
+ * @brief Process a DDS (i.e., apply a constraint) for a non-DAP transmitter.
+ *
+ * This is a companion method to the intern_dap2_data() method. Unlike that,
+ * this simply evaluates the CE against the DDS, including any functions.
+ *
+ * @note If there is no constraint, there's no need to call this.
+ *
+ * @param obj ResponseObject wrapper
+ * @param dhi Various parameters to the handler
+ * @return The DDS* after the CE, including functions, has been evaluated. The
+ * returned pointer is managed by the ResponseObject
+ */
+libdap::DDS *
+BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+{
+    BESDEBUG("dap", "BESDapResponseBuilder::process_dap2_dds() - BEGIN"<< endl);
+
+    dhi.first_container();
+
+    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj);
+    if (!bdds) throw BESInternalFatalError("Expected a BESDDSResponse instance", __FILE__, __LINE__);
+
+    DDS *dds = bdds->get_dds();
+
+    set_dataset_name(dds->filename());
+    set_ce(dhi.data[POST_CONSTRAINT]);
+    set_async_accepted(dhi.data[ASYNC]);
+    set_store_result(dhi.data[STORE_RESULT]);
+
+    ConstraintEvaluator &eval = bdds->get_ce();
+
+    // Split constraint into two halves
+    split_ce(eval);
+
+    // If there are functions, parse them and eval.
+    // Use that DDS and parse the non-function ce
+    // Serialize using the second ce and the second dds
+    if (!d_btp_func_ce.empty()) {
+#if 0
+        BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
+
+        string btp_func_ce  = get_btp_func_ce();
+        if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
+            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
+        }
+        else {
+            func_eval.parse_constraint(btp_func_ce, **dds);
+            DDS *fdds = func_eval.eval_function_clauses(**dds);
+            delete *dds; *dds = 0;
+            *dds = fdds;
+        }
+#endif
+
+        ConstraintEvaluator func_eval;
+        func_eval.parse_constraint(d_btp_func_ce, *dds);
+        DDS *fdds = func_eval.eval_function_clauses(*dds);
+        delete dds;             // Delete so that we can ...
+        bdds->set_dds(fdds);    // Transfer management responsibility
+        dds = fdds;
+
+        // Server functions might mark variables to use their read()
+        // methods. Clear that so the CE in d_dap2ce will control what is
+        // sent. If that is empty (there was only a function call) all
+        // of the variables in the intermediate DDS (i.e., the function
+        // result) will be sent.
+        dds->mark_all(false);
+
+        promote_function_output_structures(dds);
+    }
+
+    eval.parse_constraint(d_dap2ce, *dds); // Throws Error if the ce doesn't parse.
+
+    return dds;
 }
 
 /**

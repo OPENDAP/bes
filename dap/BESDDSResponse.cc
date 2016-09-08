@@ -35,10 +35,6 @@
 BESDDSResponse::~BESDDSResponse()
 {
     if (_dds) {
-        // FIXME Should the BES be deleting stuff inside a DDS object? How does
-        // the BES know this is not allocated on the stack?
-        //if (_dds->get_factory())
-        //    delete _dds->get_factory();
         delete _dds;
     }
 }
@@ -47,23 +43,19 @@ BESDDSResponse::~BESDDSResponse()
  *
  * @param cn name of the current container being operated on
  */
-void
-BESDDSResponse::set_container( const string &cn )
+void BESDDSResponse::set_container(const string &cn)
 {
-    if( _dds && get_explicit_containers() )
-    {
-	_dds->container_name( cn ) ;
+    if (_dds && get_explicit_containers()) {
+        _dds->container_name(cn);
     }
 }
 
 /** @brief clear the container in the DAP response object
  */
-void
-BESDDSResponse::clear_container( )
+void BESDDSResponse::clear_container()
 {
-    if( _dds )
-    {
-	_dds->container_name( "" ) ;
+    if (_dds) {
+        _dds->container_name("");
     }
 }
 
@@ -75,25 +67,21 @@ BESDDSResponse::clear_container( )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDDSResponse::dump( ostream &strm ) const
+void BESDDSResponse::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDDSResponse::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _dds )
-    {
-	strm << BESIndent::LMarg << "DDS:" << endl ;
-	BESIndent::Indent() ;
-	DapIndent::SetIndent( BESIndent::GetIndent() ) ;
-	_dds->dump( strm ) ;
-	DapIndent::Reset() ;
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDDSResponse::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_dds) {
+        strm << BESIndent::LMarg << "DDS:" << endl;
+        BESIndent::Indent();
+        DapIndent::SetIndent(BESIndent::GetIndent());
+        _dds->dump(strm);
+        DapIndent::Reset();
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "DDS: null" << endl ;
+    else {
+        strm << BESIndent::LMarg << "DDS: null" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
