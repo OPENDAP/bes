@@ -30,7 +30,7 @@
 
 #include "BESFileLockingCache.h"
 
-#define DATA_MARK "--DATA:"
+// FIXME #define DATA_MARK "--DATA:"
 
 class BESDapResponseBuilder;
 
@@ -41,23 +41,52 @@ class BaseTypeFactory;
 }
 
 /**
- * This class is used to cache DAP2 response objects.
- * @author jhrg 5/3/13
+ * @brief Cache the results from server functions.
+ *
+ * Serve-side functions build new datasets and can be quite large. This code
+ * caches those results so that when clients ask for a suite of responses from
+ * the function calls, the computations are run only once (in the best case)
+ * and subsequent requests for data or metadata are satisfied using information
+ * in this case.
+ *
+ * @note Cache entry collisions: This cache must hold objects that are identified
+ * by the combination of a dataset and a constraint expression. The CE can be
+ * quite large and contain a number of 'special' characters like '()' and so on.
+ * Instead of building cache IDs using a simple concatenation of the dataset
+ * and CE, we use the C++ std::hash class to generate a hash code. However, it's
+ * possible that two different dataset/CE combinations will have the same hash
+ * values. We use a simple collision resolution system where, when a collision
+ * is detected, a suffix is appended to the hash value. After a number of
+ * collision, we give up and simply do not cache the response (providing no worse
+ * performance than if the cache did not exist).
+ *
+ * @note Cache entry format: The cache uses a specially formated 'response object'
+ * that is more efficient to read and write than a typical DAP2 or DAP4 response
+ * object. DAP2 serializes data using network byte order while the cache uses
+ * native machine order. DAP4 computes checksums; the cache does not.
+ *
+ * @author jhrg
  */
 
 class BESDapFunctionResponseCache: public BESFileLockingCache {
 private:
-
     static BESDapFunctionResponseCache *d_instance;
+
+    /**
+     * Called by atexit()
+     */
     static void delete_instance() {
         delete d_instance;
         d_instance = 0;
     }
 
-    /** Initialize the cache using the default values for the cache. */
+    /** @name Suppressed constructors
+     *  Do not use.
+     */
+    ///@{
     BESDapFunctionResponseCache();
-
     BESDapFunctionResponseCache(const BESDapFunctionResponseCache &src);
+    ///@}
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 
@@ -69,12 +98,10 @@ private:
         libdap::ConstraintEvaluator *eval, const string &cache_file_name);
     libdap::DDS *load_from_cache(const string &resource_id, const string &cache_file_name);
 
-
     friend class FunctionResponseCacheTest;
     friend class StoredResultTest;
 
 protected:
-
     /**
      * @brief Protected constructor that takes as arguments keys to the cache directory,
      * file prefix, and size of the cache to be looked up a configuration file
@@ -111,10 +138,10 @@ public:
         libdap::ConstraintEvaluator *eval);
 
     virtual bool can_be_cached(libdap::DDS *dds, const std::string &constraint);
+
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
-
 };
 
 #endif // _bes_dap_response_cache_h

@@ -761,7 +761,10 @@ public:
 #endif
         }
         catch (Error &e) {
-            CPPUNIT_FAIL("Caught libdap::Error!! Message:" + e.get_error_message());
+            CPPUNIT_FAIL("Caught libdap::Error!! Message: " + e.get_error_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError!! Message: " + e.get_message() + " (" + e.get_file() +")");
         }
 
         DBG(cerr << "invoke_server_side_function_test() - END" << endl);

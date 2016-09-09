@@ -59,8 +59,6 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	CacheMarshaller.cc CacheUnMarshaller.cc \
 	ObjMemCache.cc
 	
-# Unused: BESDapSequenceAggregationServer.cc
-
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
 	BESDDXResponseHandler.h \
@@ -90,9 +88,6 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	CacheMarshaller.h CacheUnMarshaller.h \
 	ObjMemCache.h
 	
-	
-# Unused: BESDapSequenceAggregationServer.h
-
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module 
