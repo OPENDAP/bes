@@ -42,6 +42,11 @@ namespace bes {
  * Get a new temporary file using the given template. The template must give
  * the fully qualified path for the temporary file and must end in one or more
  * Xs (but six are usually used) with no characters following.
+ *
+ * @note If you pass in a bad template, behavior of this class is undefined.
+ *
+ * @param path_template Template passed to mkstemp() to build the temporary
+ * file pathname.
  */
 TemporaryFile::TemporaryFile(const std::string &path_template)
 {
