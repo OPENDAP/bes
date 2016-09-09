@@ -15,7 +15,7 @@ AT_ARG_OPTION_ARG([baselines],
     [echo "baselines set to $at_arg_baselines";
      baselines=$at_arg_baselines],[baselines=])
 
-# Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass])
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
 m4_define([_AT_BESCMD_TEST], [dnl
 
@@ -24,16 +24,19 @@ m4_define([_AT_BESCMD_TEST], [dnl
 
     input=$1
     baseline=$2
+    pass=$3
+    repeat=$4
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
-        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
-        AT_XFAIL_IF([test "$3" = "xfail"])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$pass = zxfail])
         ])
 
     AT_CLEANUP
@@ -173,6 +176,12 @@ m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
 
+m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
+[_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])
+])
+
+dnl Simple pattern tests. The baseline file holds a set of patterns, one per line,
+dnl and the test will pass if any pattern matches with the test result. 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
 [_AT_BESCMD_PATTERN_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])

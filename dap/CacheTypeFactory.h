@@ -29,8 +29,9 @@
 #include <string>
 
 #include <BaseTypeFactory.h>
+#include "CachedSequence.h"
 
-class CachedSequence;
+//class CachedSequence;
 
 /**
  * A factory for types that work with data read from the (function)
@@ -41,25 +42,8 @@ class CacheTypeFactory : public libdap::BaseTypeFactory {
 public:
     CacheTypeFactory() {}
     virtual ~CacheTypeFactory() {}
-#if 0
-    virtual Byte *NewByte(const string &n = "") const;
-    virtual Int16 *NewInt16(const string &n = "") const;
-    virtual UInt16 *NewUInt16(const string &n = "") const;
-    virtual Int32 *NewInt32(const string &n = "") const;
-    virtual UInt32 *NewUInt32(const string &n = "") const;
-    virtual Float32 *NewFloat32(const string &n = "") const;
-    virtual Float64 *NewFloat64(const string &n = "") const;
 
-    virtual Str *NewStr(const string &n = "") const;
-    virtual Url *NewUrl(const string &n = "") const;
-
-    virtual Array *NewArray(const string &n = "", BaseType *v = 0) const;
-    virtual Structure *NewStructure(const string &n = "") const;
-#endif
     virtual libdap::Sequence *NewSequence(const std::string &n = "") const;
-#if 0
-    virtual Grid *NewGrid(const string &n = "") const;
-#endif
 };
 
 #endif // cache_type_factory_h

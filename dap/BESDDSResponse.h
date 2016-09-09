@@ -37,40 +37,33 @@
 #include <DDS.h>
 #include <ConstraintEvaluator.h>
 
-using namespace libdap ;
+using namespace libdap;
 
 /** @brief Represents an OPeNDAP DDS DAP2 data object within the BES
  */
 class BESDDSResponse: public BESDapResponse {
-    private:
-        DDS * _dds;
-        ConstraintEvaluator _ce;
-    public:
-        BESDDSResponse(DDS *dds) :
-            BESDapResponse(), _dds(dds)
-        {
-        }
-        virtual ~BESDDSResponse();
+private:
+    DDS * _dds;
+    ConstraintEvaluator _ce;
 
-        virtual void set_container(const string &cn);
-        virtual void clear_container();
+public:
+    BESDDSResponse(DDS *dds) : BESDapResponse(), _dds(dds) { }
+    virtual ~BESDDSResponse();
 
-        virtual void dump(ostream &strm) const;
+    virtual void set_container(const string &cn);
+    virtual void clear_container();
 
-        /**
-         * Set the response object's DDS. The caller should probably
-         * free the existing DDS object before calling this method.
-         */
-        void set_dds(DDS *ddsIn) { _dds = ddsIn; }
+    virtual void dump(ostream &strm) const;
 
-        DDS * get_dds()
-        {
-            return _dds;
-        }
-        ConstraintEvaluator & get_ce()
-        {
-            return _ce;
-        }
+    /**
+     * Set the response object's DDS. The caller should probably
+     * free the existing DDS object before calling this method.
+     */
+    void set_dds(DDS *ddsIn) { _dds = ddsIn; }
+
+    DDS *get_dds() const { return _dds; }
+
+    ConstraintEvaluator &get_ce() { return _ce; }
 };
 
 #endif // I_BESDDSResponse

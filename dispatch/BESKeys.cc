@@ -32,12 +32,14 @@
 
 #include "config.h"
 
+#if 0
 #ifdef __cplusplus
 extern "C"
 {
 #include <sys/types.h>
-#include "regex.h"
+//#include "regex.h"
 }
+#endif
 #endif
 
 #include <cerrno>
@@ -97,13 +99,13 @@ BESKeys::~BESKeys()
 void BESKeys::initialize_keys()
 {
     _keys_file = new ifstream(_keys_file_name.c_str());
-    int myerrno = errno;
+    //int myerrno = errno;
     if (!(*_keys_file))
     {
         char path[500];
         getcwd(path, sizeof(path));
         string s = string("BES: fatal, cannot open BES configuration file ") + _keys_file_name + ": ";
-        char *err = strerror(myerrno);
+        char *err = strerror(errno);
         if (err)
             s += err;
         else

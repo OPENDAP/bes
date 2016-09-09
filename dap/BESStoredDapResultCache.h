@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -30,7 +29,10 @@
 
 #include <DapXmlNamespaces.h>
 #include <DMR.h>
+
 #include "BESFileLockingCache.h"
+
+#undef DAP2_STORED_RESULTS
 
 class BESDapResponseBuilder;
 
@@ -39,9 +41,9 @@ class BESDapResponseBuilder;
 // libdap::BaseType; tells the compiler go look i the 'libdap' namespace for 'BaseType'
 // but _while it's compiling this file_ there is no 'libdap' namespace. So we make one.
 namespace libdap {
-    class DDS;
-    class ConstraintEvaluator;
-    class BaseTypeFactory;
+class DDS;
+class ConstraintEvaluator;
+class BaseTypeFactory;
 }
 
 /**
@@ -49,12 +51,15 @@ namespace libdap {
  * @author jhrg 5/3/13
  */
 
-class BESStoredDapResultCache: public BESFileLockingCache
-{
+class BESStoredDapResultCache: public BESFileLockingCache {
 private:
 
     static BESStoredDapResultCache *d_instance;
-    static void delete_instance() { delete d_instance; d_instance = 0; }
+    static void delete_instance()
+    {
+        delete d_instance;
+        d_instance = 0;
+    }
 
     string d_storedResultsSubdir;
     string d_dataRootDir;
@@ -63,10 +68,13 @@ private:
 
     /** Initialize the cache using the default values for the cache. */
     BESStoredDapResultCache();
+
     BESStoredDapResultCache(const BESStoredDapResultCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    bool read_dap2_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
+#ifdef DAP2_STORED_RESULTS
+    bool read_dap2_data_from_cache(const string &cache_file_name, libdap::DDS *fdds);
+#endif
     bool read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr);
 
     friend class StoredDap2ResultTest;
@@ -82,37 +90,32 @@ private:
 
 protected:
 
-    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
+    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix,
+        unsigned long long size);
 
 public:
-	static const string SUBDIR_KEY;
-	static const string PREFIX_KEY;
-	static const string SIZE_KEY;
+    static const string SUBDIR_KEY;
+    static const string PREFIX_KEY;
+    static const string SIZE_KEY;
 
-    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
+    virtual ~BESStoredDapResultCache() { }
+
+    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
+        const string &stored_results_subdir, const string &prefix, unsigned long long size);
     static BESStoredDapResultCache *get_instance();
 
-    // static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
-
+#ifdef DAP2_STORED_RESULTS
     libdap::DDS *get_cached_dap2_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
-    libdap::DMR *get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory, const string &filename);
-
-    virtual ~BESStoredDapResultCache() {
-    	// delete_instance();
-    }
-
     // Store the passed DDS to disk as a serialized DAP2 object.
     virtual string store_dap2_result(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
-    		libdap::ConstraintEvaluator *eval);
+        libdap::ConstraintEvaluator *eval);
+#endif
+
+    libdap::DMR *get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory,
+        const string &filename);
 
     // Store the passed DMR to disk as a serialized DAP4 object.
     virtual string store_dap4_result(libdap::DMR &dmr, const string &constraint, BESDapResponseBuilder *rb);
-
-    // virtual void unlock_and_close(const std::string &cache_token);
-
-    // Overrides parent
-    // virtual string get_cache_file_name(const string &src, bool mangle = false);
-
 };
 
 #endif // _bes_store_result_cache_h

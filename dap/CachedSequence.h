@@ -30,7 +30,7 @@
 namespace libdap {
 class ConstraintEvaluator;
 class DDS;
-// TODO Remove class Marshaller;
+class Marshaller;
 }
 
 // namespace bes {
@@ -43,6 +43,8 @@ class CachedSequence: public libdap::Sequence
 {
 private:
 protected:
+    unsigned int d_value_index;
+
     void load_prototypes_with_values(libdap::BaseTypeRow &btr, bool safe = true);
 
 public:
@@ -54,7 +56,7 @@ public:
         created.
 
         @brief The Sequence constructor. */
-    CachedSequence(const string &n) : Sequence(n) { }
+    CachedSequence(const string &n) : Sequence(n), d_value_index(0) { }
 
     /** The Sequence server-side constructor requires the name of the variable
         to be created and the dataset name from which this variable is being
@@ -66,10 +68,10 @@ public:
         variable is being created.
 
         @brief The Sequence server-side constructor. */
-    CachedSequence(const string &n, const string &d) : Sequence(n, d) { }
+    CachedSequence(const string &n, const string &d) : Sequence(n, d), d_value_index(0) { }
 
     /** @brief The Sequence copy constructor. */
-    CachedSequence(const CachedSequence &rhs) : Sequence(rhs) { }
+    CachedSequence(const CachedSequence &rhs) : Sequence(rhs), d_value_index(0) { }
 
     virtual ~CachedSequence() { }
 
@@ -85,6 +87,9 @@ public:
     }
 
     virtual bool read_row(int row, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool ce_eval);
+
+    virtual void intern_data(libdap::ConstraintEvaluator &eval, libdap::DDS &dds);
+    virtual bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval = true);
 
     virtual void dump(ostream &strm) const;
 };
