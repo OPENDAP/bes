@@ -60,10 +60,10 @@ TemporaryFile::TemporaryFile(const std::string &path_template)
     // cover the case where older versions of mkstemp() create the file using
     // a mode of 666.
     mode_t original_mode = umask(077);
-    int fd = mkstemp(&d_name[0]);
+    d_fd = mkstemp(&d_name[0]);
     umask(original_mode);
 
-    if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
+    if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 }
 
 } // namespace bes
