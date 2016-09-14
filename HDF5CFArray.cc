@@ -39,6 +39,7 @@
 #include "HDF5RequestHandler.h"
 #include "HDF5CFArray.h"
 #include "h5cfdaputil.h"
+#include "ObjMemCache.h"
 
 
 
@@ -52,6 +53,48 @@ bool HDF5CFArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
+#if 0
+    if(HDF5RequestHandler::check_dds_cache())
+        BESDEBUG("h5","have DDS cache "<<endl);
+    else 
+        BESDEBUG("h5","Dont' have DDS cache "<<endl);
+#endif
+
+    ObjMemCache* my_data_cache = HDF5RequestHandler::get_data_mem_cache();
+    //HDF5DataMemCache * cached_h5data_mem_cache_ptr = 0;
+    //if(HDF5RequestHandler::get_data_mem_cache()) {
+    if(my_data_cache) {
+       HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename));
+       if(cached_h5data_mem_cache_ptr) {
+        BESDEBUG("h5","Data Memory Cache hit "<<endl);
+        const string my_var_name = cached_h5data_mem_cache_ptr->get_varname();
+        cerr<<"my variable name is "<<my_var_name <<endl;
+       }
+       else{ 
+        BESDEBUG("h5","Data memory added to the cache "<<endl);
+cerr<<"coming to add data memory cache "<<endl;
+        my_data_cache->add(new HDF5DataMemCache(varname), filename);
+        
+
+       }
+    }
+#if 0
+    if (my_data_cache && (cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename)))) {
+        // copy the cached DAS into the BES response object
+        BESDEBUG("h5", "Data Memory Cached hit for : " << filename << endl);
+        //*my_data_cache = *cached_h5data_mem_cache_ptr;
+        const string my_var_name = 
+    }
+    else {
+        if(my_data_cache) {
+            // add a copy
+            BESDEBUG("h5", "Data Memory cache added to the cache for : " << filename << endl);
+            my_data_cache->add(new HDF5DataMemCache(varfullpath), filename);
+        }
+
+    }
+#endif
+
 
     if(length() == 0)
         return true;

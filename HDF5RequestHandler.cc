@@ -98,6 +98,8 @@ ObjMemCache *HDF5RequestHandler::das_cache = 0;
 ObjMemCache *HDF5RequestHandler::dds_cache = 0;
 ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
 
+ObjMemCache *HDF5RequestHandler::data_mem_cache = 0;
+
 // Set default values of all BES keys be false.
 bool HDF5RequestHandler::_usecf                       = false;
 bool HDF5RequestHandler::_pass_fileid                 = false;
@@ -133,6 +135,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
         das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
         dds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
         dmr_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
+        data_mem_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
     }
 
     // Check if the EnableCF key is set.
@@ -159,6 +162,7 @@ HDF5RequestHandler::~HDF5RequestHandler()
     delete das_cache;
     delete dds_cache;
     delete dmr_cache;
+    delete data_mem_cache;
      
 }
 

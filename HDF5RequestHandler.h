@@ -30,6 +30,7 @@
 #include<string>
 #include<map>
 #include "BESRequestHandler.h"
+#include "HDF5_DataMemCache.h"
 
 class ObjMemCache; // in bes/dap
 
@@ -71,8 +72,10 @@ class HDF5RequestHandler:public BESRequestHandler {
     // Handling Cache
     static unsigned int get_cache_entries() { return _cache_entries;}
     static float get_cache_purge_level() { return _cache_purge_level;}
-
-    
+    static bool  check_dds_cache() {return (dds_cache?true:false);}
+    static ObjMemCache* get_data_mem_cache() {return data_mem_cache;}
+    static ObjMemCache* set_data_mem_cache(ObjMemCache* my_data_mem_cache) 
+                                             {data_mem_cache=my_data_mem_cache;}
 
   private:
      //cache variables. 
@@ -83,6 +86,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static ObjMemCache *das_cache;
      static ObjMemCache *dds_cache;
      static ObjMemCache *dmr_cache;
+     static ObjMemCache *data_mem_cache;
 
 
      // BES keys
