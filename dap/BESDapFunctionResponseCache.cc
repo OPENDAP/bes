@@ -316,19 +316,20 @@ string BESDapFunctionResponseCache::cache_dataset(DDS **dds, const string &const
 
     // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
     // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
-    string baseName = BESFileLockingCache::get_cache_file_name(hashed_id.str(), false);
+    string cache_file_name = BESFileLockingCache::get_cache_file_name(hashed_id.str(), false);
 
     BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
 
     string dataset_name = (*dds)->filename();
-
-    string cache_file_name;
 
     // Begin cache collision avoidance.
     //
     // FIXME I think this loop needs to be changed a bit. The code needs to look at all of the
     // possible cache files (using load_from_cache()) before it tries to write the dataset
     // to the cache. jhrg 5/13/16
+    //
+    // Move this probing to the load_from_cache() code. I think this will work... jhrg 9/14/16
+#if 0
     unsigned long suffix_counter = 0;
     bool done = false;
     while (!done) {
@@ -347,10 +348,10 @@ string BESDapFunctionResponseCache::cache_dataset(DDS **dds, const string &const
         cache_file_name = cfname.str();
 
         BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " candidate cache_file_name: " << cache_file_name << endl);
-
+#endif
         // Does the cache file exist?
         if ((ret_dds = load_from_cache(resourceId, cache_file_name))) {
-            BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Data loaded from cache file: " << cache_file_name << endl);
+            BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Data loaded from cache file: " << cache_file_name << endl);
             ret_dds->filename(dataset_name);
             *dds = ret_dds;
             done = true;
@@ -367,7 +368,9 @@ string BESDapFunctionResponseCache::cache_dataset(DDS **dds, const string &const
             *dds = ret_dds;
             done = true;
         }
+#if 0
     }
+#endif
 
     BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Used cache_file_name: " << cache_file_name << " for resource ID: " << resourceId << endl);
 
@@ -396,28 +399,50 @@ BESDapFunctionResponseCache::load_from_cache(const string &resource_id, const st
     int fd; // unused
     DDS *cached_dds = 0;   // nullptr
 
-    if (get_read_lock(cache_file_name, fd)) {
-        // So we need to READ the first line of the file into a string
-        // because we know it's the resourceID of the thing in the cache.
-        string cached_resource_id;
-        ifstream cache_file_istream(cache_file_name.c_str());
+    // FIXME Here we must get a read lock on the entire cache - this will enable the code
+    // to scan for cached things while knowing that nothing new will be added. Other
+    // processes/threads can also look for things. Nothing can write to the cache while
+    // it is locked for read access.
 
-        char line[max_cacheable_ce_len];
-        cache_file_istream.getline(line, max_cacheable_ce_len);
-        cached_resource_id.assign(line);
-
-        BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " cached_resource_id: " << cached_resource_id << endl);
-        BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " resourceId: " << resource_id << endl);
-
-        // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
-        if (cached_resource_id.compare(resource_id) == 0) {
-            // WooHoo Cache Hit!
-            BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::load_from_cache() - Cache Hit!" << endl);
-
-            cached_dds = read_data_ddx(cache_file_istream);
+    unsigned long suffix_counter = 0;
+    bool done = false;
+    while (!cached_dds) {
+        if (suffix_counter > max_collisions) {
+            stringstream ss;
+            ss << "Cache error! There are " << suffix_counter << " hash collisions for the resource '" << resourceId
+                << "' And that is a bad bad thing.";
+            throw BESInternalError(ss.str(), __FILE__, __LINE__);
         }
 
-        unlock_and_close(cache_file_name);
+        // Build cache_file_name and cache_id_file_name from baseName
+        stringstream cfname;
+        cfname << cache_file_name << "_" << suffix_counter++;
+
+        BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " candidate cache_file_name: " << cfname.str() << endl);
+
+        if (get_read_lock(cfname.str(), fd)) {
+            // So we need to READ the first line of the file into a string
+            // because we know it's the resourceID of the thing in the cache.
+            ifstream cache_file_istream(cfname.str().c_str());
+
+            char line[max_cacheable_ce_len];
+            cache_file_istream.getline(line, max_cacheable_ce_len);
+            string cached_resource_id;
+            cached_resource_id.assign(line);
+
+            BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " cached_resource_id: " << cached_resource_id << endl);
+            BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " resourceId: " << resource_id << endl);
+
+            // Then we compare that string (read from the cache_id_file_name) to the resourceID of the thing we're looking to cache
+            if (cached_resource_id.compare(resource_id) == 0) {
+                // WooHoo Cache Hit!
+                BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::load_from_cache() - Cache Hit!" << endl);
+
+                cached_dds = read_data_ddx(cache_file_istream);
+            }
+
+            unlock_and_close(cfname.str());
+        }
     }
 
     BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Cache " << (cached_dds!=0?"HIT":"MISS") << " for: " << cache_file_name << endl);
