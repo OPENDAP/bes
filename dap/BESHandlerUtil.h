@@ -52,7 +52,7 @@ public:
      * @brief Build a temporary file using a default template.
      *
      * The temporary file will be in TMP_DIR (likely /tmp) and will have
-     * a name like 'opendapXXXXXX' where the Xs are numebrs or letters.
+     * a name like 'opendapXXXXXX' where the Xs are numbers or letters.
      */
     TemporaryFile() {
         TemporaryFile(default_path_template);
