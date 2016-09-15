@@ -136,7 +136,6 @@ inline int BESFileLockingCache::m_get_descriptor(const string &file)
 
 string lockStatus(const int fd)
 {
-
     struct flock isLocked, lock_query;
 
     isLocked.l_type = F_WRLCK; /* Test for any lock on any part of file. */
@@ -152,11 +151,9 @@ string lockStatus(const int fd)
     if (ret == -1) {
         ss << "ERROR! fnctl(" << fd << ",F_GETLK, &lock) returned: " << ret << "   errno[" << errno << "]: "
             << strerror(errno) << endl;
-
     }
     else {
         ss << "SUCCESS. fnctl(" << fd << ",F_GETLK, &lock) returned: " << ret << endl;
-
     }
 
     ss << "lock_info.l_len:    " << lock_query.l_len << endl;
@@ -197,8 +194,8 @@ static void unlock(int fd)
     BESDEBUG("cache", "BESFileLockingCache::unlock() - lock status: " << lockStatus(fd) << endl);
 
     if (close(fd) == -1) throw BESInternalError("Could not close the (just) unlocked file.", __FILE__, __LINE__);
-    BESDEBUG("cache", "BESFileLockingCache::unlock() - File Closed. fd: " << fd << endl);
 
+    BESDEBUG("cache", "BESFileLockingCache::unlock() - File Closed. fd: " << fd << endl);
 }
 
 /** Get a shared read lock on an existing file.
@@ -596,7 +593,6 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
     unlock_cache();
 
     return status;
-
 }
 
 /** @brief Transfer from an exclusive lock to a shared lock.
@@ -624,6 +620,7 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
     if (fcntl(fd, F_SETLKW, &lock) == -1) {
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
+
     BESDEBUG("cache", "BESFileLockingCache::exclusive_to_shared_lock() - lock status: " << lockStatus(fd) << endl);
 }
 
@@ -643,6 +640,7 @@ void BESFileLockingCache::lock_cache_write()
         throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
+
     BESDEBUG("cache", "BESFileLockingCache::lock_cache_write() - lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
@@ -659,7 +657,6 @@ void BESFileLockingCache::lock_cache_read()
     }
 
     BESDEBUG("cache", "BESFileLockingCache::lock_cache_read() - lock status: " << lockStatus(d_cache_info_fd) << endl);
-
 }
 
 /** Unlock the cache info file.
@@ -675,6 +672,7 @@ void BESFileLockingCache::unlock_cache()
         throw BESInternalError("An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
+
     BESDEBUG("cache", "BESFileLockingCache::unlock_cache() - lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
@@ -702,9 +700,9 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
         unlock(fd);
         fd = m_get_descriptor(file_name);
     }
+
     BESDEBUG("cache", "BESFileLockingCache::unlock_and_close() - lock status: " << lockStatus(d_cache_info_fd) << endl);
     BESDEBUG("cache2", "BESFileLockingCache::unlock_and_close() -  END"<< endl);
-
 }
 
 /** @brief Update the cache info file to include 'target'

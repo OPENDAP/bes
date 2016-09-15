@@ -388,7 +388,7 @@ string BESDapFunctionResponseCache::cache_dataset(DDS **dds, const string &const
  *
  * @param resourceId The resource id is a combination of the filename and the
  * function call part of the CE that built the cached response.
- * @param cache_file_name The name of a cache file that _may_ contain the correct
+ * @param cache_file_name The basename of a cache file that _may_ contain the correct
  * response.
  * @return A pointer to a newly allocated DDS that contains data if the cache file
  * held the correct response, null otherwise.
@@ -399,14 +399,14 @@ BESDapFunctionResponseCache::load_from_cache(const string &resource_id, const st
     int fd; // unused
     DDS *cached_dds = 0;   // nullptr
 
-    // FIXME Here we must get a read lock on the entire cache - this will enable the code
+    // FIXME Here we could get a read lock on the entire cache - this will enable the code
     // to scan for cached things while knowing that nothing new will be added. Other
     // processes/threads can also look for things. Nothing can write to the cache while
-    // it is locked for read access.
+    // it is locked for read access. We might have to modify the BESFileLocking cache.
 
     unsigned long suffix_counter = 0;
-    bool done = false;
-    while (!cached_dds) {
+    //bool done = false;
+    do {
         if (suffix_counter > max_collisions) {
             stringstream ss;
             ss << "Cache error! There are " << suffix_counter << " hash collisions for the resource '" << resourceId
@@ -443,7 +443,7 @@ BESDapFunctionResponseCache::load_from_cache(const string &resource_id, const st
 
             unlock_and_close(cfname.str());
         }
-    }
+    } while (!cached_dds);
 
     BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Cache " << (cached_dds!=0?"HIT":"MISS") << " for: " << cache_file_name << endl);
 
