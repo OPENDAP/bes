@@ -176,7 +176,7 @@ public:
             CPPUNIT_ASSERT(test_dds);
 
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			token = cache->cache_dataset(&test_dds, "", &eval);
+			token = cache->get_or_cache_dataset(&test_dds, "", &eval);
 			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
 			cache->unlock_and_close(token);
 
@@ -202,7 +202,7 @@ public:
 		try {
 		    // This code is here to load the DataDDX response into the cache if it is not
 		    // there already. If it is there, it reads it from the cache.
-		    token = cache->cache_dataset(&test_dds, "", &eval);
+		    token = cache->get_or_cache_dataset(&test_dds, "", &eval);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 
@@ -257,14 +257,14 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			token = cache->cache_dataset(&test_dds, "", &eval);
+			token = cache->get_or_cache_dataset(&test_dds, "", &eval);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(test_dds);
 
 			// This reads the dataset from the cache, but unlike the previous test,
 			// does so using the public interface.
-			token = cache->cache_dataset(&test_dds, "", &eval);
+			token = cache->get_or_cache_dataset(&test_dds, "", &eval);
 
 			CPPUNIT_ASSERT(test_dds);
 			// There are nine variables in test.05.ddx
@@ -302,7 +302,7 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			token = cache->cache_dataset(&test_dds, "b,u", &eval);
+			token = cache->get_or_cache_dataset(&test_dds, "b,u", &eval);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(test_dds);
@@ -320,7 +320,7 @@ public:
 			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			oss.str("");
 
-			token = cache->cache_dataset(&test_dds, "b,u", &eval);
+			token = cache->get_or_cache_dataset(&test_dds, "b,u", &eval);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(test_dds);

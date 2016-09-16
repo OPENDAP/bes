@@ -1009,7 +1009,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
         string btp_func_ce  = get_btp_func_ce();
         if (responseCache && responseCache->can_be_cached(dds, btp_func_ce)) {
             ConstraintEvaluator func_eval;
-            string foo = responseCache->cache_dataset(&dds, btp_func_ce, &func_eval);
+            string foo = responseCache->get_or_cache_dataset(&dds, btp_func_ce, &func_eval);
         }
         else
 #endif
@@ -1106,18 +1106,15 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         BESDEBUG("dap",
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
-        string cache_token = "";
         // Define a local ce evaluator so that the clause from the function parse
         // won't get treated like selection clauses later on when serialize is called
         // on the DDS (fdds)
-        BESDapFunctionResponseCache *responseCache = 0;
-
-        // FIXME responseCache = BESDapFunctionResponseCache::get_instance();
+        BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
 
         string btp_func_ce  = get_btp_func_ce();
-        if (responseCache && responseCache->can_be_cached(*dds,btp_func_ce)) {
+        if (response_cache && response_cache->can_be_cached(*dds, btp_func_ce)) {
             ConstraintEvaluator func_eval;
-            string foo = responseCache->cache_dataset(dds, btp_func_ce, &func_eval);
+            string foo = response_cache->get_or_cache_dataset(dds, btp_func_ce, &func_eval);
         }
         else {
             // Evaluate the function

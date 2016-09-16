@@ -495,13 +495,12 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 {
     // Old way of building String, retired 10/02/2015 - ndp
     // Return d_cache_dir + "/" + d_prefix + BESFileLockingCache::DAP_CACHE_CHAR + target;
-    BESDEBUG("cache",
-        "BESFileLockingCache::get_cache_file_name() - src:         '" << src << "' mangle: "<< mangle << endl);
+    BESDEBUG("cache", __PRETTY_FUNCTION__ << " - src: '" << src << "' mangle: "<< mangle << endl);
 
     string target = src;
 
     target = BESUtil::assemblePath(getCacheFilePrefix(), src);
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target << "'" << endl);
+    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - target: '" << target << "'" << endl);
 
     if (mangle) {
         if (target.at(0) == '/') {
@@ -515,21 +514,20 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
         }
     }
 
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target << "'" << endl);
+    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - target: '" << target << "'" << endl);
 
     if (target.length() > 254) {
         ostringstream msg;
-        msg  << "[ERROR} OOPS! Cache filename is longer than 254 characters. The file system is going to balk at that. name.length: ";
-        msg << target.length() << " characters. name.value: " << target;
-        BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - " << msg.str() << endl);
+        msg << "Cache filename is longer than 254 characters (name length: ";
+        msg << target.length() << ", name: " << target;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     target = BESUtil::assemblePath(getCacheDirectory(), target, true);
 
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - d_cache_dir: '" << d_cache_dir << "'" << endl);
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - d_prefix:    '" << d_prefix << "'" << endl);
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target << "'" << endl);
+    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - d_cache_dir: '" << d_cache_dir << "'" << endl);
+    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - d_prefix:    '" << d_prefix << "'" << endl);
+    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - target:      '" << target << "'" << endl);
 
     return target;
 }

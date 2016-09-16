@@ -30,8 +30,6 @@
 
 #include "BESFileLockingCache.h"
 
-// FIXME #define DATA_MARK "--DATA:"
-
 class BESDapResponseBuilder;
 
 namespace libdap {
@@ -90,9 +88,9 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 
-    std::string getResourceId(libdap::DDS *dds, const std::string &constraint);
+    std::string get_resource_id(libdap::DDS *dds, const std::string &constraint);
 
-    libdap::DDS *read_data_ddx(/*FILE **/ istream &cached_data);
+    libdap::DDS *read_cached_data(/*FILE **/ istream &cached_data);
 
     bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
         libdap::ConstraintEvaluator *eval, const string &cache_file_name);
@@ -134,7 +132,7 @@ public:
     }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
-    virtual std::string cache_dataset(libdap::DDS **dds, const std::string &constraint,
+    virtual std::string get_or_cache_dataset(libdap::DDS **dds, const std::string &constraint,
         libdap::ConstraintEvaluator *eval);
 
     virtual bool can_be_cached(libdap::DDS *dds, const std::string &constraint);
