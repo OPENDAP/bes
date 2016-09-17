@@ -53,15 +53,21 @@ class BaseTypeFactory;
  * Instead of building cache IDs using a simple concatenation of the dataset
  * and CE, we use the C++ std::hash class to generate a hash code. However, it's
  * possible that two different dataset/CE combinations will have the same hash
- * values. We use a simple collision resolution system where, when a collision
- * is detected, a suffix is appended to the hash value. After a number of
- * collision, we give up and simply do not cache the response (providing no worse
- * performance than if the cache did not exist).
+ * values. We use a simple collision resolution system where a suffix is appended
+ * to the hash value. After a number of collisions, we give up and simply do not
+ * cache the response (providing no worse performance than if the cache did not
+ * exist - but currently we throw an exception - see load_from_cache and the
+ * constant 'max_collisions').
  *
  * @note Cache entry format: The cache uses a specially formated 'response object'
  * that is more efficient to read and write than a typical DAP2 or DAP4 response
  * object. DAP2 serializes data using network byte order while the cache uses
- * native machine order. DAP4 computes checksums; the cache does not.
+ * native machine order. DAP4 computes checksums; the cache does not. In addition,
+ * each cache entry contains the resource id as its first line so that the correct
+ * entry can be identified.
+ *
+ * @todo We are passing ConstraintEvaluator objects in when they don't need to be
+ * and using DDS ** value-result params when they don't need to be used.
  *
  * @author jhrg
  */
@@ -133,6 +139,7 @@ public:
     }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
+    // TODO cache_dataset() was too confusing, but get_or_... is not that great either
     virtual libdap::DDS *get_or_cache_dataset(libdap::DDS *dds, const std::string &constraint,
         libdap::ConstraintEvaluator *eval);
 

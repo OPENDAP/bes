@@ -281,22 +281,15 @@ bool BESDapFunctionResponseCache::can_be_cached(DDS *dds, const string &constrai
         << constraint.length() + dds->filename().size() << endl);
 
     return (constraint.length() + dds->filename().size() <= max_cacheable_ce_len);
-#if 0
-    bool can_be_cached = true;
-
-    if (constraint.length() + dds->filename().size() > max_cacheable_ce_len) can_be_cached = false;
-
-    BESDEBUG(DEBUG_KEY,
-        "BESDapFunctionResponseCache::canBeCached()  The request " << (can_be_cached?"CAN":"CANNOT") << " be cached." << endl);
-
-    return can_be_cached;
-#endif
 }
 
 /**
  * @brief Return a DDS loaded with data that can be serialized back to a client
  *
  * FIXME Repair where this is called in ResponseBuilder
+ *
+ * @note This method controls the cache lock, ensuring that the cache is
+ * unlocked when it returns.
  *
  * This code either
  * @param dds
@@ -485,12 +478,18 @@ BESDapFunctionResponseCache::read_cached_data(istream &cached_data)
 }
 
 /**
+ * @brief Evaluate the CE function(s) with the DDS and write and return the result
+ *
+ * This code assumes that the cache has already been searched for a given
+ * cache result and none found. It computes the new result, evaluating the
+ * CE function(s) and stores that result in the cache. The result is then
+ * returned.
  *
  * @param dds Evaluate the CE function(s) in the context of this DDS.
- * @param resourceId
+ * @param resource_id
  * @param func_ce projection function(s) from constraint sent by client.
  * @param eval Is this necessary? Could it be a local object?
- * @param cache_file_name
+ * @param cache_file_name Use this name to store the cached result
  * @return The new DDS.
  */
 DDS *
@@ -520,16 +519,6 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
             func_eval.parse_constraint(func_ce, *dds);
             fdds = func_eval.eval_function_clauses(*dds);
 
-#if 0
-            eval->parse_constraint(func_ce, *dds);
-
-            if (eval->function_clauses()) {
-                DDS *result_dds = eval->eval_function_clauses(*dds);
-                delete dds;
-                dds = 0;
-                dds = result_dds;
-            }
-#endif
             dds->print_xml_writer(cache_file_ostream, true, "");
 
             cache_file_ostream << DATA_MARK << endl;
