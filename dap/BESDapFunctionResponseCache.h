@@ -90,11 +90,12 @@ private:
 
     std::string get_resource_id(libdap::DDS *dds, const std::string &constraint);
 
-    libdap::DDS *read_cached_data(/*FILE **/ istream &cached_data);
+    libdap::DDS *read_cached_data(istream &cached_data);
 
-    bool write_dataset_to_cache(libdap::DDS **dds, const string &resourceId, const string &constraint,
+    libdap::DDS *write_dataset_to_cache(libdap::DDS *dds, const string &resourceId, const string &constraint,
         libdap::ConstraintEvaluator *eval, const string &cache_file_name);
-    libdap::DDS *load_from_cache(const string &resource_id, const string &cache_file_name);
+
+    libdap::DDS *load_from_cache(const string &resource_id, string &cache_file_name);
 
     friend class FunctionResponseCacheTest;
     friend class StoredResultTest;
@@ -132,7 +133,7 @@ public:
     }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
-    virtual std::string get_or_cache_dataset(libdap::DDS **dds, const std::string &constraint,
+    virtual libdap::DDS *get_or_cache_dataset(libdap::DDS *dds, const std::string &constraint,
         libdap::ConstraintEvaluator *eval);
 
     virtual bool can_be_cached(libdap::DDS *dds, const std::string &constraint);

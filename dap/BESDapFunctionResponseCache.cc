@@ -309,9 +309,9 @@ BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constr
 {
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
-    string resourceId = (*dds)->filename() + "#" + constraint;
+    string resourceId = dds->filename() + "#" + constraint;
 
-    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::cache_dataset()  resourceId: '" << resourceId << "'" << endl);
+    BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " resourceId: '" << resourceId << "'" << endl);
 
     // Get a hash function for strings
     HASH_OBJ<string> str_hash;
@@ -321,40 +321,35 @@ BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constr
     stringstream hashed_id;
     hashed_id << hashValue;
 
-    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::cache_dataset()  hashed_id: '" << hashed_id.str() << "'" << endl);
+    BESDEBUG(DEBUG_KEY,  __PRETTY_FUNCTION__ << " hashed_id: '" << hashed_id.str() << "'" << endl);
 
     // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
     // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
     string cache_file_name = BESFileLockingCache::get_cache_file_name(hashed_id.str(), false);
 
-    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::cache_dataset()  baseName: '" << baseName << "'" << endl);
+    BESDEBUG(DEBUG_KEY,  __PRETTY_FUNCTION__ << " cache_file_name: '" << cache_file_name << "'" << endl);
 
     // Does the cached dataset exist? if yes, ret_dds points to it. If no,
     // cache_file_name is updated to be the correct name for write_dataset_
     // to_cache().
+    DDS *ret_dds;
     if ((ret_dds = load_from_cache(resourceId, cache_file_name))) {
         BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Data loaded from cache file: " << cache_file_name << endl);
-        ret_dds->filename((*dds)->filename());
-        *dds = ret_dds;
-        done = true;
+        ret_dds->filename(dds->filename());
     }
-    else if (write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name)) {
+    else if ((ret_dds = write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name))) {
         BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Data written to cache file: " << cache_file_name << endl);
-        done = true;
     }
     // get_read_lock() returns immediately if the file does not exist,
     // but blocks waiting to get a shared lock if the file does exist.
     else if ((ret_dds = load_from_cache(resourceId, cache_file_name))) {
-        BESDEBUG(DEBUG_KEY,
-            __PRETTY_FUNCTION__ << " On 2nd attempt data was successfully loaded from cache file: " << cache_file_name << endl);
-        ret_dds->filename((*dds)->filename());
-        *dds = ret_dds;
-        done = true;
+        BESDEBUG(DEBUG_KEY,  __PRETTY_FUNCTION__ << " Data loaded from cache file (2nd try): " << cache_file_name << endl);
+        ret_dds->filename(dds->filename());
     }
 
     BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Used cache_file_name: " << cache_file_name << " for resource ID: " << resourceId << endl);
 
-    return cache_file_name;
+    return ret_dds;
 }
 
 /**
@@ -385,7 +380,7 @@ BESDapFunctionResponseCache::load_from_cache(const string &resource_id, string &
     do {
         if (suffix_counter > max_collisions) {
             stringstream ss;
-            ss << "Cache error! There are " << suffix_counter << " hash collisions for the resource '" << resourceId
+            ss << "Cache error! There are " << suffix_counter << " hash collisions for the resource '" << resource_id
                 << "' And that is a bad bad thing.";
             throw BESInternalError(ss.str(), __FILE__, __LINE__);
         }
@@ -440,7 +435,7 @@ BESDapFunctionResponseCache::load_from_cache(const string &resource_id, string &
  *
  */
 DDS *
-BESDapFunctionResponseCache::read_data_ddx(istream &cached_data)
+BESDapFunctionResponseCache::read_cached_data(istream &cached_data)
 {
     // Build a CachedSequence; all other types are as BaseTypeFactory builds
     CacheTypeFactory factory;
@@ -499,14 +494,16 @@ BESDapFunctionResponseCache::read_data_ddx(istream &cached_data)
  * @return The new DDS.
  */
 DDS *
-BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &resourceId, const string &func_ce,
+BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &resource_id, const string &func_ce,
     ConstraintEvaluator *eval, const string &cache_file_name)
 {
+    DDS *fdds = 0;  // will hold the return value
+
     int fd;
     if (create_and_lock(cache_file_name, fd)) {
         // If here, the cache_file_name could not be locked for read access;
         // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Caching " << cache_file_name << ", func_ce: " << constraint << endl);
+        BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Caching " << resource_id << ", func_ce: " << func_ce << endl);
 
         // Get an output stream directed at the locked cache file
         std::ofstream cache_file_ostream(cache_file_name.c_str());
@@ -515,15 +512,14 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
 
         // Do The Stuff
         try {
-            cache_file_ostream << resourceId << endl;
+            // Write the resource_id to the first line of the cache file
+            cache_file_ostream << resource_id << endl;
 
             // Evaluate the function
             ConstraintEvaluator func_eval;
-            func_eval.parse_constraint(func_ce, **dds);
-            DDS *fdds = func_eval.eval_function_clauses(**dds);
-            // Load the result of the function eval in the dds that's part of the DHI.
-            delete *dds;
-            *dds = fdds;
+            func_eval.parse_constraint(func_ce, *dds);
+            fdds = func_eval.eval_function_clauses(*dds);
+
 #if 0
             eval->parse_constraint(func_ce, *dds);
 
@@ -582,6 +578,6 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         }
     }
 
-    return dds;
+    return fdds;
 }
 
