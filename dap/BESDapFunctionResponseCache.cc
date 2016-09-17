@@ -325,7 +325,7 @@ BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constr
     // Does the cached dataset exist? if yes, ret_dds points to it. If no,
     // cache_file_name is updated to be the correct name for write_dataset_
     // to_cache().
-    DDS *ret_dds;
+    DDS *ret_dds = 0;
     if ((ret_dds = load_from_cache(resourceId, cache_file_name))) {
         BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Data loaded from cache file: " << cache_file_name << endl);
         ret_dds->filename(dds->filename());
@@ -496,6 +496,9 @@ DDS *
 BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &resource_id, const string &func_ce,
     ConstraintEvaluator *eval, const string &cache_file_name)
 {
+    BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " BEGIN " << resource_id << ": "
+        << func_ce << ": " << cache_file_name << endl);
+
     DDS *fdds = 0;  // will hold the return value
 
     int fd;

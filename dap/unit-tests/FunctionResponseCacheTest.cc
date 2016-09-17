@@ -41,6 +41,7 @@
 #include <test/TestTypeFactory.h>
 
 #include "BESDapFunctionResponseCache.h"
+#include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 
@@ -176,14 +177,12 @@ public:
             CPPUNIT_ASSERT(test_dds);
 
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			token = cache->get_or_cache_dataset(&test_dds, "", &eval);
-			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
-			cache->unlock_and_close(token);
+			DDS *result = cache->get_or_cache_dataset(test_dds, "", &eval);
 
-            CPPUNIT_ASSERT(test_dds);
+            CPPUNIT_ASSERT(result);
 		}
-		catch (Error &e) {
-			CPPUNIT_FAIL(e.get_error_message());
+		catch (BESError &e) {
+			CPPUNIT_FAIL(e.get_message());
 		}
 		DBG(cerr << "cache_a_response() - END" << endl);
 
@@ -202,27 +201,27 @@ public:
 		try {
 		    // This code is here to load the DataDDX response into the cache if it is not
 		    // there already. If it is there, it reads it from the cache.
-		    token = cache->get_or_cache_dataset(&test_dds, "", &eval);
+		    DDS *result = cache->get_or_cache_dataset(test_dds, "", &eval);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 
-			CPPUNIT_ASSERT(test_dds);
-			int var_count = test_dds->var_end() - test_dds->var_begin();
+			CPPUNIT_ASSERT(result);
+			int var_count = result->var_end() - result->var_begin();
 			CPPUNIT_ASSERT(var_count == 9);
 
-			test_dds = cache->load_from_cache(/*"test.05", */test_dds->filename()+"#", token);//, &test_dds);
+			DDS *result2 = cache->load_from_cache(/*"test.05", */test_dds->filename()+"#", token);//, &test_dds);
             // Better not be null!
-			CPPUNIT_ASSERT(test_dds);
-			test_dds->filename("test.05");
+			CPPUNIT_ASSERT(result2);
+			result2->filename("test.05");
 
 			// There are nine variables in test.05.ddx
-			var_count = test_dds->var_end() - test_dds->var_begin() ;
+			var_count = result2->var_end() - result2->var_begin() ;
 	        DBG(cerr << "cache_and_read_a_response() - var_count: "<< var_count << endl);
 			CPPUNIT_ASSERT(var_count == 9);
 
 			ostringstream oss;
-			DDS::Vars_iter i = test_dds->var_begin();
-			while (i != test_dds->var_end()) {
+			DDS::Vars_iter i = result2->var_begin();
+			while (i != result2->var_end()) {
 				DBG(cerr << "Variable " << (*i)->name() << endl);
 				// this will incrementally add the string rep of values to 'oss'
 				(*i)->print_val(oss, "", false /*print declaration */);
@@ -257,22 +256,22 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			token = cache->get_or_cache_dataset(&test_dds, "", &eval);
+			DDS *result = cache->get_or_cache_dataset(test_dds, "", &eval);
 
 			DBG(cerr << "Cached response token: " << token << endl);
-			CPPUNIT_ASSERT(test_dds);
+			CPPUNIT_ASSERT(result);
 
 			// This reads the dataset from the cache, but unlike the previous test,
 			// does so using the public interface.
-			token = cache->get_or_cache_dataset(&test_dds, "", &eval);
+			DDS *result2 = cache->get_or_cache_dataset(test_dds, "", &eval);
 
-			CPPUNIT_ASSERT(test_dds);
+			CPPUNIT_ASSERT(result2);
 			// There are nine variables in test.05.ddx
-			CPPUNIT_ASSERT(test_dds->var_end() - test_dds->var_begin() == 9);
+			CPPUNIT_ASSERT(result2->var_end() - result2->var_begin() == 9);
 
 			ostringstream oss;
-			DDS::Vars_iter i = test_dds->var_begin();
-			while (i != test_dds->var_end()) {
+			DDS::Vars_iter i = result2->var_begin();
+			while (i != result2->var_end()) {
 				DBG(cerr << "Variable " << (*i)->name() << endl);
 				// this will incrementally add the string rep of values to 'oss'
 				(*i)->print_val(oss, "", false /*print declaration */);
@@ -302,13 +301,13 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			token = cache->get_or_cache_dataset(&test_dds, "b,u", &eval);
+			DDS *result = cache->get_or_cache_dataset(test_dds, "b,u", &eval);
 
 			DBG(cerr << "Cached response token: " << token << endl);
-			CPPUNIT_ASSERT(test_dds);
+			CPPUNIT_ASSERT(result);
 			ostringstream oss;
-			DDS::Vars_iter i = test_dds->var_begin();
-			while (i != test_dds->var_end()) {
+			DDS::Vars_iter i = result->var_begin();
+			while (i != result->var_end()) {
 				DBG(cerr << "Variable " << (*i)->name() << endl);
 				if ((*i)->send_p()) {
 					(*i)->print_val(oss, "", false /*print declaration */);
@@ -320,16 +319,15 @@ public:
 			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			oss.str("");
 
-			token = cache->get_or_cache_dataset(&test_dds, "b,u", &eval);
-			cache->unlock_and_close(token);
+			DDS *result2 = cache->get_or_cache_dataset(test_dds, "b,u", &eval);
 
-			CPPUNIT_ASSERT(test_dds);
+			CPPUNIT_ASSERT(result2);
 			// There are nine variables in test.05.ddx but two in the CE used here and
 			// the response cached was constrained.
-			CPPUNIT_ASSERT(test_dds->var_end() - test_dds->var_begin() == 2);
+			CPPUNIT_ASSERT(result2->var_end() - result2->var_begin() == 2);
 
-			i = test_dds->var_begin();
-			while (i != test_dds->var_end()) {
+			i = result2->var_begin();
+			while (i != result2->var_end()) {
 				DBG(cerr << "Variable " << (*i)->name() << endl);
 				if ((*i)->send_p()) {
 					(*i)->print_val(oss, "", false /*print declaration */);
