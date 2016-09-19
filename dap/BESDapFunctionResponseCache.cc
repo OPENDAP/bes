@@ -298,7 +298,7 @@ bool BESDapFunctionResponseCache::can_be_cached(DDS *dds, const string &constrai
  * @return
  */
 DDS *
-BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constraint, ConstraintEvaluator *eval)
+BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constraint)
 {
     // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
@@ -330,7 +330,7 @@ BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constr
         BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Data loaded from cache file: " << cache_file_name << endl);
         ret_dds->filename(dds->filename());
     }
-    else if ((ret_dds = write_dataset_to_cache(dds, resourceId, constraint, eval, cache_file_name))) {
+    else if ((ret_dds = write_dataset_to_cache(dds, resourceId, constraint, cache_file_name))) {
         BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " Data written to cache file: " << cache_file_name << endl);
     }
     // get_read_lock() returns immediately if the file does not exist,
@@ -494,7 +494,7 @@ BESDapFunctionResponseCache::read_cached_data(istream &cached_data)
  */
 DDS *
 BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &resource_id, const string &func_ce,
-    ConstraintEvaluator *eval, const string &cache_file_name)
+    const string &cache_file_name)
 {
     BESDEBUG(DEBUG_KEY, __PRETTY_FUNCTION__ << " BEGIN " << resource_id << ": "
         << func_ce << ": " << cache_file_name << endl);
@@ -506,17 +506,21 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         // If here, the cache_file_name could not be locked for read access;
         // try to build it. First make an empty files and get an exclusive lock on them.
         BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Caching " << resource_id << ", func_ce: " << func_ce << endl);
-
+#if 1
         // Get an output stream directed at the locked cache file
-        std::ofstream cache_file_ostream(cache_file_name.c_str());
+        ofstream cache_file_ostream(cache_file_name.c_str(), ios::out|ios::app|ios::binary);
+        // FIXME cache_file_ostream.open(cache_file_name.c_str(), ios::out|ios::app|ios::binary);
         if (!cache_file_ostream.is_open())
             throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
-
+#endif
         // Do The Stuff
         try {
             // Write the resource_id to the first line of the cache file
             cache_file_ostream << resource_id << endl;
-
+#if 0
+            write(fd, resource_id.c_str(), resource_id.length() + 1);   // write the trailing null
+            write(fd, '\n', 1);
+#endif
             // Evaluate the function
             ConstraintEvaluator func_eval;
             func_eval.parse_constraint(func_ce, *dds);
@@ -553,19 +557,33 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
 
             unlock_and_close(cache_file_name);
         }
+        catch (Error &e) {
+            cerr << __PRETTY_FUNCTION__ << ": Error: " << e.get_error_message() << endl;
+            cache_file_ostream.close();
+            this->purge_file(cache_file_name);
+            unlock_and_close(cache_file_name);
+            throw;
+        }
+        catch (BESError &e) {
+            cerr << __PRETTY_FUNCTION__ << ": Error: " << e.get_message() << endl;
+            cache_file_ostream.close();
+            this->purge_file(cache_file_name);
+            unlock_and_close(cache_file_name);
+            throw;
+        }
+        catch (exception &e) {
+            cerr << __PRETTY_FUNCTION__ << ": Error: " << e.what() << endl;
+            cache_file_ostream.close();
+            this->purge_file(cache_file_name);
+            unlock_and_close(cache_file_name);
+            throw;
+        }
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
-
-            // Close the cache file.
+            cerr << __PRETTY_FUNCTION__ << ": Error: unknown" << endl;
             cache_file_ostream.close();
-
-            // And once it's closed, get rid of the cache file
             this->purge_file(cache_file_name);
-
-            // Unlock the cache
             unlock_and_close(cache_file_name);
-
-            // And finally re-throw the error.
             throw;
         }
     }

@@ -99,7 +99,7 @@ private:
     libdap::DDS *read_cached_data(istream &cached_data);
 
     libdap::DDS *write_dataset_to_cache(libdap::DDS *dds, const string &resourceId, const string &constraint,
-        libdap::ConstraintEvaluator *eval, const string &cache_file_name);
+        const string &cache_file_name);
 
     libdap::DDS *load_from_cache(const string &resource_id, string &cache_file_name);
 
@@ -140,8 +140,7 @@ public:
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
     // TODO cache_dataset() was too confusing, but get_or_... is not that great either
-    virtual libdap::DDS *get_or_cache_dataset(libdap::DDS *dds, const std::string &constraint,
-        libdap::ConstraintEvaluator *eval);
+    virtual libdap::DDS *get_or_cache_dataset(libdap::DDS *dds, const std::string &constraint);
 
     virtual bool can_be_cached(libdap::DDS *dds, const std::string &constraint);
 

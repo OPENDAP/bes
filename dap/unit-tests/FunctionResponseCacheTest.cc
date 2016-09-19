@@ -177,7 +177,7 @@ public:
             CPPUNIT_ASSERT(test_dds);
 
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *result = cache->get_or_cache_dataset(test_dds, "", &eval);
+			DDS *result = cache->get_or_cache_dataset(test_dds, "");
 
             CPPUNIT_ASSERT(result);
 		}
@@ -201,7 +201,7 @@ public:
 		try {
 		    // This code is here to load the DataDDX response into the cache if it is not
 		    // there already. If it is there, it reads it from the cache.
-		    DDS *result = cache->get_or_cache_dataset(test_dds, "", &eval);
+		    DDS *result = cache->get_or_cache_dataset(test_dds, "");
 
 			DBG(cerr << "Cached response token: " << token << endl);
 
@@ -256,14 +256,14 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *result = cache->get_or_cache_dataset(test_dds, "", &eval);
+			DDS *result = cache->get_or_cache_dataset(test_dds, "");
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(result);
 
 			// This reads the dataset from the cache, but unlike the previous test,
 			// does so using the public interface.
-			DDS *result2 = cache->get_or_cache_dataset(test_dds, "", &eval);
+			DDS *result2 = cache->get_or_cache_dataset(test_dds, "");
 
 			CPPUNIT_ASSERT(result2);
 			// There are nine variables in test.05.ddx
@@ -301,7 +301,7 @@ public:
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *result = cache->get_or_cache_dataset(test_dds, "b,u", &eval);
+			DDS *result = cache->get_or_cache_dataset(test_dds, "b,u");
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(result);
@@ -319,7 +319,7 @@ public:
 			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			oss.str("");
 
-			DDS *result2 = cache->get_or_cache_dataset(test_dds, "b,u", &eval);
+			DDS *result2 = cache->get_or_cache_dataset(test_dds, "b,u");
 
 			CPPUNIT_ASSERT(result2);
 			// There are nine variables in test.05.ddx but two in the CE used here and

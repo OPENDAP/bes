@@ -531,7 +531,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
 
         DDS *fdds = 0; // nulll_ptr
         if (responseCache && responseCache->can_be_cached(*dds, get_btp_func_ce())) {
-            fdds = responseCache->get_or_cache_dataset(*dds, get_btp_func_ce(), &func_eval);
+            fdds = responseCache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
         else {
             func_eval.parse_constraint(get_btp_func_ce(), **dds);
@@ -614,7 +614,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
 
         DDS *fdds = 0; // nulll_ptr
         if (responseCache && responseCache->can_be_cached(*dds, get_btp_func_ce())) {
-            fdds = responseCache->get_or_cache_dataset(*dds, get_btp_func_ce(), &func_eval);
+            fdds = responseCache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
         else {
             func_eval.parse_constraint(get_btp_func_ce(), **dds);
@@ -918,7 +918,7 @@ BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerIn
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (responseCache && responseCache->can_be_cached(dds, get_btp_func_ce())) {
-            fdds = responseCache->get_or_cache_dataset(dds, get_btp_func_ce(), &func_eval);
+            fdds = responseCache->get_or_cache_dataset(dds, get_btp_func_ce());
         }
         else {
             func_eval.parse_constraint(get_btp_func_ce(), *dds);
@@ -998,7 +998,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (responseCache && responseCache->can_be_cached(dds, get_btp_func_ce())) {
-            fdds = responseCache->get_or_cache_dataset(dds, get_btp_func_ce(), &func_eval);
+            fdds = responseCache->get_or_cache_dataset(dds, get_btp_func_ce());
         }
         else {
             func_eval.parse_constraint(get_btp_func_ce(), *dds);
@@ -1107,7 +1107,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
-            fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce(), &func_eval);
+            fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
         else {
             func_eval.parse_constraint(get_btp_func_ce(), **dds);
@@ -1252,7 +1252,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
-            fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce(), &func_eval);
+            fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
         else {
             func_eval.parse_constraint(get_btp_func_ce(), **dds);
