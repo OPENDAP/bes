@@ -177,7 +177,7 @@ public:
             CPPUNIT_ASSERT(test_dds);
 
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *result = cache->get_or_cache_dataset(test_dds, "");
+			DDS *result = cache->get_or_cache_dataset(test_dds, "version()");
 
             CPPUNIT_ASSERT(result);
 		}
