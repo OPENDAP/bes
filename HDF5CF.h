@@ -263,6 +263,7 @@ namespace HDF5CF
 	    Var ():
                    dtype (H5UNSUPTYPE), 
                    rank (-1),
+                   total_elems(0),
                    unsupported_attr_dtype(false),
                    unsupported_attr_dspace(false),
                    unsupported_dspace(false),
@@ -290,6 +291,12 @@ namespace HDF5CF
             const string & getFullPath () const
             {
                 return this->fullpath;
+            }
+
+            const size_t getTotalElems() const 
+            {
+                return this->total_elems;
+
             }
 
 	    /// Get the dimension rank of this variable
@@ -323,6 +330,7 @@ namespace HDF5CF
             std::string fullpath;
 	    H5DataType dtype;
 	    int rank;
+            size_t total_elems;
             bool unsupported_attr_dtype;
             bool unsupported_attr_dspace;
             bool unsupported_dspace;

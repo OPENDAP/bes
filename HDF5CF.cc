@@ -456,6 +456,11 @@ throw(Exception){
         else {
             if (false == unsup_var_dspace) {
                 
+                hssize_t h5_total_elms = H5Sget_simple_extent_npoints(dspace_id);
+                if(h5_total_elms <0) 
+                    throw2("Cannot get the total number of elements of HDF5 dataset ",varname);
+                else
+                    var->total_elems = (size_t)h5_total_elms;
                 int ndims = H5Sget_simple_extent_ndims(dspace_id);
                 if (ndims < 0) 
                     throw2("Cannot get the hdf5 dataspace number of dimension for the variable ",varname);

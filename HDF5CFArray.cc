@@ -48,6 +48,13 @@ BaseType *HDF5CFArray::ptr_duplicate()
     return new HDF5CFArray(*this);
 }
 
+void HDF5CFArray::read_data_from_cache(vector<char>&buf) {
+      return;
+}
+void HDF5CFArray::read_data_from_file(bool add_cache, vector<char>&buf) {
+
+      return;
+}
 // Read in an HDF5 Array 
 bool HDF5CFArray::read()
 {
@@ -60,24 +67,45 @@ bool HDF5CFArray::read()
         BESDEBUG("h5","Dont' have DDS cache "<<endl);
 #endif
 
+// UNCOMMENT LATER
+#if 0
     ObjMemCache* my_data_cache = HDF5RequestHandler::get_data_mem_cache();
     //HDF5DataMemCache * cached_h5data_mem_cache_ptr = 0;
     //if(HDF5RequestHandler::get_data_mem_cache()) {
     if(my_data_cache) {
-       HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename));
-       if(cached_h5data_mem_cache_ptr) {
-        BESDEBUG("h5","Data Memory Cache hit "<<endl);
-        const string my_var_name = cached_h5data_mem_cache_ptr->get_varname();
-        cerr<<"my variable name is "<<my_var_name <<endl;
-       }
-       else{ 
-        BESDEBUG("h5","Data memory added to the cache "<<endl);
-cerr<<"coming to add data memory cache "<<endl;
-        my_data_cache->add(new HDF5DataMemCache(varname), filename);
-        
+        // Cache key needs to be filename+varname.
+        HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename));
+        if(cached_h5data_mem_cache_ptr) {
+            BESDEBUG("h5","Data Memory Cache hit "<<endl);
+            const string var_name = cached_h5data_mem_cache_ptr->get_varname();
 
-       }
+            // Obtain the buffer and do subsetting
+            const size_t var_size = cached_h5data_mem_cache_ptr->get_var_buf_size();
+            if(!var_size) 
+                throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
+            else {
+                vector<char> buf;
+                buf.resize(var_size);
+                read_data_from_cache(buf);
+                //cerr<<"my variable name is "<<var_name <<endl;
+            }
+        }
+        else{ 
+            BESDEBUG("h5","Data memory added to the cache "<<endl);
+//cerr<<"coming to add data memory cache "<<endl;
+            HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
+            my_data_cache->add(new_mem_cache, filename);
+            vector <char> buf;
+            if(total_elems == 0)
+                throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
+            buf.resize(total_elems);
+            read_data_from_file(true,buf);
+            // Add rhe buffer 
+
+        }
     }
+#endif
+// END OF UNCOMMENT
 #if 0
     if (my_data_cache && (cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename)))) {
         // copy the cached DAS into the BES response object
