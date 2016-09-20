@@ -24,6 +24,16 @@
 
 #include "config.h"
 
+#ifdef HAVE_TR1_FUNCTIONAL
+#include <tr1/functional>
+#endif
+
+#ifdef HAVE_TR1_FUNCTIONAL
+#define HASH_OBJ std::tr1::hash
+#else
+#define HASH_OBJ std::hash
+#endif
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -70,6 +80,7 @@ using namespace libdap;
 
 const Type requested_type = dods_byte_c;
 const int num_dim = 2;
+const int dim_sz = 3;
 
 /**
  * Server function used by the ConstraintEvalutor. This is needed because passing
@@ -91,8 +102,8 @@ TestFunction::function_dap2_test(int argc, libdap::BaseType *argv[], libdap::DDS
     BaseTypeFactory btf;
     dest->add_var_nocopy(btf.NewVariable(requested_type));  // ... so use add_var_nocopy() to add it instead
 
-    vector<int> dims(num_dim);
-    dims.push_back(3); dims.push_back(3);
+    vector<int> dims(num_dim, dim_sz);
+    //dims.push_back(3); dims.push_back(3);
     unsigned long elem = 1;
     vector<int>::iterator i = dims.begin();
     while (i != dims.end()) {
@@ -228,16 +239,20 @@ public:
 		try {
             CPPUNIT_ASSERT(test_dds);
 
-			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
 			DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"foo\")");
 
             CPPUNIT_ASSERT(result);
+
+            result->print(cerr);
+
+            CPPUNIT_ASSERT(result->var("foo"));
+            CPPUNIT_ASSERT(result->var("foo")->type() == dods_array_c);
 		}
 		catch (BESError &e) {
 			CPPUNIT_FAIL(e.get_message());
 		}
-		DBG(cerr << "cache_a_response() - END" << endl);
 
+		DBG(cerr << "cache_a_response() - END" << endl);
     }
 
 	// The first call reads values into the DDS, stores a copy in the cache and
@@ -249,27 +264,38 @@ public:
 		DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
 		cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
-		string token;
 		try {
+		    const string constraint = "test(\"bar\")";
+
 		    // This code is here to load the DataDDX response into the cache if it is not
 		    // there already. If it is there, it reads it from the cache.
-		    DDS *result = cache->get_or_cache_dataset(test_dds, "");
-
-			DBG(cerr << "Cached response token: " << token << endl);
+		    DDS *result = cache->get_or_cache_dataset(test_dds, constraint);
 
 			CPPUNIT_ASSERT(result);
 			int var_count = result->var_end() - result->var_begin();
-			CPPUNIT_ASSERT(var_count == 9);
+			CPPUNIT_ASSERT(var_count == 1);
 
-			DDS *result2 = cache->load_from_cache(/*"test.05", */test_dds->filename()+"#", token);//, &test_dds);
+			//DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
+			string resource_id = test_dds->filename() + "#" + constraint;
+
+		    // Get a hash function for strings
+		    HASH_OBJ<string> str_hash;
+		    size_t hashValue = str_hash(resource_id);
+		    stringstream hashed_id;
+		    hashed_id << hashValue;
+		    string cache_file_name = hashed_id.str();
+		    DBG(cerr << "cache_and_read_a_response() - resource_id: " << resource_id
+		        << ", cache_file_name: " << cache_file_name << endl);
+
+			DDS *result2 = cache->load_from_cache(resource_id, cache_file_name);
             // Better not be null!
 			CPPUNIT_ASSERT(result2);
-			result2->filename("test.05");
+			result2->filename("function_result_SimpleTypes");
 
 			// There are nine variables in test.05.ddx
 			var_count = result2->var_end() - result2->var_begin() ;
 	        DBG(cerr << "cache_and_read_a_response() - var_count: "<< var_count << endl);
-			CPPUNIT_ASSERT(var_count == 9);
+			CPPUNIT_ASSERT(var_count == 1);
 
 			ostringstream oss;
 			DDS::Vars_iter i = result2->var_begin();
@@ -281,12 +307,7 @@ public:
 				++i;
 			}
 
-			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
-			// is a any single digit. The *Test classes implement a counter and return strings where
-			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
-			// values for <number>.
-			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
-			CPPUNIT_ASSERT(re_match(regex, oss.str()));
+			CPPUNIT_ASSERT(oss.str().compare("{{0, 1, 2},{3, 4, 5},{6, 7, 8}}") == 0);
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
@@ -300,45 +321,47 @@ public:
 	//
 	// Use the public interface to read the data (cache_dataset()), but w/o a
 	// constraint
-	void cache_and_read_a_response2()
-	{
-		DBG(cerr << "cache_and_read_a_response2() - BEGIN" << endl);
+    void cache_and_read_a_response2()
+    {
+        DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-		cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
-		string token;
-		try {
-			// This loads a DDS in the cache and returns it.
-			DDS *result = cache->get_or_cache_dataset(test_dds, "");
+        cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
+        try {
+            // This code is here to load the DataDDX response into the cache if it is not
+            // there already. If it is there, it reads it from the cache.
+            DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
 
-			DBG(cerr << "Cached response token: " << token << endl);
-			CPPUNIT_ASSERT(result);
+            CPPUNIT_ASSERT(result);
+            int var_count = result->var_end() - result->var_begin();
+            CPPUNIT_ASSERT(var_count == 1);
 
-			// This reads the dataset from the cache, but unlike the previous test,
-			// does so using the public interface.
-			DDS *result2 = cache->get_or_cache_dataset(test_dds, "");
+            DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
+            // Better not be null!
+            CPPUNIT_ASSERT(result2);
+            result2->filename("function_result_SimpleTypes");
 
-			CPPUNIT_ASSERT(result2);
-			// There are nine variables in test.05.ddx
-			CPPUNIT_ASSERT(result2->var_end() - result2->var_begin() == 9);
+            // There are nine variables in test.05.ddx
+            var_count = result2->var_end() - result2->var_begin() ;
+            DBG(cerr << "cache_and_read_a_response() - var_count: "<< var_count << endl);
+            CPPUNIT_ASSERT(var_count == 1);
 
-			ostringstream oss;
-			DDS::Vars_iter i = result2->var_begin();
-			while (i != result2->var_end()) {
-				DBG(cerr << "Variable " << (*i)->name() << endl);
-				// this will incrementally add the string rep of values to 'oss'
-				(*i)->print_val(oss, "", false /*print declaration */);
-				DBG(cerr << "Value " << oss.str() << endl);
-				++i;
-			}
+            ostringstream oss;
+            DDS::Vars_iter i = result2->var_begin();
+            while (i != result2->var_end()) {
+                DBG(cerr << "Variable " << (*i)->name() << endl);
+                // this will incrementally add the string rep of values to 'oss'
+                (*i)->print_val(oss, "", false /*print declaration */);
+                DBG(cerr << "Value " << oss.str() << endl);
+                ++i;
+            }
 
-			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
-			CPPUNIT_ASSERT(re_match(regex, oss.str()));
-		}
-		catch (Error &e) {
-			CPPUNIT_FAIL(e.get_error_message());
-		}
+            CPPUNIT_ASSERT(oss.str().compare("{{0, 1, 2},{3, 4, 5},{6, 7, 8}}") == 0);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
 
-		DBG(cerr << "cache_and_read_a_response2() - END" << endl);
+        DBG(cerr << "cache_and_read_a_response() - END" << endl);
     }
 
 	// Test caching a response where a CE is applied to the DDS. The CE here is 'b,u'

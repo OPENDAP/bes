@@ -521,7 +521,7 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
             func_eval.parse_constraint(func_ce, *dds);
             fdds = func_eval.eval_function_clauses(*dds);
 
-            dds->print_xml_writer(cache_file_ostream, true, "");
+            fdds->print_xml_writer(cache_file_ostream, true, "");
 
             cache_file_ostream << DATA_MARK << endl;
 
@@ -532,9 +532,9 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
                 ConstraintEvaluator new_ce;
                 CacheMarshaller m(cache_file_ostream);
 
-                for (DDS::Vars_iter i = dds->var_begin(); i != dds->var_end(); i++) {
+                for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
                     if ((*i)->send_p()) {
-                        (*i)->serialize(new_ce, *dds, m, false);
+                        (*i)->serialize(new_ce, *fdds, m, false);
                     }
                 }
             }
