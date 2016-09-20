@@ -1,3 +1,4 @@
-/SequenceAggregationServerTest
-/ObjMemCacheTest
-/vg_supp.txt
+SequenceAggregationServerTest
+ObjMemCacheTest
+vg_supp.txt
+FunctionResponseCacheTest
