@@ -474,6 +474,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                                     cvar->getType(),
                                     cvar->getFullPath(),
                                     cvar->getTotalElems(),
+                                    CV_EXIST,
                                     cvar->getNewName(),
                                     bt);
                 }

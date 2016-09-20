@@ -452,6 +452,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                                           cvar->getType(),
                                           cvar->getFullPath(),
                                           cvar->getTotalElems(),
+                                          CV_EXIST,
                                           cvar->getNewName(),
                                           bt);
                 }

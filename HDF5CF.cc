@@ -52,6 +52,7 @@ Var::Var(Var *var) {
     name = var->name;
     fullpath = var->fullpath;
     rank  = var->rank;
+    total_elems = var->total_elems;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_attr_dspace = var->unsupported_attr_dspace;

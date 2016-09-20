@@ -211,6 +211,7 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
                                   var->getType(),
                                   var->getFullPath(),
                                   var->getTotalElems(),
+                                  CV_UNSUPPORTED,
                                   var->getNewName(),
                                   bt);
         }

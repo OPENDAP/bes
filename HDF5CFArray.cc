@@ -48,18 +48,22 @@ BaseType *HDF5CFArray::ptr_duplicate()
     return new HDF5CFArray(*this);
 }
 
-void HDF5CFArray::read_data_from_cache(vector<char>&buf) {
-      return;
-}
-void HDF5CFArray::read_data_from_file(bool add_cache, vector<char>&buf) {
+void HDF5CFArray::read_data_from_mem_cache(vector<char>&buf) {
 
-      return;
+    // Just see if it works.
+    val2buf(&buf[0]);
+    set_read_p(true);
+    return;
 }
 // Read in an HDF5 Array 
 bool HDF5CFArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
+    if(length() == 0)
+        return true;
+
+    
 #if 0
     if(HDF5RequestHandler::check_dds_cache())
         BESDEBUG("h5","have DDS cache "<<endl);
@@ -67,16 +71,24 @@ bool HDF5CFArray::read()
         BESDEBUG("h5","Dont' have DDS cache "<<endl);
 #endif
 
+    // Check if using the memory cache
+    if((NULL == HDF5RequestHandler::get_data_mem_cache()) || (false == HDF5CFUtil::use_data_mem_cache(dtype,cvtype,varname))){ 
+cerr<<"no mem cache "<<endl;
+        vector<char>buf;
+        read_data_from_file(false,buf);
+    }
+    else {// Using the memory cache
+        
 // UNCOMMENT LATER
-#if 0
+//#if 0
     ObjMemCache* my_data_cache = HDF5RequestHandler::get_data_mem_cache();
     //HDF5DataMemCache * cached_h5data_mem_cache_ptr = 0;
-    //if(HDF5RequestHandler::get_data_mem_cache()) {
     if(my_data_cache) {
         // Cache key needs to be filename+varname.
-        HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename));
+        HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename+varname));
         if(cached_h5data_mem_cache_ptr) {
             BESDEBUG("h5","Data Memory Cache hit "<<endl);
+ cerr<<"Cache hit: varname is "<<varname <<endl;
             const string var_name = cached_h5data_mem_cache_ptr->get_varname();
 
             // Obtain the buffer and do subsetting
@@ -86,46 +98,34 @@ bool HDF5CFArray::read()
             else {
                 vector<char> buf;
                 buf.resize(var_size);
-                read_data_from_cache(buf);
+                read_data_from_mem_cache(buf);
                 //cerr<<"my variable name is "<<var_name <<endl;
             }
         }
         else{ 
             BESDEBUG("h5","Data memory added to the cache "<<endl);
 //cerr<<"coming to add data memory cache "<<endl;
-            HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
-            my_data_cache->add(new_mem_cache, filename);
+cerr<<"Cache added: varname is "<<varname <<endl;
             vector <char> buf;
             if(total_elems == 0)
                 throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
-            buf.resize(total_elems);
+            buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(dtype));
             read_data_from_file(true,buf);
-            // Add rhe buffer 
-
+            // Add the buffer 
+            
+            HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
+            new_mem_cache->set_databuf(buf);
+            my_data_cache->add(new_mem_cache, filename+varname);
         }
     }
-#endif
+    }
+//#endif
 // END OF UNCOMMENT
-#if 0
-    if (my_data_cache && (cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename)))) {
-        // copy the cached DAS into the BES response object
-        BESDEBUG("h5", "Data Memory Cached hit for : " << filename << endl);
-        //*my_data_cache = *cached_h5data_mem_cache_ptr;
-        const string my_var_name = 
-    }
-    else {
-        if(my_data_cache) {
-            // add a copy
-            BESDEBUG("h5", "Data Memory cache added to the cache for : " << filename << endl);
-            my_data_cache->add(new HDF5DataMemCache(varfullpath), filename);
-        }
 
-    }
-#endif
+    return true;
+}
 
-
-    if(length() == 0)
-        return true;
+void HDF5CFArray::read_data_from_file(bool add_cache,vector<char>&buf) {
 
     vector<int>offset;
     vector<int>count;
@@ -249,10 +249,14 @@ bool HDF5CFArray::read()
 
     }
 
+    hid_t read_ret = -1;
+    // Before reading the data, we will check if the memory cache is turned on, 
+    if(true == add_cache) {
+        read_ret= H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&buf[0]);
+    }
     // Now reading the data, note dtype is not dtypeid.
     // dtype is an enum  defined by the handler.
      
-    hid_t read_ret = -1;
 
     switch (dtype) {
 
@@ -261,7 +265,6 @@ bool HDF5CFArray::read()
         {
             vector<unsigned char> val;
             val.resize(nelms);
-
             
             if (0 == rank) 
                 read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
@@ -674,7 +677,7 @@ bool HDF5CFArray::read()
     HDF5CFUtil::close_fileid(fileid,pass_fileid);
     //H5Fclose(fileid);
     
-    return true;
+    return ;
 }
 
 

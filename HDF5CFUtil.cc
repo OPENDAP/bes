@@ -103,6 +103,47 @@ HDF5CFUtil:: H5type_to_H5DAPtype(hid_t h5_type_id)
     }
 }
 
+size_t HDF5CFUtil::H5_numeric_atomic_type_size(H5DataType h5type) {
+    
+    switch(h5type) {
+    case H5CHAR:
+    case H5UCHAR:
+        return 1;
+    case H5INT16:
+    case H5UINT16:
+        return 2;
+    case H5INT32:
+    case H5UINT32:
+    case H5FLOAT32:
+        return 4;
+    case H5FLOAT64:
+    case H5INT64:
+    case H5UINT64:
+        return 8;
+    default:
+        throw InternalErr(__FILE__,__LINE__,"This routine doesn't support to return the size of this datatype");
+    }
+
+}
+
+bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const string &varpath) {
+    if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
+            h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&
+            h5type != H5INT64 && h5type !=H5UINT64)
+        return false;
+    else {
+         if(cvtype != CV_UNSUPPORTED) 
+            return true;
+         // TODO; if varpath is specified by the user, this should return true!
+         else if(varpath == "")
+             return false;
+         else 
+             return true;
+
+    }
+
+}
+
 bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype)

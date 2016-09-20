@@ -56,6 +56,8 @@ enum H5DataType
  H5INT32,H5UINT32,H5INT64,H5UINT64,H5FLOAT64,H5VSTRING,
  H5REFERENCE,H5COMPOUND,H5ARRAY,H5UNSUPTYPE};
 
+enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
+
 using namespace std;
 
 struct Name_Size_2Pairs {
@@ -68,7 +70,9 @@ struct Name_Size_2Pairs {
 
 struct HDF5CFUtil {
 
+               static bool use_data_mem_cache(H5DataType h5type,CVType cvtype,const string & varpath);
 
+               static size_t H5_numeric_atomic_type_size(H5DataType h5type);
                /// Map HDF5 Datatype to the intermediate H5DAPtype for the future use.
                static H5DataType H5type_to_H5DAPtype(hid_t h5_type_id);
 

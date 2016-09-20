@@ -49,6 +49,7 @@ class HDF5CFArray:public Array {
                     H5DataType h5_dtype, 
                     const string &varfullpath, 
                     const size_t h5_total_elems,
+                    const CVType h5_cvtype,
                     const string & n="",  
                     BaseType * v = 0):
                     Array(n,v),
@@ -57,6 +58,7 @@ class HDF5CFArray:public Array {
                     filename(h5_filename),
                     dtype(h5_dtype),
                     total_elems(h5_total_elems),
+                    cvtype(h5_cvtype),
                     varname(varfullpath) 
         {
         }
@@ -65,7 +67,7 @@ class HDF5CFArray:public Array {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
-    void read_data_from_cache(vector<char>&buf);
+    void read_data_from_mem_cache(vector<char>&buf);
     void read_data_from_file(bool add_cache,vector<char>&buf);
     int format_constraint (int *cor, int *step, int *edg);
 
@@ -76,6 +78,7 @@ class HDF5CFArray:public Array {
         H5DataType dtype;
         string varname;
         size_t total_elems;
+        CVType cvtype;
 };
 
 #endif                          // _HDF5CFARRAY_H
