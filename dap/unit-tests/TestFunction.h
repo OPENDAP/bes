@@ -1,13 +1,8 @@
-/*
- * TestFunction.h
- *
- *  Created on: Sep 19, 2016
- *      Author: jimg
- */
 
 #ifndef DAP_UNIT_TESTS_TESTFUNCTION_H_
 #define DAP_UNIT_TESTS_TESTFUNCTION_H_
 
+#define KEY "response_cache"
 
 class TestFunction: public libdap::ServerFunction
 {

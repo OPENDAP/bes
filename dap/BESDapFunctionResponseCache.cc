@@ -506,21 +506,16 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         // If here, the cache_file_name could not be locked for read access;
         // try to build it. First make an empty files and get an exclusive lock on them.
         BESDEBUG(DEBUG_KEY,__PRETTY_FUNCTION__ << " Caching " << resource_id << ", func_ce: " << func_ce << endl);
-#if 1
+
         // Get an output stream directed at the locked cache file
         ofstream cache_file_ostream(cache_file_name.c_str(), ios::out|ios::app|ios::binary);
-        // FIXME cache_file_ostream.open(cache_file_name.c_str(), ios::out|ios::app|ios::binary);
         if (!cache_file_ostream.is_open())
             throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
-#endif
-        // Do The Stuff
+
         try {
             // Write the resource_id to the first line of the cache file
             cache_file_ostream << resource_id << endl;
-#if 0
-            write(fd, resource_id.c_str(), resource_id.length() + 1);   // write the trailing null
-            write(fd, '\n', 1);
-#endif
+
             // Evaluate the function
             ConstraintEvaluator func_eval;
             func_eval.parse_constraint(func_ce, *dds);

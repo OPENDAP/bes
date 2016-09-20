@@ -28,6 +28,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <Array.h>
+#include <Byte.h>
+#include <ServerFunctionsList.h>
 #include <ConstraintEvaluator.h>
 #include <DAS.h>
 #include <DDS.h>
@@ -45,6 +48,7 @@
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 
+#include "TestFunction.h"
 #include "test_utils.h"
 #include "test_config.h"
 
@@ -64,6 +68,53 @@ static const string c_cache_name = "/response_cache";
 
 using namespace libdap;
 
+const Type requested_type = dods_byte_c;
+const int num_dim = 2;
+
+/**
+ * Server function used by the ConstraintEvalutor. This is needed because passing
+ * the CE a null expression or one that names an non-existent function is an error.
+ *
+ * The test harness code must load up the ServerFunctionList instance - see also
+ * TestFunction.h
+ */
+void
+TestFunction::function_dap2_test(int argc, libdap::BaseType *argv[], libdap::DDS &, libdap::BaseType **btpp)
+{
+    if (argc != 1) {
+        throw Error(malformed_expr, "test(name) requires one argument.");
+    }
+
+    std::string name = extract_string_argument(argv[0]);
+
+    Array *dest = new Array(name, 0);   // The ctor for Array copies the prototype pointer...
+    BaseTypeFactory btf;
+    dest->add_var_nocopy(btf.NewVariable(requested_type));  // ... so use add_var_nocopy() to add it instead
+
+    vector<int> dims(num_dim);
+    dims.push_back(3); dims.push_back(3);
+    unsigned long elem = 1;
+    vector<int>::iterator i = dims.begin();
+    while (i != dims.end()) {
+        elem *= *i;
+        dest->append_dim(*i++);
+    }
+
+    // stuff the array with values
+    vector<dods_byte> values(elem);
+    for (unsigned int i = 0; i < elem; ++i) {
+        values[i] = i;
+    }
+
+    dest->set_value(values, elem);
+
+    dest->set_send_p(true);
+    dest->set_read_p(true);
+
+    // return the array
+    *btpp = dest;
+}
+
 class FunctionResponseCacheTest: public TestFixture {
 private:
     DDXParser dp;
@@ -77,6 +128,7 @@ private:
 
 public:
     FunctionResponseCacheTest() : dp(&ttf), test_dds(0), d_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0) {
+        libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
     }
 
     ~FunctionResponseCacheTest() {
@@ -177,7 +229,7 @@ public:
             CPPUNIT_ASSERT(test_dds);
 
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *result = cache->get_or_cache_dataset(test_dds, "version()");
+			DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"foo\")");
 
             CPPUNIT_ASSERT(result);
 		}
