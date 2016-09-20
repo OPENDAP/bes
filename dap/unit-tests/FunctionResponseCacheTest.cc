@@ -82,6 +82,9 @@ const Type requested_type = dods_byte_c;
 const int num_dim = 2;
 const int dim_sz = 3;
 
+// Move this into the class when we goto C++-11
+const string d_cache_prefix = "rc"; // used when cleaning the cache, etc.
+
 /**
  * Server function used by the ConstraintEvalutor. This is needed because passing
  * the CE a null expression or one that names an non-existent function is an error.
@@ -160,7 +163,7 @@ public:
     	DBG(cerr << "DDS Name: " << test_dds->get_dataset_name() << endl);
 
     	if (clean)
-    	    clean_cache_dir(d_cache);
+    	    clean_cache_dir(d_cache + "/" + d_cache_prefix);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
 
@@ -173,7 +176,7 @@ public:
 		delete test_dds;
 
 		if (clean)
-		    clean_cache_dir(d_cache);
+		    clean_cache_dir(d_cache + "/" + d_cache_prefix);
 
 		DBG(cerr << "tearDown() - END" << endl);
 	}
@@ -231,7 +234,7 @@ public:
 	void cache_a_response()
 	{
 		DBG(cerr << "cache_a_response() - BEGIN" << endl);
-		cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
+		cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
 
 		DBG(cerr << "cache_a_response() - Retrieved BESDapFunctionResponseCache object: " << cache << endl);
 
@@ -242,8 +245,6 @@ public:
 			DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"foo\")");
 
             CPPUNIT_ASSERT(result);
-
-            result->print(cerr);
 
             CPPUNIT_ASSERT(result->var("foo"));
             CPPUNIT_ASSERT(result->var("foo")->type() == dods_array_c);
@@ -263,7 +264,7 @@ public:
 	{
 		DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-		cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
+		cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
 		try {
 		    const string constraint = "test(\"bar\")";
 
@@ -276,14 +277,9 @@ public:
 			CPPUNIT_ASSERT(var_count == 1);
 
 			//DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
-			string resource_id = test_dds->filename() + "#" + constraint;
+			string resource_id = cache->get_resource_id(test_dds, constraint);
+		    string cache_file_name = cache->get_hash_basename(resource_id);
 
-		    // Get a hash function for strings
-		    HASH_OBJ<string> str_hash;
-		    size_t hashValue = str_hash(resource_id);
-		    stringstream hashed_id;
-		    hashed_id << hashValue;
-		    string cache_file_name = hashed_id.str();
 		    DBG(cerr << "cache_and_read_a_response() - resource_id: " << resource_id
 		        << ", cache_file_name: " << cache_file_name << endl);
 
@@ -325,7 +321,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
+        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
         try {
             // This code is here to load the DataDDX response into the cache if it is not
             // there already. If it is there, it reads it from the cache.
@@ -364,62 +360,6 @@ public:
         DBG(cerr << "cache_and_read_a_response() - END" << endl);
     }
 
-	// Test caching a response where a CE is applied to the DDS. The CE here is 'b,u'
-    //
-    // Use the public interface to read the data (cache_dataset()), but this time
-    // include a constraint.
-	void cache_and_read_a_response3()
-	{
-		DBG(cerr << "cache_and_read_a_response3() - BEGIN" << endl);
-
-		cache = BESDapFunctionResponseCache::get_instance(d_cache, "rc", 1000);
-		string token;
-		try {
-			// This loads a DDS in the cache and returns it.
-			DDS *result = cache->get_or_cache_dataset(test_dds, "b,u");
-
-			DBG(cerr << "Cached response token: " << token << endl);
-			CPPUNIT_ASSERT(result);
-			ostringstream oss;
-			DDS::Vars_iter i = result->var_begin();
-			while (i != result->var_end()) {
-				DBG(cerr << "Variable " << (*i)->name() << endl);
-				if ((*i)->send_p()) {
-					(*i)->print_val(oss, "", false /*print declaration */);
-					DBG(cerr << "Value " << oss.str() << endl);
-				}
-				++i;
-			}
-
-			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
-			oss.str("");
-
-			DDS *result2 = cache->get_or_cache_dataset(test_dds, "b,u");
-
-			CPPUNIT_ASSERT(result2);
-			// There are nine variables in test.05.ddx but two in the CE used here and
-			// the response cached was constrained.
-			CPPUNIT_ASSERT(result2->var_end() - result2->var_begin() == 2);
-
-			i = result2->var_begin();
-			while (i != result2->var_end()) {
-				DBG(cerr << "Variable " << (*i)->name() << endl);
-				if ((*i)->send_p()) {
-					(*i)->print_val(oss, "", false /*print declaration */);
-					DBG(cerr << "Value " << oss.str() << endl);
-				}
-				++i;
-			}
-
-			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
-
-		}
-		catch (Error &e) {
-			CPPUNIT_FAIL(e.get_error_message());
-		}
-
-		DBG(cerr << "cache_and_read_a_response3() - END" << endl);
-    }
 
 	CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
 
@@ -428,7 +368,6 @@ public:
     CPPUNIT_TEST(cache_a_response);
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
-    CPPUNIT_TEST(cache_and_read_a_response3);
 
     CPPUNIT_TEST_SUITE_END();
 };

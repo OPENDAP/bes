@@ -95,6 +95,7 @@ private:
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 
     std::string get_resource_id(libdap::DDS *dds, const std::string &constraint);
+    std::string get_hash_basename(const std::string &resource_id);
 
     libdap::DDS *read_cached_data(istream &cached_data);
 
@@ -144,9 +145,9 @@ public:
 
     virtual bool can_be_cached(libdap::DDS *dds, const std::string &constraint);
 
-    static string getCacheDirFromConfig();
-    static string getCachePrefixFromConfig();
-    static unsigned long getCacheSizeFromConfig();
+    static string get_cache_dir_from_config();
+    static string get_cache_prefix_from_config();
+    static unsigned long get_cache_size_from_config();
 };
 
 #endif // _bes_dap_response_cache_h

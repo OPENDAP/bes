@@ -912,7 +912,6 @@ BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerIn
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
-#if 1
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
@@ -928,14 +927,6 @@ BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerIn
         delete dds;             // Delete so that we can ...
         bdds->set_dds(fdds);    // Transfer management responsibility
         dds = fdds;
-#else
-        ConstraintEvaluator func_eval;
-        func_eval.parse_constraint(d_btp_func_ce, *dds);
-        DDS *fdds = func_eval.eval_function_clauses(*dds);
-        delete dds;             // Delete so that we can ...
-        bdds->set_dds(fdds);    // Transfer management responsibility
-        dds = fdds;
-#endif
 
         dds->mark_all(false);
 
@@ -992,7 +983,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     if (!get_btp_func_ce().empty()) {
         BESDEBUG("dap",
             "BESDapResponseBuilder::intern_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
-#if 1
+
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
@@ -1008,22 +999,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
         delete dds;             // Delete so that we can ...
         bdds->set_dds(fdds);    // Transfer management responsibility
         dds = fdds;
-#else
-        {
-            // Evaluate the function
-            ConstraintEvaluator func_eval;
-            func_eval.parse_constraint(d_btp_func_ce, *dds);
-            // bdds (BESResponseObject) manages the storage of the DDS* returned by
-            // get_dds(), so we delete that instance and then substitute the new DDS
-            // instance returned by eval_function_clauses(). bdds will delete that
-            // new instance sometime.
-            DDS *function_result_dds = func_eval.eval_function_clauses(*dds);
-            delete dds;
-            bdds->set_dds(function_result_dds);
 
-            dds = function_result_dds;  // simplify the following code; use 'dds'
-        }
-#endif
         // Server functions might mark (i.e. setting send_p) so variables will use their read()
         // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
@@ -1103,7 +1079,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
-#if 1
+
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
@@ -1116,38 +1092,9 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         delete *dds; *dds = 0;
         *dds = fdds;
-#else
-        string btp_func_ce  = get_btp_func_ce();
-        if (response_cache && response_cache->can_be_cached(*dds, btp_func_ce)) {
-            ConstraintEvaluator func_eval;
-            string foo = response_cache->get_or_cache_dataset(dds, btp_func_ce, &func_eval);
-        }
-        else {
-            // Evaluate the function
-            ConstraintEvaluator func_eval;
-            func_eval.parse_constraint(btp_func_ce, **dds);
-            DDS *fdds = func_eval.eval_function_clauses(**dds);
-            // Load the result of the function eval in the dds that's part of the DHI.
-            delete *dds;
-            *dds = fdds;
-        }
-#endif
-        // Server functions might mark (i.e. setting send_p) so variables will use their read()
-        // methods. Clear that so the CE in d_dap2ce will control what is
-        // sent. If that is empty (there was only a function call) all
-        // of the variables in the intermediate DDS (i.e., the function
-        // result) will be sent.
+
         (*dds)->mark_all(false);
 
-        // Look for
-        // one or more top level Structures whose name indicates (by way of ending with
-        // "_uwrap") that their contents should be moved to the top level.
-        // This is in support of a hack around the current API where server side functions
-        // may only return a single DAP object and not a collection of objects. The name suffix
-        // "_unwrap" is used as a signal from the function to the the various response
-        // builders and transmitters that the representation needs to be altered before
-        // transmission, and that in fact is what happens in our friend
-        // promote_function_output_structures()
         promote_function_output_structures(*dds);
 
         // evaluate the rest of the CE - the part that follows the function calls.
@@ -1248,7 +1195,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
-#if 1
+
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
@@ -1261,35 +1208,9 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
 
         delete *dds; *dds = 0;
         *dds = fdds;
-#else
-        string btp_func_ce  = get_btp_func_ce();
-        if (response_cache && response_cache->can_be_cached(*dds,btp_func_ce)) {
-            string foo = response_cache->cache_dataset(dds, btp_func_ce, &func_eval);
-        }
-        else {
-            func_eval.parse_constraint(btp_func_ce, **dds);
-            DDS *fdds = func_eval.eval_function_clauses(**dds);
-            delete *dds; *dds = 0;
-            *dds = fdds;
-        }
-#endif
-        // Server functions might mark variables to use their read()
-        // methods. Clear that so the CE in d_dap2ce will control what is
-        // sent. If that is empty (there was only a function call) all
-        // of the variables in the intermediate DDS (i.e., the function
-        // result) will be sent.
+
         (*dds)->mark_all(false);
 
-        // This next step utilizes a well known static method (so really it's a function;),
-        // promote_function_output_structures() to look for
-        // one or more top level Structures whose name indicates (by way of ending with
-        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
-        // This is in support of a hack around the current API where server side functions
-        // may only return a single DAP object and not a collection of objects. The name suffix
-        // "_unwrap" is used as a signal from the function to the the various response
-        // builders and transmitters that the representation needs to be altered before
-        // transmission, and that in fact is what happens in our friend
-        // promote_function_output_structures()
         promote_function_output_structures(*dds);
 
         eval.parse_constraint(d_dap2ce, **dds);
