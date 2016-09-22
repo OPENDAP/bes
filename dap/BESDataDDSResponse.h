@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,39 +33,52 @@
 #ifndef I_BESDataDDSResponse
 #define I_BESDataDDSResponse 1
 
-#include "BESDapResponse.h"
-#include "DataDDS.h"
-#include "ConstraintEvaluator.h"
+#include <ConstraintEvaluator.h>
 
-using namespace libdap ;
+#include "BESDapResponse.h"
+
+namespace libdap {
+class DataDDS;
+}
 
 /** @brief Represents an OPeNDAP DataDDS DAP2 data object within the BES
  */
-class BESDataDDSResponse : public BESDapResponse
-{
+class BESDataDDSResponse: public BESDapResponse {
 private:
-    DataDDS *			_dds;
-    ConstraintEvaluator		_ce;
+    libdap::DataDDS * _dds;
+    libdap::ConstraintEvaluator _ce;
+
 public:
-    				BESDataDDSResponse(DataDDS * dds)
-				    : BESDapResponse(), _dds(dds) {} 
-    
-    virtual			~BESDataDDSResponse();
+    BESDataDDSResponse(libdap::DataDDS * dds) :
+        BESDapResponse(), _dds(dds)
+    {
+    }
 
-    virtual void		set_container( const string &cn ) ;
-    virtual void		clear_container( ) ;
+    virtual ~BESDataDDSResponse();
 
-    virtual void		dump(ostream & strm) const;
+    virtual void set_container(const std::string &cn);
+    virtual void clear_container();
+
+    virtual void dump(std::ostream & strm) const;
 
     /**
      * Set the response object's DDS. The caller should probably
      * free the existing DDS object before calling this method.
      */
-    void set_dds(DataDDS *ddsIn) { _dds = ddsIn; }
+    void set_dds(libdap::DataDDS *ddsIn)
+    {
+        _dds = ddsIn;
+    }
 
+    libdap::DataDDS * get_dds()
+    {
+        return _dds;
+    }
 
-    DataDDS *			get_dds() { return _dds; }
-    ConstraintEvaluator &	get_ce() { return _ce; }
+    libdap::ConstraintEvaluator & get_ce()
+    {
+        return _ce;
+    }
 };
 
 #endif // I_BESDataDDSResponse
