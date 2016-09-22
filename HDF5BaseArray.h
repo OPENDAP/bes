@@ -65,6 +65,7 @@ class HDF5BaseArray:public Array {
     virtual bool read();
     int format_constraint (int *cor, int *step, int *edg);
     void write_nature_number_buffer(int rank, int tnumelm);
+    void read_data_from_mem_cache(H5Datatype h5type,
 
 };
 

@@ -462,4 +462,65 @@ void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
 
 }
 
+/// This inline routine will translate N dimensions into 1 dimension.
+inline int
+HDF5CFUtil::INDEX_nD_TO_1D (const std::vector < int > &dims,
+                const std::vector < int > &pos)
+{
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    int sum = 0;
+    int start = 1;
+
+    for (unsigned int p = 0; p < pos.size (); p++) {
+        int m = 1;
+
+        for (unsigned int j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+
+//! Getting a subset of a variable
+//
+//      \param input Input variable
+//       \param dim dimension info of the input
+//       \param start start indexes of each dim
+//       \param stride stride of each dim
+//       \param edge count of each dim
+//       \param poutput output variable
+// 	\parrm index dimension index
+//       \return 0 if successful. -1 otherwise.
+//
+template<typename T>  
+int HDF5CFUtil::subset(
+    const T input[],
+    int rank,
+    vector<int> & dim,
+    int start[],
+    int stride[],
+    int edge[],
+    std::vector<T> *poutput,
+    vector<int>& pos,
+    int index)
+{
+    for(int k=0; k<edge[index]; k++) 
+    {	
+        pos[index] = start[index] + k*stride[index];
+        if(index+1<rank)
+            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);			
+        if(index==rank-1)
+        {
+            poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
+        }
+    } // end of for
+    return 0;
+} // end of template<typename T> static int subset
+
 

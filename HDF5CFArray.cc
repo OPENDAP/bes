@@ -48,13 +48,6 @@ BaseType *HDF5CFArray::ptr_duplicate()
     return new HDF5CFArray(*this);
 }
 
-void HDF5CFArray::read_data_from_mem_cache(void*buf) {
-
-    // Just see if it works.
-    val2buf(buf);
-    set_read_p(true);
-    return;
-}
 // Read in an HDF5 Array 
 bool HDF5CFArray::read()
 {
@@ -690,6 +683,260 @@ void HDF5CFArray::read_data_from_file(bool add_cache,void*buf) {
     return ;
 }
 
+void HDF5CFArray::read_data_from_mem_cache(void*buf) {
+
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    // set the original position to the starting point
+    vector<int>at_pos(at_ndims,0);
+    for (int i = 0; i< rank; i++)
+        at_pos[i] = at_offset[i];
+
+
+    switch (dtype) {
+
+        case H5UCHAR:
+                
+        {
+            vector<unsigned char> val;
+            val.resize(nelms);
+            subset<unsigned char>(
+                                      &total_val[0],
+                                      rank,
+                                      dimsizes,
+                                      offset,
+                                      step,
+                                      count,
+                                      &final_val,
+                                      at_pos,
+                                      0
+                                     );
+                
+
+            set_value ((dods_byte *) &val[0], nelms);
+        } // case H5UCHAR
+            break;
+
+
+        case H5CHAR:
+        {
+
+            vector<char> val;
+            val.resize(nelms);
+
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_CHAR "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+
+            vector<short>newval;
+            newval.resize(nelms);
+
+            for (int counter = 0; counter < nelms; counter++)
+                newval[counter] = (short) (val[counter]);
+
+            set_value ((dods_int16 *) &newval[0], nelms);
+        } // case H5CHAR
+           break;
+
+
+        case H5INT16:
+        {
+            vector<short>val;
+            val.resize(nelms);
+                
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                //H5Fclose(fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_SHORT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_int16 *) &val[0], nelms);
+        }// H5INT16
+            break;
+
+
+        case H5UINT16:
+            {
+                vector<unsigned short> val;
+                val.resize(nelms);
+                if (0 == rank) 
+                   read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+                else 
+                   read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+                if (read_ret < 0) {
+
+                    if (rank > 0) H5Sclose(mspace);
+                    H5Tclose(memtype);
+                    H5Tclose(dtypeid);
+                    H5Sclose(dspace);
+                    H5Dclose(dsetid);
+                    HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                    ostringstream eherr;
+                    eherr << "Cannot read the HDF5 dataset " << varname
+                        << " with the type of H5T_NATIVE_USHORT "<<endl;
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+                }
+                set_value ((dods_uint16 *) &val[0], nelms);
+            } // H5UINT16
+            break;
+
+
+        case H5INT32:
+        {
+            vector<int>val;
+            val.resize(nelms);
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_INT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_int32 *) &val[0], nelms);
+        } // case H5INT32
+            break;
+
+        case H5UINT32:
+        {
+            vector<unsigned int>val;
+            val.resize(nelms);
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_UINT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_uint32 *) &val[0], nelms);
+        }
+            break;
+
+        case H5FLOAT32:
+        {
+
+            vector<float>val;
+            val.resize(nelms);
+
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_FLOAT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_float32 *) &val[0], nelms);
+        }
+            break;
+
+
+        case H5FLOAT64:
+        {
+
+            vector<double>val;
+            val.resize(nelms);
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_DOUBLE "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_float64 *) &val[0], nelms);
+        } // case H5FLOAT64
+            break;
+
+
+
+    // Just see if it works.
+    val2buf(buf);
+    set_read_p(true);
+    return;
+}
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 

@@ -104,6 +104,19 @@ struct HDF5CFUtil {
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
                static void close_fileid(hid_t,bool);
-};
+               inline int INDEX_nD_TO_1D (const std::vector < int > &dims,
+                                          const std::vector < int > &pos);
+
+               template<typename T>  int subset(
+                                                const T input[],
+                                                int rank,
+                                                vector<int> & dim,
+                                                int start[],
+                                                int stride[],
+                                                int edge[],
+                                                std::vector<T> *poutput,
+                                                vector<int>& pos,
+                                                int index);
+} ;
 
 #endif
