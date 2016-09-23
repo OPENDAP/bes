@@ -93,7 +93,8 @@ cerr<<"var buf size is "<<var_size <<endl;
                 vector<char> buf;
                 buf.resize(var_size);
                 cached_h5data_mem_cache_ptr->get_var_buf(buf);
-                read_data_from_mem_cache(&buf[0]);
+                //read_data_from_mem_cache(&buf[0]);
+                //Use basearray;
             }
         }
         else{ 
@@ -683,6 +684,7 @@ void HDF5CFArray::read_data_from_file(bool add_cache,void*buf) {
     return ;
 }
 
+#if 0
 void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 
     vector<int>offset;
@@ -937,6 +939,7 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
     set_read_p(true);
     return;
 }
+#endif
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 

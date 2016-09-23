@@ -32,6 +32,7 @@
 
 // DODS includes
 #include <Array.h>
+#include <HDF5CFUtil.h>
 
 using namespace libdap;
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,7 +66,18 @@ class HDF5BaseArray:public Array {
     virtual bool read();
     int format_constraint (int *cor, int *step, int *edg);
     void write_nature_number_buffer(int rank, int tnumelm);
-    void read_data_from_mem_cache(H5Datatype h5type,
+    void read_data_from_mem_cache(H5DataType h5type,const vector <size_t> &h5_dimsizes, void*buf);
+
+    template<typename T>  int subset(
+                                                void* input,
+						int rank,
+                                                const vector<size_t> & dim,
+                                                int start[],
+                                                int stride[],
+                                                int edge[],
+                                                std::vector<T> *poutput,
+                                                vector<size_t>& pos,
+                                                int index);
 
 };
 

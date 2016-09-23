@@ -462,10 +462,11 @@ void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
 
 }
 
+#if 0
 /// This inline routine will translate N dimensions into 1 dimension.
-inline int
-HDF5CFUtil::INDEX_nD_TO_1D (const std::vector < int > &dims,
-                const std::vector < int > &pos)
+inline size_t
+HDF5CFUtil::INDEX_nD_TO_1D (const std::vector <size_t > &dims,
+                const std::vector < size_t > &pos)
 {
     //
     //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
@@ -473,19 +474,20 @@ HDF5CFUtil::INDEX_nD_TO_1D (const std::vector < int > &dims,
     // 
     if(dims.size () != pos.size ())
         throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
-    int sum = 0;
-    int start = 1;
+    size_t sum = 0;
+    size_t  start = 1;
 
-    for (unsigned int p = 0; p < pos.size (); p++) {
-        int m = 1;
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
 
-        for (unsigned int j = start; j < dims.size (); j++)
+        for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
         sum += m * pos[p];
         start++;
     }
     return sum;
 }
+#endif
 
 //! Getting a subset of a variable
 //
@@ -498,6 +500,8 @@ HDF5CFUtil::INDEX_nD_TO_1D (const std::vector < int > &dims,
 // 	\parrm index dimension index
 //       \return 0 if successful. -1 otherwise.
 //
+//
+#if 0
 template<typename T>  
 int HDF5CFUtil::subset(
     const T input[],
@@ -521,6 +525,30 @@ int HDF5CFUtil::subset(
         }
     } // end of for
     return 0;
-} // end of template<typename T> static int subset
+} // end of template<typename T> static int 
+#endif
+
+inline size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+                                 const std::vector < size_t > &pos){
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+
 
 

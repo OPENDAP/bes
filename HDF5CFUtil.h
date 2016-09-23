@@ -104,9 +104,10 @@ struct HDF5CFUtil {
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
                static void close_fileid(hid_t,bool);
-               inline int INDEX_nD_TO_1D (const std::vector < int > &dims,
-                                          const std::vector < int > &pos);
+               //inline size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+                //                          const std::vector < size_t > &pos);
 
+#if 0
                template<typename T>  int subset(
                                                 const T input[],
                                                 int rank,
@@ -117,6 +118,35 @@ struct HDF5CFUtil {
                                                 std::vector<T> *poutput,
                                                 vector<int>& pos,
                                                 int index);
+#endif
 } ;
+
+size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+                                 const std::vector < size_t > &pos);
+
+#if 0
+{
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+#endif
+
+
 
 #endif
