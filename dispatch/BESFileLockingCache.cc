@@ -77,8 +77,8 @@ static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
  * size is 0, or if cache dir does not exist.
  */
 BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size) :
-    d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size), d_target_size(0), d_cache_info(""), d_cache_info_fd(
-        -1)
+    d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size), d_target_size(0), d_cache_info(""),
+    d_cache_info_fd(-1)
 {
     m_initialize_cache_info();
 }
@@ -382,7 +382,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
 void BESFileLockingCache::m_check_ctor_params()
 {
     // TODO Should this really be a fatal error? What about just not 
-    // using the cache in ths case or writing out a warning message 
+    // using the cache in this case or writing out a warning message
     // to the log. jhrg 10/23/15
     if (d_cache_dir.empty()) {
         string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory was not specified";

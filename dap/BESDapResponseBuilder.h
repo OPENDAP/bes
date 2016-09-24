@@ -136,12 +136,12 @@ public:
 	int get_timeout() const;
 	void timeout_on() const;
     void timeout_off();
+
+    virtual void establish_timeout(std::ostream &stream) const;
+    virtual void remove_timeout() const;
 	///@}
 
 	void conditional_timeout_cancel();
-
-	virtual void establish_timeout(std::ostream &stream) const;
-	virtual void remove_timeout() const;
 
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
