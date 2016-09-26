@@ -68,6 +68,7 @@ class HDF5BaseArray:public Array {
     void write_nature_number_buffer(int rank, int tnumelm);
     void read_data_from_mem_cache(H5DataType h5type,const vector <size_t> &h5_dimsizes, void*buf);
 
+    size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,const std::vector < size_t > &pos);
     template<typename T>  int subset(
                                                 void* input,
 						int rank,

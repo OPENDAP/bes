@@ -180,52 +180,44 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         } // case H5UCHAR
             break;
 
-
-#if 0
         case H5CHAR:
         {
 
-            vector<char> val;
+            vector<short>val;
             val.resize(nelms);
+            subset<short>(
+                                      buf,
+                                      ndims,
+                                      h5_dimsizes,
+                                      &offset[0],
+                                      &step[0],
+                                      &count[0],
+                                      &val,
+                                      pos,
+                                      0
+                                     );
 
-
-            vector<short>newval;
-            newval.resize(nelms);
-
-            for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (short) (val[counter]);
-
-            set_value ((dods_int16 *) &newval[0], nelms);
+            set_value ((dods_int16 *) &val[0], nelms);
         } // case H5CHAR
            break;
 
-
         case H5INT16:
         {
-            vector<short>val;
+            vector<short> val;
             val.resize(nelms);
-                
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+            subset<short>(
+                                      buf,
+                                      ndims,
+                                      h5_dimsizes,
+                                      &offset[0],
+                                      &step[0],
+                                      &count[0],
+                                      &val,
+                                      pos,
+                                      0
+                                     );
 
-            if (read_ret < 0) {
 
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_SHORT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
             set_value ((dods_int16 *) &val[0], nelms);
         }// H5INT16
             break;
@@ -235,53 +227,39 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
             {
                 vector<unsigned short> val;
                 val.resize(nelms);
-                if (0 == rank) 
-                   read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-                else 
-                   read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+             subset<unsigned short>(
+                                      buf,
+                                      ndims,
+                                      h5_dimsizes,
+                                      &offset[0],
+                                      &step[0],
+                                      &count[0],
+                                      &val,
+                                      pos,
+                                      0
+                                     );
 
-                if (read_ret < 0) {
-
-                    if (rank > 0) H5Sclose(mspace);
-                    H5Tclose(memtype);
-                    H5Tclose(dtypeid);
-                    H5Sclose(dspace);
-                    H5Dclose(dsetid);
-                    HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                    ostringstream eherr;
-                    eherr << "Cannot read the HDF5 dataset " << varname
-                        << " with the type of H5T_NATIVE_USHORT "<<endl;
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-                }
+               
                 set_value ((dods_uint16 *) &val[0], nelms);
             } // H5UINT16
             break;
-
 
         case H5INT32:
         {
             vector<int>val;
             val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+            subset<int>(
+                                      buf,
+                                      ndims,
+                                      h5_dimsizes,
+                                      &offset[0],
+                                      &step[0],
+                                      &count[0],
+                                      &val,
+                                      pos,
+                                      0
+                                     );
 
-            if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_INT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
             set_value ((dods_int32 *) &val[0], nelms);
         } // case H5INT32
             break;
@@ -290,26 +268,18 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         {
             vector<unsigned int>val;
             val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+            subset<unsigned int>(
+                                      buf,
+                                      ndims,
+                                      h5_dimsizes,
+                                      &offset[0],
+                                      &step[0],
+                                      &count[0],
+                                      &val,
+                                      pos,
+                                      0
+                                     );
 
-            if (read_ret < 0) {
-
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_UINT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
             set_value ((dods_uint32 *) &val[0], nelms);
         }
             break;
@@ -319,26 +289,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
             vector<float>val;
             val.resize(nelms);
-
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
-            if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_FLOAT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
             set_value ((dods_float32 *) &val[0], nelms);
         }
             break;
@@ -349,29 +299,9 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
             vector<double>val;
             val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
-            if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_DOUBLE "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
             set_value ((dods_float64 *) &val[0], nelms);
         } // case H5FLOAT64
             break;
-#endif
 
     }
 }
@@ -406,14 +336,36 @@ int HDF5BaseArray::subset(
             subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);			
         if(index==rank-1)
         {
-
-            INDEX_nD_TO_1D( dim, pos);
+            size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
+            void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
+            poutput->push_back(*(static_cast<T*>(tempbuf)));
             //poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);
         }
     } // end of for
     return 0;
 } // end of template<typename T> static int subset
 
+size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+                                 const std::vector < size_t > &pos){
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
 
 
 

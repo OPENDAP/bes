@@ -528,7 +528,7 @@ int HDF5CFUtil::subset(
 } // end of template<typename T> static int 
 #endif
 
-inline size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                                  const std::vector < size_t > &pos){
     //
     //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);

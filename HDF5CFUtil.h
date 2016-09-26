@@ -104,8 +104,8 @@ struct HDF5CFUtil {
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
                static void close_fileid(hid_t,bool);
-               //inline size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
-                //                          const std::vector < size_t > &pos);
+               //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+               //                           const std::vector < size_t > &pos);
 
 #if 0
                template<typename T>  int subset(
@@ -121,8 +121,8 @@ struct HDF5CFUtil {
 #endif
 } ;
 
-size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
-                                 const std::vector < size_t > &pos);
+//size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+ //                                const std::vector < size_t > &pos);
 
 #if 0
 {
