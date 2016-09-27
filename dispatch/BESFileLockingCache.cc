@@ -44,8 +44,6 @@
 #include <cstring>
 #include <cerrno>
 
-//#define DODS_DEBUG
-
 #include "BESInternalError.h"
 
 #include "BESUtil.h"
@@ -138,7 +136,7 @@ string lockStatus(const int fd)
 {
     struct flock isLocked, lock_query;
 
-    isLocked.l_type = F_WRLCK; /* Test for any lock on any part of file. */
+    isLocked.l_type = F_WRLCK; /* Test for any lock on any part of a file. */
     isLocked.l_start = 0;
     isLocked.l_whence = SEEK_SET;
     isLocked.l_len = 0;
@@ -359,7 +357,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
             return false;
 
         default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            throw BESInternalError(file_name + ": " + get_errno(), __FILE__, __LINE__);
         }
     }
 
@@ -384,33 +382,18 @@ void BESFileLockingCache::m_check_ctor_params()
     // TODO Should this really be a fatal error? What about just not 
     // using the cache in this case or writing out a warning message
     // to the log. jhrg 10/23/15
+    //
+    // Yes, leave this as a fatal error and handle the case when cache_dir is
+    // empty in code that specializes this class. Those child classes are
+    // all singletons and their get_instance() methods need to return null
+    // when caching is turned off. You cannot do that here without throwing
+    // and we don't want to throw an exception for every call to a child's
+    // get_instance() method  just because someone doesn't want to use a cache.
+    // jhrg 9/27/16
     if (d_cache_dir.empty()) {
         string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory was not specified";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-
-#if 0
-    // This code has a Time of check, time of Use (TOCTOU) error.
-    // It could be that stat returns that the directory does not
-    // exist, then another process makes the directory and then this
-    // code tries and fails. I think it would be better to just try
-    // and if it fails, return an error only when the code indicates
-    // there really is an error. 
-    //
-    // jhrg 10/23/15
-    struct stat buf;
-    int statret = stat(d_cache_dir.c_str(), &buf);
-    if (statret != 0 || !S_ISDIR(buf.st_mode)) {
-        // Try to make the directory
-        int status = mkdir(d_cache_dir.c_str(), 0775);
-        if (status != 0) {
-            string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory " + d_cache_dir + " does not exist or could not be created.";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-    }
-#endif
-
-    // I changed these to BES_SYNTAX_USER_ERROR. jhrg 10/23/15
 
     int status = mkdir(d_cache_dir.c_str(), 0775);
     // If there is an error and it's not that the dir already exists,
@@ -475,10 +458,10 @@ void BESFileLockingCache::m_initialize_cache_info()
     BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END" << endl);
 }
 
-const string chars_excluded_from_filenames = "<>=,/()\"\':? []()$";
+const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
 
 /**
- * Returns the fully qualified file system path name for the dimension cache file
+ * Returns the fully qualified file system path name for the cache file
  * associated with this particular cache resource.
  *
  * @note How names are mangled: ALl occurrences of the characters
@@ -486,35 +469,37 @@ const string chars_excluded_from_filenames = "<>=,/()\"\':? []()$";
  * '#' character.
  *
  * @param src The source name to cache
- * @param mangle if True, assume the name is a file pathname and mangle it.
+ * @param mangle If True, assume the name is a file pathname and mangle it.
  * If false, do not mangle the name (assume the caller has sent a suitable
  * string) but do turn the string into a pathname located in the cache directory
- * with the cache prefix. the 'mangle' param is true by default.
+ * with the cache prefix. The 'mangle' param is true by default.
  */
 string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 {
     // Old way of building String, retired 10/02/2015 - ndp
     // Return d_cache_dir + "/" + d_prefix + BESFileLockingCache::DAP_CACHE_CHAR + target;
-    BESDEBUG("cache", __PRETTY_FUNCTION__ << " - src: '" << src << "' mangle: "<< mangle << endl);
+    BESDEBUG("cache", __FUNCTION__ << " - src: '" << src << "' mangle: "<< mangle << endl);
 
-    string target = src;
-
+    string target = getCacheFilePrefix() + src;
+#if 0
+    // BUG This was causing the prefix to be treated as a path component.
+    // jhrg 9/27/16
     target = BESUtil::assemblePath(getCacheFilePrefix(), src);
-    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - target: '" << target << "'" << endl);
+#endif
 
     if (mangle) {
+#if 0
+        // This is not needed. jhrg 9/27/16
         if (target.at(0) == '/') {
             target = src.substr(1, target.length() - 1);
         }
-
+#endif
         string::size_type pos = target.find_first_of(chars_excluded_from_filenames);
         while (pos != string::npos) {
             target.replace(pos, 1, "#", 1);
             pos = target.find_first_of(chars_excluded_from_filenames);
         }
     }
-
-    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - target: '" << target << "'" << endl);
 
     if (target.length() > 254) {
         ostringstream msg;
@@ -525,9 +510,7 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 
     target = BESUtil::assemblePath(getCacheDirectory(), target, true);
 
-    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - d_cache_dir: '" << d_cache_dir << "'" << endl);
-    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - d_prefix:    '" << d_prefix << "'" << endl);
-    BESDEBUG("cache",  __PRETTY_FUNCTION__ << " - target:      '" << target << "'" << endl);
+    BESDEBUG("cache",  __FUNCTION__ << " - target:      '" << target << "'" << endl);
 
     return target;
 }

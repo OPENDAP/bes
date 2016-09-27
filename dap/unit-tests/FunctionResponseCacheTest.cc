@@ -163,7 +163,7 @@ public:
     	DBG(cerr << "DDS Name: " << test_dds->get_dataset_name() << endl);
 
     	if (clean)
-    	    clean_cache_dir(d_cache + "/" + d_cache_prefix);
+    	    clean_cache_dir(d_cache);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
 
@@ -176,7 +176,7 @@ public:
 		delete test_dds;
 
 		if (clean)
-		    clean_cache_dir(d_cache + "/" + d_cache_prefix);
+		    clean_cache_dir(d_cache);
 
 		DBG(cerr << "tearDown() - END" << endl);
 	}

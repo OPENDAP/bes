@@ -43,6 +43,8 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+#include <cassert>
+
 #include <sstream>
 #include <iostream>
 
@@ -743,62 +745,111 @@ string BESUtil::url_create(BESUtil::url &url_parts)
  * If the parameter ensureLeadingSlash is true then the returned string will begin with
  * a single '/' character followed by the string firstPart, a single '/' character, and
  * the string secondPart.
+ *
+ * @note I replaced the code here with a simpler version that assumes the two string
+ * arguments do not contain multiple consecutive slashes - I don't think the original
+ * version will work in cases where the string is only slashes because it will dereference
+ * the return value of begin()
  */
-string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool ensureLeadingSlash){
+string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool ensureLeadingSlash)
+{
+#if 0
+    assert(!firstPart.empty());
 
-	//BESDEBUG("util", "BESUtil::assemblePath() -  BEGIN" << endl);
-	//BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
-	//BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
+    // This version works but does not remove duplicate slashes
+    string first = firstPart;
+    string second = secondPart;
 
-	string firstPathFragment = firstPart;
-	string secondPathFragment = secondPart;
+    // add a leading slash if needed
+    if (ensureLeadingSlash && first[0] != '/')
+        first = "/" + first;
 
+    // if 'second' start with a slash, remove it
+    if (second[0] == '/')
+        second = second.substr(1);
 
-	if(ensureLeadingSlash){
-	    if(*firstPathFragment.begin() != '/')
-	    	firstPathFragment = "/" + firstPathFragment;
-	}
+    // glue the two parts together, adding a slash if needed
+    if (first.back() == '/')
+        return first.append(second);
+    else
+        return first.append("/").append(second);
+#endif
 
-	// make sure there are not multiple slashes at the end of the first part...
-	while(*firstPathFragment.rbegin() == '/' && firstPathFragment.length()>0){
-		firstPathFragment = firstPathFragment.substr(0,firstPathFragment.length()-1);
-		//BESDEBUG("util", "BESUtil::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
-	}
+#if 1
+    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
 
-	// make sure first part ends with a "/"
-    if(*firstPathFragment.rbegin() != '/'){
-    	firstPathFragment += "/";
+    assert(!firstPart.empty());
+
+    string first = firstPart;
+    string second = secondPart;
+
+    if (ensureLeadingSlash) {
+        if (first[0] != '/') first = "/" + first;
     }
-	//BESDEBUG("util", "BESUtil::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
 
-	// make sure second part does not BEGIN with a slash
-	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
-		secondPathFragment = secondPathFragment.substr(1);
-	}
+    // make sure there are not multiple slashes at the end of the first part...
+    // Note that this removes all of the slashes. jhrg 9/27/16
+    while (!first.empty() && first.back() == '/') {
+        first.pop_back();
+    }
 
-	//BESDEBUG("util", "BESUtil::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
+    // make sure second part does not BEGIN with a slash
+    while (!second.empty() && second[0] == '/') {
+        second = second.substr(1);
+    }
 
-	string newPath = firstPathFragment + secondPathFragment;
+    string newPath = first.append("/").append(second);
 
-	//BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
-	//BESDEBUG("util", "BESUtil::assemblePath() -  END" << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
 
-	return newPath;
+    return newPath;
+#endif
+
+#if 0
+    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
+
+    string first = firstPart;
+    string second = secondPart;
+
+    if (ensureLeadingSlash) {
+        if (*first.begin() != '/') first = "/" + first;
+    }
+
+    // make sure there are not multiple slashes at the end of the first part...
+    while (*first.rbegin() == '/' && first.length() > 0) {
+        first = first.substr(0, first.length() - 1);
+    }
+
+    // make sure first part ends with a "/"
+    if (*first.rbegin() != '/') {
+        first += "/";
+    }
+
+    // make sure second part does not BEGIN with a slash
+    while (*second.begin() == '/' && second.length() > 0) {
+        second = second.substr(1);
+    }
+
+    string newPath = first + second;
+
+    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
+
+    return newPath;
+#endif
 }
-
-
 
 /**
  * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
  * false otherwise.
  */
-bool BESUtil::endsWith(std::string const &fullString, std::string const &ending) {
+bool BESUtil::endsWith(std::string const &fullString, std::string const &ending)
+{
     if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare(fullString.length() - ending.length(),ending.length(), ending));
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
     }
     else {
         return false;
     }
 }
-
-
