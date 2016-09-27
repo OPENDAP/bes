@@ -32,6 +32,7 @@
 
 #include <DDS.h>
 #include <DAS.h>
+#include <DataDDS.h>
 #include <ConstraintEvaluator.h>
 // #include <DMR.h>
 #include <Error.h>
@@ -54,6 +55,9 @@
 #include "BESDebug.h"
 
 #include "BESDapResponseBuilder.h"
+
+using namespace libdap;
+using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Local Helpers

@@ -34,15 +34,20 @@
 #include <cerrno>
 #include <cstring>
 
+#include <DDS.h>
+#include <DataDDS.h>
+
 #include "BESDataResponseHandler.h"
 #include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
-//#include "BESDapTransmit.h"
 #include "BESContextManager.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+
+using namespace libdap;
+using namespace std;
 
 BESDataResponseHandler::BESDataResponseHandler( const string &name )
     : BESResponseHandler( name )

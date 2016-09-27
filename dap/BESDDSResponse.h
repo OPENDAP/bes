@@ -1,4 +1,4 @@
-// BESDDSResponse.h
+// BESlibdap::DDSResponse.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -34,20 +34,27 @@
 #define I_BESDDSResponse 1
 
 #include "BESDapResponse.h"
-#include <DDS.h>
+
+namespace libdap {
+class DDS;
+class ConstraintEvaluator;
+}
+
+// Remove this if we can get the ConstraintEvalutor out of this code.
 #include <ConstraintEvaluator.h>
 
-using namespace libdap;
-
-/** @brief Represents an OPeNDAP DDS DAP2 data object within the BES
+/** @brief Holds a DDS object within the BES
  */
 class BESDDSResponse: public BESDapResponse {
 private:
-    DDS * _dds;
-    ConstraintEvaluator _ce;
+    libdap::DDS *_dds;
+    libdap::ConstraintEvaluator _ce;
 
 public:
-    BESDDSResponse(DDS *dds) : BESDapResponse(), _dds(dds) { }
+    BESDDSResponse(libdap::DDS *dds) : BESDapResponse(), _dds(dds)
+    {
+    }
+
     virtual ~BESDDSResponse();
 
     virtual void set_container(const string &cn);
@@ -57,13 +64,33 @@ public:
 
     /**
      * Set the response object's DDS. The caller should probably
-     * free the existing DDS object before calling this method.
+     * free an existing DDS object held here before calling this method.
      */
-    void set_dds(DDS *ddsIn) { _dds = ddsIn; }
+    void set_dds(libdap::DDS *ddsIn)
+    {
+        _dds = ddsIn;
+    }
 
-    DDS *get_dds() const { return _dds; }
+    /**
+     * Get the contained DDS object.
+     * @return The contained DDS object
+     */
+    libdap::DDS * get_dds()
+    {
+        return _dds;
+    }
 
-    ConstraintEvaluator &get_ce() { return _ce; }
+    /**
+     * Get a reference to the DAP2 Constraint Evaluator.
+     * @todo Remove use of this method - there is no reason code
+     * cannot create its own ConstraintEvaluator.
+     * @deprecated
+     * @return A reference to a ConstraitEvaluator object
+     */
+    libdap::ConstraintEvaluator & get_ce()
+    {
+        return _ce;
+    }
 };
 
 #endif // I_BESDDSResponse

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,39 +33,52 @@
 #ifndef I_BESDataDDSResponse
 #define I_BESDataDDSResponse 1
 
-#include "BESDapResponse.h"
-#include "DDS.h"
-#include "ConstraintEvaluator.h"
+#include <ConstraintEvaluator.h>
 
-using namespace libdap ;
+#include "BESDapResponse.h"
+
+namespace libdap {
+class DataDDS;
+}
 
 /** @brief Represents an OPeNDAP DataDDS DAP2 data object within the BES
  */
-class BESDataDDSResponse : public BESDapResponse
-{
+class BESDataDDSResponse: public BESDapResponse {
 private:
-    DDS *			        _dds;
-    ConstraintEvaluator		_ce;
+    libdap::DDS * _dds;
+    libdap::ConstraintEvaluator _ce;
+
 public:
-    				BESDataDDSResponse(DDS * dds)
-				    : BESDapResponse(), _dds(dds) {} 
-    
-    virtual			~BESDataDDSResponse();
+    BESDataDDSResponse(libdap::DDS * dds) :
+        BESDapResponse(), _dds(dds)
+    {
+    }
 
-    virtual void		set_container( const string &cn ) ;
-    virtual void		clear_container( ) ;
+    virtual ~BESDataDDSResponse();
 
-    virtual void		dump(ostream & strm) const;
+    virtual void set_container(const std::string &cn);
+    virtual void clear_container();
+
+    virtual void dump(std::ostream & strm) const;
 
     /**
      * Set the response object's DDS. The caller should probably
      * free the existing DDS object before calling this method.
      */
-    void set_dds(DDS *ddsIn) { _dds = ddsIn; }
+    void set_dds(libdap::DDS *ddsIn)
+    {
+        _dds = ddsIn;
+    }
 
+    libdap::DDS * get_dds()
+    {
+        return _dds;
+    }
 
-    DDS *			get_dds() { return _dds; }
-    ConstraintEvaluator &	get_ce() { return _ce; }
+    libdap::ConstraintEvaluator & get_ce()
+    {
+        return _ce;
+    }
 };
 
 #endif // I_BESDataDDSResponse

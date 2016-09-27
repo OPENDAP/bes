@@ -30,18 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DataDDS.h>
+#include <ConstraintEvaluator.h>
+
 #include "BESDataDDSResponse.h"
+
+using namespace libdap;
+using namespace std;
 
 BESDataDDSResponse::~BESDataDDSResponse()
 {
     delete _dds;
-#if 0
-    if (_dds) {
-        if (_dds->get_factory())
-        delete _dds->get_factory();
-        delete _dds;
-    }
-#endif
 }
 
 /** @brief set the container in the DAP response object

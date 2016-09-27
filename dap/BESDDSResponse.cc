@@ -30,13 +30,31 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DDS.h>
+
 #include "BESDDSResponse.h"
+
+using namespace libdap;
 
 BESDDSResponse::~BESDDSResponse()
 {
+    delete _dds;
+    _dds = 0;
+
+    // Original code follows. Note that the part where the BaseType
+    // Factory was deleted was a bug that showed up when we started using
+    // the memory caches for DDS and DAS objects.
+    // See: https://opendap.atlassian.net/browse/HYRAX-254. jhrg 9/20/16
+#if 0
     if (_dds) {
+        // Should the BES be deleting stuff inside a DDS object? How does
+        // the BES know this is not allocated on the stack?
+        if (_dds->get_factory())
+            delete _dds->get_factory();
+
         delete _dds;
     }
+#endif
 }
 
 /** @brief set the container in the DAP response object
@@ -60,7 +78,7 @@ void BESDDSResponse::clear_container()
 }
 
 /** @brief dumps information about this object
- *set container in catalog values avhrr, /data/ff/1998.6.avhrr.dat;
+ * set container in catalog values avhrr, /data/ff/1998.6.avhrr.dat;
  *
  * Displays the pointer value of this instance along with the dds object
  * created
