@@ -354,4 +354,10 @@
             <Value>0</Value>
         </Attribute>
     </Int16>
+    <Attribute name="_nc3_strict" type="Int32">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.0</Value>
+    </Attribute>
 </Dataset>

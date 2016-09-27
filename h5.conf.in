@@ -126,3 +126,23 @@ H5.EnableFillValueCheck=true
 # during the mapping from HDF5 to DAP2.
 # Also this key should only be used when the H5.EnableCF key is set to true.
 H5.CheckIgnoreObj=false
+
+# Caching, this is "cloned" from the netCDF handler..
+#
+# The HDF5 handler can cache (in memory) many of the different
+# responses it builds. If the H5.CacheEntries value is zero, the cache
+# is turned off. Setting the H5.CacheEntries to a value greater than
+# zero enables caching in memory that number of responses. The cache
+# uses a LRU policy for purging old entries; tune its behavior by
+# changing the value and the CachePurgeLevel value below. Note that
+# this feature is on by default.
+
+H5.CacheEntries = 100
+
+# The H5.CachePurgeLevel key determines how much of the in-memory cache is
+# removed when it is purged. The value 0.2 (the default) configures the
+# software to remove the oldest 20% of items from the cache. You do not
+# need to edit this to use the cache since 0.2 is the default value.
+
+# H5.CachePurgeLevel = 0.2
+

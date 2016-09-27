@@ -64,6 +64,8 @@ bool HDF5GMCFSpecialCVArray::read()
     if (GPMS_L3 == product_type || GPMM_L3 == product_type) {
         if(varname=="nlayer" && 28 == tnumelm) 
             obtain_gpm_l3_layer(nelms,offset,step,count);
+        else if(varname=="nlayer" && 19 == tnumelm) 
+            obtain_gpm_l3_layer2(nelms,offset,step,count);
         else if(varname=="hgt" && 5 == tnumelm)
             obtain_gpm_l3_hgt(nelms,offset,step,count);
         else if(varname=="nalt" && 5 == tnumelm)
@@ -74,6 +76,8 @@ bool HDF5GMCFSpecialCVArray::read()
     return true;
 }
 
+// This is according to https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf(section 5.32), the definition of nlayer
+// The top of each layer is 0.5,1.0,....., 10.0,11.0.....18.0 km.
 void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int nelms,vector<int>&offset,vector<int>&step,vector<int>&count) {
 
 
@@ -84,6 +88,40 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int nelms,vector<int>&offset,ve
 
     for (int i = 20; i<28;i++)
         total_val[i] = total_val[19]+(i-19);
+
+    // Since we always assign the the missing Z dimension as 32-bit
+    // integer, so no need to check the type. The missing Z-dim is always
+    // 1-D with natural number 1,2,3,....
+    if (nelms == tnumelm) {
+        set_value ((dods_float32 *) &total_val[0], nelms);
+    }
+    else {
+
+        vector<float>val;
+        val.resize(nelms);
+        
+        for (int i = 0; i < nelms; i++)
+            val[i] = total_val[offset[0] + step[0] * i];
+        set_value ((dods_float32 *) &val[0], nelms);
+    }
+}
+
+
+// This is according to 
+// http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
+// section 8.1. Number of layers at the fixed heights of 0.0-0.5km,0.5-1.0 km,.....
+// Like obtain_gpm_l3_layer1, we use the top height value 0.5 km, 1.0 km,2km,.....,18 km.
+// See also section 4.1.1 and 3.1.1 of http://www.eorc.jaxa.jp/GPM/doc/product/format/en/06.%20GPM_Combined%20Product%20Format_E.pdf
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int nelms,vector<int>&offset,vector<int>&step,vector<int>&count) {
+
+
+    vector<float>total_val;
+    total_val.resize(tnumelm);
+    for (int i = 0; i<2;i++)
+        total_val[i] = 0.5*(i+1);
+
+    for (int i = 2; i<19;i++)
+        total_val[i] = total_val[1]+(i-1);
 
     // Since we always assign the the missing Z dimension as 32-bit
     // integer, so no need to check the type. The missing Z-dim is always

@@ -660,7 +660,7 @@ namespace HDF5CF
             void Adjust_Duplicate_FakeDim_Name(Dimension * dim)throw(Exception);
             void Insert_One_NameSizeMap_Element(string name,hsize_t size, bool unlimited) throw(Exception);
             void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,map<string,bool>&,string name,hsize_t size,bool unlimited) throw(Exception);
-            void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
+            //void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
 
             virtual string get_CF_string(string);
             virtual void Replace_Var_Info(Var* src, Var *target);
@@ -677,6 +677,11 @@ namespace HDF5CF
             // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
             bool Is_geolatlon(const string &var_name ,bool is_lat);
             bool has_latlon_cf_units(Attribute*attr, const string &varfullpath , bool is_lat);
+
+            // Check if a variable with a var name is under a specific group with groupname
+            // note: the variable's size at each dimension is also returned. The user must allocate the 
+            // memory for the dimension sizes(an array(vector is perferred).
+            bool is_var_under_group(const string &varname, const string &grpname,const int var_rank, vector<size_t> &var_size );
 
             virtual void Gen_Unsupported_Dtype_Info(bool) = 0;
             virtual void Gen_Unsupported_Dspace_Info() throw(Exception);
@@ -912,34 +917,31 @@ namespace HDF5CF
  
             string get_CF_string(string s);
 
-            // The following two routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
+            // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
             bool Check_Var_2D_CVars(Var*) throw(Exception);
             bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
-
             void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw(Exception);
             bool Coord_Match_LatLon_NameSize(const string & coord_values) throw(Exception);
             bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values,const string &var_path) throw(Exception);
             void Add_VarPath_In_Coordinates_Attr(Var*,const string &);
+
+            // The following three routines handle the GPM CF-related attributes
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
+            void Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
+
             void Add_Aqu_Attrs() throw(Exception);
             void Add_SeaWiFS_Attrs() throw(Exception);
             void Create_Missing_CV(GMCVar*,const string &) throw(Exception);
+
             bool Is_netCDF_Dimension(Var *var) throw(Exception);
 
-            //void add_ignored_info_attrs(bool is_grp,bool is_first);
-            //void add_ignored_info_objs(bool is_dim_related, bool is_first);
             void Gen_Unsupported_Dtype_Info(bool);
             void Gen_VarAttr_Unsupported_Dtype_Info()throw(Exception);
             void Gen_GM_VarAttr_Unsupported_Dtype_Info();
             void Gen_Unsupported_Dspace_Info() throw(Exception);
             void Handle_GM_Unsupported_Dtype(bool) throw(Exception);
             void Handle_GM_Unsupported_Dspace(bool) throw(Exception);
-            //bool ignored_var_transformed(Var* var);
-            //bool ignored_var_attr_transformed();
-            // bool ignored_GM_CVar_dimscale_ref_list(GMCVar* var);
-            // bool ignored_GM_SPVar_dimscale_ref_list(GMSPVar* var);
-
 
             void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
 
@@ -1212,7 +1214,8 @@ namespace HDF5CF
             void Handle_Za_CVar(bool) throw(Exception);
  
             bool Check_Augmentation_Status() throw(Exception);
-            bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
+            // Don't remove the following commented line!
+            //bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
             template<class T> bool Check_Augmented_Var_Candidate(T* , Var*, EOS5Type ) throw(Exception);
 
             template <class T>void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*,bool,int,int,int) throw(Exception);

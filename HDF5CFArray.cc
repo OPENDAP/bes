@@ -56,12 +56,6 @@ bool HDF5CFArray::read()
     if(length() == 0)
         return true;
 
-#if 0
-    string check_pass_fileid_key_str="H5.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     vector<int>offset;
     vector<int>count;
     vector<int>step;
@@ -69,7 +63,6 @@ bool HDF5CFArray::read()
     vector<hsize_t>hcount;
     vector<hsize_t>hstep;
     int nelms = 1;
-
 
     if (rank < 0) 
         throw InternalErr (__FILE__, __LINE__,
@@ -92,7 +85,6 @@ bool HDF5CFArray::read()
         }
     }
 
-    //hid_t fileid = -1;
     hid_t dsetid = -1;
     hid_t dspace = -1;
     hid_t mspace = -1;
@@ -100,10 +92,8 @@ bool HDF5CFArray::read()
     hid_t memtype = -1;
 
    
-//#if 0
     bool pass_fileid = HDF5RequestHandler::get_pass_fileid();
     if(false == pass_fileid) {
-    //if(false == pass_fileid) {
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
             ostringstream eherr;
             eherr << "HDF5 File " << filename 
@@ -111,11 +101,9 @@ bool HDF5CFArray::read()
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
     }
-//#endif
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
 
-        //H5Fclose(fileid);
         HDF5CFUtil::close_fileid(fileid,pass_fileid);
         ostringstream eherr;
         eherr << "HDF5 dataset " << varname
@@ -126,7 +114,6 @@ bool HDF5CFArray::read()
     if ((dspace = H5Dget_space(dsetid))<0) {
 
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
         HDF5CFUtil::close_fileid(fileid,pass_fileid);
         ostringstream eherr;
         eherr << "Space id of the HDF5 dataset " << varname
@@ -141,7 +128,6 @@ bool HDF5CFArray::read()
 
             H5Sclose(dspace);
             H5Dclose(dsetid);
-            //H5Fclose(fileid);
             HDF5CFUtil::close_fileid(fileid,pass_fileid);
             ostringstream eherr;
             eherr << "The selection of hyperslab of the HDF5 dataset " << varname
@@ -170,7 +156,6 @@ bool HDF5CFArray::read()
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,pass_fileid);
-        //H5Fclose(fileid);
         ostringstream eherr;
         eherr << "Obtaining the datatype of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -186,7 +171,6 @@ bool HDF5CFArray::read()
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,pass_fileid);
-        //H5Fclose(fileid);
         ostringstream eherr;
         eherr << "Obtaining the memory type of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -221,7 +205,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of H5T_NATIVE_UCHAR "<<endl;
@@ -253,7 +236,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of H5T_NATIVE_CHAR "<<endl;
@@ -320,7 +302,6 @@ bool HDF5CFArray::read()
                     H5Sclose(dspace);
                     H5Dclose(dsetid);
                     HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                    //H5Fclose(fileid);
                     ostringstream eherr;
                     eherr << "Cannot read the HDF5 dataset " << varname
                         << " with the type of H5T_NATIVE_USHORT "<<endl;
@@ -349,7 +330,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of H5T_NATIVE_INT "<<endl;
@@ -378,7 +358,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of H5T_NATIVE_UINT "<<endl;
@@ -408,7 +387,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of H5T_NATIVE_FLOAT "<<endl;
@@ -438,7 +416,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of H5T_NATIVE_DOUBLE "<<endl;
@@ -461,7 +438,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the size of the fixed size HDF5 string of the dataset " 
                       << varname <<endl;
@@ -483,7 +459,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of the fixed size HDF5 string "<<endl;
@@ -498,17 +473,10 @@ bool HDF5CFArray::read()
                   finstrval[i] = total_string.substr(i*ty_size,ty_size);
             
             // Check if we should drop the long string
-#if 0
-            string check_droplongstr_key ="H5.EnableDropLongString";
-            bool is_droplongstr = false;
-            is_droplongstr = 
-                    HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-#endif
 
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
-            //if (true == is_droplongstr &&
             if ((true == HDF5RequestHandler::get_drop_long_string()) &&
                 total_string.size() > NC_JAVA_STR_SIZE_LIMIT) {
                 for (int i = 0; i<nelms; i++)
@@ -531,7 +499,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the size of the fixed size HDF5 string of the dataset "
                       << varname <<endl;
@@ -552,7 +519,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                       << " with the type of the HDF5 variable length string "<<endl;
@@ -587,7 +553,6 @@ bool HDF5CFArray::read()
                     H5Sclose(dspace);
                     H5Dclose(dsetid);
                     HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                    //H5Fclose(fileid);
                     ostringstream eherr;
                     eherr << "Cannot reclaim the memory buffer of the HDF5 variable length string of the dataset "
                           << varname <<endl;
@@ -596,18 +561,9 @@ bool HDF5CFArray::read()
                 }
             }
 
-#if 0
-            // Check if we should drop the long string
-            string check_droplongstr_key ="H5.EnableDropLongString";
-            bool is_droplongstr = false;
-            is_droplongstr = 
-                    HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
-#endif
-
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
-            //if (true == is_droplongstr) {
             if (true == HDF5RequestHandler::get_drop_long_string()) {
                 size_t total_str_size = 0;
                 for (int i =0;i<nelms;i++) 
@@ -631,7 +587,6 @@ bool HDF5CFArray::read()
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
                         << " with the unsupported HDF5 datatype"<<endl;
@@ -678,25 +633,6 @@ HDF5CFArray::format_constraint (int *offset, int *step, int *count)
                    throw Error(malformed_expr, oss.str());
                 }
 
-
-#if 0
-                // Check for illegical  constraint
-                if (stride < 0 || start < 0 || stop < 0 || start > stop) {
-                        ostringstream oss;
-
-                        oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                                ":" << stride << ":" << stop << "]";
-                        throw Error (malformed_expr, oss.str ());
-                }
-
-                // Check for an empty constraint and use the whole dimension if so.
-                if (start == 0 && stop == 0 && stride == 0) {
-                        start = dimension_start (p, false);
-                        stride = dimension_stride (p, false);
-                        stop = dimension_stop (p, false);
-                }
-
-#endif
                 offset[id] = start;
                 step[id] = stride;
                 count[id] = ((stop - start) / stride) + 1;      // count of elements

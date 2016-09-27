@@ -3705,59 +3705,59 @@ ScanType=CONICAL;
     }
     S2_Longitude {
         String DimensionNames "nscan2,npixelev";
-        String units "degrees_east";
-        Float32 _FillValue -9999.900391;
         String origname "Longitude";
         String fullnamepath "/S2/Longitude";
+        String units "degrees_east";
+        Float32 _FillValue -9999.9;
     }
     S2_Latitude {
         String DimensionNames "nscan2,npixelev";
-        String units "degrees_north";
-        Float32 _FillValue -9999.900391;
         String origname "Latitude";
         String fullnamepath "/S2/Latitude";
+        String units "degrees_north";
+        Float32 _FillValue -9999.9;
     }
     S4_Longitude {
         String DimensionNames "nscan2,npixelfr";
-        String units "degrees_east";
-        Float32 _FillValue -9999.900391;
         String origname "Longitude";
         String fullnamepath "/S4/Longitude";
+        String units "degrees_east";
+        Float32 _FillValue -9999.9;
     }
     S4_Latitude {
         String DimensionNames "nscan2,npixelfr";
-        String units "degrees_north";
-        Float32 _FillValue -9999.900391;
         String origname "Latitude";
         String fullnamepath "/S4/Latitude";
+        String units "degrees_north";
+        Float32 _FillValue -9999.9;
     }
     S5_Longitude {
         String DimensionNames "nscan2,npixelfr";
-        String units "degrees_east";
-        Float32 _FillValue -9999.900391;
         String origname "Longitude";
         String fullnamepath "/S5/Longitude";
+        String units "degrees_east";
+        Float32 _FillValue -9999.9;
     }
     S5_Latitude {
         String DimensionNames "nscan2,npixelfr";
-        String units "degrees_north";
-        Float32 _FillValue -9999.900391;
         String origname "Latitude";
         String fullnamepath "/S5/Latitude";
+        String units "degrees_north";
+        Float32 _FillValue -9999.9;
     }
     S1_Longitude {
         String DimensionNames "nscan1,npixelev";
-        String units "degrees_east";
-        Float32 _FillValue -9999.900391;
         String origname "Longitude";
         String fullnamepath "/S1/Longitude";
+        String units "degrees_east";
+        Float32 _FillValue -9999.9;
     }
     S1_Latitude {
         String DimensionNames "nscan1,npixelev";
-        String units "degrees_north";
-        Float32 _FillValue -9999.900391;
         String origname "Latitude";
         String fullnamepath "/S1/Latitude";
+        String units "degrees_north";
+        Float32 _FillValue -9999.9;
     }
     FakeDim0 {
         String units "level";

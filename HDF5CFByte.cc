@@ -64,8 +64,6 @@ bool HDF5CFByte::read()
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
    
-//cerr<<"variable name is : "<<name() <<endl;
-
     hid_t dset_id = -1;
     dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
 
@@ -95,8 +93,6 @@ bool HDF5CFByte::read()
 
     return true;
 
-    //throw InternalErr(__FILE__, __LINE__,
-    //                  "Unimplemented read method called.");
 
 }
 

@@ -10,6 +10,39 @@
             <Value>This is a netCDF dimension but not a netCDF variable.       141</Value>
         </Attribute>
     </Float32>
+    <Attribute name="title" type="String">
+        <Value>AIRS-CloudSat matchups for AIRS granule AIRS.2006.06.15.239.L2.RetStd.v5.0.14.0.G07346074153.hdf (AIRS vars)</Value>
+    </Attribute>
+    <Attribute name="PRODUCTIONDATE" type="String">
+        <Value>201201240753</Value>
+    </Attribute>
+    <Attribute name="CloudSatGranules" type="String">
+        <Value>2006166230520_00708_CS_2B-GEOPROF_GRANULE_P_R04_E00.hdf</Value>
+    </Attribute>
+    <Attribute name="RANGEBEGINNINGDATE" type="String">
+        <Value>2006-06-15</Value>
+    </Attribute>
+    <Attribute name="RANGEBEGINNINGTIME" type="String">
+        <Value>23:53:25</Value>
+    </Attribute>
+    <Attribute name="RANGEENDINGDATE" type="String">
+        <Value>2006-06-15</Value>
+    </Attribute>
+    <Attribute name="RANGEENDINGTIME" type="String">
+        <Value>23:59:25</Value>
+    </Attribute>
+    <Attribute name="NORTHBOUNDINGCOORDINATE" type="Float64">
+        <Value>21.690250396728501</Value>
+    </Attribute>
+    <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Float64">
+        <Value>-1.7605216503143299</Value>
+    </Attribute>
+    <Attribute name="EASTBOUNDINGCOORDINATE" type="Float64">
+        <Value>-147.34747314453099</Value>
+    </Attribute>
+    <Attribute name="WESTBOUNDINGCOORDINATE" type="Float64">
+        <Value>-167.39973449707</Value>
+    </Attribute>
     <Group name="AIRS">
         <Group name="RetStd">
             <Dimension name="Cloud" size="2"/>

@@ -53,6 +53,9 @@
             <Value>8d88d674</Value>
         </Attribute>
     </Float32>
+    <Attribute name="_nc3_strict" type="Int32">
+        <Value>1</Value>
+    </Attribute>
 </Dataset>
 
 The data:

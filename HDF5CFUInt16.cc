@@ -96,7 +96,5 @@ bool HDF5CFUInt16::read()
     }
 
     return true;
-    //throw InternalErr(__FILE__, __LINE__,
-    //                  "Unimplemented read method called.");
 }
 

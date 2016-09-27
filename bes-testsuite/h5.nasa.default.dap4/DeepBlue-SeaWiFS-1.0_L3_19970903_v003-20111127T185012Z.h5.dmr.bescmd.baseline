@@ -576,6 +576,111 @@
             <Value>-999.</Value>
         </Attribute>
     </Float32>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.4</Value>
+    </Attribute>
+    <Attribute name="description" type="String">
+        <Value>SeaWiFS Deep Blue Level 3 Long-term Aerosol Data, 1.0x1.0 Degree Grid</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value>SWDB_L310 data is the arithmetic mean of all SWDB_L2 data located in each grid element after filtering by confidence flag.  Only those L2 cells having a confidence flag equal to 3 over land or 2 or 3 over ocean are used.</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>http://disc.gsfc.nasa.gov/dust</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NASA Goddard Space Flight Center</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>20111127T185012Z ./bin/l3gen_swdb 1997 246 etc/config ./l2_data/DeepBlue-SeaWiFS_L2_19970904T162634Z_v003-20111123T033206Z.h5 ./l2_data/DeepBlue-SeaWiFS_L2_19970904T162637Z_v003-20111123T033208Z.h5</Value>
+    </Attribute>
+    <Attribute name="long_name" type="String">
+        <Value>SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees</Value>
+    </Attribute>
+    <Attribute name="short_name" type="String">
+        <Value>SWDB_L310</Value>
+    </Attribute>
+    <Attribute name="version_id" type="String">
+        <Value>003</Value>
+    </Attribute>
+    <Attribute name="pge_version" type="String">
+        <Value>003</Value>
+    </Attribute>
+    <Attribute name="local_granule_id" type="String">
+        <Value>DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5</Value>
+    </Attribute>
+    <Attribute name="range_beginning_date" type="String">
+        <Value>1997-09-03</Value>
+    </Attribute>
+    <Attribute name="range_beginning_time" type="String">
+        <Value>00:00:00</Value>
+    </Attribute>
+    <Attribute name="range_ending_date" type="String">
+        <Value>1997-09-03</Value>
+    </Attribute>
+    <Attribute name="range_ending_time" type="String">
+        <Value>23:59:59</Value>
+    </Attribute>
+    <Attribute name="production_datetime" type="String">
+        <Value>2011-11-27T18:50:12.233000Z</Value>
+    </Attribute>
+    <Attribute name="instrument_long_name" type="String">
+        <Value>Sea-viewing Wide Field-of-View Sensor</Value>
+    </Attribute>
+    <Attribute name="instrument_short_name" type="String">
+        <Value>SeaWiFS</Value>
+    </Attribute>
+    <Attribute name="platform_long_name" type="String">
+        <Value>Orbview-2</Value>
+    </Attribute>
+    <Attribute name="platform_short_name" type="String">
+        <Value>OV-2</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>90.</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>-90.</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="latitude_resolution" type="Float32">
+        <Value>1.</Value>
+    </Attribute>
+    <Attribute name="longitude_resolution" type="Float32">
+        <Value>1.</Value>
+    </Attribute>
+    <Attribute name="contact_person_name" type="String">
+        <Value>Corey Bettenhausen</Value>
+    </Attribute>
+    <Attribute name="contact_person_role" type="String">
+        <Value>technical contact</Value>
+    </Attribute>
+    <Attribute name="contact_person_email" type="String">
+        <Value>corey.bettenhausen@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="contact_person_address" type="String">
+        <Value>NASA/GSFC, 8800 Greenbelt Road, Mail Code 613.2, Greenbelt, MD 20771</Value>
+    </Attribute>
+    <Attribute name="related_url" type="String">
+        <Value>http://disc.gsfc.nasa.gov/dust</Value>
+    </Attribute>
+    <Attribute name="keyword" type="String">
+        <Value>aerosol optical thickness angstrom exponent land ocean deep blue seawifs</Value>
+    </Attribute>
+    <Attribute name="data_set_language" type="String">
+        <Value>en</Value>
+    </Attribute>
+    <Attribute name="format" type="String">
+        <Value>hdf5</Value>
+    </Attribute>
     <Group name="diagnostics">
         <Float32 name="aerosol_optical_thickness_550_maximum_land">
             <Dim name="/latitude"/>

@@ -109,14 +109,229 @@ int HDF5Array::format_constraint(int *offset, int *step, int *count) {
     return nels;
 }
 
+
+bool HDF5Array::read()
+{
+    BESDEBUG("h5",
+	    ">read() dataset=" << dataset()
+	    << " dimension=" << d_num_dim
+	    << " data_size=" << d_memneed << " length=" << length()
+	    << endl);
+
+    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
+
+    BESDEBUG("h5","after H5Fopen "<<endl);
+    BESDEBUG("h5","variable name is "<<name() <<endl);
+    BESDEBUG("h5","variable path is  "<<var_path <<endl);
+
+    hid_t dset_id = -1;
+
+    if(true == is_dap4()) 
+        dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    else 
+        dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+
+    BESDEBUG("h5","after H5Dopen2 "<<endl);
+    // Leave the following code. We may replace the struct DS and DSattr(see hdf5_handler.h)
+#if 0
+    hid_t dspace_id = H5Dget_space(dset_id);
+    if(dspace_id < 0) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataspace .");
+    }
+
+    int num_dim = H5Sget_simple_extent_ndims(dspace_id);
+    if(num_dim < 0) {
+        H5Sclose(dspace_id);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+    }
+
+    H5Sclose(dspace_id);
+#endif
+
+    hid_t dtype_id = H5Dget_type(dset_id);
+    if(dtype_id < 0) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+    }
+
+ 
+    vector<int> offset(d_num_dim);
+    vector<int> count(d_num_dim);
+    vector<int> step(d_num_dim);
+    int nelms = format_constraint(&offset[0], &step[0], &count[0]); // Throws Error.
+    vector<char>values;
+ 
+    // The dataset ID and datatype ID should be replaced by using H5Fopen
+    //hid_t dset_id = d_dset_id;
+    //hid_t dtype_id = d_ty_id;
+
+    // We only map the reference to URL when the dataset is an array of reference.
+    if (get_dap_type(dtype_id,is_dap4()) == "Url") {
+        bool ret_ref = false;
+        try {
+	    ret_ref = m_array_of_reference(dset_id,dtype_id);
+            H5Tclose(dtype_id);
+            H5Dclose(dset_id);
+            H5Fclose(file_id);
+ 
+        }
+        catch(...) {
+            H5Tclose(dtype_id);
+            H5Dclose(dset_id);
+            H5Fclose(file_id);
+            throw;
+ 
+        }
+        return ret_ref;
+    }
+
+    try {
+        do_array_read(dset_id,dtype_id,values,false,0,nelms,&offset[0],&count[0],&step[0]);
+    }
+    catch(...) {
+        H5Tclose(dtype_id);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw; 
+    }
+
+    H5Tclose(dtype_id);
+    H5Dclose(dset_id);
+    H5Fclose(file_id);
+    
+    return true;
+}
+
+void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,bool has_values,int values_offset,
+                                   int nelms,int* offset,int* count, int* step)
+{
+
+    H5T_class_t  tcls = H5Tget_class(dtype_id);
+
+    if(H5T_COMPOUND == tcls)
+        m_array_of_structure(dset_id,values,has_values,values_offset,nelms,offset,count,step);
+    else if(H5T_INTEGER == tcls || H5T_FLOAT == tcls || H5T_STRING == tcls) 
+        m_array_of_atomic(dset_id,dtype_id,nelms,offset,count,step);
+    else {
+        throw InternalErr(__FILE__,__LINE__,"Fail to read the data for Unsupported datatype.");
+    }
+    
+}
+
+void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, 
+                                   int nelms,int* offset,int* count, int* step)
+{
+    
+    hid_t memtype = -1;
+    if((memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND))<0) {
+        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
+    }
+
+    // First handle variable-length string 
+    if (H5Tis_variable_str(memtype) && H5Tget_class(memtype) == H5T_STRING) {
+
+        vector<hsize_t> hoffset;
+        vector<hsize_t>hcount;
+        vector<hsize_t>hstep;
+        hoffset.resize(d_num_dim);
+        hcount.resize(d_num_dim);
+        hstep.resize(d_num_dim);
+        for (int i = 0; i <d_num_dim; i++) {
+            hoffset[i] = (hsize_t) offset[i];
+            hcount[i] = (hsize_t) count[i];
+            hstep[i] = (hsize_t) step[i];
+        }
+
+        vector<string>finstrval;
+        finstrval.resize(nelms);
+        try {
+	    read_vlen_string(dset_id, nelms, &hoffset[0], &hstep[0], &hcount[0],finstrval);
+        }
+        catch(...) {
+            H5Tclose(memtype);
+            throw InternalErr(__FILE__,__LINE__,"Fail to read variable-length string.");
+        }
+        set_value(finstrval,nelms);
+        H5Tclose(memtype);
+	return ;
+    }
+
+    try {
+        if (nelms == d_num_elm) {
+
+	    vector<char> convbuf(d_memneed);
+	    get_data(dset_id, (void *) &convbuf[0]);
+
+	    // Check if a Signed Byte to Int16 conversion is necessary, this is only valid for DAP2.
+          if(false == is_dap4()) {
+            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) 
+            {
+	        vector<short> convbuf2(nelms);
+	        for (int i = 0; i < nelms; i++) {
+		    convbuf2[i] = (signed char) (convbuf[i]);
+		    BESDEBUG("h5", "convbuf[" << i << "]="
+		        	<< (signed char)convbuf[i] << endl);
+		    BESDEBUG("h5", "convbuf2[" << i << "]="
+		        	<< convbuf2[i] << endl)
+		    ;
+	        }
+	        // Libdap will generate the wrong output.
+	        m_intern_plain_array_data((char*) &convbuf2[0],memtype);
+	    }
+	    else 
+                m_intern_plain_array_data(&convbuf[0],memtype);
+          }
+          else 
+              m_intern_plain_array_data(&convbuf[0],memtype);
+        } // if (nelms == d_num_elm)
+        else {
+    	    size_t data_size = nelms * H5Tget_size(memtype);
+	    if (data_size == 0) {
+	        throw InternalErr(__FILE__, __LINE__, "get_size failed");
+            }
+	    vector<char> convbuf(data_size);
+	    get_slabdata(dset_id, &offset[0], &step[0], &count[0], d_num_dim, &convbuf[0]);
+
+	    // Check if a Signed Byte to Int16 conversion is necessary.
+          if(false == is_dap4()){
+            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+	    //if (get_dap_type(memtype,false) == "Int8") {// bug, get_dap_type never returns Int8 type.
+	        vector<short> convbuf2(data_size);
+	        for (int i = 0; i < (int)data_size; i++) {
+	    	    convbuf2[i] = static_cast<signed char> (convbuf[i]);
+	        }
+	        m_intern_plain_array_data((char*) &convbuf2[0],memtype);
+	    }
+	    else {
+	        m_intern_plain_array_data(&convbuf[0],memtype);
+	    }
+          }
+          else 
+	      m_intern_plain_array_data(&convbuf[0],memtype);
+
+        }
+        H5Tclose(memtype);
+    }
+    catch (...) {
+        H5Tclose(memtype);
+        throw;
+    }
+
+}
+
 bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,
                                    int nelms,int* offset,int* count, int* step) {
 
     BESDEBUG("h5", "=read() Array of Structure length=" << length() << endl);
 
-    hid_t mspace = -1;
-    hid_t memtype = -1;
-    hid_t dtypeid = -1;
+    hid_t mspace   = -1;
+    hid_t memtype  = -1;
+    hid_t dtypeid  = -1;
     size_t ty_size = -1;
 
     if((dtypeid = H5Dget_type(dsetid)) < 0) 
@@ -149,7 +364,6 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            //H5Fclose(fileid);
             throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of dimensions of the data space.");
         }
 
@@ -189,7 +403,6 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-                //H5Fclose(fileid);
             throw InternalErr (__FILE__, __LINE__, "Fail to read the HDF5 compound datatype dataset.");
         }
 
@@ -599,219 +812,6 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
     }
 }
 
-bool HDF5Array::read()
-{
-    BESDEBUG("h5",
-	    ">read() dataset=" << dataset()
-	    << " dimension=" << d_num_dim
-	    << " data_size=" << d_memneed << " length=" << length()
-	    << endl);
-
-    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-BESDEBUG("h5","after H5Fopen "<<endl);
-BESDEBUG("h5","variable name is "<<name() <<endl);
-BESDEBUG("h5","variable path is  "<<var_path <<endl);
-
-    hid_t dset_id = -1;
-
-    if(true == is_dap4()) 
-        dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
-    else 
-        dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
-
-BESDEBUG("h5","after H5Dopen2 "<<endl);
-    // Leave the following code. We may replace the struct DS and DSattr(see hdf5_handler.h)
-#if 0
-    hid_t dspace_id = H5Dget_space(dset_id);
-    if(dspace_id < 0) {
-        H5Dclose(dset_id);
-        H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataspace .");
-    }
-
-    int num_dim = H5Sget_simple_extent_ndims(dspace_id);
-    if(num_dim < 0) {
-        H5Sclose(dspace_id);
-        H5Dclose(dset_id);
-        H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
-    }
-
-    H5Sclose(dspace_id);
-#endif
-
-    hid_t dtype_id = H5Dget_type(dset_id);
-    if(dtype_id < 0) {
-        H5Dclose(dset_id);
-        H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
-    }
-
- 
-    vector<int> offset(d_num_dim);
-    vector<int> count(d_num_dim);
-    vector<int> step(d_num_dim);
-    int nelms = format_constraint(&offset[0], &step[0], &count[0]); // Throws Error.
-    vector<char>values;
- 
-    // The dataset ID and datatype ID should be replaced by using H5Fopen
-    //hid_t dset_id = d_dset_id;
-    //hid_t dtype_id = d_ty_id;
-
-    // We only map the reference to URL when the dataset is an array of reference.
-    if (get_dap_type(dtype_id,is_dap4()) == "Url") {
-        bool ret_ref = false;
-        try {
-	    ret_ref = m_array_of_reference(dset_id,dtype_id);
-            H5Tclose(dtype_id);
-            H5Dclose(dset_id);
-            H5Fclose(file_id);
- 
-        }
-        catch(...) {
-            H5Tclose(dtype_id);
-            H5Dclose(dset_id);
-            H5Fclose(file_id);
-            throw;
- 
-        }
-        return ret_ref;
-    }
-
-    try {
-        do_array_read(dset_id,dtype_id,values,false,0,nelms,&offset[0],&count[0],&step[0]);
-    }
-    catch(...) {
-        H5Tclose(dtype_id);
-        H5Dclose(dset_id);
-        H5Fclose(file_id);
-        throw; 
-    }
-
-    H5Tclose(dtype_id);
-    H5Dclose(dset_id);
-    H5Fclose(file_id);
-    
-    return true;
-}
-
-void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,bool has_values,int values_offset,
-                                   int nelms,int* offset,int* count, int* step)
-{
-
-    H5T_class_t  tcls = H5Tget_class(dtype_id);
-
-    if(H5T_COMPOUND == tcls)
-        m_array_of_structure(dset_id,values,has_values,values_offset,nelms,offset,count,step);
-    else if(H5T_INTEGER == tcls || H5T_FLOAT == tcls || H5T_STRING == tcls) 
-        m_array_of_atomic(dset_id,dtype_id,nelms,offset,count,step);
-    else {
-        throw InternalErr(__FILE__,__LINE__,"Fail to read the data for Unsupported datatype.");
-    }
-    
-}
-
-void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, 
-                                   int nelms,int* offset,int* count, int* step)
-{
-    
-    hid_t memtype = -1;
-    if((memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND))<0) {
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
-    }
-
-
-    // First handle variable-length string 
-    if (H5Tis_variable_str(memtype) && H5Tget_class(memtype) == H5T_STRING) {
-
-        vector<hsize_t> hoffset;
-        vector<hsize_t>hcount;
-        vector<hsize_t>hstep;
-        hoffset.resize(d_num_dim);
-        hcount.resize(d_num_dim);
-        hstep.resize(d_num_dim);
-        for (int i = 0; i <d_num_dim; i++) {
-            hoffset[i] = (hsize_t) offset[i];
-            hcount[i] = (hsize_t) count[i];
-            hstep[i] = (hsize_t) step[i];
-        }
-
-        vector<string>finstrval;
-        finstrval.resize(nelms);
-        try {
-	    read_vlen_string(dset_id, nelms, &hoffset[0], &hstep[0], &hcount[0],finstrval);
-        }
-        catch(...) {
-            H5Tclose(memtype);
-            throw InternalErr(__FILE__,__LINE__,"Fail to read variable-length string.");
-        }
-        set_value(finstrval,nelms);
-        H5Tclose(memtype);
-	return ;
-    }
-
-    try {
-        if (nelms == d_num_elm) {
-
-	    vector<char> convbuf(d_memneed);
-	    get_data(dset_id, (void *) &convbuf[0]);
-
-	    // Check if a Signed Byte to Int16 conversion is necessary, this is only valid for DAP2.
-          if(false == is_dap4()) {
-            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) 
-            {
-	        vector<short> convbuf2(nelms);
-	        for (int i = 0; i < nelms; i++) {
-		    convbuf2[i] = (signed char) (convbuf[i]);
-		    BESDEBUG("h5", "convbuf[" << i << "]="
-		        	<< (signed char)convbuf[i] << endl);
-		    BESDEBUG("h5", "convbuf2[" << i << "]="
-		        	<< convbuf2[i] << endl)
-		    ;
-	        }
-	        // Libdap will generate the wrong output.
-	        m_intern_plain_array_data((char*) &convbuf2[0],memtype);
-	    }
-	    else 
-                m_intern_plain_array_data(&convbuf[0],memtype);
-          }
-          else 
-              m_intern_plain_array_data(&convbuf[0],memtype);
-        } // if (nelms == d_num_elm)
-        else {
-    	    size_t data_size = nelms * H5Tget_size(memtype);
-	    if (data_size == 0) {
-	        throw InternalErr(__FILE__, __LINE__, "get_size failed");
-            }
-	    vector<char> convbuf(data_size);
-	    get_slabdata(dset_id, &offset[0], &step[0], &count[0], d_num_dim, &convbuf[0]);
-
-	    // Check if a Signed Byte to Int16 conversion is necessary.
-          if(false == is_dap4()){
-            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
-	    //if (get_dap_type(memtype,false) == "Int8") {// bug, get_dap_type never returns Int8 type.
-	        vector<short> convbuf2(data_size);
-	        for (int i = 0; i < (int)data_size; i++) {
-	    	    convbuf2[i] = static_cast<signed char> (convbuf[i]);
-	        }
-	        m_intern_plain_array_data((char*) &convbuf2[0],memtype);
-	    }
-	    else {
-	        m_intern_plain_array_data(&convbuf[0],memtype);
-	    }
-          }
-          else 
-	      m_intern_plain_array_data(&convbuf[0],memtype);
-
-        }
-        H5Tclose(memtype);
-    }
-    catch (...) {
-        H5Tclose(memtype);
-        throw;
-    }
-
-}
 
 bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&values,bool has_values,int values_offset,
                                                    int at_nelms,int* at_offset,int* at_count, int* at_step){
@@ -1488,24 +1488,21 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
     // If there is just a size, don't make
     // a D4Dimension (In DAP4 you cannot share a dimension unless it has
     // a name). jhrg 3/18/14
-//cerr<<"Variable name is "<<this->name() <<endl;
 
     for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
         if (false == (*d).name.empty()) {
-//cerr<<"dimension name " <<(*d).name <<endl;
 
             D4Group *temp_grp   = grp;
-            //D4Group *dim_grp    = NULL;
             D4Dimension *d4_dim = NULL;
             while(temp_grp) {
 
                 D4Dimensions *temp_dims = temp_grp->dims();
+
                 // Check if the dimension is defined in this group
                 d4_dim = temp_dims->find_dim((*d).name);
                 if(d4_dim) { 
                   (*d).dim = d4_dim;
                   break;
-
                 }
 
                 if(temp_grp->get_parent()) 
@@ -1517,20 +1514,13 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
 
             // Not find this dimension in any of the ancestor groups, add it to this group.
             if(d4_dim == NULL) {
-//cerr<<"Added to the group "<<grp->name() <<endl;
                 d4_dim = new D4Dimension((*d).name, (*d).size);
 //cerr<<"FQN name is "<<d4_dim->fully_qualified_name() <<endl;
                 D4Dimensions * dims = grp->dims();
-                //d4_dim->set_parent(dims);
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
-                //if(dims->parent() !=grp)
-                 //   dims->set_parent(grp);
             }
-
         }
-        
-
     }
 
     dest->set_is_dap4(true);

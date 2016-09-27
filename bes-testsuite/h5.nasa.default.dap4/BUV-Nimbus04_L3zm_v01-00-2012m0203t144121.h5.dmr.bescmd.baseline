@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5">
+    <Attribute name="Satellite" type="String">
+        <Value>Nimbus-04</Value>
+    </Attribute>
+    <Attribute name="numLatBands" type="Int16">
+        <Value>36</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>1970-05-01</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>1976-04-30</Value>
+    </Attribute>
+    <Attribute name="SoftwareDeveloper" type="String">
+        <Value>Brad Fisher, SSAI</Value>
+    </Attribute>
+    <Attribute name="ContactPersonName" type="String">
+        <Value>Richard McPeters</Value>
+    </Attribute>
+    <Attribute name="L2AlgorithmVersionNumber" type="String">
+        <Value>Version 8.6.0</Value>
+    </Attribute>
+    <Attribute name="CollectionVersion" type="String">
+        <Value>1.00</Value>
+    </Attribute>
+    <Attribute name="CreationDate" type="String">
+        <Value>Fri Feb 3 14:41:21 EST 2012</Value>
+    </Attribute>
+    <Attribute name="numTimes" type="Int16">
+        <Value>72</Value>
+    </Attribute>
+    <Attribute name="ProductType" type="String">
+        <Value>L3 Monthly Zonal Means</Value>
+    </Attribute>
+    <Attribute name="numPresLevels" type="Int16">
+        <Value>21</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>BUVN04L3zm</Value>
+    </Attribute>
+    <Attribute name="ZonalSpacing" type="Float32">
+        <Value>5.</Value>
+    </Attribute>
+    <Attribute name="ZonalSpacingUnit" type="String">
+        <Value>degrees</Value>
+    </Attribute>
+    <Attribute name="ContactPersonLocation" type="String">
+        <Value>NASA Goddard Space Flight Center</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>BUV/Nimbus-04 Ozone (O3) Profile and Total Ozone Monthly L3 Global 5.0deg Lat Zones</Value>
+    </Attribute>
+    <Attribute name="LocalityValue" type="String">
+        <Value>Global</Value>
+    </Attribute>
+    <Attribute name="NorthBoundingLatitude" type="Float32">
+        <Value>90.</Value>
+    </Attribute>
+    <Attribute name="SouthBoundingLatitude" type="Float32">
+        <Value>-90.</Value>
+    </Attribute>
+    <Attribute name="InstrumentShortName" type="String">
+        <Value>BUV</Value>
+    </Attribute>
+    <Attribute name="SensorShortName" type="String">
+        <Value>Double Monochrometer</Value>
+    </Attribute>
+    <Attribute name="ParameterName" type="String">
+        <Value>Nadir Profile and Total Column Ozone</Value>
+    </Attribute>
+    <Attribute name="EastBoundingLongitude" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="WestBoundingLongitude" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="ContactPersonEmail" type="String">
+        <Value>richard.d.mcpeters@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="ContactPersonRole" type="String">
+        <Value>Principle Investigator for MEaSUREs Long Term Ozone Trends</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value>00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>23:59:59.000</Value>
+    </Attribute>
+    <Attribute name="CalibrationVersion" type="String">
+        <Value>C7</Value>
+    </Attribute>
+    <Attribute name="LocalGranuleID" type="String">
+        <Value>BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5</Value>
+    </Attribute>
+    <Attribute name="TimeUnit" type="String">
+        <Value>One Month</Value>
+    </Attribute>
     <Group name="Data_Fields">
         <Float32 name="AprioriProfileOzone">
             <Dim size="72"/>

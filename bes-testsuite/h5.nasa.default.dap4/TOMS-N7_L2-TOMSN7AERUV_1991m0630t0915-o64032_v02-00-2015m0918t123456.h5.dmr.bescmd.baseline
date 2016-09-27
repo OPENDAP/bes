@@ -95,6 +95,129 @@
             <Value>The dimension representing the cross-track position of the observation in the scan line.  The values range from 1 to 35.</Value>
         </Attribute>
     </Int32>
+    <Attribute name="AuthorAffiliation" type="String">
+        <Value>NASA/GSFC</Value>
+    </Attribute>
+    <Attribute name="AuthorName" type="String">
+        <Value>O. Torres, et al.</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.0</Value>
+    </Attribute>
+    <Attribute name="DayNightFlag" type="String">
+        <Value>Day</Value>
+    </Attribute>
+    <Attribute name="EastBoundingCoordinate" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="EquatorCrossingDate" type="String">
+        <Value>1991-06-30</Value>
+    </Attribute>
+    <Attribute name="EquatorCrossingLongitude" type="Float32">
+        <Value>20.59000015</Value>
+    </Attribute>
+    <Attribute name="EquatorCrossingTime" type="String">
+        <Value>09:35:09</Value>
+    </Attribute>
+    <Attribute name="GranuleDay" type="Int32">
+        <Value>30</Value>
+    </Attribute>
+    <Attribute name="GranuleDayOfYear" type="Int32">
+        <Value>181</Value>
+    </Attribute>
+    <Attribute name="GranuleMonth" type="Int32">
+        <Value>6</Value>
+    </Attribute>
+    <Attribute name="GranuleYear" type="Int32">
+        <Value>1991</Value>
+    </Attribute>
+    <Attribute name="HDFVersion" type="String">
+        <Value>5-1.8.11</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>10.5067/MEASURES/AERUV/DATA201</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org/</Value>
+    </Attribute>
+    <Attribute name="InputPointer" type="String">
+        <Value>TOMS-N7_L2-N7AERUV_1991m0630t0915-o64032_v002-2015m0701t221947.he5</Value>
+    </Attribute>
+    <Attribute name="InstrumentShortName" type="String">
+        <Value>TOMS</Value>
+    </Attribute>
+    <Attribute name="LocalGranuleID" type="String">
+        <Value>TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t192605.h5</Value>
+    </Attribute>
+    <Attribute name="LocalityValue" type="String">
+        <Value>Global</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>TOMS/N7 Near UV Aerosol Optical Depth and Single Scattering Albedo 1-Orbit L2 Swath 50x50 km</Value>
+    </Attribute>
+    <Attribute name="NorthBoundingCoordinate" type="Float32">
+        <Value>89.74810791</Value>
+    </Attribute>
+    <Attribute name="NumTimes" type="Int32">
+        <Value>392</Value>
+    </Attribute>
+    <Attribute name="OrbitNumber" type="Int32">
+        <Value>64032</Value>
+    </Attribute>
+    <Attribute name="ParameterName" type="String">
+        <Value>Near UV Aerosol Properties</Value>
+    </Attribute>
+    <Attribute name="PGEVersion" type="String">
+        <Value>0.0.1</Value>
+    </Attribute>
+    <Attribute name="PlatformShortName" type="String">
+        <Value>Nimbus 7</Value>
+    </Attribute>
+    <Attribute name="ProcessingCenter" type="String">
+        <Value>ACPS</Value>
+    </Attribute>
+    <Attribute name="ProcessLevel" type="String">
+        <Value>2</Value>
+    </Attribute>
+    <Attribute name="ProductionDateTimeHE5" type="String">
+        <Value>2015-07-01T22:19:47.0Z</Value>
+    </Attribute>
+    <Attribute name="ProductType" type="String">
+        <Value>L2 Swath</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>1991-06-30</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value>09:15:43</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>1991-06-30</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>10:09:51</Value>
+    </Attribute>
+    <Attribute name="SensorShortName" type="String">
+        <Value>Single Monochromator</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>TOMSN7AERUV</Value>
+    </Attribute>
+    <Attribute name="SouthBoundingCoordinate" type="Float32">
+        <Value>-67.31681061</Value>
+    </Attribute>
+    <Attribute name="VersionID" type="String">
+        <Value>2.00</Value>
+    </Attribute>
+    <Attribute name="WestBoundingCoordinate" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="TAI93At0zOfGranule" type="Float64">
+        <Value>-47606401.</Value>
+    </Attribute>
+    <Attribute name="ProductionDateTimeHDF" type="String">
+        <Value>2015-09-18T19:26:05.0Z</Value>
+    </Attribute>
     <Group name="ANCILLARY_DATA">
         <Float32 name="SurfaceAlbedo331">
             <Dim name="/nTimes"/>

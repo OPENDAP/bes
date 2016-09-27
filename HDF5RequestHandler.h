@@ -31,6 +31,8 @@
 #include<map>
 #include "BESRequestHandler.h"
 
+class ObjMemCache; // in bes/dap
+
 namespace libdap {
 
     class DAS;
@@ -56,7 +58,6 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool hdf5_build_help(BESDataHandlerInterface & dhi);
     static bool hdf5_build_version(BESDataHandlerInterface & dhi);
 
-    //static bool get_use_memcache()       { return _use_memcache;}
     static bool get_usecf()       { return _usecf;}
     static bool get_pass_fileid() { return _pass_fileid;}
     static bool get_disable_structmeta() { return _disable_structmeta;}
@@ -66,16 +67,25 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_drop_long_string() { return _drop_long_string;}
     static bool get_fillvalue_check() { return _fillvalue_check;}
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
+
+    // Handling Cache
+    static unsigned int get_cache_entries() { return _cache_entries;}
+    static float get_cache_purge_level() { return _cache_purge_level;}
+
     
 
   private:
-     //cache map variables. Not working, leave here for future investigation. KY 2016-04-27
-     //static map<std::string,libdap::DAS> das_cache;
-     //static map<std::string,libdap::DDS> dds_cache;
-     //static map<std::string,libdap::DataDDS> data_dds_cache;
+     //cache variables. 
+
+     static unsigned int _cache_entries;
+     static float _cache_purge_level;
+
+     static ObjMemCache *das_cache;
+     static ObjMemCache *dds_cache;
+     static ObjMemCache *dmr_cache;
+
 
      // BES keys
-     //static bool _use_memcache;
      static bool _usecf;
      static bool _pass_fileid;
      static bool _disable_structmeta;
@@ -88,6 +98,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
+     static void get_dds_with_attributes(const string &filename, const string&container_name,libdap::DDS*dds);
 };
 
 #endif

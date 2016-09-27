@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="mabel_l2a_20110322T165030_005_1.h5">
+    <Attribute name="title" type="String">
+        <Value>MABEL HDF5 Data Granule</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NASA Goddard Space Flight Center</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>Aircraft Observations</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>Described in Metadata group</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>http://icesat.gsfc.nasa.gov/icesat2/data/mabel/mabel_docs.php</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value>Please direct comments to David.W.Hancock@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="featureType" type="String">
+        <Value>point</Value>
+    </Attribute>
     <Group name="altimetry">
         <Attribute name="Description" type="String">
             <Value>This group contains groups of segmented altimeter-related parameters. The altimeter segment temporal length is defined by the number of laser shots specified in the metadata parameter [alt_seg_shots]. Parameters in each segment have a 1-to-1 correspondence with the parameters in other segments.  For example the times with segment 2 of the time group correspond to the data within segment 2 of the hist subgroups. There is one instance of this group within this granule.</Value>

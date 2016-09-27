@@ -9,6 +9,39 @@
     <String name="InputGenerationDateTimes">
         <Dim size="1"/>
     </String>
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=10.5067/GPM/GMI/MONTH/3A;
+AlgorithmID=3GPROF;
+AlgorithmVersion=GRID2014R1;
+FileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;
+SatelliteName=GPM;
+InstrumentName=GMI;
+GenerationDateTime=2014-07-02T23:16:24.000Z;
+StartGranuleDateTime=2014-06-01T00:00:00.000Z;
+StopGranuleDateTime=2014-06-30T23:59:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=MONTH;
+ProcessingSystem=PPS;
+ProductVersion=V03A;
+EmptyGranule=NOT_EMPTY;
+MissingData=;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=am;
+TKCodeBuildVersion=1;
+MetadataVersion=am;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V1.3GPROF.blueprint.xml;
+BlueprintVersion=BV_34;
+TKIOVersion=3.60.2;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
     <Group name="Grid">
         <Float32 name="fractionQuality2">
             <Dim size="1440"/>

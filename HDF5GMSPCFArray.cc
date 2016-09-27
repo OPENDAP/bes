@@ -51,12 +51,6 @@ bool HDF5GMSPCFArray::read()
     if(length() == 0)
         return true;
 
-#if 0
-    string check_pass_fileid_key_str="H5.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     vector<int>offset;

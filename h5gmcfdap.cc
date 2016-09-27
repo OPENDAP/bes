@@ -60,14 +60,10 @@
 
 using namespace HDF5CF;
 
+// Map general HDF5 products to DAP DDS
 void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
-    BESDEBUG("h5","Coming to GM products DDS mapping function map_gmh5_cfdds  "<<endl);
-#if 0
-    string check_objnameclashing_key ="H5.EnableCheckNameClashing";
-    bool is_check_nameclashing = false;
-    is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
-#endif
+    BESDEBUG("h5","Coming to GM products DDS mapping function map_gmh5_cfdds()  "<<endl);
 
     H5GCFProduct product_type = check_product(file_id);
 
@@ -131,7 +127,6 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
             delete f;
         throw InternalErr(e.what());
     }
-
     
     // generate DDS.
     try {
@@ -147,23 +142,10 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         delete f;
 }
 
+// Map general HDF5 products to DAP DAS
 void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
-    BESDEBUG("h5","Coming to GM products DAS mapping function map_gmh5_cfdas  "<<endl);
-#if 0
-    string check_objnameclashing_key ="H5.EnableCheckNameClashing";
-
-    bool is_check_nameclashing = false;
-    is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
-
-    // if(is_check_nameclashing) cerr<<"checking name clashing "<<endl;
-
-    string add_path_attrs_key = "H5.EnableAddPathAttrs";
-    bool is_add_path_attrs = false;
-    is_add_path_attrs = HDF5CFDAPUtil::check_beskeys(add_path_attrs_key);
-
-    // if(is_add_path_attrs) cerr<<"adding attributes "<<endl;
-#endif
+    BESDEBUG("h5","Coming to GM products DAS mapping function map_gmh5_cfdas()  "<<endl);
 
     H5GCFProduct product_type = check_product(file_id);
     GMPattern gproduct_pattern = OTHERGMS;
@@ -212,7 +194,6 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Flatten_Obj_Name(include_attr);
         if(General_Product == product_type ||
            true == HDF5RequestHandler::get_check_name_clashing()) 
-           //true == is_check_nameclashing) 
             f->Handle_Obj_NameClashing(include_attr);
 
         // Handle the "coordinate" attributes.
@@ -239,10 +220,11 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         delete f;
 }
 
+// Generate DDS mapped from general HDF5 products
 void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
-    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdds  "<<endl);
-    // "h5","coming to gen_gmh5_cfdds "<<endl;
+    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdds()  "<<endl);
+
     const vector<HDF5CF::Var *>&      vars  = f->getVars();
     const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
     const vector<HDF5CF::GMSPVar *>& spvars = f->getSPVars();
@@ -256,25 +238,25 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        // "h5","variable full path= "<< (*it_v)->getFullPath() <<endl;
+        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         gen_dap_onevar_dds(dds,*it_v,fileid, filename);
     }
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        // "h5","variable full path= "<< (*it_cv)->getFullPath() <<endl;
+        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_onegmcvar_dds(dds,*it_cv,fileid, filename);
     }
 
     for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
-        // "h5","variable full path= "<< (*it_spv)->getFullPath() <<endl;
+        BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
         gen_dap_onegmspvar_dds(dds,*it_spv,fileid, filename);
     }
 
 }
 
+// Generate DAS mapped from general HDF5 products
 void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
-    BESDEBUG("h5","Coming to GM DAS generation function gen_gmh5_cfdas  "<<endl);
-    // "h5","coming to gen_gmh5_cfdas "<<endl;
+    BESDEBUG("h5","Coming to GM DAS generation function gen_gmh5_cfdas()  "<<endl);
 
     // First check if this is for generating the ignored object info.
     if(true == f->Get_IgnoredInfo_Flag()) {
@@ -337,10 +319,10 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                     
         }
 
+        // GPM needs to be handled in a special way(mostly _FillValue)
         if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                           || GPM_L1 == f->getProductType()) 
-            update_GPM_special_attrs(das,*it_v);
-
+            update_GPM_special_attrs(das,*it_v,false);
         
     }
 
@@ -358,6 +340,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             }
                     
         }
+        // Though CF doesn't allow _FillValue, still keep it to keep the original form.
+        if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
+                                          || GPM_L1 == f->getProductType()) 
+            update_GPM_special_attrs(das,*it_cv,true);
+
     }
     for (it_spv = spvars.begin();
          it_spv != spvars.end(); ++it_spv) {
@@ -375,9 +362,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     }
        
     // CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
-//#if 0
     if(f->HaveUnlimitedDim() == true) {
-//cerr<<"coming to unlimited " <<endl;
+
+        BESDEBUG("h5","Find unlimited dimension in the GM DAS generation function gen_gmh5_cfdas()  "<<endl);
 
         // Currently there is no way for DAP to present the unlimited dimension info.
         // when there are no dimension names. So don't create DODS_EXTRA even if
@@ -414,31 +401,32 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                                     at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
                             }
                         }
-                    }
-                    
-                }
-
-            }
-        }
+                    }// if((*ird)->HaveUnlimitedDim()
+                }// for (vector<Dimension*>::
+            }// for (it_cv=cvars.begin();
+        }//if(cvars.size()>0)
         // The following line will generate the string like "Band1 str1 str2".
         //if(unlimited_names!="") 
         //         //   at->append_attr("Unlimited_Dimension","String",unlimited_names);
     }
-//#endif
 }
 
+// Generate the ignored object info. for the CF option of the general products
 void gen_gmh5_cf_ignored_obj_info(DAS &das, HDF5CF::GMFile *f) {
 
+    BESDEBUG("h5","Coming to gen_gmh5_cf_ignored_obj_info()  "<<endl);
     AttrTable *at = das.get_table("Ignored_Object_Info");
     if (NULL == at)
         at = das.add_table("Ignored_Object_Info", new AttrTable);
 
     at->append_attr("Message","String",f->Get_Ignored_Msg());
 
-
 }
 
+// Generate the DDS for a coordinate variable of the General products
 void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file_id, const string & filename) {
+
+    BESDEBUG("h5","Coming to gen_dap_onegmcvar_dds()  "<<endl);
 
     BaseType *bt = NULL;
 
@@ -653,8 +641,10 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
     }
 }
 
+// Generate DDS for special variable in a general product
 void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t fileid, const string & filename) {
 
+    BESDEBUG("h5","Coming to gen_dap_onegmspvar_dds()  "<<endl);
     BaseType *bt = NULL;
 
     switch(spvar->getType()) {
@@ -725,8 +715,9 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
 // a little bit when it changes to string representation. 
 // For example, -9999.9 becomes -9999.9000123. To reduce the misunderstanding,we
 // just add fillvalue in the string type here. KY 2014-04-02
-void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var) {
+void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
 
+    BESDEBUG("h5","Coming to update_GPM_special_attrs()  "<<endl);
     if(H5FLOAT64 == var->getType() ||
        H5FLOAT32 == var->getType() ||
        H5INT16 == var->getType() ||
@@ -765,17 +756,21 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var) {
         }
 
         // Add the fill value
-        if (has_fillvalue != true ) {
+        if(false == is_cvar ) {
+
+            // Current versions of GPM don't add fillvalues. We add the fillvalue according to the document.
+            if (has_fillvalue != true ) {
             
-            if(H5FLOAT32 == var->getType()) 
-                at->append_attr("_FillValue","Float32","-9999.9");
-            else if(H5FLOAT64 == var->getType())
-                at->append_attr("_FillValue","Float64","-9999.9");
-            else if (H5INT16 == var->getType()) 
-                at->append_attr("_FillValue","Int16","-9999");
-            else if (H5CHAR == var->getType())// H5CHAR maps to DAP int16
-                at->append_attr("_FillValue","Int16","-99");
+                if(H5FLOAT32 == var->getType()) 
+                    at->append_attr("_FillValue","Float32","-9999.9");
+                else if(H5FLOAT64 == var->getType())
+                    at->append_attr("_FillValue","Float64","-9999.9");
+                else if (H5INT16 == var->getType()) 
+                    at->append_attr("_FillValue","Int16","-9999");
+                else if (H5CHAR == var->getType())// H5CHAR maps to DAP int16
+                    at->append_attr("_FillValue","Int16","-99");
         
+            }
         }
     }
 }

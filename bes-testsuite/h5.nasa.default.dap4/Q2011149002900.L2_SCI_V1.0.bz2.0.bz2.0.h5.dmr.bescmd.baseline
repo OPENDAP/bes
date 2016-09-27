@@ -1,5 +1,140 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5">
+    <Attribute name="Product Name" type="String">
+        <Value>Q2011149002900.L2_SCI_V1.0</Value>
+    </Attribute>
+    <Attribute name="Title" type="String">
+        <Value>Aquarius Level 2 Data</Value>
+    </Attribute>
+    <Attribute name="Data Center" type="String">
+        <Value>NASA/GSFC Aquarius Data Processing Center</Value>
+    </Attribute>
+    <Attribute name="Mission" type="String">
+        <Value>SAC-D Aquarius</Value>
+    </Attribute>
+    <Attribute name="Mission Characteristics" type="String">
+        <Value>Nominal orbit: inclination=98.0 (Sun-synchronous); node=6PM (ascending); eccentricity=&lt;0.002; altitude=657 km; ground speed=6.825 km/sec</Value>
+    </Attribute>
+    <Attribute name="Sensor" type="String">
+        <Value>Aquarius</Value>
+    </Attribute>
+    <Attribute name="Sensor Characteristics" type="String">
+        <Value>Number of beams=3; channels per receiver=4; frequency 1.413 GHz; bits per sample=16; instatntaneous field of view=6.5 degrees; science data block period=1.44 sec.</Value>
+    </Attribute>
+    <Attribute name="Data Type" type="String">
+        <Value>SCI</Value>
+    </Attribute>
+    <Attribute name="Software ID" type="String">
+        <Value>0.980</Value>
+    </Attribute>
+    <Attribute name="Processing Version" type="String">
+        <Value>V1.0</Value>
+    </Attribute>
+    <Attribute name="Processing Time" type="String">
+        <Value>2011158093352000</Value>
+    </Attribute>
+    <Attribute name="Input Files" type="String">
+        <Value></Value>
+    </Attribute>
+    <Attribute name="Processing Control" type="String">
+        <Value>l2gen_aquarius par=/data1/sdpsoper/vdc/vpu0/workbuf/Q2011149002900.L2_SCI_V1.0.param</Value>
+    </Attribute>
+    <Attribute name="Number of Beams" type="Int32">
+        <Value>3</Value>
+    </Attribute>
+    <Attribute name="Radiometer Polarizations" type="Int32">
+        <Value>4</Value>
+    </Attribute>
+    <Attribute name="Radiometer Subcycles" type="Int32">
+        <Value>12</Value>
+    </Attribute>
+    <Attribute name="Radiometer Signals per Subcycle" type="Int32">
+        <Value>5</Value>
+    </Attribute>
+    <Attribute name="Radiometer Long Accumulations" type="Int32">
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="Scatterometer Polarizations" type="Int32">
+        <Value>6</Value>
+    </Attribute>
+    <Attribute name="Scatterometer Subcycles" type="Int32">
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="Start Time" type="String">
+        <Value>2011149002900240</Value>
+    </Attribute>
+    <Attribute name="Start Year" type="Int32">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="Start Day" type="Int32">
+        <Value>149</Value>
+    </Attribute>
+    <Attribute name="Start Millisec" type="Int32">
+        <Value>1740240</Value>
+    </Attribute>
+    <Attribute name="End Year" type="Int32">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="End Day" type="Int32">
+        <Value>149</Value>
+    </Attribute>
+    <Attribute name="End Millisec" type="Int32">
+        <Value>7559280</Value>
+    </Attribute>
+    <Attribute name="Product Center Time" type="String">
+        <Value>1995260001423620</Value>
+    </Attribute>
+    <Attribute name="Node Crossing Time" type="String">
+        <Value>2011149005330000</Value>
+    </Attribute>
+    <Attribute name="Orbit Node Longitude" type="Float32">
+        <Value>-102.5159378</Value>
+    </Attribute>
+    <Attribute name="Latitude Units" type="String">
+        <Value>degrees North</Value>
+    </Attribute>
+    <Attribute name="Longitude Units" type="String">
+        <Value>degrees East</Value>
+    </Attribute>
+    <Attribute name="Orbit Number" type="Int32">
+        <Value>23717</Value>
+    </Attribute>
+    <Attribute name="Cycle Number" type="Int32">
+        <Value>230</Value>
+    </Attribute>
+    <Attribute name="Pass Number" type="Int32">
+        <Value>89</Value>
+    </Attribute>
+    <Attribute name="Number of Blocks" type="Int32">
+        <Value>4042</Value>
+    </Attribute>
+    <Attribute name="End Time" type="String">
+        <Value>2011149020559280</Value>
+    </Attribute>
+    <Attribute name="Percent Water" type="Float32">
+        <Value>0.6453784108</Value>
+    </Attribute>
+    <Attribute name="Percent RFI" type="Float32">
+        <Value>0.</Value>
+    </Attribute>
+    <Attribute name="Cold Sky Calibration" type="String">
+        <Value>TBD</Value>
+    </Attribute>
+    <Attribute name="ANCILLARY_FILE1" type="String">
+        <Value>y2011052900.h5:N2011148_SST_OIV2AVAM_24h.nc,N2011149_SST_OIV2AVAM_24h.nc,N201114900_QATM_NCEP_6h.h5,N201114900_QMET_NCEP_6h,N201114900_SEAICE_NCEP_24h.hdf,N201115000_SEAICE_NCEP_24h.hdf,N201114800_SALINITY_HYCOM_24h.h5,N201114900_SALINITY_HYCOM_24h.h5</Value>
+    </Attribute>
+    <Attribute name="ANCILLARY_FILE2" type="String">
+        <Value>y2011052906.h5:N2011148_SST_OIV2AVAM_24h.nc,N2011149_SST_OIV2AVAM_24h.nc,N201114906_QATM_NCEP_6h.h5,N201114906_QMET_NCEP_6h,N201114900_SEAICE_NCEP_24h.hdf,N201115000_SEAICE_NCEP_24h.hdf,N201114800_SALINITY_HYCOM_24h.h5,N201114900_SALINITY_HYCOM_24h.h5</Value>
+    </Attribute>
+    <Attribute name="Radiometer Calibration Files" type="String">
+        <Value>coeff_loss_v2.txt,coeff_nl.txt</Value>
+    </Attribute>
+    <Attribute name="Radiometer Data Tables" type="String">
+        <Value>land_tables.h5,gain_ice.h5,tausq.h5,ocean_reflectance.h5,mk_sss_algo_tables.h5,sun_tables.h5,sun_bak_tables.h5,galaxy_wind_tables.h5,apc_matrix_051211.h5</Value>
+    </Attribute>
+    <Attribute name="Scatterometer Coefficient Files" type="String">
+        <Value>atc_prt_convert_v3.txt,ext_temps_constants_convert_v3.txt,scat_temps_convert_v1.txt,radiometer_constants_convert_v2.txt,cmd_gn.dat</Value>
+    </Attribute>
     <Group name="Aquarius Data">
         <Float32 name="Kpc_HH_ant">
             <Dim size="4042"/>

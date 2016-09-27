@@ -51,24 +51,21 @@
 
 using namespace libdap;
 
-//#ifdef USE_DAP4
 #include <D4Group.h>
 #include <D4Attributes.h>
-//#include <HDF5Structure.h>
 
-// TOOODOOO: May not need to pass DMR for depth_first, read_objects,read_objects_base_type
 //bool depth_first(hid_t, char *,  D4Group* par_grp, const char *);
-//bool depth_first(hid_t, char *, DMR &, D4Group* par_grp, const char *,bool);
-bool depth_first(hid_t, char *, DMR &, D4Group* par_grp, const char *);
-bool breadth_first(hid_t, char *, DMR &, D4Group* par_grp, const char *,bool);
-void read_objects(DMR & dmr, D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
-void read_objects_base_type(DMR & dmr, D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
-void read_objects_structure(DMR & dmr, D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
+
+//bool breadth_first(hid_t, char *, DMR &, D4Group* par_grp, const char *,bool);
+bool breadth_first(hid_t, char *, D4Group* par_grp, const char *,bool);
+
+//void read_objects(DMR & dmr, D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
+void read_objects(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
+void read_objects_base_type(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
+void read_objects_structure(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
+
 
 string get_hardlink_dmr(hid_t, const string &);
-void get_softlink(D4Group* par_grp, hid_t, const char*, const string &, int,size_t);
+void get_softlink(D4Group* par_grp, hid_t,  const string &, int,size_t);
 void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const string & full_path, BaseType* d4b,Structure * d4s,int flag);
-//#endif
-//void read_objects(DDS & dds, const string & varname, const string & filename);
-//void map_h5_attrs_to_d4(hid_t oid,D4Group* d4g,BaseType* d4b,Structure * d4s,int flag);
-//void map_h5_attrs_to_d4(hid_t oid,D4Group* d4g,BaseType* d4b,HDF5Structure * d4s,int flag);
+

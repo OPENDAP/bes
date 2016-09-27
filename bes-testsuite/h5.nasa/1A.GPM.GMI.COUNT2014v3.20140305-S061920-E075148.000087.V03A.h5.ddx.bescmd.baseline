@@ -9681,17 +9681,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan2,npixelev</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Longitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S2/Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan2" size="2959"/>
@@ -9701,17 +9701,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan2,npixelev</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_north</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Latitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S2/Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan2" size="2959"/>
@@ -9721,17 +9721,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan2,npixelfr</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Longitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S4/Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan2" size="2959"/>
@@ -9741,17 +9741,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan2,npixelfr</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_north</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Latitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S4/Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan2" size="2959"/>
@@ -9761,17 +9761,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan2,npixelfr</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Longitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S5/Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan2" size="2959"/>
@@ -9781,17 +9781,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan2,npixelfr</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_north</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Latitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S5/Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan2" size="2959"/>
@@ -9801,17 +9801,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan1,npixelev</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Longitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S1/Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan1" size="2959"/>
@@ -9821,17 +9821,17 @@ ScanType=CONICAL;
         <Attribute name="DimensionNames" type="String">
             <value>nscan1,npixelev</value>
         </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_north</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9999.900391</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Latitude</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/S1/Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
         </Attribute>
         <Float32/>
         <dimension name="nscan1" size="2959"/>

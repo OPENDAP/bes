@@ -417,6 +417,96 @@
             <Value>90.</Value>
         </Attribute>
     </Float32>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.4</Value>
+    </Attribute>
+    <Attribute name="description" type="String">
+        <Value>SeaWiFS Deep Blue Level 3 Long-term Aerosol Data, 1.0x1.0 Degree Grid</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>http://disc.gsfc.nasa.gov/dust</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>National Aeronautic and Space Administration (NASA)</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>20110527T191319Z ./bin/l3gen_swdb 2010 001 etc/config ./v002/DeepBlue-SeaWiFS_L2_20091231T013330Z_v002-20110527T103005Z.h5 ./v002/DeepBlue-SeaWiFS_L2_20091231T031211Z_v002-20110527T103014Z.h5 ./v002/DeepBlue-SeaWiFS_L2_20091231T045052Z_v002-20110527T10302</Value>
+    </Attribute>
+    <Attribute name="long_name" type="String">
+        <Value>SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees</Value>
+    </Attribute>
+    <Attribute name="short_name" type="String">
+        <Value>SWDB_L310</Value>
+    </Attribute>
+    <Attribute name="version_id" type="String">
+        <Value>002</Value>
+    </Attribute>
+    <Attribute name="pge_version" type="String">
+        <Value>002</Value>
+    </Attribute>
+    <Attribute name="local_granule_id" type="String">
+        <Value>DeepBlue-SeaWiFS-1.0_L3_20100101_v002-20110527T191319Z.h5</Value>
+    </Attribute>
+    <Attribute name="range_beginning_date" type="String">
+        <Value>2010-01-01</Value>
+    </Attribute>
+    <Attribute name="range_beginning_time" type="String">
+        <Value>00:00:00</Value>
+    </Attribute>
+    <Attribute name="range_ending_date" type="String">
+        <Value>2010-01-01</Value>
+    </Attribute>
+    <Attribute name="range_ending_time" type="String">
+        <Value>23:59:59</Value>
+    </Attribute>
+    <Attribute name="production_datetime" type="String">
+        <Value>2011-05-27T19:13:19.775000Z</Value>
+    </Attribute>
+    <Attribute name="instrument_long_name" type="String">
+        <Value>Sea-viewing Wide Field-of-View Sensor</Value>
+    </Attribute>
+    <Attribute name="instrument_short_name" type="String">
+        <Value>SeaWiFS</Value>
+    </Attribute>
+    <Attribute name="platform_long_name" type="String">
+        <Value>Orbview-2</Value>
+    </Attribute>
+    <Attribute name="platform_short_name" type="String">
+        <Value>Orbview-2</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>90.</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>-90.</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>180.</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-180.</Value>
+    </Attribute>
+    <Attribute name="latitude_resolution" type="Float32">
+        <Value>1.</Value>
+    </Attribute>
+    <Attribute name="longitude_resolution" type="Float32">
+        <Value>1.</Value>
+    </Attribute>
+    <Attribute name="contact_person_name" type="String">
+        <Value>Corey Bettenhausen</Value>
+    </Attribute>
+    <Attribute name="contact_person_email" type="String">
+        <Value>corey.bettenhausen@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="contact_person_address" type="String">
+        <Value>NASA/GSFC, 8800 Greenbelt Road, Mail Code 613.2, Greenbelt, MD 20771</Value>
+    </Attribute>
+    <Attribute name="related_url" type="String">
+        <Value>http://disc.gsfc.nasa.gov/dust</Value>
+    </Attribute>
     <Group name="diagnostics">
         <Float32 name="aerosol_optical_thickness_550_maximum_land">
             <Dim name="/latitude"/>

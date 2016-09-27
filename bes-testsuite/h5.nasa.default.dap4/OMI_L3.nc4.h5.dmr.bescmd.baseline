@@ -1,5 +1,132 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI_L3.nc4.h5">
+    <Attribute name="OrbitNumber" type="Int32">
+        <Value>7510</Value>
+        <Value>7511</Value>
+        <Value>7512</Value>
+        <Value>7513</Value>
+        <Value>7514</Value>
+        <Value>7515</Value>
+        <Value>7516</Value>
+        <Value>7517</Value>
+        <Value>7518</Value>
+        <Value>7519</Value>
+        <Value>7520</Value>
+        <Value>7521</Value>
+        <Value>7522</Value>
+        <Value>7523</Value>
+        <Value>7524</Value>
+        <Value>7525</Value>
+        <Value>7526</Value>
+        <Value>7527</Value>
+        <Value>7528</Value>
+        <Value>7529</Value>
+        <Value>7530</Value>
+        <Value>7531</Value>
+        <Value>7532</Value>
+        <Value>7533</Value>
+        <Value>7534</Value>
+        <Value>7535</Value>
+        <Value>7536</Value>
+        <Value>7537</Value>
+        <Value>7538</Value>
+        <Value>7539</Value>
+        <Value>7540</Value>
+        <Value>7541</Value>
+        <Value>7542</Value>
+        <Value>7543</Value>
+        <Value>7544</Value>
+        <Value>7545</Value>
+        <Value>7546</Value>
+        <Value>7547</Value>
+        <Value>7548</Value>
+        <Value>7549</Value>
+        <Value>7550</Value>
+        <Value>7551</Value>
+        <Value>7552</Value>
+        <Value>7553</Value>
+        <Value>7554</Value>
+    </Attribute>
+    <Attribute name="OrbitPeriod" type="Float64">
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5932.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5932.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+        <Value>5933.</Value>
+    </Attribute>
+    <Attribute name="InstrumentName" type="String">
+        <Value>OMI</Value>
+    </Attribute>
+    <Attribute name="ProcessLevel" type="String">
+        <Value>3e</Value>
+    </Attribute>
+    <Attribute name="GranuleMonth" type="Int32">
+        <Value>12</Value>
+    </Attribute>
+    <Attribute name="GranuleDay" type="Int32">
+        <Value>14</Value>
+    </Attribute>
+    <Attribute name="GranuleYear" type="Int32">
+        <Value>2005</Value>
+    </Attribute>
+    <Attribute name="GranuleDayOfYear" type="Int32">
+        <Value>348</Value>
+    </Attribute>
+    <Attribute name="TAI93At0zOfGranule" type="Float64">
+        <Value>408672005.</Value>
+    </Attribute>
+    <Attribute name="PGEVersion" type="String">
+        <Value>0.9.26</Value>
+    </Attribute>
+    <Attribute name="StartUTC" type="String">
+        <Value>2005-12-13T18:00:00.000000Z</Value>
+    </Attribute>
+    <Attribute name="EndUTC" type="String">
+        <Value>2005-12-15T06:00:00.000000Z</Value>
+    </Attribute>
+    <Attribute name="Period" type="String">
+        <Value>Daily</Value>
+    </Attribute>
     <Group name="OMI_Column_Amount_O3">
         <Dimension name="lon" size="1440"/>
         <Dimension name="lat" size="720"/>
