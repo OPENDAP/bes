@@ -56,7 +56,16 @@ bool HDF5CFArray::read()
     if(length() == 0)
         return true;
 
-    
+   // Check dimension size 
+    Dim_iter i = dim_begin();
+    Dim_iter i_end = dim_end();
+    while (i != i_end) {
+            cerr<<"dimension_size is "<<dimension_size(i)<<endl;
+            cerr<<"dimension name is "<< dimension_name(i)<<endl;
+            ++i;
+        }
+
+
 #if 0
     if(HDF5RequestHandler::check_dds_cache())
         BESDEBUG("h5","have DDS cache "<<endl);
@@ -93,7 +102,20 @@ cerr<<"var buf size is "<<var_size <<endl;
                 vector<char> buf;
                 buf.resize(var_size);
                 cached_h5data_mem_cache_ptr->get_var_buf(buf);
-                //read_data_from_mem_cache(&buf[0]);
+
+                // Obtain dimension size info.
+                vector<size_t> dim_sizes;
+                Dim_iter i_dim = dim_begin();
+                Dim_iter i_enddim = dim_end();
+		while (i_dim != i_enddim) {
+		    dim_sizes.push_back(dimension_size(i_dim));
+                    ++i_dim;
+		}
+for(int i = 0; i <dim_sizes.size();i++)
+cerr<<"dim_sizes "<<i <<" is "<<dim_sizes[i] <<endl;
+
+                
+                read_data_from_mem_cache(dtype,dim_sizes,&buf[0]);
                 //Use basearray;
             }
         }
@@ -101,6 +123,7 @@ cerr<<"var buf size is "<<var_size <<endl;
             BESDEBUG("h5","Data memory added to the cache "<<endl);
 //cerr<<"coming to add data memory cache "<<endl;
 cerr<<"Cache added: varname is "<<varname <<endl;
+
             vector <char> buf;
             if(total_elems == 0)
                 throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");

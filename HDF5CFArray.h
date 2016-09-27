@@ -23,7 +23,6 @@
 /// \file HDF5CFArray.h
 /// \brief This class includes the methods to read data array into DAP buffer from an HDF5 dataset for the CF option.
 ///
-/// In the future, this may be merged with the dddefault option.
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,11 +36,12 @@
 
 // DODS includes
 #include "HDF5CF.h"
-#include <Array.h>
+//#include <Array.h>
+#include "HDF5BaseArray.h"
 
 using namespace libdap;
 
-class HDF5CFArray:public Array {
+class HDF5CFArray:public HDF5BaseArray {
     public:
         HDF5CFArray(int h5_rank, 
                     const hid_t h5_file_id,
@@ -52,7 +52,7 @@ class HDF5CFArray:public Array {
                     const CVType h5_cvtype,
                     const string & n="",  
                     BaseType * v = 0):
-                    Array(n,v),
+                    HDF5BaseArray(n,v),
                     rank(h5_rank),
                     fileid(h5_file_id),
                     filename(h5_filename),

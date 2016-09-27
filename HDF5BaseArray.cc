@@ -174,7 +174,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                       pos,
                                       0
                                      );
-                
 
             set_value ((dods_byte *) &val[0], nelms);
         } // case H5UCHAR
@@ -183,9 +182,9 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         case H5CHAR:
         {
 
-            vector<short>val;
+            vector<char>val;
             val.resize(nelms);
-            subset<short>(
+            subset<char>(
                                       buf,
                                       ndims,
                                       h5_dimsizes,
@@ -197,7 +196,13 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                       0
                                      );
 
+            vector<short>newval;
+            newval.resize(nelms);
+
+            for (int counter = 0; counter < nelms; counter++)
+                newval[counter] = (short) (val[counter]);
             set_value ((dods_int16 *) &val[0], nelms);
+
         } // case H5CHAR
            break;
 
@@ -224,24 +229,24 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
 
         case H5UINT16:
-            {
-                vector<unsigned short> val;
-                val.resize(nelms);
-             subset<unsigned short>(
-                                      buf,
-                                      ndims,
-                                      h5_dimsizes,
-                                      &offset[0],
-                                      &step[0],
-                                      &count[0],
-                                      &val,
-                                      pos,
-                                      0
-                                     );
+        {
+    	    vector<unsigned short> val;
+	    val.resize(nelms);
+	    subset<unsigned short>(
+				    buf,
+				    ndims,
+                                    h5_dimsizes,
+                                    &offset[0],
+                                    &step[0],
+                                    &count[0],
+                                    &val,
+                                    pos,
+                                    0
+                                  );
 
                
-                set_value ((dods_uint16 *) &val[0], nelms);
-            } // H5UINT16
+            set_value ((dods_uint16 *) &val[0], nelms);
+        } // H5UINT16
             break;
 
         case H5INT32:
@@ -249,16 +254,16 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
             vector<int>val;
             val.resize(nelms);
             subset<int>(
-                                      buf,
-                                      ndims,
-                                      h5_dimsizes,
-                                      &offset[0],
-                                      &step[0],
-                                      &count[0],
-                                      &val,
-                                      pos,
-                                      0
-                                     );
+			buf,
+			ndims,
+			h5_dimsizes,
+			&offset[0],
+			&step[0],
+			&count[0],
+			&val,
+			pos,
+			0
+			);
 
             set_value ((dods_int32 *) &val[0], nelms);
         } // case H5INT32
@@ -269,16 +274,16 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
             vector<unsigned int>val;
             val.resize(nelms);
             subset<unsigned int>(
-                                      buf,
-                                      ndims,
-                                      h5_dimsizes,
-                                      &offset[0],
-                                      &step[0],
-                                      &count[0],
-                                      &val,
-                                      pos,
-                                      0
-                                     );
+				buf,
+				ndims,
+				h5_dimsizes,
+				&offset[0],
+				&step[0],
+				&count[0],
+				&val,
+				pos,
+				0
+				);
 
             set_value ((dods_uint32 *) &val[0], nelms);
         }
@@ -289,6 +294,17 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
             vector<float>val;
             val.resize(nelms);
+            subset<float>(
+	    		  buf,
+			  ndims,
+			  h5_dimsizes,
+			  &offset[0],
+			  &step[0],
+			  &count[0],
+			  &val,
+			  pos,
+			  0
+			  );
             set_value ((dods_float32 *) &val[0], nelms);
         }
             break;
@@ -299,6 +315,17 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
             vector<double>val;
             val.resize(nelms);
+            subset<double>(
+		    	    buf,
+	    		    ndims,
+    			    h5_dimsizes,
+			    &offset[0],
+    			    &step[0],
+    			    &count[0],
+			    &val,
+			    pos,
+			    0
+			    );
             set_value ((dods_float64 *) &val[0], nelms);
         } // case H5FLOAT64
             break;
@@ -349,7 +376,7 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                                  const std::vector < size_t > &pos){
     //
     //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
-    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    //  int b[10][2]; // &b[1][1] == b + (2*1 + 1);
     // 
     if(dims.size () != pos.size ())
         throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
