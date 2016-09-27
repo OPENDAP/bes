@@ -790,13 +790,15 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 
     // make sure there are not multiple slashes at the end of the first part...
     // Note that this removes all of the slashes. jhrg 9/27/16
-    while (!first.empty() && first.back() == '/') {
-        first.pop_back();
+    while (!first.empty() && *first.rbegin() == '/') {
+        // C++-11 first.pop_back();
+        first = first.substr(0, first.length() - 1);
     }
 
     // make sure second part does not BEGIN with a slash
     while (!second.empty() && second[0] == '/') {
-        second = second.substr(1);
+        // erase is faster? second = second.substr(1);
+        second.erase(0, 1);
     }
 
     string newPath = first.append("/").append(second);
