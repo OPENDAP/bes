@@ -89,7 +89,7 @@ const unsigned int max_collisions = 50; // It's hard to believe this could happe
 
 const unsigned int default_cache_size = 20; // 20 GB
 const string default_cache_prefix = "rc";
-const string default_cache_dir = "/tmp/";
+const string default_cache_dir = ""; // I'm making the default empty so that no key == no caching. jhrg 9.26.16
 
 const string BESDapFunctionResponseCache::PATH_KEY = "DAP.FunctionResponseCache.path";
 const string BESDapFunctionResponseCache::PREFIX_KEY = "DAP.FunctionResponseCache.prefix";
@@ -142,54 +142,32 @@ string BESDapFunctionResponseCache::get_cache_dir_from_config()
     return cacheDir;
 }
 
-#if 0
-BESDapFunctionResponseCache::BESDapFunctionResponseCache()
-{
-    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::BESDapFunctionResponseCache() - BEGIN" << endl);
-
-    string cacheDir = get_cache_dir_from_config();
-    string prefix = get_cache_prefix_from_config();
-    unsigned long size_in_megabytes = get_cache_size_from_config();
-
-    BESDEBUG(DEBUG_KEY,
-        "BESDapFunctionResponseCache::BESDapFunctionResponseCache() - Cache config params: " << cacheDir << ", " << prefix << ", " << size_in_megabytes << endl);
-
-    // The required params must be present. If initialize() is not called,
-    // then d_cache will stay null and is_available() will return false.
-    // Also, the directory 'path' must exist, or d_cache will be null.
-    if (!cacheDir.empty() && size_in_megabytes > 0) initialize(cacheDir, prefix, size_in_megabytes);
-
-    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::BESDapResponseCache() - END" << endl);
-}
-#endif
-
 /**
+ * @name Get the singleton instance
  * Get an instance of the BESDapFunctionResponseCache object. This class is a singleton, so the
  * first call to any of three 'get_instance()' methods makes an instance and subsequent calls
  * return a pointer to that instance.
  *
+ * @note If the cache_dir parameter is null, this will return null for the pointer to the
+ * singleton and caching is disabled.
  *
- * @param cache_dir_key Key to use to get the value of the cache directory
+ * @param cache_dir_key Key to use to get the value of the cache directory. If this is
+ * the empty stirng, return null right away.
  * @param prefix_key Key for the item/file prefix. Each file added to the cache uses this
  * as a prefix so cached items can be easily identified when /tmp is used for the cache.
  * @param size_key How big should the cache be, in megabytes
  * @return A pointer to a BESDapFunctionResponseCache object
  */
+///@{
 BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
     if (d_instance == 0) {
-        if (dir_exists(cache_dir)) {
-            try {
-                d_instance = new BESDapFunctionResponseCache(cache_dir, prefix, size);
+        if (!cache_dir.empty() && dir_exists(cache_dir)) {
+            d_instance = new BESDapFunctionResponseCache(cache_dir, prefix, size);
 #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
+            atexit(delete_instance);
 #endif
-            }
-            catch (BESError &be) {
-                BESDEBUG(DEBUG_KEY,
-                    "BESDapFunctionResponseCache::get_instance(): Failed to obtain cache! msg: " << be.get_message() << endl);
-            }
         }
     }
 
@@ -199,27 +177,17 @@ BESDapFunctionResponseCache::get_instance(const string &cache_dir, const string 
     return d_instance;
 }
 
-/**
- * Get the default instance of the BESDapFunctionResponseCache object. This will read "TheBESKeys" looking for the values
- * of FUNCTION_CACHE_PATH, FUNCTION_CACHE_PREFIX, an FUNCTION_CACHE_SIZE to initialize the cache.
- */
 BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance()
 {
     if (d_instance == 0) {
-        try {
-            if (dir_exists(get_cache_dir_from_config())) {
-
-                d_instance = new BESDapFunctionResponseCache(get_cache_dir_from_config(), get_cache_prefix_from_config(),
-                    get_cache_size_from_config());
+        string cache_dir = get_cache_dir_from_config();
+        if (!cache_dir.empty() && dir_exists(cache_dir)) {
+            d_instance = new BESDapFunctionResponseCache(get_cache_dir_from_config(), get_cache_prefix_from_config(),
+                get_cache_size_from_config());
 #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
+            atexit(delete_instance);
 #endif
-            }
-        }
-        catch (BESError &be) {
-            BESDEBUG(DEBUG_KEY,
-                "BESDapFunctionResponseCache::get_instance(): Failed to obtain cache! msg: " << be.get_message() << endl);
         }
     }
 
@@ -227,6 +195,7 @@ BESDapFunctionResponseCache::get_instance()
 
     return d_instance;
 }
+///@}
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the
@@ -306,12 +275,19 @@ string BESDapFunctionResponseCache::get_hash_basename(const string &resource_id)
 /**
  * @brief Return a DDS loaded with data that can be serialized back to a client
  *
- * FIXME Repair where this is called in ResponseBuilder
+ * Given a DDS and a DAP2 constraint expression that contains only projection function
+ * calls, either pull a cached DDS* that is the result of evaluating those functions,
+ * or evaluate, cache and return the result. This is the main API cacll for this
+ * class.
  *
  * @note This method controls the cache lock, ensuring that the cache is
  * unlocked when it returns.
  *
- * This code either
+ * @note The code that evaluates the function expression (when needed) could be
+ * sped up by using a thread to handle the process of writing the DDS to the cache,
+ * but this will be complicated until we have shared pointers (because the DDS*
+ * could be deleted while the cache code is still writing it).
+ *
  * @param dds
  * @param constraint
  * @param eval

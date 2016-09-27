@@ -66,10 +66,7 @@ class BaseTypeFactory;
  * each cache entry contains the resource id as its first line so that the correct
  * entry can be identified.
  *
- * @todo We are passing ConstraintEvaluator objects in when they don't need to be
- * and using DDS ** value-result params when they don't need to be used.
- *
- * @author jhrg
+ * @author ndp, jhrg
  */
 
 class BESDapFunctionResponseCache: public BESFileLockingCache {
