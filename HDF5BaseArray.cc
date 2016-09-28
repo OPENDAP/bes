@@ -142,13 +142,16 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
 //#if 0
 void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<size_t> &h5_dimsizes,void* buf) {
 
-
+    BESDEBUG("h5", "Coming to read_data_from_mem_cache"<<endl);
     vector<int>offset;
     vector<int>count;
     vector<int>step;
 
-    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
     int ndims = h5_dimsizes.size();
+    offset.resize(ndims);
+    count.resize(ndims);
+    step.resize(ndims);
+    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
     // set the original position to the starting point
     vector<size_t>pos(ndims,0);
@@ -162,7 +165,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                 
         {
             vector<unsigned char> val;
-            val.resize(nelms);
             subset<unsigned char>(
                                       buf,
                                       ndims,
@@ -183,7 +185,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         {
 
             vector<char>val;
-            val.resize(nelms);
             subset<char>(
                                       buf,
                                       ndims,
@@ -209,7 +210,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         case H5INT16:
         {
             vector<short> val;
-            val.resize(nelms);
             subset<short>(
                                       buf,
                                       ndims,
@@ -231,7 +231,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         case H5UINT16:
         {
     	    vector<unsigned short> val;
-	    val.resize(nelms);
 	    subset<unsigned short>(
 				    buf,
 				    ndims,
@@ -252,7 +251,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         case H5INT32:
         {
             vector<int>val;
-            val.resize(nelms);
             subset<int>(
 			buf,
 			ndims,
@@ -272,7 +270,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         case H5UINT32:
         {
             vector<unsigned int>val;
-            val.resize(nelms);
             subset<unsigned int>(
 				buf,
 				ndims,
@@ -291,9 +288,10 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
         case H5FLOAT32:
         {
-
+//cerr<<"coming to float "<<endl;
+//cerr<<"nelms is "<<nelms <<endl;
             vector<float>val;
-            val.resize(nelms);
+            //val.resize(nelms);
             subset<float>(
 	    		  buf,
 			  ndims,
@@ -305,6 +303,9 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			  pos,
 			  0
 			  );
+//cerr<<"before sending data to dap "<<endl;
+//for(int i =0; i<nelms;i++)
+//cerr<<"before sending var is "<<val[i] <<endl;
             set_value ((dods_float32 *) &val[0], nelms);
         }
             break;
@@ -314,7 +315,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         {
 
             vector<double>val;
-            val.resize(nelms);
             subset<double>(
 		    	    buf,
 	    		    ndims,
@@ -364,7 +364,12 @@ int HDF5BaseArray::subset(
         if(index==rank-1)
         {
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
+//cerr<<"cur_pos is "<<cur_pos <<endl;
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
+ //cerr<<"The tempbuf is "<<*(static_cast<T*>(tempbuf))<<endl;
+            //T temp_val = *(static_cast<T*>(tempbuf));
+//cerr<<"temp_val is "<<temp_val <<endl;
+            //poutput->push_back(temp_val);
             poutput->push_back(*(static_cast<T*>(tempbuf)));
             //poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);
         }

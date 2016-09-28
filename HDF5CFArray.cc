@@ -56,15 +56,6 @@ bool HDF5CFArray::read()
     if(length() == 0)
         return true;
 
-   // Check dimension size 
-    Dim_iter i = dim_begin();
-    Dim_iter i_end = dim_end();
-    while (i != i_end) {
-            cerr<<"dimension_size is "<<dimension_size(i)<<endl;
-            cerr<<"dimension name is "<< dimension_name(i)<<endl;
-            ++i;
-        }
-
 
 #if 0
     if(HDF5RequestHandler::check_dds_cache())
@@ -80,62 +71,60 @@ cerr<<"no mem cache "<<endl;
     }
     else {// Using the memory cache
         
-// UNCOMMENT LATER
-//#if 0
-    ObjMemCache* my_data_cache = HDF5RequestHandler::get_data_mem_cache();
-    //HDF5DataMemCache * cached_h5data_mem_cache_ptr = 0;
-    if(my_data_cache) {
-        // Cache key needs to be filename+varname.
-        HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename+varname));
-        if(cached_h5data_mem_cache_ptr) {
-            BESDEBUG("h5","Data Memory Cache hit "<<endl);
- cerr<<"Cache hit: varname is "<<varname <<endl;
-            const string var_name = cached_h5data_mem_cache_ptr->get_varname();
- cerr<<"my variable name is "<<var_name <<endl;
+        ObjMemCache* my_data_cache = HDF5RequestHandler::get_data_mem_cache();
 
-            // Obtain the buffer and do subsetting
-            const size_t var_size = cached_h5data_mem_cache_ptr->get_var_buf_size();
-cerr<<"var buf size is "<<var_size <<endl;
-            if(!var_size) 
-                throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
-            else {
-                vector<char> buf;
-                buf.resize(var_size);
-                cached_h5data_mem_cache_ptr->get_var_buf(buf);
+        if(my_data_cache) {
+            // Cache key needs to be filename+varname.
+            HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename+varname));
+            if(cached_h5data_mem_cache_ptr) {
+                BESDEBUG("h5","Data Memory Cache hit "<<endl);
+//cerr<<"Cache hit: varname is "<<varname <<endl;
+                const string var_name = cached_h5data_mem_cache_ptr->get_varname();
+//cerr<<"my variable name is "<<var_name <<endl;
 
-                // Obtain dimension size info.
-                vector<size_t> dim_sizes;
-                Dim_iter i_dim = dim_begin();
-                Dim_iter i_enddim = dim_end();
-		while (i_dim != i_enddim) {
-		    dim_sizes.push_back(dimension_size(i_dim));
-                    ++i_dim;
-		}
-for(int i = 0; i <dim_sizes.size();i++)
-cerr<<"dim_sizes "<<i <<" is "<<dim_sizes[i] <<endl;
+                // Obtain the buffer and do subsetting
+                const size_t var_size = cached_h5data_mem_cache_ptr->get_var_buf_size();
+//cerr<<"var buf size is "<<var_size <<endl;
+                if(!var_size) 
+                    throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
+                else {
+                    vector<char> buf;
+                    buf.resize(var_size);
+                    cached_h5data_mem_cache_ptr->get_var_buf(buf);
+//cerr<<"buf 0 is "<<*((float*)&buf[0])<<endl;
+
+                    // Obtain dimension size info.
+    		    vector<size_t> dim_sizes;
+		    Dim_iter i_dim = dim_begin();
+	    	    Dim_iter i_enddim = dim_end();
+	    	    while (i_dim != i_enddim) {
+	    		dim_sizes.push_back(dimension_size(i_dim));
+			++i_dim;
+		    }
+//for(int i = 0; i <dim_sizes.size();i++)
+//cerr<<"dim_sizes "<<i <<" is "<<dim_sizes[i] <<endl;
 
                 
-                read_data_from_mem_cache(dtype,dim_sizes,&buf[0]);
-                //Use basearray;
-            }
-        }
-        else{ 
-            BESDEBUG("h5","Data memory added to the cache "<<endl);
+     		    read_data_from_mem_cache(dtype,dim_sizes,(void*)&buf[0]);
+		}
+	    }
+	    else{ 
+		BESDEBUG("h5","Data memory added to the cache "<<endl);
 //cerr<<"coming to add data memory cache "<<endl;
-cerr<<"Cache added: varname is "<<varname <<endl;
+//cerr<<"Cache added: varname is "<<varname <<endl;
 
-            vector <char> buf;
-            if(total_elems == 0)
-                throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
-            buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(dtype));
-            read_data_from_file(true,&buf[0]);
-            // Add the buffer 
+     		vector <char> buf;
+	 	if(total_elems == 0)
+	     	    throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
+	       	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(dtype));
+	       	read_data_from_file(true,&buf[0]);
+		// Add the buffer 
             
-            HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
-            new_mem_cache->set_databuf(buf);
-            my_data_cache->add(new_mem_cache, filename+varname);
-        }
-    }
+	       	HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
+	       	new_mem_cache->set_databuf(buf);
+	       	my_data_cache->add(new_mem_cache, filename+varname);
+	    }
+	}
     }
 //#endif
 // END OF UNCOMMENT
