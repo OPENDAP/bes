@@ -56,9 +56,9 @@ static bool debug = false;
 static bool debug2 = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
 #undef DBG2
-#define DBG2(x) do { if (debug2) (x); } while(false);
+#define DBG2(x) do { if (debug2) (x); } while(false)
 
 namespace functions
 {
@@ -580,7 +580,7 @@ public:
         CPPUNIT_ASSERT(gc1.d_lon[6] == 120);
         CPPUNIT_ASSERT(gc1.d_lon[9] == 240);
     }
-#if 0
+#if 1
     // This test is broken because reorder...() uses read and I haven't worked
     // out how to get the data used here into the grid so that read() called
     // elsewhere will return it. Might try using the series_values property to
@@ -1321,17 +1321,3 @@ int main(int argc, char*argv[]) {
 
     return wasSuccessful ? 0 : 1;
 }
-
-
-#if 0
-int
-main( int, char** )
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() );
-
-    bool wasSuccessful = runner.run( "", false ) ;
-
-    return wasSuccessful ? 0 : 1;
-}
-#endif
