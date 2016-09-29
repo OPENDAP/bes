@@ -96,7 +96,7 @@ NC_GOES_Dataset::NC_GOES_Dataset(const string& id, vector<int> &rBandList) :
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr NC_GOES_Dataset::InitialDataset(const int isSimple)
+CPLErr NC_GOES_Dataset::InitializeDataset(const int isSimple)
 {
 	vector<string> strSet;
 	unsigned int n = CsvburstCpp(ms_CoverageID, strSet, ':');

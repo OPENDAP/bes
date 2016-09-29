@@ -123,7 +123,7 @@ public:
 #endif
     virtual CPLErr SetNativeCRS();
     virtual CPLErr SetGDALDataset(const int isSimple = 0);
-    virtual CPLErr InitialDataset(const int isSimple = 0);
+    virtual CPLErr InitializeDataset(const int isSimple = 0);
     virtual CPLErr GetGeoMinMax(double geoMinMax[]);
 
 public:

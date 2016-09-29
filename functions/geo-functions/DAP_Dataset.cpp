@@ -181,7 +181,7 @@ DAP_Dataset::DAP_Dataset(Array *src, Array *lat, Array *lon) :
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::InitialDataset(const int isSimple)
+CPLErr DAP_Dataset::InitializeDataset(const int isSimple)
 {
     DBG(cerr << "InitialDataset() - BEGIN" << endl);
 
@@ -781,14 +781,11 @@ CPLErr DAP_Dataset::RectifyGOESDataSet()
     DBG(cerr << "RectifyGOESDataSet() - rectDataSet:\n" << datasetInfo(rectDataSet) << endl);
     DBG(cerr << "RectifyGOESDataSet() - satDataSet:\n" << datasetInfo(maptr_DS.get()) << endl);
 
-
-
-
     // FIXME Magic value of 0.125
     if (CE_None != GDALReprojectImage(maptr_DS.get(), NULL, rectDataSet, pszDstWKT,
-            GRA_Lanczos /*GRA_NearestNeighbour*/, 0, 0.0/*0.125*/, GDALTermProgress, NULL, NULL)) {
+            GRA_NearestNeighbour, 0, 0.125, GDALTermProgress, NULL, NULL)) {
         GDALClose(rectDataSet);
-        //GDALClose(poDriver); // I had to comment this out to stop some seg fault think.. Weird...
+        GDALClose(poDriver); // I had to comment this out to stop some seg fault think.. Weird...
         OGRFree(pszDstWKT);
         throw Error("DAP_Dataset::RectifyGOESDataSet() - Failed to re-project satellite data from GCP CRS to geographical CRS.");
     }

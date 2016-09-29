@@ -3,7 +3,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
+// Copyright (c) 2013 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -21,17 +21,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
-// (c) COPYRIGHT URI/MIT 1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
-// Authors:
-//      jhrg,jimg       James Gallagher <jgallagher@gso.uri.edu>
-
-
-// These functions are used by the CE evaluator
-//
-// 1/15/99 jhrg
 
 #include "config.h"
 
@@ -53,7 +42,6 @@
 #include "DAP_Dataset.h"
 #include "reproj_functions.h"
 
-
 using namespace std;
 
 namespace libdap {
@@ -71,8 +59,9 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     DBG(cerr << "function_swath2array() - BEGIN" << endl);
 
     // Use the same documentation for both swath2array and swath2grid
-    string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-    		+ "<function name=\"swath2array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid\">\n"
+    string info =
+        string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            + "<function name=\"swath2array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid\">\n"
             + "</function>\n";
 
     if (argc == 0) {
@@ -80,32 +69,36 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         response->set_value(info);
         *btpp = response;
         DBG(cerr << "function_swath2array() - END (no args)" << endl);
-       return;
+        return;
     }
 
     // TODO Add optional fourth arg that lets the caller say which datum to use;
     // default to WGS84
     if (argc != 3)
-    	throw Error("The function swath2array() requires three arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The function swath2array() requires three arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     Array *src = dynamic_cast<Array*>(argv[0]);
     if (!src)
-    	throw Error("The first argument to swath2array() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The first argument to swath2array() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     Array *lat = dynamic_cast<Array*>(argv[1]);
     if (!lat)
-    	throw Error("The second argument to swath2array() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The second argument to swath2array() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     Array *lon = dynamic_cast<Array*>(argv[2]);
     if (!lon)
-    	throw Error("The third argument to swath2array() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The third argument to swath2array() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     // The args passed into the function using argv[] are deleted after the call.
 
     DAP_Dataset ds(src, lat, lon);
 
     try {
-        ds.InitialDataset(0);
+        ds.InitializeDataset(0);
 
         *btpp = ds.GetDAPArray();
     }
@@ -113,10 +106,11 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         DBG(cerr << "function_swath2array() - Encountered libdap::Error   msg: '" << e.get_error_message() << "'" << endl);
         throw e;
     }
-    catch(...) {
+    catch (...) {
         DBG(cerr << "function_swath2array() - Encountered unknown exception." << endl);
         throw;
     }
+
     DBG(cerr << "function_swath2array() - END" << endl);
 
     return;
@@ -134,8 +128,9 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
     DBG(cerr << "function_swath2grid() - BEGIN" << endl);
 
-    string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-    		+ "<function name=\"swath2grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid\">\n"
+    string info =
+        string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            + "<function name=\"swath2grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid\">\n"
             + "</function>\n";
 
     if (argc == 0) {
@@ -148,29 +143,33 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     // TODO Add optional fourth arg that lets the caller say which datum to use;
     // default to WGS84
     if (argc != 3)
-    	throw Error("The function swath2grid() requires three arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The function swath2grid() requires three arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     Array *src = dynamic_cast<Array*>(argv[0]);
     if (!src)
-    	throw Error("The first argument to swath2grid() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The first argument to swath2grid() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     Array *lat = dynamic_cast<Array*>(argv[1]);
     if (!lat)
-    	throw Error("The second argument to swath2grid() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The second argument to swath2grid() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     Array *lon = dynamic_cast<Array*>(argv[2]);
     if (!lon)
-    	throw Error("The third argument to swath2grid() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        throw Error(
+            "The third argument to swath2grid() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
 
     // The args passed into the function using argv[] are deleted after the call.
 
     DAP_Dataset ds(src, lat, lon);
 
     try {
-        DBG(cerr << "function_swath2grid() - Calling DAP_Dataset::InitialDataset()"  << endl);
-        ds.InitialDataset(0);
+        DBG(cerr << "function_swath2grid() - Calling DAP_Dataset::InitialDataset()" << endl);
+        ds.InitializeDataset(0);
 
-        DBG(cerr << "function_swath2grid() - Calling DAP_Dataset::GetDAPGrid()"  << endl);
+        DBG(cerr << "function_swath2grid() - Calling DAP_Dataset::GetDAPGrid()" << endl);
         *btpp = ds.GetDAPGrid();
 
     }
@@ -178,7 +177,7 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         DBG(cerr << "function_swath2grid() - Caught libdap::Error  msg:" << e.get_error_message() << endl);
         throw e;
     }
-    catch(...) {
+    catch (...) {
         DBG(cerr << "function_swath2grid() - Caught unknown exception." << endl);
         throw;
     }
@@ -188,6 +187,7 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     return;
 }
 
+#if 0
 /**
  * @todo The lat and lon arrays are passed in, but there's an assumption that the
  * source data array and the two lat and lon arrays are the same shape. But the
@@ -203,8 +203,8 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     string functionName = "crs";
 
     string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-            + "<function name=\""+functionName+"\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#crs\">\n"
-            + "</function>\n";
+    + "<function name=\""+functionName+"\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#crs\">\n"
+    + "</function>\n";
 
     if (argc == 0) {
         Str *response = new Str("info");
@@ -214,34 +214,34 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     }
 
     if (argc != 5)
-        throw Error("The function "+functionName+"() requires five arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+    throw Error("The function "+functionName+"() requires five arguments. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
     Array *src = dynamic_cast<Array*>(argv[0]);
     if (!src)
-        throw Error("The first argument to "+functionName+"() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+    throw Error("The first argument to "+functionName+"() must be a data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
     Array *lat = dynamic_cast<Array*>(argv[1]);
     if (!lat)
-        throw Error("The second argument to "+functionName+"() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+    throw Error("The second argument to "+functionName+"() must be a latitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
     Array *lon = dynamic_cast<Array*>(argv[2]);
     if (!lon)
-        throw Error("The third argument to "+functionName+"() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+    throw Error("The third argument to "+functionName+"() must be a longitude array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
     Str *nativeCrsName = dynamic_cast<Str*>(argv[3]);
     if (!src)
-        throw Error("The fourth argument to "+functionName+"() must be a string identifying the native CRS of the data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+    throw Error("The fourth argument to "+functionName+"() must be a string identifying the native CRS of the data array. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
     Str *targetCrsName = dynamic_cast<Str*>(argv[4]);
     if (!src)
-        throw Error("The fifth argument to "+functionName+"() must be a string identifying the target CRS. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
+    throw Error("The fifth argument to "+functionName+"() must be a string identifying the target CRS. See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#"+functionName);
 
     // The args passed into the function using argv[] are deleted after the call.
 
     DAP_Dataset ds(src, lat, lon);
 
     try {
-        ds.InitialDataset(0);
+        ds.InitializeDataset(0);
 
         *btpp = ds.GetDAPGrid();
     }
@@ -258,7 +258,7 @@ void function_changeCRS(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 
     return;
 }
+#endif
 
-
-
-} // namespace libdap
+}
+ // namespace libdap

@@ -101,7 +101,7 @@ public:
     GDALDataset* GetGDALDataset();
 
     // Virtual Functions Definition
-    virtual CPLErr InitialDataset(const int isSimple = 0);
+    virtual CPLErr InitializeDataset(const int isSimple = 0);
 
     // Fetch Function Related
     const OGRSpatialReference& GetNativeCRS();

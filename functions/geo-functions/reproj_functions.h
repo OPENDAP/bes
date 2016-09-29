@@ -4,7 +4,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
+// Copyright (c) 2013 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -23,16 +23,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
-// Authors:
-//      jhrg,jimg       James Gallagher <jgallagher@gso.uri.edu>
-
-// Declarations for CE functions.
-//
-// 1/15/99 jhrg
-
 #ifndef _reproj_functions_h
 #define _reproj_functions_h
 
@@ -44,7 +34,6 @@ namespace libdap {
 
 void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp);
-
 
 class SwathToGrid: public libdap::ServerFunction {
 public:
@@ -100,9 +89,6 @@ public:
 
     virtual void dump(ostream &strm) const;
 };
-
-
-
 
 } // namespace libdap
 

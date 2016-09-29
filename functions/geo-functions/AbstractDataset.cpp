@@ -29,7 +29,11 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include <iostream>
+
 #include "AbstractDataset.h"
+
+using namespace std;
 
 /************************************************************************/
 /* ==================================================================== */
@@ -41,9 +45,9 @@
  * \class AbstractDataset "AbstractDataset.h"
  *
  * An abstract dataset encapsulating one or more raster bands, which is
- * based on GDALDataset, and add the support to metadata model: ISO 19115
+ * based on GDALDataset, and adds the support to metadata model: ISO 19115
  * and 1SO 19115 (2). A series of Fetch functions are provided for the
- * implementation of Web Coverage Service.
+ * implementation of aWeb Coverage Service (WCS) endpoint.
  *
  * Use WCSTCreateDataset() to create a AbstractDataset for a named coverage
  * identifier and band list.
@@ -96,9 +100,9 @@ AbstractDataset::~AbstractDataset()
 /**
  * \brief Initialize the data set.
  *
- * This is the virtual function for initializing abstract dataste. The
+ * This is the virtual function for initializing AbstarctDataset. The
  * subclasses of AbstarctDataset will call SetNativeCRS(), SetGeoTransform()
- * and SetGDALDataset() to initialize an abstarct dataset.
+ * and SetGDALDataset() to initialize the associated fields.
  *
  * @param isSimple The WCS request type.  When user executing a DescribeCoverage
  * request, isSimple is set to 1, and for GetCoverage, is set to 0.
@@ -106,7 +110,7 @@ AbstractDataset::~AbstractDataset()
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr AbstractDataset::InitialDataset(const int isSimple)
+CPLErr AbstractDataset::InitializeDataset(const int isSimple)
 {
 	return CE_Failure;
 }

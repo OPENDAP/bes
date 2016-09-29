@@ -26,15 +26,11 @@ libswath2grid_la_SOURCES = $(SRCS) $(HDRS)
 libswath2grid_la_LDFLAGS = 
 libswath2grid_la_LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
-SRCS = AbstractDataset.cpp wcs_error.cpp    \
-BoundingBox.cpp wcsUtil.cpp DAP_Dataset.cpp  reproj_functions.cc
+SRCS = AbstractDataset.cpp BoundingBox.cpp wcs_error.cpp wcsUtil.cpp \
+DAP_Dataset.cpp reproj_functions.cc
 
-# NC_GOES_Dataset.cpp NC_GOES_Dataset.h
-
-HDRS = AbstractDataset.h wcs_error.h    \
-BoundingBox.h wcsUtil.h DAP_Dataset.h reproj_functions.h
-
-
+HDRS = AbstractDataset.h BoundingBox.h wcs_error.h wcsUtil.h \
+DAP_Dataset.h reproj_functions.h 
 
 if  LIBDAP
 check-dap:

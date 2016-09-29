@@ -29,26 +29,24 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#define DODS_DEBUG
-//#define DODS_DEBUG2
-
 #include <GetOpt.h>
-#include "BaseType.h"
-#include "Array.h"
-#include "Grid.h"
+
+#include <BaseType.h>
+#include <Array.h>
+#include <Grid.h>
+
+#include <test/TestTypeFactory.h>
+
+#include <util.h>
+#include <debug.h>
 
 #include "reproj_functions.h"
 
-#include "test/TestTypeFactory.h"
-
-#include "util.h"
-#include "debug.h"
+#include "test_config.h"
 
 static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
-
-
 
 #define THREE_ARRAY_1_DDS "three_array_1.dds"
 #define THREE_ARRAY_1_DAS "three_array_1.das"
@@ -61,7 +59,7 @@ int test_variable_sleep_interval = 0;
 
 /**
  * Splits the string on the passed char. Returns vector of substrings.
- * TODO make this work on situations where multiple spaces doesn't hose the split()
+ * TODO make this work in situations where multiple spaces doesn't hose the split()
  */
 static vector<string> &split(const string &s, char delim, vector<string> &elems) {
     stringstream ss(s);
@@ -80,7 +78,7 @@ static vector<string> split(const string &s, char delim = ' ') {
     return split(s, delim, elems);
 }
 
-class s2gTest:public TestFixture
+class s2gTest : public TestFixture
 {
 private:
     DDS * dds;
@@ -106,10 +104,10 @@ public:
             dim_1_size =  90;
 
             dds = new DDS(&btf);
-            string dds_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DDS ;
+            string dds_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DDS ;
             dds->parse(dds_file);
             DAS das;
-            string das_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DAS ;
+            string das_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DAS ;
             das.parse(das_file);
             dds->transfer_attributes(&das);
 
@@ -221,11 +219,7 @@ public:
             lat.set_read_p(true);
 
 #endif
-
-
-
         }
-
         catch (Error & e) {
             cerr << "SetUp (Error): " << e.get_error_message() << endl;
             throw;
@@ -236,7 +230,6 @@ public:
         }
 
         DBG(cerr<<"setUp() - END" << endl);
-
     }
 
     void tearDown()
@@ -247,7 +240,7 @@ public:
     CPPUNIT_TEST_SUITE( s2gTest );
 
     CPPUNIT_TEST(no_arguments_test);
-    // CPPUNIT_TEST(array_return_test);
+    CPPUNIT_TEST(array_return_test);
     CPPUNIT_TEST(grid_return_test);
 
     CPPUNIT_TEST_SUITE_END();
@@ -261,8 +254,7 @@ public:
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
-            DBG(cerr << "[ERROR] " << e.get_error_message() << endl);
-            CPPUNIT_ASSERT(!"no_arguments_test() should not have failed");
+            CPPUNIT_FAIL("no_arguments_test(): " + e.get_error_message());
         }
         DBG(cerr<<"no_arguments_test() - END" << endl);
     }
@@ -289,9 +281,7 @@ public:
             a->value(&values[0][0]);
         }
         catch (Error &e) {
-
-            DBG(cerr << "[ERROR] " << e.get_error_message() << endl);
-            CPPUNIT_FAIL("array_return_test");
+            CPPUNIT_FAIL("array_return_test: " + e.get_error_message());
         }
         DBG(cerr<<"array_return_test() - END" << endl);
     }
@@ -688,6 +678,7 @@ public:
         }
     }
 #endif
+
     void grid_return_test()
     {
         DBG(cerr<<"grid_return_test() - BEGIN" << endl);
@@ -698,13 +689,13 @@ public:
             argv[2] = dds->var("Latitude");
 
 
-            cerr << "Input values:" << endl;
+            DBG(cerr << "Input values:" << endl);
             dods_float32 data_vals[dim_0_size][dim_1_size];
             Array *a = static_cast<Array*>(argv[0]);
             a->value(&data_vals[0][0]);
             for (int i = 0; i < dim_0_size; ++i) {
                 for (int j = 0; j < dim_1_size; ++j) {
-                    cerr << "BT_diff_SO2[" << i << "][" << j << "]: " <<  data_vals[i][j] << endl;
+                    DBG2(cerr << "BT_diff_SO2[" << i << "][" << j << "]: " <<  data_vals[i][j] << endl);
                 }
             }
 
@@ -734,13 +725,12 @@ public:
             cerr << "Output values:" << endl;
             for (int i = 0; i < 135; ++i) {
                 for (int j = 0; j < 154; ++j) {
-                    cerr << "t[" << i << "][" << j << "] == lon: " << lon[j] << ", lat: " << lat[i] << " val: " << values[i][j] << endl;
+                    DBG2(cerr << "t[" << i << "][" << j << "] == lon: " << lon[j] << ", lat: " << lat[i] << " val: " << values[i][j] << endl);
                 }
             }
         }
         catch (Error &e) {
-            DBG(cerr << "[ERROR] " << e.get_error_message() << endl);
-            CPPUNIT_FAIL("array_return_test");
+            CPPUNIT_FAIL("gid_return_test: " + e.get_error_message());
         }
         DBG(cerr<<"grid_return_test() - END" << endl);
     }
@@ -773,7 +763,7 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("functions::ugrid::BindTest::") + argv[i++];
+            test = string("s2gTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
