@@ -138,7 +138,7 @@ bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const stri
          else if(varpath == "")
              return false;
          else 
-             return true;
+             return false;
 
     }
 
