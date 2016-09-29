@@ -50,6 +50,7 @@ class HDF5CFArray:public HDF5BaseArray {
                     const string &varfullpath, 
                     const size_t h5_total_elems,
                     const CVType h5_cvtype,
+                    const bool h5_islatlon,
                     const string & n="",  
                     BaseType * v = 0):
                     HDF5BaseArray(n,v),
@@ -59,6 +60,7 @@ class HDF5CFArray:public HDF5BaseArray {
                     dtype(h5_dtype),
                     total_elems(h5_total_elems),
                     cvtype(h5_cvtype),
+                    islatlon(h5_islatlon),
                     varname(varfullpath) 
         {
         }
@@ -79,6 +81,7 @@ class HDF5CFArray:public HDF5BaseArray {
         string varname;
         size_t total_elems;
         CVType cvtype;
+        bool islatlon;
 };
 
 #endif                          // _HDF5CFARRAY_H
