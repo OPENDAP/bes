@@ -359,6 +359,9 @@ namespace HDF5CF
                 return this->cvartype;
             }
 
+            const bool isLatLon() const;
+
+
         private:
             // Each coordinate variable has and only has one dimension
             // This assumption is based on the exact match between

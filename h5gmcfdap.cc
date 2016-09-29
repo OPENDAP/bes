@@ -465,6 +465,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             case CV_EXIST: 
             {
                 HDF5CFArray *ar = NULL;
+                bool is_latlon = cvar->isLatLon();
                 
                 try {
                     ar = new HDF5CFArray (
@@ -475,6 +476,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                                     cvar->getFullPath(),
                                     cvar->getTotalElems(),
                                     CV_EXIST,
+                                    is_latlon,
                                     cvar->getNewName(),
                                     bt);
                 }

@@ -84,6 +84,36 @@ Var::Var(Var *var) {
 
 }
 
+const bool CVar::isLatLon() const{
+
+    bool ret_value = false;
+    if(CV_EXIST == this->cvartype || CV_MODIFY==this->cvartype || CV_SPECIAL==this->cvartype) {
+        string attr_name ="units";
+        string lat_unit_value = "degrees_north";
+        string lon_unit_value = "degrees_east";
+
+        for(vector<Attribute *>::const_iterator ira = this->attrs.begin();
+                     ira != this->attrs.end();ira++) {
+
+            if ((H5FSTRING == (*ira)->getType()) ||
+                (H5VSTRING == (*ira)->getType())) {
+                string attr_value;
+
+                if((*ira)->getCount()==1) {
+                   string attr_value((*ira)->getValue().begin(),(*ira)->getValue().end());
+                   if(attr_value == lat_unit_value || attr_value == lon_unit_value){
+                        ret_value = true;
+                        break;
+                   }
+                }
+            }
+        }
+    }
+    else if(this->cvartype == CV_LAT_MISS || this->cvartype == CV_LON_MISS) 
+        ret_value = true;
+    return ret_value;
+
+}
 File::~File ()
 {
 

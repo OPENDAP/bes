@@ -443,6 +443,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
             case CV_EXIST:
             {
+                bool is_latlon = cvar->isLatLon();
                 HDF5CFArray *ar = NULL;
                 try {
                     ar = new HDF5CFArray (
@@ -453,6 +454,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                                           cvar->getFullPath(),
                                           cvar->getTotalElems(),
                                           CV_EXIST,
+                                          is_latlon,
                                           cvar->getNewName(),
                                           bt);
                 }
@@ -556,6 +558,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                 // Currently only support Aura TES files. May need to revise when having more
                 // special products KY 2012-2-3
             {
+
                 if (cvar->getRank() !=1) {
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
