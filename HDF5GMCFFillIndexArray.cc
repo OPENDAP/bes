@@ -191,6 +191,7 @@ cerr<<"file name " <<filename <<endl;
 }
 
 
+#if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
 int
@@ -235,7 +236,144 @@ HDF5GMCFFillIndexArray::format_constraint (int *offset, int *step, int *count)
 
         return nels;
 }
+#endif
+
 void HDF5GMCFFillIndexArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
+    BESDEBUG("h5","Coming to HDF5GMCFFillIndexArray read "<<endl);
+
+
+    int nelms = 0;
+
+#if 0
+cerr<<"coming to read function"<<endl;
+cerr<<"file name " <<filename <<endl;
+"h5","var name "<<varname <<endl;
+#endif
+
+    if (rank != 1) 
+        throw InternalErr (__FILE__, __LINE__,
+                          "Currently the rank of the dimension scale must be 1.");
+
+    vector<int> offset;
+    offset.resize(rank);
+    vector<int>count;
+    count.resize(rank);
+    vector<int>step;
+    step.resize(rank);
+
+    // Obtain the number of the subsetted elements
+    nelms = format_constraint (&offset[0], &step[0], &count[0]);
+
+
+    switch (dtype) {
+
+        case H5UCHAR:
+                
+        {
+            vector<unsigned char> val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_byte *) &val[0], nelms);
+        } // case H5UCHAR
+            break;
+
+
+        // signed char maps to 16-bit integer in DAP2(HDF5 to DAP2 mapping document.)
+        case H5CHAR:
+        case H5INT16:
+        {
+
+            vector<short>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+               
+            set_value ((dods_int16 *) &val[0], nelms);
+        }// H5CHAR and H5INT16
+            break;
+
+
+        case H5UINT16:
+        {
+            vector<unsigned short> val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+                
+            set_value ((dods_uint16 *) &val[0], nelms);
+        } // H5UINT16
+            break;
+
+
+        case H5INT32:
+        {
+            vector<int>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_int32 *) &val[0], nelms);
+        } // case H5INT32
+            break;
+
+        case H5UINT32:
+        {
+            vector<unsigned int>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_uint32 *) &val[0], nelms);
+        }
+            break;
+
+        case H5FLOAT32:
+        {
+
+            vector<float>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_float32 *) &val[0], nelms);
+        }
+            break;
+
+
+        case H5FLOAT64:
+        {
+
+            vector<double>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_float64 *) &val[0], nelms);
+        } // case H5FLOAT64
+            break;
+
+
+        case H5FSTRING:
+        case H5VSTRING:
+        default:
+        {
+            ostringstream eherr;
+            eherr << "Currently the dimension scale datatype cannot be string"<<endl;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+            break;
+
+    }
+
 
     return;
 }

@@ -154,7 +154,108 @@ for (int i =0; i <nelms; i++)
 }
 
 void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool,void*){
+    BESDEBUG("h5","Coming to HDFEOS5CFMissLLArray read "<<endl);
+    int nelms = -1;
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
 
+    if (eos5_projcode != HE5_GCTP_GEO) 
+        throw InternalErr (__FILE__, __LINE__,"The projection is not supported.");
+                          
+
+    if (rank <=  0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of dimension of this variable should be greater than 0");
+    else {
+
+         offset.resize(rank);
+         count.resize(rank);
+         step.resize(rank);
+         nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    }
+
+    if (nelms <= 0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments is negative.");
+
+
+    float start = 0.0;
+    float end   = 0.0;
+
+    vector<float>val;
+    val.resize(nelms);
+    
+
+    if (CV_LAT_MISS == cvartype) {
+        
+        if (HE5_HDFE_GD_UL == eos5_origin || HE5_HDFE_GD_UR == eos5_origin) {
+
+            start = point_upper;
+            end   = point_lower; 
+
+        }
+        else {// (gridorigin == HE5_HDFE_GD_LL || gridorigin == HE5_HDFE_GD_LR)
+        
+            start = point_lower;
+            end = point_upper;
+        }
+
+        if(ydimsize <=0) 
+           throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments should be greater than 0.");
+           
+        float lat_step = (end - start) /ydimsize;
+
+        // Now offset,step and val will always be valid. line 74 and 85 assure this.
+        if ( HE5_HDFE_CENTER == eos5_pixelreg ) {
+            for (int i = 0; i < nelms; i++)
+                val[i] = ((float)(offset[0]+i*step[0] + 0.5f) * lat_step + start) / 1000000.0;
+        }
+        else { // HE5_HDFE_CORNER 
+            for (int i = 0; i < nelms; i++)
+                val[i] = ((float)(offset[0]+i * step[0])*lat_step + start) / 1000000.0;
+        }
+
+    }
+
+    if (CV_LON_MISS == cvartype) {
+
+        if (HE5_HDFE_GD_UL == eos5_origin || HE5_HDFE_GD_LL == eos5_origin) {
+
+            start = point_left;
+            end   = point_right; 
+
+        }
+        else {// (gridorigin == HE5_HDFE_GD_UR || gridorigin == HE5_HDFE_GD_LR)
+        
+            start = point_right;
+            end = point_left;
+        }
+
+        if(xdimsize <=0) 
+           throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments should be greater than 0.");
+        float lon_step = (end - start) /xdimsize;
+
+        if (HE5_HDFE_CENTER == eos5_pixelreg) {
+            for (int i = 0; i < nelms; i++)
+                val[i] = ((float)(offset[0] + i *step[0] + 0.5f) * lon_step + start ) / 1000000.0;
+        }
+        else { // HE5_HDFE_CORNER 
+            for (int i = 0; i < nelms; i++)
+                val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0;
+        }
+
+    }
+
+#if 0
+for (int i =0; i <nelms; i++) 
+"h5","final data val "<< i <<" is " << val[i] <<endl;
+#endif
+
+    set_value ((dods_float32 *) &val[0], nelms);
+ 
     return;
 }
 #if 0

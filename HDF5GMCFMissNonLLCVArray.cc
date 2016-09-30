@@ -51,6 +51,8 @@ bool HDF5GMCFMissNonLLCVArray::read()
 }
 
 void HDF5GMCFMissNonLLCVArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
-
+     BESDEBUG("h5","Coming to HDF5GMCFMissNonLLCVArray read "<<endl);
+     write_nature_number_buffer(rank,tnumelm);
+ 
     return;
 }

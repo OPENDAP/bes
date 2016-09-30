@@ -465,6 +465,26 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,
 
 void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
+    BESDEBUG("h5","Coming to HDF5GMCFMissLLArray read "<<endl);
+
+    // Here we still use vector just in case we need to tackle "rank>1" in the future.
+    // Also we would like to keep it consistent with other similar handlings.
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+
+    offset.resize(rank);
+    count.resize(rank);
+    step.resize(rank);
+        
+    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+
+    if (GPMM_L3 == product_type || GPMS_L3 == product_type) 
+       obtain_gpm_l3_ll(&offset[0],&step[0],nelms);
+    else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
+       obtain_aqu_obpg_l3_ll(&offset[0],&step[0],nelms);
+
+
     return;
 
 }
