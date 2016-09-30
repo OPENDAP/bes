@@ -62,11 +62,12 @@ class HDF5BaseArray:public Array {
         
     virtual ~ HDF5BaseArray() {
     }
-    virtual BaseType *ptr_duplicate();
-    virtual bool read();
+    //virtual BaseType *ptr_duplicate();
+    //virtual bool read();
     int format_constraint (int *cor, int *step, int *edg);
     void write_nature_number_buffer(int rank, int tnumelm);
     void read_data_from_mem_cache(H5DataType h5type,const vector <size_t> &h5_dimsizes, void*buf);
+    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf) = 0;
 
     size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,const std::vector < size_t > &pos);
     template<typename T>  int subset(

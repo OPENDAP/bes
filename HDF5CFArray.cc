@@ -56,18 +56,10 @@ bool HDF5CFArray::read()
     if(length() == 0)
         return true;
 
-
-#if 0
-    if(HDF5RequestHandler::check_dds_cache())
-        BESDEBUG("h5","have DDS cache "<<endl);
-    else 
-        BESDEBUG("h5","Dont' have DDS cache "<<endl);
-#endif
-
     // Check if using the memory cache
     if((NULL == HDF5RequestHandler::get_data_mem_cache()) || (false == HDF5CFUtil::use_data_mem_cache(dtype,cvtype,varname))){ 
 cerr<<"no mem cache "<<endl;
-        read_data_from_file(false,NULL);
+        read_data_NOT_from_mem_cache(false,NULL);
     }
     else {// Using the memory cache
         
@@ -88,9 +80,11 @@ cerr<<"no mem cache "<<endl;
                 if(!var_size) 
                     throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
                 else {
-                    vector<char> buf;
-                    buf.resize(var_size);
-                    cached_h5data_mem_cache_ptr->get_var_buf(buf);
+                    //vector<char> buf;
+                    //buf.resize(var_size);
+                    void *buf;
+                    buf = cached_h5data_mem_cache_ptr->get_var_buf();
+                    //cached_h5data_mem_cache_ptr->get_var_buf(buf);
 //cerr<<"buf 0 is "<<*((float*)&buf[0])<<endl;
 
                     // Obtain dimension size info.
@@ -104,8 +98,9 @@ cerr<<"no mem cache "<<endl;
 //for(int i = 0; i <dim_sizes.size();i++)
 //cerr<<"dim_sizes "<<i <<" is "<<dim_sizes[i] <<endl;
 
+     		    read_data_from_mem_cache(dtype,dim_sizes,buf);
+     		    //read_data_from_mem_cache(dtype,dim_sizes,(void*)&buf[0]);
                 
-     		    read_data_from_mem_cache(dtype,dim_sizes,(void*)&buf[0]);
 		}
 	    }
 	    else{ 
@@ -117,7 +112,7 @@ cerr<<"no mem cache "<<endl;
 	 	if(total_elems == 0)
 	     	    throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
 	       	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(dtype));
-	       	read_data_from_file(true,&buf[0]);
+	       	read_data_NOT_from_mem_cache(true,&buf[0]);
 		// Add the buffer 
             
 	       	HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
@@ -126,13 +121,11 @@ cerr<<"no mem cache "<<endl;
 	    }
 	}
     }
-//#endif
-// END OF UNCOMMENT
 
     return true;
 }
 
-void HDF5CFArray::read_data_from_file(bool add_cache,void*buf) {
+void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     vector<int>offset;
     vector<int>count;
@@ -257,6 +250,7 @@ void HDF5CFArray::read_data_from_file(bool add_cache,void*buf) {
     }
 
     hid_t read_ret = -1;
+
     // Before reading the data, we will check if the memory cache is turned on, 
     if(true == add_cache) {
         read_ret= H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,buf);
@@ -270,10 +264,10 @@ void HDF5CFArray::read_data_from_file(bool add_cache,void*buf) {
             throw InternalErr(__FILE__,__LINE__,"Cannot read the data to the buffer.");
         }
     }
+
     // Now reading the data, note dtype is not dtypeid.
     // dtype is an enum  defined by the handler.
      
-
     switch (dtype) {
 
         case H5UCHAR:
@@ -691,9 +685,8 @@ void HDF5CFArray::read_data_from_file(bool add_cache,void*buf) {
     H5Sclose(dspace);
     H5Dclose(dsetid);
     HDF5CFUtil::close_fileid(fileid,pass_fileid);
-    //H5Fclose(fileid);
     
-    return ;
+    return;
 }
 
 #if 0
@@ -953,6 +946,7 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 }
 #endif
 
+#if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
 int
@@ -998,3 +992,4 @@ HDF5CFArray::format_constraint (int *offset, int *step, int *count)
         return nels;
 }
 
+#endif

@@ -55,6 +55,7 @@ class HDF5GMCFMissNonLLCVArray:public HDF5BaseArray {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
+    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
 
   private:
         int rank;

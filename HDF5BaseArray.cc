@@ -48,7 +48,7 @@
 #include "HDF5BaseArray.h"
 
 
-
+#if 0
 BaseType *HDF5BaseArray::ptr_duplicate()
 {
     return new HDF5BaseArray(*this);
@@ -62,6 +62,7 @@ bool HDF5BaseArray::read()
     return true;
 }
 
+#endif
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
@@ -148,6 +149,10 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     vector<int>step;
 
     int ndims = h5_dimsizes.size();
+    if(ndims == 0)
+        throw InternalErr(__FILE__, __LINE__, "Currently we only support array numeric data in the cache, the number of dimension for this file is 0");
+    
+
     offset.resize(ndims);
     count.resize(ndims);
     step.resize(ndims);
@@ -288,10 +293,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
         case H5FLOAT32:
         {
-//cerr<<"coming to float "<<endl;
-//cerr<<"nelms is "<<nelms <<endl;
             vector<float>val;
-            //val.resize(nelms);
             subset<float>(
 	    		  buf,
 			  ndims,
@@ -303,9 +305,6 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			  pos,
 			  0
 			  );
-//cerr<<"before sending data to dap "<<endl;
-//for(int i =0; i<nelms;i++)
-//cerr<<"before sending var is "<<val[i] <<endl;
             set_value ((dods_float32 *) &val[0], nelms);
         }
             break;
@@ -364,12 +363,7 @@ int HDF5BaseArray::subset(
         if(index==rank-1)
         {
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
-//cerr<<"cur_pos is "<<cur_pos <<endl;
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
- //cerr<<"The tempbuf is "<<*(static_cast<T*>(tempbuf))<<endl;
-            //T temp_val = *(static_cast<T*>(tempbuf));
-//cerr<<"temp_val is "<<temp_val <<endl;
-            //poutput->push_back(temp_val);
             poutput->push_back(*(static_cast<T*>(tempbuf)));
             //poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);
         }

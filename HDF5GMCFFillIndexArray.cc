@@ -235,4 +235,7 @@ HDF5GMCFFillIndexArray::format_constraint (int *offset, int *step, int *count)
 
         return nels;
 }
+void HDF5GMCFFillIndexArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
+    return;
+}

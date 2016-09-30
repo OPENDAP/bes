@@ -69,9 +69,10 @@ class HDF5CFArray:public HDF5BaseArray {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
+    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
     //void read_data_from_mem_cache(void*buf);
-    void read_data_from_file(bool add_cache,void*buf);
-    int format_constraint (int *cor, int *step, int *edg);
+    //void read_data_from_file(bool add_cache,void*buf);
+    //int format_constraint (int *cor, int *step, int *edg);
 
   private:
         int rank;

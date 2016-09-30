@@ -266,3 +266,8 @@ bool HDFEOS5CFSpecialCVArray::read(){
     return true;
 }
 
+void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool add_cache, void*buf) {
+
+    return;
+
+}
