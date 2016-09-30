@@ -463,8 +463,12 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,
     H5Aclose(s_attr_id);
 }
 
+void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
+    return;
 
+}
+#if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
 int
@@ -508,4 +512,5 @@ HDF5GMCFMissLLArray::format_constraint (int *offset, int *step, int *count)
 
         return nels;
 }
+#endif
 

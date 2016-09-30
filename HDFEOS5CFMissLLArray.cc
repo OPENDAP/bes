@@ -153,6 +153,11 @@ for (int i =0; i <nelms; i++)
     return true;
 }
 
+void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool,void*){
+
+    return;
+}
+#if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
 int
@@ -199,4 +204,4 @@ HDFEOS5CFMissLLArray::format_constraint (int *offset, int *step, int *count)
         return nels;
 }
 
-
+#endif
