@@ -46,13 +46,13 @@ BaseType *HDFEOS5CFMissNonLLCVArray::ptr_duplicate()
 bool HDFEOS5CFMissNonLLCVArray::read()
 {
     BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray read "<<endl);
-    write_nature_number_buffer(rank,tnumelm);
+    read_data_NOT_from_mem_cache(false,NULL);
     return true;
 }
 
 void HDFEOS5CFMissNonLLCVArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) 
 {
-    BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray read "<<endl);
+    BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray: read_data_NOT_from_mem_cache "<<endl);
     write_nature_number_buffer(rank,tnumelm);
  
     return;

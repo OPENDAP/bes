@@ -47,31 +47,9 @@ BaseType *HDF5GMCFSpecialCVArray::ptr_duplicate()
 bool HDF5GMCFSpecialCVArray::read()
 {
 
-    // Here we still use vector just in case we need to tackle "rank>1" in the future.
-    // Also we would like to keep it consistent with other similar handlings.
+    BESDEBUG("h5","Coming to HDF5GMCFSpecialCVArray read "<<endl);
 
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
-
-    int rank = 1;
-    offset.resize(rank);
-    count.resize(rank);
-    step.resize(rank);
-        
-    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
-
-    if (GPMS_L3 == product_type || GPMM_L3 == product_type) {
-        if(varname=="nlayer" && 28 == tnumelm) 
-            obtain_gpm_l3_layer(nelms,offset,step,count);
-        else if(varname=="nlayer" && 19 == tnumelm) 
-            obtain_gpm_l3_layer2(nelms,offset,step,count);
-        else if(varname=="hgt" && 5 == tnumelm)
-            obtain_gpm_l3_hgt(nelms,offset,step,count);
-        else if(varname=="nalt" && 5 == tnumelm)
-            obtain_gpm_l3_nalt(nelms,offset,step,count);
-    }
-        
+    read_data_NOT_from_mem_cache(false,NULL);
 
     return true;
 }
@@ -200,6 +178,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int nelms,vector<int>&offset,vec
 
 void HDF5GMCFSpecialCVArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
+    BESDEBUG("h5","Coming to HDF5GMCFSpecialCVArray: read_data_NOT_from_mem_cache "<<endl);
     // Here we still use vector just in case we need to tackle "rank>1" in the future.
     // Also we would like to keep it consistent with other similar handlings.
 
@@ -228,49 +207,4 @@ void HDF5GMCFSpecialCVArray::read_data_NOT_from_mem_cache(bool add_cache,void*bu
     return;
 }
 
-#if 0
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
-int
-HDF5GMCFSpecialCVArray::format_constraint (int *offset, int *step, int *count)
-{
-        long nels = 1;
-        int id = 0;
-
-        Dim_iter p = dim_begin ();
-
-        while (p != dim_end ()) {
-
-                int start = dimension_start (p, true);
-                int stride = dimension_stride (p, true);
-                int stop = dimension_stop (p, true);
-
-                // Check for illegal  constraint
-                if (start > stop) {
-                   ostringstream oss;
-
-                   oss << "Array/Grid hyperslab start point "<< start <<
-                         " is greater than stop point " <<  stop <<".";
-                   throw Error(malformed_expr, oss.str());
-                }
-
-                offset[id] = start;
-                step[id] = stride;
-                count[id] = ((stop - start) / stride) + 1;      // count of elements
-                nels *= count[id];              // total number of values for variable
-
-                BESDEBUG ("h5",
-                         "=format_constraint():"
-                         << "id=" << id << " offset=" << offset[id]
-                         << " step=" << step[id]
-                         << " count=" << count[id]
-                         << endl);
-
-                id++;
-                p++;
-        }
-
-        return nels;
-}
-#endif
 

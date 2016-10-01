@@ -50,23 +50,7 @@ bool HDF5GMCFMissLLArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5GMCFMissLLArray read "<<endl);
-
-    // Here we still use vector just in case we need to tackle "rank>1" in the future.
-    // Also we would like to keep it consistent with other similar handlings.
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
-
-    offset.resize(rank);
-    count.resize(rank);
-    step.resize(rank);
-        
-    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
-
-    if (GPMM_L3 == product_type || GPMS_L3 == product_type) 
-       obtain_gpm_l3_ll(&offset[0],&step[0],nelms);
-    else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
-       obtain_aqu_obpg_l3_ll(&offset[0],&step[0],nelms);
+    read_data_NOT_from_mem_cache(false,NULL);
 
     return true;
 }
@@ -465,7 +449,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,
 
 void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
-    BESDEBUG("h5","Coming to HDF5GMCFMissLLArray read "<<endl);
+    BESDEBUG("h5","Coming to HDF5GMCFMissLLArray: read_data_NOT_from_mem_cache  "<<endl);
 
     // Here we still use vector just in case we need to tackle "rank>1" in the future.
     // Also we would like to keep it consistent with other similar handlings.
@@ -488,49 +472,4 @@ void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) 
     return;
 
 }
-#if 0
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
-int
-HDF5GMCFMissLLArray::format_constraint (int *offset, int *step, int *count)
-{
-        long nels = 1;
-        int id = 0;
-
-        Dim_iter p = dim_begin ();
-
-        while (p != dim_end ()) {
-
-                int start = dimension_start (p, true);
-                int stride = dimension_stride (p, true);
-                int stop = dimension_stop (p, true);
-
-                // Check for illegal  constraint
-                if (start > stop) {
-                   ostringstream oss;
-
-                   oss << "Array/Grid hyperslab start point "<< start <<
-                         " is greater than stop point " <<  stop <<".";
-                   throw Error(malformed_expr, oss.str());
-                }
-
-                offset[id] = start;
-                step[id] = stride;
-                count[id] = ((stop - start) / stride) + 1;      // count of elements
-                nels *= count[id];              // total number of values for variable
-
-                BESDEBUG ("h5",
-                         "=format_constraint():"
-                         << "id=" << id << " offset=" << offset[id]
-                         << " step=" << step[id]
-                         << " count=" << count[id]
-                         << endl);
-
-                id++;
-                p++;
-        }
-
-        return nels;
-}
-#endif
 
