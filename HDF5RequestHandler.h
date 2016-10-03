@@ -70,23 +70,34 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
 
     // Handling Cache
-    static unsigned int get_cache_entries() { return _cache_entries;}
+    static unsigned int get_mdcache_entries() { return _mdcache_entries;}
+    static unsigned int get_lrdcache_entries() { return _lrdcache_entries;}
+    static unsigned int get_srdcache_entries() { return _srdcache_entries;}
     static float get_cache_purge_level() { return _cache_purge_level;}
-    static bool  check_dds_cache() {return (dds_cache?true:false);}
-    static ObjMemCache* get_data_mem_cache() {return data_mem_cache;}
-    static ObjMemCache* set_data_mem_cache(ObjMemCache* my_data_mem_cache) 
-                                             {data_mem_cache=my_data_mem_cache;}
+    //static bool  check_dds_cache() {return (dds_cache?true:false);}
+    
+    static ObjMemCache* get_lrdata_mem_cache() {return lrdata_mem_cache;}
+    static ObjMemCache* set_lrdata_mem_cache(ObjMemCache* my_lrdata_mem_cache) 
+                                             {lrdata_mem_cache=my_lrdata_mem_cache;}
+
+    static ObjMemCache* get_srdata_mem_cache() {return srdata_mem_cache;}
+    static ObjMemCache* set_srdata_mem_cache(ObjMemCache* my_srdata_mem_cache) 
+                                             {srdata_mem_cache=my_srdata_mem_cache;}
+
 
   private:
      //cache variables. 
 
-     static unsigned int _cache_entries;
+     static unsigned int _mdcache_entries;
+     static unsigned int _lrdcache_entries;
+     static unsigned int _srdcache_entries;
      static float _cache_purge_level;
 
      static ObjMemCache *das_cache;
      static ObjMemCache *dds_cache;
      static ObjMemCache *dmr_cache;
-     static ObjMemCache *data_mem_cache;
+     static ObjMemCache *lrdata_mem_cache;
+     static ObjMemCache *srdata_mem_cache;
 
 
      // BES keys
@@ -99,6 +110,13 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _drop_long_string;
      static bool _fillvalue_check;
      static bool _check_ignore_obj;
+     //static bool _ld_mcache_config;
+     //static bool _sd_mcache_config;
+     
+     static bool common_cache_dirs;
+     static vector<string> lrd_cache_dir_list;
+     static vector<string> lrd_non_cache_dir_list;
+     static void obtain_lrd_common_cache_dirs();
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);

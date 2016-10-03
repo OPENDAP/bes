@@ -84,13 +84,18 @@ static unsigned int get_uint_key(const string &key,unsigned int def_val);
 // Obtain the BES key as a floating-pointer number.
 static float get_float_key(const string &key, float def_val);
 
+// Obtain the BES key as a string.
+static string get_beskeys(const string&);
+
 // For the CF option
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
 
 // Check the description of cache_entries and cache_purge_level at h5.conf.in.
-unsigned int HDF5RequestHandler::_cache_entries = 200;
+unsigned int HDF5RequestHandler::_mcache_entries = 200;
+unsigned int HDF5RequestHandler::_lrdcache_entries = 40;
+unsigned int HDF5RequestHandler::_srdcache_entries = 200;
 float HDF5RequestHandler::_cache_purge_level = 0.2;
 
 // Metadata object cache at DAS,DDS and DMR.
@@ -98,7 +103,8 @@ ObjMemCache *HDF5RequestHandler::das_cache = 0;
 ObjMemCache *HDF5RequestHandler::dds_cache = 0;
 ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
 
-ObjMemCache *HDF5RequestHandler::data_mem_cache = 0;
+ObjMemCache *HDF5RequestHandler::lrddata_mem_cache = 0;
+ObjMemCache *HDF5RequestHandler::srddata_mem_cache = 0;
 
 // Set default values of all BES keys be false.
 bool HDF5RequestHandler::_usecf                       = false;
@@ -127,15 +133,14 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 
-    // Obtain the cache entries and purge level.
-    HDF5RequestHandler::_cache_entries     = get_uint_key("H5.CacheEntries", 0);
+    // Obtain the metadata cache entries and purge level.
+    HDF5RequestHandler::_mdcache_entries     = get_uint_key("H5.MetaDataMemCacheEntries", 0);
     HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2);
 
-    if (get_cache_entries()) {  // else it stays at its default of null
-        das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
-        dds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
-        dmr_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
-        data_mem_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
+    if (get_mdcache_entries()) {  // else it stays at its default of null
+        das_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
+        dds_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
+        dmr_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
     }
 
     // Check if the EnableCF key is set.
@@ -150,6 +155,20 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _drop_long_string            = check_beskeys("H5.EnableDropLongString");
     _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
+
+    if(get_usecf()) {
+        if(get_lrdcache_entries()) {
+            lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
+            if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
+                obtain_lrd_common_cache_dirs();
+
+            }
+        }
+        if(get_srdcache_entries()) {
+            srdata_mem_cahce = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
+
+        }
+    }
 
 
     BESDEBUG(HDF5_NAME, "Exiting HDF5RequestHandler::HDF5RequestHandler" << endl);
@@ -905,6 +924,52 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
+static bool HDF5RequestHandler::obtain_lrd_common_cache_dirs() 
+{
+
+    //bool ret_value = false;
+    string lrd_config_fpath;
+    string lrd_config_fname;
+    lrd_config_fpath = get_beskeys("H5.DataCachePath");
+    lrd_config_fname = get_beskeys("H5.LargeDataMemCacheFileName");
+    if(lrd_config_fpath=="" ||
+       lrd_config_fname=="")
+        return false;
+
+    // The following code is borrowed from HDF-EOS5 augmentation tool
+  /* Open the mapping file */
+  fp = fopen(dimgeonames, "r");
+  if(fp==NULL) {
+    printf("Choose the file option but the dimension mapping file doesn't exist. \n");
+    return -2;
+  }
+
+  /* Assume the number of characters in  each line doesn't exceed 1024.*/
+
+  char mystring[1024];
+
+  while(fgets(mystring, 1024, fp)!=NULL) {/* while((s = getline(&line, &n, fp)) != -1)  */
+
+    line = mystring;
+
+    if(line[0]=='#') /* comment */
+      continue;
+
+    if(strlen(line) <= 1) /* empty line */
+      continue;
+
+    /* trim out special characters such as space, tab or new line character*/
+    char *token = trim(strtok_r(line, " \t\n\r", &saveptr));
+
+    flag = atoi(token);   	
+            dimname = trim(strtok_r(/*line*/NULL, " \t\n\r", &saveptr));
+        geoname = trim(strtok_r(NULL, " \t\r\n", &saveptr));
+
+    
+
+
+}
+
 bool check_beskeys(const string key) {
 
     bool found = false;
@@ -950,5 +1015,15 @@ static float get_float_key(const string &key, float def_val)
     else {
         return def_val;
     }
+}
+
+static string get_beskeys(const string &key) {
+
+    bool found = false;
+    string ret_value ="";
+
+    TheBESKeys::TheKeys()->get_value( key, ret_value, found ) ;
+    return ret_value;
+
 }
 
