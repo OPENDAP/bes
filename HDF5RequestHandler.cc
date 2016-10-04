@@ -118,6 +118,7 @@ bool HDF5RequestHandler::_add_path_attrs              = false;
 bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
+bool HDF5RequestHandler::_common_cache_dirs            = false;
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
@@ -165,7 +166,10 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
         if(get_lrdcache_entries()) {
             lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
             if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
-                obtain_lrd_common_cache_dirs();
+                _common_cache_dirs =obtain_lrd_common_cache_dirs();
+if(false == _common_cache_dirs) 
+cerr<<"No specific cache info"<<endl;
+             
             }
         }
         if(get_srdcache_entries()) {
@@ -944,10 +948,10 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
     string line;
     string mcache_config_fname = lrd_config_fpath+"/"+lrd_config_fname;
     
-    ifstream mcache_config_file("example.txt");
-    //ifstream mcache_config_file(mcache_config_file);
+    //ifstream mcache_config_file("example.txt");
+    ifstream mcache_config_file(mcache_config_fname.c_str());
     if(mcache_config_file.is_open()==false){
-        cout<<"the file cannot be open"<<endl;
+cerr<<"the file cannot be open"<<endl;
         BESDEBUG(HDF5_NAME,"The large data memory cache configure file "<<mcache_config_fname );
         BESDEBUG(HDF5_NAME," cannot be opened."<<endl);
         return false;
@@ -970,7 +974,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                 //lrd_non_cache_dir_list +=temp_name_list;
                 lrd_non_cache_dir_list.insert(lrd_non_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
             }
-            else if(line.at(2)=='2') {
+            else if(line.at(0)=='2') {
                 HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
                 //lrd_var_cache_file_list +=temp_name_list;
                 lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
@@ -984,7 +988,16 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
 cerr<<"lrd_cache_dir_list is "<<lrd_cache_dir_list <<endl;
 cerr<<"lrd_non_cache_dir_list is "<<lrd_non_cache_dir_list <<endl;
 cerr<<"lrd_var_cache_file_list is "<<lrd_var_cache_file_list <<endl;
+
 #endif
+for(int i =0; i<lrd_cache_dir_list.size();i++)
+cerr<<"lrd cache list is "<<lrd_cache_dir_list[i] <<endl;
+for(int i =0; i<lrd_non_cache_dir_list.size();i++)
+cerr<<"lrd non cache list is "<<lrd_non_cache_dir_list[i] <<endl;
+for(int i =0; i<lrd_var_cache_file_list.size();i++)
+cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
+
+
 
     mcache_config_file.close();
     if(lrd_cache_dir_list.size()==0 && lrd_non_cache_dir_list.size()==0 && lrd_var_cache_file_list.size()==0)

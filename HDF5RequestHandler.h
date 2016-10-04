@@ -84,6 +84,17 @@ class HDF5RequestHandler:public BESRequestHandler {
     static ObjMemCache* set_srdata_mem_cache(ObjMemCache* my_srdata_mem_cache) 
                                              {srdata_mem_cache=my_srdata_mem_cache;}
 
+    static bool get_common_cache_dirs() { return _common_cache_dirs;}
+    static void get_lrd_cache_dir_list(vector<string>& cur_lrd_cache_dir_list) 
+                                              { cur_lrd_cache_dir_list = lrd_cache_dir_list;}
+
+    static void get_lrd_non_cache_dir_list(vector<string>& cur_lrd_non_cache_dir_list) 
+                                              { cur_lrd_non_cache_dir_list = lrd_non_cache_dir_list;}
+
+    static void get_lrd_var_cache_file_list(vector<string>& cur_lrd_var_cache_file_list) 
+                                              { cur_lrd_var_cache_file_list = lrd_var_cache_file_list;}
+
+                                              
 
   private:
      //cache variables. 
@@ -113,7 +124,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      //static bool _ld_mcache_config;
      //static bool _sd_mcache_config;
      
-     static bool common_cache_dirs;
+     static bool _common_cache_dirs;
      static vector<string> lrd_cache_dir_list;
      static vector<string> lrd_non_cache_dir_list;
      static vector<string> lrd_var_cache_file_list;
