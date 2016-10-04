@@ -116,7 +116,8 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool common_cache_dirs;
      static vector<string> lrd_cache_dir_list;
      static vector<string> lrd_non_cache_dir_list;
-     static void obtain_lrd_common_cache_dirs();
+     static vector<string> lrd_var_cache_file_list;
+     static bool obtain_lrd_common_cache_dirs();
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);

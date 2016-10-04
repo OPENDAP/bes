@@ -57,17 +57,17 @@ bool HDF5CFArray::read()
         return true;
 
     // Check if using the memory cache
-    if((NULL == HDF5RequestHandler::get_data_mem_cache()) || (false == HDF5CFUtil::use_data_mem_cache(dtype,cvtype,varname))){ 
+    if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) || (false == HDF5CFUtil::use_data_mem_cache(dtype,cvtype,varname))){ 
 cerr<<"no mem cache "<<endl;
         read_data_NOT_from_mem_cache(false,NULL);
     }
     else {// Using the memory cache
         
-        ObjMemCache* my_data_cache = HDF5RequestHandler::get_data_mem_cache();
+        ObjMemCache* my_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
 
         if(my_data_cache) {
             // Cache key needs to be filename+varname.
-            HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_data_mem_cache())->get(filename+varname));
+            HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_lrdata_mem_cache())->get(filename+varname));
             if(cached_h5data_mem_cache_ptr) {
                 BESDEBUG("h5","Data Memory Cache hit "<<endl);
 //cerr<<"Cache hit: varname is "<<varname <<endl;

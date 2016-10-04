@@ -32,6 +32,8 @@
 /// \author James Gallagher <jgallagher@opendap.org>
 
 
+#include<iostream>
+#include <fstream>
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -93,7 +95,7 @@ extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
 
 // Check the description of cache_entries and cache_purge_level at h5.conf.in.
-unsigned int HDF5RequestHandler::_mcache_entries = 200;
+unsigned int HDF5RequestHandler::_mdcache_entries = 200;
 unsigned int HDF5RequestHandler::_lrdcache_entries = 40;
 unsigned int HDF5RequestHandler::_srdcache_entries = 200;
 float HDF5RequestHandler::_cache_purge_level = 0.2;
@@ -103,8 +105,8 @@ ObjMemCache *HDF5RequestHandler::das_cache = 0;
 ObjMemCache *HDF5RequestHandler::dds_cache = 0;
 ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
 
-ObjMemCache *HDF5RequestHandler::lrddata_mem_cache = 0;
-ObjMemCache *HDF5RequestHandler::srddata_mem_cache = 0;
+ObjMemCache *HDF5RequestHandler::lrdata_mem_cache = 0;
+ObjMemCache *HDF5RequestHandler::srdata_mem_cache = 0;
 
 // Set default values of all BES keys be false.
 bool HDF5RequestHandler::_usecf                       = false;
@@ -116,6 +118,9 @@ bool HDF5RequestHandler::_add_path_attrs              = false;
 bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
+vector<string> HDF5RequestHandler::lrd_cache_dir_list;
+vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
+vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
 
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
@@ -161,11 +166,10 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
             lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
             if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
                 obtain_lrd_common_cache_dirs();
-
             }
         }
         if(get_srdcache_entries()) {
-            srdata_mem_cahce = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
+            srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
 
         }
     }
@@ -181,7 +185,8 @@ HDF5RequestHandler::~HDF5RequestHandler()
     delete das_cache;
     delete dds_cache;
     delete dmr_cache;
-    delete data_mem_cache;
+    delete lrdata_mem_cache;
+    delete srdata_mem_cache;
      
 }
 
@@ -924,7 +929,7 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
-static bool HDF5RequestHandler::obtain_lrd_common_cache_dirs() 
+bool HDF5RequestHandler::obtain_lrd_common_cache_dirs() 
 {
 
     //bool ret_value = false;
@@ -936,39 +941,59 @@ static bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
        lrd_config_fname=="")
         return false;
 
-    // The following code is borrowed from HDF-EOS5 augmentation tool
-  /* Open the mapping file */
-  fp = fopen(dimgeonames, "r");
-  if(fp==NULL) {
-    printf("Choose the file option but the dimension mapping file doesn't exist. \n");
-    return -2;
-  }
-
-  /* Assume the number of characters in  each line doesn't exceed 1024.*/
-
-  char mystring[1024];
-
-  while(fgets(mystring, 1024, fp)!=NULL) {/* while((s = getline(&line, &n, fp)) != -1)  */
-
-    line = mystring;
-
-    if(line[0]=='#') /* comment */
-      continue;
-
-    if(strlen(line) <= 1) /* empty line */
-      continue;
-
-    /* trim out special characters such as space, tab or new line character*/
-    char *token = trim(strtok_r(line, " \t\n\r", &saveptr));
-
-    flag = atoi(token);   	
-            dimname = trim(strtok_r(/*line*/NULL, " \t\n\r", &saveptr));
-        geoname = trim(strtok_r(NULL, " \t\r\n", &saveptr));
+    string line;
+    string mcache_config_fname = lrd_config_fpath+"/"+lrd_config_fname;
+    
+    ifstream mcache_config_file("example.txt");
+    //ifstream mcache_config_file(mcache_config_file);
+    if(mcache_config_file.is_open()==false){
+        cout<<"the file cannot be open"<<endl;
+        BESDEBUG(HDF5_NAME,"The large data memory cache configure file "<<mcache_config_fname );
+        BESDEBUG(HDF5_NAME," cannot be opened."<<endl);
+        return false;
+    }
 
     
+    while(getline(mcache_config_file,line)) {
+        if(line.size()>1 && line.at(1)==' ') {
+            char sep=' ';
+            string subline = line.substr(2);
+            vector<string> temp_name_list;
 
+            if(line.at(0)=='1') {
+                HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                //lrd_cache_dir_list +=temp_name_list;
+                lrd_cache_dir_list.insert(lrd_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
+            }
+            else if(line.at(0)=='0'){
+                HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                //lrd_non_cache_dir_list +=temp_name_list;
+                lrd_non_cache_dir_list.insert(lrd_non_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
+            }
+            else if(line.at(2)=='2') {
+                HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                //lrd_var_cache_file_list +=temp_name_list;
+                lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
+
+            }
+        }
+    }
+
+
+#if 0
+cerr<<"lrd_cache_dir_list is "<<lrd_cache_dir_list <<endl;
+cerr<<"lrd_non_cache_dir_list is "<<lrd_non_cache_dir_list <<endl;
+cerr<<"lrd_var_cache_file_list is "<<lrd_var_cache_file_list <<endl;
+#endif
+
+    mcache_config_file.close();
+    if(lrd_cache_dir_list.size()==0 && lrd_non_cache_dir_list.size()==0 && lrd_var_cache_file_list.size()==0)
+        return false;
+    else 
+        return true;
 
 }
+
 
 bool check_beskeys(const string key) {
 
