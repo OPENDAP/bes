@@ -126,6 +126,26 @@ size_t HDF5CFUtil::H5_numeric_atomic_type_size(H5DataType h5type) {
 
 }
 
+#if 0
+bool HDF5CFUtil::use_lrdata_mem_cache(H5DataType h5type, CVType cvtype, bool islatlon ) {
+    if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
+            h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&
+            h5type != H5INT64 && h5type !=H5UINT64)
+        return false;
+    else {
+         if(cvtype != CV_UNSUPPORTED) 
+            return true;
+         // TODO; if varpath is specified by the user, this should return true!
+         else if(varpath == "")
+             return false;
+         else 
+             return false;
+
+    }
+
+}
+#endif
+
 bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const string &varpath) {
     if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
             h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&

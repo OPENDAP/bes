@@ -55,6 +55,33 @@ bool HDF5CFArray::read()
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
     if(length() == 0)
         return true;
+/// Start comments
+#if 0
+
+    if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) && NULL == HDF5RequestHandler::get_srdata_mem_cache()){
+cerr<<"no mem cache "<<endl;
+        read_data_NOT_from_mem_cache(false,NULL);
+        return true;
+    }
+
+    // Check if needs to use large raw data cache or small raw data cache.
+    short use_cache_flag = 0;
+
+    if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
+        if((cv_type == CV_EXIST) && (islatlon != true)) {
+
+            if(h5type == H5CHAR || h5type ==H5UCHAR || h5type==H5INT16 || h5type ==H5UINT16 ||
+                h5type == H5INT32 || h5type ==H5UINT32 || h5type ==H5FLOAT32 || h5type==H5FLOAT64 ) 
+
+
+        }
+        else if
+
+    }
+
+#endif
+
+/// End comments
 
     // Check if using the memory cache
     if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) || (false == HDF5CFUtil::use_data_mem_cache(dtype,cvtype,varname))){ 

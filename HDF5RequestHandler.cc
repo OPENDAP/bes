@@ -933,52 +933,65 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
+
 bool HDF5RequestHandler::obtain_lrd_common_cache_dirs() 
 {
-
-    //bool ret_value = false;
     string lrd_config_fpath;
     string lrd_config_fname;
+
+    // Obtain DataCache path
     lrd_config_fpath = get_beskeys("H5.DataCachePath");
+
+    // Obtain the configure file name that specifics the large file configuration
     lrd_config_fname = get_beskeys("H5.LargeDataMemCacheFileName");
-    if(lrd_config_fpath=="" ||
-       lrd_config_fname=="")
+ 
+    // If either the configure file path or fname is missing, won't add specific mem. cache dirs. 
+    if(lrd_config_fpath=="" || lrd_config_fname=="")
         return false;
 
-    string line;
+    // temp_line for storing info of one line in the config. file 
+    string temp_line;
+
+    // The full path of the configure file
     string mcache_config_fname = lrd_config_fpath+"/"+lrd_config_fname;
     
     //ifstream mcache_config_file("example.txt");
+    // Open the configure file
     ifstream mcache_config_file(mcache_config_fname.c_str());
+
+    // If the configuration file is not open, return false.
     if(mcache_config_file.is_open()==false){
-cerr<<"the file cannot be open"<<endl;
         BESDEBUG(HDF5_NAME,"The large data memory cache configure file "<<mcache_config_fname );
         BESDEBUG(HDF5_NAME," cannot be opened."<<endl);
         return false;
     }
 
-    
-    while(getline(mcache_config_file,line)) {
-        if(line.size()>1 && line.at(1)==' ') {
+    // Read the configuration file line by line
+    while(getline(mcache_config_file,temp_line)) {
+
+        // Only consider lines that is no less than 2 characters and the 2nd character is space.
+        if(temp_line.size()>1 && temp_line.at(1)==' ') {
             char sep=' ';
-            string subline = line.substr(2);
+            string subline = temp_line.substr(2);
             vector<string> temp_name_list;
 
-            if(line.at(0)=='1') {
+            // Include directories to store common latitude and longitude values
+            if(temp_line.at(0)=='1') {
                 HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
                 //lrd_cache_dir_list +=temp_name_list;
                 lrd_cache_dir_list.insert(lrd_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
             }
-            else if(line.at(0)=='0'){
+            // Include directories not to store common latitude and longitude values
+            else if(temp_line.at(0)=='0'){
                 HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
                 //lrd_non_cache_dir_list +=temp_name_list;
                 lrd_non_cache_dir_list.insert(lrd_non_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
             }
-            else if(line.at(0)=='2') {
+            // Include variable names that the server would like to store in the memory cache
+            else if(temp_line.at(0)=='2') {
                 HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
                 //lrd_var_cache_file_list +=temp_name_list;
                 lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
-
             }
         }
     }
@@ -996,7 +1009,6 @@ for(int i =0; i<lrd_non_cache_dir_list.size();i++)
 cerr<<"lrd non cache list is "<<lrd_non_cache_dir_list[i] <<endl;
 for(int i =0; i<lrd_var_cache_file_list.size();i++)
 cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
-
 
 
     mcache_config_file.close();
