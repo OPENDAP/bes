@@ -397,8 +397,8 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
 string HDF5BaseArray::
 check_str_sect_in_list(const vector<string>&str_list, const string cur_str,const char sep) {
 
-    string::size_type start = 0, end = 0;
     string ret_str;
+    string::size_type start = 0, end = 0;
     // Obtain the ret_str value
     // The cur_str will be chopped into tokens separated by sep.
     while ((end = cur_str.find(sep, start)) != string::npos) {
@@ -422,10 +422,73 @@ check_str_sect_in_list(const vector<string>&str_list, const string cur_str,const
 
 
 void HDF5BaseArray::
-handle_data_with_mem_cache(H5DataType, const short cache_case, const string & key) {     
+handle_data_with_mem_cache(H5DataType h5_dtype, const short cache_flag, const string & cache_key) {     
+
+    // 
+    ObjMemCache * mem_data_cache= NULL;
+    if(1 == cache_flag) 
+        mem_data_cache = HDF5RequestHandler::get_srdata_mem_cache();
+    else if(cache_flag > 1) 
+        mem_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
 
 
+    if(mem_data_cache == NULL)
+        throw InternalErr(__FILE__,__LINE__,"The memory data cache should NOT be NULL.");
 
+    HDF5DataMemCache* mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
+    if(mem_cache_ptr) {
+        
+        BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
+                 <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
+       
+        BESDEBUG("h5","Data Memory Cache hit, the cache flag is "<< cache_flag<<endl);
+
+        //const string var_name = mem_cache_ptr->get_varname();
+
+        // Obtain the buffer and do subsetting
+        const size_t var_size = mem_cache_ptr->get_var_buf_size();
+        if(!var_size) 
+            throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
+        else {
+
+            void *buf = mem_cache_ptr->get_var_buf();
+
+            // Obtain dimension size info.
+    	    vector<size_t> dim_sizes;
+	    Dim_iter i_dim = dim_begin();
+	    Dim_iter i_enddim = dim_end();
+	    while (i_dim != i_enddim) {
+	 	dim_sizes.push_back(dimension_size(i_dim));
+		++i_dim;
+	    }
+            // read data from the memory cache
+     	    read_data_from_mem_cache(h5_dtype,dim_sizes,buf);
+	}
+    }
+    else{ 
+
+        BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
+                 <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
+       
+        BESDEBUG("h5","Data Memory added to the cache, the cache flag is "<< cache_flag<<endl);
+
+ 	vector <char> buf;
+ 	if(total_elems == 0)
+     	    throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
+
+       	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(h5_dtype));
+
+        // This routine will read the data, send it to the DAP and save the buf to the cache.
+  	read_data_NOT_from_mem_cache(true,&buf[0]);
+            
+        // Create a new cache element.
+    	//HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
+    	HDF5DataMemCache* new_mem_cache_ele = new HDF5DataMemCache();
+       	new_mem_cache_ele->set_databuf(buf);
+       	mem_data_cache->add(new_mem_cache_ele, cache_key);
+    }
+
+    return;
 }
 
 

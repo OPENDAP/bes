@@ -23,16 +23,17 @@ using namespace std;
  */
 class HDF5DataMemCache : public libdap::DapObj {
 private:
-    string varname;
+    //string varname;
     vector <char>  databuf;
 public:
-    HDF5DataMemCache(const string &name) {varname = name; }
+    HDF5DataMemCache() { }
+    //HDF5DataMemCache(const string &name) {varname = name; }
     //HDF5DataMemCache(const HDF5DataMemCache & h5datacache);
-    const string get_varname() {return varname;}
+    //const string get_varname() {return varname;}
     const size_t get_var_buf_size() {return databuf.size();}
     //void get_var_buf(vector<char>&var_buf) { var_buf = databuf;}
     void* get_var_buf() { return &databuf[0];}
-    void set_varname(const string& name) {varname = name; }
+    //void set_varname(const string& name) {varname = name; }
     void set_databuf(vector<char> &buf){databuf = buf;}
     virtual ~HDF5DataMemCache() { };
     virtual void dump(ostream &strm) const;
