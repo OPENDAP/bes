@@ -56,7 +56,7 @@ bool HDF5CFArray::read()
     if(length() == 0)
         return true;
 /// Start comments
-#if 0
+//#if 0
 
     if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) && NULL == HDF5RequestHandler::get_srdata_mem_cache()){
 cerr<<"no mem cache "<<endl;
@@ -67,19 +67,51 @@ cerr<<"no mem cache "<<endl;
     // Check if needs to use large raw data cache or small raw data cache.
     short use_cache_flag = 0;
 
+    // The small data cache is checked first to reduce the operation of the big data cache.
     if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
-        if((cv_type == CV_EXIST) && (islatlon != true)) {
-
-            if(h5type == H5CHAR || h5type ==H5UCHAR || h5type==H5INT16 || h5type ==H5UINT16 ||
-                h5type == H5INT32 || h5type ==H5UINT32 || h5type ==H5FLOAT32 || h5type==H5FLOAT64 ) 
-
+        if(((cv_type == CV_EXIST) && (islatlon != true)) || (cv_type == CV_NONLATLON_MISS) 
+            || (cv_type == CV_FILLINDEX) ||(cv_type == CV_MODIFY) ||(cv_type == CV_SPECIAL))
+            if(HDF5CFUtil::cf_strict_support_type(dtype)==true)
+		use_cache_flag = 1;
 
         }
-        else if
+    }
+
+    if(use_cache_flag !=1) {
+
+        if(HDF5RequestHandler::get_lrdata_mem_cache() != NULL) {
+
+            // This is the trival case, just check the common conditions
+            if(HDF5RequestHandler::get_common_cache_dirs()) {
+		if((cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS 
+                   || (cv_type == CV_EXIST && islatlon == true)) {
+			if(HDF5CFUtil::cf_strict_support_type(dtype)==true)
+			    use_cache_flag = 2;
+                }
+            }
+            else {
+                // Need to check if we don't want to cache some CVs
+		if((cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS
+                   || (cv_type == CV_EXIST && islatlon == true)) {
+                    vector<string> cur_lrd_non_cache_dir_list;
+                    HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);
+                    // We cannot find the non-cache directory
+                    if(false == check_non_cache_dir(cur_lrd_non_cache_dir_list,filename)) {
+                        use_cache_flag = 2;                       
+
+                    }
+
+                }
+
+
+            }
+	}
+    }
+
 
     }
 
-#endif
+//#endif
 
 /// End comments
 
