@@ -46,7 +46,8 @@
 #include "InternalErr.h"
 
 #include "HDF5BaseArray.h"
-
+#include "HDF5RequestHandler.h"
+#include "ObjMemCache.h"
 
 #if 0
 BaseType *HDF5BaseArray::ptr_duplicate()
@@ -391,6 +392,40 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
         start++;
     }
     return sum;
+}
+
+string HDF5BaseArray::
+check_str_sect_in_list(const vector<string>&str_list, const string cur_str,const char sep) {
+
+    string::size_type start = 0, end = 0;
+    string ret_str;
+    // Obtain the ret_str value
+    // The cur_str will be chopped into tokens separated by sep.
+    while ((end = cur_str.find(sep, start)) != string::npos) {
+        if(str_list.find(str_list.start(),str_list.end(),substr(cur_str.substr(start,end-start))!=
+           str_list.end()) {
+           ret_str = cur_str.substr(start,end-start);
+           break;
+        }
+        start = end + 1;
+    }
+
+    // We will not include the last sect (rightmost sect) of cur_str.
+    if(ret_str != "") {
+        if(ret_str == cur_str.substr(cur_str.find_last_of(sep)+1))  
+            ret_str ="";
+    }
+
+    return ret_str;
+
+}
+
+
+void HDF5BaseArray::
+handle_data_with_mem_cache(H5DataType, const short cache_case, const string & key) {     
+
+
+
 }
 
 

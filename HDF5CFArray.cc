@@ -55,8 +55,6 @@ bool HDF5CFArray::read()
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
     if(length() == 0)
         return true;
-/// Start comments
-//#if 0
 
     if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) && NULL == HDF5RequestHandler::get_srdata_mem_cache()){
 cerr<<"no mem cache "<<endl;
@@ -67,84 +65,81 @@ cerr<<"no mem cache "<<endl;
     // Check if needs to use large raw data cache or small raw data cache.
     short use_cache_flag = 0;
 
-    // The small data cache is checked first to reduce the operation of the big data cache.
+    // The small data cache is checked first to reduce the resources to operate the big data cache.
     if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
         if(((cv_type == CV_EXIST) && (islatlon != true)) || (cv_type == CV_NONLATLON_MISS) 
-            || (cv_type == CV_FILLINDEX) ||(cv_type == CV_MODIFY) ||(cv_type == CV_SPECIAL))
+            || (cv_type == CV_FILLINDEX) ||(cv_type == CV_MODIFY) ||(cv_type == CV_SPECIAL)){
             if(HDF5CFUtil::cf_strict_support_type(dtype)==true)
 		use_cache_flag = 1;
-
         }
     }
 
+    // If this varible doesn't fit the small data cache, let's check if it fits the large data cache.
     if(use_cache_flag !=1) {
 
         if(HDF5RequestHandler::get_lrdata_mem_cache() != NULL) {
 
-            // This is the trival case, just check the common conditions
+            // This is the trival case. If no information is provided to the configuration of large data cache,
+            // just follow the conventions to cache the lat/lon varible per file.
             if(HDF5RequestHandler::get_common_cache_dirs()) {
-		if((cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS 
+		if(cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS 
                    || (cv_type == CV_EXIST && islatlon == true)) {
+                        // Only the numeric datatype DAP2 and CF support are cached.
 			if(HDF5CFUtil::cf_strict_support_type(dtype)==true)
 			    use_cache_flag = 2;
                 }
             }
             else {
                 // Need to check if we don't want to cache some CVs
-		if((cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS
+		if(cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS
                    || (cv_type == CV_EXIST && islatlon == true)) {
                     vector<string> cur_lrd_non_cache_dir_list;
                     HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);
-                    // We cannot find the non-cache directory
-                    if(false == check_non_cache_dir(cur_lrd_non_cache_dir_list,filename)) {
-                        use_cache_flag = 2;                       
 
+                    // Check if this file is included in the non-cache directory
+                    if("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/')) {
+
+                        // Only the numeric datatype DAP2 and CF support are cached.                
+                        if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
+                            use_cache_flag = 3;                       
                     }
-
                 }
+                // Here we allow all the variable names to be cached,including the variables 
+                // that have specific path.
+                vector<string> cur_lrd_var_cache_file_list;
+                if(cur_lrd_var_cache_file_list.size() >0){
+                    if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varpath)){
 
-
+                         // Only the numeric datatype DAP2 and CF support are cached.                
+                        if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
+                            use_cache_flag = 4;
+                    }
+                }
             }
-	}
+        }
     }
 
-
-    }
-
-//#endif
-
-/// End comments
-
-    // Check if using the memory cache
-    if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) || (false == HDF5CFUtil::use_data_mem_cache(dtype,cvtype,varname))){ 
-cerr<<"no mem cache "<<endl;
+    if(0 == use_cache_flag) 
         read_data_NOT_from_mem_cache(false,NULL);
-    }
-    else {// Using the memory cache
-        
-        ObjMemCache* my_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
+    else if(1 == use_cache_flag) {// Use the small data cache,mostly for non lat/lon coordinate variables
 
-        if(my_data_cache) {
+        ObjMemCache* sr_data_cache = HDF5RequestHandler::get_srdata_mem_cache();
+
+        if(sr_data_cache) {
+
             // Cache key needs to be filename+varname.
-            HDF5DataMemCache* cached_h5data_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_lrdata_mem_cache())->get(filename+varname));
-            if(cached_h5data_mem_cache_ptr) {
-                BESDEBUG("h5","Data Memory Cache hit "<<endl);
-//cerr<<"Cache hit: varname is "<<varname <<endl;
-                const string var_name = cached_h5data_mem_cache_ptr->get_varname();
-//cerr<<"my variable name is "<<var_name <<endl;
+            HDF5DataMemCache* cached_h5_srdata_mem_cache_ptr = static_cast<HDF5DataMemCache*>((HDF5RequestHandler::get_srdata_mem_cache())->get(filename+varname));
+            if(cached_h5_srdata_mem_cache_ptr) {
+                BESDEBUG("h5","Small Data Memory Cache hit "<<endl);
+                const string var_name = cached_h5_srdata_mem_cache_ptr->get_varname();
 
                 // Obtain the buffer and do subsetting
-                const size_t var_size = cached_h5data_mem_cache_ptr->get_var_buf_size();
-//cerr<<"var buf size is "<<var_size <<endl;
+                const size_t var_size = cached_h5_srdata_mem_cache_ptr->get_var_buf_size();
                 if(!var_size) 
                     throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
                 else {
-                    //vector<char> buf;
-                    //buf.resize(var_size);
-                    void *buf;
-                    buf = cached_h5data_mem_cache_ptr->get_var_buf();
-                    //cached_h5data_mem_cache_ptr->get_var_buf(buf);
-//cerr<<"buf 0 is "<<*((float*)&buf[0])<<endl;
+
+                    void *buf = cached_h5_srdata_mem_cache_ptr->get_var_buf();
 
                     // Obtain dimension size info.
     		    vector<size_t> dim_sizes;
@@ -154,29 +149,108 @@ cerr<<"no mem cache "<<endl;
 	    		dim_sizes.push_back(dimension_size(i_dim));
 			++i_dim;
 		    }
-//for(int i = 0; i <dim_sizes.size();i++)
-//cerr<<"dim_sizes "<<i <<" is "<<dim_sizes[i] <<endl;
-
+                    // read data from the memory cache
      		    read_data_from_mem_cache(dtype,dim_sizes,buf);
-     		    //read_data_from_mem_cache(dtype,dim_sizes,(void*)&buf[0]);
+		}
+	    }
+	    else{ 
+
+		BESDEBUG("h5","Small Data memory added to the cache "<<endl);
+     		vector <char> buf;
+	 	if(total_elems == 0)
+	     	    throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
+
+	       	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(dtype));
+
+                // This routine will read the data, send to the DAP and save the buf to the cache.
+	       	read_data_NOT_from_mem_cache(true,&buf[0]);
+            
+                // Create a new cache element.
+	       	HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
+	       	new_mem_cache->set_databuf(buf);
+	       	sr_data_cache->add(new_mem_cache, filename+varname);
+	    }
+	}
+    }
+
+    else if(use_cache_flag == 2) {// Cache the large raw data, mostly for lat/lon coordinate variables
+
+        ObjMemCache* lr_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
+
+        if(lr_data_cache) {
+
+            HDF5DataMemCache* lrdata_cache_ptr = NULL;
+            // Obtain the memory cache
+            // Here we need to check if we just need to store one common lat/lon CVs.
+            // First, common_cache_dirs may exist
+            string cache_dir;
+            if(HDF5RequestHandler::get_common_cache_dirs() == false) {
+                if((cvtype == CV_EXIST && islatlon == true) 
+                    || cvtype == CV_LAT_MISS ||cvtype == CV_LON_MISS) {
+
+	            vector<string> cur_cache_dlist;
+                    HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);
+
+		    cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');
+
+                    // Get the cache directory
+                    if(cache_dir !="") {
+                        lrdata_cache_ptr = static_cast<HDF5DataMemCache*>
+                            ((HDF5RequestHandler::get_lrdata_mem_cache())->get(cache_dir+varname));
+                    }
+                    else {// No common directory, 
+                      // we don't allow cv cached with var. name.So the key is filename+varname
+			lrdata_cache_ptr = static_cast<HDF5DataMemCache*>
+                           ((HDF5RequestHandler::get_lrdata_mem_cache())->get(filename+varname));
+		    }
+		}
+                else {//We will check if there are any variables need to be cached.
+
+                }
+            }
+	    else { 
+		    lrdata_cache_ptr = static_cast<HDF5DataMemCache*>
+			((HDF5RequestHandler::get_lrdata_mem_cache())->get(filename+varname));
+                
+	    }
+	    if(lrdata_cache_ptr) {
+
+		    BESDEBUG("h5","Large Data Memory Cache hit "<<endl);
+		    const string var_name = lrdata_cache_ptr->get_varname();
+
+		    // Obtain the buffer and do subsetting
+		    const size_t var_size = lrdata_cache_ptr->get_var_buf_size();
+                if(!var_size) 
+                    throw InternalErr(__FILE__,__LINE__,"The large cached data buffer size is 0.");
+                else {
+
+                    void *buf = lrdata_cache_ptr->get_var_buf();
+                    // Obtain dimension size info.
+    		    vector<size_t> dim_sizes;
+		    Dim_iter i_dim = dim_begin();
+	    	    Dim_iter i_enddim = dim_end();
+	    	    while (i_dim != i_enddim) {
+	    		dim_sizes.push_back(dimension_size(i_dim));
+			++i_dim;
+		    }
+     		    read_data_from_mem_cache(dtype,dim_sizes,buf);
                 
 		}
 	    }
 	    else{ 
-		BESDEBUG("h5","Data memory added to the cache "<<endl);
-//cerr<<"coming to add data memory cache "<<endl;
-//cerr<<"Cache added: varname is "<<varname <<endl;
-
+		BESDEBUG("h5","Large Data memory added to the cache "<<endl);
      		vector <char> buf;
 	 	if(total_elems == 0)
 	     	    throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
 	       	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(dtype));
 	       	read_data_NOT_from_mem_cache(true,&buf[0]);
-		// Add the buffer 
             
 	       	HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
 	       	new_mem_cache->set_databuf(buf);
-	       	my_data_cache->add(new_mem_cache, filename+varname);
+                if(cache_dir =="") 
+	       	    lr_data_cache->add(new_mem_cache, filename+varname);
+                else
+                    lr_data_cache->add(new_mem_cache,cache_dir+varname);
 	    }
 	}
     }
