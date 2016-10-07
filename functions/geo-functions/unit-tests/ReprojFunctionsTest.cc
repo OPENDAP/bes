@@ -45,11 +45,16 @@
 #include "test_config.h"
 
 static bool debug = false;
+static bool bes_debug = false;
+
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+#if 0
+const string THREE_ARRAY_1_DDS = "three_array_1.dds";
+const string THREE_ARRAY_1_DAS = "three_array_1.das";
+#endif
 
-#define THREE_ARRAY_1_DDS "three_array_1.dds"
-#define THREE_ARRAY_1_DAS "three_array_1.das"
+const string small_dds = "small.dds";
 
 using namespace CppUnit;
 using namespace libdap;
@@ -61,7 +66,8 @@ int test_variable_sleep_interval = 0;
  * Splits the string on the passed char. Returns vector of substrings.
  * TODO make this work in situations where multiple spaces doesn't hose the split()
  */
-static vector<string> &split(const string &s, char delim, vector<string> &elems) {
+static vector<string> &split(const string &s, char delim, vector<string> &elems)
+{
     stringstream ss(s);
     string item;
     while (getline(ss, item, delim)) {
@@ -73,41 +79,46 @@ static vector<string> &split(const string &s, char delim, vector<string> &elems)
 /**
  * Splits the string on the passed char. Returns vector of substrings.
  */
-static vector<string> split(const string &s, char delim = ' ') {
+static vector<string> split(const string &s, char delim = ' ')
+{
     vector<string> elems;
     return split(s, delim, elems);
 }
 
-class s2gTest : public TestFixture
+class ReprojFunctionsTest : public TestFixture
 {
 private:
-    DDS * dds;
+    DDS *dds;
     TestTypeFactory btf;
+#if 0
     ConstraintEvaluator ce;
     int dim_0_size;
     int dim_1_size;
-
+#endif
 
 public:
-    s2gTest():dds(0)
+    ReprojFunctionsTest() : dds(0)
     {}
-    ~s2gTest()
+    ~ReprojFunctionsTest()
     {}
 
     void setUp()
     {
-        DBG(cerr<<"setUp() - BEGIN" << endl);
+        DBG(cerr << "setUp() - BEGIN" << endl);
         try {
+            dds = new DDS(&btf);
+            string dds_file = (string) TEST_SRC_DIR + "/" + small_dds;
+            dds->parse(dds_file);
 
-#if 1
+#if 0
             dim_0_size = 135;
-            dim_1_size =  90;
+            dim_1_size = 90;
 
             dds = new DDS(&btf);
-            string dds_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DDS ;
+            string dds_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DDS;
             dds->parse(dds_file);
             DAS das;
-            string das_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DAS ;
+            string das_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DAS;
             das.parse(das_file);
             dds->transfer_attributes(&das);
 
@@ -123,26 +134,26 @@ public:
 
             dods_float32 t_vals[dim_0_size][dim_1_size];
             for (int i = 0; i < dim_0_size; ++i)
-                for (int j = 0; j < dim_1_size; ++j)
-                    t_vals[i][j] = ((double)j) + (i * 10.0);
+            for (int j = 0; j < dim_1_size; ++j)
+            t_vals[i][j] = ((double)j) + (i * 10.0);
             t.set_value(&t_vals[0][0], dim_0_size*dim_1_size);
             t.set_read_p(true);
 
             // Read real lat/lon values from a Level 1B file ascii dump
             fstream input("three_array_1.txt", fstream::in);
             if (input.eof() || input.fail())
-                throw Error("Could not open lat/lon data in SetUp.");
+            throw Error("Could not open lat/lon data in SetUp.");
             // Read a line of text to get to the start of the data.
             string line;
             getline(input, line);
             if (input.eof() || input.fail())
-                throw Error("Could not read lat/lon data in SetUp.");
+            throw Error("Could not read lat/lon data in SetUp.");
 
             dods_float64 lon_vals[dim_0_size][dim_1_size];
             for (int i = 0; i < dim_0_size; ++i) {
                 getline(input, line);
                 if (input.eof() || input.fail())
-                    throw Error("Could not read lon data from row " + long_to_string(i) + " in SetUp.");
+                throw Error("Could not read lon data from row " + long_to_string(i) + " in SetUp.");
                 vector<string> vals = split(line, ',');
                 for (unsigned int j = 1; j < vals.size(); ++j) {
                     DBG2(cerr << "loading in lon value: " << vals[j] << "' " << atof(vals[j].c_str()) << endl;)
@@ -156,7 +167,7 @@ public:
             for (int i = 0; i < dim_0_size; ++i) {
                 getline(input, line);
                 if (input.eof() || input.fail())
-                    throw Error("Could not read lat data from row " + long_to_string(i) + " in SetUp.");
+                throw Error("Could not read lat data from row " + long_to_string(i) + " in SetUp.");
                 vector<string> vals = split(line, ',');
                 for (unsigned int j = 1; j < vals.size(); ++j) {
                     DBG2(cerr << "loading in lat value: " << vals[j] << "' " << atof(vals[j].c_str()) << endl;)
@@ -168,10 +179,10 @@ public:
 #endif
 #if 0
             dds = new DDS(&btf);
-            string dds_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DDS ;
+            string dds_file = /*(string)TEST_SRC_DIR + "/" +*/THREE_ARRAY_1_DDS;
             dds->parse(dds_file);
             DAS das;
-            string das_file = /*(string)TEST_SRC_DIR + "/" +*/ THREE_ARRAY_1_DAS ;
+            string das_file = /*(string)TEST_SRC_DIR + "/" +*/THREE_ARRAY_1_DAS;
             das.parse(das_file);
             dds->transfer_attributes(&das);
 
@@ -185,8 +196,8 @@ public:
 
             dods_float64 t_vals[10][10];
             for (int i = 0; i < 10; ++i)
-                for (int j = 0; j < 10; ++j)
-                    t_vals[i][j] = j + (i * 10);
+            for (int j = 0; j < 10; ++j)
+            t_vals[i][j] = j + (i * 10);
             t.set_value(&t_vals[0][0], 100);
             t.set_read_p(true);
 
@@ -224,12 +235,12 @@ public:
             cerr << "SetUp (Error): " << e.get_error_message() << endl;
             throw;
         }
-        catch(std::exception &e) {
+        catch (std::exception &e) {
             cerr << "SetUp (std::exception): " << e.what() << endl;
             throw;
         }
 
-        DBG(cerr<<"setUp() - END" << endl);
+        DBG(cerr << "setUp() - END" << endl);
     }
 
     void tearDown()
@@ -237,7 +248,7 @@ public:
         delete dds; dds = 0;
     }
 
-    CPPUNIT_TEST_SUITE( s2gTest );
+    CPPUNIT_TEST_SUITE( ReprojFunctionsTest );
 
     CPPUNIT_TEST(no_arguments_test);
     CPPUNIT_TEST(array_return_test);
@@ -245,6 +256,7 @@ public:
 
     CPPUNIT_TEST_SUITE_END();
 
+#if 0
     void no_arguments_test()
     {
         DBG(cerr<<"no_arguments_test() - BEGIN" << endl);
@@ -287,7 +299,7 @@ public:
     }
 
 
-#if 0
+
     void one_argument_not_a_grid_test()
     {
         try {
@@ -677,7 +689,6 @@ public:
             CPPUNIT_ASSERT("Pass: Caught exception");
         }
     }
-#endif
 
     void grid_return_test()
     {
@@ -734,22 +745,29 @@ public:
         }
         DBG(cerr<<"grid_return_test() - END" << endl);
     }
+#endif
+
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(s2gTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ReprojFunctionsTest);
 
 int main(int argc, char*argv[])
 {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "db");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
+
+        case 'b':
+            bes_debug = 1;  // debug is a static global
+            break;
+
         default:
             break;
         }
@@ -763,7 +781,7 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("s2gTest::") + argv[i++];
+            test = string("ReprojFunctionsTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

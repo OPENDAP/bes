@@ -45,6 +45,7 @@
 #include <debug.h>
 
 #include "reproj_functions.h"
+#include "DAP_Dataset.h"
 
 using namespace std;
 
@@ -189,6 +190,9 @@ SizeBox get_size_box(Array *lat, Array *lon)
 
 /**
  * @brief Extract the geo-transform coordinates from a DP2 Grid
+ *
+ * @note Side effect: Data are read into the lat and lon Arrays
+ *
  * @param lat
  * @param lon
  * @return A vector<double> of length 6 with the GDAL geo-transform parameters
@@ -224,6 +228,7 @@ vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size
 		}
 	}
 
+	// TODO Should these by using size - 1 in the denominator? jhrg 10/7/16
     double res_x, res_y;
     if (min_x > max_x && min_x > 0 && max_x < 0)
         res_x = (360 + max_x - min_x) / (size.x_size - 1);
@@ -232,20 +237,30 @@ vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size
 
     res_y = (max_y - min_y) / (size.y_size - 1);
 
-    double res = min(res_x, res_y);
+    // Removed jhrg 10/7/16 double res = min(res_x, res_y);
+
+    // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+    // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+
+    // In case of north up images, the GT(2) and GT(4) coefficients are zero,
+    // and the GT(1) is pixel width, and GT(5) is pixel height. The (GT(0),GT(3))
+    // position is the top left corner of the top left pixel of the raster.
+    //
+    // Note that for an inverted dataset, use min_y and res_y for GT(3) and GT(5)
 
     vector<double> geo_transform(6);
     geo_transform[0] = min_x;
-    geo_transform[1] = res;
+    geo_transform[1] = res_x;
     geo_transform[2] = 0;
-    geo_transform[3] = max_y;
+    geo_transform[3] = max_y;   // Assume max lat is at the top
     geo_transform[4] = 0;
-    geo_transform[5] = -res;
+    geo_transform[5] = -res_y;  // moving down (lower lats) corresponds to ++index
 
     return geo_transform;
 }
 
-GDALDataType get_grid_type(const Grid *g) {
+GDALDataType get_grid_type(const Grid *g)
+{
 	switch (const_cast<Grid*>(g)->get_array()->type()) {
 	case dods_byte_c:
 		return GDT_Byte;
@@ -310,7 +325,7 @@ void read_band_data(const Grid* g, const SizeBox &g_size, GDALRasterBand* band)
  * @param g Get data and attributes from this Grid
  * @return The GDAL Dataset
  */
-auto_ptr<GDALDataset> build_gdal_daatset_from_grid(Grid *g)
+auto_ptr<GDALDataset> build_src_dataset(Grid *g)
 {
 	// FIXME Must determine which axes are lat and lon. jhrg 10/6/16
     Array *lat = static_cast<Array*>(*g->get_map_iter(0));
@@ -350,7 +365,7 @@ auto_ptr<GDALDataset> build_gdal_daatset_from_grid(Grid *g)
     // FIXME I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
     // native_srs.SetUTM( 11, TRUE );
 
-    // TODO Is this needed? jhrg 10/6/16
+    // TODO Is this needed? Does it conflict with SetGeoTransform above. jhrg 10/6/16
     char *pszSRS_WKT = NULL;
     native_srs.exportToWkt( &pszSRS_WKT );
     ds->SetProjection( pszSRS_WKT );
@@ -368,33 +383,49 @@ auto_ptr<GDALDataset> build_gdal_daatset_from_grid(Grid *g)
  * @param hSrcDS
  * @param hDstDS
  */
-void warp_raster(GDALDatasetH hSrcDS, GDALDatasetH hDstDS)
+void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds)
 {
 	// Setup warp options.
 	GDALWarpOptions* psWarpOptions = GDALCreateWarpOptions();
-	psWarpOptions->hSrcDS = hSrcDS;
-	psWarpOptions->hDstDS = hDstDS;
+	psWarpOptions->hSrcDS = src_ds;
+	psWarpOptions->hDstDS = dst_ds;
 	psWarpOptions->nBandCount = 1;
 	psWarpOptions->panSrcBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
 	psWarpOptions->panSrcBands[0] = 1;
 	psWarpOptions->panDstBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
 	psWarpOptions->panDstBands[0] = 1;
+
 	// Establish reprojection transformer.
-	psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer(hSrcDS,
-			GDALGetProjectionRef(hSrcDS), hDstDS, GDALGetProjectionRef(hDstDS),
+	psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer(src_ds,
+			GDALGetProjectionRef(src_ds), dst_ds, GDALGetProjectionRef(dst_ds),
 			FALSE, 0.0, 1);
 	psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
 	// Initialize and execute the warp operation.
 	GDALWarpOperation oOperation;
 	oOperation.Initialize(psWarpOptions);
+
 	// TODO There's a method for multi-threads and also a MT warp options option. jhrg 10/6/16
-	oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS));
+	oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(dst_ds), GDALGetRasterYSize(dst_ds));
 
 	GDALDestroyGenImgProjTransformer(psWarpOptions->pTransformerArg);
 	GDALDestroyWarpOptions(psWarpOptions);
 }
 
+auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
+{
+    GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+    if(!driver)
+        throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
+
+    GDALDataType gdal_type = get_grid_type(g);
+
+    // The MEM driver takes no creation options (I think) jhrg 10/6/16
+    auto_ptr<GDALDataset> ds(driver->Create("result", 10, 10,
+            1 /* nBands*/, gdal_type, NULL /* driver_options */));
+
+    return ds;
+}
 /**
  * @brief Scale a DAP2 Grid given the Grid, dest lat/lon subset, dest size and CRS.
  *
@@ -406,27 +437,16 @@ void warp_raster(GDALDatasetH hSrcDS, GDALDatasetH hDstDS)
  * uses the GDAL constants
  * @return The new Grid variable
  */
-Grid *scale_dap_grid(Grid *src, GeoBox &bbox, SizeBox &size, const string &crs,
-		const int interp)
+Grid *scale_dap_grid(Grid *src, GeoBox &bbox, SizeBox &size, const string &crs, const int interp)
 {
 	// Build GDALDataset for src
-	auto_ptr<GDALDataset> gdal_src = build_gdal_daatset_from_grid(src);
+	auto_ptr<GDALDataset> src_ds = build_src_dataset(src);
 
 	// Build GDALDaatset for result - Assume it's a double for now (jhrg 10/6/16)
-	//auto_ptr<GDALDataset> dest;
+    auto_ptr<GDALDataset> dst_ds = build_dst_dataset(src);
 
 	// Call the GDAL warp code
-    GDALDatasetH  /*hSrcDS,*/ hDstDS;
-    // Open input and output files.
-    //GDALAllRegister();
-    //hSrcDS = GDALOpen( "in.tif", GA_ReadOnly );
-    hDstDS = GDALOpen( "out.tif", GA_Update );
-
-    // Setup warp options.
-	warp_raster(gdal_src.get()/*hSrcDS*/, hDstDS);
-
-    GDALClose( hDstDS );
-    //GDALClose( hSrcDS );
+    warp_raster(src_ds.get(), dst_ds.get());
 
 	// Build the result Grid using the result GDALDataset    GDALRasterBand *poBand = satDataSet->GetRasterBand(1);
 	//auto_ptr<Grid> dest(new Grid("result"));
@@ -508,7 +528,7 @@ Grid *scale_dap_grid(Grid *src, GeoBox &bbox, SizeBox &size, const string &crs,
  */
 void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-#if 0
+#if 1
     DBG(cerr << "function_swath2array() - BEGIN" << endl);
 
     // Use the same documentation for both swath2array and swath2grid
@@ -580,7 +600,7 @@ void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
  */
 void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-#if 0
+#if 1
 	DBG(cerr << "function_swath2grid() - BEGIN" << endl);
 
     string info =

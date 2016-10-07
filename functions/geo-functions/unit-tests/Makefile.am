@@ -52,8 +52,7 @@ test_config.h: test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = s2gTest
-
+UNIT_TESTS = ReprojFunctionsTest
 else
 UNIT_TESTS =
 
@@ -72,7 +71,7 @@ TEST_SRC =
 # Many of the tests use these - build once
 TEST_OBJ =
 
-s2gTest_SOURCES = s2gTest.cc  $(TEST_SRC)
-s2gTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
-s2gTest_LDADD = -ltest-types ../libswath2grid.la $(CPPUNIT_LIBS) $(DAP_SERVER_LIBS) $(TEST_OBJ) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
+ReprojFunctionsTest_SOURCES = ReprojFunctionsTest.cc  $(TEST_SRC)
+ReprojFunctionsTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ReprojFunctionsTest_LDADD = -ltest-types ../repro_functions.o $(CPPUNIT_LIBS) $(DAP_SERVER_LIBS) $(TEST_OBJ) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
 
