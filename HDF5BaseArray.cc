@@ -421,7 +421,8 @@ check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,cons
 
 }
 
-bool check_var_cache_files(const vector<string>&slist, const string &fname,const string &varname) {
+bool HDF5BaseArray::
+check_var_cache_files(const vector<string>&slist, const string &fname,const string &varname) {
 
     bool ret_value = false;
     if(fname=="" || varname=="")
