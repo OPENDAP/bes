@@ -42,6 +42,7 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
+#include <algorithm>
 #include <BESDebug.h>
 #include "InternalErr.h"
 
@@ -395,14 +396,14 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
 }
 
 string HDF5BaseArray::
-check_str_sect_in_list(const vector<string>&str_list, const string cur_str,const char sep) {
+check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,const char sep) {
 
     string ret_str;
     string::size_type start = 0, end = 0;
     // Obtain the ret_str value
     // The cur_str will be chopped into tokens separated by sep.
     while ((end = cur_str.find(sep, start)) != string::npos) {
-        if(str_list.find(str_list.start(),str_list.end(),substr(cur_str.substr(start,end-start))!=
+        if(std::find(str_list.begin(),str_list.end(),cur_str.substr(start,end-start))!=
            str_list.end()) {
            ret_str = cur_str.substr(start,end-start);
            break;
@@ -411,18 +412,33 @@ check_str_sect_in_list(const vector<string>&str_list, const string cur_str,const
     }
 
     // We will not include the last sect (rightmost sect) of cur_str.
-    if(ret_str != "") {
-        if(ret_str == cur_str.substr(cur_str.find_last_of(sep)+1))  
-            ret_str ="";
-    }
+    //if(ret_str != "") {
+    //    if(ret_str == cur_str.substr(cur_str.find_last_of(sep)+1))  
+    //        ret_str ="";
+    //}
 
     return ret_str;
 
 }
 
+bool check_var_cache_files(const vector<string>&slist, const string &fname,const string &varname) {
+
+    bool ret_value = false;
+    if(fname=="" || varname=="")
+        return ret_value;
+    string fullpath = (fname[fname.size()-1]=='/')?(fname+varname):(fname+'/'+varname);
+    for(int i = 0; i<slist.size();i++) {
+        if(fullpath.rfind(slist[i])==(fullpath.size()-slist[i].size())){
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
+
 
 void HDF5BaseArray::
-handle_data_with_mem_cache(H5DataType h5_dtype, const short cache_flag, const string & cache_key) {     
+handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short cache_flag, const string & cache_key) {     
 
     // 
     ObjMemCache * mem_data_cache= NULL;

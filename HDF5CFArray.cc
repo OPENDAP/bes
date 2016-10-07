@@ -63,13 +63,13 @@ cerr<<"no mem cache "<<endl;
         return true;
     }
 
-    // Check if needs to use large raw data cache or small raw data cache.
+    // Flag to check if using large raw data cache or small raw data cache.
     short use_cache_flag = 0;
 
     // The small data cache is checked first to reduce the resources to operate the big data cache.
     if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
-        if(((cv_type == CV_EXIST) && (islatlon != true)) || (cv_type == CV_NONLATLON_MISS) 
-            || (cv_type == CV_FILLINDEX) ||(cv_type == CV_MODIFY) ||(cv_type == CV_SPECIAL)){
+        if(((cvtype == CV_EXIST) && (islatlon != true)) || (cvtype == CV_NONLATLON_MISS) 
+            || (cvtype == CV_FILLINDEX) ||(cvtype == CV_MODIFY) ||(cvtype == CV_SPECIAL)){
 
             if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
 		use_cache_flag = 1;
@@ -82,43 +82,43 @@ cerr<<"no mem cache "<<endl;
         if(HDF5RequestHandler::get_lrdata_mem_cache() != NULL) {
 
             // This is the trival case. 
-            // If no information is provided to the configuration of large data cache,
-            // just follow the conventions to cache the lat/lon varible per file.
+            // If no information is provided in the configuration file of large data cache,
+            // just cache the lat/lon varible per file.
             if(HDF5RequestHandler::get_common_cache_dirs() == false) {
-		if(cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS 
-                    || (cv_type == CV_EXIST && islatlon == true)) {
+		if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS 
+                    || (cvtype == CV_EXIST && islatlon == true)) {
 
-                    // Only the numeric datatype DAP2 and CF support are cached.
+                    // Only the data with the numeric datatype DAP2 and CF support are cached.
 		    if(HDF5CFUtil::cf_strict_support_type(dtype)==true)
 		        use_cache_flag = 2;
                 }
             }
-            else {
+            else {// Have large data cache configuration info.
 
                 // Need to check if we don't want to cache some CVs, now
                 // this only applies to lat/lon CV.
-		if(cv_type == CV_LAT_MISS || cv_type == CV_LON_MISS
-                    || (cv_type == CV_EXIST && islatlon == true)) {
+		if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS
+                    || (cvtype == CV_EXIST && islatlon == true)) {
 
                     vector<string> cur_lrd_non_cache_dir_list;
                     HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);
 
                     // Check if this file is included in the non-cache directory
                     if( (cur_lrd_non_cache_dir_list.size() == 0) ||
-                        ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/')) {
+                        ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {
 
-                        // Only the numeric datatype DAP2 and CF support are cached.                
+                        // Only data with the numeric datatype DAP2 and CF support are cached.   
                         if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
                             use_cache_flag = 3;                       
                     }
                 }
-                // Here we allow all the variable names to be cached,including the variables 
-                // that have specific path.
+                // Here we allow all the variable names to be cached. 
+                // The file path that includes the variables can also included.
                 vector<string> cur_lrd_var_cache_file_list;
                 if(cur_lrd_var_cache_file_list.size() >0){
-                    if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varpath)){
+                    if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varname)){
 
-                         // Only the numeric datatype DAP2 and CF support are cached.                
+                         // Only the data with the numeric datatype DAP2 and CF support are cached. 
                         if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
                             use_cache_flag = 4;
                     }
@@ -131,21 +131,22 @@ cerr<<"no mem cache "<<endl;
         read_data_NOT_from_mem_cache(false,NULL);
     else {// memory cache cases
 
-         string cache_key;
-         if( 3 == use_cache_flag){
-             vector<string> cur_cache_dlist;
-             HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);
-             string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');
-             if(cache_dir = "") 
+        string cache_key;
+        if( 3 == use_cache_flag){
+            vector<string> cur_cache_dlist;
+            HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);
+            string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');
+            if(cache_dir != "") 
                 cache_key = cache_dir + varname;
-             else
+            else
                 cache_key = filename + varname;
 
-         }
-         else
+        }
+        else
             cache_key = filename + varname;
 
-         handle_data_with_mem_cache(dtype,use_cache_flag,cache_key);
+        handle_data_with_mem_cache(dtype,total_elems,use_cache_flag,cache_key);
+
 
     }
 

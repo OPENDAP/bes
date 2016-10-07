@@ -6,7 +6,7 @@
 void
 HDF5DataMemCache::dump(ostream &strm) const
 {
-    cerr<<"var name is "<<varname <<endl;
+    cerr<<"dump HDF5 data mem cache " <<endl;
 }
 
 

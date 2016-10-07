@@ -80,10 +80,10 @@ class HDF5BaseArray:public Array {
                                                 std::vector<T> *poutput,
                                                 std::vector<size_t>& pos,
                                                 int index);
-    std::string check_str_in_list(const std::vector<string> &str_list,const std::string cur_str);
-
-    void  handle_data_with_mem_cache(H5DataType, const short cache_case, const std::string & key);
-    }
+    std::string check_str_sect_in_list(const std::vector<string> &,const std::string &,char);
+    bool check_var_cache_files(const std::vector<string>&,const std::string &,const std::string &);
+    void  handle_data_with_mem_cache(H5DataType, size_t t_elems,const short cache_case, const std::string & key);
+    
 };
 
 #endif                          // _HDF5BASEARRAY_H
