@@ -91,20 +91,27 @@ const bool CVar::isLatLon() const{
         string attr_name ="units";
         string lat_unit_value = "degrees_north";
         string lon_unit_value = "degrees_east";
+//cerr<<"cv name is "<< this->name <<endl;
 
         for(vector<Attribute *>::const_iterator ira = this->attrs.begin();
                      ira != this->attrs.end();ira++) {
 
+//cerr<<"attribute name is "<<(*ira)->name <<endl;
+//cerr<<"attribnte type is "<<(*ira)->getType() <<endl;
             if ((H5FSTRING == (*ira)->getType()) ||
                 (H5VSTRING == (*ira)->getType())) {
-                string attr_value;
+                if(attr_name == (*ira)->name) {
+                string attr_value1((*ira)->getValue().begin(),(*ira)->getValue().end());
+//cerr<<"CV attribute value outside is "<<attr_value1 <<endl;
 
                 if((*ira)->getCount()==1) {
                    string attr_value((*ira)->getValue().begin(),(*ira)->getValue().end());
+//cerr<<"CV attribute value inside is "<<attr_value <<endl;
                    if(attr_value == lat_unit_value || attr_value == lon_unit_value){
                         ret_value = true;
                         break;
                    }
+                }
                 }
             }
         }

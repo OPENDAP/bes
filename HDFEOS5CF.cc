@@ -160,6 +160,22 @@ void EOS5File::Retrieve_H5_Info(const char *path,
     File::Retrieve_H5_Info(path,file_id,true);
 }
 
+void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values() {
+
+    for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
+          ircv != this->cvars.end(); ++ircv) {
+
+        // When the coordinate variables exist in the file, retrieve the attribute values.
+        if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype)){
+            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                 ira != (*ircv)->attrs.end(); ++ira) 
+                Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
+                    
+        }
+    }
+
+}
+
 // Retrieve the attribute values for the HDF-EOS5
 void EOS5File::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
 

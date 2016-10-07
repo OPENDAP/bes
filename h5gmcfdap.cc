@@ -92,6 +92,8 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Handle coordinate variables
         f->Handle_CVar();
 
+        // We need to retrieve existing coordinate variable attributes for memory cache use.
+        f->Retrieve_H5_CVar_Supported_Attr_Values(); 
         // Handle special variables
         f->Handle_SpVar();
 

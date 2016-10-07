@@ -176,6 +176,9 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Handle coordinate variables
         f->Handle_CVar();
 
+        // Retrieve existing coordinate variable attributes for memory cache use.
+        f->Retrieve_H5_CVar_Supported_Attr_Values();
+
         // Adjust variable and dimension names again based on the handling coordinate variables.
         f->Adjust_Var_Dim_NewName_Before_Flattening();
 
