@@ -29,8 +29,12 @@ libswath2grid_la_LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 SRCS = AbstractDataset.cpp BoundingBox.cpp wcs_error.cpp wcsUtil.cpp \
 DAP_Dataset.cpp reproj_functions.cc
 
+# Geo2DArray.cc
+
 HDRS = AbstractDataset.h BoundingBox.h wcs_error.h wcsUtil.h \
-DAP_Dataset.h reproj_functions.h 
+DAP_Dataset.h reproj_functions.h
+
+# Geo2DArray.h
 
 if  LIBDAP
 check-dap:

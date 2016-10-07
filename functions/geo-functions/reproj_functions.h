@@ -26,16 +26,34 @@
 #ifndef _reproj_functions_h
 #define _reproj_functions_h
 
-#include "BESAbstractModule.h"
+// #include "BESAbstractModule.h"
 #include "ServerFunction.h"
-#include "ServerFunctionsList.h"
+//#include "ServerFunctionsList.h"
 
 namespace libdap {
+
+struct SizeBox {
+	int x_size;
+	int y_size;
+
+	SizeBox(int x, int y) : x_size(x), y_size(y) { }
+	SizeBox(): x_size(0), y_size(0) { }
+};
+
+struct GeoBox {
+	double top;		// Latitude
+	double bottom;	// Lat
+	double left;	// Lon
+	double right;	// Lon
+
+	GeoBox(double t, double b, double l, double r) : top(t), bottom(b), left(l), right(r) { }
+	GeoBox() : top(0.0), bottom(0.0), left(0.0), right(0.0) { }
+};
 
 void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 
-class SwathToGrid: public libdap::ServerFunction {
+class SwathToGrid: public ServerFunction {
 public:
     SwathToGrid()
     {
@@ -53,7 +71,7 @@ public:
 
 };
 
-class SwathToArray: public libdap::ServerFunction {
+class SwathToArray: public ServerFunction {
 public:
     SwathToArray()
     {
@@ -71,7 +89,7 @@ public:
 
 };
 
-
+#if 0
 class ReProjectionFunctions: public BESAbstractModule {
 public:
     ReProjectionFunctions()
@@ -89,6 +107,7 @@ public:
 
     virtual void dump(ostream &strm) const;
 };
+#endif
 
 } // namespace libdap
 
