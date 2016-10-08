@@ -427,7 +427,23 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
     bool ret_value = false;
     if(fname=="" || varname=="")
         return ret_value;
+
     string fullpath = (fname[fname.size()-1]=='/')?(fname+varname):(fname+'/'+varname);
+
+    if(fname[fname.size()-1] == '/') {
+        if(varname[0]!='/')
+            fullpath = fname+varname;
+        else
+            fullpath = fname.substr(0,fname.size()-1)+varname;
+    }
+    else {
+        if(varname[0]!='/')
+            fullpath = fname+'/'+varname;
+        else
+            fullpath = fname+varname;
+    }
+        
+
     for(int i = 0; i<slist.size();i++) {
         if(fullpath.rfind(slist[i])==(fullpath.size()-slist[i].size())){
             ret_value = true;

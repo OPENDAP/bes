@@ -58,7 +58,6 @@ bool HDF5CFArray::read()
 
     if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) && 
         NULL == HDF5RequestHandler::get_srdata_mem_cache()){
-cerr<<"no mem cache "<<endl;
         read_data_NOT_from_mem_cache(false,NULL);
         return true;
     }
@@ -115,8 +114,10 @@ cerr<<"no mem cache "<<endl;
                 // Here we allow all the variable names to be cached. 
                 // The file path that includes the variables can also included.
                 vector<string> cur_lrd_var_cache_file_list;
+                HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
                 if(cur_lrd_var_cache_file_list.size() >0){
                     if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varname)){
+cerr<<"have var cached "<<endl;
 
                          // Only the data with the numeric datatype DAP2 and CF support are cached. 
                         if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
