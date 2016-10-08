@@ -38,7 +38,7 @@
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRStreamUnMarshaller.h>
-//<XDRFileUnMarshaller.h>
+
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
@@ -52,11 +52,6 @@
 #include "BESLog.h"
 #include "BESDebug.h"
 
-#ifdef NDEBUG
-#undef BESDEBUG
-#define BESDEBUG(stream, stuff)
-#endif
-
 #define CRLF "\r\n"
 
 using namespace std;
@@ -69,7 +64,6 @@ const string BESDapResponseCache::SIZE_KEY = "DAP.ResponseCache.size";
 
 unsigned long BESDapResponseCache::getCacheSizeFromConfig()
 {
-
     bool found;
     string size;
     unsigned long size_in_megabytes = 0;
@@ -163,7 +157,6 @@ BESDapResponseCache::BESDapResponseCache()
 BESDapResponseCache *
 BESDapResponseCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
-
     if (d_instance == 0) {
         try {
             if (dir_exists(cache_dir)) {
@@ -179,6 +172,7 @@ BESDapResponseCache::get_instance(const string &cache_dir, const string &prefix,
         }
 
     }
+
     BESDEBUG("dap_response_cache", "BESDapResponseCache::get_instance(dir,prefix,size) - d_instance: " << d_instance << endl);
 
     return d_instance;
@@ -210,13 +204,11 @@ BESDapResponseCache::get_instance()
     return d_instance;
 }
 
-
-
 /**
  * Is the item named by cache_entry_name valid? This code tests that the
  * cache entry is non-zero in size (returns false if that is the case, although
  * that might not be correct) and that the dataset associated with this
- * ResponseBulder instance is at least as old as the cached entry.
+ * ResponseBuilder instance is at least as old as the cached entry.
  *
  * @param cache_file_name File name of the cached entry
  * @return True if the thing is valid, false otherwise.
@@ -248,8 +240,7 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
     // Trick: if the d_dataset is not a file, stat() returns error and
     // the times stay equal and the code uses the cache entry.
 
-    // TODO Fix this so that the code can get a LMT from the correct
-    // handler.
+    // TODO Fix this so that the code can get a LMT from the correct handler.
     if (dataset_time > entry_time) return false;
 
     return true;
@@ -319,13 +310,13 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
  */
 DDS *
 BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory,
-        const string &filename)
+        const string &datasset_name)
 {
     BESDEBUG("dap_response_cache", __PRETTY_FUNCTION__ << " Reading cache for " << cache_file_name << endl);
 
     DDS *fdds = new DDS(factory);
 
-    fdds->filename(filename);
+    fdds->filename(datasset_name);
 
     read_data_from_cache(cache_file_name, fdds);
 
@@ -350,7 +341,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
     BaseTypeFactory factory;
     DDS *fdds;
 
-    // Build the response_id. Since the response conent is a function of both the dataset AND the constraint,
+    // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
     // glue them together to get a unique id for the response.
     string response_id = dds.filename() + "#" + constraint;
 
@@ -379,6 +370,7 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             fdds = new DDS(dds);
             eval->parse_constraint(constraint, *fdds);
 
+            // FIXME fix the function eval to allow functions and CEs together
             if (eval->function_clauses()) {
                 DDS *temp_fdds = eval->eval_function_clauses(*fdds);
                 delete fdds;
@@ -391,15 +383,10 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             }
 
 #if 1
+            // FIXME Write a better 'serialize' for caching - can just dump data using the
+            // local word order.
+
             string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
-
-            // Use a ConstraintEvaluator that has not parsed a CE so the code can use
-            // the send method(s)
-            ConstraintEvaluator eval;
-
-            // Setting the version to 3.2 causes send_data_ddx to write the MIME headers that
-            // the cache expects.
-            fdds->set_dap_version("3.2");
 
             // This is a bit of a hack, but it effectively uses ResponseBuilder to write the
             // cached object/response without calling the machinery in one of the send_*()
@@ -408,22 +395,18 @@ BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapRes
             // of the DDS's variables.
             set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain,
                     last_modified_time(rb->get_dataset_name()));
-            //data_stream << flush;
-            rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
-            //data_stream << flush;
-
-            data_stream << CRLF << "--" << boundary << "--" << CRLF;
-#endif
-#if 0
-            // FIXME: Remove Lame hack
-            ConstraintEvaluator eval;
 
             // Setting the version to 3.2 causes send_data_ddx to write the MIME headers that
-            // the cache expects. FIXME Wrong, but we still need to set the value. Used by the
-            // code that prints the 'DDX'
+            // the cache expects.
             fdds->set_dap_version("3.2");
 
-            rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, /*boundary*/"unused", /*start*/"unused", /*ce_eval*/true);
+            // Use a ConstraintEvaluator that has not parsed a CE so the code can use
+            // the send method(s)
+            ConstraintEvaluator eval;
+
+            rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
+
+            data_stream << CRLF << "--" << boundary << "--" << CRLF;
 #endif
             data_stream.close();
 

@@ -26,6 +26,7 @@
 #define _bes_dap_response_cache_h
 
 #include <string>
+
 #include "BESFileLockingCache.h"
 
 class BESDapResponseBuilder;
@@ -40,26 +41,26 @@ class BaseTypeFactory;
  * This class is used to cache DAP2 response objects.
  * @author jhrg 5/3/13
  */
-
 class BESDapResponseCache: public BESFileLockingCache {
 private:
-
     static BESDapResponseCache *d_instance;
-    static void delete_instance()
-    {
+
+    /**
+     * Called by atexit().
+     */
+    static void delete_instance() {
         delete d_instance;
         d_instance = 0;
     }
 
-    /** Initialize the cache using the default values for the cache. */
     BESDapResponseCache();
 
     BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
+    void read_data_from_cache(const string &cache_file_name, libdap::DDS *fdds);
     libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory,
-        const std::string &dataset);
+        const std::string &dataset_name);
 
     friend class ResponseCacheTest;
     friend class StoredResultTest;

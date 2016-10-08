@@ -102,4 +102,4 @@ after_failure:
   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
   - ls -lh /tmp/${LOG_FILE_TGZ}
-  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
+  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@test.opendap.org:${LOG_FILE_TGZ}

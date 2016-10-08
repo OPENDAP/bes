@@ -77,7 +77,7 @@ public:
             return;
         }
 
-        for(int i=0; i<names->size() ;i++){
+        for(unsigned int i=0; i<names->size() ;i++){
             DBG(cerr <<  "   name["<< i << "]: "<< (*names)[i] << endl);
         }
     }

@@ -29,7 +29,11 @@
 
 #define DAP_PROTOCOL_VERSION "3.2"
 
-class BESDapResponseCache;
+#undef DAP2_STORED_RESULTS
+
+class BESDapFunctionResponseCache;
+class BESDataHandlerInterface;
+class BESResponseObject;
 
 namespace libdap {
     class ConstraintEvaluator;
@@ -75,7 +79,9 @@ protected:
 
 	void initialize();
 
+#ifdef DAP2_STORED_RESULTS
 	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
+#endif
 
 	void send_dap4_data_using_ce(std::ostream &out, libdap::DMR &dmr, bool with_mime_headersr);
 
@@ -130,38 +136,48 @@ public:
 	int get_timeout() const;
 	void timeout_on() const;
     void timeout_off();
+
+    virtual void establish_timeout(std::ostream &stream) const;
+    virtual void remove_timeout() const;
 	///@}
 
 	void conditional_timeout_cancel();
 
-	virtual void establish_timeout(std::ostream &stream) const;
-	virtual void remove_timeout() const;
-
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
 	virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
-	virtual void send_das(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
+	virtual void send_das(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
-	virtual void send_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
+	virtual void send_dds(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
-	virtual void serialize_dap2_data_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void serialize_dap2_data_dds(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool ce_eval = true);
-	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
-	virtual void send_ddx(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	// Added jhrg 9/1/16
+	virtual libdap::DDS *intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	virtual libdap::DDS *process_dap2_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
+	// TODO jhrg 9/6/16
+	//
+	// virtual libdap::DMR *intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
+	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
-	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
+#ifdef	DAP2_STORED_RESULTS
+	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
-
+#endif
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 
 	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true);
 
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
+
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
 };
 

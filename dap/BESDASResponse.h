@@ -33,19 +33,22 @@
 #ifndef I_BESDASResponse
 #define I_BESDASResponse 1
 
-#include <DAS.h>
-
 #include "BESDapResponse.h"
 
-using namespace libdap;
+namespace libdap {
+class DAS;
+}
+
+//using namespace libdap;
 
 /** @brief Represents an OPeNDAP DAS DAP2 data object within the BES
  */
 class BESDASResponse: public BESDapResponse {
 private:
-    DAS * _das;
+    libdap::DAS * _das;
 public:
-    BESDASResponse(DAS *das) : BESDapResponse(), _das(das)
+    BESDASResponse(libdap::DAS *das) :
+        BESDapResponse(), _das(das)
     {
     }
     virtual ~BESDASResponse();
@@ -55,7 +58,7 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    DAS * get_das()
+    libdap::DAS * get_das()
     {
         return _das;
     }

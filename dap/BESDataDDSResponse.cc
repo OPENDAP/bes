@@ -30,38 +30,36 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DataDDS.h>
+#include <ConstraintEvaluator.h>
+
 #include "BESDataDDSResponse.h"
+
+using namespace libdap;
+using namespace std;
 
 BESDataDDSResponse::~BESDataDDSResponse()
 {
-    if (_dds) {
-        if (_dds->get_factory())
-            delete _dds->get_factory();
-        delete _dds;
-    }
+    delete _dds;
 }
 
 /** @brief set the container in the DAP response object
  *
  * @param cn name of the current container being operated on
  */
-void
-BESDataDDSResponse::set_container( const string &cn )
+void BESDataDDSResponse::set_container(const string &cn)
 {
-    if( _dds && get_explicit_containers() )
-    {
-	_dds->container_name( cn ) ;
+    if (_dds && get_explicit_containers()) {
+        _dds->container_name(cn);
     }
 }
 
 /** @brief clear the container in the DAP response object
  */
-void
-BESDataDDSResponse::clear_container( )
+void BESDataDDSResponse::clear_container()
 {
-    if( _dds )
-    {
-	_dds->container_name( "" ) ;
+    if (_dds) {
+        _dds->container_name("");
     }
 }
 
@@ -74,8 +72,7 @@ BESDataDDSResponse::clear_container( )
  */
 void BESDataDDSResponse::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDataDDSResponse::dump - ("
-            << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESDataDDSResponse::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_dds) {
         strm << BESIndent::LMarg << "DDS:" << endl;

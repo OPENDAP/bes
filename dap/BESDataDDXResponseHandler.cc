@@ -30,14 +30,18 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DataDDS.h>
+
 #include "BESDataDDXResponseHandler.h"
 #include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
-//#include "BESDapTransmit.h"
 
 #include "BESDebug.h"
+
+using namespace libdap;
+using namespace std;
 
 BESDataDDXResponseHandler::BESDataDDXResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -71,7 +75,7 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // Create the DDS.
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
+    DDS *dds = new DDS( NULL, "virtual" ) ;
     BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
     _response = bdds ;
 

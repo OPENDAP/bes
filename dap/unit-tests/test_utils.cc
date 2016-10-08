@@ -59,32 +59,10 @@ readTestBaseline(const string &fn)
     return string(&buffer[0]);
 }
 
-#if 0
-	// This version of 'clean_cache' was ripped from the StoreDap4ResultTest unit tests.
-	// Saved for posterity... jhrg 1/12/15
-    void clean_cache(const string &directory, const string &prefix) {
-        DIR *dip = opendir(directory.c_str());
-        if (!dip)
-            throw InternalErr(__FILE__, __LINE__, "Unable to open cache directory " + directory);
-
-        struct dirent *dit;
-        // go through the cache directory and collect all of the files that
-        // start with the matching prefix
-        while ((dit = readdir(dip)) != NULL) {
-            string dirEntry = dit->d_name;
-            if (dirEntry.compare(0, prefix.length(), prefix) == 0) {
-            	unlink(string(directory + "/" + dit->d_name).c_str());
-            }
-        }
-
-        closedir(dip);
-    }
-#endif
-
 void clean_cache_dir(const string &cache)
 {
 	char cwd[MAXPATHLEN];	// MAXPATHLEN is defined in <sys/param.h>
-	string cache_dir = string(getwd(cwd)) + cache + "/*";
+	string cache_dir = cache + "/*";
 
 	string command = string("rm ") + cache_dir + " 2>/dev/null";
 

@@ -71,8 +71,13 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
-#include "BESDapResponseCache.h"
+#include "BESDapFunctionResponseCache.h"
 #include "BESStoredDapResultCache.h"
+
+#include "BESResponseObject.h"
+#include "BESDDSResponse.h"
+#include "BESDataDDSResponse.h"
+#include "BESDataHandlerInterface.h"
 
 #include "test_utils.h"
 #include "test_config.h"
@@ -272,9 +277,9 @@ public:
         d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
         DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-        TheBESKeys::TheKeys()->set_key(BESDapResponseCache::PATH_KEY, (string) TEST_SRC_DIR + "/response_cache");
-        TheBESKeys::TheKeys()->set_key(BESDapResponseCache::PREFIX_KEY, "dap_response");
-        TheBESKeys::TheKeys()->set_key(BESDapResponseCache::SIZE_KEY, "100");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, (string) TEST_SRC_DIR + "/response_cache");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, "dap_response");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "100");
 
         DBG2(cerr << "setUp() - END" << endl);
     }
@@ -359,7 +364,7 @@ public:
 
             ConstraintEvaluator ce;
 
-            drb->send_dds(oss, *dds, ce);
+            drb->send_dds(oss, &dds, ce);
 
             DBG(cerr << "DDS: " << oss.str() << endl);
 
@@ -378,7 +383,7 @@ public:
         ConstraintEvaluator ce;
 
         try {
-            drb->send_ddx(oss, *dds, ce);
+            drb->send_ddx(oss, &dds, ce);
 
             DBG(cerr << "DDX: " << oss.str() << endl);
 
@@ -391,6 +396,7 @@ public:
         }
     }
 
+#ifdef DAP2_STORED_RESULTS
     void store_dap2_result_test()
     {
 
@@ -419,7 +425,7 @@ public:
             (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
-            drb->send_dap2_data(oss, *test_05_dds, ce, false);
+            drb->send_dap2_data(oss, &test_05_dds, ce, false);
 
             string candidateResponseDoc = oss.str();
 
@@ -447,7 +453,7 @@ public:
 
         try {
             oss.str("");
-            drb->send_dap2_data(oss, *test_05_dds, ce, false);
+            drb->send_dap2_data(oss, &test_05_dds, ce, false);
 
             string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
@@ -505,8 +511,8 @@ public:
         TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, "");
     }
+#endif
 
-#if 1
     void store_dap4_result_test()
     {
 
@@ -665,7 +671,6 @@ public:
         TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, "");
     }
-#endif
 
     void escape_code_test()
     {
@@ -714,7 +719,7 @@ public:
 
             ConstraintEvaluator ce;
             DBG(cerr << "invoke_server_side_function_test() - Calling BESDapResponseBuilder.send_dap2_data()" << endl);
-            drb6->send_dap2_data(oss, *dds, ce);
+            drb6->send_dap2_data(oss, &dds, ce);
 
             DBG(cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
 
@@ -756,7 +761,10 @@ public:
 #endif
         }
         catch (Error &e) {
-            CPPUNIT_FAIL("Caught libdap::Error!! Message:" + e.get_error_message());
+            CPPUNIT_FAIL("Caught libdap::Error!! Message: " + e.get_error_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError!! Message: " + e.get_message() + " (" + e.get_file() +")");
         }
 
         DBG(cerr << "invoke_server_side_function_test() - END" << endl);
@@ -777,8 +785,7 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(store_dap2_result_test);
     CPPUNIT_TEST(store_dap4_result_test);
 #endif
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ResponseBuilderTest);
