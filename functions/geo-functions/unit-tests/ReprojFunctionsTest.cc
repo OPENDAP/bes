@@ -27,6 +27,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <iterator>
+#include <string>
+#include <algorithm>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -43,7 +46,7 @@
 #include <util.h>
 #include <debug.h>
 
-#include "reproj_functions.h"
+#include "scale_util.h"
 
 #include "test_config.h"
 
@@ -61,13 +64,15 @@ using namespace std;
 
 int test_variable_sleep_interval = 0;
 
+
 class ReprojFunctionsTest : public TestFixture
 {
 private:
     DDS *small_dds;
     TestTypeFactory btf;
 
-    string src_dir;
+    const string src_dir;
+    const static int small_dim_size = 11;
 
     /**
      * @brief Read data from a text file
@@ -121,8 +126,8 @@ private:
         if (!var) throw Error(string(__FUNCTION__) + ": The Array variable was null.");
         string data_file = src_dir + "/" + file;
         read_data_from_file(data_file, buf.size(), &buf[0]);
-        if (!var) throw Error(string(__FUNCTION__) + ": Could not find 'lat'.");
-        if (!var->set_value(buf, buf.size())) throw Error(string(__FUNCTION__) + ": Could not set 'lat'.");
+        if (!var) throw Error(string(__FUNCTION__) + ": Could not find '" + var->name() + "'.");
+        if (!var->set_value(buf, buf.size())) throw Error(string(__FUNCTION__) + ": Could not set '" + var->name() + "'.");
         var->set_read_p(true);
     }
 
@@ -140,9 +145,12 @@ public:
             string dds_file = src_dir + "/" + small_dds_file;
             small_dds->parse(dds_file);
 
-            vector<dods_float32> buf(10);
+            vector<dods_float32> buf(small_dim_size);
             load_var(dynamic_cast<Array*>(small_dds->var("lat")), "small_lat.txt", buf);
             load_var(dynamic_cast<Array*>(small_dds->var("lon")), "small_lon.txt", buf);
+
+            vector<dods_float32> data(small_dim_size * small_dim_size);
+            load_var(dynamic_cast<Array*>(small_dds->var("data")), "small_data.txt", data);
 
         }
         catch (Error & e) {
@@ -163,36 +171,79 @@ public:
     }
 
     void test_reading_data() {
-        vector<dods_float32> f32(10);
+        vector<dods_float32> f32(small_dim_size);
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
         lat->value(&f32[0]);
         for (int i = 0; i < 10; ++i) {
             DBG(cerr << "lat[" << i << "] = " << f32[i] << endl);
         }
-        CPPUNIT_ASSERT(f32[0] == -5);
-        CPPUNIT_ASSERT(f32[9] == 5);
+        CPPUNIT_ASSERT(f32[0] == 5);
+        CPPUNIT_ASSERT(f32[small_dim_size - 1] == -5);
 
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         lon->value(&f32[0]);
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < small_dim_size; ++i) {
             DBG(cerr << "lon[" << i << "] = " << f32[i] << endl);
         }
-        CPPUNIT_ASSERT(f32[0] == -5);
-        CPPUNIT_ASSERT(f32[9] == 5);
+        CPPUNIT_ASSERT(f32[0] == -0.5);
+        CPPUNIT_ASSERT(f32[small_dim_size - 1] == 0.5);
 
+        Array *d = dynamic_cast<Array*>(small_dds->var("data"));
+        const int data_size = small_dim_size * small_dim_size;
+        vector<dods_float32> data(data_size);
+        d->value(&data[0]);
+        for (int i = 0; i < data_size; ++i) {
+            DBG(cerr << "data[" << i << "] = " << data[i] << endl);
+        }
+        CPPUNIT_ASSERT(data[0] == -99);
+        CPPUNIT_ASSERT(data[small_dim_size - 1] == -99);
+
+        DBG(cerr << "data[" << 5*small_dim_size + 0 << "]: " << data[5*small_dim_size + 0] << endl);
+        DBG(cerr << "data[" << 5*small_dim_size + 4 << "]: " << data[5*small_dim_size + 4] << endl);
+        CPPUNIT_ASSERT(data[5*small_dim_size + 0] == (dods_float32)3.1); // accounts for rounding error
+        CPPUNIT_ASSERT(data[5*small_dim_size + 4] == 3.5);
     }
 
     void test_get_size_box() {
         SizeBox sb = get_size_box(dynamic_cast<Array*>(small_dds->var("lat")), dynamic_cast<Array*>(small_dds->var("lon")));
 
-        CPPUNIT_ASSERT(sb.x_size == 10);
-        CPPUNIT_ASSERT(sb.y_size == 10);
+        CPPUNIT_ASSERT(sb.x_size == small_dim_size);
+        CPPUNIT_ASSERT(sb.y_size == small_dim_size);
+    }
+
+    // vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size)
+    void test_get_geotransform_data(){
+        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        CPPUNIT_ASSERT(lat);
+        CPPUNIT_ASSERT(lon);
+
+        SizeBox sb = get_size_box(lat, lon);
+        CPPUNIT_ASSERT(sb.x_size == small_dim_size);
+        CPPUNIT_ASSERT(sb.y_size == small_dim_size);
+
+        // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+        // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+        // X == lon, Y is lat
+        vector<double> gt = get_geotransform_data(lat, lon, sb);
+
+        DBG(cerr << "gt values: ");
+        DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
+        CPPUNIT_ASSERT(gt[1] == 0.1);  // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
+        CPPUNIT_ASSERT(gt[3] == 5.0);   // max lat
+        CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
+        CPPUNIT_ASSERT(gt[5] == -1.0);  // resolution of lat; neg for north up data
     }
 
     CPPUNIT_TEST_SUITE( ReprojFunctionsTest );
 
     CPPUNIT_TEST(test_reading_data);
     CPPUNIT_TEST(test_get_size_box);
+    CPPUNIT_TEST(test_get_geotransform_data);
 
     CPPUNIT_TEST_SUITE_END();
 

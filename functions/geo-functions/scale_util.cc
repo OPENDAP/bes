@@ -225,7 +225,8 @@ vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size
 		}
 	}
 
-	// TODO Should these by using size - 1 in the denominator? jhrg 10/7/16
+	// Use size-1 in the denominator because an axis that spans N values
+	// (on a closed interval) will have N+1 values (e.g., 3,2,1,0,1,2,3)
     double res_x, res_y;
     if (min_x > max_x && min_x > 0 && max_x < 0)
         res_x = (360 + max_x - min_x) / (size.x_size - 1);
@@ -256,9 +257,9 @@ vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size
     return geo_transform;
 }
 
-GDALDataType get_grid_type(const Grid *g)
+GDALDataType get_array_type(const Array *a)
 {
-	switch (const_cast<Grid*>(g)->get_array()->type()) {
+	switch (const_cast<Array*>(a)->type()) {
 	case dods_byte_c:
 		return GDT_Byte;
 
@@ -289,7 +290,7 @@ GDALDataType get_grid_type(const Grid *g)
 	case dods_int64_c:
 	default:
 		throw Error("Cannot perform geo-spatial operations on "
-				+ const_cast<Grid*>(g)->get_array()->type_name() + " data.");
+				+ const_cast<Array*>(a)->type_name() + " data.");
 	}
 }
 
@@ -299,19 +300,19 @@ GDALDataType get_grid_type(const Grid *g)
  * @param g_size
  * @param band
  */
-void read_band_data(const Grid* g, const SizeBox &g_size, GDALRasterBand* band)
+void read_band_data(const Array *src, const SizeBox &size, GDALRasterBand* band)
 {
 	// FIXME Use the Grid Array native type
-	vector<double> values(g_size.y_size * g_size.x_size); // FIXME Assumes grid is 2D
-	Array *a = const_cast<Grid*>(g)->get_array();
+	vector<double> values(size.y_size * size.x_size); // FIXME Assumes grid is 2D
+	Array *a = const_cast<Array*>(src);
 	a->read();
 	extract_double_array(a, values);
 
 	// TODO Look at using WriteBlock() because it might be faster. jhrg 10/6/16
-	CPLErr error = band->RasterIO(GF_Write, 0, 0, g_size.x_size, g_size.y_size,
-			&values[0], g_size.x_size, g_size.y_size, GDT_Float64, 0, 0);
+	CPLErr error = band->RasterIO(GF_Write, 0, 0, size.x_size, size.y_size,
+			&values[0], size.x_size, size.y_size, GDT_Float64, 0, 0);
 	if (error != CPLE_None)
-		throw Error("Could not load data for grid '" + g->name() + "': " + CPLGetLastErrorMsg());
+		throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
 
 /**
@@ -328,15 +329,15 @@ auto_ptr<GDALDataset> build_src_dataset(Grid *g)
     Array *lat = static_cast<Array*>(*g->get_map_iter(0));
     Array *lon = static_cast<Array*>(*g->get_map_iter(1));
 
-    SizeBox g_size = get_size_box(lat, lon);
-    GDALDataType gdal_type = get_grid_type(g);
+    SizeBox array_size = get_size_box(lat, lon);
+    GDALDataType gdal_type = get_array_type(g->get_array());
 
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if(!driver)
         throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
     // The MEM driver takes no creation options (I think) jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", g_size.x_size, g_size.y_size,
+    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
     		1 /* nBands*/, gdal_type, NULL /* driver_options */));
 
     // Get the one band for this dataset and load it with data
@@ -344,9 +345,9 @@ auto_ptr<GDALDataset> build_src_dataset(Grid *g)
 	if (!band)
 		throw Error("Could not get the GDAL Rasterband for grid '" + g->name() + "': " + CPLGetLastErrorMsg());
 
-	read_band_data(g, g_size, band);
+	read_band_data(g->get_array(), array_size, band);
 
-	vector<double> geo_transform = get_geotransform_data(lat, lon, g_size);
+	vector<double> geo_transform = get_geotransform_data(lat, lon, array_size);
     ds->SetGeoTransform(&geo_transform[0]);
 
     // Supported values:
@@ -415,7 +416,7 @@ auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
     if(!driver)
         throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
-    GDALDataType gdal_type = get_grid_type(g);
+    GDALDataType gdal_type = get_array_type(const_cast<Grid*>(g)->get_array());
 
     // The MEM driver takes no creation options (I think) jhrg 10/6/16
     auto_ptr<GDALDataset> ds(driver->Create("result", 10, 10,

@@ -1,6 +1,6 @@
 
 Dataset {
-    Byte a[lon=10][lat=10];
-    Float32 lat[10];
-    Float32 lon[10];
+    Float32 data[lon=11][lat=11];
+    Float32 lat[11];
+    Float32 lon[11];
 } small;
