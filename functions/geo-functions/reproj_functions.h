@@ -50,6 +50,9 @@ struct GeoBox {
 	GeoBox() : top(0.0), bottom(0.0), left(0.0), right(0.0) { }
 };
 
+SizeBox get_size_box(Array *lat, Array *lon);
+vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size);
+
 void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 

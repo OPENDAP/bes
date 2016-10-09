@@ -25,6 +25,9 @@
 
 // Tests for the AISResources class.
 
+#include <iostream>
+#include <sstream>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -49,12 +52,8 @@ static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
-#if 0
-const string THREE_ARRAY_1_DDS = "three_array_1.dds";
-const string THREE_ARRAY_1_DAS = "three_array_1.das";
-#endif
 
-const string small_dds = "small.dds";
+const string small_dds_file = "small.dds";
 
 using namespace CppUnit;
 using namespace libdap;
@@ -62,42 +61,73 @@ using namespace std;
 
 int test_variable_sleep_interval = 0;
 
-/**
- * Splits the string on the passed char. Returns vector of substrings.
- * TODO make this work in situations where multiple spaces doesn't hose the split()
- */
-static vector<string> &split(const string &s, char delim, vector<string> &elems)
-{
-    stringstream ss(s);
-    string item;
-    while (getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-/**
- * Splits the string on the passed char. Returns vector of substrings.
- */
-static vector<string> split(const string &s, char delim = ' ')
-{
-    vector<string> elems;
-    return split(s, delim, elems);
-}
-
 class ReprojFunctionsTest : public TestFixture
 {
 private:
-    DDS *dds;
+    DDS *small_dds;
     TestTypeFactory btf;
-#if 0
-    ConstraintEvaluator ce;
-    int dim_0_size;
-    int dim_1_size;
-#endif
+
+    string src_dir;
+
+    /**
+     * @brief Read data from a text file
+     *
+     * Read data from a text file where those values are listed on one or more
+     * lines. Each value is separated by a space, comma, or something that C++'s
+     * istringstream won't confuse with a character that's part of the value.
+     *
+     * Assume the text file starts with a line that should be ignored.
+     *
+     * @param file Name of the input file
+     * @param size Number of values to read
+     * @param dest Chunk of memory with sizeof(T) * size bytes
+     */
+    template <typename T>
+    void read_data_from_file(const string &file, unsigned int size, T *dest)
+    {
+        fstream input(file.c_str(), fstream::in);
+        if (input.eof() || input.fail()) throw Error(string(__FUNCTION__) + ": Could not open data (" + file +").");
+
+        // Read a line of text to get to the start of the data.
+        string line;
+        getline(input, line);
+        if (input.eof() || input.fail()) throw Error(string(__FUNCTION__) + ": Could not read data.");
+
+        // Get data line by line and load it into 'dest.' Assume that the last line
+        // might not have as many values as the others.
+        getline(input, line);
+        if (input.eof() || input.fail())
+            throw Error(string(__FUNCTION__) + ": Could not read data.");
+
+        while (!(input.eof() || input.fail())) {
+            DBG(cerr << "line: " << line << endl);
+            istringstream iss(line);
+            while (!iss.eof()) {
+                iss >> (*dest++);
+
+                if (!size--)
+                    throw Error(string(__FUNCTION__) + ": Too many values in the data file.");
+            }
+
+            getline(input, line);
+            if (input.bad())   // in the loop we only care about I/O failures, not logical errors like reading EOF.
+                throw Error(string(__FUNCTION__) + ": Could not read data.");
+        }
+    }
+
+    template<typename T>
+    void load_var(Array *var, const string &file, vector<T> &buf)
+    {
+        if (!var) throw Error(string(__FUNCTION__) + ": The Array variable was null.");
+        string data_file = src_dir + "/" + file;
+        read_data_from_file(data_file, buf.size(), &buf[0]);
+        if (!var) throw Error(string(__FUNCTION__) + ": Could not find 'lat'.");
+        if (!var->set_value(buf, buf.size())) throw Error(string(__FUNCTION__) + ": Could not set 'lat'.");
+        var->set_read_p(true);
+    }
 
 public:
-    ReprojFunctionsTest() : dds(0)
+    ReprojFunctionsTest() : small_dds(0), src_dir(TEST_SRC_DIR)
     {}
     ~ReprojFunctionsTest()
     {}
@@ -106,29 +136,132 @@ public:
     {
         DBG(cerr << "setUp() - BEGIN" << endl);
         try {
-            dds = new DDS(&btf);
-            string dds_file = (string) TEST_SRC_DIR + "/" + small_dds;
-            dds->parse(dds_file);
+            small_dds = new DDS(&btf);
+            string dds_file = src_dir + "/" + small_dds_file;
+            small_dds->parse(dds_file);
 
+            vector<dods_float32> buf(10);
+            load_var(dynamic_cast<Array*>(small_dds->var("lat")), "small_lat.txt", buf);
+            load_var(dynamic_cast<Array*>(small_dds->var("lon")), "small_lon.txt", buf);
+
+        }
+        catch (Error & e) {
+            cerr << "SetUp (Error): " << e.get_error_message() << endl;
+            throw;
+        }
+        catch (std::exception &e) {
+            cerr << "SetUp (std::exception): " << e.what() << endl;
+            throw;
+        }
+
+        DBG(cerr << "setUp() - END" << endl);
+    }
+
+    void tearDown()
+    {
+        delete small_dds; small_dds = 0;
+    }
+
+    void test_reading_data() {
+        vector<dods_float32> f32(10);
+        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+        lat->value(&f32[0]);
+        for (int i = 0; i < 10; ++i) {
+            DBG(cerr << "lat[" << i << "] = " << f32[i] << endl);
+        }
+        CPPUNIT_ASSERT(f32[0] == -5);
+        CPPUNIT_ASSERT(f32[9] == 5);
+
+        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        lon->value(&f32[0]);
+        for (int i = 0; i < 10; ++i) {
+            DBG(cerr << "lon[" << i << "] = " << f32[i] << endl);
+        }
+        CPPUNIT_ASSERT(f32[0] == -5);
+        CPPUNIT_ASSERT(f32[9] == 5);
+
+    }
+
+    void test_get_size_box() {
+        SizeBox sb = get_size_box(dynamic_cast<Array*>(small_dds->var("lat")), dynamic_cast<Array*>(small_dds->var("lon")));
+
+        CPPUNIT_ASSERT(sb.x_size == 10);
+        CPPUNIT_ASSERT(sb.y_size == 10);
+    }
+
+    CPPUNIT_TEST_SUITE( ReprojFunctionsTest );
+
+    CPPUNIT_TEST(test_reading_data);
+    CPPUNIT_TEST(test_get_size_box);
+
+    CPPUNIT_TEST_SUITE_END();
+
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(ReprojFunctionsTest);
+
+int main(int argc, char*argv[])
+{
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    GetOpt getopt(argc, argv, "db");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+
+        case 'b':
+            bes_debug = 1;  // debug is a static global
+            break;
+
+        default:
+            break;
+        }
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            test = string("ReprojFunctionsTest::") + argv[i++];
+
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
+}
+
+
+// Old code //
+
+// Used to initialize value in setup
 #if 0
             dim_0_size = 135;
             dim_1_size = 90;
 
-            dds = new DDS(&btf);
+            small_dds = new DDS(&btf);
             string dds_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DDS;
-            dds->parse(dds_file);
+            small_dds->parse(dds_file);
             DAS das;
             string das_file = (string)TEST_SRC_DIR + "/" + THREE_ARRAY_1_DAS;
             das.parse(das_file);
-            dds->transfer_attributes(&das);
+            small_dds->transfer_attributes(&das);
 
             DBG(cerr<<"setUp() - Loaded DDS:"<< endl);
-            DBG(dds->print_xml(stderr, false, "noBlob"));
+            DBG(small_dds->print_xml(stderr, false, "noBlob"));
 
             // Load values into the array variables
-            Array & t = dynamic_cast < Array & >(*dds->var("BT_diff_SO2"));
-            Array & lon = dynamic_cast < Array & >(*dds->var("Longitude"));
-            Array & lat = dynamic_cast < Array & >(*dds->var("Latitude"));
+            Array & t = dynamic_cast < Array & >(*small_dds->var("BT_diff_SO2"));
+            Array & lon = dynamic_cast < Array & >(*small_dds->var("Longitude"));
+            Array & lat = dynamic_cast < Array & >(*small_dds->var("Latitude"));
 
             DBG(cerr<<"setUp() - Synthesizing data values..."<< endl);
 
@@ -178,21 +311,21 @@ public:
             lat.set_read_p(true);
 #endif
 #if 0
-            dds = new DDS(&btf);
+            small_dds = new DDS(&btf);
             string dds_file = /*(string)TEST_SRC_DIR + "/" +*/THREE_ARRAY_1_DDS;
-            dds->parse(dds_file);
+            small_dds->parse(dds_file);
             DAS das;
             string das_file = /*(string)TEST_SRC_DIR + "/" +*/THREE_ARRAY_1_DAS;
             das.parse(das_file);
-            dds->transfer_attributes(&das);
+            small_dds->transfer_attributes(&das);
 
             DBG(cerr<<"setUp() - Loaded DDS:"<< endl);
-            DBG(dds->print_xml(stderr, false, "noBlob"));
+            DBG(small_dds->print_xml(stderr, false, "noBlob"));
 
             // Load values into the array variables
-            Array & t = dynamic_cast < Array & >(*dds->var("t"));
-            Array & lon = dynamic_cast < Array & >(*dds->var("lon"));
-            Array & lat = dynamic_cast < Array & >(*dds->var("lat"));
+            Array & t = dynamic_cast < Array & >(*small_dds->var("t"));
+            Array & lon = dynamic_cast < Array & >(*small_dds->var("lon"));
+            Array & lat = dynamic_cast < Array & >(*small_dds->var("lat"));
 
             dods_float64 t_vals[10][10];
             for (int i = 0; i < 10; ++i)
@@ -230,31 +363,9 @@ public:
             lat.set_read_p(true);
 
 #endif
-        }
-        catch (Error & e) {
-            cerr << "SetUp (Error): " << e.get_error_message() << endl;
-            throw;
-        }
-        catch (std::exception &e) {
-            cerr << "SetUp (std::exception): " << e.what() << endl;
-            throw;
-        }
 
-        DBG(cerr << "setUp() - END" << endl);
-    }
 
-    void tearDown()
-    {
-        delete dds; dds = 0;
-    }
-
-    CPPUNIT_TEST_SUITE( ReprojFunctionsTest );
-
-    CPPUNIT_TEST(no_arguments_test);
-    CPPUNIT_TEST(array_return_test);
-    CPPUNIT_TEST(grid_return_test);
-
-    CPPUNIT_TEST_SUITE_END();
+// Old tests
 
 #if 0
     void no_arguments_test()
@@ -262,7 +373,7 @@ public:
         DBG(cerr<<"no_arguments_test() - BEGIN" << endl);
         try {
             BaseType *btp = 0;
-            function_swath2array(0, 0, *dds, &btp);
+            function_swath2array(0, 0, *small_dds, &btp);
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
@@ -276,9 +387,9 @@ public:
         DBG(cerr<<"array_return_test() - BEGIN" << endl);
         try {
             BaseType *argv[3];
-            argv[0] = dds->var("BT_diff_SO2");
-            argv[1] = dds->var("Longitude");
-            argv[2] = dds->var("Latitude");
+            argv[0] = small_dds->var("BT_diff_SO2");
+            argv[1] = small_dds->var("Longitude");
+            argv[2] = small_dds->var("Latitude");
 
             BaseType *btp = 0;
             function_swath2array(3, argv, *dds, &btp);
@@ -304,7 +415,7 @@ public:
     {
         try {
             BaseType *argv[1];
-            argv[0] = dds->var("lat");
+            argv[0] = small_dds->var("lat");
             CPPUNIT_ASSERT(argv[0] && "dds->var should find this, although it is not a grid");
             BaseType *btp = 0;
             function_grid(1, argv, *dds, &btp);
@@ -320,8 +431,8 @@ public:
     {
         try {
             BaseType *argv[2];
-            argv[0] = dds->var("a");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("a");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
             argv[1] = new Str("");
             string expression = "3<second<=7";
             dynamic_cast<Str*>(argv[1])->val2buf(&expression);
@@ -340,15 +451,15 @@ public:
     {
         try {
             BaseType *argv[2];
-            argv[0] = dds->var("a");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("a");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
             argv[1] = new Str("");
             string expression = "3<first<=7";
             dynamic_cast<Str*>(argv[1])->val2buf(&expression);
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_grid(2, argv, *small_dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //Grid &g = dynamic_cast<Grid&>(*argv[0]);
@@ -366,8 +477,8 @@ public:
     {
         try {
             BaseType *argv[3];
-            argv[0] = dds->var("a");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("a");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
 
             argv[1] = new Str("");
             string expression = "first>3";
@@ -379,9 +490,9 @@ public:
             dynamic_cast<Str*>(argv[2])->val2buf(&expression);
             dynamic_cast<Str*>(argv[2])->set_read_p(true);
 
-            //function_grid(3, argv, *dds);
+            //function_grid(3, argv, *small_dds);
             BaseType *btp = 0;
-            function_grid(3, argv, *dds, &btp);
+            function_grid(3, argv, *small_dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //Grid &g = dynamic_cast<Grid&>(*function_grid(3, argv, *dds));
@@ -400,15 +511,15 @@ public:
     {
         try {
             BaseType *argv[2];
-            argv[0] = dds->var("b");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("b");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
             argv[1] = new Str("");
             string expression = "3<first<=7";
             dynamic_cast<Str*>(argv[1])->val2buf(&expression);
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_grid(2, argv, *small_dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //function_grid(2, argv, *dds);
@@ -428,8 +539,8 @@ public:
     {
         try {
             BaseType *argv[3];
-            argv[0] = dds->var("b");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("b");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
 
             argv[1] = new Str("");
             string expression = "first>3";
@@ -442,7 +553,7 @@ public:
             dynamic_cast<Str*>(argv[2])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(3, argv, *dds, &btp);
+            function_grid(3, argv, *small_dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //function_grid(3, argv, *dds);
@@ -462,8 +573,8 @@ public:
     {
         try {
             BaseType *argv[2];
-            argv[0] = dds->var("a");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("a");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
             argv[1] = new Str("");
             string expression = "7<first<=3";
             dynamic_cast<Str*>(argv[1])->val2buf(&expression);
@@ -488,8 +599,8 @@ public:
     {
         try {
             BaseType *argv[2];
-            argv[0] = dds->var("a");
-            CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
+            argv[0] = small_dds->var("a");
+            CPPUNIT_ASSERT(argv[0] && "small_dds->var should find this");
             argv[1] = new Str("");
             string expression = "3<=first<20";
             dynamic_cast<Str*>(argv[1])->val2buf(&expression);
@@ -513,7 +624,7 @@ public:
     void linear_scale_args_test() {
         try {
             BaseType *btp = 0;
-            function_linear_scale(0, 0, *dds, &btp);
+            function_linear_scale(0, 0, *small_dds, &btp);
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
@@ -524,7 +635,7 @@ public:
 
     void linear_scale_array_test() {
         try {
-            Array *a = dynamic_cast<Grid&>(*dds->var("a")).get_array();
+            Array *a = dynamic_cast<Grid&>(*small_dds->var("a")).get_array();
             CPPUNIT_ASSERT(a);
             BaseType *argv[3];
             argv[0] = a;
@@ -533,7 +644,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);//b
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_linear_scale(3, argv, *small_dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_array_c
                            && scaled->var()->type() == dods_float64_c);
             double *values = extract_double_array(dynamic_cast<Array*>(scaled));
@@ -549,7 +660,7 @@ public:
 
     void linear_scale_grid_test() {
         try {
-            Grid *g = dynamic_cast<Grid*>(dds->var("a"));
+            Grid *g = dynamic_cast<Grid*>(small_dds->var("a"));
             CPPUNIT_ASSERT(g);
             BaseType *argv[3];
             argv[0] = g;
@@ -558,7 +669,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_linear_scale(3, argv, *small_dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_grid_c);
             Grid *g_s = dynamic_cast<Grid*>(scaled);
             CPPUNIT_ASSERT(g_s->get_array()->var()->type() == dods_float64_c);
@@ -575,12 +686,12 @@ public:
 
     void linear_scale_grid_attributes_test() {
         try {
-            Grid *g = dynamic_cast<Grid*>(dds->var("a"));
+            Grid *g = dynamic_cast<Grid*>(small_dds->var("a"));
             CPPUNIT_ASSERT(g);
             BaseType *argv[1];
             argv[0] = g;
             BaseType *scaled = 0;
-            function_linear_scale(1, argv, *dds, &scaled);
+            function_linear_scale(1, argv, *small_dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_grid_c);
             Grid *g_s = dynamic_cast<Grid*>(scaled);
             CPPUNIT_ASSERT(g_s->get_array()->var()->type() == dods_float64_c);
@@ -598,7 +709,7 @@ public:
     // This tests the case where attributes are not found
     void linear_scale_grid_attributes_test2() {
         try {
-            Grid *g = dynamic_cast<Grid*>(dds->var("b"));
+            Grid *g = dynamic_cast<Grid*>(small_dds->var("b"));
             CPPUNIT_ASSERT(g);
             BaseType *argv[1];
             argv[0] = g;
@@ -624,7 +735,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);//b
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_linear_scale(3, argv, *small_dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_float64_c);
 
             CPPUNIT_ASSERT(dynamic_cast<Float64*>(scaled)->value() == 10.1);
@@ -645,10 +756,10 @@ public:
             argv[0] = i;
 
             ConstraintEvaluator unused;
-            function_dap(1, argv, *dds, unused);
+            function_dap(1, argv, *small_dds, unused);
 
-            CPPUNIT_ASSERT(dds->get_dap_major() == 2);
-            CPPUNIT_ASSERT(dds->get_dap_minor() == 0);
+            CPPUNIT_ASSERT(small_dds->get_dap_major() == 2);
+            CPPUNIT_ASSERT(small_dds->get_dap_minor() == 0);
         }
         catch (Error &e) {
             DBG(cerr << e.get_error_message() << endl);
@@ -665,10 +776,10 @@ public:
             argv[0] = d;
 
             ConstraintEvaluator unused;
-            function_dap(1, argv, *dds, unused);
+            function_dap(1, argv, *small_dds, unused);
 
-            CPPUNIT_ASSERT(dds->get_dap_major() == 3);
-            CPPUNIT_ASSERT(dds->get_dap_minor() == 2);
+            CPPUNIT_ASSERT(small_dds->get_dap_major() == 3);
+            CPPUNIT_ASSERT(small_dds->get_dap_minor() == 2);
         }
         catch (Error &e) {
             DBG(cerr << e.get_error_message() << endl);
@@ -695,9 +806,9 @@ public:
         DBG(cerr<<"grid_return_test() - BEGIN" << endl);
         try {
             BaseType *argv[3];
-            argv[0] = dds->var("BT_diff_SO2");
-            argv[1] = dds->var("Longitude");
-            argv[2] = dds->var("Latitude");
+            argv[0] = small_dds->var("BT_diff_SO2");
+            argv[1] = small_dds->var("Longitude");
+            argv[2] = small_dds->var("Latitude");
 
 
             DBG(cerr << "Input values:" << endl);
@@ -747,45 +858,3 @@ public:
     }
 #endif
 
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(ReprojFunctionsTest);
-
-int main(int argc, char*argv[])
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    GetOpt getopt(argc, argv, "db");
-    int option_char;
-    while ((option_char = getopt()) != -1)
-        switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
-
-        case 'b':
-            bes_debug = 1;  // debug is a static global
-            break;
-
-        default:
-            break;
-        }
-
-    bool wasSuccessful = true;
-    string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        while (i < argc) {
-            test = string("ReprojFunctionsTest::") + argv[i++];
-
-            wasSuccessful = wasSuccessful && runner.run(test);
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
-}

@@ -6,13 +6,13 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/functions -I$(top_srcdir)/functions/geo-functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
-AM_LDADD =  $(DAP_SERVER_LIBS) $(GF_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
+LDADD = -ltest-types $(CPPUNIT_LIBS) $(DAP_SERVER_LIBS) $(TEST_OBJ) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
 #-L.. -lfunctions_module  
 # ../libfunctions_module.la
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
-AM_LDADD += $(CPPUNIT_LIBS)
+LDADD += $(CPPUNIT_LIBS)
 endif
 
 if USE_VALGRIND
@@ -32,7 +32,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
-EXTRA_DIST = test_config.h.in ce-functions-testsuite tabular
+EXTRA_DIST = test_config.h.in
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
@@ -71,7 +71,8 @@ TEST_SRC =
 # Many of the tests use these - build once
 TEST_OBJ =
 
-ReprojFunctionsTest_SOURCES = ReprojFunctionsTest.cc  $(TEST_SRC)
+ReprojFunctionsTest_SOURCES = ReprojFunctionsTest.cc ../scale_util.cc $(TEST_SRC)
 ReprojFunctionsTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
-ReprojFunctionsTest_LDADD = -ltest-types ../repro_functions.o $(CPPUNIT_LIBS) $(DAP_SERVER_LIBS) $(TEST_OBJ) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
+ReprojFunctionsTest_LDADD = $(LDADD)
 
+# 
