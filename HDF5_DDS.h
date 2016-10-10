@@ -15,7 +15,7 @@
 #include "hdf5.h"
 
 
-#include <DataDDS.h>
+#include <DDS.h>
 #include <InternalErr.h>
 
 using namespace libdap;
@@ -35,7 +35,7 @@ using namespace libdap;
  * strictly needed, but it would make both the DDS and DataDDS responses
  * work the same way.
  */
-class HDF5DDS : public DataDDS {
+class HDF5DDS : public DDS {
 private:
     hid_t fileid;
 
@@ -45,9 +45,9 @@ private:
     }
 
 public:
-    HDF5DDS(DataDDS *ddsIn) : DataDDS(*ddsIn), fileid(-1) {}
+    HDF5DDS(DDS *ddsIn) : DDS(*ddsIn), fileid(-1) {}
 
-    HDF5DDS(const HDF5DDS &rhs) : DataDDS(rhs) {
+    HDF5DDS(const HDF5DDS &rhs) : DDS(rhs) {
         m_duplicate(rhs);
     }
 
