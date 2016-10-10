@@ -1,0 +1,16 @@
+Dataset {
+    Float32 g2_temp1[g2_dim1 = 2][g2_dim2 = 3];
+    Float32 g3_temp2[g3_dim1 = 2][g3_dim2 = 3];
+    Float32 g1_pres2[g1_dim1 = 4][g1_dim2 = 6];
+    Float32 pres1[lat = 2][lon = 3];
+    Int32 g1_dim1[g1_dim1 = 4];
+    Int32 g1_dim2[g1_dim2 = 6];
+    Float32 lat[lat = 2];
+    Float32 lon[lon = 3];
+    Float32 g2_lat1[g2_dim1 = 2][g2_dim2 = 3];
+    Float32 g3_latitude[g3_dim1 = 2][g3_dim2 = 3];
+    Float32 g1_lat1[g1_dim1 = 4][g1_dim2 = 6];
+    Float32 g2_lon1[g2_dim1 = 2][g2_dim2 = 3];
+    Float32 g3_longitude[g3_dim1 = 2][g3_dim2 = 3];
+    Float32 g1_lon1[g1_dim1 = 4][g1_dim2 = 6];
+} nc4_group_mlls.h5;

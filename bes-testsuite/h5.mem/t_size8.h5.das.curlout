@@ -1,0 +1,26 @@
+Attributes {
+    dchar {
+        Int16 minimum 0;
+        Int16 maximum 127;
+        String origname "dchar";
+        String fullnamepath "/dchar";
+    }
+    dschar {
+        Int16 minimum -128;
+        Int16 maximum 127;
+        String origname "dschar";
+        String fullnamepath "/dschar";
+    }
+    duchar_1 {
+        Byte minimum 0;
+        Byte maximum 255;
+        String origname "duchar_1";
+        String fullnamepath "/duchar_1";
+    }
+    duchar_2 {
+        Byte minimum 0;
+        Byte maximum 255;
+        String origname "duchar_2";
+        String fullnamepath "/duchar_2";
+    }
+}

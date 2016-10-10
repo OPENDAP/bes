@@ -1,0 +1,28 @@
+Attributes {
+    HDF5_GLOBAL {
+        Int32 _nc3_strict 1;
+    }
+    mydata {
+        String origname "mydata";
+        String fullnamepath "/mydata";
+        String coordinates "lat lon pre";
+    }
+    pre {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "pre";
+        Int32 _Netcdf4Dimid 2;
+        String units "hPa";
+        String origname "pre";
+        String fullnamepath "/pre";
+    }
+    lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    lon {
+        String units "degrees_east";
+        String origname "lon";
+        String fullnamepath "/lon";
+    }
+}
