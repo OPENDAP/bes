@@ -259,7 +259,7 @@ vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size
 
 GDALDataType get_array_type(const Array *a)
 {
-	switch (const_cast<Array*>(a)->type()) {
+	switch (const_cast<Array*>(a)->var()->type()) {
 	case dods_byte_c:
 		return GDT_Byte;
 
@@ -290,15 +290,15 @@ GDALDataType get_array_type(const Array *a)
 	case dods_int64_c:
 	default:
 		throw Error("Cannot perform geo-spatial operations on "
-				+ const_cast<Array*>(a)->type_name() + " data.");
+				+ const_cast<Array*>(a)->var()->type_name() + " data.");
 	}
 }
 
 /**
  * @brief Read data from a Grid and load it into a GDAL raster band
- * @param g
- * @param g_size
- * @param band
+ * @param src
+ * @param size
+ * @param band The RasterBand is modified
  */
 void read_band_data(const Array *src, const SizeBox &size, GDALRasterBand* band)
 {

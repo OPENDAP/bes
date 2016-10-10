@@ -31,6 +31,11 @@
 #include <string>
 #include <algorithm>
 
+#include <gdal.h>
+#include <gdal_priv.h>
+#include <ogr_spatialref.h>
+#include <gdalwarper.h>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -133,7 +138,10 @@ private:
 
 public:
     ReprojFunctionsTest() : small_dds(0), src_dir(TEST_SRC_DIR)
-    {}
+    {
+        GDALAllRegister();
+        OGRRegisterAll();
+    }
     ~ReprojFunctionsTest()
     {}
 
@@ -239,14 +247,57 @@ public:
         CPPUNIT_ASSERT(gt[5] == -1.0);  // resolution of lat; neg for north up data
     }
 
+    void test_read_band_data()
+    {
+        try {
+            Array *d = dynamic_cast<Array*>(small_dds->var("data"));
+
+            GDALDataType gdal_type = get_array_type(d);
+
+            GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+            if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
+
+            // The MEM driver takes no creation options (I think) jhrg 10/6/16
+            auto_ptr<GDALDataset> ds(
+                driver->Create("result", small_dim_size, small_dim_size, 1 /* nBands*/, gdal_type,
+                    NULL /* driver_options */));
+
+            // The MEM format is one of the few that supports the AddBand() method. The AddBand()
+            // method supports DATAPOINTER, PIXELOFFSET and LINEOFFSET options to reference an
+            // existing memory array.
+
+            // Get the one band for this dataset and load it with data
+            GDALRasterBand *band = ds->GetRasterBand(1);
+            if (!band)
+                throw Error("Could not get the GDALRasterBand for Array '" + d->name() + "': " + CPLGetLastErrorMsg());
+
+            SizeBox size(small_dim_size, small_dim_size);
+            read_band_data(d, size, band);
+
+            CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
+            CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
+            CPPUNIT_ASSERT(band->GetBand() == 1);
+            CPPUNIT_ASSERT(band->GetRasterDataType() == gdal_type); // tautology?
+
+            int block_x, block_y;
+            band->GetBlockSize(&block_x, &block_y);
+            DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+            // CPPUNIT_ASSERT(block_x == small_dim_size && block_y == small_dim_size);
+        }
+        catch(Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_FAIL("Error");
+        }
+    }
+
     CPPUNIT_TEST_SUITE( ReprojFunctionsTest );
 
     CPPUNIT_TEST(test_reading_data);
     CPPUNIT_TEST(test_get_size_box);
     CPPUNIT_TEST(test_get_geotransform_data);
+    CPPUNIT_TEST(test_read_band_data);
 
     CPPUNIT_TEST_SUITE_END();
-
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ReprojFunctionsTest);

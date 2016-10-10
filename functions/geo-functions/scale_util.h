@@ -26,6 +26,11 @@
 #ifndef _scale_util_h
 #define _scale_util_h
 
+#include <gdal.h>
+//#include <gdal_priv.h>
+//#include <ogr_spatialref.h>
+//#include <gdalwarper.h>
+
 namespace libdap {
 
 struct SizeBox {
@@ -48,6 +53,9 @@ struct GeoBox {
 
 SizeBox get_size_box(Array *lat, Array *lon);
 vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size);
+GDALDataType get_array_type(const Array *a);
+void read_band_data(const Array *src, const SizeBox &size, GDALRasterBand* band);
+
 
 } // namespace libdap
 
