@@ -30,7 +30,12 @@
 #include <iterator>
 #include <string>
 #include <algorithm>
+#include <limits>
 
+#include <cmath>
+
+#include <cpl_port.h>
+#include <cpl_error.h>
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <ogr_spatialref.h>
@@ -69,15 +74,28 @@ using namespace std;
 
 int test_variable_sleep_interval = 0;
 
-
 class ReprojFunctionsTest : public TestFixture
 {
 private:
     DDS *small_dds;
     TestTypeFactory btf;
 
+    CPLErrorHandler orig_err_handler;
+
     const string src_dir;
     const static int small_dim_size = 11;
+
+    /**
+     * @brief simple double equality test
+     * @param a
+     * @param b
+     * @return True if they are within epsilon
+     */
+    bool same_as(double a, double b)
+    {
+        // use float's epsilon since double's is too small for these tests
+        return fabs(a - b) <= numeric_limits<float>::epsilon();
+    }
 
     /**
      * @brief Read data from a text file
@@ -141,6 +159,8 @@ public:
     {
         GDALAllRegister();
         OGRRegisterAll();
+
+        orig_err_handler = CPLSetErrorHandler(CPLQuietErrorHandler);
     }
     ~ReprojFunctionsTest()
     {}
@@ -158,7 +178,10 @@ public:
             load_var(dynamic_cast<Array*>(small_dds->var("lon")), "small_lon.txt", buf);
 
             vector<dods_float32> data(small_dim_size * small_dim_size);
-            load_var(dynamic_cast<Array*>(small_dds->var("data")), "small_data.txt", data);
+            Array *a = dynamic_cast<Array*>(small_dds->var("data"));
+            load_var(a, "small_data.txt", data);
+
+            a->get_attr_table().append_attr("missing_value", "String", "-99");
 
         }
         catch (Error & e) {
@@ -182,17 +205,19 @@ public:
         vector<dods_float32> f32(small_dim_size);
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
         lat->value(&f32[0]);
-        for (int i = 0; i < 10; ++i) {
-            DBG(cerr << "lat[" << i << "] = " << f32[i] << endl);
-        }
+        DBG(cerr << "lat: ");
+        DBG(copy(f32.begin(), f32.end(), ostream_iterator<double>(cerr, " ")));
+        DBG(cerr << endl);
+
         CPPUNIT_ASSERT(f32[0] == 5);
         CPPUNIT_ASSERT(f32[small_dim_size - 1] == -5);
 
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         lon->value(&f32[0]);
-        for (int i = 0; i < small_dim_size; ++i) {
-            DBG(cerr << "lon[" << i << "] = " << f32[i] << endl);
-        }
+        DBG(cerr << "lon: ");
+        DBG(copy(f32.begin(), f32.end(), ostream_iterator<double>(cerr, " ")));
+        DBG(cerr << endl);
+
         CPPUNIT_ASSERT(f32[0] == -0.5);
         CPPUNIT_ASSERT(f32[small_dim_size - 1] == 0.5);
 
@@ -200,9 +225,9 @@ public:
         const int data_size = small_dim_size * small_dim_size;
         vector<dods_float32> data(data_size);
         d->value(&data[0]);
-        for (int i = 0; i < data_size; ++i) {
-            DBG(cerr << "data[" << i << "] = " << data[i] << endl);
-        }
+        DBG(cerr << "data: ");
+        DBG(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
+        DBG(cerr << endl);
         CPPUNIT_ASSERT(data[0] == -99);
         CPPUNIT_ASSERT(data[small_dim_size - 1] == -99);
 
@@ -233,14 +258,14 @@ public:
         // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
         // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
         // X == lon, Y is lat
-        vector<double> gt = get_geotransform_data(lat, lon, sb);
+        vector<double> gt = get_geotransform_data(lat, lon);
 
         DBG(cerr << "gt values: ");
         DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
         DBG(cerr << endl);
 
         CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
-        CPPUNIT_ASSERT(gt[1] == 0.1);  // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(gt[1] == 0.1);   // resolution of lon; i.e., pixel width
         CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
         CPPUNIT_ASSERT(gt[3] == 5.0);   // max lat
         CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
@@ -258,8 +283,7 @@ public:
             if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
             // The MEM driver takes no creation options (I think) jhrg 10/6/16
-            auto_ptr<GDALDataset> ds(
-                driver->Create("result", small_dim_size, small_dim_size, 1 /* nBands*/, gdal_type,
+            auto_ptr<GDALDataset> ds(driver->Create("result", small_dim_size, small_dim_size, 1 /* nBands*/, gdal_type,
                     NULL /* driver_options */));
 
             // The MEM format is one of the few that supports the AddBand() method. The AddBand()
@@ -271,22 +295,131 @@ public:
             if (!band)
                 throw Error("Could not get the GDALRasterBand for Array '" + d->name() + "': " + CPLGetLastErrorMsg());
 
+            CPLErr error = CE_None;
+            // Without this call, the min value accessed below will be -99
+            // error = band->SetNoDataValue(-99);
+
             SizeBox size(small_dim_size, small_dim_size);
-            read_band_data(d, size, band);
+            read_band_data(d, band);
 
             CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
             CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
             CPPUNIT_ASSERT(band->GetBand() == 1);
             CPPUNIT_ASSERT(band->GetRasterDataType() == gdal_type); // tautology?
 
+            // This is just interesting...
             int block_x, block_y;
             band->GetBlockSize(&block_x, &block_y);
             DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
-            // CPPUNIT_ASSERT(block_x == small_dim_size && block_y == small_dim_size);
+
+            double min, max;
+            error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+            DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+            CPPUNIT_ASSERT(same_as(min, -99));
+            CPPUNIT_ASSERT(same_as(max, 6.9));
         }
         catch(Error &e) {
-            DBG(cerr << e.get_error_message() << endl);
-            CPPUNIT_FAIL("Error");
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+    }
+
+    // This tests the get_missing_data_value() function too (indirectly)
+    void test_build_src_dataset() {
+        Array *data = dynamic_cast<Array*>(small_dds->var("data"));
+        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+
+        auto_ptr<GDALDataset> ds = build_src_dataset(data, lon, lat);
+
+        GDALRasterBand *band = ds->GetRasterBand(1);
+        if (!band)
+            throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+
+        CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
+        CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
+        CPPUNIT_ASSERT(band->GetBand() == 1);
+        CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
+
+        // This is just interesting...
+        int block_x, block_y;
+        band->GetBlockSize(&block_x, &block_y);
+        DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+
+        double min, max;
+        CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+        DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+        CPPUNIT_ASSERT(same_as(min, 1.0));  // This is 1 and not -99 because the no data value is set.
+        CPPUNIT_ASSERT(same_as(max, 6.9));
+
+        vector<double> gt(6);
+        ds->GetGeoTransform(&gt[0]);
+
+        DBG(cerr << "gt values: ");
+        DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
+        CPPUNIT_ASSERT(gt[1] == 0.1);   // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
+        CPPUNIT_ASSERT(gt[3] == 5.0);   // max lat
+        CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
+        CPPUNIT_ASSERT(gt[5] == -1.0);  // resolution of lat; neg for north up data
+    }
+
+    void test_warp_raster() {
+        try {
+        Array *data = dynamic_cast<Array*>(small_dds->var("data"));
+        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+
+        auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+
+        // Lets build the dst using the same element type as the src.
+        SizeBox dst_size(small_dim_size, small_dim_size);
+        auto_ptr<GDALDataset> dst = build_dst_dataset(dst_size, get_array_type(data));
+
+        // The dst GDALDataset is modified as a side effect
+        warp_raster(src.get(), dst.get());
+
+        CPPUNIT_ASSERT(dst->GetRasterCount() == 1);
+
+        GDALRasterBand *band = dst->GetRasterBand(1);
+        if (!band)
+            throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+
+        CPPUNIT_ASSERT(band->GetXSize() == 21);
+        CPPUNIT_ASSERT(band->GetYSize() == 21);
+        CPPUNIT_ASSERT(band->GetBand() == 1);
+        CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
+
+        // This is just interesting...
+        int block_x, block_y;
+        band->GetBlockSize(&block_x, &block_y);
+        DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+
+        double min, max;
+        CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+        DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+        CPPUNIT_ASSERT(same_as(min, 1.0));  // This is 1 and not -99 because the no data value is set.
+        CPPUNIT_ASSERT(same_as(max, 6.9));
+
+        vector<double> gt(6);
+        dst->GetGeoTransform(&gt[0]);
+
+        DBG(cerr << "gt values: ");
+        DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+        DBG(cerr << endl);
+#if 0
+        CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
+        CPPUNIT_ASSERT(gt[1] == 0.1);   // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
+        CPPUNIT_ASSERT(gt[3] == 5.0);   // max lat
+        CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
+        CPPUNIT_ASSERT(gt[5] == -1.0);  // resolution of lat; neg for north up data
+#endif
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
         }
     }
 
@@ -296,6 +429,8 @@ public:
     CPPUNIT_TEST(test_get_size_box);
     CPPUNIT_TEST(test_get_geotransform_data);
     CPPUNIT_TEST(test_read_band_data);
+    CPPUNIT_TEST(test_build_src_dataset);
+    CPPUNIT_TEST(test_warp_raster);
 
     CPPUNIT_TEST_SUITE_END();
 };
