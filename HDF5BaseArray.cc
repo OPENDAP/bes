@@ -428,7 +428,7 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
     if(fname=="" || varname=="")
         return ret_value;
 
-    string fullpath = (fname[fname.size()-1]=='/')?(fname+varname):(fname+'/'+varname);
+    string fullpath;
 
     if(fname[fname.size()-1] == '/') {
         if(varname[0]!='/')
@@ -445,6 +445,10 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
         
 
     for(int i = 0; i<slist.size();i++) {
+cerr<<"fullpath is "<<fullpath <<endl;
+cerr<<"slist[i] is "<<slist[i] <<endl;
+cerr<<"fullpath - slist size"<<fullpath.size() -slist[i].size()<<endl;
+cerr<<"fullpath.rfind(slist[i] is "<<fullpath.rfind(slist[i]) <<endl;
         if(fullpath.rfind(slist[i])==(fullpath.size()-slist[i].size())){
             ret_value = true;
             break;

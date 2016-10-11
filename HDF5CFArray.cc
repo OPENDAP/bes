@@ -116,7 +116,10 @@ bool HDF5CFArray::read()
                 vector<string> cur_lrd_var_cache_file_list;
                 HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
                 if(cur_lrd_var_cache_file_list.size() >0){
+for(int i =0; i<cur_lrd_var_cache_file_list.size();i++)
+cerr<<"lrd var cache is "<<cur_lrd_var_cache_file_list[i]<<endl;
                     if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varname)){
+cerr<<"varname is "<<varname <<endl;
 cerr<<"have var cached "<<endl;
 
                          // Only the data with the numeric datatype DAP2 and CF support are cached. 
