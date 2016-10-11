@@ -62,6 +62,7 @@ bool HDF5CFArray::read()
         return true;
     }
 
+//cerr<<"varname is "<<varname <<endl;
     // Flag to check if using large raw data cache or small raw data cache.
     short use_cache_flag = 0;
 
@@ -116,11 +117,11 @@ bool HDF5CFArray::read()
                 vector<string> cur_lrd_var_cache_file_list;
                 HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
                 if(cur_lrd_var_cache_file_list.size() >0){
-for(int i =0; i<cur_lrd_var_cache_file_list.size();i++)
-cerr<<"lrd var cache is "<<cur_lrd_var_cache_file_list[i]<<endl;
+///for(int i =0; i<cur_lrd_var_cache_file_list.size();i++)
+//cerr<<"lrd var cache is "<<cur_lrd_var_cache_file_list[i]<<endl;
                     if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varname)){
-cerr<<"varname is "<<varname <<endl;
-cerr<<"have var cached "<<endl;
+//cerr<<"varname is "<<varname <<endl;
+//cerr<<"have var cached "<<endl;
 
                          // Only the data with the numeric datatype DAP2 and CF support are cached. 
                         if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
@@ -150,7 +151,6 @@ cerr<<"have var cached "<<endl;
             cache_key = filename + varname;
 
         handle_data_with_mem_cache(dtype,total_elems,use_cache_flag,cache_key);
-
 
     }
 

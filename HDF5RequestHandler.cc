@@ -996,7 +996,6 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                 vector<int>sq_pos;
                 for(int i = 0; i<subline.size();i++){
                     if(subline[i]=='"') {
-cerr<<"find the double quote" <<endl;
                         dq_pos.push_back(i);
                     }
                     else if(subline[i]=='\'')
@@ -1011,7 +1010,7 @@ cerr<<"find the double quote" <<endl;
                             temp_name_list.push_back
                             (subline.substr(dq_pos[dq_index]+1,dq_pos[dq_index+1]-dq_pos[dq_index]-1));
                         }
-                        dq_index=+2;
+                        dq_index=dq_index + 2;
                     }
                 }
                 else if((sq_pos.size()!=0) &&(sq_pos.size()%2==0)&& dq_pos.size()==0) {
@@ -1021,10 +1020,9 @@ cerr<<"find the double quote" <<endl;
                             temp_name_list.push_back
                             (subline.substr(sq_pos[sq_index]+1,sq_pos[sq_index+1]-sq_pos[sq_index]-1));
                         }
-                        sq_index=+2;
+                        sq_index=sq_index+2;
                     }
                 }
-cerr<<"reach out the temp_name "<<endl;
 
                 //lrd_var_cache_file_list +=temp_name_list;
                 lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());

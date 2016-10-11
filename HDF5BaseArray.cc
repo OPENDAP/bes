@@ -445,11 +445,12 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
         
 
     for(int i = 0; i<slist.size();i++) {
-cerr<<"fullpath is "<<fullpath <<endl;
-cerr<<"slist[i] is "<<slist[i] <<endl;
-cerr<<"fullpath - slist size"<<fullpath.size() -slist[i].size()<<endl;
-cerr<<"fullpath.rfind(slist[i] is "<<fullpath.rfind(slist[i]) <<endl;
+//cerr<<"fullpath is "<<fullpath <<endl;
+//cerr<<"slist[i] is "<<slist[i] <<endl;
+//cerr<<"fullpath - slist size"<<fullpath.size() -slist[i].size()<<endl;
+//cerr<<"fullpath.rfind(slist[i] is "<<fullpath.rfind(slist[i]) <<endl;
         if(fullpath.rfind(slist[i])==(fullpath.size()-slist[i].size())){
+//cerr<<"find the list "<<endl;
             ret_value = true;
             break;
         }
