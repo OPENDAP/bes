@@ -24,10 +24,12 @@
 
 #include "config.h"
 
-#include <limits.h>
+//#include <limits.h>
 
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <cassert>
 
 #include <gdal.h>
 #include <gdal_priv.h>
@@ -302,18 +304,62 @@ GDALDataType get_array_type(const Array *a)
  */
 void read_band_data(const Array *src, const SizeBox &size, GDALRasterBand* band)
 {
-	// FIXME Use the Grid Array native type
-	vector<double> values(size.y_size * size.x_size); // FIXME Assumes grid is 2D
 	Array *a = const_cast<Array*>(src);
-	a->read();
+
+    assert(a->dimensions() == 2);
+
+    a->read();
+
+    vector<double> values(size.y_size * size.x_size);
 	extract_double_array(a, values);
 
-	// TODO Look at using WriteBlock() because it might be faster. jhrg 10/6/16
+	// WriteBlock() might be faster, but the MEM driver (which this cide uses)
+	// does not understand the options used to set the block size. jhrg 10/6/16
 	CPLErr error = band->RasterIO(GF_Write, 0, 0, size.x_size, size.y_size,
 			&values[0], size.x_size, size.y_size, GDT_Float64, 0, 0);
 	if (error != CPLE_None)
 		throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
+
+#if 1
+/**
+ * @brief Share the Array's internal buffer with GDAL
+ *
+ * This will not work; we need a way to access the internal buffer.
+ * As a test, to see if this code will work (there is some doubt about
+ * the DATAPOINTER option working on 64 bit machines), hack a version
+ * that allocates a buffer here and uses AddBand with that. This test
+ * leaks memory.
+ *
+ * @param src
+ * @param ds
+ */
+void add_band_data(const Array *src, const SizeBox &size, GDALDataset* ds)
+{
+    Array *a = const_cast<Array*>(src);
+
+    assert(a->dimensions() == 2);
+
+    a->read();
+
+    // FIXME This leaks memory. Replace with code that uses the Array's buffer.
+    vector<double> *values = new vector<double>(size.y_size * size.x_size);
+    extract_double_array(a, *values);
+
+    // The MEMory driver supports the DATAPOINTER option.
+    char **options = NULL;
+    ostringstream oss;
+    oss << (long)values;
+    options = CSLSetNameValue(options, "DATAPOINTER", oss.str().c_str());
+
+    CPLErr error = ds->AddBand(get_array_type(a), options);
+
+    CSLDestroy( options );
+
+    if (error != CPLE_None)
+        throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
+}
+#endif
 
 /**
  * @brief build GDALDataset from a DAP2 Grid

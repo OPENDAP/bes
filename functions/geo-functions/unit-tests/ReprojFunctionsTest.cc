@@ -31,6 +31,9 @@
 #include <string>
 #include <algorithm>
 
+#include <cmath>    // For floating point comparesion
+#include <limits>
+
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <ogr_spatialref.h>
@@ -78,6 +81,23 @@ private:
 
     const string src_dir;
     const static int small_dim_size = 11;
+
+    /**
+     * @brief from stack overflow
+     *
+     * @note http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double-comparison
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    bool AreSame(double a, double b)
+    {
+        // I used float's epsilon since that's apparently needed when
+        // values are given as constants with only one significant digit.
+        // These are not critical comparisons...
+        return fabs(a - b) < numeric_limits<float>::epsilon();
+    }
 
     /**
      * @brief Read data from a text file
@@ -208,7 +228,7 @@ public:
 
         DBG(cerr << "data[" << 5*small_dim_size + 0 << "]: " << data[5*small_dim_size + 0] << endl);
         DBG(cerr << "data[" << 5*small_dim_size + 4 << "]: " << data[5*small_dim_size + 4] << endl);
-        CPPUNIT_ASSERT(data[5*small_dim_size + 0] == (dods_float32)3.1); // accounts for rounding error
+        CPPUNIT_ASSERT(AreSame(data[5*small_dim_size + 0], 3.1)); // accounts for rounding error
         CPPUNIT_ASSERT(data[5*small_dim_size + 4] == 3.5);
     }
 
@@ -283,6 +303,17 @@ public:
             band->GetBlockSize(&block_x, &block_y);
             DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
             // CPPUNIT_ASSERT(block_x == small_dim_size && block_y == small_dim_size);
+            double min, max;
+            band->ComputeStatistics(false, &min, &max, NULL/*mean*/, NULL/*stddev*/, NULL/*prog*/, NULL/*prog_arg*/);
+            DBG(cerr << "min, max: " << min << ", " << max << endl);
+            CPPUNIT_ASSERT(min == -99.0);
+            CPPUNIT_ASSERT(AreSame(max, 6.9));
+
+            band->SetNoDataValue(-99.0);
+            band->ComputeStatistics(false, &min, &max, NULL/*mean*/, NULL/*stddev*/, NULL/*prog*/, NULL/*prog_arg*/);
+            DBG(cerr << "min, max: " << min << ", " << max << endl);
+            CPPUNIT_ASSERT(min = 1.0);
+            CPPUNIT_ASSERT(AreSame(max, 6.9));
         }
         catch(Error &e) {
             DBG(cerr << e.get_error_message() << endl);
