@@ -38,7 +38,7 @@
 //#include <Array.h>
 
 #include "HDFEOS5CFMissLLArray.h"
-
+#include "HDF5RequestHandler.h"
 
 
 BaseType *HDFEOS5CFMissLLArray::ptr_duplicate()
@@ -50,8 +50,38 @@ bool HDFEOS5CFMissLLArray::read()
 {
 
     BESDEBUG("h5","Coming to HDFEOS5CFMissLLArray read "<<endl);
-    read_data_NOT_from_mem_cache(false,NULL);
+    if(NULL == HDF5RequestHandler::get_lrdata_mem_cache())
+        read_data_NOT_from_mem_cache(false,NULL);
+    else {
+	vector<string> cur_lrd_non_cache_dir_list;                                      
+        HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);     
+                                                                                                    
+        string cache_key;
+        // Check if this file is included in the non-cache directory                    
+        if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                 
+    	    ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {  
+		vector<string> cur_cache_dlist;                                                         
+		HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                            
+		string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');                
+		if(cache_dir != "")                                                                     
+		    cache_key = cache_dir + varname;                                                    
+		else                                                                                    
+		    cache_key = filename + varname;     
 
+                // Need to obtain the total number of elements.
+                // Currently only trivial geographic projection is supported.
+                // So the total number of elements for LAT is ydimsize,
+                //    the total number of elements for LON is xdimsize.
+                if(cvartype == CV_LAT_MISS)
+                    handle_data_with_mem_cache(H5FLOAT32,(size_t)ydimsize,3,cache_key);
+                else 
+                    handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,3,cache_key);
+        }
+        else 
+	    read_data_NOT_from_mem_cache(false,NULL);
+    }
+                                                                                                    
+                                                   
     return true;
 }
 

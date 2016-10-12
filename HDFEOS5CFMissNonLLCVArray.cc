@@ -37,6 +37,7 @@
 #include "InternalErr.h"
 
 #include "HDFEOS5CFMissNonLLCVArray.h"
+#include "HDF5RequestHandler.h"
 
 BaseType *HDFEOS5CFMissNonLLCVArray::ptr_duplicate()
 {
@@ -46,7 +47,16 @@ BaseType *HDFEOS5CFMissNonLLCVArray::ptr_duplicate()
 bool HDFEOS5CFMissNonLLCVArray::read()
 {
     BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray read "<<endl);
-    read_data_NOT_from_mem_cache(false,NULL);
+
+    if(NULL == HDF5RequestHandler::get_srdata_mem_cache())                                          
+        read_data_NOT_from_mem_cache(false,NULL);                                                   
+    else {                                                                                          
+        // Notice for this special fake variable case, we just use the info. from DAP.
+        // dataset() is the file name and name() is the HDF5 unique var name.
+        string cache_key = dataset() + name();
+        handle_data_with_mem_cache(H5INT32,tnumelm,1,cache_key);             
+    }
+ 
     return true;
 }
 

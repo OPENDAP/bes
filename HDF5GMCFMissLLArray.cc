@@ -50,8 +50,47 @@ bool HDF5GMCFMissLLArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5GMCFMissLLArray read "<<endl);
-    read_data_NOT_from_mem_cache(false,NULL);
 
+    if(NULL == HDF5RequestHandler::get_lrdata_mem_cache())                                          
+        read_data_NOT_from_mem_cache(false,NULL);                                                   
+
+    else {                                                                                          
+                                                                                                    
+        vector<string> cur_lrd_non_cache_dir_list;                                                  
+        HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);                 
+                                                                                                    
+        string cache_key;                                                                           
+
+        // Check if this file is included in the non-cache directory                                
+        if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                             
+            ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {              
+                vector<string> cur_cache_dlist;                                                     
+                HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                        
+                string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');            
+                if(cache_dir != "")                                                                 
+                    cache_key = cache_dir + varname;                                                
+                else                                                                                
+                    cache_key = filename + varname;                                                 
+                                                                                                    
+                // Need to obtain the total number of elements.                                     
+                // Obtain dimension size info.                                                          
+		vector<size_t> dim_sizes;                                                               
+		Dim_iter i_dim = dim_begin();                                                           
+		Dim_iter i_enddim = dim_end();                                                          
+		while (i_dim != i_enddim) {                                                             
+		    dim_sizes.push_back(dimension_size(i_dim));                                         
+		    ++i_dim;                                                                            
+		}             
+
+                size_t total_elems =1;
+                for(int i = 0; i<dim_sizes.size();i++)
+		    total_elems = total_elems*dim_sizes[i];
+
+                handle_data_with_mem_cache(dtype,total_elems,3,cache_key);             
+        }                                                                                           
+        else                                                                                        
+            read_data_NOT_from_mem_cache(false,NULL);                                               
+    }                                    
     return true;
 }
 

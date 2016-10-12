@@ -62,6 +62,8 @@ class HDF5BaseArray:public Array {
         
     virtual ~ HDF5BaseArray() {
     }
+
+   protected:
     //virtual BaseType *ptr_duplicate();
     //virtual bool read();
     int format_constraint (int *cor, int *step, int *edg);
