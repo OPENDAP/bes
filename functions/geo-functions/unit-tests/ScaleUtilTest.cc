@@ -71,7 +71,7 @@ using namespace std;
 
 int test_variable_sleep_interval = 0;
 
-class ReprojFunctionsTest : public TestFixture
+class ScaleUtilTest : public TestFixture
 {
 private:
     DDS *small_dds;
@@ -153,14 +153,14 @@ private:
     }
 
 public:
-    ReprojFunctionsTest() : small_dds(0), src_dir(TEST_SRC_DIR)
+    ScaleUtilTest() : small_dds(0), src_dir(TEST_SRC_DIR)
     {
         GDALAllRegister();
         OGRRegisterAll();
 
         orig_err_handler = CPLSetErrorHandler(CPLQuietErrorHandler);
     }
-    ~ReprojFunctionsTest()
+    ~ScaleUtilTest()
     {}
 
     void setUp()
@@ -529,7 +529,7 @@ public:
         CPPUNIT_ASSERT(buf[5*small_dim_size + 4] == 3.5);
     }
 
-    CPPUNIT_TEST_SUITE( ReprojFunctionsTest );
+    CPPUNIT_TEST_SUITE( ScaleUtilTest );
 
     CPPUNIT_TEST(test_reading_data);
     CPPUNIT_TEST(test_get_size_box);
@@ -543,7 +543,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ReprojFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ScaleUtilTest);
 
 int main(int argc, char*argv[])
 {

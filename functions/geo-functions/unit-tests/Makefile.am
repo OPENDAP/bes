@@ -52,7 +52,7 @@ test_config.h: test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = ReprojFunctionsTest
+UNIT_TESTS = ScaleUtilTest
 else
 UNIT_TESTS =
 
@@ -71,8 +71,8 @@ TEST_SRC =
 # Many of the tests use these - build once
 TEST_OBJ =
 
-ReprojFunctionsTest_SOURCES = ReprojFunctionsTest.cc ../scale_util.cc $(TEST_SRC)
-ReprojFunctionsTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
-ReprojFunctionsTest_LDADD = $(LDADD)
+ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
+ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ScaleUtilTest_LDADD = $(LDADD)
 
 # 

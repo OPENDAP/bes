@@ -327,6 +327,36 @@ void read_band_data(const Array *src, GDALRasterBand* band)
 		throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
 
+/**
+ * @brief Share the Array's internal buffer with GDAL
+ *
+ * This can avoid allocating temporary memory.
+ *
+ * @param src The Array
+ * @param ds The GDALDataset
+ */
+void add_band_data(const Array *src, GDALDataset* ds)
+{
+    Array *a = const_cast<Array*>(src);
+
+    assert(a->dimensions() == 2);
+
+    a->read();
+
+    // The MEMory driver supports the DATAPOINTER option.
+    char **options = NULL;
+    ostringstream oss;
+    oss << reinterpret_cast<unsigned long>(a->get_buf());
+    options = CSLSetNameValue(options, "DATAPOINTER", oss.str().c_str());
+
+    CPLErr error = ds->AddBand(get_array_type(a), options);
+
+    CSLDestroy(options);
+
+    if (error != CPLE_None)
+        throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
+}
+
 template <typename T>
 static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long y, const unsigned long x, Array *a)
 {
@@ -391,35 +421,12 @@ Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src
     }
 }
 
-
-/**
- * @brief Share the Array's internal buffer with GDAL
- *
- * @todo Test this.
- *
- * @param src
- * @param ds
- */
-void add_band_data(const Array *src, GDALDataset* ds)
+void build_maps_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src)
 {
-    Array *a = const_cast<Array*>(src);
-
-    assert(a->dimensions() == 2);
-
-    a->read();
-
-    // The MEMory driver supports the DATAPOINTER option.
-    char **options = NULL;
-    ostringstream oss;
-    oss << reinterpret_cast<unsigned long>(a->get_buf());
-    options = CSLSetNameValue(options, "DATAPOINTER", oss.str().c_str());
-
-    CPLErr error = ds->AddBand(get_array_type(a), options);
-
-    CSLDestroy(options);
-
-    if (error != CPLE_None)
-        throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
+    // Get the GDALDataset size
+    GDALRasterBand *band = dst->GetRasterBand(1);
+    unsigned long y = band->GetYSize();
+    unsigned long x = band->GetXSize(); // lon
 }
 
 /**
@@ -547,7 +554,7 @@ auto_ptr<GDALDataset> build_dst_dataset(SizeBox &size, GDALDataType gdal_type, c
  * @param src The source GDALDataset
  * @param size The destination size
  * @param interp The interpolation algorithm to use (default: nearest neighbor,
- * other options are bilinear,cubic,cubicspline,lanczos,average,mode)
+ * other options are bilinear, cubic, cubicspline, lanczos, average, mode)
  * @param crs The CRS to use for the result (default is to use the CRS of 'src')
  * @return An auto_ptr to the result (a new GDALDataset instance)
  */
@@ -555,7 +562,7 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
     const string &interp /*nearest*/, const string &crs /*""*/)
 {
     char **argv = NULL;
-    argv = CSLAddString(argv, "-of");   // output format
+    argv = CSLAddString(argv, "-of");       // output format
     argv = CSLAddString(argv, "MEM");
 
     argv = CSLAddString(argv, "-outsize");  // output size
@@ -569,7 +576,7 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
     argv = CSLAddString(argv, "1");
 
     argv = CSLAddString(argv, "-r");    // resampling
-    argv = CSLAddString(argv, interp.c_str());  // {nearest (default),bilinear,cubic,cubicspline,lanczos,average,mode}
+    argv = CSLAddString(argv, interp.c_str());  // {nearest(default),bilinear,cubic,cubicspline,lanczos,average,mode}
 
     if (!crs.empty()) {
         argv = CSLAddString(argv, "-a_srs");   // dst SRS (WKT or "EPSG:n")
