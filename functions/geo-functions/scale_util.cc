@@ -24,10 +24,9 @@
 
 #include "config.h"
 
-//#include <limits.h>
-
 #include <iostream>
 #include <vector>
+#include <limits>
 #include <sstream>
 #include <cassert>
 
@@ -196,8 +195,10 @@ SizeBox get_size_box(Array *lat, Array *lon)
  * @param lon
  * @return A vector<double> of length 6 with the GDAL geo-transform parameters
  */
-vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size)
+vector<double> get_geotransform_data(Array *lat, Array *lon)
 {
+    SizeBox size = get_size_box(lat, lon);
+
     lat->read();
 	vector<double> lat_values(size.y_size);
 	extract_double_array(lat, lat_values);
@@ -297,26 +298,30 @@ GDALDataType get_array_type(const Array *a)
 }
 
 /**
- * @brief Read data from a Grid and load it into a GDAL raster band
+ * @brief Read data from an Array and load it into a GDAL RasterBand
  * @param src
  * @param size
  * @param band The RasterBand is modified
  */
-void read_band_data(const Array *src, const SizeBox &size, GDALRasterBand* band)
+void read_band_data(const Array *src, GDALRasterBand* band)
 {
-	Array *a = const_cast<Array*>(src);
+    Array *a = const_cast<Array*>(src);
+    if (a->dimensions() != 2)
+        throw Error("Cannot perform geo-spatial operations on an Array ("
+            + a->name() + ") with " + long_to_string(a->dimensions()) + " dimensions.");
 
-    assert(a->dimensions() == 2);
+    // Assume row x col (i.e., [y][x]) order of dimensions
+    unsigned long y = a->dimension_size(a->dim_begin(), true);
+    unsigned long x =  a->dimension_size(a->dim_begin() + 1, true);
 
-    a->read();
+	a->read();  // Should this code use intern_data()? jhrg 10/11/16
 
-    vector<double> values(size.y_size * size.x_size);
-	extract_double_array(a, values);
+    // We may be able to use AddBand() to skip the I/O operation here
+	// For now, we use read() to load the data values and get_buf() to
+	// access a pointer to them.
+	CPLErr error = band->RasterIO(GF_Write, 0, 0, x, y, a->get_buf(),
+	    x, y, get_array_type(a), 0, 0);
 
-	// WriteBlock() might be faster, but the MEM driver (which this cide uses)
-	// does not understand the options used to set the block size. jhrg 10/6/16
-	CPLErr error = band->RasterIO(GF_Write, 0, 0, size.x_size, size.y_size,
-			&values[0], size.x_size, size.y_size, GDT_Float64, 0, 0);
 	if (error != CPLE_None)
 		throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
@@ -342,14 +347,10 @@ void add_band_data(const Array *src, const SizeBox &size, GDALDataset* ds)
 
     a->read();
 
-    // FIXME This leaks memory. Replace with code that uses the Array's buffer.
-    vector<double> *values = new vector<double>(size.y_size * size.x_size);
-    extract_double_array(a, *values);
-
     // The MEMory driver supports the DATAPOINTER option.
     char **options = NULL;
     ostringstream oss;
-    oss << (long)values;
+    oss << a->get_buf();
     options = CSLSetNameValue(options, "DATAPOINTER", oss.str().c_str());
 
     CPLErr error = ds->AddBand(get_array_type(a), options);
@@ -362,54 +363,115 @@ void add_band_data(const Array *src, const SizeBox &size, GDALDataset* ds)
 #endif
 
 /**
- * @brief build GDALDataset from a DAP2 Grid
+ * @brief Get the Array's 'no data' value
  *
- * @note The GDAL Dataset object is made with a single band
- * Geo data are set
- * @param g Get data and attributes from this Grid
- * @return The GDAL Dataset
+ * @param src The Array to get the 'no data' attribute from/
+ * @return The value of the 'no data' attribute or NaN
  */
-auto_ptr<GDALDataset> build_src_dataset(Grid *g)
+double get_missing_data_value(const Array *src)
 {
-	// FIXME Must determine which axes are lat and lon. jhrg 10/6/16
-    Array *lat = static_cast<Array*>(*g->get_map_iter(0));
-    Array *lon = static_cast<Array*>(*g->get_map_iter(1));
+    Array *a = const_cast<Array*>(src);
+
+    // Read this from the 'missing_value' or '_FillValue' attributes
+    string mv_attr = a->get_attr_table().get_attr("missing_value");
+    if (mv_attr.empty()) mv_attr = a->get_attr_table().get_attr("_FillValue");
+
+    double missing_data = numeric_limits<double>::quiet_NaN();
+    if (!mv_attr.empty()) {
+        char *endptr;
+        missing_data = strtod(mv_attr.c_str(), &endptr);
+#ifndef NDEBUG
+        if (missing_data == 0.0 && endptr == mv_attr.c_str())
+            cerr << "Error converting no data attribute to double: " << strerror(errno) << endl;
+#endif
+    }
+
+    return missing_data;
+}
+
+/**
+ * @brief Build a GDAL Dataset object for this data/lon/lat combination
+ *
+ * @note Supported values for the srs parameter
+ * "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
+ * "WGS72": same as "EPSG:4322" but has no dependence on EPSG data files.
+ * "NAD27": same as "EPSG:4267" but has no dependence on EPSG data files.
+ * "NAD83": same as "EPSG:4269" but has no dependence on EPSG data files.
+ * "EPSG:n": same as doing an ImportFromEPSG(n).
+ *
+ * @param data
+ * @param lon
+ * @param lat
+ * @param srs The SRS/CRS of the data array; defaults to WGS84
+ * @return An auto_ptr<GDALDataset>
+ */
+auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, const string &srs)
+{
+    GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+    if(!driver)
+        throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
     SizeBox array_size = get_size_box(lat, lon);
-    GDALDataType gdal_type = get_array_type(g->get_array());
+    //GDALDataType gdal_type = get_array_type(data);
 
+    // The MEM driver takes no creation options jhrg 10/6/16
+    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
+    		1 /* nBands*/, get_array_type(data), NULL /* driver_options */));
+
+    // Get the one band for this dataset and load it with data
+	GDALRasterBand *band = ds->GetRasterBand(1);
+	if (!band)
+		throw Error("Could not get the GDAL RasterBand for Array '" + data->name() + "': " + CPLGetLastErrorMsg());
+
+	// Set the no data value here; I'm not sure what the affect of using NaN will be... jhrg 10/11/16
+	double no_data = get_missing_data_value(data);
+	band->SetNoDataValue(no_data);
+
+	read_band_data(data, band);
+
+	vector<double> geo_transform = get_geotransform_data(lat, lon);
+    ds->SetGeoTransform(&geo_transform[0]);
+
+    OGRSpatialReference native_srs;
+    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str()))
+    	throw Error("Could not set '" + srs + "' as the dataset native CRS.");
+
+    // TODO I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
+    // native_srs.SetUTM( 11, TRUE );
+
+    // Connect the SRS/CRS to the GDAL Dataset
+    char *pszSRS_WKT = NULL;
+    native_srs.exportToWkt( &pszSRS_WKT );
+    ds->SetProjection( pszSRS_WKT );
+    CPLFree( pszSRS_WKT );
+
+    return ds;
+}
+
+/**
+ * @brief Build a GDAL Dataset for the given size and type
+ * @param a
+ * @param size
+ * @return
+ */
+auto_ptr<GDALDataset> build_dst_dataset(SizeBox &size, GDALDataType gdal_type, const string &srs)
+{
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if(!driver)
         throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
     // The MEM driver takes no creation options (I think) jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
-    		1 /* nBands*/, gdal_type, NULL /* driver_options */));
+    auto_ptr<GDALDataset> ds(driver->Create("result", size.x_size, size.y_size,
+            1 /* nBands*/, gdal_type, NULL /* driver_options */));
 
-    // Get the one band for this dataset and load it with data
-	GDALRasterBand *band = ds->GetRasterBand(1);
-	if (!band)
-		throw Error("Could not get the GDAL Rasterband for grid '" + g->name() + "': " + CPLGetLastErrorMsg());
-
-	read_band_data(g->get_array(), array_size, band);
-
-	vector<double> geo_transform = get_geotransform_data(lat, lon, array_size);
-    ds->SetGeoTransform(&geo_transform[0]);
-
-    // Supported values:
-    // "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
-    // "WGS72": same as "EPSG:4322" but has no dependence on EPSG data files.
-    // "NAD27": same as "EPSG:4267" but has no dependence on EPSG data files.
-    // "NAD83": same as "EPSG:4269" but has no dependence on EPSG data files.
-    // "EPSG:n": same as doing an ImportFromEPSG(n).
     OGRSpatialReference native_srs;
-    if (CE_None != native_srs.SetWellKnownGeogCS("WGS84"))
-    	throw Error("Could not set the dataset native CRS.");
+    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str()))
+        throw Error("Could not set '" + srs + "' as the dataset native CRS.");
 
-    // FIXME I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
+    // TODO I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
     // native_srs.SetUTM( 11, TRUE );
 
-    // TODO Is this needed? Does it conflict with SetGeoTransform above. jhrg 10/6/16
+    // Connect the SRS/CRS to the GDAL Dataset
     char *pszSRS_WKT = NULL;
     native_srs.exportToWkt( &pszSRS_WKT );
     ds->SetProjection( pszSRS_WKT );
@@ -429,47 +491,64 @@ auto_ptr<GDALDataset> build_src_dataset(Grid *g)
  */
 void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds)
 {
-	// Setup warp options.
-	GDALWarpOptions* psWarpOptions = GDALCreateWarpOptions();
-	psWarpOptions->hSrcDS = src_ds;
-	psWarpOptions->hDstDS = dst_ds;
-	psWarpOptions->nBandCount = 1;
-	psWarpOptions->panSrcBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
-	psWarpOptions->panSrcBands[0] = 1;
-	psWarpOptions->panDstBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
-	psWarpOptions->panDstBands[0] = 1;
+    // Setup warp options.
+    GDALWarpOptions* psWarpOptions = GDALCreateWarpOptions();
+    psWarpOptions->hSrcDS = src_ds;
+    psWarpOptions->hDstDS = dst_ds;
+    psWarpOptions->nBandCount = 1;
+    psWarpOptions->panSrcBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
+    psWarpOptions->panSrcBands[0] = 1;
+    psWarpOptions->panDstBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
+    psWarpOptions->panDstBands[0] = 1;
 
-	// Establish reprojection transformer.
-	psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer(src_ds,
-			GDALGetProjectionRef(src_ds), dst_ds, GDALGetProjectionRef(dst_ds),
-			FALSE, 0.0, 1);
-	psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
+    // Establish reprojection transformer.
+    const char *src_wkt = GDALGetProjectionRef(src_ds);
+    char *dst_wkt = NULL;
 
-	// Initialize and execute the warp operation.
-	GDALWarpOperation oOperation;
-	oOperation.Initialize(psWarpOptions);
+    OGRSpatialReference oSRS;
+    //oSRS.SetUTM( 11, TRUE );
+    oSRS.SetWellKnownGeogCS( "WGS84" );
+    oSRS.exportToWkt( &dst_wkt );
 
-	// TODO There's a method for multi-threads and also a MT warp options option. jhrg 10/6/16
-	oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(dst_ds), GDALGetRasterYSize(dst_ds));
+    psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer(src_ds, src_wkt, NULL, dst_wkt,
+            false /* Use GCP OK*/, 0.0 /*allowed error threshold*/, 1 /*GCP polynomial order*/);
 
-	GDALDestroyGenImgProjTransformer(psWarpOptions->pTransformerArg);
-	GDALDestroyWarpOptions(psWarpOptions);
+    if (psWarpOptions->pTransformerArg == NULL)
+        throw Error(string("Could not build GDAL Transformer Argument: ") + CPLGetLastErrorMsg());
+
+    vector<double> adfDstGeoTransform(6);
+    int nPixels=0, nLines=0;
+    CPLErr eErr;
+    eErr = GDALSuggestedWarpOutput( src_ds,
+                                    GDALGenImgProjTransform, psWarpOptions->pTransformerArg,
+                                    &adfDstGeoTransform[0], &nPixels, &nLines );
+    if (eErr != CE_None)
+        throw Error(string("Could not get suggest warp output: ") + CPLGetLastErrorMsg());
+
+    GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+
+    cerr << "nPixels: " << nPixels << endl;
+    cerr << "nLines: " << nLines << endl;
+    cerr << "adfDstGeoTransform: ";
+    copy(adfDstGeoTransform.begin(), adfDstGeoTransform.end(), ostream_iterator<double>(cerr, " "));
+    cerr << endl;
+
+#if 0
+    psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
+
+    // Initialize and execute the warp operation.
+    GDALWarpOperation oOperation;
+    oOperation.Initialize(psWarpOptions);
+
+    // TODO There's a method for multi-threads and also a MT warp options option. jhrg 10/6/16
+    oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(dst_ds), GDALGetRasterYSize(dst_ds));
+
+    GDALDestroyGenImgProjTransformer(psWarpOptions->pTransformerArg);
+    GDALDestroyWarpOptions(psWarpOptions);
+#endif
 }
 
-auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
-{
-    GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
-    if(!driver)
-        throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
-    GDALDataType gdal_type = get_array_type(const_cast<Grid*>(g)->get_array());
-
-    // The MEM driver takes no creation options (I think) jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", 10, 10,
-            1 /* nBands*/, gdal_type, NULL /* driver_options */));
-
-    return ds;
-}
 /**
  * @brief Scale a DAP2 Grid given the Grid, dest lat/lon subset, dest size and CRS.
  *
@@ -481,20 +560,24 @@ auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
  * uses the GDAL constants
  * @return The new Grid variable
  */
-Grid *scale_dap_grid(Grid *src, GeoBox &bbox, SizeBox &size, const string &crs, const int interp)
+Grid *scale_dap_grid(Grid *src, SizeBox &size, const string &dest_crs, const int interp)
 {
+    // Pull out lat, lon and array
+
+#if 0
 	// Build GDALDataset for src
 	auto_ptr<GDALDataset> src_ds = build_src_dataset(src);
 
 	// Build GDALDaatset for result - Assume it's a double for now (jhrg 10/6/16)
-    auto_ptr<GDALDataset> dst_ds = build_dst_dataset(src);
+    GDALDataType gdal_type = get_array_type(src);
+    auto_ptr<GDALDataset> dst_ds = build_dst_dataset(size, gdal_type);
 
 	// Call the GDAL warp code
     warp_raster(src_ds.get(), dst_ds.get());
 
 	// Build the result Grid using the result GDALDataset    GDALRasterBand *poBand = satDataSet->GetRasterBand(1);
 	//auto_ptr<Grid> dest(new Grid("result"));
-
+#endif
 #if 0
      // Supported values:
     // "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
