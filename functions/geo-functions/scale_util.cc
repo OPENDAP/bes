@@ -412,7 +412,6 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
         throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
     SizeBox array_size = get_size_box(lat, lon);
-    //GDALDataType gdal_type = get_array_type(data);
 
     // The MEM driver takes no creation options jhrg 10/6/16
     auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
@@ -469,7 +468,7 @@ auto_ptr<GDALDataset> build_dst_dataset(SizeBox &size, GDALDataType gdal_type, c
         throw Error("Could not set '" + srs + "' as the dataset native CRS.");
 
     // TODO I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
-    // native_srs.SetUTM( 11, TRUE );
+    native_srs.SetUTM( 11, TRUE );
 
     // Connect the SRS/CRS to the GDAL Dataset
     char *pszSRS_WKT = NULL;
@@ -505,32 +504,34 @@ void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds)
     const char *src_wkt = GDALGetProjectionRef(src_ds);
     char *dst_wkt = NULL;
 
-    OGRSpatialReference oSRS;
-    //oSRS.SetUTM( 11, TRUE );
-    oSRS.SetWellKnownGeogCS( "WGS84" );
-    oSRS.exportToWkt( &dst_wkt );
+    OGRSpatialReference dst_srs;
+    dst_srs.SetUTM( 11, TRUE );
+    dst_srs.SetWellKnownGeogCS( "WGS72" );
+    dst_srs.exportToWkt( &dst_wkt );
+    cerr << "dst_wkt: " << dst_wkt << endl;
 
-    psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer(src_ds, src_wkt, NULL, dst_wkt,
+    //psWarpOptions->pTransformerArg
+    void *transformer_arg = GDALCreateGenImgProjTransformer(src_ds, src_wkt, NULL, dst_wkt,
             false /* Use GCP OK*/, 0.0 /*allowed error threshold*/, 1 /*GCP polynomial order*/);
 
-    if (psWarpOptions->pTransformerArg == NULL)
+    if (transformer_arg == NULL)
         throw Error(string("Could not build GDAL Transformer Argument: ") + CPLGetLastErrorMsg());
 
-    vector<double> adfDstGeoTransform(6);
-    int nPixels=0, nLines=0;
+    vector<double> dst_geo_trans(6);
+    int nPixels=11, nLines=11;
     CPLErr eErr;
     eErr = GDALSuggestedWarpOutput( src_ds,
-                                    GDALGenImgProjTransform, psWarpOptions->pTransformerArg,
-                                    &adfDstGeoTransform[0], &nPixels, &nLines );
+                                    GDALGenImgProjTransform, transformer_arg,
+                                    &dst_geo_trans[0], &nPixels, &nLines );
     if (eErr != CE_None)
         throw Error(string("Could not get suggest warp output: ") + CPLGetLastErrorMsg());
 
-    GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+    GDALDestroyGenImgProjTransformer(transformer_arg);
 
     cerr << "nPixels: " << nPixels << endl;
     cerr << "nLines: " << nLines << endl;
     cerr << "adfDstGeoTransform: ";
-    copy(adfDstGeoTransform.begin(), adfDstGeoTransform.end(), ostream_iterator<double>(cerr, " "));
+    copy(dst_geo_trans.begin(), dst_geo_trans.end(), ostream_iterator<double>(cerr, " "));
     cerr << endl;
 
 #if 0

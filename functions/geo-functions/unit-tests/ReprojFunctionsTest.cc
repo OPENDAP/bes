@@ -88,6 +88,7 @@ private:
 
     /**
      * @brief simple double equality test
+     * @see http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double-comparison
      * @param a
      * @param b
      * @return True if they are within epsilon
@@ -380,6 +381,15 @@ public:
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
         auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+
+        GDALTranslateOptions *options = NULL;
+
+        options = GDALTranslateOptionsNew (char **papszArgv, NULL /*binary options*/);
+
+        int *usage_error = 0;   // result param
+        GDALDatasetH dst_handle =  GDALTranslate("warped_dst", src.get(), options, usage_error);
+
+        GDALTranslateOptionsFree(options);
 
         // Lets build the dst using the same element type as the src.
         SizeBox dst_size(small_dim_size, small_dim_size);
