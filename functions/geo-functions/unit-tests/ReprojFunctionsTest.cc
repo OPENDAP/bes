@@ -327,6 +327,60 @@ public:
         }
     }
 
+    void test_add_band_data()
+    {
+        try {
+            Array *d = dynamic_cast<Array*>(small_dds->var("data"));
+
+            GDALDataType gdal_type = get_array_type(d);
+
+            GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+            if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
+
+            // The MEM driver takes no creation options (I think) jhrg 10/6/16
+            auto_ptr<GDALDataset> ds(driver->Create("result", small_dim_size, small_dim_size, 0 /* nBands*/, gdal_type,
+                    NULL /* driver_options */));
+
+            // The MEM format is one of the few that supports the AddBand() method. The AddBand()
+            // method supports DATAPOINTER, PIXELOFFSET and LINEOFFSET options to reference an
+            // existing memory array.
+
+            add_band_data(d, ds.get());
+
+            CPPUNIT_ASSERT(ds->GetRasterCount() == 1);
+
+            // Get the one band for this dataset
+            GDALRasterBand *band = ds->GetRasterBand(1);
+            if (!band)
+                throw Error("Could not get the GDALRasterBand for Array '" + d->name() + "': " + CPLGetLastErrorMsg());
+
+            CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
+            CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
+            CPPUNIT_ASSERT(band->GetBand() == 1);
+            CPPUNIT_ASSERT(band->GetRasterDataType() == gdal_type); // tautology?
+
+            // This is just interesting...
+            int block_x, block_y;
+            band->GetBlockSize(&block_x, &block_y);
+            DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+
+            double min, max;
+            CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+            DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+            CPPUNIT_ASSERT(same_as(min, -99));
+            CPPUNIT_ASSERT(same_as(max, 6.9));
+
+            band->SetNoDataValue(-99.0);
+            band->ComputeStatistics(false, &min, &max, NULL/*mean*/, NULL/*stddev*/, NULL/*prog*/, NULL/*prog_arg*/);
+            DBG(cerr << "min, max: " << min << ", " << max << endl);
+            CPPUNIT_ASSERT(min = 1.0);
+            CPPUNIT_ASSERT(same_as(max, 6.9));
+        }
+        catch(Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+    }
+
     // This tests the get_missing_data_value() function too (indirectly)
     void test_build_src_dataset() {
         Array *data = dynamic_cast<Array*>(small_dds->var("data"));
@@ -469,8 +523,8 @@ public:
             }
         }
 
-        DBG(cerr << "data[" << 5*small_dim_size + 0 << "]: " << data[5*small_dim_size + 0] << endl);
-        DBG(cerr << "data[" << 5*small_dim_size + 4 << "]: " << data[5*small_dim_size + 4] << endl);
+        DBG(cerr << "buf[" << 5*small_dim_size + 0 << "]: " << buf[5*small_dim_size + 0] << endl);
+        DBG(cerr << "buf[" << 5*small_dim_size + 4 << "]: " << buf[5*small_dim_size + 4] << endl);
         CPPUNIT_ASSERT(same_as(buf[5*small_dim_size + 0], 3.1)); // accounts for rounding error
         CPPUNIT_ASSERT(buf[5*small_dim_size + 4] == 3.5);
     }
@@ -481,6 +535,7 @@ public:
     CPPUNIT_TEST(test_get_size_box);
     CPPUNIT_TEST(test_get_geotransform_data);
     CPPUNIT_TEST(test_read_band_data);
+    CPPUNIT_TEST(test_add_band_data);
     CPPUNIT_TEST(test_build_src_dataset);
     CPPUNIT_TEST(test_scaling_with_gdal);
     CPPUNIT_TEST(test_build_array_from_gdal_dataset);

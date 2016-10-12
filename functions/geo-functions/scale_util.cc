@@ -395,6 +395,8 @@ Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src
 /**
  * @brief Share the Array's internal buffer with GDAL
  *
+ * @todo Test this.
+ *
  * @param src
  * @param ds
  */

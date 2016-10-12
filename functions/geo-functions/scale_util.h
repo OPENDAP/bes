@@ -52,6 +52,7 @@ SizeBox get_size_box(Array *lat, Array *lon);
 vector<double> get_geotransform_data(Array *lat, Array *lon);
 GDALDataType get_array_type(const Array *a);
 void read_band_data(const Array *src, GDALRasterBand* band);
+void add_band_data(const Array *src, GDALDataset* ds);
 auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, const string &srs = "WGS84");
 auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size, const string &interp = "nearest",
     const string &crs = "");
