@@ -40,6 +40,21 @@ m4_define([AT_MEMCACHE_BINARYDATA_RESPONSE_TEST],
 [_AT_MEMCACHE_BINARYDATA_TEST([$1], [$abs_srcdir/h5.mem/$1.curlout])
 ])
 
+m4_define([_AT_MEMCACHE_DATASUBSET_TEST],   
+[AT_SETUP([MemCacheDataSubset $1])
+AT_KEYWORDS([memcache])
+
+# Use the following AT_CHECK to generate baseline file.
+AT_CHECK_UNQUOTED([curl -s localhost:8080/opendap/hyrax/data/hdf5/hdf5-fake-data/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
+AT_CHECK_UNQUOTED([curl -s localhost:8080/opendap/hyrax/data/hdf5/hdf5-fake-data/$1 |getdap -M -|| true], [], [stdout], [stderr])
+AT_CHECK_UNQUOTED([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([AT_MEMCACHE_DATASUBSET_RESPONSE_TEST],
+[_AT_MEMCACHE_DATASUBSET_TEST([$1], [$abs_srcdir/h5.mem/$1.curlout])
+])
+
+
 # Test generic cases.
 AT_MEMCACHE_RESPONSE_TEST([t_float.h5.das])
 AT_MEMCACHE_RESPONSE_TEST([t_float.h5.dds])
@@ -273,7 +288,7 @@ AT_MEMCACHE_BINARYDATA_RESPONSE_TEST([za_2_2d_yz.h5.dods])
 
 # Test subsetting.
 #AT_MEMCACHE_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.dods?lat[0:2:3],lon[0:3:7],ZDim[0:1:1],temperature[0:1:1][0:2:3][0:3:7]])
-AT_MEMCACHE_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.dods?temperature[0:1:1][0:2:3][0:3:7]])
+AT_MEMCACHE_DATASUBSET_RESPONSE_TEST([grid_1_3d.h5.dods?temperature@<:@0:1:1@:>@@<:@0:2:3@:>@@<:@0:3:7@:>@])
 #AT_MEMCACHE_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_0.bescmd])
 #AT_MEMCACHE_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_middle.bescmd])
 #AT_MEMCACHE_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_last.bescmd])
