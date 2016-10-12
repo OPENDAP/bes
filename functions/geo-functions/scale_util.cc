@@ -32,6 +32,7 @@
 
 #include <gdal.h>
 #include <gdal_priv.h>
+#include <gdal_utils.h>
 #include <ogr_spatialref.h>
 #include <gdalwarper.h>
 
@@ -326,20 +327,78 @@ void read_band_data(const Array *src, GDALRasterBand* band)
 		throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
 
-#if 1
+template <typename T>
+static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long y, const unsigned long x, Array *a)
+{
+    // get the data
+    vector<T> buf(y * x);
+    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, get_array_type(a), 0, 0);
+
+    if (error != CPLE_None)
+        throw Error(string("Could not extract data for array.") + CPLGetLastErrorMsg());
+
+    a->set_value(buf, buf.size());
+
+    return a;
+}
+
+Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src)
+{
+    // Get the GDALDataset size
+    GDALRasterBand *band = dst->GetRasterBand(1);
+    unsigned long y = band->GetYSize();
+    unsigned long x = band->GetXSize();
+
+    // Build a new DAP Array; use the src Array's element type
+    Array *result = new Array("result", const_cast<Array*>(src)->var()->ptr_duplicate());
+    result->append_dim(y);
+    result->append_dim(x);
+
+    // get the data
+    switch (result->var()->type()) {
+    case dods_byte_c:
+        return transfer_values_helper<dods_byte>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_uint16_c:
+        return transfer_values_helper<dods_uint16>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_int16_c:
+        return transfer_values_helper<dods_int16>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_uint32_c:
+        return transfer_values_helper<dods_uint32>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_int32_c:
+        return transfer_values_helper<dods_int32>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_float32_c:
+        return transfer_values_helper<dods_float32>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_float64_c:
+        return transfer_values_helper<dods_float64>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_uint8_c:
+        return transfer_values_helper<dods_byte>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_int8_c:
+        return transfer_values_helper<dods_int8>(dst->GetRasterBand(1), y, x, result);
+        break;
+    case dods_uint64_c:
+    case dods_int64_c:
+    default:
+        throw InternalErr(__FILE__, __LINE__,
+                "The source array to a geo-function contained an unsupported numeric type.");
+    }
+}
+
+
 /**
  * @brief Share the Array's internal buffer with GDAL
- *
- * This will not work; we need a way to access the internal buffer.
- * As a test, to see if this code will work (there is some doubt about
- * the DATAPOINTER option working on 64 bit machines), hack a version
- * that allocates a buffer here and uses AddBand with that. This test
- * leaks memory.
  *
  * @param src
  * @param ds
  */
-void add_band_data(const Array *src, const SizeBox &size, GDALDataset* ds)
+void add_band_data(const Array *src, GDALDataset* ds)
 {
     Array *a = const_cast<Array*>(src);
 
@@ -350,17 +409,16 @@ void add_band_data(const Array *src, const SizeBox &size, GDALDataset* ds)
     // The MEMory driver supports the DATAPOINTER option.
     char **options = NULL;
     ostringstream oss;
-    oss << a->get_buf();
+    oss << reinterpret_cast<unsigned long>(a->get_buf());
     options = CSLSetNameValue(options, "DATAPOINTER", oss.str().c_str());
 
     CPLErr error = ds->AddBand(get_array_type(a), options);
 
-    CSLDestroy( options );
+    CSLDestroy(options);
 
     if (error != CPLE_None)
         throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
-#endif
 
 /**
  * @brief Get the Array's 'no data' value
@@ -447,6 +505,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
     return ds;
 }
 
+#if 0
 /**
  * @brief Build a GDAL Dataset for the given size and type
  * @param a
@@ -478,7 +537,62 @@ auto_ptr<GDALDataset> build_dst_dataset(SizeBox &size, GDALDataType gdal_type, c
 
     return ds;
 }
+#endif
 
+/**
+ * @brief Scale a GDAL dataset
+ *
+ * @param src The source GDALDataset
+ * @param size The destination size
+ * @param interp The interpolation algorithm to use (default: nearest neighbor,
+ * other options are bilinear,cubic,cubicspline,lanczos,average,mode)
+ * @param crs The CRS to use for the result (default is to use the CRS of 'src')
+ * @return An auto_ptr to the result (a new GDALDataset instance)
+ */
+auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size,
+    const string &interp /*nearest*/, const string &crs /*""*/)
+{
+    char **argv = NULL;
+    argv = CSLAddString(argv, "-of");   // output format
+    argv = CSLAddString(argv, "MEM");
+
+    argv = CSLAddString(argv, "-outsize");  // output size
+    ostringstream oss;
+    oss << size.x_size;
+    argv = CSLAddString(argv, oss.str().c_str());    // size x
+    oss.str(""); oss << size.y_size;
+    argv = CSLAddString(argv, oss.str().c_str());    // size y
+
+    argv = CSLAddString(argv, "-b");    // band number
+    argv = CSLAddString(argv, "1");
+
+    argv = CSLAddString(argv, "-r");    // resampling
+    argv = CSLAddString(argv, interp.c_str());  // {nearest (default),bilinear,cubic,cubicspline,lanczos,average,mode}
+
+    if (!crs.empty()) {
+        argv = CSLAddString(argv, "-a_srs");   // dst SRS (WKT or "EPSG:n")
+        argv = CSLAddString(argv, crs.c_str());
+    }
+
+    GDALTranslateOptions *options = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
+
+    int usage_error = CE_None;   // result
+    GDALDatasetH dst_handle = GDALTranslate("warped_dst", src.get(), options, &usage_error);
+    if (!dst_handle || usage_error != CE_None) {
+        GDALClose(dst_handle);
+        GDALTranslateOptionsFree(options);
+        throw Error(string("Error calling GDAL translate: ") + CPLGetLastErrorMsg());
+    }
+
+    auto_ptr<GDALDataset> dst;
+    dst.reset(static_cast<GDALDataset*>(dst_handle));
+
+    GDALTranslateOptionsFree(options);
+
+    return dst;
+}
+
+#if 0
 /**
  * @brief Warp the source to dest using their SRS and sizes
  *
@@ -533,22 +647,8 @@ void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds)
     cerr << "adfDstGeoTransform: ";
     copy(dst_geo_trans.begin(), dst_geo_trans.end(), ostream_iterator<double>(cerr, " "));
     cerr << endl;
-
-#if 0
-    psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
-
-    // Initialize and execute the warp operation.
-    GDALWarpOperation oOperation;
-    oOperation.Initialize(psWarpOptions);
-
-    // TODO There's a method for multi-threads and also a MT warp options option. jhrg 10/6/16
-    oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(dst_ds), GDALGetRasterYSize(dst_ds));
-
-    GDALDestroyGenImgProjTransformer(psWarpOptions->pTransformerArg);
-    GDALDestroyWarpOptions(psWarpOptions);
-#endif
 }
-
+#endif
 
 /**
  * @brief Scale a DAP2 Grid given the Grid, dest lat/lon subset, dest size and CRS.

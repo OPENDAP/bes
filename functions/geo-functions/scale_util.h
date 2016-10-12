@@ -27,9 +27,6 @@
 #define _scale_util_h
 
 #include <gdal.h>
-//#include <gdal_priv.h>
-//#include <ogr_spatialref.h>
-//#include <gdalwarper.h>
 
 namespace libdap {
 
@@ -56,8 +53,9 @@ vector<double> get_geotransform_data(Array *lat, Array *lon);
 GDALDataType get_array_type(const Array *a);
 void read_band_data(const Array *src, GDALRasterBand* band);
 auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, const string &srs = "WGS84");
-auto_ptr<GDALDataset> build_dst_dataset(SizeBox &size, GDALDataType gdal_type, const string &srs = "WGS84");
-void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds);
+auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size, const string &interp = "nearest",
+    const string &crs = "");
+Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src);
 
 } // namespace libdap
 
