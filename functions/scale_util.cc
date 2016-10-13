@@ -48,8 +48,9 @@
 #include "scale_util.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 #if 0
 // This code is used to build GCPs and various other info when a 'coverage'

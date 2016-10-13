@@ -9,10 +9,10 @@ AM_CXXFLAGS =
 AUTOMAKE_OPTIONS = foreign check-news
 
 if DAP_MODULES
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 else
-AM_CPPFLAGS = $(BES_CPPFLAGS)
+AM_CPPFLAGS = $(BES_CPPFLAGS) $(GDAL_CFLAGS)
 LIBADD = $(BES_DAP_LIBS)
 endif
 
@@ -34,7 +34,8 @@ M_VER=1.1.0
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-SUBDIRS = . unit-tests tests geo-functions
+SUBDIRS = . unit-tests tests 
+# geo-functions
 
 # We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
 # However, since we use it we must list all of the subdirs we want; without
@@ -59,7 +60,7 @@ MakeMaskFunction.cc DilateArrayFunction.cc \
 BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc \
 TabularSequence.cc BBoxFunction.cc RoiFunction.cc roi_util.cc \
 BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc functions_util.cc \
-DapFunctionsRequestHandler.cc
+DapFunctionsRequestHandler.cc scale_util.cc ScaleGrid.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
@@ -68,7 +69,7 @@ MakeMaskFunction.h DilateArrayFunction.h \
 BindNameFunction.h BindShapeFunction.h TabularFunction.h \
 TabularSequence.h BBoxFunction.h RoiFunction.h roi_util.h \
 BBoxUnionFunction.h Odometer.h MaskArrayFunction.h functions_util.h \
-DapFunctionsRequestHandler.h
+DapFunctionsRequestHandler.h scale_util.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 # libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

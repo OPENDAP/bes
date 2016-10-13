@@ -35,9 +35,10 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class Array;
 class Grid;
+}
+namespace functions {
 
 struct SizeBox {
 	int x_size;
@@ -59,23 +60,25 @@ struct GeoBox {
 };
 #endif
 
-SizeBox get_size_box(Array *lat, Array *lon);
-std::vector<double> get_geotransform_data(Array *lat, Array *lon);
-GDALDataType get_array_type(const Array *a);
-void read_band_data(const Array *src, GDALRasterBand* band);
-void add_band_data(const Array *src, GDALDataset* ds);
-std::auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, const std::string &srs = "WGS84");
+SizeBox get_size_box(libdap::Array *lat, libdap::Array *lon);
+std::vector<double> get_geotransform_data(libdap::Array *lat, libdap::Array *lon);
+GDALDataType get_array_type(const libdap::Array *a);
+void read_band_data(const libdap::Array *src, GDALRasterBand* band);
+void add_band_data(const libdap::Array *src, GDALDataset* ds);
+std::auto_ptr<GDALDataset> build_src_dataset(libdap::Array *data, libdap::Array *lon, libdap::Array *lat, const std::string &srs = "WGS84");
 std::auto_ptr<GDALDataset> scale_dataset(std::auto_ptr<GDALDataset> src, const SizeBox &size,
     const std::string &interp = "nearest", const std::string &crs = "");
-Array *build_array_from_gdal_dataset(std::auto_ptr<GDALDataset> dst, const Array *src);
-void build_maps_from_gdal_dataset(GDALDataset *dst, Array *lon_map, Array *lat_map);
+libdap::Array *build_array_from_gdal_dataset(std::auto_ptr<GDALDataset> dst, const libdap::Array *src);
+void build_maps_from_gdal_dataset(GDALDataset *dst, libdap::Array *lon_map, libdap::Array *lat_map);
 
-Grid *scale_dap_grid(Grid *src, SizeBox &size, const std::string &dest_crs, const std::string &interp);
+libdap::Grid *scale_dap_grid(const libdap::Grid *src, SizeBox &size, const std::string &dest_crs, const std::string &interp);
+libdap::Grid *scale_dap_array(const libdap::Array *data, const libdap::Array *lon, const libdap::Array *lat,
+    const SizeBox &size, const std::string &crs, const std::string &interp);
 
-void function_scale_grid(int argc, BaseType * argv[], DDS &, BaseType **btpp);
-void function_scale_array(int argc, BaseType * argv[], DDS &, BaseType **btpp);
+void function_scale_grid(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp);
+void function_scale_array(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp);
 
-class ScaleGrid: public ServerFunction {
+class ScaleGrid: public libdap::ServerFunction {
 public:
     ScaleGrid()
     {
@@ -84,7 +87,7 @@ public:
         setUsageString("scale_grid(Grid, Y size, X size, CRS, Interpolation method)");
         setRole("http://services.opendap.org/dap4/server-side-function/scale_grid");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid");
-        setFunction(libdap::function_scale_grid);
+        setFunction(function_scale_grid);
         setVersion("1.0");
     }
     virtual ~ScaleGrid()
@@ -93,7 +96,7 @@ public:
 
 };
 
-class ScaleArray: public ServerFunction {
+class ScaleArray: public libdap::ServerFunction {
 public:
     ScaleArray()
     {
@@ -102,7 +105,7 @@ public:
         setUsageString("scale_grid(Array data, Array lon, Array lat, Y size, X size, CRS, Interpolation method)");
         setRole("http://services.opendap.org/dap4/server-side-function/scale_array");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_array");
-        setFunction(libdap::function_scale_array);
+        setFunction(function_scale_array);
         setVersion("1.0");
     }
     virtual ~ScaleArray()
