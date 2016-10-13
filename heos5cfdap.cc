@@ -446,6 +446,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
             case CV_EXIST:
             {
+//cerr<<"cvar new name exist at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
                 bool is_latlon = cvar->isLatLon();
                 HDF5CFArray *ar = NULL;
                 try {
@@ -483,6 +484,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
             case CV_LON_MISS:
             {
 
+//cerr<<"cvar new name latlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
                 HDFEOS5CFMissLLArray *ar = NULL;
                 try {
                     ar = new HDFEOS5CFMissLLArray (
@@ -523,6 +525,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
             case CV_NONLATLON_MISS:
             {
+//cerr<<"cvar new name nonlatlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
 
                 if (cvar->getRank() !=1) {
                     delete bt;

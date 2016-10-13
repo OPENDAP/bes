@@ -1588,6 +1588,8 @@ for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
 cerr<<"EOS5CVar name "<<(*irv)->name <<endl;
 cerr<<"EOS5CVar dimension name "<< (*irv)->cfdimname <<endl;
 cerr<<"EOS5CVar new name "<<(*irv)->newname <<endl;
+cerr<<"EOS5CVar type is  "<<(*irv)->cvartype <<endl;
+//cerr<<"EOS5CVar dtype is "<<(*irv)->dtype <<endl;
 }
 #endif
     
@@ -2163,6 +2165,8 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
 
                     //Find it, create a coordinate variable.
                     EOS5CVar *EOS5cvar = new EOS5CVar(*irv);
+//cerr<<"Handling 3rd CV variable new name is "<<(*irv)->newname <<endl;
+//cerr<<"(*irv)->total_elems is "<<(*irv)->total_elems <<endl;
     
                     // Still keep the original dimension name to avoid the nameclashing when
                     // one grid and one swath and one za occur in the same file
@@ -3717,6 +3721,7 @@ void EOS5File:: Create_Missing_CV(T* eos5data,EOS5CVar *EOS5cvar, const string& 
     if (1 == num_eos5data) 
         eos5cvar_dim->newname = reduced_dimname;
     else eos5cvar_dim->newname = dimname; 
+//cerr<<"eos5 missing cv name is "<<EOS5cvar->newname <<endl;
 
     EOS5cvar->dims.push_back(eos5cvar_dim);
     EOS5cvar->cfdimname = dimname;
@@ -3810,6 +3815,7 @@ void EOS5File:: Handle_SpVar() throw(Exception) {
                                     // The following two lines are key to make sure duplicate CV
                                     //  using a different name but keep all other info.
                                     (*irv2)->newname = dup_var_name;
+//cerr<<"EOS5CVar new name at special var is "<<(*irv2)->newname <<endl;
                                     (*irv2)->getDimensions()[0]->newname = dup_var_name;
                                 }
                             }
@@ -3941,6 +3947,7 @@ void EOS5File::Replace_Var_Info(EOS5CVar *src, EOS5CVar*target) {
     target->cfdimname = src->cfdimname;
     target->cvartype = src->cvartype;
     target->eos_type = src->eos_type;
+    target->total_elems = src->total_elems;
     
 }
 
