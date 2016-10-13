@@ -37,6 +37,7 @@
 #include <gdalwarper.h>
 
 #include <Str.h>
+#include <Float32.h>
 #include <Array.h>
 #include <Grid.h>
 
@@ -300,9 +301,14 @@ GDALDataType get_array_type(const Array *a)
 
 /**
  * @brief Read data from an Array and load it into a GDAL RasterBand
- * @param src
- * @param size
- * @param band The RasterBand is modified
+ *
+ * This function reads data from the array into an already-allocated band.
+ * The add_band_data() function is probably more efficient since it builds
+ * a band that uses the data from the DAP Array (and thus without making a
+ * copy).
+ *
+ * @param src Read data from this Array
+ * @param band The RasterBand; modified so that it holds a copy of data from 'src'
  */
 void read_band_data(const Array *src, GDALRasterBand* band)
 {
@@ -332,8 +338,10 @@ void read_band_data(const Array *src, GDALRasterBand* band)
  *
  * This can avoid allocating temporary memory.
  *
+ * @note This does not seem to work.
+ *
  * @param src The Array
- * @param ds The GDALDataset
+ * @param ds The GDALDataset; modified so that it has a new band
  */
 void add_band_data(const Array *src, GDALDataset* ds)
 {
@@ -357,6 +365,14 @@ void add_band_data(const Array *src, GDALDataset* ds)
         throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
 
+/**
+ * @brief Used to transfer data values from a gdal dataset to a dap Array
+ * @param band Read from this raster and
+ * @param y Rows
+ * @param x Cols
+ * @param a Set the values in this array
+ * @return Return a pointer to parameter 'a'
+ */
 template <typename T>
 static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long y, const unsigned long x, Array *a)
 {
@@ -372,46 +388,53 @@ static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long y
     return a;
 }
 
-Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src)
+/**
+ * @brief Extract data from a gdal dataset and store it in a dap Array
+ *
+ * @param source The gdal dataset; data source
+ * @param dest The dap Array; destnation
+ * @return
+ */
+Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> source, const Array *dest)
 {
     // Get the GDALDataset size
-    GDALRasterBand *band = dst->GetRasterBand(1);
+    GDALRasterBand *band = source->GetRasterBand(1);
     unsigned long y = band->GetYSize();
     unsigned long x = band->GetXSize();
 
-    // Build a new DAP Array; use the src Array's element type
-    Array *result = new Array("result", const_cast<Array*>(src)->var()->ptr_duplicate());
+    // Build a new DAP Array; use the dest Array's element type
+    Array *result = new Array("result", const_cast<Array*>(dest)->var()->ptr_duplicate());
     result->append_dim(y);
     result->append_dim(x);
 
     // get the data
     switch (result->var()->type()) {
     case dods_byte_c:
-        return transfer_values_helper<dods_byte>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_byte>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_uint16_c:
-        return transfer_values_helper<dods_uint16>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_uint16>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_int16_c:
-        return transfer_values_helper<dods_int16>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_int16>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_uint32_c:
-        return transfer_values_helper<dods_uint32>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_uint32>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_int32_c:
-        return transfer_values_helper<dods_int32>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_int32>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_float32_c:
-        return transfer_values_helper<dods_float32>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_float32>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_float64_c:
-        return transfer_values_helper<dods_float64>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_float64>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_uint8_c:
-        return transfer_values_helper<dods_byte>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_byte>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_int8_c:
-        return transfer_values_helper<dods_int8>(dst->GetRasterBand(1), y, x, result);
+        return transfer_values_helper<dods_int8>(source->GetRasterBand(1), y, x, result);
         break;
     case dods_uint64_c:
     case dods_int64_c:
@@ -421,21 +444,78 @@ Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src
     }
 }
 
-void build_maps_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src)
+/**
+ * @brief build lon and lat maps using a GDAL dataset
+ *
+ * Given a GDAL Dataset, use the geo-transform information along with
+ * the dataset's extent (height and width in pixels) to build Maps/shared
+ * dimensions for DAP2/4 Grid/Coverages. The two Array arguments must
+ * be allocated by the caller and have an element type of dods_float32, but
+ * their dimensionality should not be set.
+ *
+ * @note
+ * Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+ * Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+ * For an inverted dataset, use min_y and res_y for GT(3) and GT(5)
+ * In case of north up images, the GT(2) and GT(4) coefficients are zero
+ *
+ * @param dst Source for the DAP2 Grid maps (or DAP4 shared dimensions)
+ * @param lon_map value-result parameter for the longitude map (uses dods_float32
+ * elements)
+ * @param lat_map value-result parameter for the latitude map
+ */
+void build_maps_from_gdal_dataset(GDALDataset *dst, Array *lon_map, Array *lat_map)
 {
+    // get the geo-transform data
+    vector<double> gt(6);
+    dst->GetGeoTransform(&gt[0]);
+
     // Get the GDALDataset size
     GDALRasterBand *band = dst->GetRasterBand(1);
-    unsigned long y = band->GetYSize();
+
+    // Build Lon map
     unsigned long x = band->GetXSize(); // lon
 
-    // get the geo-transform data
+    lon_map->append_dim(x, "Longitude");
 
     // for each value, use the geo-transform data to compute a value and store it.
+    vector<dods_float32> lon(x);
+    dods_float32 *cur_lon = &lon[0];
+    dods_float32 *prev_lon = cur_lon;
+    // lon[0] = gt[0];
+    *cur_lon++ = gt[0];
+    for (unsigned long i = 1; i < x; ++i) {
+        // lon[i] = gt[0] + i * gt[1];
+        // lon[i] = lon[i-1] + gt[1];
+        *cur_lon++ = *prev_lon++ + gt[1];
+    }
 
+    lon_map->set_value(&lon[0], x); // copies values to new storage
+
+    // Build the Lat map
+    unsigned long y = band->GetYSize();
+
+    lat_map->append_dim(y, "Latitude");
+
+    // for each value, use the geo-transform data to compute a value and store it.
+    vector<dods_float32> lat(y);
+    dods_float32 *cur_lat = &lat[0];
+    dods_float32 *prev_lat = cur_lat;
+    // lat[0] = gt[3];
+    *cur_lat++ = gt[3];
+    for (unsigned long i = 1; i < y; ++i) {
+        // lat[i] = gt[3] + i * gt[5];
+        // lat[i] = lat[i-1] + gt[5];
+        *cur_lat++ = *prev_lat++ + gt[5];
+    }
+
+    lat_map->set_value(&lat[0], y);
 }
 
 /**
  * @brief Get the Array's 'no data' value
+ *
+ * Heuristic search for the missing value flag used by these data.
  *
  * @param src The Array to get the 'no data' attribute from/
  * @return The value of the 'no data' attribute or NaN
@@ -460,6 +540,8 @@ double get_missing_data_value(const Array *src)
 
     return missing_data;
 }
+
+#define ADD_BAND 0
 
 /**
  * @brief Build a GDAL Dataset object for this data/lon/lat combination
@@ -489,6 +571,10 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
     auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
     		1 /* nBands*/, get_array_type(data), NULL /* driver_options */));
 
+#if ADD_BAND
+    add_band_data(data, ds.get());
+#endif
+
     // Get the one band for this dataset and load it with data
 	GDALRasterBand *band = ds->GetRasterBand(1);
 	if (!band)
@@ -498,7 +584,9 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
 	double no_data = get_missing_data_value(data);
 	band->SetNoDataValue(no_data);
 
+#if !ADD_BAND
 	read_band_data(data, band);
+#endif
 
 	vector<double> geo_transform = get_geotransform_data(lat, lon);
     ds->SetGeoTransform(&geo_transform[0]);
@@ -507,7 +595,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
     if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str()))
     	throw Error("Could not set '" + srs + "' as the dataset native CRS.");
 
-    // TODO I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
+    // I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
     // native_srs.SetUTM( 11, TRUE );
 
     // Connect the SRS/CRS to the GDAL Dataset
@@ -518,40 +606,6 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
 
     return ds;
 }
-
-#if 0
-/**
- * @brief Build a GDAL Dataset for the given size and type
- * @param a
- * @param size
- * @return
- */
-auto_ptr<GDALDataset> build_dst_dataset(SizeBox &size, GDALDataType gdal_type, const string &srs)
-{
-    GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
-    if(!driver)
-        throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
-
-    // The MEM driver takes no creation options (I think) jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", size.x_size, size.y_size,
-            1 /* nBands*/, gdal_type, NULL /* driver_options */));
-
-    OGRSpatialReference native_srs;
-    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str()))
-        throw Error("Could not set '" + srs + "' as the dataset native CRS.");
-
-    // TODO I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
-    native_srs.SetUTM( 11, TRUE );
-
-    // Connect the SRS/CRS to the GDAL Dataset
-    char *pszSRS_WKT = NULL;
-    native_srs.exportToWkt( &pszSRS_WKT );
-    ds->SetProjection( pszSRS_WKT );
-    CPLFree( pszSRS_WKT );
-
-    return ds;
-}
-#endif
 
 /**
  * @brief Scale a GDAL dataset
@@ -598,165 +652,90 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
         throw Error(string("Error calling GDAL translate: ") + CPLGetLastErrorMsg());
     }
 
-    auto_ptr<GDALDataset> dst;
-    dst.reset(static_cast<GDALDataset*>(dst_handle));
+    auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
 
     GDALTranslateOptionsFree(options);
 
     return dst;
 }
 
-#if 0
 /**
- * @brief Warp the source to dest using their SRS and sizes
+ * @brief Scale a Grid; this version takes the data, lon and lat Arrays as separate arguments
  *
- * @todo Read the warp API to learn about memory options for optimization
- * and interpolation options
- *
- * @param hSrcDS
- * @param hDstDS
+ * @param data
+ * @param lon
+ * @param lat
+ * @param size
+ * @param crs
+ * @param interp
+ * @return The scaled Grid where the first map holds the longitude data and second
+ * holds the latitude data.
  */
-void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds)
+Grid *scale_dap_array(const Array *data, const Array *lon, const Array *lat, const SizeBox &size,
+    const string &crs, const string &interp)
 {
-    // Setup warp options.
-    GDALWarpOptions* psWarpOptions = GDALCreateWarpOptions();
-    psWarpOptions->hSrcDS = src_ds;
-    psWarpOptions->hDstDS = dst_ds;
-    psWarpOptions->nBandCount = 1;
-    psWarpOptions->panSrcBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
-    psWarpOptions->panSrcBands[0] = 1;
-    psWarpOptions->panDstBands = (int*) (CPLMalloc(sizeof(int) * psWarpOptions->nBandCount));
-    psWarpOptions->panDstBands[0] = 1;
+    // Build GDALDataset for Grid g with lon and lat maps as given
+    Array *d = const_cast<Array*>(data);
 
-    // Establish reprojection transformer.
-    const char *src_wkt = GDALGetProjectionRef(src_ds);
-    char *dst_wkt = NULL;
+    auto_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(lon), const_cast<Array*>(lat));
 
-    OGRSpatialReference dst_srs;
-    dst_srs.SetUTM( 11, TRUE );
-    dst_srs.SetWellKnownGeogCS( "WGS72" );
-    dst_srs.exportToWkt( &dst_wkt );
-    cerr << "dst_wkt: " << dst_wkt << endl;
+    // scale to the new size, using optional CRS and interpolation params
+    auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
 
-    //psWarpOptions->pTransformerArg
-    void *transformer_arg = GDALCreateGenImgProjTransformer(src_ds, src_wkt, NULL, dst_wkt,
-            false /* Use GCP OK*/, 0.0 /*allowed error threshold*/, 1 /*GCP polynomial order*/);
+    // Build a result Grid: extract the data, build the maps and assemble
+    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst, d));
 
-    if (transformer_arg == NULL)
-        throw Error(string("Could not build GDAL Transformer Argument: ") + CPLGetLastErrorMsg());
+    auto_ptr<Array> built_lon(new Array(lon->name(), new Float32(lon->name())));
+    auto_ptr<Array> built_lat(new Array(lat->name(), new Float32(lat->name())));
 
-    vector<double> dst_geo_trans(6);
-    int nPixels=11, nLines=11;
-    CPLErr eErr;
-    eErr = GDALSuggestedWarpOutput( src_ds,
-                                    GDALGenImgProjTransform, transformer_arg,
-                                    &dst_geo_trans[0], &nPixels, &nLines );
-    if (eErr != CE_None)
-        throw Error(string("Could not get suggest warp output: ") + CPLGetLastErrorMsg());
+    build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
 
-    GDALDestroyGenImgProjTransformer(transformer_arg);
+    auto_ptr<Grid> result(new Grid(d->name()));
+    result->set_array(built_data.release());
+    result->add_map(built_lon.release(), false);
+    result->add_map(built_lat.release(), false);
 
-    cerr << "nPixels: " << nPixels << endl;
-    cerr << "nLines: " << nLines << endl;
-    cerr << "adfDstGeoTransform: ";
-    copy(dst_geo_trans.begin(), dst_geo_trans.end(), ostream_iterator<double>(cerr, " "));
-    cerr << endl;
+    return result.release();
 }
-#endif
 
 /**
  * @brief Scale a DAP2 Grid given the Grid, dest lat/lon subset, dest size and CRS.
  *
  * @param src The Grid that holds the source data
- * @param bbox The lat/lon box corner points
  * @param size The size in pixels for the result
  * @param crs Transform the result to the given CRS; default is the src CRS
  * @param interp Use this interpolation scheme; default is NearestNeighboor. This
  * uses the GDAL constants
  * @return The new Grid variable
  */
-Grid *scale_dap_grid(Grid *src, SizeBox &size, const string &dest_crs, const int interp)
+Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, const string &interp)
 {
-    // Pull out lat, lon and array
+    // Build GDALDataset for Grid g with lon and lat maps as given
+    Array *data = static_cast<Array*>(const_cast<Grid*>(g)->array_var());
+    Array *lon = static_cast<Array*>(*const_cast<Grid*>(g)->map_begin());
+    Array *lat = static_cast<Array*>(*(const_cast<Grid*>(g)->map_begin() + 1));
 
+    return scale_dap_array(data, lon, lat, size, crs, interp);
 #if 0
-	// Build GDALDataset for src
-	auto_ptr<GDALDataset> src_ds = build_src_dataset(src);
+    auto_ptr<GDALDataset> src = build_src_dataset(data, const_cast<Array*>(lon), const_cast<Array*>(lat));
 
-	// Build GDALDaatset for result - Assume it's a double for now (jhrg 10/6/16)
-    GDALDataType gdal_type = get_array_type(src);
-    auto_ptr<GDALDataset> dst_ds = build_dst_dataset(size, gdal_type);
+    // scale to the new size, using optional CRS and interpolation params
+    auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
 
-	// Call the GDAL warp code
-    warp_raster(src_ds.get(), dst_ds.get());
+    // Build a result Grid: extract the data, build the maps and assemble
+    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst, data));
 
-	// Build the result Grid using the result GDALDataset    GDALRasterBand *poBand = satDataSet->GetRasterBand(1);
-	//auto_ptr<Grid> dest(new Grid("result"));
-#endif
-#if 0
-     // Supported values:
-    // "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
-    // "WGS72": same as "EPSG:4322" but has no dependence on EPSG data files.
-    // "NAD27": same as "EPSG:4267" but has no dependence on EPSG data files.
-    // "NAD83": same as "EPSG:4269" but has no dependence on EPSG data files.
-    // "EPSG:n": same as doing an ImportFromEPSG(n).
-    OGRSpatialReference native_crs;
-    if (CE_None != native_crs.SetWellKnownGeogCS("WGS84"))
-    	throw Error("Could not set the dataset native CRS.");
+    auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
+    auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
 
-    vector<double> geo_transform = get_geotransform_data(lat, lon, g_size);
-    ds->SetGeoTransform(&geo_transform[0]);
+    build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
 
-   // Read this from the 'missing_value' or '_FillValue' attributes
-     string mv_attr = g->get_attr_table().get_attr("missing_value");
-     if (mv_attr.empty())
-     	mv_attr = g->get_attr_table().get_attr("_FillValue");
+    auto_ptr<Grid> result(new Grid("scaled_" + g->name()));
+    result->set_array(built_data.release());
+    result->add_map(built_lon.release(), false);
+    result->add_map(built_lat.release(), false);
 
-     float missing_value = 0.0;
-     if (!mv_attr.empty())
-     	missing_value = atof(mv_attr.c_str());
-
- 	// Hack code from CPLErr DAP_Dataset::SetGDALDataset(const int isSimple). jhrg 10/5/16
-     poBand->SetNoDataValue(md_MissingValue);
-
-    DBG(cerr << "SetGDALDataset() - Reading data" << endl);
-    m_src->read();
-    double *data = extract_double_array(m_src);
-    DBG(cerr << "SetGDALDataset() - Data read." << endl);
-
-
-    DBG(cerr << "SetGDALDataset() - Calling RasterIO(GF_Write,0,0,"<<
-            mi_RectifiedImageXSize<<","<< mi_RectifiedImageYSize<< ",data,"<<
-            mi_SrcImageXSize<< ","<< mi_SrcImageYSize << ","<< eBandType << ",0,0)" << endl);
-
-
-    if (CE_None != poBand->RasterIO(GF_Write, 0, 0, mi_RectifiedImageXSize, mi_RectifiedImageYSize, data,
-                    mi_SrcImageXSize, mi_SrcImageYSize, eBandType, 0, 0)) {
-        GDALClose((GDALDatasetH) satDataSet);
-        throw Error("Failed to set satellite data band to '"+driverName+"' DataSet (" + string(CPLGetLastErrorMsg()) + ").");
-    }
-    delete[] data;
-    DBG(cerr << "SetGDALDataset() -  RasterIO call completed" << endl);
-
-
-    //set GCPs for this VRTDataset
-    if (CE_None != SetGCPGeoRef4VRTDataset(satDataSet)) {
-        GDALClose((GDALDatasetH) satDataSet);
-        throw Error("Could not georeference the virtual dataset (" + string(CPLGetLastErrorMsg()) + ").");
-    }
-
-    DBG(cerr << "SetGDALDataset() - satDataSet: " << satDataSet << endl);
-
-    maptr_DS.reset(satDataSet);
-
-
-    CPLErr err_code = CE_None;
-    if (!isSimple)
-        err_code = RectifyGOESDataSet();
-
-    DBG(cerr << "SetGDALDataset() - END" << endl);
-
-    return err_code;
+    return result.release();
 #endif
 }
 

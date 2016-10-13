@@ -31,6 +31,7 @@
 #include <string>
 #include <algorithm>
 #include <limits>
+#include <functional>
 
 #include <cmath>
 
@@ -45,6 +46,7 @@
 #include <GetOpt.h>
 
 #include <BaseType.h>
+#include <Float32.h>
 #include <Array.h>
 #include <Grid.h>
 
@@ -89,7 +91,7 @@ private:
      * @param b
      * @return True if they are within epsilon
      */
-    bool same_as(double a, double b)
+    static bool same_as(const double a, const double b)
     {
         // use float's epsilon since double's is too small for these tests
         return fabs(a - b) <= numeric_limits<float>::epsilon();
@@ -529,6 +531,79 @@ public:
         CPPUNIT_ASSERT(buf[5*small_dim_size + 4] == 3.5);
     }
 
+    void test_build_maps_from_gdal_dataset() {
+        Array *data = dynamic_cast<Array*>(small_dds->var("data"));
+        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+
+        auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+
+        auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
+        auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
+
+        build_maps_from_gdal_dataset(src.get(), built_lon.get(), built_lat.get());
+
+#if 0
+        Array *built_lon = new Array("built_lon", new Float32("built_lon"));
+        Array *built_lat = new Array("built_lat", new Float32("built_lat"));
+
+        build_maps_from_gdal_dataset(src.get(), built_lon, built_lat);
+#endif
+        // Check the lon map
+
+        CPPUNIT_ASSERT(built_lon->dimensions() == 1);
+        unsigned long x = built_lon->dimension_size(built_lon->dim_begin());
+        CPPUNIT_ASSERT(x == small_dim_size);
+
+        vector<dods_float32> buf_lon(x);
+        built_lon->value(&buf_lon[0]);
+
+        if (debug) {
+            cerr << "buf_lon:" << endl;
+            for (unsigned long i = 0; i < small_dim_size; ++i)
+                cerr << buf_lon[i] << " ";
+            cerr << endl;
+        }
+
+        vector<dods_float32> orig_lon(small_dim_size);
+        lon->value(&orig_lon[0]);
+
+        if (debug) {
+             cerr << "orig_lon:" << endl;
+             for (unsigned long i = 0; i < small_dim_size; ++i)
+                 cerr << orig_lon[i] << " ";
+             cerr << endl;
+         }
+
+        CPPUNIT_ASSERT(equal(buf_lon.begin(), buf_lon.end(), orig_lon.begin(), same_as));
+
+        // Check the lat map
+        unsigned long y = built_lon->dimension_size(built_lon->dim_begin());
+        CPPUNIT_ASSERT(y == small_dim_size);
+
+        vector<dods_float32> buf_lat(y);
+        built_lat->value(&buf_lat[0]);
+
+        if (debug) {
+            cerr << "buf_lat:" << endl;
+            for (unsigned long i = 0; i < small_dim_size; ++i)
+                cerr << buf_lat[i] << " ";
+            cerr << endl;
+        }
+
+        vector<dods_float32> orig_lat(small_dim_size);
+        lat->value(&orig_lat[0]);
+
+        if (debug) {
+            cerr << "orig_lat:" << endl;
+            for (unsigned long i = 0; i < small_dim_size; ++i)
+                cerr << orig_lat[i] << " ";
+            cerr << endl;
+        }
+
+        CPPUNIT_ASSERT(buf_lat == orig_lat);
+    }
+
     CPPUNIT_TEST_SUITE( ScaleUtilTest );
 
     CPPUNIT_TEST(test_reading_data);
@@ -539,6 +614,7 @@ public:
     CPPUNIT_TEST(test_build_src_dataset);
     CPPUNIT_TEST(test_scaling_with_gdal);
     CPPUNIT_TEST(test_build_array_from_gdal_dataset);
+    CPPUNIT_TEST(test_build_maps_from_gdal_dataset);
 
     CPPUNIT_TEST_SUITE_END();
 };
