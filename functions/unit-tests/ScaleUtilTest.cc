@@ -69,6 +69,7 @@ const string small_dds_file = "small.dds";
 
 using namespace CppUnit;
 using namespace libdap;
+using namespace functions;
 using namespace std;
 
 int test_variable_sleep_interval = 0;
@@ -81,7 +82,7 @@ private:
 
     CPLErrorHandler orig_err_handler;
 
-    const string src_dir;
+    string src_dir;
     const static int small_dim_size = 11;
 
     /**
@@ -157,6 +158,7 @@ private:
 public:
     ScaleUtilTest() : small_dds(0), src_dir(TEST_SRC_DIR)
     {
+        src_dir.append("/scale");
         GDALAllRegister();
         OGRRegisterAll();
 

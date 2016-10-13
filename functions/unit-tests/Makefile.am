@@ -54,7 +54,7 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
-OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest
+OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -123,3 +123,6 @@ MakeMaskFunctionTest_OBJ = ../MakeMaskFunction.o
 MakeMaskFunctionTest_SOURCES = MakeMaskFunctionTest.cc $(TEST_SRC)
 MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
+ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS) 

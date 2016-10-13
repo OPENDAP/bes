@@ -1,4 +1,5 @@
 
-Move this directory so that it becomes it's own module - it's a pretty
-obscure server function that transforms swath data into a DAP2 grid.
-Uses GDAL.
+DEPRECATED
+
+This is old code. It is not build and should not be distributed.
+jhrg 10/12/16
