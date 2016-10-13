@@ -427,6 +427,11 @@ void build_maps_from_gdal_dataset(auto_ptr<GDALDataset> dst, const Array *src)
     GDALRasterBand *band = dst->GetRasterBand(1);
     unsigned long y = band->GetYSize();
     unsigned long x = band->GetXSize(); // lon
+
+    // get the geo-transform data
+
+    // for each value, use the geo-transform data to compute a value and store it.
+
 }
 
 /**
