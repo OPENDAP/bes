@@ -10,10 +10,10 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 if DAP_MODULES
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS)
 else
 AM_CPPFLAGS = $(BES_CPPFLAGS) $(GDAL_CFLAGS)
-LIBADD = $(BES_DAP_LIBS)
+LIBADD = $(BES_DAP_LIBS) $(GDAL_LDFLAGS)
 endif
 
 # These are not used by automake but are often useful for certain types of

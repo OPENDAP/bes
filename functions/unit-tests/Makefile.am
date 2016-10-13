@@ -125,4 +125,4 @@ MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD)
 
 ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
 ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
-ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS) 
+ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
