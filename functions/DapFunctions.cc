@@ -46,10 +46,10 @@
 #include "BBoxUnionFunction.h"
 #include "MaskArrayFunction.h"
 #include "DilateArrayFunction.h"
-
 #include "DapFunctionsRequestHandler.h"
 
 #include "DapFunctions.h"
+#include "ScaleGrid.h"
 
 namespace functions {
 
@@ -80,6 +80,9 @@ void DapFunctions::initialize(const string &modname)
 
     libdap::ServerFunctionsList::TheList()->add_function(new MaskArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new DilateArrayFunction());
+
+    libdap::ServerFunctionsList::TheList()->add_function(new ScaleArray());
+    libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

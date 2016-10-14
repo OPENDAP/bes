@@ -38,6 +38,7 @@ namespace libdap {
 class Array;
 class Grid;
 }
+
 namespace functions {
 
 struct SizeBox {
@@ -71,7 +72,7 @@ std::auto_ptr<GDALDataset> scale_dataset(std::auto_ptr<GDALDataset> src, const S
 libdap::Array *build_array_from_gdal_dataset(std::auto_ptr<GDALDataset> dst, const libdap::Array *src);
 void build_maps_from_gdal_dataset(GDALDataset *dst, libdap::Array *lon_map, libdap::Array *lat_map);
 
-libdap::Grid *scale_dap_grid(const libdap::Grid *src, SizeBox &size, const std::string &dest_crs, const std::string &interp);
+libdap::Grid *scale_dap_grid(const libdap::Grid *src, const SizeBox &size, const std::string &dest_crs, const std::string &interp);
 libdap::Grid *scale_dap_array(const libdap::Array *data, const libdap::Array *lon, const libdap::Array *lat,
     const SizeBox &size, const std::string &crs, const std::string &interp);
 
@@ -114,6 +115,6 @@ public:
 
 };
 
-} // namespace libdap
+} // namespace functions
 
 #endif // _scale_util_h

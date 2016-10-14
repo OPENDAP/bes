@@ -23,6 +23,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "ScaleGrid.h"
+
 #include "config.h"
 
 #include <memory>
@@ -36,7 +38,6 @@
 #include <util.h>
 #include <debug.h>
 
-#include "scale_util.h"
 #include "functions_util.h"
 
 using namespace std;
@@ -118,7 +119,7 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-    "<function name=\"scale_grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid\">\n" +
+    "<function name=\"scale_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid\">\n" +
     "</function>\n";
 
     if (argc == 0) {
@@ -129,7 +130,7 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     }
 
     if (argc != 5 || argc != 7) {
-        throw Error("The scale_grid() function requires five arguments: three Arrays and the new lon, lat extents.\n\
+        throw Error("The scale_array() function requires five arguments: three Arrays and the new lon, lat extents.\n\
              See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid");
     }
 

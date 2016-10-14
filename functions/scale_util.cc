@@ -45,7 +45,7 @@
 #include <Error.h>
 #include <debug.h>
 
-#include "scale_util.h"
+#include "ScaleGrid.h"
 
 using namespace std;
 using namespace libdap;

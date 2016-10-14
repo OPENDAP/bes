@@ -55,7 +55,7 @@
 #include <util.h>
 #include <debug.h>
 
-#include "scale_util.h"
+#include "ScaleGrid.h"
 
 #include "test_config.h"
 

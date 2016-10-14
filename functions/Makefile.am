@@ -69,7 +69,7 @@ MakeMaskFunction.h DilateArrayFunction.h \
 BindNameFunction.h BindShapeFunction.h TabularFunction.h \
 TabularSequence.h BBoxFunction.h RoiFunction.h roi_util.h \
 BBoxUnionFunction.h Odometer.h MaskArrayFunction.h functions_util.h \
-DapFunctionsRequestHandler.h scale_util.h
+DapFunctionsRequestHandler.h ScaleGrid.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 # libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
