@@ -48,6 +48,10 @@ bool HDF5GMCFMissNonLLCVArray::read()
 {
     BESDEBUG("h5","Coming to HDF5GMCFMissNonLLCVArray read "<<endl);
 
+    // No need to cache this since the calculation is trival
+    read_data_NOT_from_mem_cache(false,NULL);
+
+#if 0
     if(NULL == HDF5RequestHandler::get_srdata_mem_cache())                                          
         read_data_NOT_from_mem_cache(false,NULL);                                                   
     else {                                                                                          
@@ -57,6 +61,7 @@ bool HDF5GMCFMissNonLLCVArray::read()
         handle_data_with_mem_cache(H5INT32,tnumelm,1,cache_key);             
     }
  
+#endif
     return true;
 }
 

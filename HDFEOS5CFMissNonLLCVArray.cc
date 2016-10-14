@@ -48,6 +48,9 @@ bool HDFEOS5CFMissNonLLCVArray::read()
 {
     BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray read "<<endl);
 
+    // Don't use cache since the calculation is fairly small.
+    read_data_NOT_from_mem_cache(false,NULL);
+#if 0
     if(NULL == HDF5RequestHandler::get_srdata_mem_cache())                                          
         read_data_NOT_from_mem_cache(false,NULL);                                                   
     else {                                                                                          
@@ -56,6 +59,7 @@ bool HDFEOS5CFMissNonLLCVArray::read()
         string cache_key = dataset() + name();
         handle_data_with_mem_cache(H5INT32,tnumelm,1,cache_key);             
     }
+#endif
  
     return true;
 }

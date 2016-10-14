@@ -77,9 +77,9 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
     template<typename T> 
     void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value );
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
-    void obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms);
+    void obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
 
-    void obtain_gpm_l3_ll(int* offset,int* step,int nelms);
+    void obtain_gpm_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
 };
 
 #endif                          // _HDF5GMCFMissLLARRAY_H

@@ -95,7 +95,7 @@ bool HDF5GMCFMissLLArray::read()
 }
 
 // Obtain latitude and longitude for Aquarius and OBPG level 3 products
-void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms) {
+void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms,bool add_cache,void* buf) {
 
     BESDEBUG("h5","Coming to obtain_aqu_obpg_l3_ll read "<<endl);
 
@@ -192,13 +192,21 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms)
     for (int i = 0; i < nelms; ++i)
         val[i] = LL_first_point + (offset[0] + i*step[0])*LL_step;
 
+    if(true == add_cache) {
+        vector<float> total_val;
+        total_val.resize(LL_total_num);
+        for(int total_i = 0; total_i<LL_total_num; total_i++)
+            total_val[total_i] = LL_first_point +total_i*LL_step;
+        memcpy(buf,&total_val[0],4*LL_total_num);
+    }
+
     set_value ((dods_float32 *) &val[0], nelms);
     H5Gclose(rootid);
     HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
 }
 
 // Obtain lat/lon for GPM level 3 products
-void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms) {
+void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms,bool add_cache,void*buf) {
 
     if (1 != rank ) 
         throw InternalErr (__FILE__, __LINE__,
@@ -334,6 +342,14 @@ cerr<<"varname is "<<varname <<endl;
         }
         for (int i = 0; i < nelms; ++i) 
             val[i] = lat_start+offset[0]*lat_res+lat_res/2 + i*lat_res*step[0];
+
+        if(add_cache== true) {
+            vector<float>total_val;
+            total_val.resize(latsize);
+            for(int total_i = 0; total_i<latsize; total_i++)
+		total_val[total_i] = lat_start+lat_res/2 +total_i*lat_res;
+	    memcpy(buf,&total_val[0],4*latsize);
+        }
     }
     else if(CV_LON_MISS == cvartype) {
 
@@ -347,6 +363,15 @@ cerr<<"varname is "<<varname <<endl;
 
         for (int i = 0; i < nelms; ++i) 
             val[i] = lon_start+offset[0]*lon_res+lon_res/2 + i*lon_res*step[0];
+
+        if(add_cache== true) {
+            vector<float>total_val;
+            total_val.resize(lonsize);
+            for(int total_i = 0; total_i<lonsize; total_i++)
+		total_val[total_i] = lon_start+lon_res/2 +total_i*lon_res;
+	    memcpy(buf,&total_val[0],4*lonsize);
+        }
+
     }
     
     set_value ((dods_float32 *) &val[0], nelms);
@@ -503,9 +528,9 @@ void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) 
     int nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
     if (GPMM_L3 == product_type || GPMS_L3 == product_type) 
-       obtain_gpm_l3_ll(&offset[0],&step[0],nelms);
+       obtain_gpm_l3_ll(&offset[0],&step[0],nelms,add_cache,buf);
     else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
-       obtain_aqu_obpg_l3_ll(&offset[0],&step[0],nelms);
+       obtain_aqu_obpg_l3_ll(&offset[0],&step[0],nelms,add_cache,buf);
 
 
     return;
