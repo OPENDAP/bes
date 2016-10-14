@@ -1,0 +1,395 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+        Int32 OrbitNumber 32761, 32762, 32763, 32764, 32765, 32766, 32767, 32768, 32769, 32770, 32771, 32772, 32773, 32774, 32775, -1;
+        Float64 OrbitPeriod 5933.0171530246735, 5932.9854329824448, 5932.9812080860138, 5933.0274649858475, 5933.1091589927673, 5933.1329820156097, 5933.1063899993896, 5933.0301359891891, 5932.9687699079514, 5932.9739450216293, 5932.9884800910950, 5933.0489789247513, 5933.1401200294495, 5933.0943109989166, 5933.0943109989166, 0.0000000000000000;
+        String InstrumentName "MLS Aura";
+        String HostName " ";
+        String ProcessLevel "L2";
+        String PGEVersion "V02-23";
+        String StartUTC "2010-09-12T00:00:00.000000Z";
+        String EndUTC "2010-09-12T23:59:59.999999Z";
+        Int32 GranuleMonth 9;
+        Int32 GranuleDay 12;
+        Int32 GranuleDayOfYear 255;
+        Int32 GranuleYear 2010;
+        Float64 TAI93At0zOfGranule 558403207.00000000;
+        Int32 FirstMAF 7851081;
+        Int32 LastMAF 7854588;
+        String MiscNotes "No gmao or ncep files--falling back to climatology";
+        String fullnamepath "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES";
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_BrO {
+        Float32 Pressure 1000.000000, 681.2920532, 464.1588745, 316.2277527, 215.4434662, 146.7799225, 100.0000000, 68.12920380, 46.41588974, 31.62277603, 21.54434776, 14.67799282, 10.00000000, 6.812920570, 4.641588688, 3.162277699, 2.154434681, 1.467799306, 1.000000000, 0.6812920570, 0.4641588926, 0.3162277639, 0.2154434621, 0.1467799246, 0.1000000015, 0.04641588777, 0.02154434659, 0.009999999776, 0.004641588777, 0.002154434798, 0.001000000047, 0.0004641588894, 0.0002154434624, 9.999999747e-05, 4.641588748e-05, 2.154434696e-05, 9.999999747e-06;
+        String VerticalCoordinate "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/BrO";
+    }
+    HDFEOS_SWATHS_BrO_Data_Fields {
+    }
+    HDFEOS_SWATHS_BrO_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.10";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    Convergence {
+        String units "NoUnits";
+        Float32 _FillValue -999.9899902;
+        String title "BrOConvergence";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Convergence";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Data Fields/Convergence";
+        String orig_dimname "nTimes";
+    }
+    L2gpPrecision {
+        Float32 _FillValue -999.9899902;
+        String title "BrOPrecision";
+        String units "vmr";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "L2gpPrecision";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Data Fields/L2gpPrecision";
+        String orig_dimname_list "nTimes nLevels";
+    }
+    L2gpValue {
+        Float32 _FillValue -999.9899902;
+        String title "BrO";
+        String units "vmr";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "L2gpValue";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Data Fields/L2gpValue";
+        String orig_dimname_list "nTimes nLevels";
+    }
+    Quality {
+        String units "NoUnits";
+        Float32 _FillValue -999.9899902;
+        String title "BrOQuality";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Quality";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Data Fields/Quality";
+        String orig_dimname "nTimes";
+    }
+    Status {
+        Int32 _FillValue 513;
+        String title "BrOStatus";
+        String units "NoUnits";
+        Int32 missing_value 513;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Status";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Data Fields/Status";
+        String orig_dimname "nTimes";
+    }
+    ChunkNumber {
+        Int32 _FillValue -999;
+        String title "ChunkNumber";
+        String units "NoUnits";
+        Int32 missing_value -999;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "ChunkNumber";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/ChunkNumber";
+        String orig_dimname "nTimes";
+    }
+    LineOfSightAngle {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "LineOfSightAngle";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "LineOfSightAngle";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/LineOfSightAngle";
+        String orig_dimname "nTimes";
+    }
+    LocalSolarTime {
+        String units "h";
+        Float32 _FillValue -999.9899902;
+        String title "LocalSolarTime";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "LocalSolarTime";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/LocalSolarTime";
+        String orig_dimname "nTimes";
+    }
+    Longitude {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "Longitude";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/Longitude";
+        String orig_dimname "nTimes";
+    }
+    OrbitGeodeticAngle {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "OrbitGeodeticAngle";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "OrbitGeodeticAngle";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/OrbitGeodeticAngle";
+        String orig_dimname "nTimes";
+    }
+    SolarZenithAngle {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "SolarZenithAngle";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "SolarZenithAngle";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/SolarZenithAngle";
+        String orig_dimname "nTimes";
+    }
+    Time {
+        Float64 _FillValue -999.98999023437500;
+        String title "Time";
+        String units "s";
+        Float64 missing_value -999.98999023437500;
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Time";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/Time";
+        String orig_dimname "nTimes";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    coremetadata_0 {
+        String origname "coremetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/coremetadata.0";
+    }
+    Latitude {
+        String title "Latitude";
+        Float32 _FillValue -999.9899902;
+        String units "degrees_north";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/Latitude";
+        String orig_dimname "nTimes";
+    }
+    Pressure {
+        Float32 _FillValue -999.9899902;
+        String title "Pressure";
+        String units "hPa";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/BrO/Geolocation Fields/Pressure";
+        String orig_dimname "nLevels";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MLS-Aura_L2GP-BrO_v02-23-c01_2010d255.he5";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-09-14T21:44:48.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Both";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "c01";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update anticipated using enhanced PGE";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Inferred Passed";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Validated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Passed";
+                            String CLASS "1";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Validated, see http://disc.gsfc.nasa.gov/Aura/MLS/ for quality document";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "BrO";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    STARTORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 32761;
+                    }
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2010-09-12";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "00:00:00";
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 0.0;
+                    }
+                    STOPORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 32775;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 2;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "ML2BRO";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Found at /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PCF";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                    }
+                    ZONEIDENTIFIERCLASS {
+                        ZONEIDENTIFIER {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Other Grid System";
+                        }
+                    }
+                }
+                VERTICALSPATIALDOMAIN {
+                    VERTICALSPATIALDOMAINCONTAINER {
+                        String CLASS "1";
+                        VERTICALSPATIALDOMAINTYPE {
+                            String CLASS "1";
+                            Int32 NUM_VAL 1;
+                            String VALUE "Atmosphere Layer";
+                        }
+                        VERTICALSPATIALDOMAINVALUE {
+                            String CLASS "1";
+                            Int32 NUM_VAL 1;
+                            String VALUE "Atmosphere Profile";
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Limb";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-09-12";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.999999Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-09-12";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "V02-23";
+                }
+            }
+        }
+    }
+}
