@@ -19,8 +19,8 @@ m4_define([_AT_MEMCONFCACHE_TEST],
 AT_KEYWORDS([memcache])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([curl -s localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L305.004/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
-AT_CHECK([curl -s localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L305.004/$1 |getdap -M -|| true], [], [stdout], [stderr])
+#AT_CHECK([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L305.004/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
+AT_CHECK([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L305.004/$1 |getdap -M -|| true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -34,8 +34,8 @@ m4_define([_AT_MEMCONFNONCACHE_TEST],
 AT_KEYWORDS([memcache])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([curl -s localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L2.004/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
-AT_CHECK([curl -s localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L2.004/$1 |getdap -M -|| true], [], [stdout], [stderr])
+#AT_CHECK([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L2.004/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
+AT_CHECK([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/nasa-data/SWDB_L2.004/$1 |getdap -M -|| true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
