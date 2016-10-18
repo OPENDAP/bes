@@ -113,7 +113,7 @@ const bool CVar::isLatLon() const{
                            break;
                        }
                        else if(attr_value.size() == (lat_unit_value.size()+1)) {
-                           if(attr_value.back()=='\0' || attr_value.back() == ' '){
+                           if(attr_value[attr_value.size()-1]=='\0' || attr_value[attr_value.size()-1] == ' '){
 //cerr<<"coming to null term "<<endl;
                                ret_value = true;
                                break;
@@ -126,7 +126,7 @@ const bool CVar::isLatLon() const{
                            break;
                        }
                        else if(attr_value.size() == (lon_unit_value.size()+1)) {
-                           if(attr_value.back()=='\0' || attr_value.back() == ' '){
+                           if(attr_value[attr_value.size()-1]=='\0' || attr_value[attr_value.size()-1] == ' '){
                                ret_value = true;
                                break;
                            }
