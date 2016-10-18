@@ -188,6 +188,11 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Remove unsupported dataspace 
         f->Handle_Unsupported_Dspace(include_attr);
         
+        // Need to retrieve the units of CV when memory cache is turned on.
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+            f->Adjust_Attr_Info();
+
         // May need to adjust the object names for special objects. Currently no operations
         // are done in this routine.
         f->Adjust_Obj_Name();
@@ -446,8 +451,18 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
             case CV_EXIST:
             {
-//cerr<<"cvar new name exist at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
+
+#if 0
+for(vector<HDF5CF::Attribute *>::const_iterator it_ra = cvar->getAttributes().begin();
+                 it_ra != cvar->getAttributes().end(); ++it_ra) {
+cerr<<"cvar attribute name is "<<(*it_ra)->getNewName() <<endl;
+cerr<<"cvar attribute value type is "<<(*it_ra)->getType() <<endl;
+}
+cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
+#endif
                 bool is_latlon = cvar->isLatLon();
+//if(is_latlon == true) cerr<<"this var is lat/lon"<<endl;
+//else cerr<<"this var is NOT lat/lon" <<endl;
                 HDF5CFArray *ar = NULL;
                 try {
                     ar = new HDF5CFArray (

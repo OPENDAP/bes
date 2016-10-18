@@ -167,6 +167,7 @@ void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values() {
 
         // When the coordinate variables exist in the file, retrieve the attribute values.
         if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype)){
+//cerr<<"CVar name is: "<<(*ircv)->fullpath <<endl;
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) 
                 Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
@@ -3363,6 +3364,8 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr() throw(Exception) {
                             (((*irv)->name == "Latitude") ||
                              ((this->eos5cfzas.size() > 0) && ((*irv)->name == "nLats")))) {
                              units_value = lat_cf_unit_attrvalue;
+//cerr<<"coming to obtain the correct units_value: "<<units_value <<endl;
+//cerr<<"cvar name is "<<(*irv)->newname <<endl;
                              (*ira)->value.resize(units_value.size());
                              if (H5FSTRING == (*ira)->dtype) 
                                  (*ira)->fstrsize = units_value.size();

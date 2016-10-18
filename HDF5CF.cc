@@ -96,12 +96,12 @@ const bool CVar::isLatLon() const{
         for(vector<Attribute *>::const_iterator ira = this->attrs.begin();
                      ira != this->attrs.end();ira++) {
 
-//cerr<<"attribute name is "<<(*ira)->name <<endl;
+//cerr<<"attribute name is "<<(*ira)->newname <<endl;
 //cerr<<"attribnte type is "<<(*ira)->getType() <<endl;
             if ((H5FSTRING == (*ira)->getType()) ||
                 (H5VSTRING == (*ira)->getType())) {
-                if(attr_name == (*ira)->name) {
-//                string attr_value1((*ira)->getValue().begin(),(*ira)->getValue().end());
+                if(attr_name == (*ira)->newname) {
+                string attr_value1((*ira)->getValue().begin(),(*ira)->getValue().end());
 //cerr<<"CV attribute value outside is "<<attr_value1 <<endl;
 
                 if((*ira)->getCount()==1) {

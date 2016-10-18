@@ -145,8 +145,12 @@ bool HDF5CFArray::read()
             string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');
             if(cache_dir != "") 
                 cache_key = cache_dir + varname;
-            else
+            else {
                 cache_key = filename + varname;
+                // If this lat/lon is not in the common dir. list, it is still cached as a general lat/lon.
+                // Change the flag to 2.
+                use_cache_flag = 2;
+            }
 
         }
         else

@@ -479,7 +479,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
        
-        BESDEBUG("h5","Data Memory Cache hit, the cache flag is "<< cache_flag<<endl);
+        BESDEBUG("h5","Data Memory Cache hit, the variable name is "<<name() <<". The cache flag is "<< cache_flag<<endl);
 
         //const string var_name = mem_cache_ptr->get_varname();
 
@@ -508,7 +508,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
        
-        BESDEBUG("h5","Data Memory added to the cache, the cache flag is "<< cache_flag<<endl);
+        BESDEBUG("h5","Data Memory added to the cache, the variable name is "<<name() <<". The cache flag is "<< cache_flag<<endl);
 
  	vector <char> buf;
  	if(total_elems == 0)
