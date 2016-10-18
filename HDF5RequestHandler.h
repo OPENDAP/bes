@@ -77,11 +77,11 @@ class HDF5RequestHandler:public BESRequestHandler {
     //static bool  check_dds_cache() {return (dds_cache?true:false);}
     
     static ObjMemCache* get_lrdata_mem_cache() {return lrdata_mem_cache;}
-    static ObjMemCache* set_lrdata_mem_cache(ObjMemCache* my_lrdata_mem_cache) 
+    void set_lrdata_mem_cache(ObjMemCache* my_lrdata_mem_cache) 
                                              {lrdata_mem_cache=my_lrdata_mem_cache;}
 
     static ObjMemCache* get_srdata_mem_cache() {return srdata_mem_cache;}
-    static ObjMemCache* set_srdata_mem_cache(ObjMemCache* my_srdata_mem_cache) 
+    void set_srdata_mem_cache(ObjMemCache* my_srdata_mem_cache) 
                                              {srdata_mem_cache=my_srdata_mem_cache;}
 
     static bool get_common_cache_dirs() { return _common_cache_dirs;}

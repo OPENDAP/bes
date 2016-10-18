@@ -64,11 +64,14 @@ bool HDF5GMCFMissLLArray::read()
         // Check if this file is included in the non-cache directory                                
         if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                             
             ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {              
+                short cache_flag = 2;
                 vector<string> cur_cache_dlist;                                                     
                 HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                        
                 string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');            
-                if(cache_dir != "")                                                                 
+                if(cache_dir != "")  {                                                               
+                    cache_flag = 3;
                     cache_key = cache_dir + varname;                                                
+                }
                 else                                                                                
                     cache_key = filename + varname;                                                 
                                                                                                     
@@ -86,7 +89,7 @@ bool HDF5GMCFMissLLArray::read()
                 for(int i = 0; i<dim_sizes.size();i++)
 		    total_elems = total_elems*dim_sizes[i];
 
-                handle_data_with_mem_cache(dtype,total_elems,3,cache_key);             
+                handle_data_with_mem_cache(dtype,total_elems,cache_flag,cache_key);             
         }                                                                                           
         else                                                                                        
             read_data_NOT_from_mem_cache(false,NULL);                                               
@@ -260,7 +263,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms,bool 
                 name() == "lnL" || name() == "ltL") {
                 string temp_grids_group_name(GPM_GRID_MULTI_GROUP_NAME,strlen(GPM_GRID_MULTI_GROUP_NAME));
                
-cerr<<"varname is "<<varname <<endl;
+//cerr<<"varname is "<<varname <<endl;
                 size_t grids_group_pos = varname.find(temp_grids_group_name);
                 if(string::npos == grids_group_pos) {
                     throw InternalErr (__FILE__, __LINE__,

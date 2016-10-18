@@ -45,8 +45,8 @@ m4_define([_AT_MEMCACHE_DATASUBSET_TEST],
 AT_KEYWORDS([memcache])
 
 # Use the following AT_CHECK to generate baseline file.
-AT_CHECK_UNQUOTED([curl -s localhost:8080/opendap/hyrax/data/hdf5/hdf5-fake-data/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
-AT_CHECK_UNQUOTED([curl -s localhost:8080/opendap/hyrax/data/hdf5/hdf5-fake-data/$1 |getdap -M -|| true], [], [stdout], [stderr])
+AT_CHECK_UNQUOTED([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/hdf5-fake-data/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
+AT_CHECK_UNQUOTED([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/hdf5-fake-data/$1 |getdap -M -|| true], [], [stdout], [stderr])
 AT_CHECK_UNQUOTED([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 

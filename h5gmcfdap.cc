@@ -92,8 +92,13 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Handle coordinate variables
         f->Handle_CVar();
 
-        // We need to retrieve existing coordinate variable attributes for memory cache use.
+        // We need to retrieve  coordinate variable attributes for memory cache use.
         f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+        //    f->Retrieve_H5_Supported_Attr_Values();
+
+
         // Handle special variables
         f->Handle_SpVar();
 
@@ -103,6 +108,10 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Handle unsupported dataspaces
         f->Handle_Unsupported_Dspace(include_attr);
 
+        // Need to handle the "coordinate" attributes when memory cache is turned on.
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+            f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
 
         // Adjust object names(may remove redundant paths)
 
@@ -123,6 +132,12 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
          if(General_Product == product_type ||
             true == HDF5RequestHandler::get_check_name_clashing()) 
             f->Handle_DimNameClashing();
+
+        // Need to handle the "coordinate" attributes when memory cache is turned on.
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+            f->Handle_Coor_Attr();
+ 
     }
     catch (HDF5CF::Exception &e){
         if (f != NULL)
@@ -468,6 +483,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             {
                 HDF5CFArray *ar = NULL;
                 bool is_latlon = cvar->isLatLon();
+//cerr<<"cvar path is "<<cvar->getFullPath()<<endl;
+//if(is_latlon) cerr<<"this is lat/lon" <<endl;
+//else cerr<<"this is NOT lat/lon"<<endl;
                 
                 try {
                     ar = new HDF5CFArray (

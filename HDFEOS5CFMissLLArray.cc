@@ -60,11 +60,14 @@ bool HDFEOS5CFMissLLArray::read()
         // Check if this file is included in the non-cache directory                    
         if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                 
     	    ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {  
+                short cache_flag = 2;
 		vector<string> cur_cache_dlist;                                                         
 		HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                            
 		string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');                
-		if(cache_dir != "")                                                                     
+		if(cache_dir != ""){                                                                     
 		    cache_key = cache_dir + varname;                                                    
+                    cache_flag = 3;
+                }
 		else                                                                                    
 		    cache_key = filename + varname;     
 
@@ -73,9 +76,9 @@ bool HDFEOS5CFMissLLArray::read()
                 // So the total number of elements for LAT is ydimsize,
                 //    the total number of elements for LON is xdimsize.
                 if(cvartype == CV_LAT_MISS)
-                    handle_data_with_mem_cache(H5FLOAT32,(size_t)ydimsize,3,cache_key);
+                    handle_data_with_mem_cache(H5FLOAT32,(size_t)ydimsize,cache_flag,cache_key);
                 else 
-                    handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,3,cache_key);
+                    handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,cache_flag,cache_key);
         }
         else 
 	    read_data_NOT_from_mem_cache(false,NULL);

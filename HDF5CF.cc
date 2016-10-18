@@ -101,16 +101,40 @@ const bool CVar::isLatLon() const{
             if ((H5FSTRING == (*ira)->getType()) ||
                 (H5VSTRING == (*ira)->getType())) {
                 if(attr_name == (*ira)->name) {
-                string attr_value1((*ira)->getValue().begin(),(*ira)->getValue().end());
+//                string attr_value1((*ira)->getValue().begin(),(*ira)->getValue().end());
 //cerr<<"CV attribute value outside is "<<attr_value1 <<endl;
 
                 if((*ira)->getCount()==1) {
                    string attr_value((*ira)->getValue().begin(),(*ira)->getValue().end());
 //cerr<<"CV attribute value inside is "<<attr_value <<endl;
-                   if(attr_value == lat_unit_value || attr_value == lon_unit_value){
-                        ret_value = true;
-                        break;
+                   if(attr_value.compare(0,lat_unit_value.size(),lat_unit_value) ==0){
+                       if(attr_value.size() == lat_unit_value.size()){
+                           ret_value = true;
+                           break;
+                       }
+                       else if(attr_value.size() == (lat_unit_value.size()+1)) {
+                           if(attr_value.back()=='\0' || attr_value.back() == ' '){
+//cerr<<"coming to null term "<<endl;
+                               ret_value = true;
+                               break;
+                           }
+                       }
                    }
+                   else if(attr_value.compare(0,lon_unit_value.size(),lon_unit_value) ==0){
+                       if(attr_value.size() == lon_unit_value.size()){
+                           ret_value = true;
+                           break;
+                       }
+                       else if(attr_value.size() == (lon_unit_value.size()+1)) {
+                           if(attr_value.back()=='\0' || attr_value.back() == ' '){
+                               ret_value = true;
+                               break;
+                           }
+                       }
+
+                   }
+
+
                 }
                 }
             }

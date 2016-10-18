@@ -32,7 +32,7 @@ AT_KEYWORDS([memcache])
 
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([curl -s localhost:8080/opendap/hyrax/data/hdf5/nasa-data/$1 | getdap -M - > $2|| true], [], [stdout], [stderr])
-AT_CHECK([curl -s localhost:8080/opendap/hyrax/data/hdf5/nasa-data/$1 |getdap -M -|| true], [], [stdout], [stderr])
+AT_CHECK([curl -s -g localhost:8080/opendap/hyrax/data/hdf5/nasa-data/$1 |getdap -M -|| true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
