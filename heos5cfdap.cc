@@ -177,16 +177,40 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Handle_CVar();
 
         // Retrieve existing coordinate variable attributes for memory cache use.
-        f->Retrieve_H5_CVar_Supported_Attr_Values();
+        //f->Retrieve_H5_CVar_Supported_Attr_Values();
 
         // Adjust variable and dimension names again based on the handling coordinate variables.
         f->Adjust_Var_Dim_NewName_Before_Flattening();
 
         // Remove unsupported datatype 
-        f->Handle_Unsupported_Dtype(include_attr);
+        //f->Handle_Unsupported_Dtype(include_attr);
 
         // Remove unsupported dataspace 
-        f->Handle_Unsupported_Dspace(include_attr);
+        //f->Handle_Unsupported_Dspace(include_attr);
+
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+
+            // Handle unsupported datatypes including the attributes
+            f->Handle_Unsupported_Dtype(true);
+
+            // Handle unsupported dataspaces including the attributes
+            f->Handle_Unsupported_Dspace(true);
+
+            // We need to retrieve  coordinate variable attributes for memory cache use.
+            f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+
+        }
+        else {
+
+	    // Handle unsupported datatypes
+	    f->Handle_Unsupported_Dtype(include_attr);
+
+	    // Handle unsupported dataspaces
+	    f->Handle_Unsupported_Dspace(include_attr);
+
+        }
+ 
         
         // Need to retrieve the units of CV when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||

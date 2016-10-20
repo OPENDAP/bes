@@ -93,7 +93,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         f->Handle_CVar();
 
         // We need to retrieve  coordinate variable attributes for memory cache use.
-        f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+        //f->Retrieve_H5_CVar_Supported_Attr_Values(); 
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
         //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
         //    f->Retrieve_H5_Supported_Attr_Values();
@@ -102,11 +102,32 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Handle special variables
         f->Handle_SpVar();
 
-        // Handle unsupported datatypes
-        f->Handle_Unsupported_Dtype(include_attr);
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
-        // Handle unsupported dataspaces
-        f->Handle_Unsupported_Dspace(include_attr);
+            // Handle unsupported datatypes including the attributes
+            f->Handle_Unsupported_Dtype(true);
+
+            // Handle unsupported dataspaces including the attributes
+            f->Handle_Unsupported_Dspace(true);
+
+            // We need to retrieve  coordinate variable attributes for memory cache use.
+            f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+
+        }
+        else {
+
+	    // Handle unsupported datatypes
+	    f->Handle_Unsupported_Dtype(include_attr);
+
+	    // Handle unsupported dataspaces
+	    f->Handle_Unsupported_Dspace(include_attr);
+
+        }
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+        //    f->Retrieve_H5_Supported_Attr_Values();
+
 
         // Need to handle the "coordinate" attributes when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 

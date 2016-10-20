@@ -141,6 +141,8 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
 
     // Obtain the metadata cache entries and purge level.
     HDF5RequestHandler::_mdcache_entries     = get_uint_key("H5.MetaDataMemCacheEntries", 0);
+    HDF5RequestHandler::_lrdcache_entries     = get_uint_key("H5.LargeDataMemCacheEntries", 0);
+    HDF5RequestHandler::_srdcache_entries     = get_uint_key("H5.SmallDataMemCacheEntries", 0);
     HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2);
 
     if (get_mdcache_entries()) {  // else it stays at its default of null
@@ -167,8 +169,10 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
             lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
             if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
                 _common_cache_dirs =obtain_lrd_common_cache_dirs();
+#if 0
 if(false == _common_cache_dirs) 
 cerr<<"No specific cache info"<<endl;
+#endif
              
             }
         }
@@ -1032,17 +1036,14 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
 
 
 #if 0
-cerr<<"lrd_cache_dir_list is "<<lrd_cache_dir_list <<endl;
-cerr<<"lrd_non_cache_dir_list is "<<lrd_non_cache_dir_list <<endl;
-cerr<<"lrd_var_cache_file_list is "<<lrd_var_cache_file_list <<endl;
 
-#endif
 for(int i =0; i<lrd_cache_dir_list.size();i++)
 cerr<<"lrd cache list is "<<lrd_cache_dir_list[i] <<endl;
 for(int i =0; i<lrd_non_cache_dir_list.size();i++)
 cerr<<"lrd non cache list is "<<lrd_non_cache_dir_list[i] <<endl;
 for(int i =0; i<lrd_var_cache_file_list.size();i++)
 cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
+#endif
 
 
     mcache_config_file.close();

@@ -139,6 +139,8 @@ bool HDF5CFArray::read()
     else {// memory cache cases
 
         string cache_key;
+
+        // Possibly we have common lat/lon dirs,so check here.
         if( 3 == use_cache_flag){
             vector<string> cur_cache_dlist;
             HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);

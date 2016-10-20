@@ -395,6 +395,8 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     return sum;
 }
 
+// This routine will check if any section(separated by sep) of string cur_str is inside the vector str_list. 
+// The first found string will be returned or empty string will return if not found in the whole cur_str.
 string HDF5BaseArray::
 check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,const char sep) {
 
@@ -421,6 +423,10 @@ check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,cons
 
 }
 
+// This routine will check if there is any sub-string of the fullpath(fname+varname) that is exactly the subset of the fullpath with the same ending 
+// of the fullpath is contained in the slist.
+// Examples: slist contains { /foo1/foovar foovar2 } fname is /temp/myfile/foo1/ varname is foovar. The rotuine will return true. 
+//                                                   fname is /myfile/foo2/  varname is foovar. The routine will return false.
 bool HDF5BaseArray::
 check_var_cache_files(const vector<string>&slist, const string &fname,const string &varname) {
 
@@ -458,7 +464,7 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
     return ret_value;
 }
 
-
+// Handle data when memory cache is turned on.
 void HDF5BaseArray::
 handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short cache_flag, const string & cache_key) {     
 
@@ -466,8 +472,13 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     ObjMemCache * mem_data_cache= NULL;
     if(1 == cache_flag) 
         mem_data_cache = HDF5RequestHandler::get_srdata_mem_cache();
-    else if(cache_flag > 1) 
+    else if(cache_flag > 1) {
         mem_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
+cerr<<"coming to the large metadata cache "<<endl;
+cerr<<"The cache key is "<<cache_key <<endl;
+
+mem_data_cache->dump(cerr);
+    }
 
 
     if(mem_data_cache == NULL)
@@ -475,6 +486,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 
     HDF5DataMemCache* mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
+cerr<<"coming to the cache hit"<<endl;
         
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
@@ -504,6 +516,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 	}
     }
     else{ 
+cerr<<"coming to add the cache  "<<endl;
 
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
@@ -523,6 +536,8 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     	//HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
     	HDF5DataMemCache* new_mem_cache_ele = new HDF5DataMemCache();
        	new_mem_cache_ele->set_databuf(buf);
+
+        // Add this entry to the cache list
        	mem_data_cache->add(new_mem_cache_ele, cache_key);
     }
 
