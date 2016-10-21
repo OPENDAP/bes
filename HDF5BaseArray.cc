@@ -474,10 +474,11 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
         mem_data_cache = HDF5RequestHandler::get_srdata_mem_cache();
     else if(cache_flag > 1) {
         mem_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
-cerr<<"coming to the large metadata cache "<<endl;
-cerr<<"The cache key is "<<cache_key <<endl;
+//cerr<<"coming to the large metadata cache "<<endl;
+//cerr<<"The cache key is "<<cache_key <<endl;
 
-mem_data_cache->dump(cerr);
+// dump the values in the cache
+//mem_data_cache->dump(cerr);
     }
 
 
@@ -486,7 +487,7 @@ mem_data_cache->dump(cerr);
 
     HDF5DataMemCache* mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
-cerr<<"coming to the cache hit"<<endl;
+//cerr<<"coming to the cache hit"<<endl;
         
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
@@ -516,7 +517,7 @@ cerr<<"coming to the cache hit"<<endl;
 	}
     }
     else{ 
-cerr<<"coming to add the cache  "<<endl;
+//cerr<<"coming to add the cache  "<<endl;
 
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
