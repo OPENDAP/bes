@@ -1,0 +1,9 @@
+/var/log/bes/*log {
+    missingok
+    notifempty
+    sharedscripts
+    delaycompress
+    postrotate
+        /sbin/service besd restart > /dev/null 2>/dev/null || true
+    endscript
+}
