@@ -25,7 +25,7 @@ BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=nc:.*\.nc(\.(bz2|gz|Z))?$;
-BES.Catalog.catalog.TypeMatch=h4:.*\.(hdf|HDF)(\.(bz2|gz|Z))?$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.(bz2|gz|Z))?$;
 
 # BES.Catalog.catalog.TypeMatch+=reader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
 
