@@ -40,7 +40,8 @@ SUBDIRS = . unit-tests tests
 # We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
 # However, since we use it we must list all of the subdirs we want; without
 # it, automake will automatically distribute all the stuff in SUBDIRS.
-DIST_SUBDIRS = unit-tests tests geo-functions
+DIST_SUBDIRS = unit-tests tests
+# geo-functions
 
 if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code

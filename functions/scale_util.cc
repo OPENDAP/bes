@@ -24,6 +24,10 @@
 
 #include "config.h"
 
+#define DODS_DEBUG
+
+#include <float.h>
+
 #include <iostream>
 #include <vector>
 #include <limits>
@@ -52,123 +56,6 @@ using namespace libdap;
 
 namespace functions {
 
-#if 0
-// This code is used to build GCPs and various other info when a 'coverage'
-// has two-dimensional lat and lon maps. I'm not using it now, but maybe in
-// the future we will be... jhrg 10/5/16
-void SetGeoBBoxAndGCPs(int nXSize, int nYSize)
-{
-    DBG(cerr << "SetGeoBBoxAndGCPs() - BEGIN" << endl);
-
-    // reuse the Dim_iter for both lat and lon arrays
-    Array::Dim_iter i = m_lat->dim_begin();
-    int nLatXSize = m_lat->dimension_size(i, true);
-    int nLatYSize = m_lat->dimension_size(i + 1, true);
-    i = m_lon->dim_begin();
-    int nLonXSize = m_lon->dimension_size(i, true);
-    int nLonYSize = m_lon->dimension_size(i + 1, true);
-
-    DBG(cerr << "SetGeoBBoxAndGCPs() - nXSize: "<< nXSize << "  nLatXSize: " << nLatXSize << endl );
-    DBG(cerr << "SetGeoBBoxAndGCPs() - nYSize: "<< nYSize << "  nLatYSize: " << nLatYSize << endl );
-
-    if (nXSize != nLatXSize || nLatXSize != nLonXSize || nYSize != nLatYSize || nLatYSize != nLonYSize)
-        throw Error("SetGeoBBoxAndGCPs() - The size of latitude/longitude and the data field does not match.");
-
-    m_lat->read();
-    m_lon->read();
-    double *dataLat = extract_double_array(m_lat);
-    double *dataLon = extract_double_array(m_lon);
-
-    DBG(cerr << "SetGeoBBoxAndGCPs() - Past lat/lon data read" << endl);
-
-    try {
-        mdSrcGeoMinX = 360;
-        mdSrcGeoMaxX = -360;
-        mdSrcGeoMinY = 90;
-        mdSrcGeoMaxY = -90;
-
-        // Sample every other row and column; This reduces the number of
-        // Grid Control points (GCPs) which speeds the regridding process
-        // Could we go smaller with no loss in quality? jhrg 10/5/16
-        int xSpace = 2;
-        int ySpace = 2;
-
-        int nGCPs = 0;
-        GDAL_GCP gdalCGP;
-
-        for (int iLine = 0; iLine < nYSize - ySpace; iLine += ySpace) {
-            for (int iPixel = 0; iPixel < nXSize - xSpace; iPixel += xSpace) {
-                double x = *(dataLon + (iLine * nYSize) + iPixel);
-                double y = *(dataLat + (iLine * nYSize) + iPixel);
-
-                if (isValidLongitude(x) && isValidLatitude(y)) {
-                    char pChr[64];
-                    snprintf(pChr, 64, "%d", ++nGCPs);
-                    GDALInitGCPs(1, &gdalCGP);
-                    gdalCGP.pszId = strdup(pChr);
-                    gdalCGP.pszInfo = strdup("");
-                    gdalCGP.dfGCPLine = iLine;
-                    gdalCGP.dfGCPPixel = iPixel;
-                    gdalCGP.dfGCPX = x;
-                    gdalCGP.dfGCPY = y;
-
-                    DBG2(cerr << "iLine, iPixel: " << iLine << ", " << iPixel << " --> x,y: " << x << ", " << y << endl);
-
-                    gdalCGP.dfGCPZ = 0;
-                    m_gdalGCPs.push_back(gdalCGP);
-
-                    mdSrcGeoMinX = MIN(mdSrcGeoMinX, gdalCGP.dfGCPX);
-                    mdSrcGeoMaxX = MAX(mdSrcGeoMaxX, gdalCGP.dfGCPX);
-                    mdSrcGeoMinY = MIN(mdSrcGeoMinY, gdalCGP.dfGCPY);
-                    mdSrcGeoMaxY = MAX(mdSrcGeoMaxY, gdalCGP.dfGCPY);
-                }
-            }
-        }
-    }
-    catch (...) {
-        delete[] dataLat;
-        delete[] dataLon;
-        throw;
-    }
-
-    delete[] dataLat;
-    delete[] dataLon;
-
-    DBG(cerr << "SetGeoBBoxAndGCPs() - END" << endl);
-
-    // For the swath2grid code, I used this as well, in the caller.
-    // This provides info for the dest GDALDataset, where the swath
-    // (a referenceable grid) is now a rectified grid. For the case
-    // I'm coding now, the input is a rectified grid. jhrg 10/5/16
-    double resX, resY;
-    if (mdSrcGeoMinX > mdSrcGeoMaxX && mdSrcGeoMinX > 0 && mdSrcGeoMaxX < 0)
-        resX = (360 + mdSrcGeoMaxX - mdSrcGeoMinX) / (src_x_size - 1);
-    else
-        resX = (mdSrcGeoMaxX - mdSrcGeoMinX) / (src_x_size - 1);
-
-    resY = (mdSrcGeoMaxY - mdSrcGeoMinY) / (nYSize - 1);
-
-    double res = MIN(resX, resY);
-
-    if (mdSrcGeoMinX > mdSrcGeoMaxX && mdSrcGeoMinX > 0 && mdSrcGeoMaxX < 0)
-        mi_RectifiedImageXSize = (int) ((360 + mdSrcGeoMaxX - mdSrcGeoMinX) / res) + 1;
-    else
-        mi_RectifiedImageXSize = (int) ((mdSrcGeoMaxX - mdSrcGeoMinX) / res) + 1;
-
-    mi_RectifiedImageYSize = (int) fabs((mdSrcGeoMaxY - mdSrcGeoMinY) / res) + 1;
-
-    DBG(cerr << "SetGeoTransform() - Source image size: " << src_x_size << ", " << nYSize << endl);
-    DBG(cerr << "SetGeoTransform() - Rectified image size: " << mi_RectifiedImageXSize << ", " << mi_RectifiedImageYSize << endl);
-
-    md_Geotransform[0] = mdSrcGeoMinX;
-    md_Geotransform[1] = res;
-    md_Geotransform[2] = 0;
-    md_Geotransform[3] = mdSrcGeoMaxY;
-    md_Geotransform[4] = 0;
-    md_Geotransform[5] = -res;
-}
-#endif
-
 inline static int is_valid_lat(const double lat)
 {
     return (lat >= -90 && lat <= 90);
@@ -179,88 +66,155 @@ inline static int is_valid_lon(const double lon)
     return (lon >= -180 && lon <= 180);
 }
 
-SizeBox get_size_box(Array *lat, Array *lon)
+/**
+ * @brief return a SizeBox circumscribing the two DAP Arrays
+ * @param x
+ * @param y
+ * @return A SizeBox
+ */
+SizeBox get_size_box(Array *x, Array *y)
 {
-	// Latitude is Y
-    int src_y_size = lat->dimension_size(lat->dim_begin(), true);
-    // Longitude is X
-    int src_x_size = lon->dimension_size(lon->dim_begin(), true);
+    int src_x_size = x->dimension_size(x->dim_begin(), true);
+    int src_y_size = y->dimension_size(y->dim_begin(), true);
 
     return SizeBox(src_x_size, src_y_size);
 }
 
 /**
+ * @brief Test an array of doubles to see if its values are monotonic and uniform
+ * @param values The array
+ * @param res The uniform offset between elements
+ * @return True if the array is monotonic and uniform, otherwise false.
+ */
+bool monotonic_and_uniform(const vector<double> &values, double res)
+{
+    vector<double>::size_type end_index = values.size() - 1;
+    for (vector<double>::size_type i = 0; i < end_index; ++i) {
+        if ((values[i+1] - values[i]) != res)
+            return false;
+    }
+
+    return true;
+}
+
+/**
  * @brief Extract the geo-transform coordinates from a DP2 Grid
  *
- * @note Side effect: Data are read into the lat and lon Arrays
+ * @note Side effect: Data are read into the x and y Arrays
  *
- * @param lat
- * @param lon
+ * @param x
+ * @param y
+ * @param test_maps Should the x and y arrays be tested to ensure they are monotonic
+ * and uniform? By default, false unless the source has been built with --enable-developer
  * @return A vector<double> of length 6 with the GDAL geo-transform parameters
  */
-vector<double> get_geotransform_data(Array *lat, Array *lon)
+vector<double> get_geotransform_data(Array *x, Array *y, bool test_maps /* default: false*/)
 {
-    SizeBox size = get_size_box(lat, lon);
+#ifndef NDEBUG
+    test_maps = true;
+#endif
 
-    lat->read();
-	vector<double> lat_values(size.y_size);
-	extract_double_array(lat, lat_values);
+    SizeBox size = get_size_box(x, y);
 
-	lon->read();
-	vector<double> lon_values(size.x_size);
-	extract_double_array(lon, lon_values);
+    y->read();
+	vector<double> y_values(size.y_size);
+	extract_double_array(y, y_values);
 
-	double min_x = 360;
-	double max_x = -360;
-	double min_y = 90;
-	double max_y = -90;
+    double res_y = (y_values[y_values.size()-1] - y_values[0]) / (y_values.size() -1);
 
-	for (int x = 0; x < size.x_size; ++x) {
-		double lon = lon_values[x];
-		if (is_valid_lon(lon)) {
-			min_x = min(min_x, lon);
-			max_x = max(max_x, lon);
-		}
-	}
+    if (test_maps && !monotonic_and_uniform(y_values, res_y))
+        throw Error(malformed_expr, "The grids maps/dimensions must be monotonic and uniform (" + y->name() + ").");
 
-	for (int y = 0; y < size.y_size; ++y) {
-		double lat = lat_values[y];
-		if (is_valid_lat(y)) {
-			min_y = min(min_y, lat);
-			max_y = max(max_y, lat);
-		}
-	}
+    x->read();
+	vector<double> x_values(size.x_size);
+	extract_double_array(x, x_values);
 
-	// Use size-1 in the denominator because an axis that spans N values
-	// (on a closed interval) will have N+1 values (e.g., 3,2,1,0,1,2,3)
-    double res_x, res_y;
-    if (min_x > max_x && min_x > 0 && max_x < 0)
-        res_x = (360 + max_x - min_x) / (size.x_size - 1);
-    else
-        res_x = (max_x - min_x) / (size.x_size - 1);
+	double res_x = (x_values[x_values.size()-1] - x_values[0]) / (x_values.size() -1);
 
-    res_y = (max_y - min_y) / (size.y_size - 1);
-
-    // Removed jhrg 10/7/16 double res = min(res_x, res_y);
+	if (test_maps && !monotonic_and_uniform(x_values, res_x))
+	    throw Error(malformed_expr, "The grids maps/dimensions must be monotonic and uniform (" + x->name() + ").");
 
     // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
     // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
 
+	// Original comment:
     // In case of north up images, the GT(2) and GT(4) coefficients are zero,
     // and the GT(1) is pixel width, and GT(5) is pixel height. The (GT(0),GT(3))
     // position is the top left corner of the top left pixel of the raster.
     //
     // Note that for an inverted dataset, use min_y and res_y for GT(3) and GT(5)
+	//
+	// 10/27/16 I decided to not treat this as lat/lon information but simply
+	// develop a mathematical transform that will be correct for the data as given
+	// _so long as_ the data are monotonic and uniform. jhrg
 
     vector<double> geo_transform(6);
-    geo_transform[0] = min_x;
+    geo_transform[0] = x_values[0];
     geo_transform[1] = res_x;
-    geo_transform[2] = 0;
-    geo_transform[3] = max_y;   // Assume max lat is at the top
+    geo_transform[2] = 0;           // Assumed because the x/y maps are vectors
+    geo_transform[3] = y_values[0];
     geo_transform[4] = 0;
-    geo_transform[5] = -res_y;  // moving down (lower lats) corresponds to ++index
+    geo_transform[5] = res_y;
 
     return geo_transform;
+}
+
+/**
+ * @brief
+ *
+ * @todo Improve (don't copy return values, protect sample values, plug leaks).
+ *
+ * @param x
+ * @param y
+ * @param sample_x
+ * @param sample_y
+ * @return
+ */
+vector<GDAL_GCP> get_gcp_data(Array *x, Array *y, int sample_x, int sample_y)
+{
+    SizeBox size = get_size_box(x, y);
+
+    y->read();
+    vector<double> y_values(size.y_size);
+    extract_double_array(y, y_values);
+
+    x->read();
+    vector<double> x_values(size.x_size);
+    extract_double_array(x, x_values);
+
+    // Build the GCP list.
+
+    // Determine how many control points to use. Subset by a factor of M
+    // but never use less than 10% of of the x and y axis values (each)
+    // FIXME Just use given values for now, which will default to 1.
+
+    // Build the GCP list, sampling as per sample_x and sample_y
+    unsigned long n_gcps = (size.x_size/sample_x) * (size.y_size/sample_y);
+
+    vector<GDAL_GCP> gcp_list(n_gcps);
+    GDALInitGCPs(n_gcps, &gcp_list[0]); // allocates the 'list'; free with Deinit
+
+    int count = 0;
+    for (int i = 0; i < size.x_size; i += sample_x) {
+        for (int j = 0; j < size.y_size; j += sample_y) {
+#if 0
+            // is this needed?
+            char pChr[64];
+            snprintf(pChr, 64, "%ld", count);
+
+            gcp_list[count].pszId = strdup(pChr);
+#endif
+            // gcp[i].pszInfo = strdup(""); // already set to this by GDALInitGCPs
+            gcp_list[count].dfGCPLine = j;
+            gcp_list[count].dfGCPPixel = i;
+            gcp_list[count].dfGCPX = x_values[i];
+            gcp_list[count].dfGCPY = y_values[j];
+
+            ++count;
+        }
+    }
+
+   return gcp_list;
 }
 
 GDALDataType get_array_type(const Array *a)
@@ -301,6 +255,193 @@ GDALDataType get_array_type(const Array *a)
 }
 
 /**
+ * @brief Used to transfer data values from a gdal dataset to a dap Array
+ * @param band Read from this raster and
+ * @param y Rows
+ * @param x Cols
+ * @param a Set the values in this array
+ * @return Return a pointer to parameter 'a'
+ */
+template <typename T>
+static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long x, const unsigned long y, Array *a)
+{
+    // get the data
+    vector<T> buf(x * y);
+    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, get_array_type(a), 0, 0);
+
+    if (error != CPLE_None)
+        throw Error(string("Could not extract data for array.") + CPLGetLastErrorMsg());
+
+    a->set_value(buf, buf.size());
+
+    return a;
+}
+
+/**
+ * @brief Extract data from a gdal dataset and store it in a dap Array
+ *
+ * @param source The gdal dataset; data source
+ * @param dest The dap Array; destnation
+ * @return
+ */
+Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> source, const Array *dest)
+{
+    // Get the GDALDataset size
+    GDALRasterBand *band = source->GetRasterBand(1);
+    unsigned long x = band->GetXSize();
+    unsigned long y = band->GetYSize();
+
+    // Build a new DAP Array; use the dest Array's element type
+    Array *result = new Array("result", const_cast<Array*>(dest)->var()->ptr_duplicate());
+    result->append_dim(x);
+    result->append_dim(y);
+
+    // get the data
+    switch (result->var()->type()) {
+    case dods_byte_c:
+        return transfer_values_helper<dods_byte>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_uint16_c:
+        return transfer_values_helper<dods_uint16>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_int16_c:
+        return transfer_values_helper<dods_int16>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_uint32_c:
+        return transfer_values_helper<dods_uint32>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_int32_c:
+        return transfer_values_helper<dods_int32>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_float32_c:
+        return transfer_values_helper<dods_float32>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_float64_c:
+        return transfer_values_helper<dods_float64>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_uint8_c:
+        return transfer_values_helper<dods_byte>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_int8_c:
+        return transfer_values_helper<dods_int8>(source->GetRasterBand(1), x, y, result);
+        break;
+    case dods_uint64_c:
+    case dods_int64_c:
+    default:
+        throw InternalErr(__FILE__, __LINE__,
+                "The source array to a geo-function contained an unsupported numeric type.");
+    }
+}
+
+/**
+ * @brief build lon and lat maps using a GDAL dataset
+ *
+ * Given a GDAL Dataset, use the geo-transform information along with
+ * the dataset's extent (height and width in pixels) to build Maps/shared
+ * dimensions for DAP2/4 Grid/Coverages. The two Array arguments must
+ * be allocated by the caller and have an element type of dods_float32, but
+ * their dimensionality should not be set.
+ *
+ * @note
+ * Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+ * Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+ * For an inverted dataset, use min_y and res_y for GT(3) and GT(5)
+ * In case of north up images, the GT(2) and GT(4) coefficients are zero
+ *
+ * @param dst Source for the DAP2 Grid maps (or DAP4 shared dimensions)
+ * @param x_map value-result parameter for the longitude map (uses dods_float32
+ * elements)
+ * @param y_map value-result parameter for the latitude map
+ * @param name_maps If true, name the x map "Latitude" and the y map "Longitude"
+ * if false, do not name the maps.
+ */
+void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, bool name_maps /*default false */)
+{
+    // get the geo-transform data
+    vector<double> gt(6);
+    dst->GetGeoTransform(&gt[0]);
+
+    // Get the GDALDataset size
+    GDALRasterBand *band = dst->GetRasterBand(1);
+
+    // Build Lon map
+    unsigned long x = band->GetXSize(); // x_map_vals
+
+    if (name_maps) {
+        x_map->append_dim(x, "Latitude");
+    }
+    else {
+        x_map->append_dim(x);
+    }
+
+    // for each value, use the geo-transform data to compute a value and store it.
+    vector<dods_float32> x_map_vals(x);
+    dods_float32 *cur_x = &x_map_vals[0];
+    dods_float32 *prev_x = cur_x;
+    // x_map_vals[0] = gt[0];
+    *cur_x++ = gt[0];
+    for (unsigned long i = 1; i < x; ++i) {
+        // x_map_vals[i] = gt[0] + i * gt[1];
+        // x_map_vals[i] = x_map_vals[i-1] + gt[1];
+        *cur_x++ = *prev_x++ + gt[1];
+    }
+
+    x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+
+    // Build the Lat map
+    unsigned long y = band->GetYSize();
+
+    if (name_maps) {
+        y_map->append_dim(y, "Latitude");
+    }
+    else {
+        y_map->append_dim(y);
+    }
+
+    // for each value, use the geo-transform data to compute a value and store it.
+    vector<dods_float32> y_map_vals(y);
+    dods_float32 *cur_y = &y_map_vals[0];
+    dods_float32 *prev_y = cur_y;
+    // y_map_vals[0] = gt[3];
+    *cur_y++ = gt[3];
+    for (unsigned long i = 1; i < y; ++i) {
+        // y_map_vals[i] = gt[3] + i * gt[5];
+        // y_map_vals[i] = y_map_vals[i-1] + gt[5];
+        *cur_y++ = *prev_y++ + gt[5];
+    }
+
+    y_map->set_value(&y_map_vals[0], y);
+}
+
+/**
+ * @brief Get the Array's 'no data' value
+ *
+ * Heuristic search for the missing value flag used by these data.
+ *
+ * @param src The Array to get the 'no data' attribute from/
+ * @return The value of the 'no data' attribute or NaN
+ */
+double get_missing_data_value(const Array *src)
+{
+    Array *a = const_cast<Array*>(src);
+
+    // Read this from the 'missing_value' or '_FillValue' attributes
+    string mv_attr = a->get_attr_table().get_attr("missing_value");
+    if (mv_attr.empty()) mv_attr = a->get_attr_table().get_attr("_FillValue");
+
+    double missing_data = numeric_limits<double>::quiet_NaN();
+    if (!mv_attr.empty()) {
+        char *endptr;
+        missing_data = strtod(mv_attr.c_str(), &endptr);
+        assert (missing_data == 0.0 && endptr == mv_attr.c_str());
+    }
+
+    return missing_data;
+}
+
+#define ADD_BAND 0
+
+/**
  * @brief Read data from an Array and load it into a GDAL RasterBand
  *
  * This function reads data from the array into an already-allocated band.
@@ -318,20 +459,18 @@ void read_band_data(const Array *src, GDALRasterBand* band)
         throw Error("Cannot perform geo-spatial operations on an Array ("
             + a->name() + ") with " + long_to_string(a->dimensions()) + " dimensions.");
 
-    // Assume row x col (i.e., [y][x]) order of dimensions
-    unsigned long y = a->dimension_size(a->dim_begin(), true);
-    unsigned long x =  a->dimension_size(a->dim_begin() + 1, true);
+    unsigned long x = a->dimension_size(a->dim_begin(), true);
+    unsigned long y = a->dimension_size(a->dim_begin() + 1, true);
 
-	a->read();  // Should this code use intern_data()? jhrg 10/11/16
+    a->read();  // Should this code use intern_data()? jhrg 10/11/16
 
     // We may be able to use AddBand() to skip the I/O operation here
-	// For now, we use read() to load the data values and get_buf() to
-	// access a pointer to them.
-	CPLErr error = band->RasterIO(GF_Write, 0, 0, x, y, a->get_buf(),
-	    x, y, get_array_type(a), 0, 0);
+    // For now, we use read() to load the data values and get_buf() to
+    // access a pointer to them.
+    CPLErr error = band->RasterIO(GF_Write, 0, 0, x, y, a->get_buf(), x, y, get_array_type(a), 0, 0);
 
-	if (error != CPLE_None)
-		throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
+    if (error != CPLE_None)
+        throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
 
 /**
@@ -367,184 +506,6 @@ void add_band_data(const Array *src, GDALDataset* ds)
 }
 
 /**
- * @brief Used to transfer data values from a gdal dataset to a dap Array
- * @param band Read from this raster and
- * @param y Rows
- * @param x Cols
- * @param a Set the values in this array
- * @return Return a pointer to parameter 'a'
- */
-template <typename T>
-static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long y, const unsigned long x, Array *a)
-{
-    // get the data
-    vector<T> buf(y * x);
-    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, get_array_type(a), 0, 0);
-
-    if (error != CPLE_None)
-        throw Error(string("Could not extract data for array.") + CPLGetLastErrorMsg());
-
-    a->set_value(buf, buf.size());
-
-    return a;
-}
-
-/**
- * @brief Extract data from a gdal dataset and store it in a dap Array
- *
- * @param source The gdal dataset; data source
- * @param dest The dap Array; destnation
- * @return
- */
-Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> source, const Array *dest)
-{
-    // Get the GDALDataset size
-    GDALRasterBand *band = source->GetRasterBand(1);
-    unsigned long y = band->GetYSize();
-    unsigned long x = band->GetXSize();
-
-    // Build a new DAP Array; use the dest Array's element type
-    Array *result = new Array("result", const_cast<Array*>(dest)->var()->ptr_duplicate());
-    result->append_dim(y);
-    result->append_dim(x);
-
-    // get the data
-    switch (result->var()->type()) {
-    case dods_byte_c:
-        return transfer_values_helper<dods_byte>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_uint16_c:
-        return transfer_values_helper<dods_uint16>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_int16_c:
-        return transfer_values_helper<dods_int16>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_uint32_c:
-        return transfer_values_helper<dods_uint32>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_int32_c:
-        return transfer_values_helper<dods_int32>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_float32_c:
-        return transfer_values_helper<dods_float32>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_float64_c:
-        return transfer_values_helper<dods_float64>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_uint8_c:
-        return transfer_values_helper<dods_byte>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_int8_c:
-        return transfer_values_helper<dods_int8>(source->GetRasterBand(1), y, x, result);
-        break;
-    case dods_uint64_c:
-    case dods_int64_c:
-    default:
-        throw InternalErr(__FILE__, __LINE__,
-                "The source array to a geo-function contained an unsupported numeric type.");
-    }
-}
-
-/**
- * @brief build lon and lat maps using a GDAL dataset
- *
- * Given a GDAL Dataset, use the geo-transform information along with
- * the dataset's extent (height and width in pixels) to build Maps/shared
- * dimensions for DAP2/4 Grid/Coverages. The two Array arguments must
- * be allocated by the caller and have an element type of dods_float32, but
- * their dimensionality should not be set.
- *
- * @note
- * Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
- * Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
- * For an inverted dataset, use min_y and res_y for GT(3) and GT(5)
- * In case of north up images, the GT(2) and GT(4) coefficients are zero
- *
- * @param dst Source for the DAP2 Grid maps (or DAP4 shared dimensions)
- * @param lon_map value-result parameter for the longitude map (uses dods_float32
- * elements)
- * @param lat_map value-result parameter for the latitude map
- */
-void build_maps_from_gdal_dataset(GDALDataset *dst, Array *lon_map, Array *lat_map)
-{
-    // get the geo-transform data
-    vector<double> gt(6);
-    dst->GetGeoTransform(&gt[0]);
-
-    // Get the GDALDataset size
-    GDALRasterBand *band = dst->GetRasterBand(1);
-
-    // Build Lon map
-    unsigned long x = band->GetXSize(); // lon
-
-    lon_map->append_dim(x, "Longitude");
-
-    // for each value, use the geo-transform data to compute a value and store it.
-    vector<dods_float32> lon(x);
-    dods_float32 *cur_lon = &lon[0];
-    dods_float32 *prev_lon = cur_lon;
-    // lon[0] = gt[0];
-    *cur_lon++ = gt[0];
-    for (unsigned long i = 1; i < x; ++i) {
-        // lon[i] = gt[0] + i * gt[1];
-        // lon[i] = lon[i-1] + gt[1];
-        *cur_lon++ = *prev_lon++ + gt[1];
-    }
-
-    lon_map->set_value(&lon[0], x); // copies values to new storage
-
-    // Build the Lat map
-    unsigned long y = band->GetYSize();
-
-    lat_map->append_dim(y, "Latitude");
-
-    // for each value, use the geo-transform data to compute a value and store it.
-    vector<dods_float32> lat(y);
-    dods_float32 *cur_lat = &lat[0];
-    dods_float32 *prev_lat = cur_lat;
-    // lat[0] = gt[3];
-    *cur_lat++ = gt[3];
-    for (unsigned long i = 1; i < y; ++i) {
-        // lat[i] = gt[3] + i * gt[5];
-        // lat[i] = lat[i-1] + gt[5];
-        *cur_lat++ = *prev_lat++ + gt[5];
-    }
-
-    lat_map->set_value(&lat[0], y);
-}
-
-/**
- * @brief Get the Array's 'no data' value
- *
- * Heuristic search for the missing value flag used by these data.
- *
- * @param src The Array to get the 'no data' attribute from/
- * @return The value of the 'no data' attribute or NaN
- */
-double get_missing_data_value(const Array *src)
-{
-    Array *a = const_cast<Array*>(src);
-
-    // Read this from the 'missing_value' or '_FillValue' attributes
-    string mv_attr = a->get_attr_table().get_attr("missing_value");
-    if (mv_attr.empty()) mv_attr = a->get_attr_table().get_attr("_FillValue");
-
-    double missing_data = numeric_limits<double>::quiet_NaN();
-    if (!mv_attr.empty()) {
-        char *endptr;
-        missing_data = strtod(mv_attr.c_str(), &endptr);
-#ifndef NDEBUG
-        if (missing_data == 0.0 && endptr == mv_attr.c_str())
-            cerr << "Error converting no data attribute to double: " << strerror(errno) << endl;
-#endif
-    }
-
-    return missing_data;
-}
-
-#define ADD_BAND 0
-
-/**
  * @brief Build a GDAL Dataset object for this data/lon/lat combination
  *
  * @note Supported values for the srs parameter
@@ -557,16 +518,17 @@ double get_missing_data_value(const Array *src)
  * @param data
  * @param lon
  * @param lat
- * @param srs The SRS/CRS of the data array; defaults to WGS84
+ * @param srs The SRS/CRS of the data array; defaults to WGS84 which
+ * uses lat, lon axis order.
  * @return An auto_ptr<GDALDataset>
  */
-auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, const string &srs)
+auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const string &srs)
 {
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if(!driver)
         throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
-    SizeBox array_size = get_size_box(lat, lon);
+    SizeBox array_size = get_size_box(x, y);
 
     // The MEM driver takes no creation options jhrg 10/6/16
     auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
@@ -589,7 +551,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *lon, Array *lat, con
 	read_band_data(data, band);
 #endif
 
-	vector<double> geo_transform = get_geotransform_data(lat, lon);
+	vector<double> geo_transform = get_geotransform_data(x, y);
     ds->SetGeoTransform(&geo_transform[0]);
 
     OGRSpatialReference native_srs;
@@ -672,13 +634,13 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
  * @return The scaled Grid where the first map holds the longitude data and second
  * holds the latitude data.
  */
-Grid *scale_dap_array(const Array *data, const Array *lon, const Array *lat, const SizeBox &size,
+Grid *scale_dap_array(const Array *data, const Array *lat, const Array *lon, const SizeBox &size,
     const string &crs, const string &interp)
 {
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *d = const_cast<Array*>(data);
 
-    auto_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(lon), const_cast<Array*>(lat));
+    auto_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(lat), const_cast<Array*>(lon));
 
     // scale to the new size, using optional CRS and interpolation params
     auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
@@ -686,8 +648,8 @@ Grid *scale_dap_array(const Array *data, const Array *lon, const Array *lat, con
     // Build a result Grid: extract the data, build the maps and assemble
     auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst, d));
 
-    auto_ptr<Array> built_lon(new Array(lon->name(), new Float32(lon->name())));
     auto_ptr<Array> built_lat(new Array(lat->name(), new Float32(lat->name())));
+    auto_ptr<Array> built_lon(new Array(lon->name(), new Float32(lon->name())));
 
     build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
 
@@ -713,10 +675,10 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
 {
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *data = static_cast<Array*>(const_cast<Grid*>(g)->array_var());
-    Array *lon = static_cast<Array*>(*const_cast<Grid*>(g)->map_begin());
-    Array *lat = static_cast<Array*>(*(const_cast<Grid*>(g)->map_begin() + 1));
+    Array *lat = static_cast<Array*>(*(const_cast<Grid*>(g)->map_begin()));
+    Array *lon = static_cast<Array*>(*const_cast<Grid*>(g)->map_begin()+1);
 
-    return scale_dap_array(data, lon, lat, size, crs, interp);
+    return scale_dap_array(data, lat, lon, size, crs, interp);
 #if 0
     auto_ptr<GDALDataset> src = build_src_dataset(data, const_cast<Array*>(lon), const_cast<Array*>(lat));
 

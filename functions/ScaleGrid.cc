@@ -74,8 +74,8 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         return;
     }
 
-    if (argc != 3 || argc != 5) {
-        throw Error("The scale_grid() function requires three arguments: a Grid and the new lon, lat extents.\n\
+    if (argc != 3 && argc != 5) {
+        throw Error("The scale_grid() function requires three arguments: a Grid and the new lon, lat extents (got " + long_to_string(argc) + " args).\n\
              See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid");
     }
 
@@ -129,33 +129,33 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         return;
     }
 
-    if (argc != 5 || argc != 7) {
-        throw Error("The scale_array() function requires five arguments: three Arrays and the new lon, lat extents.\n\
+    if (!(argc == 5 || argc == 7)) {
+        throw Error("The scale_array() function requires five arguments: three Arrays and the new lat and lon extents.\n\
              See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid");
     }
 
     Array *data = dynamic_cast <Array *>(argv[0]);
     if (!data)
-        throw Error(malformed_expr,"The first argument to scale_grid() must be an Array variable!");
-    Array *lon = dynamic_cast <Array *>(argv[1]);
-    if (!lon)
-        throw Error(malformed_expr,"The second argument to scale_grid() must be an Array variable!");
-    Array *lat = dynamic_cast <Array *>(argv[2]);
-    if (!lat)
-        throw Error(malformed_expr,"The third argument to scale_grid() must be an Array variable!");
+        throw Error(malformed_expr,"The first argument to scale_array() must be an Array variable!");
+    Array *x = dynamic_cast <Array *>(argv[1]);
+    if (!x)
+        throw Error(malformed_expr,"The second argument to scale_array() must be an Array variable!");
+    Array *y = dynamic_cast <Array *>(argv[2]);
+    if (!y)
+        throw Error(malformed_expr,"The third argument to scale_array() must be an Array variable!");
 
-    unsigned long y = extract_uint_value(argv[3]);
-    unsigned long x = extract_uint_value(argv[4]);
+    unsigned long new_x = extract_uint_value(argv[3]);
+    unsigned long new_y = extract_uint_value(argv[4]);
 
-    string crs = "WGS84";
+    string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
     string interp = "nearest";
-    if (argc == 5) {
+    if (argc == 7) {
         crs = extract_string_argument(argv[5]);
         interp = extract_string_argument(argv[6]);
     }
 
-    SizeBox size(y, x);
-    *btpp = scale_dap_array(data, lon, lat, size, crs, interp);
+    SizeBox size(new_x, new_y);
+    *btpp = scale_dap_array(data, x, y, size, crs, interp);
 }
 
 }
