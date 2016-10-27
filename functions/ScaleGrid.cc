@@ -60,8 +60,6 @@ namespace functions {
  */
 void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    DBG(cerr << "Entering function_grid..." << endl);
-
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
     "<function name=\"scale_grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid\">\n" +
@@ -115,11 +113,9 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  */
 void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    DBG(cerr << "Entering function_grid..." << endl);
-
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-    "<function name=\"scale_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid\">\n" +
+    "<function name=\"scale_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_array\">\n" +
     "</function>\n";
 
     if (argc == 0) {
@@ -129,9 +125,9 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         return;
     }
 
-    if (!(argc == 5 || argc == 7)) {
+    if (!(argc > 4  && argc < 8)) {
         throw Error("The scale_array() function requires five arguments: three Arrays and the new lat and lon extents.\n\
-             See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid");
+             See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_array");
     }
 
     Array *data = dynamic_cast <Array *>(argv[0]);
@@ -149,8 +145,11 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
     string interp = "nearest";
-    if (argc == 7) {
+    if (argc > 5) {
         crs = extract_string_argument(argv[5]);
+    }
+
+    if (argc > 6) {
         interp = extract_string_argument(argv[6]);
     }
 

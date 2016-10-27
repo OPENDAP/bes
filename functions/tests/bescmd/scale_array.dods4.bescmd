@@ -5,12 +5,12 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="catalogContainer" space="catalog">/functions/tests/data/fnoc.dods</bes:setContainer>
+  <bes:setContainer name="catalogContainer" space="catalog">/functions/tests/data/fnoc_hacked.dods</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      
-        <bes:constraint>scale_array(u,lon,lat,6,6)</bes:constraint>
+      <!--  Int16 u[lat = 17][lon = 21]; u.u is 17 x 21 -->
+      <bes:constraint>scale_array(u.u,u.lat,u.lon,34,42)</bes:constraint>
     </bes:container>
   </bes:define>
   

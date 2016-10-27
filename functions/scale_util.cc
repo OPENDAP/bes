@@ -299,7 +299,7 @@ static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long x
  * @param dest The dap Array; destnation
  * @return
  */
-Array *build_array_from_gdal_dataset(auto_ptr<GDALDataset> source, const Array *dest)
+Array *build_array_from_gdal_dataset(GDALDataset *source, const Array *dest)
 {
     // Get the GDALDataset size
     GDALRasterBand *band = source->GetRasterBand(1);
@@ -597,7 +597,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
  * @return An auto_ptr to the result (a new GDALDataset instance)
  */
 auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size,
-    const string &interp /*nearest*/, const string &crs /*""*/)
+    const string &crs /*""*/, const string &interp /*nearest*/)
 {
     char **argv = NULL;
     argv = CSLAddString(argv, "-of");       // output format
@@ -620,6 +620,13 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
         argv = CSLAddString(argv, "-a_srs");   // dst SRS (WKT or "EPSG:n")
         argv = CSLAddString(argv, crs.c_str());
     }
+
+#ifdef DODS_DEBUG
+    char **local = argv;
+    while (*local) {
+        cerr << "argv: " << *local++ << endl;
+    }
+#endif
 
     GDALTranslateOptions *options = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
 
@@ -662,17 +669,17 @@ Grid *scale_dap_array(const Array *data, const Array *lat, const Array *lon, con
     auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
 
     // Build a result Grid: extract the data, build the maps and assemble
-    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst, d));
+    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
 
     auto_ptr<Array> built_lat(new Array(lat->name(), new Float32(lat->name())));
     auto_ptr<Array> built_lon(new Array(lon->name(), new Float32(lon->name())));
 
-    build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
+    build_maps_from_gdal_dataset(dst.get(), built_lat.get(), built_lon.get());
 
     auto_ptr<Grid> result(new Grid(d->name()));
     result->set_array(built_data.release());
-    result->add_map(built_lon.release(), false);
     result->add_map(built_lat.release(), false);
+    result->add_map(built_lon.release(), false);
 
     return result.release();
 }
@@ -695,27 +702,6 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
     Array *lon = static_cast<Array*>(*const_cast<Grid*>(g)->map_begin()+1);
 
     return scale_dap_array(data, lat, lon, size, crs, interp);
-#if 0
-    auto_ptr<GDALDataset> src = build_src_dataset(data, const_cast<Array*>(lon), const_cast<Array*>(lat));
-
-    // scale to the new size, using optional CRS and interpolation params
-    auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
-
-    // Build a result Grid: extract the data, build the maps and assemble
-    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst, data));
-
-    auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
-    auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
-
-    build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
-
-    auto_ptr<Grid> result(new Grid("scaled_" + g->name()));
-    result->set_array(built_data.release());
-    result->add_map(built_lon.release(), false);
-    result->add_map(built_lat.release(), false);
-
-    return result.release();
-#endif
 }
 
 }
