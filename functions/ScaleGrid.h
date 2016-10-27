@@ -65,20 +65,22 @@ SizeBox get_size_box(libdap::Array *x, libdap::Array *y);
 
 std::vector<double> get_geotransform_data(libdap::Array *x, libdap::Array *y, bool test_maps = false);
 // std::auto_ptr< std::vector<GDAL_GCP> >
-vector<GDAL_GCP>get_gcp_data(libdap::Array *x, libdap::Array *y, int sample_x = 1, int sample_y = 1);
+std::vector<GDAL_GCP> get_gcp_data(libdap::Array *x, libdap::Array *y, int sample_x = 1, int sample_y = 1);
 
 GDALDataType get_array_type(const libdap::Array *a);
 void read_band_data(const libdap::Array *src, GDALRasterBand* band);
 void add_band_data(const libdap::Array *src, GDALDataset* ds);
 
-std::auto_ptr<GDALDataset> build_src_dataset(libdap::Array *data, libdap::Array *x, libdap::Array *y, const std::string &srs = "WGS84");
+std::auto_ptr<GDALDataset> build_src_dataset(libdap::Array *data, libdap::Array *x, libdap::Array *y,
+    const std::string &srs = "WGS84");
 std::auto_ptr<GDALDataset> scale_dataset(std::auto_ptr<GDALDataset> src, const SizeBox &size,
     const std::string &interp = "nearest", const std::string &crs = "");
 
 libdap::Array *build_array_from_gdal_dataset(std::auto_ptr<GDALDataset> dst, const libdap::Array *src);
 void build_maps_from_gdal_dataset(GDALDataset *dst, libdap::Array *x_map, libdap::Array *y_map, bool name_maps = false);
 
-libdap::Grid *scale_dap_grid(const libdap::Grid *src, const SizeBox &size, const std::string &dest_crs, const std::string &interp);
+libdap::Grid *scale_dap_grid(const libdap::Grid *src, const SizeBox &size, const std::string &dest_crs,
+    const std::string &interp);
 libdap::Grid *scale_dap_array(const libdap::Array *data, const libdap::Array *lon, const libdap::Array *lat,
     const SizeBox &size, const std::string &crs, const std::string &interp);
 

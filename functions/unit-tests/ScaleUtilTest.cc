@@ -248,7 +248,8 @@ public:
         CPPUNIT_ASSERT(sb.y_size == y_size);
     }
 
-    void test_get_geotransform_data(){
+    void test_get_geotransform_data() {
+        try {
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         CPPUNIT_ASSERT(lat);
@@ -273,9 +274,13 @@ public:
         CPPUNIT_ASSERT(gt[3] == -0.5);   // max lat
         CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
         CPPUNIT_ASSERT(gt[5] == 0.1);  // resolution of lat; neg for north up data
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
     }
 
-    void test_get_gcp_data(){
+    void test_get_gcp_data() {
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         CPPUNIT_ASSERT(lat);

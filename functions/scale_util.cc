@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-#define DODS_DEBUG
+// #define DODS_DEBUG
 
 #include <float.h>
 
@@ -81,6 +81,19 @@ SizeBox get_size_box(Array *x, Array *y)
 }
 
 /**
+ * @brief simple double equality test
+ * @see http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double-comparison
+ * @param a
+ * @param b
+ * @return True if they are within epsilon
+ */
+static bool same_as(const double a, const double b)
+{
+    // use float's epsilon since double's is too small for these tests
+    return fabs(a - b) <= numeric_limits<float>::epsilon();
+}
+
+/**
  * @brief Test an array of doubles to see if its values are monotonic and uniform
  * @param values The array
  * @param res The uniform offset between elements
@@ -90,7 +103,9 @@ bool monotonic_and_uniform(const vector<double> &values, double res)
 {
     vector<double>::size_type end_index = values.size() - 1;
     for (vector<double>::size_type i = 0; i < end_index; ++i) {
-        if ((values[i+1] - values[i]) != res)
+        DBG(cerr << "values[" << i+1 << "]: " << values[i+1] << " - values[" << i << "]: " << values[i] << endl);
+        DBG(cerr << values[i+1] - values[i] <<" != res: " << res << endl);
+        if (!same_as((values[i+1] - values[i]), res))
             return false;
     }
 
@@ -433,7 +448,8 @@ double get_missing_data_value(const Array *src)
     if (!mv_attr.empty()) {
         char *endptr;
         missing_data = strtod(mv_attr.c_str(), &endptr);
-        assert (missing_data == 0.0 && endptr == mv_attr.c_str());
+        if (missing_data == 0.0 && endptr == mv_attr.c_str())
+            missing_data = numeric_limits<double>::quiet_NaN();
     }
 
     return missing_data;
