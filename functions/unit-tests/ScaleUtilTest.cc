@@ -83,7 +83,7 @@ private:
     CPLErrorHandler orig_err_handler;
 
     string src_dir;
-    const static int small_dim_size = 11;
+    const static int x_size = 9, y_size = 11;
 
     /**
      * @brief simple double equality test
@@ -175,11 +175,12 @@ public:
             string dds_file = src_dir + "/" + small_dds_file;
             small_dds->parse(dds_file);
 
-            vector<dods_float32> buf(small_dim_size);
-            load_var(dynamic_cast<Array*>(small_dds->var("lat")), "small_lat.txt", buf);
-            load_var(dynamic_cast<Array*>(small_dds->var("lon")), "small_lon.txt", buf);
+            vector<dods_float32> lat(x_size);
+            load_var(dynamic_cast<Array*>(small_dds->var("lat")), "small_lat.txt", lat);
+            vector<dods_float32> lon(y_size);
+            load_var(dynamic_cast<Array*>(small_dds->var("lon")), "small_lon.txt", lon);
 
-            vector<dods_float32> data(small_dim_size * small_dim_size);
+            vector<dods_float32> data(x_size * y_size);
             Array *a = dynamic_cast<Array*>(small_dds->var("data"));
             load_var(a, "small_data.txt", data);
 
@@ -204,49 +205,49 @@ public:
     }
 
     void test_reading_data() {
-        vector<dods_float32> f32(small_dim_size);
+        vector<dods_float32> lat_buf(x_size);
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
-        lat->value(&f32[0]);
+        lat->value(&lat_buf[0]);
         DBG(cerr << "lat: ");
-        DBG(copy(f32.begin(), f32.end(), ostream_iterator<double>(cerr, " ")));
+        DBG(copy(lat_buf.begin(), lat_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
 
-        CPPUNIT_ASSERT(f32[0] == 5);
-        CPPUNIT_ASSERT(f32[small_dim_size - 1] == -5);
+        CPPUNIT_ASSERT(lat_buf[0] == 4);
+        CPPUNIT_ASSERT(lat_buf[x_size - 1] == -4);
 
+        vector<dods_float32> lon_buf(x_size);
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
-        lon->value(&f32[0]);
+        lon->value(&lon_buf[0]);
         DBG(cerr << "lon: ");
-        DBG(copy(f32.begin(), f32.end(), ostream_iterator<double>(cerr, " ")));
+        DBG(copy(lon_buf.begin(), lon_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
 
-        CPPUNIT_ASSERT(f32[0] == -0.5);
-        CPPUNIT_ASSERT(f32[small_dim_size - 1] == 0.5);
+        CPPUNIT_ASSERT(lon_buf[0] == -0.5);
+        CPPUNIT_ASSERT(lon_buf[y_size - 1] == 0.5);
 
         Array *d = dynamic_cast<Array*>(small_dds->var("data"));
-        const int data_size = small_dim_size * small_dim_size;
+        const int data_size = x_size * y_size;
         vector<dods_float32> data(data_size);
         d->value(&data[0]);
         DBG(cerr << "data: ");
         DBG(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
         CPPUNIT_ASSERT(data[0] == -99);
-        CPPUNIT_ASSERT(data[small_dim_size - 1] == -99);
+        CPPUNIT_ASSERT(data[data_size - 1] == -99);
 
-        DBG(cerr << "data[" << 5*small_dim_size + 0 << "]: " << data[5*small_dim_size + 0] << endl);
-        DBG(cerr << "data[" << 5*small_dim_size + 4 << "]: " << data[5*small_dim_size + 4] << endl);
-        CPPUNIT_ASSERT(same_as(data[5*small_dim_size + 0], 3.1)); // accounts for rounding error
-        CPPUNIT_ASSERT(data[5*small_dim_size + 4] == 3.5);
+        DBG(cerr << "data[" << 4*x_size + 0 << "]: " << data[4*x_size + 0] << endl);
+        DBG(cerr << "data[" << 4*x_size + 4 << "]: " << data[4*x_size + 4] << endl);
+        CPPUNIT_ASSERT(same_as(data[4*x_size + 0], -99)); // accounts for rounding error
+        CPPUNIT_ASSERT(data[4*x_size + 4] == 3.5);
     }
 
     void test_get_size_box() {
         SizeBox sb = get_size_box(dynamic_cast<Array*>(small_dds->var("lat")), dynamic_cast<Array*>(small_dds->var("lon")));
 
-        CPPUNIT_ASSERT(sb.x_size == small_dim_size);
-        CPPUNIT_ASSERT(sb.y_size == small_dim_size);
+        CPPUNIT_ASSERT(sb.x_size == x_size);
+        CPPUNIT_ASSERT(sb.y_size == y_size);
     }
 
-    // vector<double> get_geotransform_data(Array *lat, Array *lon, const SizeBox &size)
     void test_get_geotransform_data(){
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
@@ -254,8 +255,8 @@ public:
         CPPUNIT_ASSERT(lon);
 
         SizeBox sb = get_size_box(lat, lon);
-        CPPUNIT_ASSERT(sb.x_size == small_dim_size);
-        CPPUNIT_ASSERT(sb.y_size == small_dim_size);
+        CPPUNIT_ASSERT(sb.x_size == x_size);
+        CPPUNIT_ASSERT(sb.y_size == y_size);
 
         // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
         // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
@@ -266,12 +267,62 @@ public:
         DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
         DBG(cerr << endl);
 
-        CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
-        CPPUNIT_ASSERT(gt[1] == 0.1);   // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(gt[0] == 4.0);  // min lon
+        CPPUNIT_ASSERT(gt[1] == -1.0);   // resolution of lon; i.e., pixel width
         CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
-        CPPUNIT_ASSERT(gt[3] == 5.0);   // max lat
+        CPPUNIT_ASSERT(gt[3] == -0.5);   // max lat
         CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
-        CPPUNIT_ASSERT(gt[5] == -1.0);  // resolution of lat; neg for north up data
+        CPPUNIT_ASSERT(gt[5] == 0.1);  // resolution of lat; neg for north up data
+    }
+
+    void test_get_gcp_data(){
+        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        CPPUNIT_ASSERT(lat);
+        CPPUNIT_ASSERT(lon);
+
+        SizeBox sb = get_size_box(lat, lon);
+        CPPUNIT_ASSERT(sb.x_size == x_size);
+        CPPUNIT_ASSERT(sb.y_size == y_size);
+
+        vector<GDAL_GCP> gcp_list = get_gcp_data(lat, lon);
+
+        // Get the affine transform from the GCPs
+        vector<double> gt(6);
+        int status = GDALGCPsToGeoTransform(gcp_list.size(), &gcp_list[0], &gt[0], 1 /* cp_list*/);
+        CPPUNIT_ASSERT(status == true);
+
+        // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+        // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+        DBG(cerr << "gt values: ");
+        DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        CPPUNIT_ASSERT(same_as(gt[0], 4.0));  // min lon
+        CPPUNIT_ASSERT(same_as(gt[1], -1.0));   // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(same_as(gt[2], 0.0));   // north-south parallel to y axis
+        CPPUNIT_ASSERT(same_as(gt[3], -0.5));   // max lat
+        CPPUNIT_ASSERT(same_as(gt[4], 0.0));   // 0 if east-west is parallel to x axis
+        CPPUNIT_ASSERT(same_as(gt[5], 0.1));  // resolution of lat; neg for north up data
+
+        int sample = 4; // For these data, 5 will fail.
+
+        gcp_list = get_gcp_data(lat, lon, sample, sample);
+        status = GDALGCPsToGeoTransform(gcp_list.size(), &gcp_list[0], &gt[0], 0 /* ApproxOK */);
+        CPPUNIT_ASSERT(status == true);
+
+        // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+        // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+        DBG(cerr << "gt values (sample " << sample << ") : ");
+        DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        CPPUNIT_ASSERT(same_as(gt[0], 4.0));  // min lon
+        CPPUNIT_ASSERT(same_as(gt[1], -1.0));   // resolution of lon; i.e., pixel width
+        CPPUNIT_ASSERT(same_as(gt[2], 0.0));   // north-south parallel to y axis
+        CPPUNIT_ASSERT(same_as(gt[3], -0.5));   // max lat
+        CPPUNIT_ASSERT(same_as(gt[4], 0.0));   // 0 if east-west is parallel to x axis
+        CPPUNIT_ASSERT(same_as(gt[5], 0.1));  // resolution of lat; neg for north up data
     }
 
     void test_read_band_data()
@@ -285,7 +336,7 @@ public:
             if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
             // The MEM driver takes no creation options (I think) jhrg 10/6/16
-            auto_ptr<GDALDataset> ds(driver->Create("result", small_dim_size, small_dim_size, 1 /* nBands*/, gdal_type,
+            auto_ptr<GDALDataset> ds(driver->Create("result", x_size, y_size, 1 /* nBands*/, gdal_type,
                     NULL /* driver_options */));
 
             // The MEM format is one of the few that supports the AddBand() method. The AddBand()
@@ -301,11 +352,10 @@ public:
             // Without this call, the min value accessed below will be -99
             // error = band->SetNoDataValue(-99);
 
-            SizeBox size(small_dim_size, small_dim_size);
             read_band_data(d, band);
 
-            CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
-            CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
+            CPPUNIT_ASSERT(band->GetXSize() == x_size);
+            CPPUNIT_ASSERT(band->GetYSize() == y_size);
             CPPUNIT_ASSERT(band->GetBand() == 1);
             CPPUNIT_ASSERT(band->GetRasterDataType() == gdal_type); // tautology?
 
@@ -342,7 +392,7 @@ public:
             if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
             // The MEM driver takes no creation options (I think) jhrg 10/6/16
-            auto_ptr<GDALDataset> ds(driver->Create("result", small_dim_size, small_dim_size, 0 /* nBands*/, gdal_type,
+            auto_ptr<GDALDataset> ds(driver->Create("result", x_size, y_size, 0 /* nBands*/, gdal_type,
                     NULL /* driver_options */));
 
             // The MEM format is one of the few that supports the AddBand() method. The AddBand()
@@ -358,8 +408,8 @@ public:
             if (!band)
                 throw Error("Could not get the GDALRasterBand for Array '" + d->name() + "': " + CPLGetLastErrorMsg());
 
-            CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
-            CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
+            CPPUNIT_ASSERT(band->GetXSize() == x_size);
+            CPPUNIT_ASSERT(band->GetYSize() == y_size);
             CPPUNIT_ASSERT(band->GetBand() == 1);
             CPPUNIT_ASSERT(band->GetRasterDataType() == gdal_type); // tautology?
 
@@ -387,45 +437,50 @@ public:
 
     // This tests the get_missing_data_value() function too (indirectly)
     void test_build_src_dataset() {
-        Array *data = dynamic_cast<Array*>(small_dds->var("data"));
-        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
-        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+        try {
+            Array *data = dynamic_cast<Array*>(small_dds->var("data"));
+            Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+            Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-        auto_ptr<GDALDataset> ds = build_src_dataset(data, lon, lat);
+            auto_ptr<GDALDataset> ds = build_src_dataset(data, lat, lon);
 
-        GDALRasterBand *band = ds->GetRasterBand(1);
-        if (!band)
-            throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+            GDALRasterBand *band = ds->GetRasterBand(1);
+            if (!band)
+                throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
 
-        CPPUNIT_ASSERT(band->GetXSize() == small_dim_size);
-        CPPUNIT_ASSERT(band->GetYSize() == small_dim_size);
-        CPPUNIT_ASSERT(band->GetBand() == 1);
-        CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
+            CPPUNIT_ASSERT(band->GetXSize() == x_size);
+            CPPUNIT_ASSERT(band->GetYSize() == y_size);
+            CPPUNIT_ASSERT(band->GetBand() == 1);
+            CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
 
-        // This is just interesting...
-        int block_x, block_y;
-        band->GetBlockSize(&block_x, &block_y);
-        DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+            // This is just interesting...
+            int block_x, block_y;
+            band->GetBlockSize(&block_x, &block_y);
+            DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
 
-        double min, max;
-        CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
-        DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
-        CPPUNIT_ASSERT(same_as(min, 1.0));  // This is 1 and not -99 because the no data value is set.
-        CPPUNIT_ASSERT(same_as(max, 6.9));
+            double min, max;
+            CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+            DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+            CPPUNIT_ASSERT(same_as(min, 1.0));  // This is 1 and not -99 because the no data value is set.
+            CPPUNIT_ASSERT(same_as(max, 6.9));
 
-        vector<double> gt(6);
-        ds->GetGeoTransform(&gt[0]);
+            vector<double> gt(6);
+            ds->GetGeoTransform(&gt[0]);
 
-        DBG(cerr << "gt values: ");
-        DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
-        DBG(cerr << endl);
+            DBG(cerr << "gt values: ");
+            DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+            DBG(cerr << endl);
 
-        CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
-        CPPUNIT_ASSERT(gt[1] == 0.1);   // resolution of lon; i.e., pixel width
-        CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
-        CPPUNIT_ASSERT(gt[3] == 5.0);   // max lat
-        CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
-        CPPUNIT_ASSERT(gt[5] == -1.0);  // resolution of lat; neg for north up data
+            CPPUNIT_ASSERT(gt[0] == 4.0);  // min lon
+            CPPUNIT_ASSERT(gt[1] == -1.0);   // resolution of lon; i.e., pixel width
+            CPPUNIT_ASSERT(gt[2] == 0.0);   // north-south parallel to y axis
+            CPPUNIT_ASSERT(gt[3] == -0.5);   // max lat
+            CPPUNIT_ASSERT(gt[4] == 0.0);   // 0 if east-west is parallel to x axis
+            CPPUNIT_ASSERT(gt[5] == 0.1);  // resolution of lat; neg for north up data
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
     }
 
     void test_scaling_with_gdal() {
@@ -434,7 +489,7 @@ public:
             Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
             Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-            auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+            auto_ptr<GDALDataset> src = build_src_dataset(data, lat, lon);
 
             const int dst_size = 22;
             SizeBox size(dst_size, dst_size);
@@ -470,12 +525,13 @@ public:
             DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
             DBG(cerr << endl);
 
-            CPPUNIT_ASSERT(gt[0] == -0.5);  // min lon
-            CPPUNIT_ASSERT(gt[1] == 0.05);// resolution of lon; i.e., pixel width
+            // gt values: -4 0.409091 0 0.5 0 -0.05
+            CPPUNIT_ASSERT(gt[0] == 4.0);  // min lon
+            CPPUNIT_ASSERT(same_as(gt[1], -0.409091));// resolution of lon; i.e., pixel width
             CPPUNIT_ASSERT(gt[2] == 0.0);// north-south parallel to y axis
-            CPPUNIT_ASSERT(gt[3] == 5.0);// max lat
+            CPPUNIT_ASSERT(gt[3] == -0.5);// max lat
             CPPUNIT_ASSERT(gt[4] == 0.0);// 0 if east-west is parallel to x axis
-            CPPUNIT_ASSERT(gt[5] == -0.5);// resolution of lat; neg for north up data
+            CPPUNIT_ASSERT(same_as(gt[5], 0.05));// resolution of lat; neg for north up data
 
             // Extract the data now.
             vector<dods_float32> buf(dst_size * dst_size);
@@ -493,10 +549,10 @@ public:
                 }
             }
 
-            CPPUNIT_ASSERT(buf[5 * dst_size + 0] == 1.0);
-            CPPUNIT_ASSERT(buf[6 * dst_size + 0] == 2.0);
-            CPPUNIT_ASSERT(same_as(buf[10 * dst_size + 0], 3.1));
-            CPPUNIT_ASSERT(same_as(buf[10 * dst_size + 6], 3.4));
+            CPPUNIT_ASSERT(buf[0 * dst_size + 4] == 1.0);
+            CPPUNIT_ASSERT(buf[0 * dst_size + 6] == 2.0);
+            CPPUNIT_ASSERT(same_as(buf[0 * dst_size + 11], 3.1));
+            CPPUNIT_ASSERT(same_as(buf[6 * dst_size + 11], 3.4));
 
             GDALClose(dst.release());
         }
@@ -506,31 +562,36 @@ public:
     }
 
     void test_build_array_from_gdal_dataset() {
-        Array *data = dynamic_cast<Array*>(small_dds->var("data"));
-        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
-        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+        try {
+            Array *data = dynamic_cast<Array*>(small_dds->var("data"));
+            Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+            Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-        auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+            auto_ptr<GDALDataset> src = build_src_dataset(data, lat, lon);
 
-        auto_ptr<Array> result(build_array_from_gdal_dataset(src, data));
+            auto_ptr<Array> result(build_array_from_gdal_dataset(src, data));
 
-        vector<dods_float32> buf(small_dim_size * small_dim_size);
-        result->value(&buf[0]);
+            vector<dods_float32> buf(x_size * y_size);
+            result->value(&buf[0]);
 
-        if (debug) {
-            cerr << "buf:" << endl;
-            for (int y = 0; y < small_dim_size; ++y) {
-                for (int x = 0; x < small_dim_size; ++x) {
-                    cerr << buf[y * small_dim_size + x] << " ";
+            if (debug) {
+                cerr << "buf:" << endl;
+                for (int y = 0; y < y_size; ++y) {
+                    for (int x = 0; x < x_size; ++x) {
+                        cerr << buf[y * x_size + x] << " ";
+                    }
+                    cerr << endl;
                 }
-                cerr << endl;
             }
-        }
 
-        DBG(cerr << "buf[" << 5*small_dim_size + 0 << "]: " << buf[5*small_dim_size + 0] << endl);
-        DBG(cerr << "buf[" << 5*small_dim_size + 4 << "]: " << buf[5*small_dim_size + 4] << endl);
-        CPPUNIT_ASSERT(same_as(buf[5*small_dim_size + 0], 3.1)); // accounts for rounding error
-        CPPUNIT_ASSERT(buf[5*small_dim_size + 4] == 3.5);
+            DBG(cerr << "buf[" << 0 * x_size + 4 << "]: " << buf[0 * x_size + 4] << endl);
+            DBG(cerr << "buf[" << 4 * x_size + 4 << "]: " << buf[4 * x_size + 4] << endl);
+            CPPUNIT_ASSERT(same_as(buf[0 * x_size + 4], 3.1)); // accounts for rounding error
+            CPPUNIT_ASSERT(buf[4 * x_size + 4] == 3.5);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
     }
 
     void test_build_maps_from_gdal_dataset() {
@@ -538,41 +599,34 @@ public:
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-        auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+        auto_ptr<GDALDataset> src = build_src_dataset(data, lat, lon);
 
         auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
         auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
 
-        build_maps_from_gdal_dataset(src.get(), built_lon.get(), built_lat.get());
+        build_maps_from_gdal_dataset(src.get(), built_lat.get(), built_lon.get());
 
-#if 0
-        Array *built_lon = new Array("built_lon", new Float32("built_lon"));
-        Array *built_lat = new Array("built_lat", new Float32("built_lat"));
-
-        build_maps_from_gdal_dataset(src.get(), built_lon, built_lat);
-#endif
         // Check the lon map
-
         CPPUNIT_ASSERT(built_lon->dimensions() == 1);
-        unsigned long x = built_lon->dimension_size(built_lon->dim_begin());
-        CPPUNIT_ASSERT(x == small_dim_size);
+        unsigned long y = built_lon->dimension_size(built_lon->dim_begin());
+        CPPUNIT_ASSERT(y == y_size);
 
-        vector<dods_float32> buf_lon(x);
+        vector<dods_float32> buf_lon(y);
         built_lon->value(&buf_lon[0]);
 
         if (debug) {
             cerr << "buf_lon:" << endl;
-            for (unsigned long i = 0; i < small_dim_size; ++i)
+            for (unsigned long i = 0; i < y_size; ++i)
                 cerr << buf_lon[i] << " ";
             cerr << endl;
         }
 
-        vector<dods_float32> orig_lon(small_dim_size);
+        vector<dods_float32> orig_lon(y_size);
         lon->value(&orig_lon[0]);
 
         if (debug) {
              cerr << "orig_lon:" << endl;
-             for (unsigned long i = 0; i < small_dim_size; ++i)
+             for (unsigned long i = 0; i < y_size; ++i)
                  cerr << orig_lon[i] << " ";
              cerr << endl;
          }
@@ -580,25 +634,25 @@ public:
         CPPUNIT_ASSERT(equal(buf_lon.begin(), buf_lon.end(), orig_lon.begin(), same_as));
 
         // Check the lat map
-        unsigned long y = built_lon->dimension_size(built_lon->dim_begin());
-        CPPUNIT_ASSERT(y == small_dim_size);
+        unsigned long x = built_lon->dimension_size(built_lat->dim_begin());
+        CPPUNIT_ASSERT(x == x_size);
 
-        vector<dods_float32> buf_lat(y);
+        vector<dods_float32> buf_lat(x);
         built_lat->value(&buf_lat[0]);
 
         if (debug) {
             cerr << "buf_lat:" << endl;
-            for (unsigned long i = 0; i < small_dim_size; ++i)
+            for (unsigned long i = 0; i < x_size; ++i)
                 cerr << buf_lat[i] << " ";
             cerr << endl;
         }
 
-        vector<dods_float32> orig_lat(small_dim_size);
+        vector<dods_float32> orig_lat(x_size);
         lat->value(&orig_lat[0]);
 
         if (debug) {
             cerr << "orig_lat:" << endl;
-            for (unsigned long i = 0; i < small_dim_size; ++i)
+            for (unsigned long i = 0; i < x_size; ++i)
                 cerr << orig_lat[i] << " ";
             cerr << endl;
         }
@@ -617,6 +671,8 @@ public:
     CPPUNIT_TEST(test_scaling_with_gdal);
     CPPUNIT_TEST(test_build_array_from_gdal_dataset);
     CPPUNIT_TEST(test_build_maps_from_gdal_dataset);
+
+    CPPUNIT_TEST(test_get_gcp_data);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -653,7 +709,7 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("ReprojFunctionsTest::") + argv[i++];
+            test = string("ScaleUtilTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
