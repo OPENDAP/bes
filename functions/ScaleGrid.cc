@@ -72,7 +72,7 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         return;
     }
 
-    if (argc != 3 && argc != 5) {
+    if (argc < 3 || argc > 5) {
         throw Error("The scale_grid() function requires three arguments: a Grid and the new lon, lat extents (got " + long_to_string(argc) + " args).\n\
              See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid");
     }
@@ -86,8 +86,10 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     string crs = "WGS84";
     string interp = "nearest";
-    if (argc == 5) {
+    if (argc > 3) {
         crs = extract_string_argument(argv[3]);
+    }
+    if (argc > 4) {
         interp = extract_string_argument(argv[4]);
     }
 

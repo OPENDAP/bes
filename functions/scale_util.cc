@@ -657,13 +657,13 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
  * @return The scaled Grid where the first map holds the longitude data and second
  * holds the latitude data.
  */
-Grid *scale_dap_array(const Array *data, const Array *lat, const Array *lon, const SizeBox &size,
+Grid *scale_dap_array(const Array *data, const Array *x, const Array *y, const SizeBox &size,
     const string &crs, const string &interp)
 {
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *d = const_cast<Array*>(data);
 
-    auto_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(lat), const_cast<Array*>(lon));
+    auto_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(x), const_cast<Array*>(y));
 
     // scale to the new size, using optional CRS and interpolation params
     auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
@@ -671,8 +671,8 @@ Grid *scale_dap_array(const Array *data, const Array *lat, const Array *lon, con
     // Build a result Grid: extract the data, build the maps and assemble
     auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
 
-    auto_ptr<Array> built_lat(new Array(lat->name(), new Float32(lat->name())));
-    auto_ptr<Array> built_lon(new Array(lon->name(), new Float32(lon->name())));
+    auto_ptr<Array> built_lat(new Array(x->name(), new Float32(x->name())));
+    auto_ptr<Array> built_lon(new Array(y->name(), new Float32(y->name())));
 
     build_maps_from_gdal_dataset(dst.get(), built_lat.get(), built_lon.get());
 
@@ -697,11 +697,17 @@ Grid *scale_dap_array(const Array *data, const Array *lat, const Array *lon, con
 Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, const string &interp)
 {
     // Build GDALDataset for Grid g with lon and lat maps as given
-    Array *data = static_cast<Array*>(const_cast<Grid*>(g)->array_var());
-    Array *lat = static_cast<Array*>(*(const_cast<Grid*>(g)->map_begin()));
-    Array *lon = static_cast<Array*>(*const_cast<Grid*>(g)->map_begin()+1);
+    Array *data = dynamic_cast<Array*>(const_cast<Grid*>(g)->array_var());
 
-    return scale_dap_array(data, lat, lon, size, crs, interp);
+    Grid::Map_iter m = const_cast<Grid*>(g)->map_begin();
+    Array *x = dynamic_cast<Array*>(*m++);
+    Array *y = dynamic_cast<Array*>(*m);
+
+    assert(data);
+    assert(x);
+    assert(y);
+
+    return scale_dap_array(data, x, y, size, crs, interp);
 }
 
 }

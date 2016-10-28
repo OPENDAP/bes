@@ -116,3 +116,8 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods3.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods4.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods5.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods6.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods2.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods3.bescmd)
+
