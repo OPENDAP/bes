@@ -56,7 +56,7 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = apache hello_world doxy.conf.in bes.spec \
-OSX_Resources bes-config-pkgconfig
+OSX_Resources bes-config-pkgconfig besd.logrotate
 
 server-tests:
 	cd cmdln && make server-tests
