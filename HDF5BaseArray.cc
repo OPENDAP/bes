@@ -474,11 +474,13 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
         mem_data_cache = HDF5RequestHandler::get_srdata_mem_cache();
     else if(cache_flag > 1) {
         mem_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
+
 //cerr<<"coming to the large metadata cache "<<endl;
 //cerr<<"The cache key is "<<cache_key <<endl;
 
-// dump the values in the cache
+// dump the values in the cache,keep this line to check if memory cache works.
 //mem_data_cache->dump(cerr);
+
     }
 
 

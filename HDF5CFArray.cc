@@ -70,7 +70,6 @@ bool HDF5CFArray::read()
     if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
         if(((cvtype == CV_EXIST) && (islatlon != true)) || (cvtype == CV_NONLATLON_MISS) 
             || (cvtype == CV_FILLINDEX) ||(cvtype == CV_MODIFY) ||(cvtype == CV_SPECIAL)){
-//cerr<<"coming to use_cache_flag =1 "<<endl;
 
             if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
 		use_cache_flag = 1;

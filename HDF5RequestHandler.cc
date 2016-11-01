@@ -178,8 +178,11 @@ cerr<<"No specific cache info"<<endl;
         }
         if(get_srdcache_entries()) {
             srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
+//cerr<<"small memory data cache "<<endl;
 
         }
+//        else 
+//cerr<<"no small memory data cache "<<endl;
     }
 
 
