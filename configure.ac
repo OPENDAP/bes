@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.63)
-AC_INIT([hdf4_handler], [3.12.1], [opendap-tech@opendap.org])
+AC_INIT([hdf4_handler], [3.12.2], [opendap-tech@opendap.org])
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
