@@ -29,7 +29,7 @@ noinst_HEADERS = test_config.h
 
 DIRS_EXTRA = response_cache input-files
 
-EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h test_config.h.in
+EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
