@@ -50,7 +50,7 @@
 #include "HE5Parser.h"
 
 
-enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
+//enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
 enum EOS5Type {GRID,SWATH,ZA,OTHERVARS};
 enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,GENERAL_LATLON1D, GENERAL_LATLON_COOR_ATTR,OTHERGMS};
 enum EOS5AuraName {OMI,MLS,HIRDLS,TES,NOTAURA};
@@ -263,6 +263,7 @@ namespace HDF5CF
 	    Var ():
                    dtype (H5UNSUPTYPE), 
                    rank (-1),
+                   total_elems(0),
                    unsupported_attr_dtype(false),
                    unsupported_attr_dspace(false),
                    unsupported_dspace(false),
@@ -290,6 +291,12 @@ namespace HDF5CF
             const string & getFullPath () const
             {
                 return this->fullpath;
+            }
+
+            const size_t getTotalElems() const 
+            {
+                return this->total_elems;
+
             }
 
 	    /// Get the dimension rank of this variable
@@ -323,6 +330,7 @@ namespace HDF5CF
             std::string fullpath;
 	    H5DataType dtype;
 	    int rank;
+            size_t total_elems;
             bool unsupported_attr_dtype;
             bool unsupported_attr_dspace;
             bool unsupported_dspace;
@@ -350,6 +358,9 @@ namespace HDF5CF
             {
                 return this->cvartype;
             }
+
+            const bool isLatLon() const;
+
 
         private:
             // Each coordinate variable has and only has one dimension
@@ -544,6 +555,9 @@ namespace HDF5CF
 
             /// Retrieve attribute values for the supported HDF5 datatypes.
             virtual void Retrieve_H5_Supported_Attr_Values() throw (Exception);
+
+            /// Retrieve coordinate variable attributes.
+            virtual void  Retrieve_H5_CVar_Supported_Attr_Values() = 0;
 
             /// Handle unsupported HDF5 datatypes
             virtual void Handle_Unsupported_Dtype(bool) throw(Exception);
@@ -787,6 +801,8 @@ namespace HDF5CF
 
             /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
             void Retrieve_H5_Supported_Attr_Values() throw (Exception);
+
+            void Retrieve_H5_CVar_Supported_Attr_Values(); 
 
             /// Adjust attribute values for general HDF5 products.
             void Adjust_H5_Attr_Value(Attribute *attr) throw (Exception);
@@ -1097,6 +1113,10 @@ namespace HDF5CF
 
             /// Retrieve attribute values for the supported HDF5 datatypes for HDF-EOS5 products.
             void Retrieve_H5_Supported_Attr_Values() throw (Exception);
+
+             /// Retrieve coordinate variable attributes.
+            void  Retrieve_H5_CVar_Supported_Attr_Values();
+            
 
             /// Handle unsupported HDF5 datatypes for HDF-EOS5 products.
             void Handle_Unsupported_Dtype(bool) throw(Exception);

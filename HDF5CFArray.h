@@ -23,7 +23,6 @@
 /// \file HDF5CFArray.h
 /// \brief This class includes the methods to read data array into DAP buffer from an HDF5 dataset for the CF option.
 ///
-/// In the future, this may be merged with the dddefault option.
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,24 +36,31 @@
 
 // DODS includes
 #include "HDF5CF.h"
-#include <Array.h>
+//#include <Array.h>
+#include "HDF5BaseArray.h"
 
 using namespace libdap;
 
-class HDF5CFArray:public Array {
+class HDF5CFArray:public HDF5BaseArray {
     public:
         HDF5CFArray(int h5_rank, 
                     const hid_t h5_file_id,
                     const string & h5_filename, 
                     H5DataType h5_dtype, 
                     const string &varfullpath, 
+                    const size_t h5_total_elems,
+                    const CVType h5_cvtype,
+                    const bool h5_islatlon,
                     const string & n="",  
                     BaseType * v = 0):
-                    Array(n,v),
+                    HDF5BaseArray(n,v),
                     rank(h5_rank),
                     fileid(h5_file_id),
                     filename(h5_filename),
                     dtype(h5_dtype),
+                    total_elems(h5_total_elems),
+                    cvtype(h5_cvtype),
+                    islatlon(h5_islatlon),
                     varname(varfullpath) 
         {
         }
@@ -63,7 +69,10 @@ class HDF5CFArray:public Array {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
-    int format_constraint (int *cor, int *step, int *edg);
+    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    //void read_data_from_mem_cache(void*buf);
+    //void read_data_from_file(bool add_cache,void*buf);
+    //int format_constraint (int *cor, int *step, int *edg);
 
   private:
         int rank;
@@ -71,6 +80,9 @@ class HDF5CFArray:public Array {
         string filename;
         H5DataType dtype;
         string varname;
+        size_t total_elems;
+        CVType cvtype;
+        bool islatlon;
 };
 
 #endif                          // _HDF5CFARRAY_H

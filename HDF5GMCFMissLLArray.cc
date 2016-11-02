@@ -51,28 +51,54 @@ bool HDF5GMCFMissLLArray::read()
 
     BESDEBUG("h5","Coming to HDF5GMCFMissLLArray read "<<endl);
 
-    // Here we still use vector just in case we need to tackle "rank>1" in the future.
-    // Also we would like to keep it consistent with other similar handlings.
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
+    if(NULL == HDF5RequestHandler::get_lrdata_mem_cache())                                          
+        read_data_NOT_from_mem_cache(false,NULL);                                                   
 
-    offset.resize(rank);
-    count.resize(rank);
-    step.resize(rank);
-        
-    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    else {                                                                                          
+                                                                                                    
+        vector<string> cur_lrd_non_cache_dir_list;                                                  
+        HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);                 
+                                                                                                    
+        string cache_key;                                                                           
 
-    if (GPMM_L3 == product_type || GPMS_L3 == product_type) 
-       obtain_gpm_l3_ll(&offset[0],&step[0],nelms);
-    else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
-       obtain_aqu_obpg_l3_ll(&offset[0],&step[0],nelms);
+        // Check if this file is included in the non-cache directory                                
+        if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                             
+            ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {              
+                short cache_flag = 2;
+                vector<string> cur_cache_dlist;                                                     
+                HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                        
+                string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');            
+                if(cache_dir != "")  {                                                               
+                    cache_flag = 3;
+                    cache_key = cache_dir + varname;                                                
+                }
+                else                                                                                
+                    cache_key = filename + varname;                                                 
+                                                                                                    
+                // Need to obtain the total number of elements.                                     
+                // Obtain dimension size info.                                                          
+		vector<size_t> dim_sizes;                                                               
+		Dim_iter i_dim = dim_begin();                                                           
+		Dim_iter i_enddim = dim_end();                                                          
+		while (i_dim != i_enddim) {                                                             
+		    dim_sizes.push_back(dimension_size(i_dim));                                         
+		    ++i_dim;                                                                            
+		}             
 
+                size_t total_elems =1;
+                for(int i = 0; i<dim_sizes.size();i++)
+		    total_elems = total_elems*dim_sizes[i];
+
+                handle_data_with_mem_cache(dtype,total_elems,cache_flag,cache_key);             
+        }                                                                                           
+        else                                                                                        
+            read_data_NOT_from_mem_cache(false,NULL);                                               
+    }                                    
     return true;
 }
 
 // Obtain latitude and longitude for Aquarius and OBPG level 3 products
-void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms) {
+void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms,bool add_cache,void* buf) {
 
     BESDEBUG("h5","Coming to obtain_aqu_obpg_l3_ll read "<<endl);
 
@@ -169,13 +195,21 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms)
     for (int i = 0; i < nelms; ++i)
         val[i] = LL_first_point + (offset[0] + i*step[0])*LL_step;
 
+    if(true == add_cache) {
+        vector<float> total_val;
+        total_val.resize(LL_total_num);
+        for(int total_i = 0; total_i<LL_total_num; total_i++)
+            total_val[total_i] = LL_first_point +total_i*LL_step;
+        memcpy(buf,&total_val[0],4*LL_total_num);
+    }
+
     set_value ((dods_float32 *) &val[0], nelms);
     H5Gclose(rootid);
     HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
 }
 
 // Obtain lat/lon for GPM level 3 products
-void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms) {
+void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms,bool add_cache,void*buf) {
 
     if (1 != rank ) 
         throw InternalErr (__FILE__, __LINE__,
@@ -229,7 +263,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset,int* step,int nelms) {
                 name() == "lnL" || name() == "ltL") {
                 string temp_grids_group_name(GPM_GRID_MULTI_GROUP_NAME,strlen(GPM_GRID_MULTI_GROUP_NAME));
                
-cerr<<"varname is "<<varname <<endl;
+//cerr<<"varname is "<<varname <<endl;
                 size_t grids_group_pos = varname.find(temp_grids_group_name);
                 if(string::npos == grids_group_pos) {
                     throw InternalErr (__FILE__, __LINE__,
@@ -311,6 +345,14 @@ cerr<<"varname is "<<varname <<endl;
         }
         for (int i = 0; i < nelms; ++i) 
             val[i] = lat_start+offset[0]*lat_res+lat_res/2 + i*lat_res*step[0];
+
+        if(add_cache== true) {
+            vector<float>total_val;
+            total_val.resize(latsize);
+            for(int total_i = 0; total_i<latsize; total_i++)
+		total_val[total_i] = lat_start+lat_res/2 +total_i*lat_res;
+	    memcpy(buf,&total_val[0],4*latsize);
+        }
     }
     else if(CV_LON_MISS == cvartype) {
 
@@ -324,6 +366,15 @@ cerr<<"varname is "<<varname <<endl;
 
         for (int i = 0; i < nelms; ++i) 
             val[i] = lon_start+offset[0]*lon_res+lon_res/2 + i*lon_res*step[0];
+
+        if(add_cache== true) {
+            vector<float>total_val;
+            total_val.resize(lonsize);
+            for(int total_i = 0; total_i<lonsize; total_i++)
+		total_val[total_i] = lon_start+lon_res/2 +total_i*lon_res;
+	    memcpy(buf,&total_val[0],4*lonsize);
+        }
+
     }
     
     set_value ((dods_float32 *) &val[0], nelms);
@@ -463,49 +514,29 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,
     H5Aclose(s_attr_id);
 }
 
+void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
+
+    BESDEBUG("h5","Coming to HDF5GMCFMissLLArray: read_data_NOT_from_mem_cache  "<<endl);
+
+    // Here we still use vector just in case we need to tackle "rank>1" in the future.
+    // Also we would like to keep it consistent with other similar handlings.
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+
+    offset.resize(rank);
+    count.resize(rank);
+    step.resize(rank);
+        
+    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+
+    if (GPMM_L3 == product_type || GPMS_L3 == product_type) 
+       obtain_gpm_l3_ll(&offset[0],&step[0],nelms,add_cache,buf);
+    else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
+       obtain_aqu_obpg_l3_ll(&offset[0],&step[0],nelms,add_cache,buf);
 
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
-int
-HDF5GMCFMissLLArray::format_constraint (int *offset, int *step, int *count)
-{
-        long nels = 1;
-        int id = 0;
+    return;
 
-        Dim_iter p = dim_begin ();
-
-        while (p != dim_end ()) {
-
-                int start = dimension_start (p, true);
-                int stride = dimension_stride (p, true);
-                int stop = dimension_stop (p, true);
-
-                // Check for illegal  constraint
-                if (start > stop) {
-                   ostringstream oss;
-
-                   oss << "Array/Grid hyperslab start point "<< start <<
-                         " is greater than stop point " <<  stop <<".";
-                   throw Error(malformed_expr, oss.str());
-                }
-
-                offset[id] = start;
-                step[id] = stride;
-                count[id] = ((stop - start) / stride) + 1;      // count of elements
-                nels *= count[id];              // total number of values for variable
-
-                BESDEBUG ("h5",
-                         "=format_constraint():"
-                         << "id=" << id << " offset=" << offset[id]
-                         << " step=" << step[id]
-                         << " count=" << count[id]
-                         << endl);
-
-                id++;
-                p++;
-        }
-
-        return nels;
 }
 

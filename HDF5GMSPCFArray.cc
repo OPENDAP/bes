@@ -51,6 +51,15 @@ bool HDF5GMSPCFArray::read()
     if(length() == 0)
         return true;
 
+    read_data_NOT_from_mem_cache(false,NULL);
+
+    return true;
+}
+
+void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
+
+    BESDEBUG("h5","Coming to HDF5GMSPCFArray: read_data_NOT_from_mem_cache "<<endl);
+
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     vector<int>offset;
@@ -287,11 +296,10 @@ bool HDF5GMSPCFArray::read()
     H5Sclose(dspace);
     H5Dclose(dsetid);
     HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-    
-    return true;
-}
 
-        
+    return;
+}
+#if 0        
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
 int
@@ -335,3 +343,4 @@ HDF5GMSPCFArray::format_constraint (int *offset, int *step, int *count)
         }
         return nels;
 }
+#endif

@@ -106,3 +106,10 @@ $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/LaRC/MOP03
 
 #2-D lat/lon netCDF-4 like file
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5
+
+#SWDB files for testing the memory cache
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/DeepBlue-SeaWiFS-0.5_L3_20100613_v004-20130604T133539Z.h5
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/DeepBlue-SeaWiFS-1.0_L3_20100613_v004-20130604T133539Z.h5
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/DeepBlue-SeaWiFS_L2_20100101T003505Z_v004-20130524T141300Z.h5
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/DeepBlue-SeaWiFS-1.0_L3_20100614_v004-20130604T133548Z.h5
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/DeepBlue-SeaWiFS-0.5_L3_20101210_v004-20130604T135845Z.h5

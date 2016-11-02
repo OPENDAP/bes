@@ -32,6 +32,8 @@
 /// \author James Gallagher <jgallagher@opendap.org>
 
 
+#include<iostream>
+#include <fstream>
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -84,19 +86,27 @@ static unsigned int get_uint_key(const string &key,unsigned int def_val);
 // Obtain the BES key as a floating-pointer number.
 static float get_float_key(const string &key, float def_val);
 
+// Obtain the BES key as a string.
+static string get_beskeys(const string&);
+
 // For the CF option
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
 
 // Check the description of cache_entries and cache_purge_level at h5.conf.in.
-unsigned int HDF5RequestHandler::_cache_entries = 200;
+unsigned int HDF5RequestHandler::_mdcache_entries = 200;
+unsigned int HDF5RequestHandler::_lrdcache_entries = 40;
+unsigned int HDF5RequestHandler::_srdcache_entries = 200;
 float HDF5RequestHandler::_cache_purge_level = 0.2;
 
 // Metadata object cache at DAS,DDS and DMR.
 ObjMemCache *HDF5RequestHandler::das_cache = 0;
 ObjMemCache *HDF5RequestHandler::dds_cache = 0;
 ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
+
+ObjMemCache *HDF5RequestHandler::lrdata_mem_cache = 0;
+ObjMemCache *HDF5RequestHandler::srdata_mem_cache = 0;
 
 // Set default values of all BES keys be false.
 bool HDF5RequestHandler::_usecf                       = false;
@@ -108,6 +118,10 @@ bool HDF5RequestHandler::_add_path_attrs              = false;
 bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
+bool HDF5RequestHandler::_common_cache_dirs            = false;
+vector<string> HDF5RequestHandler::lrd_cache_dir_list;
+vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
+vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
 
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
@@ -125,14 +139,16 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 
-    // Obtain the cache entries and purge level.
-    HDF5RequestHandler::_cache_entries     = get_uint_key("H5.CacheEntries", 0);
+    // Obtain the metadata cache entries and purge level.
+    HDF5RequestHandler::_mdcache_entries     = get_uint_key("H5.MetaDataMemCacheEntries", 0);
+    HDF5RequestHandler::_lrdcache_entries     = get_uint_key("H5.LargeDataMemCacheEntries", 0);
+    HDF5RequestHandler::_srdcache_entries     = get_uint_key("H5.SmallDataMemCacheEntries", 0);
     HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2);
 
-    if (get_cache_entries()) {  // else it stays at its default of null
-        das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
-        dds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
-        dmr_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
+    if (get_mdcache_entries()) {  // else it stays at its default of null
+        das_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
+        dds_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
+        dmr_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
     }
 
     // Check if the EnableCF key is set.
@@ -148,6 +164,27 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
 
+    if(get_usecf()) {
+        if(get_lrdcache_entries()) {
+            lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
+            if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
+                _common_cache_dirs =obtain_lrd_common_cache_dirs();
+#if 0
+if(false == _common_cache_dirs) 
+cerr<<"No specific cache info"<<endl;
+#endif
+             
+            }
+        }
+        if(get_srdcache_entries()) {
+            srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
+//cerr<<"small memory data cache "<<endl;
+
+        }
+//        else 
+//cerr<<"no small memory data cache "<<endl;
+    }
+
 
     BESDEBUG(HDF5_NAME, "Exiting HDF5RequestHandler::HDF5RequestHandler" << endl);
 }
@@ -159,6 +196,8 @@ HDF5RequestHandler::~HDF5RequestHandler()
     delete das_cache;
     delete dds_cache;
     delete dmr_cache;
+    delete lrdata_mem_cache;
+    delete srdata_mem_cache;
      
 }
 
@@ -901,6 +940,124 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
+
+bool HDF5RequestHandler::obtain_lrd_common_cache_dirs() 
+{
+    string lrd_config_fpath;
+    string lrd_config_fname;
+
+    // Obtain DataCache path
+    lrd_config_fpath = get_beskeys("H5.DataCachePath");
+
+    // Obtain the configure file name that specifics the large file configuration
+    lrd_config_fname = get_beskeys("H5.LargeDataMemCacheFileName");
+ 
+    // If either the configure file path or fname is missing, won't add specific mem. cache dirs. 
+    if(lrd_config_fpath=="" || lrd_config_fname=="")
+        return false;
+
+    // temp_line for storing info of one line in the config. file 
+    string temp_line;
+
+    // The full path of the configure file
+    string mcache_config_fname = lrd_config_fpath+"/"+lrd_config_fname;
+    
+    //ifstream mcache_config_file("example.txt");
+    // Open the configure file
+    ifstream mcache_config_file(mcache_config_fname.c_str());
+
+    // If the configuration file is not open, return false.
+    if(mcache_config_file.is_open()==false){
+        BESDEBUG(HDF5_NAME,"The large data memory cache configure file "<<mcache_config_fname );
+        BESDEBUG(HDF5_NAME," cannot be opened."<<endl);
+        return false;
+    }
+
+    // Read the configuration file line by line
+    while(getline(mcache_config_file,temp_line)) {
+
+        // Only consider lines that is no less than 2 characters and the 2nd character is space.
+        if(temp_line.size()>1 && temp_line.at(1)==' ') {
+            char sep=' ';
+            string subline = temp_line.substr(2);
+            vector<string> temp_name_list;
+
+            // Include directories to store common latitude and longitude values
+            if(temp_line.at(0)=='1') {
+                HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                //lrd_cache_dir_list +=temp_name_list;
+                lrd_cache_dir_list.insert(lrd_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
+            }
+            // Include directories not to store common latitude and longitude values
+            else if(temp_line.at(0)=='0'){
+                HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                //lrd_non_cache_dir_list +=temp_name_list;
+                lrd_non_cache_dir_list.insert(lrd_non_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
+            }
+            // Include variable names that the server would like to store in the memory cache
+            else if(temp_line.at(0)=='2') {
+                
+                // We need to handle the space case inside a variable path
+                // either "" or '' needs to be used to identify a var path
+                vector<int>dq_pos;
+                vector<int>sq_pos;
+                for(int i = 0; i<subline.size();i++){
+                    if(subline[i]=='"') {
+                        dq_pos.push_back(i);
+                    }
+                    else if(subline[i]=='\'')
+                        sq_pos.push_back(i);
+                }
+                if(dq_pos.size()==0 && sq_pos.size()==0)
+                    HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                else if((dq_pos.size()!=0) &&(dq_pos.size()%2==0)&& sq_pos.size()==0) {
+                    int  dq_index= 0;
+                    while(dq_index < dq_pos.size()){
+                        if(dq_pos[dq_index+1]>(dq_pos[dq_index]+1)) {
+                            temp_name_list.push_back
+                            (subline.substr(dq_pos[dq_index]+1,dq_pos[dq_index+1]-dq_pos[dq_index]-1));
+                        }
+                        dq_index=dq_index + 2;
+                    }
+                }
+                else if((sq_pos.size()!=0) &&(sq_pos.size()%2==0)&& dq_pos.size()==0) {
+                    int  sq_index= 0;
+                    while(sq_index < sq_pos.size()){
+                        if(sq_pos[sq_index+1]>(sq_pos[sq_index]+1)) {
+                            temp_name_list.push_back
+                            (subline.substr(sq_pos[sq_index]+1,sq_pos[sq_index+1]-sq_pos[sq_index]-1));
+                        }
+                        sq_index=sq_index+2;
+                    }
+                }
+
+                //lrd_var_cache_file_list +=temp_name_list;
+                lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
+            }
+        }
+    }
+
+
+#if 0
+
+for(int i =0; i<lrd_cache_dir_list.size();i++)
+cerr<<"lrd cache list is "<<lrd_cache_dir_list[i] <<endl;
+for(int i =0; i<lrd_non_cache_dir_list.size();i++)
+cerr<<"lrd non cache list is "<<lrd_non_cache_dir_list[i] <<endl;
+for(int i =0; i<lrd_var_cache_file_list.size();i++)
+cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
+#endif
+
+
+    mcache_config_file.close();
+    if(lrd_cache_dir_list.size()==0 && lrd_non_cache_dir_list.size()==0 && lrd_var_cache_file_list.size()==0)
+        return false;
+    else 
+        return true;
+
+}
+
+
 bool check_beskeys(const string key) {
 
     bool found = false;
@@ -946,5 +1103,15 @@ static float get_float_key(const string &key, float def_val)
     else {
         return def_val;
     }
+}
+
+static string get_beskeys(const string &key) {
+
+    bool found = false;
+    string ret_value ="";
+
+    TheBESKeys::TheKeys()->get_value( key, ret_value, found ) ;
+    return ret_value;
+
 }
 

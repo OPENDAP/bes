@@ -47,11 +47,16 @@ BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 bool HDFEOS5CFSpecialCVArray::read(){
 
     BESDEBUG("h5","Coming to HDFEOS5CFSpecialCVArray read "<<endl);
-#if 0
-    string check_pass_fileid_key_str="H5.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
+
+    read_data_NOT_from_mem_cache(false,NULL);
+
+    return true;
+}
+
+void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool add_cache, void*buf) {
+
+    BESDEBUG("h5","Coming to HDFEOS5CFSpecialCVArray: read_data_NOT_from_mem_cache "<<endl);
+
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     vector<int> offset;
@@ -263,6 +268,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
     //H5Fclose(fileid);
 
-    return true;
-}
+ 
+    return;
 
+}

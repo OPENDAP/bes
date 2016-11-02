@@ -137,7 +137,26 @@ H5.CheckIgnoreObj=false
 # changing the value and the CachePurgeLevel value below. Note that
 # this feature is on by default.
 
-H5.CacheEntries = 100
+H5.MetaDataMemCacheEntries  = 400
+H5.LargeDataMemCacheEntries = 100 
+H5.SmallDataMemCacheEntries  = 400
+
+H5.LargeDataMemCacheConfig=true
+#H5.SmallDataMemCacheConfig=true
+
+#H5.DataDiskCache=true (future version)
+
+#H5.DataCachePath= path to store the data memcache configure file or the data disk cache configure file, apply to both small size or large size memory data cache or future disk cache
+
+H5.DataCachePath=/opt/tmp
+
+#H5.SmallDataMemCacheFileName=yourownname
+#H5.SmallDataMemCacheFileName=sdatamem.conf(future version)
+#H5.LargeDataMemCacheFileName=yourownname
+H5.LargeDataMemCacheFileName=ldatamem.conf
+
+#H5.DataDiskCacheFileName=(future version)
+
 
 # The H5.CachePurgeLevel key determines how much of the in-memory cache is
 # removed when it is purged. The value 0.2 (the default) configures the

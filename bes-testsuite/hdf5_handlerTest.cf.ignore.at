@@ -51,7 +51,8 @@ AT_BESCMD_RESPONSE_TEST([t_2d_2dll.nc4.h5.das.bescmd])
 
 
 # The current handler doesn't support scalar.
-AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
+# The handler supports the scalar since Hyrax 1.13.1. Comment out this test.
+#AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
 
 # Links and named datatypes
 AT_BESCMD_RESPONSE_TEST([t_link_comment.h5.das.bescmd])

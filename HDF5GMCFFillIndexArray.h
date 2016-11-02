@@ -39,17 +39,18 @@
 
 // DODS includes
 #include "HDF5CF.h"
-#include <Array.h>
+//#include <Array.h>
+#include "HDF5BaseArray.h"
 
 using namespace libdap;
 
-class HDF5GMCFFillIndexArray:public Array {
+class HDF5GMCFFillIndexArray:public HDF5BaseArray {
     public:
         HDF5GMCFFillIndexArray(int h5_rank, 
                     H5DataType h5_dtype, 
                     const string & n="",  
                     BaseType * v = 0):
-                    Array(n,v),
+                    HDF5BaseArray(n,v),
                     rank(h5_rank),
                     dtype(h5_dtype)
         {
@@ -59,7 +60,8 @@ class HDF5GMCFFillIndexArray:public Array {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
-    int format_constraint (int *cor, int *step, int *edg);
+    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    //int format_constraint (int *cor, int *step, int *edg);
 
   private:
         int rank;

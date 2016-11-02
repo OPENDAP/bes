@@ -56,6 +56,8 @@ enum H5DataType
  H5INT32,H5UINT32,H5INT64,H5UINT64,H5FLOAT64,H5VSTRING,
  H5REFERENCE,H5COMPOUND,H5ARRAY,H5UNSUPTYPE};
 
+enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
+
 using namespace std;
 
 struct Name_Size_2Pairs {
@@ -68,7 +70,9 @@ struct Name_Size_2Pairs {
 
 struct HDF5CFUtil {
 
+               static bool use_data_mem_cache(H5DataType h5type,CVType cvtype,const string & varpath);
 
+               static size_t H5_numeric_atomic_type_size(H5DataType h5type);
                /// Map HDF5 Datatype to the intermediate H5DAPtype for the future use.
                static H5DataType H5type_to_H5DAPtype(hid_t h5_type_id);
 
@@ -100,6 +104,49 @@ struct HDF5CFUtil {
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
                static void close_fileid(hid_t,bool);
-};
+               //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+               //                           const std::vector < size_t > &pos);
+
+#if 0
+               template<typename T>  int subset(
+                                                const T input[],
+                                                int rank,
+                                                vector<int> & dim,
+                                                int start[],
+                                                int stride[],
+                                                int edge[],
+                                                std::vector<T> *poutput,
+                                                vector<int>& pos,
+                                                int index);
+#endif
+} ;
+
+//size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+ //                                const std::vector < size_t > &pos);
+
+#if 0
+{
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+#endif
+
+
 
 #endif

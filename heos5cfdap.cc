@@ -176,15 +176,47 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Handle coordinate variables
         f->Handle_CVar();
 
+        // Retrieve existing coordinate variable attributes for memory cache use.
+        //f->Retrieve_H5_CVar_Supported_Attr_Values();
+
         // Adjust variable and dimension names again based on the handling coordinate variables.
         f->Adjust_Var_Dim_NewName_Before_Flattening();
 
         // Remove unsupported datatype 
-        f->Handle_Unsupported_Dtype(include_attr);
+        //f->Handle_Unsupported_Dtype(include_attr);
 
         // Remove unsupported dataspace 
-        f->Handle_Unsupported_Dspace(include_attr);
+        //f->Handle_Unsupported_Dspace(include_attr);
+
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+
+            // Handle unsupported datatypes including the attributes
+            f->Handle_Unsupported_Dtype(true);
+
+            // Handle unsupported dataspaces including the attributes
+            f->Handle_Unsupported_Dspace(true);
+
+            // We need to retrieve  coordinate variable attributes for memory cache use.
+            f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+
+        }
+        else {
+
+	    // Handle unsupported datatypes
+	    f->Handle_Unsupported_Dtype(include_attr);
+
+	    // Handle unsupported dataspaces
+	    f->Handle_Unsupported_Dspace(include_attr);
+
+        }
+ 
         
+        // Need to retrieve the units of CV when memory cache is turned on.
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+            f->Adjust_Attr_Info();
+
         // May need to adjust the object names for special objects. Currently no operations
         // are done in this routine.
         f->Adjust_Obj_Name();
@@ -443,6 +475,18 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
             case CV_EXIST:
             {
+
+#if 0
+for(vector<HDF5CF::Attribute *>::const_iterator it_ra = cvar->getAttributes().begin();
+                 it_ra != cvar->getAttributes().end(); ++it_ra) {
+cerr<<"cvar attribute name is "<<(*it_ra)->getNewName() <<endl;
+cerr<<"cvar attribute value type is "<<(*it_ra)->getType() <<endl;
+}
+cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
+#endif
+                bool is_latlon = cvar->isLatLon();
+//if(is_latlon == true) cerr<<"this var is lat/lon"<<endl;
+//else cerr<<"this var is NOT lat/lon" <<endl;
                 HDF5CFArray *ar = NULL;
                 try {
                     ar = new HDF5CFArray (
@@ -451,6 +495,9 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                                           filename,
                                           cvar->getType(),
                                           cvar->getFullPath(),
+                                          cvar->getTotalElems(),
+                                          CV_EXIST,
+                                          is_latlon,
                                           cvar->getNewName(),
                                           bt);
                 }
@@ -476,6 +523,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
             case CV_LON_MISS:
             {
 
+//cerr<<"cvar new name latlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
                 HDFEOS5CFMissLLArray *ar = NULL;
                 try {
                     ar = new HDFEOS5CFMissLLArray (
@@ -516,6 +564,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
             case CV_NONLATLON_MISS:
             {
+//cerr<<"cvar new name nonlatlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
 
                 if (cvar->getRank() !=1) {
                     delete bt;
@@ -554,6 +603,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                 // Currently only support Aura TES files. May need to revise when having more
                 // special products KY 2012-2-3
             {
+
                 if (cvar->getRank() !=1) {
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");

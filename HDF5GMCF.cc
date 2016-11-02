@@ -49,6 +49,7 @@ GMCVar::GMCVar(Var*var) {
     name = var->name;
     fullpath = var->fullpath;
     rank  = var->rank;
+    total_elems = var->total_elems;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
@@ -125,6 +126,7 @@ GMSPVar::GMSPVar(Var*var) {
     BESDEBUG("h5", "Coming to GMSPVar()"<<endl);
     fullpath = var->fullpath;
     rank  = var->rank;
+    total_elems = var->total_elems;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
 
@@ -214,12 +216,16 @@ void GMFile::Retrieve_H5_Info(const char *path,
     BESDEBUG("h5", "Coming to Retrieve_H5_Info()"<<endl);
     // GPM needs the attribute info. to obtain the lat/lon.
     // So set the include_attr to be true for these products.
+    //
+//        File::Retrieve_H5_Info(path,file_id,true);
+//#if 0
     if (product_type == Mea_SeaWiFS_L2 || product_type == Mea_SeaWiFS_L3
         || GPMS_L3 == product_type  || GPMM_L3 == product_type || GPM_L1 == product_type || OBPG_L3 == product_type
         || Mea_Ozone == product_type || General_Product == product_type)  
         File::Retrieve_H5_Info(path,file_id,true);
     else 
         File::Retrieve_H5_Info(path,file_id,include_attr);
+//#endif
 }
 
 // Update the product type. This is because the file structure may change across different versions of products
@@ -240,6 +246,20 @@ void GMFile::Update_Product_Type() throw(Exception) {
                         (*irv)->newname = (*irv)->name;
             }
             this->product_type = General_Product;
+        }
+    }
+}
+
+void GMFile::Retrieve_H5_CVar_Supported_Attr_Values() {
+
+    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+          ircv != this->cvars.end(); ++ircv) {
+          
+        if ((*ircv)->cvartype != CV_NONLATLON_MISS){
+            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                 ira != (*ircv)->attrs.end(); ++ira) {
+                Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
+            }
         }
     }
 }

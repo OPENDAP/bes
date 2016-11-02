@@ -1,0 +1,26 @@
+Attributes {
+    d32_1 {
+        Float32 minimum -1.120000005;
+        Float32 maximum 2.140000105;
+        String origname "d32_1";
+        String fullnamepath "/d32_1";
+    }
+    d32_2 {
+        Float32 minimum 1.100000024;
+        Float32 maximum 4.099999905;
+        String origname "d32_2";
+        String fullnamepath "/d32_2";
+    }
+    d64_1 {
+        Float64 minimum -2.0999999046325684;
+        Float64 maximum 4.9000000953674316;
+        String origname "d64_1";
+        String fullnamepath "/d64_1";
+    }
+    d64_2 {
+        Float64 minimum -10.100000381469727;
+        Float64 maximum 20.899999618530273;
+        String origname "d64_2";
+        String fullnamepath "/d64_2";
+    }
+}

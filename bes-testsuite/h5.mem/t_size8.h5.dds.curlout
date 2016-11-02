@@ -1,0 +1,6 @@
+Dataset {
+    Int16 dchar[2];
+    Int16 dschar[2][2];
+    Byte duchar_1[2][2][2];
+    Byte duchar_2[2][2][2][2][2];
+} t_size8.h5;

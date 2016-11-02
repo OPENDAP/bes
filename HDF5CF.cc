@@ -52,6 +52,7 @@ Var::Var(Var *var) {
     name = var->name;
     fullpath = var->fullpath;
     rank  = var->rank;
+    total_elems = var->total_elems;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_attr_dspace = var->unsupported_attr_dspace;
@@ -83,6 +84,67 @@ Var::Var(Var *var) {
 
 }
 
+const bool CVar::isLatLon() const{
+
+    bool ret_value = false;
+    if(CV_EXIST == this->cvartype || CV_MODIFY==this->cvartype || CV_SPECIAL==this->cvartype) {
+        string attr_name ="units";
+        string lat_unit_value = "degrees_north";
+        string lon_unit_value = "degrees_east";
+//cerr<<"cv name is "<< this->name <<endl;
+
+        for(vector<Attribute *>::const_iterator ira = this->attrs.begin();
+                     ira != this->attrs.end();ira++) {
+
+//cerr<<"attribute name is "<<(*ira)->newname <<endl;
+//cerr<<"attribnte type is "<<(*ira)->getType() <<endl;
+            if ((H5FSTRING == (*ira)->getType()) ||
+                (H5VSTRING == (*ira)->getType())) {
+                if(attr_name == (*ira)->newname) {
+                string attr_value1((*ira)->getValue().begin(),(*ira)->getValue().end());
+//cerr<<"CV attribute value outside is "<<attr_value1 <<endl;
+
+                if((*ira)->getCount()==1) {
+                   string attr_value((*ira)->getValue().begin(),(*ira)->getValue().end());
+//cerr<<"CV attribute value inside is "<<attr_value <<endl;
+                   if(attr_value.compare(0,lat_unit_value.size(),lat_unit_value) ==0){
+                       if(attr_value.size() == lat_unit_value.size()){
+                           ret_value = true;
+                           break;
+                       }
+                       else if(attr_value.size() == (lat_unit_value.size()+1)) {
+                           if(attr_value[attr_value.size()-1]=='\0' || attr_value[attr_value.size()-1] == ' '){
+//cerr<<"coming to null term "<<endl;
+                               ret_value = true;
+                               break;
+                           }
+                       }
+                   }
+                   else if(attr_value.compare(0,lon_unit_value.size(),lon_unit_value) ==0){
+                       if(attr_value.size() == lon_unit_value.size()){
+                           ret_value = true;
+                           break;
+                       }
+                       else if(attr_value.size() == (lon_unit_value.size()+1)) {
+                           if(attr_value[attr_value.size()-1]=='\0' || attr_value[attr_value.size()-1] == ' '){
+                               ret_value = true;
+                               break;
+                           }
+                       }
+
+                   }
+
+
+                }
+                }
+            }
+        }
+    }
+    else if(this->cvartype == CV_LAT_MISS || this->cvartype == CV_LON_MISS) 
+        ret_value = true;
+    return ret_value;
+
+}
 File::~File ()
 {
 
@@ -456,6 +518,11 @@ throw(Exception){
         else {
             if (false == unsup_var_dspace) {
                 
+                hssize_t h5_total_elms = H5Sget_simple_extent_npoints(dspace_id);
+                if(h5_total_elms <0) 
+                    throw2("Cannot get the total number of elements of HDF5 dataset ",varname);
+                else
+                    var->total_elems = (size_t)h5_total_elms;
                 int ndims = H5Sget_simple_extent_ndims(dspace_id);
                 if (ndims < 0) 
                     throw2("Cannot get the hdf5 dataspace number of dimension for the variable ",varname);

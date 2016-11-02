@@ -103,6 +103,67 @@ HDF5CFUtil:: H5type_to_H5DAPtype(hid_t h5_type_id)
     }
 }
 
+size_t HDF5CFUtil::H5_numeric_atomic_type_size(H5DataType h5type) {
+    
+    switch(h5type) {
+    case H5CHAR:
+    case H5UCHAR:
+        return 1;
+    case H5INT16:
+    case H5UINT16:
+        return 2;
+    case H5INT32:
+    case H5UINT32:
+    case H5FLOAT32:
+        return 4;
+    case H5FLOAT64:
+    case H5INT64:
+    case H5UINT64:
+        return 8;
+    default:
+        throw InternalErr(__FILE__,__LINE__,"This routine doesn't support to return the size of this datatype");
+    }
+
+}
+
+#if 0
+bool HDF5CFUtil::use_lrdata_mem_cache(H5DataType h5type, CVType cvtype, bool islatlon ) {
+    if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
+            h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&
+            h5type != H5INT64 && h5type !=H5UINT64)
+        return false;
+    else {
+         if(cvtype != CV_UNSUPPORTED) 
+            return true;
+         // TODO; if varpath is specified by the user, this should return true!
+         else if(varpath == "")
+             return false;
+         else 
+             return false;
+
+    }
+
+}
+#endif
+
+bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const string &varpath) {
+    if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
+            h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&
+            h5type != H5INT64 && h5type !=H5UINT64)
+        return false;
+    else {
+         if(cvtype != CV_UNSUPPORTED) 
+            return true;
+         // TODO; if varpath is specified by the user, this should return true!
+         else if(varpath == "")
+             return false;
+         else 
+             return false;
+
+    }
+
+}
+
 bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
@@ -420,5 +481,94 @@ void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
     }
 
 }
+
+#if 0
+/// This inline routine will translate N dimensions into 1 dimension.
+inline size_t
+HDF5CFUtil::INDEX_nD_TO_1D (const std::vector <size_t > &dims,
+                const std::vector < size_t > &pos)
+{
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+#endif
+
+//! Getting a subset of a variable
+//
+//      \param input Input variable
+//       \param dim dimension info of the input
+//       \param start start indexes of each dim
+//       \param stride stride of each dim
+//       \param edge count of each dim
+//       \param poutput output variable
+// 	\parrm index dimension index
+//       \return 0 if successful. -1 otherwise.
+//
+//
+#if 0
+template<typename T>  
+int HDF5CFUtil::subset(
+    const T input[],
+    int rank,
+    vector<int> & dim,
+    int start[],
+    int stride[],
+    int edge[],
+    std::vector<T> *poutput,
+    vector<int>& pos,
+    int index)
+{
+    for(int k=0; k<edge[index]; k++) 
+    {	
+        pos[index] = start[index] + k*stride[index];
+        if(index+1<rank)
+            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);			
+        if(index==rank-1)
+        {
+            poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
+        }
+    } // end of for
+    return 0;
+} // end of template<typename T> static int 
+#endif
+
+size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+                                 const std::vector < size_t > &pos){
+    //
+    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
+    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    // 
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+
 
 

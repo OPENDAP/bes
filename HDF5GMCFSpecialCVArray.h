@@ -38,14 +38,15 @@
 
 // DODS includes
 #include "HDF5CF.h"
-#include <Array.h>
+//#include <Array.h>
+#include "HDF5BaseArray.h"
 
 using namespace libdap;
 
-class HDF5GMCFSpecialCVArray:public Array {
+class HDF5GMCFSpecialCVArray:public HDF5BaseArray {
     public:
         HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const string &varfullpath, H5GCFProduct h5_product_type, const string & n="",  BaseType * v = 0):
-        Array(n,v),
+        HDF5BaseArray(n,v),
         dtype(h5_dtype),
         tnumelm(h5_tnumelm),
         varname(varfullpath),
@@ -58,7 +59,7 @@ class HDF5GMCFSpecialCVArray:public Array {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
-    int format_constraint (int *cor, int *step, int *edg);
+    //int format_constraint (int *cor, int *step, int *edg);
     
 
     private:
@@ -77,6 +78,7 @@ class HDF5GMCFSpecialCVArray:public Array {
         
         void obtain_gpm_l3_hgt(int, vector<int>&,vector<int>&,vector<int>&);
         void obtain_gpm_l3_nalt(int, vector<int>&,vector<int>&,vector<int>&);
+        virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
 
 };
 

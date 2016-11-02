@@ -39,6 +39,7 @@
 #include "HDF5RequestHandler.h"
 #include "HDF5CFArray.h"
 #include "h5cfdaputil.h"
+#include "ObjMemCache.h"
 
 
 
@@ -52,9 +53,118 @@ bool HDF5CFArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
-
     if(length() == 0)
         return true;
+
+    if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) && 
+        NULL == HDF5RequestHandler::get_srdata_mem_cache()){
+        read_data_NOT_from_mem_cache(false,NULL);
+        return true;
+    }
+
+//cerr<<"varname is "<<varname <<endl;
+    // Flag to check if using large raw data cache or small raw data cache.
+    short use_cache_flag = 0;
+
+    // The small data cache is checked first to reduce the resources to operate the big data cache.
+    if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
+        if(((cvtype == CV_EXIST) && (islatlon != true)) || (cvtype == CV_NONLATLON_MISS) 
+            || (cvtype == CV_FILLINDEX) ||(cvtype == CV_MODIFY) ||(cvtype == CV_SPECIAL)){
+
+            if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
+		use_cache_flag = 1;
+        }
+    }
+
+    // If this varible doesn't fit the small data cache, let's check if it fits the large data cache.
+    if(use_cache_flag !=1) {
+
+        if(HDF5RequestHandler::get_lrdata_mem_cache() != NULL) {
+
+            // This is the trival case. 
+            // If no information is provided in the configuration file of large data cache,
+            // just cache the lat/lon varible per file.
+            if(HDF5RequestHandler::get_common_cache_dirs() == false) {
+		if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS 
+                    || (cvtype == CV_EXIST && islatlon == true)) {
+//cerr<<"coming to use_cache_flag =2 "<<endl;
+
+                    // Only the data with the numeric datatype DAP2 and CF support are cached.
+		    if(HDF5CFUtil::cf_strict_support_type(dtype)==true)
+		        use_cache_flag = 2;
+                }
+            }
+            else {// Have large data cache configuration info.
+
+                // Need to check if we don't want to cache some CVs, now
+                // this only applies to lat/lon CV.
+		if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS
+                    || (cvtype == CV_EXIST && islatlon == true)) {
+
+                    vector<string> cur_lrd_non_cache_dir_list;
+                    HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);
+
+                    // Check if this file is included in the non-cache directory
+                    if( (cur_lrd_non_cache_dir_list.size() == 0) ||
+                        ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {
+
+                        // Only data with the numeric datatype DAP2 and CF support are cached.   
+                        if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
+                            use_cache_flag = 3;                       
+                    }
+                }
+                // Here we allow all the variable names to be cached. 
+                // The file path that includes the variables can also included.
+                vector<string> cur_lrd_var_cache_file_list;
+                HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
+                if(cur_lrd_var_cache_file_list.size() >0){
+///for(int i =0; i<cur_lrd_var_cache_file_list.size();i++)
+//cerr<<"lrd var cache is "<<cur_lrd_var_cache_file_list[i]<<endl;
+                    if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varname)){
+//cerr<<"varname is "<<varname <<endl;
+//cerr<<"have var cached "<<endl;
+
+                         // Only the data with the numeric datatype DAP2 and CF support are cached. 
+                        if(HDF5CFUtil::cf_strict_support_type(dtype)==true) 
+                            use_cache_flag = 4;
+                    }
+                }
+            }
+        }
+    }
+
+    if(0 == use_cache_flag) 
+        read_data_NOT_from_mem_cache(false,NULL);
+    else {// memory cache cases
+
+        string cache_key;
+
+        // Possibly we have common lat/lon dirs,so check here.
+        if( 3 == use_cache_flag){
+            vector<string> cur_cache_dlist;
+            HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);
+            string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');
+            if(cache_dir != "") 
+                cache_key = cache_dir + varname;
+            else {
+                cache_key = filename + varname;
+                // If this lat/lon is not in the common dir. list, it is still cached as a general lat/lon.
+                // Change the flag to 2.
+                use_cache_flag = 2;
+            }
+
+        }
+        else
+            cache_key = filename + varname;
+
+        handle_data_with_mem_cache(dtype,total_elems,use_cache_flag,cache_key);
+
+    }
+
+    return true;
+}
+
+void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     vector<int>offset;
     vector<int>count;
@@ -178,11 +288,25 @@ bool HDF5CFArray::read()
 
     }
 
+    hid_t read_ret = -1;
+
+    // Before reading the data, we will check if the memory cache is turned on, 
+    if(true == add_cache) {
+        read_ret= H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,buf);
+        if(read_ret <0){ 
+            if (rank >0) 
+                H5Sclose(mspace);
+            H5Tclose(dtypeid);
+            H5Sclose(dspace);
+            H5Dclose(dsetid);
+            HDF5CFUtil::close_fileid(fileid,pass_fileid);
+            throw InternalErr(__FILE__,__LINE__,"Cannot read the data to the buffer.");
+        }
+    }
+
     // Now reading the data, note dtype is not dtypeid.
     // dtype is an enum  defined by the handler.
      
-    hid_t read_ret = -1;
-
     switch (dtype) {
 
         case H5UCHAR:
@@ -190,7 +314,6 @@ bool HDF5CFArray::read()
         {
             vector<unsigned char> val;
             val.resize(nelms);
-
             
             if (0 == rank) 
                 read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
@@ -601,12 +724,268 @@ bool HDF5CFArray::read()
     H5Sclose(dspace);
     H5Dclose(dsetid);
     HDF5CFUtil::close_fileid(fileid,pass_fileid);
-    //H5Fclose(fileid);
     
-    return true;
+    return;
 }
 
+#if 0
+void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    // set the original position to the starting point
+    vector<int>at_pos(at_ndims,0);
+    for (int i = 0; i< rank; i++)
+        at_pos[i] = at_offset[i];
+
+
+    switch (dtype) {
+
+        case H5UCHAR:
+                
+        {
+            vector<unsigned char> val;
+            val.resize(nelms);
+            subset<unsigned char>(
+                                      &total_val[0],
+                                      rank,
+                                      dimsizes,
+                                      offset,
+                                      step,
+                                      count,
+                                      &final_val,
+                                      at_pos,
+                                      0
+                                     );
+                
+
+            set_value ((dods_byte *) &val[0], nelms);
+        } // case H5UCHAR
+            break;
+
+
+        case H5CHAR:
+        {
+
+            vector<char> val;
+            val.resize(nelms);
+
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_CHAR "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+
+            vector<short>newval;
+            newval.resize(nelms);
+
+            for (int counter = 0; counter < nelms; counter++)
+                newval[counter] = (short) (val[counter]);
+
+            set_value ((dods_int16 *) &newval[0], nelms);
+        } // case H5CHAR
+           break;
+
+
+        case H5INT16:
+        {
+            vector<short>val;
+            val.resize(nelms);
+                
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                //H5Fclose(fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_SHORT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_int16 *) &val[0], nelms);
+        }// H5INT16
+            break;
+
+
+        case H5UINT16:
+            {
+                vector<unsigned short> val;
+                val.resize(nelms);
+                if (0 == rank) 
+                   read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+                else 
+                   read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+                if (read_ret < 0) {
+
+                    if (rank > 0) H5Sclose(mspace);
+                    H5Tclose(memtype);
+                    H5Tclose(dtypeid);
+                    H5Sclose(dspace);
+                    H5Dclose(dsetid);
+                    HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                    ostringstream eherr;
+                    eherr << "Cannot read the HDF5 dataset " << varname
+                        << " with the type of H5T_NATIVE_USHORT "<<endl;
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+                }
+                set_value ((dods_uint16 *) &val[0], nelms);
+            } // H5UINT16
+            break;
+
+
+        case H5INT32:
+        {
+            vector<int>val;
+            val.resize(nelms);
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_INT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_int32 *) &val[0], nelms);
+        } // case H5INT32
+            break;
+
+        case H5UINT32:
+        {
+            vector<unsigned int>val;
+            val.resize(nelms);
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_UINT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_uint32 *) &val[0], nelms);
+        }
+            break;
+
+        case H5FLOAT32:
+        {
+
+            vector<float>val;
+            val.resize(nelms);
+
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_FLOAT "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_float32 *) &val[0], nelms);
+        }
+            break;
+
+
+        case H5FLOAT64:
+        {
+
+            vector<double>val;
+            val.resize(nelms);
+            if (0 == rank) 
+                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
+            else 
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+
+            if (read_ret < 0) {
+                if (rank > 0) 
+                    H5Sclose(mspace);
+                H5Tclose(memtype);
+                H5Tclose(dtypeid);
+                H5Sclose(dspace);
+                H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,pass_fileid);
+                ostringstream eherr;
+                eherr << "Cannot read the HDF5 dataset " << varname
+                      << " with the type of H5T_NATIVE_DOUBLE "<<endl;
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+
+            }
+            set_value ((dods_float64 *) &val[0], nelms);
+        } // case H5FLOAT64
+            break;
+
+
+
+    // Just see if it works.
+    val2buf(buf);
+    set_read_p(true);
+    return;
+}
+#endif
+
+#if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
 int
@@ -652,3 +1031,4 @@ HDF5CFArray::format_constraint (int *offset, int *step, int *count)
         return nels;
 }
 
+#endif

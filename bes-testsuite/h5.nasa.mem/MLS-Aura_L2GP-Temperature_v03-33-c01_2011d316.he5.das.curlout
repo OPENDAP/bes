@@ -1,0 +1,788 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+        Int32 OrbitNumber 38964, 38965, 38966, 38967, 38968, 38969, 38970, 38971, 38972, 38973, 38974, 38975, 38976, 38977, 38978, 38979;
+        Float64 OrbitPeriod 5933.0658420324326, 5933.0350159406662, 5933.0013910531998, 5933.0148810148239, 5933.0768610239029, 5933.1525189876556, 5933.1481529474258, 5933.1057939529419, 5933.0248800516129, 5932.9982190132141, 5932.9965770244598, 5933.0246369838715, 5933.1131370067596, 5933.1493159532547, 5933.0928369760513, 5933.0928369760513;
+        String InstrumentName "MLS Aura";
+        String HostName " ";
+        String ProcessLevel "L2";
+        String PGEVersion "V03-33";
+        String StartUTC "2011-11-12T00:00:00.000000Z";
+        String EndUTC "2011-11-12T23:59:59.999999Z";
+        Int32 GranuleMonth 11;
+        Int32 GranuleDay 12;
+        Int32 GranuleDayOfYear 316;
+        Int32 GranuleYear 2011;
+        Float64 TAI93At0zOfGranule 0.0000000000000000;
+        Int32 FirstMAF 784304;
+        Int32 LastMAF 787811;
+        String MiscNotes "apriori(geos5),/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_0000.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_0600.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_1200.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_1800.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111113_0000.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_0000.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_0600.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_1200.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_1800.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111113_0000.V01.hdf";
+        String content "l2gp";
+        String lastOperation "write";
+        String name "/workops/jobs/science/1321212753.14503/MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5";
+        String ShortName "L2GP-Temperature";
+        String typeStr "swath";
+        Int32 type 164;
+        Int32 access 3;
+        Int32 HDFVersion 5;
+        Int32 PCFID 0;
+        Int32 recordlength 0;
+        Int32 errorCode 0;
+        Int32 PCFIDRange 30000, 30569;
+        Int32 FileID 67108887, 0, 0;
+        String PCF2 "run and deleted at PGE termination.
+#
+# Entries in this section are generated internally by the Toolkit.
+# DO NOT MAKE MANUAL ENTRIES IN THIS SECTION.
+#
+#########################################################################
+#
+# Next line is default location for TEMPORARY FILES
+!  /workops/jobs/science/1321212753.14503
+#
+#
+?   END
+";
+        String fullnamepath "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES";
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_Temperature {
+        Float32 Pressure 1000.000000, 825.4041748, 681.2920532, 562.3413086, 464.1588745, 383.1186829, 316.2277527, 261.0157166, 215.4434662, 177.8279419, 146.7799225, 121.1527634, 100.0000000, 82.54042053, 68.12920380, 56.23413086, 46.41588974, 38.31186676, 31.62277603, 26.10157204, 21.54434776, 17.78279495, 14.67799282, 12.11527634, 10.00000000, 8.254041672, 6.812920570, 5.623413086, 4.641588688, 3.831186771, 3.162277699, 2.610157251, 2.154434681, 1.778279424, 1.467799306, 1.211527705, 1.000000000, 0.6812920570, 0.4641588926, 0.3162277639, 0.2154434621, 0.1467799246, 0.1000000015, 0.04641588777, 0.02154434659, 0.009999999776, 0.004641588777, 0.002154434798, 0.001000000047, 0.0004641588894, 0.0002154434624, 9.999999747e-05, 4.641588748e-05, 2.154434696e-05, 9.999999747e-06;
+        String VerticalCoordinate "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature";
+    }
+    HDFEOS_SWATHS_Temperature_Data_Fields {
+    }
+    HDFEOS_SWATHS_Temperature_Geolocation_Fields {
+    }
+    HDFEOS_SWATHS_WMOTPPressure_GEOS5 {
+        Float32 Pressure -999.9899902;
+        String VerticalCoordinate "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5";
+    }
+    HDFEOS_SWATHS_WMOTPPressure_GEOS5_Data_Fields {
+    }
+    HDFEOS_SWATHS_WMOTPPressure_GEOS5_Geolocation_Fields {
+    }
+    HDFEOS_SWATHS_WMOTPPressure_MLS {
+        Float32 Pressure -999.9899902;
+        String VerticalCoordinate "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS";
+    }
+    HDFEOS_SWATHS_WMOTPPressure_MLS_Data_Fields {
+    }
+    HDFEOS_SWATHS_WMOTPPressure_MLS_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.12";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    Temperature_Convergence {
+        String units "NoUnits";
+        Float32 _FillValue -999.9899902;
+        String title "TemperatureConvergence";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Convergence";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Data Fields/Convergence";
+        String orig_dimname "nTimes";
+    }
+    Temperature_L2gpPrecision {
+        Float32 _FillValue -999.9899902;
+        String title "TemperaturePrecision";
+        String units "K";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "L2gpPrecision";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Data Fields/L2gpPrecision";
+        String orig_dimname_list "nTimes nLevels";
+    }
+    Temperature_L2gpValue {
+        Float32 _FillValue -999.9899902;
+        String title "Temperature";
+        String units "K";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "L2gpValue";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Data Fields/L2gpValue";
+        String orig_dimname_list "nTimes nLevels";
+    }
+    Temperature_Quality {
+        String units "NoUnits";
+        Float32 _FillValue -999.9899902;
+        String title "TemperatureQuality";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Quality";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Data Fields/Quality";
+        String orig_dimname "nTimes";
+    }
+    Temperature_Status {
+        Int32 _FillValue 513;
+        String title "TemperatureStatus";
+        String units "NoUnits";
+        Int32 missing_value 513;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Status";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Data Fields/Status";
+        String orig_dimname "nTimes";
+    }
+    Temperature_ChunkNumber {
+        Int32 _FillValue -999;
+        String title "ChunkNumber";
+        String units "NoUnits";
+        Int32 missing_value -999;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "ChunkNumber";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/ChunkNumber";
+        String orig_dimname "nTimes";
+    }
+    Temperature_LineOfSightAngle {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "LineOfSightAngle";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "LineOfSightAngle";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/LineOfSightAngle";
+        String orig_dimname "nTimes";
+    }
+    Temperature_LocalSolarTime {
+        Float32 _FillValue -999.9899902;
+        String title "LocalSolarTime";
+        String units "h";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "LocalSolarTime";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/LocalSolarTime";
+        String orig_dimname "nTimes";
+    }
+    Temperature_Longitude {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "Longitude";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Longitude";
+        String orig_dimname "nTimes";
+    }
+    Temperature_OrbitGeodeticAngle {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "OrbitGeodeticAngle";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "OrbitGeodeticAngle";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/OrbitGeodeticAngle";
+        String orig_dimname "nTimes";
+    }
+    Temperature_SolarZenithAngle {
+        String units "deg";
+        Float32 _FillValue -999.9899902;
+        String title "SolarZenithAngle";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "SolarZenithAngle";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/SolarZenithAngle";
+        String orig_dimname "nTimes";
+    }
+    Temperature_Time {
+        Float64 _FillValue -999.98999023437500;
+        String title "Time";
+        String units "s";
+        Float64 missing_value -999.98999023437500;
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Time";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Time";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_Convergence {
+        String units "NoUnits";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-GEOS5Convergence";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Convergence";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Convergence";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_L2gpPrecision {
+        String units "hPa";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-GEOS5Precision";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "L2gpPrecision";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/L2gpPrecision";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_L2gpValue {
+        String units "hPa";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-GEOS5";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "L2gpValue";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/L2gpValue";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_Quality {
+        String units "NoUnits";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-GEOS5Quality";
+        String origname "Quality";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Quality";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_Status {
+        Int32 _FillValue 513;
+        String title "WMOTPPressure-GEOS5Status";
+        String units "NoUnits";
+        Int32 missing_value 513;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Status";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Status";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_ChunkNumber {
+        Int32 _FillValue -999;
+        String title "ChunkNumber";
+        String units "NoUnits";
+        Int32 missing_value -999;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "ChunkNumber";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/ChunkNumber";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_LineOfSightAngle {
+        Float32 _FillValue -999.9899902;
+        String title "LineOfSightAngle";
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "LineOfSightAngle";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/LineOfSightAngle";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_LocalSolarTime {
+        Float32 _FillValue -999.9899902;
+        String title "LocalSolarTime";
+        String units "h";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "LocalSolarTime";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/LocalSolarTime";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_Longitude {
+        Float32 _FillValue -999.9899902;
+        String title "Longitude";
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Longitude";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_OrbitGeodeticAngle {
+        Float32 _FillValue -999.9899902;
+        String title "OrbitGeodeticAngle";
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "OrbitGeodeticAngle";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/OrbitGeodeticAngle";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_SolarZenithAngle {
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        Float32 _FillValue -999.9899902;
+        String title "SolarZenithAngle";
+        String origname "SolarZenithAngle";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/SolarZenithAngle";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_Time {
+        Float64 _FillValue -999.98999023437500;
+        String title "Time";
+        String units "s";
+        Float64 missing_value -999.98999023437500;
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Time";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Time";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_Convergence {
+        String units "NoUnits";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-MLSConvergence";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Convergence";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Convergence";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_L2gpPrecision {
+        String units "hPa";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-MLSPrecision";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "L2gpPrecision";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/L2gpPrecision";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_L2gpValue {
+        String units "hPa";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-MLS";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "L2gpValue";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/L2gpValue";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_Quality {
+        String units "NoUnits";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        Float32 _FillValue -999.9899902;
+        String title "WMOTPPressure-MLSQuality";
+        String origname "Quality";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Quality";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_Status {
+        Int32 _FillValue 513;
+        String title "WMOTPPressure-MLSStatus";
+        String units "NoUnits";
+        Int32 missing_value 513;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "Status";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Status";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_ChunkNumber {
+        Int32 _FillValue -999;
+        String title "ChunkNumber";
+        String units "NoUnits";
+        Int32 missing_value -999;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "ChunkNumber";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/ChunkNumber";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_LineOfSightAngle {
+        Float32 _FillValue -999.9899902;
+        String title "LineOfSightAngle";
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "LineOfSightAngle";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/LineOfSightAngle";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_LocalSolarTime {
+        Float32 _FillValue -999.9899902;
+        String title "LocalSolarTime";
+        String units "h";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "LocalSolarTime";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/LocalSolarTime";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_Longitude {
+        Float32 _FillValue -999.9899902;
+        String title "Longitude";
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Longitude";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_OrbitGeodeticAngle {
+        Float32 _FillValue -999.9899902;
+        String title "OrbitGeodeticAngle";
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "MLS-Specific";
+        String origname "OrbitGeodeticAngle";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/OrbitGeodeticAngle";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_SolarZenithAngle {
+        String units "deg";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        Float32 _FillValue -999.9899902;
+        String title "SolarZenithAngle";
+        String origname "SolarZenithAngle";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/SolarZenithAngle";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_MLS_Time {
+        Float64 _FillValue -999.98999023437500;
+        String title "Time";
+        String units "s";
+        Float64 missing_value -999.98999023437500;
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Time";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Time";
+        String orig_dimname "nTimes";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    coremetadata_0 {
+        String origname "coremetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/coremetadata.0";
+    }
+    xmlmetadata {
+        String origname "xmlmetadata";
+        String fullnamepath "/HDFEOS INFORMATION/xmlmetadata";
+    }
+    Temperature_Latitude {
+        String units "degrees_north";
+        Float32 _FillValue -999.9899902;
+        Float32 missing_value -999.9899902;
+        String title "Latitude";
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Latitude";
+        String orig_dimname "nTimes";
+    }
+    Temperature_Pressure {
+        Float32 _FillValue -999.9899902;
+        String title "Pressure";
+        String units "hPa";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Pressure";
+        String orig_dimname "nLevels";
+    }
+    WMOTPPressure_MLS_Latitude {
+        String title "Latitude";
+        Float32 _FillValue -999.9899902;
+        String units "degrees_north";
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Latitude";
+        String orig_dimname "nTimes";
+    }
+    WMOTPPressure_GEOS5_Latitude {
+        String units "degrees_north";
+        Float32 _FillValue -999.9899902;
+        Float32 missing_value -999.9899902;
+        String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
+        String title "Latitude";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Latitude";
+        String orig_dimname "nTimes";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2011-11-14T07:12:53.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Both";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "c01";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update anticipated using enhanced PGE";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Inferred Passed";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Validated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Passed";
+                            String CLASS "1";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Validated, see http://disc.gsfc.nasa.gov/Aura/MLS/ for quality document";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Temperature";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    STARTORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 38964;
+                    }
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2011-11-12";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "00:00:00";
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 0.0;
+                    }
+                    STOPORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 38979;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 3;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "ML2T";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Found at /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PCF";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                    }
+                    ZONEIDENTIFIERCLASS {
+                        ZONEIDENTIFIER {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Other Grid System";
+                        }
+                    }
+                }
+                VERTICALSPATIALDOMAIN {
+                    VERTICALSPATIALDOMAINCONTAINER {
+                        String CLASS "1";
+                        VERTICALSPATIALDOMAINTYPE {
+                            String CLASS "1";
+                            Int32 NUM_VAL 1;
+                            String VALUE "Atmosphere Layer";
+                        }
+                        VERTICALSPATIALDOMAINVALUE {
+                            String CLASS "1";
+                            Int32 NUM_VAL 1;
+                            String VALUE "Atmosphere Profile";
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Limb";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2011-11-12";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.999999Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2011-11-12";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "V03-33";
+                }
+            }
+        }
+    }
+    XMLMetadata {
+        String Contents "<?xml version=&quote1.0&quote?>
+<!DOCTYPE GranuleMetaDataFile SYSTEM &quotehttp://ecsinfo.gsfc.nasa.gov/ECSInfo/ecsmetadata/dtds/DPL/ECS/ScienceGranuleMetadata.dtd&quote>
+<GranuleMetaDataFile>
+  <DTDVersion>1.0</DTDVersion>
+  <DataCenterId>SDPTK</DataCenterId>
+  <GranuleURMetaData>
+    <CollectionMetaData>
+      <ShortName>ML2T</ShortName>
+      <VersionID>3</VersionID>
+    </CollectionMetaData>
+    <ECSDataGranule>
+      <ReprocessingPlanned>further update anticipated using enhanced PGE</ReprocessingPlanned>
+      <LocalGranuleID>MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5</LocalGranuleID>
+      <DayNightFlag>Both</DayNightFlag>
+      <ProductionDateTime>2011-11-14 07:12:53.000</ProductionDateTime>
+      <LocalVersionID>c01</LocalVersionID>
+    </ECSDataGranule>
+    <PGEVersionClass>
+      <PGEVersion>V03-33</PGEVersion>
+    </PGEVersionClass>
+    <RangeDateTime>
+      <RangeEndingTime>23:59:59.999999</RangeEndingTime>
+      <RangeEndingDate>2011-11-12</RangeEndingDate>
+      <RangeBeginningTime>00:00:00.000000</RangeBeginningTime>
+      <RangeBeginningDate>2011-11-12</RangeBeginningDate>
+    </RangeDateTime>
+    <SpatialDomainContainer>
+      <GranuleLocality>
+        <LocalityValue>Limb</LocalityValue>
+      </GranuleLocality>
+      <VerticalSpatialDomain>
+        <VerticalSpatialDomainContainer>
+          <VerticalSpatialDomainType>Atmosphere Layer</VerticalSpatialDomainType>
+          <VerticalSpatialDomainValue>Atmosphere Profile</VerticalSpatialDomainValue>
+        </VerticalSpatialDomainContainer>
+      </VerticalSpatialDomain>
+      <HorizontalSpatialDomainContainer>
+        <ZoneIdentifierClass>
+          <ZoneIdentifier>Other Grid System</ZoneIdentifier>
+        </ZoneIdentifierClass>
+        <BoundingRectangle>
+          <WestBoundingCoordinate>-180.0</WestBoundingCoordinate>
+          <NorthBoundingCoordinate>90.0</NorthBoundingCoordinate>
+          <EastBoundingCoordinate>180.0</EastBoundingCoordinate>
+          <SouthBoundingCoordinate>-90.0</SouthBoundingCoordinate>
+        </BoundingRectangle>
+      </HorizontalSpatialDomainContainer>
+    </SpatialDomainContainer>
+    <OrbitCalculatedSpatialDomain>
+      <OrbitCalculatedSpatialDomainContainer>
+        <OrbitRange>
+          <StartOrbitNumber>38964</StartOrbitNumber>
+          <StopOrbitNumber>38979</StopOrbitNumber>
+        </OrbitRange>
+        <EquatorCrossingLongitude>0.0</EquatorCrossingLongitude>
+        <EquatorCrossingDate>2011-11-12</EquatorCrossingDate>
+        <EquatorCrossingTime>00:00:00</EquatorCrossingTime>
+      </OrbitCalculatedSpatialDomainContainer>
+    </OrbitCalculatedSpatialDomain>
+    <MeasuredParameter>
+      <MeasuredParameterContainer>
+        <ParameterName>Temperature</ParameterName>
+        <QAStats>
+          <QAPercentMissingData>0</QAPercentMissingData>
+          <QAPercentOutofBoundsData>0</QAPercentOutofBoundsData>
+          <QAPercentInterpolatedData>0</QAPercentInterpolatedData>
+        </QAStats>
+        <QAFlags>
+          <AutomaticQualityFlag>Passed</AutomaticQualityFlag>
+          <AutomaticQualityFlagExplanation>Validated</AutomaticQualityFlagExplanation>
+          <OperationalQualityFlag>Not Investigated</OperationalQualityFlag>
+          <OperationalQualityFlagExplanation>Not Investigated</OperationalQualityFlagExplanation>
+          <ScienceQualityFlag>Inferred Passed</ScienceQualityFlag>
+          <ScienceQualityFlagExplanation>Validated, see http://disc.gsfc.nasa.gov/Aura/MLS/ for quality document</ScienceQualityFlagExplanation>
+        </QAFlags>
+      </MeasuredParameterContainer>
+    </MeasuredParameter>
+    <InputGranule>
+      <InputPointer>Found at /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PCF</InputPointer>
+    </InputGranule>
+  </GranuleURMetaData>
+</GranuleMetaDataFile>
+";
+    }
+}
