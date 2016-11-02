@@ -1,3 +1,140 @@
+2016-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+	Conflicts:
+		HDF5RequestHandler.cc
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-08-24  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-199, final code touch up and more testing
+
+2016-08-24  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-199, continue implementing the DMR cache. Testing.
+
+2016-08-23  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-199, implement DMR cache
+
+	HFVHANDLER-198, finish the re-arrangement of the code in HDF5RequestHandler.cc. Also update the testing configuration files to reflect the addition of the memory cache keys.
+
+2016-08-19  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-198, create a helper function to generate DDS. This helper function will be used by both build_dds and build_data.
+
+2016-08-11  root  <root@alpaca.ad.hdfgroup.org>
+
+	HFVHANDLER-184, add memory cache for DAS and DDS to the HDF handler.
+
+2016-07-15  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-175, edit comments a little bit.
+
+2016-07-15  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-175, add helper function to make sure the lat/lon are checked under both /geolocation and / groups, tested with fake HDF5 files. Works fine.
+
+2016-07-14  myang6  <myang6@hdfgroup.org>
+
+	Add Hyrax version for the handler release version in the README
+
+2016-07-13  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, add more comments and BESDUBUG info. code clean-up for functions
+
+	HFVHANDLER-191, add BESDEBUG information to functions and also add the H5 API close function calls at HDF5CFStr.cc. Somehow, handles are not closed.
+
+2016-07-12  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, add BES Debug info.
+
+2016-07-11  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, adding debug information.
+
+2016-07-11  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, add comments
+
+2016-07-11  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, add more comments at HDFEOS5CF.cc
+
+2016-07-11  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, Add comments, clean up code for handling HDF-EOS5.
+
+2016-07-08  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, add simple comments.
+
+2016-07-07  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, add/edit comments for the handling of genenral HDF5 products.
+
+2016-07-06  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-191, clean up code
+
+2016-07-05  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-194, Forgot updating the function to read the value.
+
+2016-07-05  root  <root@guanaco.ad.hdfgroup.org>
+
+	HFVHANDLER-194, adding new nlayer values for GPM level 3 4.0 data. The values are according to section 4.1.1 and 3.1.1 of http://www.eorc.jaxa.jp/GPM/doc/product/format/en/06.%20GPM_Combined%20Product%20Format_E.pdf.
+
+2016-07-05  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-192, don't write _FillValue and units if the products(GPM V04A) already have _FillValue and units attributes.
+
+	HFVHANDLER-192, update the way to handle _FilLValue and units for GPM.
+
+2016-06-30  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-189, with the support of root attribute mapping, some NASA DMR files need to update. Certainly a lot of NASA files have root attributes.
+
+2016-06-30  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	HFVHANDLER-189, using breadth_first to traverse the HDF5 objects. Making sure the root attributes are mapped. No HDF5_global attribute container is added for root attributes.
+
+	HFVHANDLER-189, 1) Map the attributes under the root group to DAP4. Previously ignored. 2) Use breadth_first search only. The depth_first search is kept but commented out. 3) The attributes under the root group are not using the container like HDF5_GLOBAL. We will see how this goes. 4) The layout order follows the ncdump: that's: under a group- variables, group attributes and then the children groups.
+
+2016-06-29  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-189, add code to handle the root attribute and also change the layout to present HDF5 groups.
+
+2016-06-28  kyang2014  <myang6@hdfgroup.org>
+
+	ESDIS-515, the default option code for handling DAP4 is cleaned up. 1) Most commented codes in h5das.cc,h5dds.cc,h5dmr.cc are removed. 2) Obvious redundant parameters(dmr in read_objects) are removed 3) Comments are added for h5dmr.cc and h5get.cc properly.
+
+2016-06-27  kyang2014  <myang6@hdfgroup.org>
+
+	ESDIS-515, editing the comments, removing redundant codes, revising a few functions that have inconsistent or redundant input parameters.
+
+2016-06-10  myang6  <myang6@kituo.ad.hdfgroup.org>
+
+	Merge branch 'master' into hdf5_handler_local
+
+2016-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.13.1 	modified:   NEWS
+
+2016-06-01  kyang2014  <myang6@hdfgroup.org>
+
+	Update NEWS.
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-31  kyang2014  <myang6@hdfgroup.org>
+
+	commit the file to reflect the master branch Merge branch 'master' into hdf5_handler_local
 2016-05-26  James Gallagher  <jgallagher@opendap.org>
 
 	Merge branch 'master' of https://github.com/opendap/hdf5_handler
