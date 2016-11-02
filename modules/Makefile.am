@@ -10,6 +10,16 @@ if BES_DEVELOPER
 SUBDIRS += debug_functions
 endif
 
+if BUILD_HDF4
+SUBDIRS += hdf4_handler
+endif
+
+if BUILD_HDF5
+SUBDIRS += hdf5_handler
+endif
+
+# fileout_netcdf needs to come after HDF4 (and maybe HDF5
+# in the future) because of the tests it runs.
 if BUILD_NETCDF
 SUBDIRS += netcdf_handler fileout_netcdf
 endif
@@ -25,14 +35,6 @@ endif
 
 if BUILD_FITS
 SUBDIRS += fits_handler
-endif
-
-if BUILD_HDF4
-SUBDIRS += hdf4_handler
-endif
-
-if BUILD_HDF5
-SUBDIRS += hdf5_handler
 endif
 
 # Same deal as above, but this uses HDF4/5 too... jhrg 12/12/14
