@@ -34,7 +34,9 @@
 #include <string>
 #include <map>
 
-#include <DapObj.h>
+namespace libdap {
+    class DapObj;
+}
 
 //namespace bes {
 
@@ -117,6 +119,7 @@ public:
 
     /**
      * @brief Initialize the DapObj cache to use an item count threshold
+     *
      * The purge() method will be automatically run whenever the threshold
      * value is exceeded and add() is called.
      * @param entries_threashold Purge the cache when this number of
@@ -125,8 +128,8 @@ public:
      * the LRU items (e.g., 0.2 --> the oldest 20% items are removed)
      */
     ObjMemCache(unsigned int entries_threshold, float purge_threshold): d_age(0),
-        d_entries_threshold(0), d_purge_threshold(purge_threshold) {
-        d_entries_threshold = entries_threshold >> 1; // * 2
+        d_entries_threshold(entries_threshold), d_purge_threshold(purge_threshold) {
+        // d_entries_threshold = entries_threshold >> 1; // * 2
     }
 
     virtual ~ObjMemCache();

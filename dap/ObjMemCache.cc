@@ -50,7 +50,7 @@ ObjMemCache::~ObjMemCache()
 }
 
 /**
- * @brief Added an object to the cache and associate it with a key
+ * @brief Add an object to the cache and associate it with a key
  *
  * Add the pointer to the cache, purging the cache of the least
  * recently used items if the cache was initialized with a specific
@@ -68,9 +68,8 @@ void ObjMemCache::add(DapObj *obj, const string &key)
     // purge.
     //
     // Bug fix: was using 'd_age > d_entries_threshold' which didn't
-    // work so I switched to the cache.size(). Also, each obj has two
-    // entries, so the threshold is set accordingly in the ctors. This
-    // is a fix for Hyrax-270. jhrg 10/21/16
+    // work so I switched to the cache.size(). This is a fix for Hyrax-270.
+    // jhrg 10/21/16
     if (d_entries_threshold && (cache.size() > d_entries_threshold))
         purge(d_purge_threshold);
 
