@@ -458,45 +458,48 @@ double get_missing_data_value(const Array *src)
 #define ADD_BAND 0
 
 
-Array::Dim_iter getXDim(const libdap::Array *src){
+Array::Dim_iter get_x_dim(const libdap::Array *src){
     Array *a = const_cast<Array*>(src);
-	if (a->dimensions() < 2){
+    int numDims = a->dimensions();
+	if (numDims < 2){
     	stringstream ss;
-    	ss << "Ouch! Retreiving the 'x' dimension for the array ";
+    	ss << "Ouch! Retrieving the 'x' dimension for the array ";
     	a->print_decl(ss,"",false,true,true);
     	ss << " FAILED Because it has less than 2 dimensions";
     	BESDEBUG("scale_function", ss.str());
         throw Error(ss.str());
 	}
-	Array::Dim_iter  end = a->dim_end();
-    Array::Dim_iter xDim = end - 2;
+	Array::Dim_iter  start = a->dim_begin();
+    Array::Dim_iter   xDim = start + numDims - 2;
     return xDim;
 }
-Array::Dim_iter getYDim(const libdap::Array *src){
+Array::Dim_iter get_y_dim(const libdap::Array *src){
     Array *a = const_cast<Array*>(src);
-	if (a->dimensions() < 2){
+    int numDims = a->dimensions();
+	if (numDims < 2){
     	stringstream ss;
-    	ss << "Ouch! Retreiving the 'y' dimension for the array ";
+    	ss << "Ouch! Retrieving the 'y' dimension for the array ";
     	a->print_decl(ss,"",false,true,true);
     	ss << " FAILED Because it has less than 2 dimensions";
     	BESDEBUG("scale_function", ss.str());
         throw Error(ss.str());
 	}
-	Array::Dim_iter  end = a->dim_end();
-    Array::Dim_iter yDim = end - 1;
+	Array::Dim_iter start = a->dim_begin();
+    Array::Dim_iter  yDim = start + numDims - 1;
     return yDim;
 }
 
 bool arrayIsEffectively2D(const libdap::Array *src){
 
     Array *a = const_cast<Array*>(src);
-	if (a->dimensions() == 2)
+    int numDims = a->dimensions();
+	if (numDims == 2)
     	return true;
-	if (a->dimensions() < 2)
+	if (numDims < 2)
     	return false;
 
-    Array::Dim_iter    xDim = getXDim(a);
-    for(Array::Dim_iter thisDim = a->dim_begin(); thisDim<xDim ; thisDim++){
+    Array::Dim_iter    xDim = get_x_dim(a);
+    for(Array::Dim_iter thisDim = a->dim_begin(); thisDim < xDim ; thisDim++){
        unsigned long size = a->dimension_size(thisDim, true);
        if(size>1){
         	return false;
@@ -536,8 +539,8 @@ void read_band_data(const Array *src, GDALRasterBand* band)
  //   unsigned long x = a->dimension_size(a->dim_begin(), true);
  //   unsigned long y = a->dimension_size(a->dim_begin() + 1, true);
 
-    unsigned long x = a->dimension_size(getXDim(a), true);
-    unsigned long y = a->dimension_size(getYDim(a), true);
+    unsigned long x = a->dimension_size(get_x_dim(a), true);
+    unsigned long y = a->dimension_size(get_y_dim(a), true);
 
     a->read();  // Should this code use intern_data()? jhrg 10/11/16
 
