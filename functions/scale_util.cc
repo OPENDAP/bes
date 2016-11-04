@@ -47,7 +47,7 @@
 
 #include <util.h>
 #include <Error.h>
-#include <debug.h>
+#include <BesDebug.h>
 
 #include "ScaleGrid.h"
 
@@ -103,8 +103,8 @@ bool monotonic_and_uniform(const vector<double> &values, double res)
 {
     vector<double>::size_type end_index = values.size() - 1;
     for (vector<double>::size_type i = 0; i < end_index; ++i) {
-        DBG(cerr << "values[" << i+1 << "]: " << values[i+1] << " - values[" << i << "]: " << values[i] << endl);
-        DBG(cerr << values[i+1] - values[i] <<" != res: " << res << endl);
+        BESDEBUG("scale_function", "values[" << i+1 << "]: " << values[i+1] << " - values[" << i << "]: " << values[i] << endl);
+        BESDEBUG("scale_function", values[i+1] - values[i] <<" != res: " << res << endl);
         if (!same_as((values[i+1] - values[i]), res))
             return false;
     }
@@ -457,6 +457,56 @@ double get_missing_data_value(const Array *src)
 
 #define ADD_BAND 0
 
+
+Array::Dim_iter getXDim(const libdap::Array *src){
+    Array *a = const_cast<Array*>(src);
+	if (a->dimensions() < 2){
+    	stringstream ss;
+    	ss << "Ouch! Retreiving the 'x' dimension for the array ";
+    	a->print_decl(ss,"",false,true,true);
+    	ss << " FAILED Because it has less than 2 dimensions";
+    	BESDEBUG("scale_function", ss.str());
+        throw Error(ss.str());
+	}
+	Array::Dim_iter  end = a->dim_end();
+    Array::Dim_iter xDim = end - 2;
+    return xDim;
+}
+Array::Dim_iter getYDim(const libdap::Array *src){
+    Array *a = const_cast<Array*>(src);
+	if (a->dimensions() < 2){
+    	stringstream ss;
+    	ss << "Ouch! Retreiving the 'y' dimension for the array ";
+    	a->print_decl(ss,"",false,true,true);
+    	ss << " FAILED Because it has less than 2 dimensions";
+    	BESDEBUG("scale_function", ss.str());
+        throw Error(ss.str());
+	}
+	Array::Dim_iter  end = a->dim_end();
+    Array::Dim_iter yDim = end - 1;
+    return yDim;
+}
+
+bool arrayIsEffectively2D(const libdap::Array *src){
+
+    Array *a = const_cast<Array*>(src);
+	if (a->dimensions() == 2)
+    	return true;
+	if (a->dimensions() < 2)
+    	return false;
+
+    Array::Dim_iter    xDim = getXDim(a);
+    for(Array::Dim_iter thisDim = a->dim_begin(); thisDim<xDim ; thisDim++){
+       unsigned long size = a->dimension_size(thisDim, true);
+       if(size>1){
+        	return false;
+        }
+    }
+    return true;
+}
+
+
+
 /**
  * @brief Read data from an Array and load it into a GDAL RasterBand
  *
@@ -471,12 +521,23 @@ double get_missing_data_value(const Array *src)
 void read_band_data(const Array *src, GDALRasterBand* band)
 {
     Array *a = const_cast<Array*>(src);
-    if (a->dimensions() != 2)
-        throw Error("Cannot perform geo-spatial operations on an Array ("
-            + a->name() + ") with " + long_to_string(a->dimensions()) + " dimensions.");
 
-    unsigned long x = a->dimension_size(a->dim_begin(), true);
-    unsigned long y = a->dimension_size(a->dim_begin() + 1, true);
+    if (!arrayIsEffectively2D(src)){
+    	stringstream ss;
+    	ss << "Cannot perform geo-spatial operations on an Array (";
+    	ss << a->name() << ") with " << long_to_string(a->dimensions()) << " dimensions.";
+    	ss << "Because the constrained shape of the array: ";
+    	a->print_decl(ss,"",false,true,true);
+    	ss << " Fails to is not effectively just the last two dimensions (x,y)";
+    	BESDEBUG("scale_function", ss.str());
+        throw Error(ss.str());
+    }
+
+ //   unsigned long x = a->dimension_size(a->dim_begin(), true);
+ //   unsigned long y = a->dimension_size(a->dim_begin() + 1, true);
+
+    unsigned long x = a->dimension_size(getXDim(a), true);
+    unsigned long y = a->dimension_size(getYDim(a), true);
 
     a->read();  // Should this code use intern_data()? jhrg 10/11/16
 
