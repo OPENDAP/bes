@@ -25,21 +25,24 @@
 
 #include <cstdlib>
 
+#include <gdal.h>
+#include <gdal_priv.h>
+#include <gdalwarper.h>
+#include <ogrsf_frmts.h>
+#include <ogr_spatialref.h>
+#include <cpl_conv.h>
+#include <cpl_minixml.h>
+#include <vrtdataset.h>
+
 #define DODS_DEBUG
 
-#include "DAP_Dataset.h"
+#include "Geo2DArray.h"
 
 #include "Array.h"
 #include "Grid.h"
 #include "Float64.h"
 
 #include "Error.h"
-#if 0
-#include "ConstraintEvaluator.h"
-#include "Sequence.h"
-#include "Structure.h"
-#include "ServerFunction.h"
-#endif
 
 #include "util.h"
 #include "debug.h"
@@ -47,39 +50,56 @@
 using namespace libdap;
 using namespace std;
 
-#if 0
-#define GOES_TIME_DEBUG FALSE
-#endif
 
 namespace libdap {
 
-DAP_Dataset::DAP_Dataset()
-{
+string datasetInfo( GDALDataset  *poDataset){
+
+    stringstream ss;
+
+    double        adfGeoTransform[6];
+
+    ss << "########## GDALDataset ##########"<< endl;
+
+    ss << "Description: " << poDataset->GetDescription() << endl;
+
+    ss << "Driver: '"<<  poDataset->GetDriver()->GetDescription() << "' "<<  poDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME )<< endl;
+
+    ss << "Size is: [" << poDataset->GetRasterXSize() << "][" << poDataset->GetRasterYSize() << "][" << poDataset->GetRasterCount() << "]"<< endl;
+
+    if( poDataset->GetProjectionRef()  != NULL )
+        ss << "Projection Ref: '" << poDataset->GetProjectionRef() << "'" << endl;
+
+    ss << "GCPProjection: '" << poDataset->GetGCPProjection() << "'" << endl;
+
+    if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
+    {
+        ss << "GeoTransform[6]: " << endl;
+        ss << "    Origin(0,3)    = (" << adfGeoTransform[0]<< "," <<  adfGeoTransform[3] << ")" << endl;
+        ss << "    PixelSize(1,5) = (" << adfGeoTransform[1] << "," <<  adfGeoTransform[5] << ")" << endl;
+        ss << "    Mysto(2,4)     = (" << adfGeoTransform[2] << "," <<  adfGeoTransform[4] << ")" << endl;
+
+
+    }
+
+    return ss.str();
 }
 
-/************************************************************************/
-/*                           ~DAP_Dataset()                             */
-/************************************************************************/
-
 /**
- * \brief Destroy an open DAP_Dataset object.
+ * \brief Destroy an open Geo2DArray object.
  *
- * This is the accepted method of closing a DAP_Dataset dataset and
+ * This is the accepted method of closing a Geo2DArray dataset and
  * deallocating all resources associated with it.
  */
 
-DAP_Dataset::~DAP_Dataset()
+Geo2DArray::~Geo2DArray()
 {
 }
 
-/************************************************************************/
-/*                           DAP_Dataset()                              */
-/************************************************************************/
-
 /**
- * \brief Create an DAP_Dataset object.
+ * \brief Create an Geo2DArray object.
  *
- * This is the accepted method of creating a DAP_Dataset object and
+ * This is the accepted method of creating a Geo2DArray object and
  * allocating all resources associated with it.
  *
  * @param id The coverage identifier.
@@ -88,14 +108,24 @@ DAP_Dataset::~DAP_Dataset()
  * daily data, the user could specify multiple days range in request.
  * Each day is seemed as one field.
  *
- * @return A DAP_Dataset object.
+ * @return A Geo2DArray object.
  */
-
-DAP_Dataset::DAP_Dataset(const string& id, vector<int> &rBandList) :
-        AbstractDataset(id, rBandList)
+Geo2DArray::Geo2DArray(const string &n, BaseType *v, Array *lat, Array *lon, bool is_dap4 /*false*/) :
+		Array(n, v, is_dap4),
+		d_lat(lat), d_lon(lon),
+		d_missing_value(0),
+		mb_GeoTransformSet(false)
 {
-    md_MissingValue = 0;
-    mb_GeoTransformSet = FALSE;
+
+}
+
+Geo2DArray::Geo2DArray(const string &n, const string &d, BaseType *v, Array *lat, Array *lon, bool is_dap4 /*false*/) :
+				Array(n, d, v, is_dap4),
+				d_lat(lat), d_lon(lon),
+				d_missing_value(0),
+				mb_GeoTransformSet(false)
+{
+
 }
 
 /**
@@ -103,9 +133,12 @@ DAP_Dataset::DAP_Dataset(const string& id, vector<int> &rBandList) :
  *
  *
  */
-
-DAP_Dataset::DAP_Dataset(Array *src, Array *lat, Array *lon) :
+#if 0
+Geo2DArray::Geo2DArray(Array *src, Array *lat, Array *lon) :
         AbstractDataset(), m_src(src), m_lat(lat), m_lon(lon)
+#endif
+void
+Geo2DArray::initialize()
 {
 #if 1
     // TODO Remove these?
@@ -117,14 +150,14 @@ DAP_Dataset::DAP_Dataset(Array *src, Array *lat, Array *lon) :
     CPLSetErrorHandler(CPLQuietErrorHandler);
 
     // Read this from the 'missing_value' or '_FillValue' attributes
-    string missing_value = m_src->get_attr_table().get_attr("missing_value");
+    string missing_value = get_attr_table().get_attr("missing_value");
     if (missing_value.empty())
-        missing_value = m_src->get_attr_table().get_attr("_FillValue");
+        missing_value = get_attr_table().get_attr("_FillValue");
 
     if (!missing_value.empty())
-        md_MissingValue = atof(missing_value.c_str());
+        d_missing_value = atof(missing_value.c_str());
     else
-        md_MissingValue = 0;
+        d_missing_value = 0;
 
     mb_GeoTransformSet = FALSE;
 }
@@ -149,20 +182,21 @@ DAP_Dataset::DAP_Dataset(Array *src, Array *lat, Array *lon) :
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::InitialDataset(const int isSimple)
+CPLErr Geo2DArray::InitializeDataset(const int isSimple)
 {
-    DBG(cerr << "In InitialDataset" << endl);
+    DBG(cerr << "InitialDataset() - BEGIN" << endl);
 
     // Might break that operation out so the remap is a separate call
-    if (CE_None != SetNativeCRS() || CE_None != SetGeoTransform())
-        throw Error("Could not set the dataset native CRS or the GeoTransform.");
+    if (CE_None != set_native_crs() || CE_None != SetGeoTransform())
+        throw Error("Geo2DArray::InitialDataset() - Could not set the dataset native CRS or the GeoTransform.");
 
-    DBG(cerr << "Before SetGDALDataset" << endl);
+    DBG(cerr << "InitialDataset() - Calling SetGDALDataset()" << endl);
 
-    if (CE_None != SetGDALDataset(isSimple)) {
+    if (CE_None != set_gdal_dataset(isSimple)) {
         GDALClose(maptr_DS.release());
-        throw Error("Could not reproject the dataset.");
+        throw Error("Geo2DArray::InitialDataset() - Could not re-project the dataset.");
     }
+    DBG(cerr << "InitialDataset() - END" << endl);
 
     return CE_None;
 }
@@ -174,11 +208,11 @@ CPLErr DAP_Dataset::InitialDataset(const int isSimple)
 /**
  * @brief Build a DAP Array from the GDALDataset
  */
-Array *DAP_Dataset::GetDAPArray()
+Array *Geo2DArray::GetDAPArray()
 {
-    DBG(cerr << "In GetDAPArray" << endl);
-    DBG(cerr << "maptr_DS: " << maptr_DS.get() << endl);
-    DBG(cerr << "raster band count: " << maptr_DS->GetRasterCount() << endl);
+    DBG(cerr << "GetDAPArray() - BEGIN" << endl);
+    DBG(cerr << "GetDAPArray() - maptr_DS: " << maptr_DS.get() << endl);
+    DBG(cerr << "GetDAPArray() - raster band count: " << maptr_DS->GetRasterCount() << endl);
 
     // There should be just one band
     if (maptr_DS->GetRasterCount() != 1)
@@ -189,14 +223,14 @@ Array *DAP_Dataset::GetDAPArray()
     int y = maptr_DS->GetRasterYSize();
     GDALRasterBand *rb = maptr_DS->GetRasterBand(1);
     if (!rb)
-        throw Error("In function swath2grid(), could not access the raster data.");
+        throw Error("Geo2DArray::GetDAPArray() - In function swath2grid(), could not access the raster data.");
 
-    // Since the DAP_Dataset code works with all data values as doubles,
+    // Since the Geo2DArray code works with all data values as doubles,
     // Assume the raster band has GDAL type GDT_Float64, but test anyway
     if (GDT_Float64 != rb->GetRasterDataType())
         throw Error("In function swath2grid(), expected raster data to be of type double.");
 
-    DBG(cerr << "Destination array will have dimensions: " << x << ", " << y << endl);
+    DBG(cerr << "GetDAPArray() - Destination array will have dimensions: " << x << ", " << y << endl);
 
     Array *a = new Array(m_src->name(), new Float64(m_src->name()));
 
@@ -207,7 +241,7 @@ Array *DAP_Dataset::GetDAPArray()
     ++i;
 
     if (i == m_src->dim_end())
-        throw Error("In function swath2grid(), expected source array to have two dimensions (2).");
+        throw Error("Geo2DArray::GetDAPArray() - In function swath2grid(), expected source array to have two dimensions (2).");
 
     a->append_dim(y, m_src->dimension_name(i));
 
@@ -238,11 +272,11 @@ Array *DAP_Dataset::GetDAPArray()
     // This sets the instance variable that holds the geotransform coefs. These
     // are needed by the GetDAPGrid() method.
     if (CE_None != maptr_DS->GetGeoTransform (m_geo_transform_coef))
-        throw Error("In function swath2grid(), could not access the geo transform data.");
+        throw Error("Geo2DArray::GetDAPArray() - In function swath2grid(), could not access the geo transform data.");
 
-    DBG(cerr << "projection_info: " << projection_info << endl);
-    DBG(cerr << "gcp_projection_info: " << gcp_projection_info << endl);
-    DBG(cerr << "geo_transform coefs: " << double_to_string(m_geo_transform_coef[0]) << endl);
+    DBG(cerr << "GetDAPArray() - projection_info: " << projection_info << endl);
+    DBG(cerr << "GetDAPArray() - gcp_projection_info: " << gcp_projection_info << endl);
+    DBG(cerr << "GetDAPArray() - geo_transform coefs: " << double_to_string(m_geo_transform_coef[0]) << endl);
 
     AttrTable &attr = a->get_attr_table();
     attr.append_attr("projection", "String", projection_info);
@@ -250,6 +284,7 @@ Array *DAP_Dataset::GetDAPArray()
     for (unsigned int i = 0; i < sizeof(m_geo_transform_coef); ++i) {
         attr.append_attr("geo_transform_coefs", "String", double_to_string(m_geo_transform_coef[i]));
     }
+    DBG(cerr << "GetDAPArray() - END" << endl);
 
     return a;
 }
@@ -261,9 +296,9 @@ Array *DAP_Dataset::GetDAPArray()
 /**
  * @brief Build a DAP Grid from the GDALDataset
  */
-Grid *DAP_Dataset::GetDAPGrid()
+Grid *Geo2DArray::GetDAPGrid()
 {
-    DBG(cerr << "In GetDAPGrid" << endl);
+    DBG(cerr << "GetDAPGrid() - BEGIN" << endl);
 
     Array *a = GetDAPArray();
     Array::Dim_iter i = a->dim_begin();
@@ -309,6 +344,8 @@ Grid *DAP_Dataset::GetDAPGrid()
     lat->set_value(&data[0], lat_size);
     g->add_var_nocopy(lat, maps);
 
+    DBG(cerr << "GetDAPGrid() - END" << endl);
+
     return g;
 }
 
@@ -331,11 +368,13 @@ Grid *DAP_Dataset::GetDAPGrid()
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::SetNativeCRS()
+CPLErr Geo2DArray::set_native_crs()
 {
-    DBG(cerr << "In SetNativeCRS" << endl);
+    DBG(cerr << "SetNativeCRS() - BEGIN" << endl);
 
     mo_NativeCRS.SetWellKnownGeogCS("WGS84");
+
+    DBG(cerr << "SetNativeCRS() - END" << endl);
 
     return CE_None;
 }
@@ -355,9 +394,9 @@ CPLErr DAP_Dataset::SetNativeCRS()
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::SetGeoTransform()
+CPLErr Geo2DArray::set_geo_transform()
 {
-    DBG(cerr << "In SetGeoTransform" << endl);
+    DBG(cerr << "SetGeoTransform() - BEGIN" << endl);
 
     // TODO Look at this; is this correct
     // Assume the array is two dimensional
@@ -368,13 +407,13 @@ CPLErr DAP_Dataset::SetGeoTransform()
     int nYSize = m_src->dimension_size(i + 1, true);
 #endif
     // Data are in row-major order, so the first dim is the Y-axis value
-    int nYSize = m_src->dimension_size(i, true);
-    int nXSize = m_src->dimension_size(i + 1, true);
+    int nXSize = m_src->dimension_size(i, true);
+    int nYSize = m_src->dimension_size(i + 1, true);
 
     mi_SrcImageXSize = nXSize;
     mi_SrcImageYSize = nYSize;
 
-    SetGeoBBoxAndGCPs(nXSize, nYSize);
+    set_geo_bbox_and_gcp(nXSize, nYSize);
 
     double resX, resY;
     if (mdSrcGeoMinX > mdSrcGeoMaxX && mdSrcGeoMinX > 0 && mdSrcGeoMaxX < 0)
@@ -393,8 +432,8 @@ CPLErr DAP_Dataset::SetGeoTransform()
 
     mi_RectifiedImageYSize = (int) fabs((mdSrcGeoMaxY - mdSrcGeoMinY) / res) + 1;
 
-    DBG(cerr << "Source image size: " << nXSize << ", " << nYSize << endl);
-    DBG(cerr << "Rectified image size: " << mi_RectifiedImageXSize << ", " << mi_RectifiedImageYSize << endl);
+    DBG(cerr << "SetGeoTransform() - Source image size: " << nXSize << ", " << nYSize << endl);
+    DBG(cerr << "SetGeoTransform() - Rectified image size: " << mi_RectifiedImageXSize << ", " << mi_RectifiedImageYSize << endl);
 
     md_Geotransform[0] = mdSrcGeoMinX;
     md_Geotransform[1] = res;
@@ -403,6 +442,8 @@ CPLErr DAP_Dataset::SetGeoTransform()
     md_Geotransform[4] = 0;
     md_Geotransform[5] = -res;
     mb_GeoTransformSet = TRUE;
+
+    DBG(cerr << "SetGeoTransform() - END" << endl);
 
     return CE_None;
 }
@@ -422,9 +463,9 @@ CPLErr DAP_Dataset::SetGeoTransform()
  * @return CE_None on success or CE_Failure on failure.
  */
 
-void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
+void Geo2DArray::set_geo_bbox_and_gcp(int nXSize, int nYSize)
 {
-    DBG(cerr << "In SetGeoBBoxAndGCPs" << endl);
+    DBG(cerr << "SetGeoBBoxAndGCPs() - BEGIN" << endl);
 
     // reuse the Dim_iter for both lat and lon arrays
     Array::Dim_iter i = m_lat->dim_begin();
@@ -434,8 +475,11 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
     int nLonXSize = m_lon->dimension_size(i, true);
     int nLonYSize = m_lon->dimension_size(i + 1, true);
 
+    DBG(cerr << "SetGeoBBoxAndGCPs() - nXSize: "<< nXSize << "  nLatXSize: " << nLatXSize << endl );
+    DBG(cerr << "SetGeoBBoxAndGCPs() - nYSize: "<< nYSize << "  nLatYSize: " << nLatYSize << endl );
+
     if (nXSize != nLatXSize || nLatXSize != nLonXSize || nYSize != nLatYSize || nLatYSize != nLonYSize)
-        throw Error("The size of latitude/longitude and data field does not match.");
+        throw Error("SetGeoBBoxAndGCPs() - The size of latitude/longitude and data field does not match.");
 
 #if 0
     /*
@@ -466,7 +510,7 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
     double *dataLat = extract_double_array(m_lat);
     double *dataLon = extract_double_array(m_lon);
 
-    DBG(cerr << "Past lat/lon data read" << endl);
+    DBG(cerr << "SetGeoBBoxAndGCPs() - Past lat/lon data read" << endl);
 
     try {
 
@@ -487,7 +531,7 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
                 double x = *(dataLon + (iLine * nYSize) + iPixel);
                 double y = *(dataLat + (iLine * nYSize) + iPixel);
 
-                if (isValidLongitude(x) && isValidLatitude(y)) {
+                if (is_valid_lon(x) && is_valid_lat(y)) {
                     char pChr[64];
                     snprintf(pChr, 64, "%d", ++nGCPs);
                     GDALInitGCPs(1, &gdalCGP);
@@ -520,7 +564,7 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
     delete[] dataLat;
     delete[] dataLon;
 
-    DBG(cerr << "Leaving SetGeoBBoxAndGCPs" << endl);
+    DBG(cerr << "SetGeoBBoxAndGCPs() - END" << endl);
 }
 
 /************************************************************************/
@@ -533,17 +577,20 @@ void DAP_Dataset::SetGeoBBoxAndGCPs(int nXSize, int nYSize)
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::SetGDALDataset(const int isSimple)
+CPLErr Geo2DArray::set_gdal_dataset(const int isSimple)
 {
-    DBG(cerr << "In SetGDALDataset" << endl);
+    DBG(cerr << "SetGDALDataset() - BEGIN" << endl);
 
     // NB: mi_RectifiedImageXSize & Y are set in SetGeoTransform()
     GDALDataType eBandType = GDT_Float64;
     // VRT, which was used in the original sample code, is not supported in this context, so I used MEM
-    GDALDriverH poDriver = GDALGetDriverByName("MEM");
+    string driverName = "MEM";
+    GDALDriverH poDriver = GDALGetDriverByName(driverName.c_str());
     if (!poDriver) {
-        throw Error("Failed to get MEM driver (" + string(CPLGetLastErrorMsg()) + ").");
+        throw Error("Failed to get '"+driverName+"' driver (" + string(CPLGetLastErrorMsg()) + ").");
     }
+    DBG(cerr << "SetGDALDataset() - Acquired '"+driverName+"' driver" << endl);
+
 
     GDALDataset* satDataSet = (GDALDataset*) GDALCreate(poDriver, "", mi_RectifiedImageXSize, mi_RectifiedImageYSize,
             1, eBandType, NULL);
@@ -551,33 +598,49 @@ CPLErr DAP_Dataset::SetGDALDataset(const int isSimple)
         GDALClose(poDriver);
         throw Error("Failed to create MEM dataSet (" + string(CPLGetLastErrorMsg()) + ").");
     }
+    DBG(cerr << "SetGDALDataset() - Created GDALDataset" << endl);
 
     GDALRasterBand *poBand = satDataSet->GetRasterBand(1);
-    poBand->SetNoDataValue(md_MissingValue);
+    poBand->SetNoDataValue(d_missing_value);
 
+    DBG(cerr << "SetGDALDataset() - Reading data" << endl);
     m_src->read();
     double *data = extract_double_array(m_src);
+    DBG(cerr << "SetGDALDataset() - Data read." << endl);
+
+
+    DBG(cerr << "SetGDALDataset() - Calling RasterIO(GF_Write,0,0,"<<
+            mi_RectifiedImageXSize<<","<< mi_RectifiedImageYSize<< ",data,"<<
+            mi_SrcImageXSize<< ","<< mi_SrcImageYSize << ","<< eBandType << ",0,0)" << endl);
+
+
     if (CE_None != poBand->RasterIO(GF_Write, 0, 0, mi_RectifiedImageXSize, mi_RectifiedImageYSize, data,
                     mi_SrcImageXSize, mi_SrcImageYSize, eBandType, 0, 0)) {
         GDALClose((GDALDatasetH) satDataSet);
-        throw Error("Failed to set satellite data band to MEM DataSet (" + string(CPLGetLastErrorMsg()) + ").");
+        throw Error("Failed to set satellite data band to '"+driverName+"' DataSet (" + string(CPLGetLastErrorMsg()) + ").");
     }
     delete[] data;
+    DBG(cerr << "SetGDALDataset() -  RasterIO call completed" << endl);
+
 
     //set GCPs for this VRTDataset
-    if (CE_None != SetGCPGeoRef4VRTDataset(satDataSet)) {
+    if (CE_None != set_gcp_georef(satDataSet)) {
         GDALClose((GDALDatasetH) satDataSet);
         throw Error("Could not georeference the virtual dataset (" + string(CPLGetLastErrorMsg()) + ").");
     }
 
-    DBG(cerr << "satDataSet: " << satDataSet << endl);
+    DBG(cerr << "SetGDALDataset() - satDataSet: " << satDataSet << endl);
 
     maptr_DS.reset(satDataSet);
 
-    if (isSimple)
-        return CE_None;
 
-    return RectifyGOESDataSet();
+    CPLErr err_code = CE_None;
+    if (!isSimple)
+        err_code = rectify_dataset();
+
+    DBG(cerr << "SetGDALDataset() - END" << endl);
+
+    return err_code;
 }
 
 /************************************************************************/
@@ -595,7 +658,7 @@ CPLErr DAP_Dataset::SetGDALDataset(const int isSimple)
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::SetGCPGeoRef4VRTDataset(GDALDataset* poVDS)
+CPLErr Geo2DArray::set_gcp_georef(GDALDataset* poVDS)
 {
     char* psTargetSRS;
     mo_NativeCRS.exportToWkt(&psTargetSRS);
@@ -635,7 +698,7 @@ CPLErr DAP_Dataset::SetGCPGeoRef4VRTDataset(GDALDataset* poVDS)
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::SetMetaDataList(GDALDataset* hSrcDS)
+CPLErr Geo2DArray::SetMetaDataList(GDALDataset* hSrcDS)
 {
     // TODO Remove
 #if 0
@@ -667,7 +730,7 @@ CPLErr DAP_Dataset::SetMetaDataList(GDALDataset* hSrcDS)
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::GetGeoMinMax(double geoMinMax[])
+CPLErr Geo2DArray::GetGeoMinMax(double geoMinMax[])
 {
     if (!mb_GeoTransformSet)
         return CE_Failure;
@@ -693,35 +756,39 @@ CPLErr DAP_Dataset::GetGeoMinMax(double geoMinMax[])
  * @return CE_None on success or CE_Failure on failure.
  */
 
-CPLErr DAP_Dataset::RectifyGOESDataSet()
+CPLErr Geo2DArray::rectify_dataset()
 {
-    DBG(cerr << "In RectifyGOESDataSet" << endl);
+    DBG(cerr << "rectify_dataset() - BEGIN" << endl);
 
     char *pszDstWKT;
     mo_NativeCRS.exportToWkt(&pszDstWKT);
+    DBG(cerr << "rectify_dataset() - pszDstWKT: '" << pszDstWKT << "'" << endl);
 
-    GDALDriverH poDriver = GDALGetDriverByName("VRT"); // MEM
+    string driverName="VRT";
+    GDALDriverH poDriver = GDALGetDriverByName(driverName.c_str()); // VRT
     GDALDataset* rectDataSet = (GDALDataset*) GDALCreate(poDriver, "", mi_RectifiedImageXSize, mi_RectifiedImageYSize,
             maptr_DS->GetRasterCount(), maptr_DS->GetRasterBand(1)->GetRasterDataType(), NULL);
     if (NULL == rectDataSet) {
         GDALClose(poDriver);
         OGRFree(pszDstWKT);
-        throw Error("Failed to create \"MEM\" dataSet.");
+        throw Error("Geo2DArray::RectifyGOESDataSet(): Failed to create \""+driverName+"\" dataSet.");
     }
+    DBG(cerr << "rectify_dataset() - Got '"<< driverName << "' driver."<< endl);
+
 
     rectDataSet->SetProjection(pszDstWKT);
     rectDataSet->SetGeoTransform(md_Geotransform);
 
-    DBG(cerr << "rectDataSet: " << rectDataSet << endl);
-    DBG(cerr << "satDataSet: " << maptr_DS.get() << endl);
+    DBG(cerr << "rectify_dataset() - rectDataSet:\n" << datasetInfo(rectDataSet) << endl);
+    DBG(cerr << "rectify_dataset() - satDataSet:\n" << datasetInfo(maptr_DS.get()) << endl);
 
     // FIXME Magic value of 0.125
     if (CE_None != GDALReprojectImage(maptr_DS.get(), NULL, rectDataSet, pszDstWKT,
-            GRA_Lanczos /*GRA_NearestNeighbour*/, 0, 0.0/*0.125*/, NULL, NULL, NULL)) {
+            GRA_NearestNeighbour, 0, 0.125, GDALTermProgress, NULL, NULL)) {
         GDALClose(rectDataSet);
-        GDALClose(poDriver);
+        GDALClose(poDriver); // I had to comment this out to stop some seg fault think.. Weird...
         OGRFree(pszDstWKT);
-        throw Error("Failed to re-project satellite data from GCP CRS to geographical CRS.");
+        throw Error("Geo2DArray::RectifyGOESDataSet() - Failed to re-project satellite data from GCP CRS to geographical CRS.");
     }
 
     OGRFree(pszDstWKT);
@@ -729,9 +796,11 @@ CPLErr DAP_Dataset::RectifyGOESDataSet()
 
     maptr_DS.reset(rectDataSet);
 
-    DBG(cerr << "Leaving RectifyGOESDataSet" << endl);
+    DBG(cerr << "rectify_dataset() - END" << endl);
 
     return CE_None;
 }
+
+
 
 } // namespace libdap

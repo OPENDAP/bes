@@ -74,10 +74,14 @@ public:
 	{
 	}
 
-	My2DPoint& operator =(const My2DPoint& p)
+	My2DPoint& operator =(const My2DPoint& rhs)
 	{
-		mi_X = p.mi_X;
-		mi_Y = p.mi_Y;
+	    // Added jhrg 9/28/16
+	    if (this == &rhs)
+	        return *this;
+
+		mi_X = rhs.mi_X;
+		mi_Y = rhs.mi_Y;
 		return *this;
 	}
 };
@@ -113,11 +117,15 @@ public:
 	{
 
 	}
-	BoundingBox& operator =(const BoundingBox& box)
+	BoundingBox& operator =(const BoundingBox& rhs)
 	{
-		mo_LowerLeftPT = box.mo_LowerLeftPT;
-		mo_UpperRightPT = box.mo_UpperRightPT;
-		mo_CRS = box.mo_CRS;
+	    // Added jhrg 9/28/16
+	    if (this == &rhs)
+	        return *this;
+
+		mo_LowerLeftPT = rhs.mo_LowerLeftPT;
+		mo_UpperRightPT = rhs.mo_UpperRightPT;
+		mo_CRS = rhs.mo_CRS;
 		return *this;
 	}
 

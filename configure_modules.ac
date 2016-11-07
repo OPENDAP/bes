@@ -725,7 +725,8 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
-		 functions/swath2grid/Makefile])
+		 functions/geo-functions/Makefile
+		 functions/geo-functions/unit-tests/Makefile])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])

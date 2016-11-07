@@ -109,3 +109,15 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_4.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_5.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_6.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_7.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods.bescmd)
+AT_BESCMD_RESPONSE_PATTERN_TEST(bescmd/scale_array.dods2.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods3.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods4.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods5.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods6.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods2.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods3.bescmd)
+
