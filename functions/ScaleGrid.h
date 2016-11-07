@@ -28,6 +28,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <gdal.h>
 #include <gdal_priv.h>
