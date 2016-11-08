@@ -456,60 +456,79 @@ double get_missing_data_value(const Array *src)
     return missing_data;
 }
 
-#define ADD_BAND 0
-
-
-Array::Dim_iter get_x_dim(const libdap::Array *src){
+/**
+ * @brief Get the libdap Array::Dim_iter for the Array's X dimension
+ *
+ * @param src The Array
+ * @return The libdap Array::Dim_iter
+ */
+Array::Dim_iter get_x_dim(const libdap::Array *src)
+{
     Array *a = const_cast<Array*>(src);
     int numDims = a->dimensions();
-	if (numDims < 2){
-    	stringstream ss;
-    	ss << "Ouch! Retrieving the 'x' dimension for the array ";
-    	a->print_decl(ss,"",false,true,true);
-    	ss << " FAILED Because it has less than 2 dimensions";
-    	BESDEBUG("scale_function", ss.str());
+    if (numDims < 2) {
+        stringstream ss;
+        ss << "Ouch! Retrieving the 'x' dimension for the array ";
+        a->print_decl(ss, "", false, true, true);
+        ss << " FAILED Because it has less than 2 dimensions";
+        BESDEBUG("scale_function", ss.str());
         throw Error(ss.str());
-	}
-	Array::Dim_iter  start = a->dim_begin();
-    Array::Dim_iter   xDim = start + numDims - 2;
+    }
+    Array::Dim_iter start = a->dim_begin();
+    Array::Dim_iter xDim = start + numDims - 2;
     return xDim;
 }
-Array::Dim_iter get_y_dim(const libdap::Array *src){
+
+/**
+ * @brief Get the libdap Array::Dim_iter for the Array's Y dimension
+ *
+ * @param src The Array
+ * @return The libdap Array::Dim_iter
+ */
+Array::Dim_iter get_y_dim(const libdap::Array *src)
+{
     Array *a = const_cast<Array*>(src);
     int numDims = a->dimensions();
-	if (numDims < 2){
-    	stringstream ss;
-    	ss << "Ouch! Retrieving the 'y' dimension for the array ";
-    	a->print_decl(ss,"",false,true,true);
-    	ss << " FAILED Because it has less than 2 dimensions";
-    	BESDEBUG("scale_function", ss.str());
+    if (numDims < 2) {
+        stringstream ss;
+        ss << "Ouch! Retrieving the 'y' dimension for the array ";
+        a->print_decl(ss, "", false, true, true);
+        ss << " FAILED Because it has less than 2 dimensions";
+        BESDEBUG("scale_function", ss.str());
         throw Error(ss.str());
-	}
-	Array::Dim_iter start = a->dim_begin();
-    Array::Dim_iter  yDim = start + numDims - 1;
+    }
+    Array::Dim_iter start = a->dim_begin();
+    Array::Dim_iter yDim = start + numDims - 1;
     return yDim;
 }
 
-bool arrayIsEffectively2D(const libdap::Array *src){
+/**
+ * @brief Is this a 2D Array?
+ *
+ * Look at this Array and determine if it is 2D or 'effectively' 2D.
+ * The latter is true when the left-most dimensions all have a size
+ * of one (1).
+ *
+ * @param src The Array
+ * @return True if the Array is effectively/actually 2D, false otherwise.
+ */
+bool arrayIsEffectively2D(const libdap::Array *src)
+{
 
     Array *a = const_cast<Array*>(src);
     int numDims = a->dimensions();
-	if (numDims == 2)
-    	return true;
-	if (numDims < 2)
-    	return false;
+    if (numDims == 2) return true;
+    if (numDims < 2) return false;
 
-    Array::Dim_iter    xDim = get_x_dim(a);
-    for(Array::Dim_iter thisDim = a->dim_begin(); thisDim < xDim ; thisDim++){
-       unsigned long size = a->dimension_size(thisDim, true);
-       if(size>1){
-        	return false;
+    Array::Dim_iter xDim = get_x_dim(a);
+    for (Array::Dim_iter thisDim = a->dim_begin(); thisDim < xDim; thisDim++) {
+        unsigned long size = a->dimension_size(thisDim, true);
+        if (size > 1) {
+            return false;
         }
     }
     return true;
 }
-
-
 
 /**
  * @brief Read data from an Array and load it into a GDAL RasterBand
@@ -585,6 +604,8 @@ void add_band_data(const Array *src, GDALDataset* ds)
     if (error != CPLE_None)
         throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
 }
+
+#define ADD_BAND 0
 
 /**
  * @brief Build a GDAL Dataset object for this data/lon/lat combination
