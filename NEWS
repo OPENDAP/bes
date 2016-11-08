@@ -1,3 +1,20 @@
+News for Version 3.17.3
+
+Added an in-memory cache for the handlers
+
+Added a logrotate file to the rpm package
+
+Added the Response Cache (which is really used for function responses only
+at this point).
+
+Fixed Hyrax-254. This bug caused random behavior when accessing
+aggregations.
+
+Fixed a problem with ASCII responses when one or more dimensions of an
+N-dim array had only one element.
+
+New edits for the HDF5 handler
+
 News for Version 3.17.2
 
 Minor changes for the source distribution (no changes to the software,

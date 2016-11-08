@@ -43,6 +43,10 @@ bin_SCRIPTS = bes-config bes-config-pkgconfig
 # with-out a second underscore.
 init_ddir = $(sysconfdir)/rc.d/init.d
 init_d_SCRIPTS = besd
+
+logrotate_ddir = $(sysconfdir)/logrotate.d
+logrotate_d_DATA = besd.logrotate
+
 CLEANFILES = $(init_d_SCRIPTS)
 
 pkgconfigdir=$(libdir)/pkgconfig
@@ -52,7 +56,7 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = apache hello_world doxy.conf.in bes.spec \
-OSX_Resources bes-config-pkgconfig
+OSX_Resources bes-config-pkgconfig besd.logrotate
 
 server-tests:
 	cd cmdln && make server-tests

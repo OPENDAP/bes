@@ -34,7 +34,9 @@
 #include <string>
 #include <map>
 
-#include <DapObj.h>
+namespace libdap {
+    class DapObj;
+}
 
 //namespace bes {
 
@@ -68,6 +70,14 @@
  * When an object is removed from the cache using remove() or purge(),
  * it is deleted.
  *
+ * @note The cache uses an unsigned long long to track the age of
+ * items in the cache. It's possible that numbers could wrap around
+ * (although that would be a very long-running process) in which case
+ * the code will think that the newest objects in the cache are the
+ * oldest and remove them. After d_entries_threshold, this will
+ * even itself out and the cache will correctly purge the oldest
+ * entries.
+ *
  */
 class ObjMemCache {
 private:
@@ -77,13 +87,13 @@ private:
 
         // We need the string so that we can erase the index entry easily
         Entry(libdap::DapObj *o, const std::string &n): d_obj(o), d_name(n) { }
-        // deleting an Entry deletes teh thing it references
+        // deleting an Entry deletes the thing it references
         ~Entry() { delete d_obj; d_obj = 0;}
     };
 
-    unsigned int d_count;
-    unsigned int d_entries_threshold;
-    float d_purge_threshold;
+    unsigned long long d_age;           // When obj was add or last accessed
+    unsigned int d_entries_threshold;   // no more than this num of entries
+    float d_purge_threshold;            // free up this fraction of the cache
 
     typedef std::pair<unsigned int, Entry*> cache_pair_t;  // used by map::insert()
     typedef std::map<unsigned int, Entry*> cache_t;
@@ -105,10 +115,11 @@ public:
      * cache size in add().
      * @see purge().
      */
-    ObjMemCache(): d_count(0), d_entries_threshold(0), d_purge_threshold(0.2) { }
+    ObjMemCache(): d_age(0), d_entries_threshold(0), d_purge_threshold(0.2) { }
 
     /**
      * @brief Initialize the DapObj cache to use an item count threshold
+     *
      * The purge() method will be automatically run whenever the threshold
      * value is exceeded and add() is called.
      * @param entries_threashold Purge the cache when this number of
@@ -116,8 +127,10 @@ public:
      * @param purge_threshold When purging items, remove this fraction of
      * the LRU items (e.g., 0.2 --> the oldest 20% items are removed)
      */
-    ObjMemCache(unsigned int entries_threshold, float purge_threshold): d_count(0),
-        d_entries_threshold(entries_threshold), d_purge_threshold(purge_threshold) { }
+    ObjMemCache(unsigned int entries_threshold, float purge_threshold): d_age(0),
+        d_entries_threshold(entries_threshold), d_purge_threshold(purge_threshold) {
+        // d_entries_threshold = entries_threshold >> 1; // * 2
+    }
 
     virtual ~ObjMemCache();
 
