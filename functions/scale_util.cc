@@ -489,7 +489,7 @@ Array::Dim_iter get_y_dim(const libdap::Array *src){
     return yDim;
 }
 
-bool arrayIsEffectively2D(const libdap::Array *src){
+bool array_is_effectively_2D(const libdap::Array *src){
 
     Array *a = const_cast<Array*>(src);
     int numDims = a->dimensions();
@@ -525,7 +525,7 @@ void read_band_data(const Array *src, GDALRasterBand* band)
 {
     Array *a = const_cast<Array*>(src);
 
-    if (!arrayIsEffectively2D(src)){
+    if (!array_is_effectively_2D(src)){
     	stringstream ss;
     	ss << "Cannot perform geo-spatial operations on an Array (";
     	ss << a->name() << ") with " << long_to_string(a->dimensions()) << " dimensions.";
