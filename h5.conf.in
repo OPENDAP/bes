@@ -127,33 +127,78 @@ H5.EnableFillValueCheck=true
 # Also this key should only be used when the H5.EnableCF key is set to true.
 H5.CheckIgnoreObj=false
 
-# Caching, this is "cloned" from the netCDF handler..
-#
-# The HDF5 handler can cache (in memory) many of the different
-# responses it builds. If the H5.CacheEntries value is zero, the cache
-# is turned off. Setting the H5.CacheEntries to a value greater than
-# zero enables caching in memory that number of responses. The cache
+# Caching 
+# 1. Caching DAP metadata responses. 
+# The HDF5 handler can cache (in memory)DDS,DAS and DMR 
+# responses it builds. If the H5.MetaDataMemCacheEntries value is zero, the cache
+# is turned off. Setting the H5.MetaDataMemCacheEntries to a value greater than
+# zero enables caching DDS,DAS and DMR reponses in memory. The cache
 # uses a LRU policy for purging old entries; tune its behavior by
 # changing the value and the CachePurgeLevel value below. Note that
 # this feature is on by default.
 
-H5.MetaDataMemCacheEntries  = 400
-H5.LargeDataMemCacheEntries = 100 
-H5.SmallDataMemCacheEntries  = 400
+H5.MetaDataMemCacheEntries=400
+
+
+# 2. Caching the data values of HDF5 coordinate variables or specific variables.
+# The HDF5 handler also provides a way for the data service agents to 
+# cache the data values of coordinate variables or specific variables.
+# WARNING: 
+# 1) Since this is an advanced feature, we turn off this feature by default.
+# Advanced users should read the description and change the H5.LargeDataMemCacheEntries and
+# H5.SmallDataMemCacheEntries to an integer value greater than 0. 
+# 2) This feature only takes effect when the EnableCF key is set to true.
+#
+# 2.1 Caching the latitude/longitude coordinate variables and specific data variables
+#
+# Compared with other coordinate variables, arrays to store latitude/longitude are usually large 
+# and arrays to store data variables in the memory cache are also relatively large.
+# So we use the BES key name H5.LargeDataMemCacheEntries .
+# change the following line to something like H5.LargeDataMemCacheEntries=20 if using this feature.
+H5.LargeDataMemCacheEntries=0
+#H5.LargeDataMemCacheEntries=20
+
+#
+# By turning on the H5.LargeDataMemCacheConfig key to be true, one can provide a configuration file 
+# to tell the handler whether and how one wants to store the latitude/longitude and other variable values.
+# 
+# BES key H5.LargeDataMemCacheConfig, H5.DatacachePath, H5.LargeDataMemCacheFileName should be used together
+# to tune this feature. 
+# 
+# H5.DataCachePath tells the handler where the configuration file is located. It should be a full path of
+# a directory (such as /tmp) in a server Hyrax is installed.
+#
+# H5.LargeDataMemCacheFileName provides the configuration file name(such as ldatamem.conf) that the handler can read.
+# The configuration file is a pure text file. 
+# Let's call the configuration file ldata.conf.
+# The first character of every line should always be a number: one of {0,1,2}. The handler will ignore
+# the whole line if the first character at each line is not {0,1,2}. 
+# Many NASA grid files of the same product share the same latitude and longitude. So we may only
+# cache one latitude/longitude for all the files of the same product. To achieve this,  
+# For the line starting with number 1, one can specify a directory name where the latitude/longitude are shared
+# for all products that the full path of the file name includes that directory.
+# For example, two grids files mygrid1.h5 and mygrid2.h5 share the same latitude and longitude.
+# They are located in under the /cache-ll. The full path for the filenames are 
+# /cache-ll/mygrid1.h5 and /cache-ll/mygrid2.h5.
+# One can specify  "1 cache-ll" at a line in the ldata.conf.  
 
 H5.LargeDataMemCacheConfig=true
+
+#H5.DataCachePath= path to store the data memcache configure file or the data disk cache configure file, apply to both small size or large size memory data cache or future disk cache
+H5.DataCachePath=/opt/tmp
+H5.LargeDataMemCacheFileName=ldatamem.conf
+
+
+H5.SmallDataMemCacheEntries  = 400
+
 #H5.SmallDataMemCacheConfig=true
 
 #H5.DataDiskCache=true (future version)
 
-#H5.DataCachePath= path to store the data memcache configure file or the data disk cache configure file, apply to both small size or large size memory data cache or future disk cache
-
-H5.DataCachePath=/opt/tmp
 
 #H5.SmallDataMemCacheFileName=yourownname
 #H5.SmallDataMemCacheFileName=sdatamem.conf(future version)
 #H5.LargeDataMemCacheFileName=yourownname
-H5.LargeDataMemCacheFileName=ldatamem.conf
 
 #H5.DataDiskCacheFileName=(future version)
 
