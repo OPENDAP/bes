@@ -137,16 +137,21 @@ H5.CheckIgnoreObj=false
 # changing the value and the CachePurgeLevel value below. Note that
 # this feature is on by default.
 
-H5.MetaDataMemCacheEntries=400
-
+H5.MetaDataMemCacheEntries=300
+#H5.MetaDataMemCacheEntries=0
 
 # 2. Caching the data values of HDF5 coordinate variables or specific variables.
+#
 # The HDF5 handler also provides a way for the data service agents to 
 # cache the data values of coordinate variables or specific variables.
+#
 # WARNING: 
 # 1) Since this is an advanced feature, we turn off this feature by default.
 # Advanced users should read the description and change the H5.LargeDataMemCacheEntries and
 # H5.SmallDataMemCacheEntries to an integer value greater than 0. 
+# A suggested number is provided at a comment line right after the line the BES key is set.
+# It may not be an optimial number for a specific case.
+#
 # 2) This feature only takes effect when the EnableCF key is set to true.
 #
 # 2.1 Caching the latitude/longitude coordinate variables and specific data variables
@@ -154,9 +159,10 @@ H5.MetaDataMemCacheEntries=400
 # Compared with other coordinate variables, arrays to store latitude/longitude are usually large 
 # and arrays to store data variables in the memory cache are also relatively large.
 # So we use the BES key name H5.LargeDataMemCacheEntries .
-# change the following line to something like H5.LargeDataMemCacheEntries=20 if using this feature.
+# change the following line to something like H5.LargeDataMemCacheEntries=40 if using this feature.
+#
 H5.LargeDataMemCacheEntries=0
-#H5.LargeDataMemCacheEntries=20
+#H5.LargeDataMemCacheEntries=40
 
 #
 # By turning on the H5.LargeDataMemCacheConfig key to be true, one can provide a configuration file 
@@ -166,42 +172,90 @@ H5.LargeDataMemCacheEntries=0
 # to tune this feature. 
 # 
 # H5.DataCachePath tells the handler where the configuration file is located. It should be a full path of
-# a directory (such as /tmp) in a server Hyrax is installed.
+# a directory (such as /tmp) in a server where Hyrax is installed.
 #
-# H5.LargeDataMemCacheFileName provides the configuration file name(such as ldatamem.conf) that the handler can read.
+# H5.LargeDataMemCacheFileName provides the configuration file name that the handler can read and carry out 
+# the corresponding actions.
 # The configuration file is a pure text file. 
 # Let's call the configuration file ldata.conf.
 # The information in the file should be something like:
-# 1 cache-ll
-# 0 no-cache-ll
-# 2 "/cache-ll/swath_1_3d_2x2yz.h5/HDFEOS/SWATHS/Swath/Data Fields/Temperature" 
+# 1 cache-ll cache-ll2
+# 0 no-cache-ll no-cache-ll2
+# 2 "/cache-ll/swath_1_3d_2x2yz.h5/HDFEOS/SWATHS/Swath/Data Fields/Temperature" "non-cache-ll/foo"
 #
 # The first character of every line should always be a number: one of {0,1,2}. The handler will ignore
-# the whole line if the first character at each line is not {0,1,2}. 
+# the whole line if the first character at each line is not a number among {0,1,2}. 
 # These numbers serve as flags to tell the handler how to handle the data variables.
 # After the number, an empty space should be followed, after the empty space, a string list can be 
-# provided with the space as common separator. 
+# provided with an empty space as a common separator. 
 # 
 # Description of each case
 # A) Case 1: Flag =1 
 # Many NASA grid files of the same product share the same latitude and longitude. So we may only
 # cache one latitude/longitude for all the files of the same product. To achieve this,  
 # For the line starting with number 1, one can specify one directory name where the latitude/longitude are shared
-# either under this directory or under one of the offspring directories of this directory.
-# In other words, for all products that the full path of the file name includes that directory qualifies 
+# either under this directory or under sub-directories of this directory.
+# In other words, Any served HDF5 file of which the full path of the file name contains that directory qualifies 
 # for this case.
-# For example, two grids files mygrid1.h5 and mygrid2.h5 share the same latitude and longitude.
-# They are located in under the /cache-ll/foo. The full path for the filenames are 
+# For example, two grid files mygrid1.h5 and mygrid2.h5 share the same latitude and longitude.
+# They are located under the /cache-ll/foo. The full pathes for these filenames are 
 # /cache-ll/foo/mygrid1.h5 and /cache-ll/foo/mygrid2.h5.
 # One can specify  "1 cache-ll" at a line in the ldata.conf.  
 # The handler will just store one pair of latitude/longitude for all file paths that include cache-ll.
-# ** Currently only one directory name can be specified. **
+# One can provide more than one directory name. If another two grid files yourgrid1.h5 and yourgrid2.h5 also
+# share the same latitude and longitude. They are located under /cache-ll2/foo2 One can add cach-ll2 at the same line.
+# 1 cache-ll cache-ll2
+#
+# In this way, only one set of latitude/longitude is stored in the memory cache for any HDF5 file of which the path 
+# matches cache-ll2.
+# 
+# ** Currently only one directory name can be specified and no '/' is allowed. Something like /cache-ll/foo won't be picked up
+#    by the handler.  The handler will not include this entry in its directory list that stores one pair of latitude/longitude for a whole directory.**
 #
 # B) Case 2: Flag = 0
 # Some NASA swath files have 2-D latitude/longitude coordinate variables that are not appropriate to 
 # store in the memory cache because potentially  hundreds or thousands of relatively large latitude/longitude
 # arrays stored in the array may cause frequent purging or thrashing of memory caches. So with this 
-# flag on, one can specify which directory 
+# flag on, one can specify directory names. The handler will NOT cache any latitude/longitude values 
+# for HDF5 files under these directories or their subdirectories. 
+#
+# C) Case 3: Flag = 2
+# Sometimes a few data variables of a product are so frequently accessed and the system can afford to store them in the memory.
+# The handler also provides a way for a user to specify these variables and store them in the memory cache.
+# Users need to provide the path to identify the variable. The handler will cache the variable vaules
+# to the memory if the variable path matches the path provided in this list.
+# Although it is not required to specify the file path of the variable to be cached, users should be fully aware
+# that the variables that share the same variable name for all files the Hyrax serve may be cached 
+# if they are accessed. This may or may not be what users want. If users just want to cache a variable
+# for a specific file or files under a specific directory, this can also be done with this flog.
+#
+# An example: 
+# if a user wants to cache the variable /SH/temperature for all HDF5 files served by this Hyrax server,
+# it can be done to specify the following in the configuration file:
+# 2 /SH/temperature 
+# When the variable /SH/temperature in an HDF5 file is fetched, values of this variable will be cached in the 
+# memory. The varabile /SH/temperature in another HDF5 file is fetched, values of this variable will be
+# cached in the memory in a different slot because the file path of these two files are different.
+#
+# If a user just want to cache a variable /NH/temperature in a special file called foo.h5 under /foo2,
+# it can also be done by adding the file path /foo2/foo.h5 to the configuration file,
+# 2 /SH/temperature /foo2/foo.h5/NH/temperature
+#
+# The handler will only cache the variable /NH/temperature if the file path containing this variable 
+# includes /foo2/foo.h5.
+# WARNINGS: 
+# Since HDF5 allows an empty space ' ' to be inside a variable path, for instance,  the group name 
+# "/Data Fields" is legal in the HDF5. For such a case, users must use either single quotes or double
+# quotes to encapsulate the file+variable path. Even if only one variable path contains the space.
+# Not doing so may cause the handler not to cache the
+# variable values as expected.
+# For example, 
+#
+#
+#
+# 
+#  
+#
 
 H5.LargeDataMemCacheConfig=true
 
