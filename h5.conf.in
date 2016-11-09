@@ -171,16 +171,37 @@ H5.LargeDataMemCacheEntries=0
 # H5.LargeDataMemCacheFileName provides the configuration file name(such as ldatamem.conf) that the handler can read.
 # The configuration file is a pure text file. 
 # Let's call the configuration file ldata.conf.
+# The information in the file should be something like:
+# 1 cache-ll
+# 0 no-cache-ll
+# 2 "/cache-ll/swath_1_3d_2x2yz.h5/HDFEOS/SWATHS/Swath/Data Fields/Temperature" 
+#
 # The first character of every line should always be a number: one of {0,1,2}. The handler will ignore
 # the whole line if the first character at each line is not {0,1,2}. 
+# These numbers serve as flags to tell the handler how to handle the data variables.
+# After the number, an empty space should be followed, after the empty space, a string list can be 
+# provided with the space as common separator. 
+# 
+# Description of each case
+# A) Case 1: Flag =1 
 # Many NASA grid files of the same product share the same latitude and longitude. So we may only
 # cache one latitude/longitude for all the files of the same product. To achieve this,  
-# For the line starting with number 1, one can specify a directory name where the latitude/longitude are shared
-# for all products that the full path of the file name includes that directory.
+# For the line starting with number 1, one can specify one directory name where the latitude/longitude are shared
+# either under this directory or under one of the offspring directories of this directory.
+# In other words, for all products that the full path of the file name includes that directory qualifies 
+# for this case.
 # For example, two grids files mygrid1.h5 and mygrid2.h5 share the same latitude and longitude.
-# They are located in under the /cache-ll. The full path for the filenames are 
-# /cache-ll/mygrid1.h5 and /cache-ll/mygrid2.h5.
+# They are located in under the /cache-ll/foo. The full path for the filenames are 
+# /cache-ll/foo/mygrid1.h5 and /cache-ll/foo/mygrid2.h5.
 # One can specify  "1 cache-ll" at a line in the ldata.conf.  
+# The handler will just store one pair of latitude/longitude for all file paths that include cache-ll.
+# ** Currently only one directory name can be specified. **
+#
+# B) Case 2: Flag = 0
+# Some NASA swath files have 2-D latitude/longitude coordinate variables that are not appropriate to 
+# store in the memory cache because potentially  hundreds or thousands of relatively large latitude/longitude
+# arrays stored in the array may cause frequent purging or thrashing of memory caches. So with this 
+# flag on, one can specify which directory 
 
 H5.LargeDataMemCacheConfig=true
 
