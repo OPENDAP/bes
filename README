@@ -36,6 +36,27 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.3.3(Released with Hyrax 1.13.2)
+----------------------------
+
+- The retrieval of BES key values are moved to the the constructor of the hdf5 handler to improve the
+  performance.
+- The DAP metadata responses: DDS,DAS and DMR can be cached in memory to improve the performance. 
+
+CF option:
+
+- Add the memory cache support to store  data values of coordinate variables and specific data variables.
+- Updated the support of the fillvalue and the addition of new coordinate variables in the new GPM products.
+- Fixed a bug to identify variables latitude and longitude for SMAP-like products.
+
+Default option:
+- Add the mapping of root attributes to DAP4. 
+
+Note: 
+
+1) The description of memory cache feature can be found in h5.conf.in under https://github.com/OPENDAP/hdf5_handler.
+2) Since Hyrax 1.13.2 is an emergency release, the handler version is not bumped. 
+
 What's new for version 2.3.3(Released with Hyrax 1.13.1)
 ----------------------------
 CF option:
