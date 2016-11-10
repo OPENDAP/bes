@@ -246,36 +246,34 @@ H5.LargeDataMemCacheEntries=0
 # WARNINGS: 
 # Since HDF5 allows an empty space ' ' to be inside a variable path, for instance,  the group name 
 # "/Data Fields" is legal in the HDF5. For such a case, users must use either single quotes or double
-# quotes to encapsulate the file+variable path. Even if only one variable path contains the space.
-# Not doing so may cause the handler not to cache the
-# variable values as expected.
-# For example, 
+# quotes to encapsulate the file+variable path. Furthermore, even if only one variable path contains the space,
+# one must still encapsulate all the other file+variable path. 
+# Not doing so may cause the handler not to cache the corresponding variables.
+# A correct example:
+# 2 "foo.h5/Data Fields/foo2" "foo1.h5/foo3" 
+# A incorrect example:
+# 2 "foo.h5/Data Fields/foo" foo1.h5/foo3
+# With the incorrect example, the handler will ignore foo1.h5/foo3.
 #
-#
-#
+# Where to find sample configuration files? 
+# Sample configuration files can be found under 
+# https://github.com/OPENDAP/hdf5_handler/blob/master/bes-testsuite/h5.mem/ldatamem.conf
+# https://github.com/OPENDAP/hdf5_handler/blob/master/bes-testsuite/h5.nasa.mem/lnasadatamem.conf
 # 
-#  
-#
 
 H5.LargeDataMemCacheConfig=true
-
-#H5.DataCachePath= path to store the data memcache configure file or the data disk cache configure file, apply to both small size or large size memory data cache or future disk cache
 H5.DataCachePath=/opt/tmp
 H5.LargeDataMemCacheFileName=ldatamem.conf
 
-
-H5.SmallDataMemCacheEntries  = 400
-
-#H5.SmallDataMemCacheConfig=true
-
-#H5.DataDiskCache=true (future version)
-
-
-#H5.SmallDataMemCacheFileName=yourownname
-#H5.SmallDataMemCacheFileName=sdatamem.conf(future version)
-#H5.LargeDataMemCacheFileName=yourownname
-
-#H5.DataDiskCacheFileName=(future version)
+# 2.2 Caching the non-latitude/longitude coordinate variables 
+# These coordinate variables include height or other non-lat/lon coordinate variables.
+# Usually these coordinate variables are stored in 1-D array and the storage size is small.
+# Currently no configuration file is implemented for users to tune how to store these
+# coordinate variables in memory cache. Every such coordinate variable for a file will be
+# stored in the memory as a cache entry. One can provide an integer number to identify
+# the number of memory cache entries.
+H5.SmallDataMemCacheEntries=0
+#H5.SmallDataMemCacheEntries=200
 
 
 # The H5.CachePurgeLevel key determines how much of the in-memory cache is
