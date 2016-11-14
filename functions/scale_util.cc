@@ -49,13 +49,19 @@
 #include <util.h>
 #include <Error.h>
 #include <BesDebug.h>
+#include <BesDapError.h>
 
 #include "ScaleGrid.h"
+
+#define DEBUG_KEY "geo"
+
 
 using namespace std;
 using namespace libdap;
 
+
 namespace functions {
+
 
 inline static int is_valid_lat(const double lat)
 {
@@ -104,8 +110,8 @@ bool monotonic_and_uniform(const vector<double> &values, double res)
 {
     vector<double>::size_type end_index = values.size() - 1;
     for (vector<double>::size_type i = 0; i < end_index; ++i) {
-        BESDEBUG("scale_function", "values[" << i+1 << "]: " << values[i+1] << " - values[" << i << "]: " << values[i] << endl);
-        BESDEBUG("scale_function", values[i+1] - values[i] <<" != res: " << res << endl);
+        BESDEBUG(DEBUG_KEY, "values[" << i+1 << "]: " << values[i+1] << " - values[" << i << "]: " << values[i] << endl);
+        BESDEBUG(DEBUG_KEY, values[i+1] - values[i] <<" != res: " << res << endl);
         if (!same_as((values[i+1] - values[i]), res))
             return false;
     }
@@ -138,18 +144,22 @@ vector<double> get_geotransform_data(Array *x, Array *y, bool test_maps /* defau
 
     double res_y = (y_values[y_values.size()-1] - y_values[0]) / (y_values.size() -1);
 
-    if (test_maps && !monotonic_and_uniform(y_values, res_y))
-        throw Error(malformed_expr, "The grids maps/dimensions must be monotonic and uniform (" + y->name() + ").");
-
+    if (test_maps && !monotonic_and_uniform(y_values, res_y)){
+        string msg = "The grids maps/dimensions must be monotonic and uniform (" + y->name() + ").";
+		BESDEBUG(DEBUG_KEY,"ERROR get_geotransform_data(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+    }
     x->read();
 	vector<double> x_values(size.x_size);
 	extract_double_array(x, x_values);
 
 	double res_x = (x_values[x_values.size()-1] - x_values[0]) / (x_values.size() -1);
 
-	if (test_maps && !monotonic_and_uniform(x_values, res_x))
-	    throw Error(malformed_expr, "The grids maps/dimensions must be monotonic and uniform (" + x->name() + ").");
-
+	if (test_maps && !monotonic_and_uniform(x_values, res_x)){
+	    string msg = "The grids maps/dimensions must be monotonic and uniform (" + x->name() + ").";
+		BESDEBUG(DEBUG_KEY,"ERROR get_geotransform_data(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+}
     // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
     // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
 
@@ -264,9 +274,13 @@ GDALDataType get_array_type(const Array *a)
 
 	case dods_uint64_c:
 	case dods_int64_c:
-	default:
-		throw Error("Cannot perform geo-spatial operations on "
-				+ const_cast<Array*>(a)->var()->type_name() + " data.");
+	default: {
+		string msg = "Cannot perform geo-spatial operations on "
+				+ const_cast<Array*>(a)->var()->type_name() + " data.";
+		BESDEBUG(DEBUG_KEY,"ERROR get_array_type(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+
+	}
 	}
 }
 
@@ -285,9 +299,11 @@ static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long x
     vector<T> buf(x * y);
     CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, get_array_type(a), 0, 0);
 
-    if (error != CPLE_None)
-        throw Error(string("Could not extract data for array.") + CPLGetLastErrorMsg());
-
+    if (error != CPLE_None){
+        string msg = string("Could not extract data for array.") +  CPLGetLastErrorMsg();
+		BESDEBUG(DEBUG_KEY,"ERROR transfer_values_helper(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+}
     a->set_value(buf, buf.size());
 
     return a;
@@ -470,9 +486,9 @@ Array::Dim_iter get_x_dim(const libdap::Array *src)
         stringstream ss;
         ss << "Ouch! Retrieving the 'x' dimension for the array ";
         a->print_decl(ss, "", false, true, true);
-        ss << " FAILED Because it has less than 2 dimensions";
-        BESDEBUG("scale_function", ss.str());
-        throw Error(ss.str());
+        ss << " FAILED Because it has less than 2 dimensions" << endl;
+        BESDEBUG(DEBUG_KEY, ss.str());
+        throw BESError(ss.str(),BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
     }
     Array::Dim_iter start = a->dim_begin();
     Array::Dim_iter xDim = start + numDims - 2;
@@ -493,9 +509,9 @@ Array::Dim_iter get_y_dim(const libdap::Array *src)
         stringstream ss;
         ss << "Ouch! Retrieving the 'y' dimension for the array ";
         a->print_decl(ss, "", false, true, true);
-        ss << " FAILED Because it has less than 2 dimensions";
-        BESDEBUG("scale_function", ss.str());
-        throw Error(ss.str());
+        ss << " FAILED Because it has less than 2 dimensions" << endl;
+        BESDEBUG(DEBUG_KEY, ss.str());
+        throw BESError(ss.str(),BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
     }
     Array::Dim_iter start = a->dim_begin();
     Array::Dim_iter yDim = start + numDims - 1;
@@ -551,9 +567,9 @@ void read_band_data(const Array *src, GDALRasterBand* band)
     	ss << a->name() << ") with " << long_to_string(a->dimensions()) << " dimensions.";
     	ss << "Because the constrained shape of the array: ";
     	a->print_decl(ss,"",false,true,true);
-    	ss << " Fails to is not effectively just the last two dimensions (x,y)";
-    	BESDEBUG("scale_function", ss.str());
-        throw Error(ss.str());
+    	ss << " Fails to is not effectively just the last two dimensions (x,y)" << endl;
+    	BESDEBUG(DEBUG_KEY, ss.str());
+        throw BESError(ss.str(),BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
     }
 
  //   unsigned long x = a->dimension_size(a->dim_begin(), true);
@@ -569,8 +585,11 @@ void read_band_data(const Array *src, GDALRasterBand* band)
     // access a pointer to them.
     CPLErr error = band->RasterIO(GF_Write, 0, 0, x, y, a->get_buf(), x, y, get_array_type(a), 0, 0);
 
-    if (error != CPLE_None)
-        throw Error("Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
+    if (error != CPLE_None){
+    	string msg = "Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg();
+    	BESDEBUG(DEBUG_KEY,"ERROR read_band_data(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+    }
 }
 
 /**
@@ -601,8 +620,11 @@ void add_band_data(const Array *src, GDALDataset* ds)
 
     CSLDestroy(options);
 
-    if (error != CPLE_None)
-        throw Error("Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg());
+    if (error != CPLE_None){
+    	string msg ="Could not add data for grid '" + a->name() + "': " + CPLGetLastErrorMsg();
+    	BESDEBUG(DEBUG_KEY,"ERROR add_band_data(): " << msg << endl);
+        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
 }
 
 #define ADD_BAND 0
@@ -627,9 +649,11 @@ void add_band_data(const Array *src, GDALDataset* ds)
 auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const string &srs)
 {
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
-    if(!driver)
-        throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
-
+    if(!driver){
+    	string msg = string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg();
+    	BESDEBUG(DEBUG_KEY, "ERROR build_src_dataset(): " << msg << endl);
+        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
     SizeBox array_size = get_size_box(x, y);
 
     // The MEM driver takes no creation options jhrg 10/6/16
@@ -642,9 +666,11 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
 
     // Get the one band for this dataset and load it with data
 	GDALRasterBand *band = ds->GetRasterBand(1);
-	if (!band)
-		throw Error("Could not get the GDAL RasterBand for Array '" + data->name() + "': " + CPLGetLastErrorMsg());
-
+	if (!band){
+		string msg = "Could not get the GDAL RasterBand for Array '" + data->name() + "': " + CPLGetLastErrorMsg();
+		BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset():  " << msg << endl);
+        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+	}
 	// Set the no data value here; I'm not sure what the affect of using NaN will be... jhrg 10/11/16
 	double no_data = get_missing_data_value(data);
 	band->SetNoDataValue(no_data);
@@ -657,9 +683,11 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
     ds->SetGeoTransform(&geo_transform[0]);
 
     OGRSpatialReference native_srs;
-    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str()))
-    	throw Error("Could not set '" + srs + "' as the dataset native CRS.");
-
+    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){
+    	string msg = "Could not set '" + srs + "' as the dataset native CRS.";
+		BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+}
     // I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
     // native_srs.SetUTM( 11, TRUE );
 
@@ -707,7 +735,16 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
         argv = CSLAddString(argv, crs.c_str());
     }
 
-#ifdef DODS_DEBUG
+
+
+    if(BESISDEBUG(DEBUG_KEY)){
+        char **local = argv;
+        while (*local) {
+            BESDEBUG(DEBUG_KEY, "argv: " << *local++ << endl);
+        }
+
+    }
+#if 0
     char **local = argv;
     while (*local) {
         cerr << "argv: " << *local++ << endl;
@@ -721,8 +758,10 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
     if (!dst_handle || usage_error != CE_None) {
         GDALClose(dst_handle);
         GDALTranslateOptionsFree(options);
-        throw Error(string("Error calling GDAL translate: ") + CPLGetLastErrorMsg());
-    }
+        string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
+		BESDEBUG(DEBUG_KEY,"ERROR scale_dataset(): " << msg << endl);
+        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+ }
 
     auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
 

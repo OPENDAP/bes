@@ -36,14 +36,18 @@
 #include <Str.h>
 #include <Error.h>
 #include <util.h>
-#include <debug.h>
+#include <BesDebug.h>
 
 #include "functions_util.h"
+
+#define DEBUG_KEY "geo"
 
 using namespace std;
 using namespace libdap;
 
+
 namespace functions {
+
 
 /**
  * @brief Scale a grid; uses gdal
@@ -81,6 +85,7 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     if (!src)
         throw Error(malformed_expr,"The first argument to scale_grid() must be a Grid variable!");
 
+    BESDEBUG(DEBUG_KEY,"function_scale_grid() - Evaluating grid '"<< src->name() << "'" << endl);
     unsigned long y = extract_uint_value(argv[1]);
     unsigned long x = extract_uint_value(argv[2]);
 
@@ -92,6 +97,9 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     if (argc > 4) {
         interp = extract_string_argument(argv[4]);
     }
+
+    BESDEBUG(DEBUG_KEY,"function_scale_grid() - CRS '"<< crs << "'" << endl);
+    BESDEBUG(DEBUG_KEY,"function_scale_grid() - Interpolation Method '"<< interp << "'" << endl);
 
     SizeBox size(y, x);
     *btpp = scale_dap_grid(src, size, crs, interp);
