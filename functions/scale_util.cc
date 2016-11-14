@@ -360,9 +360,10 @@ Array *build_array_from_gdal_dataset(GDALDataset *source, const Array *dest)
     case dods_uint64_c:
     case dods_int64_c:
     default:
-        throw InternalErr(__FILE__, __LINE__,
-                "The source array to a geo-function contained an unsupported numeric type.");
-    }
+        string msg = "The source array to a geo-function contained an unsupported numeric type.";
+        BESDEBUG(DEBUG_KEY,"ERROR build_array_from_gdal_dataset(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+}
 }
 
 /**
@@ -586,7 +587,7 @@ void read_band_data(const Array *src, GDALRasterBand* band)
     CPLErr error = band->RasterIO(GF_Write, 0, 0, x, y, a->get_buf(), x, y, get_array_type(a), 0, 0);
 
     if (error != CPLE_None){
-    	string msg = "Could not load data for grid '" + a->name() + "': " + CPLGetLastErrorMsg();
+    	string msg = "Could not load data for grid '" + a->name() + "' msg: '" + CPLGetLastErrorMsg() +  "'";
     	BESDEBUG(DEBUG_KEY,"ERROR read_band_data(): " << msg << endl);
         throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
     }
