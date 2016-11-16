@@ -219,6 +219,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     if( !bdas )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
+    H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
     try {
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
@@ -237,8 +238,12 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 
                 cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
                 if (cf_fileid < 0){
-                    throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                                   + filename, __FILE__, __LINE__);
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
 
                 read_cfdas( *das,filename,cf_fileid);
