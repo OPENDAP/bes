@@ -5,20 +5,21 @@ Updated for version 3.12.2(November 16 2016, Hyrax 1.13.2)
   
   [Known Issues]
 
-  1) For AMSR E level-3 data, the variable like SI_12km_N_18H_DSC doesn't have any CF scale/offset,_FillValue,
-     unit attributes. These attributes have to be retrieved from the product document. Therefore, the 
-     plot generated directly from the OPeNDAP handler may not be correct. If AMSR_E level 3 HDF4 
-     products are still served by NASA data centers,The Hyrax's NcML module can be used with the HDF4 handler
-     to provide the missing CF attributes to generate the correct plot.
+  1) For AMSR E level-3 data, the variable like SI_12km_N_18H_DSC doesn't have any CF scale/offset,
+     _FillValue, unit attributes. These attributes have to be retrieved from the product document.
+     Therefore, the plot generated directly from the OPeNDAP handler may not be correct.
+     If AMSR_E level 3 HDF4 products are still served by NASA data centers, the Hyrax's NcML module
+     can be used with the HDF4 handler to provide the missing CF attributes to generate the correct 
+     plot.
      More information on how to use NcML to provide the missing CF attributes, 
      please check http://hdfeos.org/examples/ncml.php 
 
-  2) For the HDF-EOS2 swath, the HDF4 handler identifies the latitude and longitude coordinate variables based on
-     the variable names rather than via the CF units attribute since one cannot use the HDF-EOS2 library to add
-     attributes for an HDF-EOS2 field.Therefore, the HDF-EOS2 swath field attributes can only be added and retrieved
-     by only the HDF4 APIs. It is difficult and inefficient for the handler to use HDF4 APIs when handling the 
-     HDF-EOS2 swath fields. Given that all NASA HDF-EOS2 swath files we observed simply use name 
-     "Latitude" for the latitude field and "Longitude" for the
+  2) For the HDF-EOS2 swath, the HDF4 handler identifies the latitude and longitude coordinate variables 
+     based on the variable names rather than via the CF units attribute since one cannot use the HDF-EOS2
+     library to add  attributes for an HDF-EOS2 field. Therefore, the HDF-EOS2 swath field attributes
+     can only be added and retrieved by only the HDF4 APIs. It is difficult and inefficient for the 
+     handler to use HDF4 APIs when when handling the DF-EOS2 swath fields. Given that all NASA HDF-EOS2 
+     swath files we observed simply use name "Latitude" for the latitude field and "Longitude" for the 
      longitude field, we believe using variable names "Latitude" and "Longitude" to identify latitude and
      longitude under swath geo-location fields is sufficient to serve NASA HDF4 products. Even if the 
      handler cannot identify the latitude and longitude as coordinate variables, the handler will still
@@ -26,12 +27,13 @@ Updated for version 3.12.2(November 16 2016, Hyrax 1.13.2)
      
   3) DataCache may not work on MacOS for rare cases.
 
-     Some HDF4 variables can be cached in disk. The cached file name uses the variable name as the key to distinguish each other.
-     On MacOS system that is not configured to be case-sensitive(using diskutil info to check your OS),
-     when the DataCache BES key is turned on, two legal variable names like TIME and Time with the same shape may share the same cached file name.
-     Thus this may cause the data inconsistent. 
-     Given that the DataCache feature is turned off by default and the usage of this feature is only on Linux, 
-     the handler just documents this as an known issue. 
+     Some HDF4 variables can be cached in disk. The cached file name uses the variable name as the key 
+     to distinguish each other. On MacOS system that is not configured to be case-sensitive
+     (using diskutil info to check your OS), when the DataCache BES key is turned on, two legal variable
+     names like TIME and Time with the same shape may share the same cached file name. Thus this may
+     cause the data inconsistent. 
+     Given that the DataCache feature is turned off by default and the usage of this feature is only  
+     on Linux, the handler just documents this as an known issue. 
 
 
 Updated for version 3.12.1(April 29 2016, Hyrax 1.13.1))
