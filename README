@@ -16,14 +16,15 @@ Updated for version 3.12.2(November 16 2016, Hyrax 1.13.2)
 
   2) For the HDF-EOS2 swath, the HDF4 handler identifies the latitude and longitude coordinate variables 
      based on the variable names rather than via the CF units attribute since one cannot use the HDF-EOS2
-     library to add  attributes for an HDF-EOS2 field. Therefore, the HDF-EOS2 swath field attributes
-     can only be added and retrieved by only the HDF4 APIs. It is difficult and inefficient for the 
-     handler to use HDF4 APIs when when handling the DF-EOS2 swath fields. Given that all NASA HDF-EOS2 
+     library to add attributes for an HDF-EOS2 field. Therefore, the HDF-EOS2 swath field attributes
+     can only be added and retrieved by using the HDF4 APIs. It is difficult and inefficient for the 
+     handler to use HDF4 APIs when handling the HDF-EOS2 swath fields. Given that all NASA HDF-EOS2 
      swath files we observed simply use name "Latitude" for the latitude field and "Longitude" for the 
-     longitude field, we believe using variable names "Latitude" and "Longitude" to identify latitude and
-     longitude under swath geo-location fields is sufficient to serve NASA HDF4 products. Even if the 
-     handler cannot identify the latitude and longitude as coordinate variables, the handler will still
-     generate the correct DDS and DAS and Data responses although they may not follow the CF conventions.
+     longitude field, we believe using variable names "Latitude" and "Longitude" to identify latitude 
+     and longitude under swath geo-location fields is sufficient to serve NASA HDF-EOS2 products. Even 
+     if the handler cannot identify the latitude and longitude as coordinate variables, the handler 
+     will still generate the correct DDS and DAS and Data responses although they may not follow the 
+     CF conventions.
      
   3) DataCache may not work on MacOS for rare cases.
 
