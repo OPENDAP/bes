@@ -592,6 +592,9 @@ at_format='?'
 # Description of all the test groups.
 at_help_all="1;DmrppTest.at:8;BESCMD \$abs_srcdir/bes/d_int.h5.dmrpp.dmr.bescmd;bescmd;
 2;DmrppTest.at:9;BESCMD \$abs_srcdir/bes/grid_1_2d.h5.dmrpp.dmr.bescmd;bescmd;
+3;DmrppTest.at:11;BESCMD \$abs_srcdir/bes/nc4_group_atomic.h5.dmrpp.dmr.bescmd;bescmd;
+4;DmrppTest.at:12;BESCMD \$abs_srcdir/bes/t_int_scalar.h5.dmrpp.dmr.bescmd;bescmd;
+5;DmrppTest.at:13;BESCMD \$abs_srcdir/bes/t_float.h5.dmrpp.dmr.bescmd;bescmd;
 "
 # List of the all the test groups.
 at_groups_all=`$as_echo "$at_help_all" | sed 's/;.*//'`
@@ -605,7 +608,7 @@ at_fn_validate_ranges ()
   for at_grp
   do
     eval at_value=\$$at_grp
-    if test $at_value -lt 1 || test $at_value -gt 2; then
+    if test $at_value -lt 1 || test $at_value -gt 5; then
       $as_echo "invalid test group: $at_value" >&2
       exit 1
     fi
@@ -2188,3 +2191,258 @@ fi
 ) 5>&1 2>&1 7>&- | eval $at_tee_pipe
 read at_status <"$at_status_file"
 #AT_STOP_2
+#AT_START_3
+at_fn_group_banner 3 'DmrppTest.at:11' \
+  "BESCMD \$abs_srcdir/bes/nc4_group_atomic.h5.dmrpp.dmr.bescmd" ""
+at_xfail=no
+      test z$pass = zxfail && at_xfail=yes
+(
+  $as_echo "3. $at_setup_line: testing $at_desc ..."
+  $at_traceon
+
+
+
+    input=$abs_srcdir/bes/nc4_group_atomic.h5.dmrpp.dmr.bescmd
+    baseline=$abs_srcdir/bes/nc4_group_atomic.h5.dmrpp.dmr.bescmd.baseline
+    pass=
+    repeat=
+    if test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached; then :
+  repeat="-r 3"
+fi
+
+    if test -n "$baselines" -a x$baselines = xyes; then :
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:11: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:11"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; tee stdout <"$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:11"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:11: mv stdout \$baseline.tmp"
+at_fn_check_prepare_dynamic "mv stdout $baseline.tmp" "DmrppTest.at:11"
+( $at_check_trace; mv stdout $baseline.tmp
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:11"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+else
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:11: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:11"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; tee stdout <"$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:11"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:11: diff -b -B \$baseline stdout"
+at_fn_check_prepare_dynamic "diff -b -B $baseline stdout" "DmrppTest.at:11"
+( $at_check_trace; diff -b -B $baseline stdout
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:11"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+
+fi
+
+      set +x
+  $at_times_p && times >"$at_times_file"
+) 5>&1 2>&1 7>&- | eval $at_tee_pipe
+read at_status <"$at_status_file"
+#AT_STOP_3
+#AT_START_4
+at_fn_group_banner 4 'DmrppTest.at:12' \
+  "BESCMD \$abs_srcdir/bes/t_int_scalar.h5.dmrpp.dmr.bescmd" ""
+at_xfail=no
+      test z$pass = zxfail && at_xfail=yes
+(
+  $as_echo "4. $at_setup_line: testing $at_desc ..."
+  $at_traceon
+
+
+
+    input=$abs_srcdir/bes/t_int_scalar.h5.dmrpp.dmr.bescmd
+    baseline=$abs_srcdir/bes/t_int_scalar.h5.dmrpp.dmr.bescmd.baseline
+    pass=
+    repeat=
+    if test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached; then :
+  repeat="-r 3"
+fi
+
+    if test -n "$baselines" -a x$baselines = xyes; then :
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:12: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:12"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; tee stdout <"$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:12"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:12: mv stdout \$baseline.tmp"
+at_fn_check_prepare_dynamic "mv stdout $baseline.tmp" "DmrppTest.at:12"
+( $at_check_trace; mv stdout $baseline.tmp
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:12"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+else
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:12: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:12"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; tee stdout <"$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:12"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:12: diff -b -B \$baseline stdout"
+at_fn_check_prepare_dynamic "diff -b -B $baseline stdout" "DmrppTest.at:12"
+( $at_check_trace; diff -b -B $baseline stdout
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:12"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+
+fi
+
+      set +x
+  $at_times_p && times >"$at_times_file"
+) 5>&1 2>&1 7>&- | eval $at_tee_pipe
+read at_status <"$at_status_file"
+#AT_STOP_4
+#AT_START_5
+at_fn_group_banner 5 'DmrppTest.at:13' \
+  "BESCMD \$abs_srcdir/bes/t_float.h5.dmrpp.dmr.bescmd" ""
+at_xfail=no
+      test z$pass = zxfail && at_xfail=yes
+(
+  $as_echo "5. $at_setup_line: testing $at_desc ..."
+  $at_traceon
+
+
+
+    input=$abs_srcdir/bes/t_float.h5.dmrpp.dmr.bescmd
+    baseline=$abs_srcdir/bes/t_float.h5.dmrpp.dmr.bescmd.baseline
+    pass=
+    repeat=
+    if test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached; then :
+  repeat="-r 3"
+fi
+
+    if test -n "$baselines" -a x$baselines = xyes; then :
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:13: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:13"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; tee stdout <"$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:13"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:13: mv stdout \$baseline.tmp"
+at_fn_check_prepare_dynamic "mv stdout $baseline.tmp" "DmrppTest.at:13"
+( $at_check_trace; mv stdout $baseline.tmp
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:13"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+else
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:13: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:13"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; tee stdout <"$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:13"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+        { set +x
+$as_echo "$at_srcdir/DmrppTest.at:13: diff -b -B \$baseline stdout"
+at_fn_check_prepare_dynamic "diff -b -B $baseline stdout" "DmrppTest.at:13"
+( $at_check_trace; diff -b -B $baseline stdout
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:13"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+
+fi
+
+      set +x
+  $at_times_p && times >"$at_times_file"
+) 5>&1 2>&1 7>&- | eval $at_tee_pipe
+read at_status <"$at_status_file"
+#AT_STOP_5

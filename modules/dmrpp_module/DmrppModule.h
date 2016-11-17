@@ -21,14 +21,16 @@
 #ifndef I_DmrppModule_H
 #define I_DmrppModule_H 1
 
+#include <string>
+
 #include "BESAbstractModule.h"
 
 class DmrppModule: public BESAbstractModule {
 public:
 	DmrppModule() { }
 	virtual ~DmrppModule() { }
-	virtual void initialize(const string &modname);
-	virtual void terminate(const string &modname);
+	virtual void initialize(const std::string &modname);
+	virtual void terminate(const std::string &modname);
 
 	virtual void dump(ostream &strm) const;
 };

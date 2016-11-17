@@ -19,11 +19,7 @@
 // 02874-0112.
 
 #include <iostream>
-
-using std::endl;
-
-#include "DmrppModule.h"
-#include "DmrppRequestHandler.h"
+#include <string>
 
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
@@ -35,10 +31,17 @@ using std::endl;
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 
+#include "DmrppModule.h"
+#include "DmrppRequestHandler.h"
+
+using namespace std;
+
 #define DAP_CATALOG "catalog"
 
 void DmrppModule::initialize(const string &modname)
 {
+    BESDebug::Register(modname);
+
     BESDEBUG(modname, "Initializing DMR++ Reader Module " << modname << endl);
 
     BESRequestHandlerList::TheList()->add_handler(modname, new DmrppRequestHandler(modname));
@@ -54,8 +57,6 @@ void DmrppModule::initialize(const string &modname)
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
-    BESDebug::Register(modname);
-
     BESDEBUG(modname, "Done Initializing DMR++ Reader Module " << modname << endl);
 }
 
@@ -63,10 +64,8 @@ void DmrppModule::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning DMR++ Reader Module " << modname << endl);
 
-    BESRequestHandler *rh = 0;
-
-    rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-    if (rh) delete rh;
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
+    delete rh;
 
     BESContainerStorageList::TheList()->deref_persistence(DAP_CATALOG);
 
