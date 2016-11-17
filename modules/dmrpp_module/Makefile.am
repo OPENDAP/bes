@@ -24,9 +24,10 @@ SUBDIRS = . bes-testsuite
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = DmrppModule.cc DmrppRequestHandler.cc
+BES_SRCS = DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc
 
-BES_HDRS = DmrppModule.h DmrppRequestHandler.h 
+BES_HDRS = DmrppModule.h DmrppRequestHandler.h DmrppCommin.h DmrppByte.h \
+DmrppArray.h
 
 # hack. This is probably not needed and is currently not used, but
 # I'm leaving it in for now. If there are run-time issues with this
