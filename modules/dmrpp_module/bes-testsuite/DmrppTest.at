@@ -5,8 +5,8 @@ m4_include([handler_tests_macros.m4])
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
 
-AT_BESCMD_RESPONSE_TEST([dap/d_int.h5.dmrpp.dmr.bescmd])
-AT_BESCMD_RESPONSE_TEST([dap/grid_1_2d.h5.dmrpp.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([bes/d_int.h5.dmrpp.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([bes/grid_1_2d.h5.dmrpp.dmr.bescmd])
 
 # d_int.h5.dmrpp 
 # grid_1_2d.h5.dmrpp
