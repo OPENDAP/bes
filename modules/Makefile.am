@@ -4,7 +4,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS = csv_handler dap-server freeform_handler 
+SUBDIRS = csv_handler dap-server freeform_handler dmrpp_module
 
 if BES_DEVELOPER
 SUBDIRS += debug_functions

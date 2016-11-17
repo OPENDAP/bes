@@ -1,0 +1,35 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP DAP Reader Module Configuration file             		#
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=reader
+BES.module.reader=@bes_modules_dir@/libdapreader_module.so
+
+#-----------------------------------------------------------------------#
+# Setting the data information
+#-----------------------------------------------------------------------#
+BES.Catalog.catalog.TypeMatch+=reader:.*\.(dds|dods|data_ddx|dmr|dap)$;
+
+#-----------------------------------------------------------------------#
+# DAP Reader module specific parameters
+#-----------------------------------------------------------------------#
+
+# These keys control how the DapReader handler interprets the DDS, DMR, 
+# etc., input files. By default it uses the BaseTypeFactory types - the
+# default type classes distributed with libdap - when instantiating variables.
+# By setting UseTestTypes to true, the TestByte, ..., classes are used
+# instead.  
+
+DR.UseTestTypes=true
+
+# Use the 'series values' feature of the test types
+DR.UseSeriesValues=false

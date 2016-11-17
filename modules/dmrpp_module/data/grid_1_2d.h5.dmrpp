@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.h5">
+  <Group name="HDFEOS">
+    <Group name="ADDITIONAL">
+      <Group name="FILE_ATTRIBUTES"/>
+    </Group>
+    <Group name="GRIDS">
+      <Group name="GeoGrid">
+        <Group name="Data Fields">
+          <Float32 name="temperature">
+            <Dim size="4"/>
+            <Dim size="8"/>
+            <Attribute name="units" type="String">
+              <Value>K</Value>
+            </Attribute>
+            <h4:byteStream offset="40672" nBytes="128" uuid="3fd2c024-4934-4732-ad47-063539472602" md5="3b37566bd3a2587a88e4787820e0d36f"/>
+          </Float32>
+        </Group>
+      </Group>
+    </Group>
+  </Group>
+  <Group name="HDFEOS INFORMATION">
+    <String name="StructMetadata.0">
+      <h4:byteStream offset="5304" nBytes="32000" uuid="1721dd71-90df-4781-af2f-4098eb28baca" md5="a1d84a9da910f58677226bf71fa9d1dd"/>
+    </String>
+    <Attribute name="HDFEOSVersion" type="String">
+      <Value>HDFEOS_5.1.13</Value>
+    </Attribute>
+  </Group>
+</Dataset>

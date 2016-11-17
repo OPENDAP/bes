@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" dapVersion="4.0" dmrVersion="1.0" name="t_float.h5">
+  <Float32 name="d32_1">
+    <Dim size="2"/>
+    <Attribute name="minimum" type="Float32">
+      <Value>-1.120000005</Value>
+    </Attribute>
+    <Attribute name="maximum" type="Float32">
+      <Value>2.140000105</Value>
+    </Attribute>
+    <h4:byteStream offset="2216" md5="ec2b3d664cfbfd9217e74738bbcd281f" uuid="c498ba62-0915-4641-bbda-e583daeae899" nBytes="8"/>
+  </Float32>
+  <Float32 name="d32_2">
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Attribute name="minimum" type="Float32">
+      <Value>1.100000024</Value>
+    </Attribute>
+    <Attribute name="maximum" type="Float32">
+      <Value>4.099999905</Value>
+    </Attribute>
+    <h4:byteStream offset="2224" md5="aeaafe45df3d2e57fe3c68f9887c60b0" uuid="e5cb51bc-ed3f-4f66-89da-9793fdbd7667" nBytes="16"/>
+  </Float32>
+  <Float64 name="d64_1">
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Attribute name="minimum" type="Float64">
+      <Value>-2.0999999046325684</Value>
+    </Attribute>
+    <Attribute name="maximum" type="Float64">
+      <Value>4.9000000953674316</Value>
+    </Attribute>
+    <h4:byteStream offset="2240" md5="f1e57dab82f2500507cad0888d520c08" uuid="eef57d69-e7ee-4199-a14b-c97e63e865c6" nBytes="64"/>
+  </Float64>
+  <Float64 name="d64_2">
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Dim size="2"/>
+    <Attribute name="minimum" type="Float64">
+      <Value>-10.100000381469727</Value>
+    </Attribute>
+    <Attribute name="maximum" type="Float64">
+      <Value>20.899999618530273</Value>
+    </Attribute>
+    <h4:byteStream offset="2304" md5="88a376f14f1b9b5564b5930b931d3a1a" uuid="e16c36b1-9d21-4015-9c8f-b1c88de67078" nBytes="256"/>
+  </Float64>
+</Dataset>
