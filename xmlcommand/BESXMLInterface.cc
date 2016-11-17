@@ -90,7 +90,7 @@ void BESXMLInterface::build_data_request_plan()
     BESDEBUG("besxml", "building request plan for xml document: " << endl << _dhi->data["XMLDoc"] << endl);
 
     if (BESLog::TheLog()->is_verbose()) {
-        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << "] building" << endl;
+        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " building" << endl;
     }
 
     // I do not know why, but uncommenting this macro breaks some tests

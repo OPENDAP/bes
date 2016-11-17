@@ -1,5 +1,5 @@
 #! /bin/sh
-# Generated from handler_tests_macros.m4 by GNU Autoconf 2.69.
+# Generated from ../../handler_tests_macros.m4 by GNU Autoconf 2.69.
 #
 # Copyright (C) 2009-2012 Free Software Foundation, Inc.
 #
@@ -2022,7 +2022,7 @@ exit 0
 at_fn_group_banner 1 'DmrppTest.at:8' \
   "BESCMD \$abs_srcdir/bes/d_int.h5.dmrpp.dmr.bescmd" ""
 at_xfail=no
-      test "" = "xfail" && at_xfail=yes
+      test z$pass = zxfail && at_xfail=yes
 (
   $as_echo "1. $at_setup_line: testing $at_desc ..."
   $at_traceon
@@ -2031,13 +2031,18 @@ at_xfail=no
 
     input=$abs_srcdir/bes/d_int.h5.dmrpp.dmr.bescmd
     baseline=$abs_srcdir/bes/d_int.h5.dmrpp.dmr.bescmd.baseline
+    pass=
+    repeat=
+    if test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached; then :
+  repeat="-r 3"
+fi
 
     if test -n "$baselines" -a x$baselines = xyes; then :
 
         { set +x
-$as_echo "$at_srcdir/DmrppTest.at:8: besstandalone -c \$abs_builddir/bes.conf -i \$input"
-at_fn_check_prepare_dynamic "besstandalone -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:8"
-( $at_check_trace; besstandalone -c $abs_builddir/bes.conf -i $input
+$as_echo "$at_srcdir/DmrppTest.at:8: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:8"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2064,9 +2069,9 @@ $at_traceon; }
 else
 
         { set +x
-$as_echo "$at_srcdir/DmrppTest.at:8: besstandalone -c \$abs_builddir/bes.conf -i \$input"
-at_fn_check_prepare_dynamic "besstandalone -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:8"
-( $at_check_trace; besstandalone -c $abs_builddir/bes.conf -i $input
+$as_echo "$at_srcdir/DmrppTest.at:8: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:8"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2084,7 +2089,7 @@ at_fn_check_prepare_dynamic "diff -b -B $baseline stdout" "DmrppTest.at:8"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
-echo stdout:; cat "$at_stdout"
+at_fn_diff_devnull "$at_stdout" || at_failed=:
 at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:8"
 $at_failed && at_fn_log_failure
 $at_traceon; }
@@ -2102,7 +2107,7 @@ read at_status <"$at_status_file"
 at_fn_group_banner 2 'DmrppTest.at:9' \
   "BESCMD \$abs_srcdir/bes/grid_1_2d.h5.dmrpp.dmr.bescmd" ""
 at_xfail=no
-      test "" = "xfail" && at_xfail=yes
+      test z$pass = zxfail && at_xfail=yes
 (
   $as_echo "2. $at_setup_line: testing $at_desc ..."
   $at_traceon
@@ -2111,13 +2116,18 @@ at_xfail=no
 
     input=$abs_srcdir/bes/grid_1_2d.h5.dmrpp.dmr.bescmd
     baseline=$abs_srcdir/bes/grid_1_2d.h5.dmrpp.dmr.bescmd.baseline
+    pass=
+    repeat=
+    if test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached; then :
+  repeat="-r 3"
+fi
 
     if test -n "$baselines" -a x$baselines = xyes; then :
 
         { set +x
-$as_echo "$at_srcdir/DmrppTest.at:9: besstandalone -c \$abs_builddir/bes.conf -i \$input"
-at_fn_check_prepare_dynamic "besstandalone -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:9"
-( $at_check_trace; besstandalone -c $abs_builddir/bes.conf -i $input
+$as_echo "$at_srcdir/DmrppTest.at:9: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:9"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2144,9 +2154,9 @@ $at_traceon; }
 else
 
         { set +x
-$as_echo "$at_srcdir/DmrppTest.at:9: besstandalone -c \$abs_builddir/bes.conf -i \$input"
-at_fn_check_prepare_dynamic "besstandalone -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:9"
-( $at_check_trace; besstandalone -c $abs_builddir/bes.conf -i $input
+$as_echo "$at_srcdir/DmrppTest.at:9: besstandalone \$repeat -c \$abs_builddir/bes.conf -i \$input"
+at_fn_check_prepare_dynamic "besstandalone $repeat -c $abs_builddir/bes.conf -i $input" "DmrppTest.at:9"
+( $at_check_trace; besstandalone $repeat -c $abs_builddir/bes.conf -i $input
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2164,7 +2174,7 @@ at_fn_check_prepare_dynamic "diff -b -B $baseline stdout" "DmrppTest.at:9"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
-echo stdout:; cat "$at_stdout"
+at_fn_diff_devnull "$at_stdout" || at_failed=:
 at_fn_check_status 0 $at_status "$at_srcdir/DmrppTest.at:9"
 $at_failed && at_fn_log_failure
 $at_traceon; }

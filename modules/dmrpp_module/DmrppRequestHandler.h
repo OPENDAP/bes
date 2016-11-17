@@ -27,31 +27,37 @@
 
 #include "BESRequestHandler.h"
 
+#undef DAP2
+
 namespace libdap {
 	class DMR;
 	class DDS;
 }
 
 class DmrppRequestHandler: public BESRequestHandler {
+#if 0
 	static bool d_use_series_values;
 	static bool d_use_series_values_set;
 
 	static bool d_use_test_types;
 	static bool d_use_test_types_set;
+#endif
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(const string& accessed, bool explicit_containers, libdap::DMR* dmr);
+#if DAP2
 	static void build_dds_from_file(const string& accessed, bool explicit_containers, libdap::DDS* dds);
 	static void load_dds_from_data_file(const string &accessed, libdap::DDS &dds);
-
+#endif
 public:
 	DmrppRequestHandler(const string &name);
 	virtual ~DmrppRequestHandler(void) { }
 
+#if DAP2
 	static bool dap_build_das(BESDataHandlerInterface &dhi);
 	static bool dap_build_dds(BESDataHandlerInterface &dhi);
 	static bool dap_build_data(BESDataHandlerInterface &dhi);
-
+#endif
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);
 

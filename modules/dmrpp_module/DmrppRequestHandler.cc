@@ -67,12 +67,13 @@ using namespace libdap;
 
 int test_variable_sleep_interval = 0;
 
+#if 0
 bool DmrppRequestHandler::d_use_series_values = true;
 bool DmrppRequestHandler::d_use_series_values_set = false;
 
 bool DmrppRequestHandler::d_use_test_types = true;
 bool DmrppRequestHandler::d_use_test_types_set = false;
-
+#endif
 const string module = "dmrpp";
 
 static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
@@ -91,11 +92,13 @@ static void read_key_value(const std::string &key_name, bool &key_value, bool &i
     }
 }
 
+#if 0
 static bool extension_match(const string &data_source, const string &extension)
 {
     string::size_type pos = data_source.rfind(extension);
     return pos != string::npos && pos + extension.length() == data_source.length();
 }
+#endif
 
 /**
  * Here we register all of our handler functions so that the BES Dispatch machinery
@@ -104,20 +107,23 @@ static bool extension_match(const string &data_source, const string &extension)
 DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
+#if DAP2
     add_handler(DAS_RESPONSE, dap_build_das);
     add_handler(DDS_RESPONSE, dap_build_dds);
     add_handler(DATA_RESPONSE, dap_build_data);
-
+#endif
     add_handler(DMR_RESPONSE, dap_build_dmr);
     add_handler(DAP4DATA_RESPONSE, dap_build_dap4data);
 
     add_handler(VERS_RESPONSE, dap_build_vers);
     add_handler(HELP_RESPONSE, dap_build_help);
-
+#if 0
     read_key_value("DR.UseTestTypes", d_use_test_types, d_use_test_types_set);
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
+#endif
 }
 
+#if DAP2
 /** Read values from a DAP2 or DAP4 response
  *
  * @param accessed File that holds a 'frozen' DAP2 or DAP4 data response
@@ -213,10 +219,23 @@ void DmrppRequestHandler::build_dds_from_file(const string &accessed, bool expli
     BESDEBUG(module, "Exiting build_dds_from_file..." << endl);
 
 }
+#endif
 
-void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool explicit_containers, DMR* dmr)
+void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool /*explicit_containers*/, DMR* dmr)
 {
     BESDEBUG(module, "In DmrppRequestHandler::build_dmr_from_file; accessed: " << accessed << endl);
+
+    dmr->set_filename(accessed);
+    dmr->set_name(name_path(accessed));
+
+    D4BaseTypeFactory BaseFactory;
+    dmr->set_factory(&BaseFactory);
+
+    D4ParserSax2 parser;
+    ifstream in(accessed.c_str(), ios::in);
+    parser.intern(in, dmr);
+
+    dmr->set_factory(0);
 
 #if 0
     dmr->set_filename(accessed);
@@ -262,8 +281,8 @@ void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool expli
 
     dmr->set_factory(0);
 #endif
-    BESDEBUG(module, "Exiting build_dmr_from_file..." << endl);
 
+    BESDEBUG(module, "Exiting build_dmr_from_file..." << endl);
 }
 
 /**
@@ -281,7 +300,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 {
     BESDEBUG(module, "Entering dap_build_dmr..." << endl);
 
-#if 0
+#if 1
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
@@ -323,7 +342,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
     BESDEBUG(module, "Entering dap_build_dap4data..." << endl);
 
-#if 0
+#if 1
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr) throw BESInternalError("BESDMRResponse cast error", __FILE__, __LINE__);
@@ -332,6 +351,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         DMR *dmr = bdmr->get_dmr();
         build_dmr_from_file(dhi.container->access(), bdmr->get_explicit_containers(), dmr);
 
+#if 0
         if (d_use_series_values) {
             dmr->root()->set_read_p(false);
 
@@ -341,6 +361,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
             else
                 throw Error("In the reader handler: Could not set UseSeriesValues");
         }
+#endif
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -364,6 +385,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     return false;
 }
 
+#if DAP2
 /**
  * This method will look at the extension on the input file and assume
  * that if it's .das, that file should be read and used to build the DAS
@@ -489,6 +511,7 @@ bool DmrppRequestHandler::dap_build_data(BESDataHandlerInterface &dhi)
 
     return true;
 }
+#endif
 
 bool DmrppRequestHandler::dap_build_vers(BESDataHandlerInterface &dhi)
 {

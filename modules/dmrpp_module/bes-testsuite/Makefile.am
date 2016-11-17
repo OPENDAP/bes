@@ -42,7 +42,7 @@ clean-local:
 
 # Why are these dependencies prefixed by $(srcdir)? jhrg 3/17/15
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/DmrppTest.at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(srcdir)/DmrppTest.at $(srcdir)/package.m4 $(srcdir)/bes.conf $(srcdir)/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 

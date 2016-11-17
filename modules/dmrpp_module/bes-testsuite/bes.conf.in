@@ -7,16 +7,15 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader
+BES.modules=dap,cmd,dmrpp
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
-BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
-BES.module.dmrpp=@modulesdir@/dmrpp/.libs/libdmrpp_module.so
+BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
 
-BES.Catalog.catalog.RootDirectory=@modulesdir@/dmrpp_module
+BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/dmrpp_module/
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|data|dmr|xml|dap)$;
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.(dmrpp)$;
 BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
 
 BES.Catalog.catalog.Include=;
