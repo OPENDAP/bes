@@ -41,16 +41,14 @@
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
 
-//#include <D4BaseTypeFactory.h>
-
 #include <DMR.h>
 #include <D4Group.h>
-#include <D4ParserSax2.h>
 
 #include <InternalErr.h>
 #include <mime_util.h>  // for name_path
 
 #include "DmrppTypeFactory.h"
+#include "DmrppParserSax2.h"
 #include "DmrppRequestHandler.h"
 
 using namespace libdap;
@@ -60,6 +58,7 @@ int test_variable_sleep_interval = 0;
 
 const string module = "dmrpp";
 
+#if 0
 static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
 {
     if (is_key_set == false) {
@@ -76,7 +75,6 @@ static void read_key_value(const std::string &key_name, bool &key_value, bool &i
     }
 }
 
-#if 0
 static bool extension_match(const string &data_source, const string &extension)
 {
     string::size_type pos = data_source.rfind(extension);
@@ -119,7 +117,7 @@ void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool /*exp
     DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
     dmr->set_factory(&BaseFactory);
 
-    D4ParserSax2 parser;
+    DmrppParserSax2 parser;
     ifstream in(accessed.c_str(), ios::in);
     parser.intern(in, dmr);
 

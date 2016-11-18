@@ -49,29 +49,11 @@ class D4EnumDef;
 class D4Dimension;
 }
 
-/** Parse the XML text which encodes the network/persistent representation of
-    the DMR object. In the current implementation, the DMR is held by an
-    instance of the class DDS which in turn holds variables which include
-    attributes.
-
-    This parser for the DMR document uses the SAX interface of libxml2.
-    Static methods are used as callbacks for the SAX parser. These static
-    methods are public because making them private complicates compilation.
-    They should not be called by anything other than the intern method.
-    They do not throw exceptions because exceptions from within callbacks are
-    not reliable or portable. To signal errors, the methods record
-    information in the DmrppParserSax2 object. Once the error handler is called,
-    construction of an DMR object ends even though the SAX parser still
-    calls the various callback functions. The parser treats warnings,
-    errors and fatal_errors the same way; when any are found parsing
-    stops. The intern method throws an Error of InternalErr exception if an
-    error was found.
-
-    Note that this class uses the C++-supplied default definitions for the
-    default and copy constructors as well as the destructor and assignment
-    operator.
-
-    @see DMR */
+/**
+ * Hacked DMR parser copied from libdap. This version of the parser processes
+ * h4:byteStream elements and stores their information (xml attributes) in
+ * Dmrpp BaseTypes.
+ */
 class DmrppParserSax2
 {
 private:
@@ -107,6 +89,7 @@ private:
 
         // inside_sequence, Removed from merged code jhrg 5/2/14
 
+        // FIXMEinside_h4_byte_stream,
         not_dap4_element,
 
         parser_unknown,

@@ -52,6 +52,7 @@
 #include "DmrppParserSax2.h"
 
 static const string module = "dmrpp";
+static const string hdf4_namespace  = "http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1";
 
 using namespace libdap;
 using namespace std;
@@ -84,6 +85,7 @@ static const char *states[] = {
 
         "inside_constructor",
 
+        // FIXME "inside_h4_byte_stream",
         "not_dap4_element",
 
         "parser_unknown",
@@ -634,25 +636,22 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         const xmlChar **attributes)
 {
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
-    const char *localname = (const char *) l;
+    const char *localname = reinterpret_cast<const char *>(l);
 
-    if (parser->debug()) cerr << "Start element " << localname << "  prefix:  "<< (prefix?(char *)prefix:"null") << "  ns: "<< (URI?(char *)URI:"null")
-    		   << " (state: " << states[parser->get_state()] << ")" << endl;
+    string this_element_ns_name(URI ? (char *)URI: "null");
 
-    if(parser->get_state() != parser_error){
+    if (parser->debug()) cerr << "Start element " << localname << "  prefix:  "<< (prefix?(char *)prefix:"null")
+        << "  ns: " << this_element_ns_name  << " (state: " << states[parser->get_state()] << ")" << endl;
+
+    if (parser->get_state() != parser_error) {
         string dap4_ns_name = DapXmlNamspaces::getDapNamespaceString(DAP_4_0);
         if (parser->debug()) cerr << "dap4_ns_name:         " << dap4_ns_name << endl;
 
-        string this_element_ns_name((char *)URI);
-        if (parser->debug()) cerr << "this_element_ns_name: " << this_element_ns_name << endl;
-
-        if(this_element_ns_name.compare(dap4_ns_name)){
+        if (this_element_ns_name != dap4_ns_name) {
             if (parser->debug()) cerr << "Start of non DAP4 element: " << localname << " detected." << endl;
         	parser->push_state(not_dap4_element);
-        	// return;
         }
     }
-
 
     switch (parser->get_state()) {
         case parser_start:
@@ -787,11 +786,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         case inside_dim_def:
             // No content; nothing to do
             break;
-#if 0
-        case inside_dimension:
-            // No content.
-            break;
-#endif
+
         case inside_dim:
             // No content.
             break;
@@ -828,6 +823,12 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         case not_dap4_element:
             if (parser->debug()) cerr << "Inside non DAP4 element. localname: " << localname << endl;
+            // Check for a h4:byteStream and process if found
+            //  <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
+            if (strcmp(localname, "byteStream") == 0 && this_element_ns_name == hdf4_namespace) {
+                if (parser->debug()) cerr << "Inside HDF4 byteStream: " << localname << endl;
+                // cast down to DmrppCommon and set the values. Maybe use transfer_xml_attrs...
+            }
         	break;
 
         case parser_unknown:
