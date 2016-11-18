@@ -17,6 +17,8 @@
 
 bool HDFEOS2GeoCF1D::read()
 {
+    if(length() == 0)                                                                               
+        return true; 
 
     // Declaration of offset,count and step
     vector<int> offset;
@@ -66,50 +68,43 @@ bool HDFEOS2GeoCF1D::read()
 int
 HDFEOS2GeoCF1D::format_constraint (int *offset, int *step, int *count)
 {
+
     long nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
-
     while (p != dim_end ()) {
 
         int start = dimension_start (p, true);
         int stride = dimension_stride (p, true);
         int stop = dimension_stop (p, true);
 
-
-        // Check for illegical  constraint
-        if (stride < 0 || start < 0 || stop < 0 || start > stop) {
+        // Check for illegal  constraint
+        if (start > stop) {
             ostringstream oss;
-
-            oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                ":" << stride << ":" << stop << "]";
-            throw Error (malformed_expr, oss.str ());
-        }
-
-        // Check for an empty constraint and use the whole dimension if so.
-        if (start == 0 && stop == 0 && stride == 0) {
-            start = dimension_start (p, false);
-            stride = dimension_stride (p, false);
-            stop = dimension_stop (p, false);
+            oss << "Array/Grid hyperslab start point "<< start <<
+                   " is greater than stop point " <<  stop <<".";
+            throw Error(malformed_expr, oss.str());
         }
 
         offset[id] = start;
         step[id] = stride;
-        count[id] = ((stop - start) / stride) + 1;// count of elements
-        nels *= count[id];// total number of values for variable
+        count[id] = ((stop - start) / stride) + 1;      // count of elements
+        nels *= count[id];              // total number of values for variable
 
-        BESDEBUG ("h4", 
-                  "=format_constraint():"
-                  << "id=" << id << " offset=" << offset[id]
-                  << " step=" << step[id]
-                  << " count=" << count[id]
-                  << endl);
+        BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
 
         id++;
         p++;
-    }
+    }// while (p != dim_end ())
 
     return nels;
 }
+
+
 #endif

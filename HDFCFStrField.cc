@@ -25,7 +25,7 @@ HDFCFStrField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFCFStrField read "<<endl);
-    if(length() == 0)                                                                               
+    if(length() == 0)        
         return true;
 
 #if 0
@@ -287,7 +287,7 @@ HDFCFStrField::format_constraint (int *offset, int *step, int *count)
         count[id] = ((stop - start) / stride) + 1;      // count of elements
         nels *= count[id];              // total number of values for variable
 
-        BESDEBUG ("h5",
+        BESDEBUG ("h4",
                          "=format_constraint():"
                          << "id=" << id << " offset=" << offset[id]
                          << " step=" << step[id]
