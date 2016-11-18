@@ -30,9 +30,6 @@
 #include <BESTextInfo.h>
 #include <BESDapNames.h>
 
-//#include <BESDataDDSResponse.h>
-//#include <BESDDSResponse.h>
-//#include <BESDASResponse.h>
 #include <BESDMRResponse.h>
 
 #include <BESConstraintFuncs.h>
@@ -44,7 +41,7 @@
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
 
-#include <D4BaseTypeFactory.h>
+//#include <D4BaseTypeFactory.h>
 
 #include <DMR.h>
 #include <D4Group.h>
@@ -53,6 +50,7 @@
 #include <InternalErr.h>
 #include <mime_util.h>  // for name_path
 
+#include "DmrppTypeFactory.h"
 #include "DmrppRequestHandler.h"
 
 using namespace libdap;
@@ -118,7 +116,7 @@ void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool /*exp
     dmr->set_filename(accessed);
     dmr->set_name(name_path(accessed));
 
-    D4BaseTypeFactory BaseFactory;
+    DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
     dmr->set_factory(&BaseFactory);
 
     D4ParserSax2 parser;
