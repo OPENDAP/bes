@@ -85,3 +85,14 @@ DmrppByte::read()
 
     return true;
 }
+
+void DmrppByte::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppByte::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    Byte::dump(strm);
+    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    DapIndent::UnIndent();
+}

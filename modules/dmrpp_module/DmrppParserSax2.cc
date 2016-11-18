@@ -45,11 +45,12 @@
 
 #include <DapXmlNamespaces.h>
 #include <util.h>
-#include <debug.h>
 
+#include <BESDapError.h>
 #include <BESDebug.h>
 
 #include "DmrppParserSax2.h"
+#include "DmrppCommon.h"
 
 static const string module = "dmrpp";
 static const string hdf4_namespace  = "http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1";
@@ -823,11 +824,31 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         case not_dap4_element:
             if (parser->debug()) cerr << "Inside non DAP4 element. localname: " << localname << endl;
-            // Check for a h4:byteStream and process if found
-            //  <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
+
             if (strcmp(localname, "byteStream") == 0 && this_element_ns_name == hdf4_namespace) {
+                // Check for a h4:byteStream and process if found
+                // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
+
                 if (parser->debug()) cerr << "Inside HDF4 byteStream: " << localname << endl;
-                // cast down to DmrppCommon and set the values. Maybe use transfer_xml_attrs...
+
+                parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+
+                DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
+                if (!dc)
+                    throw BESDapError("Could not cast BaseType to DmrppType in the drmpp handler.", true,
+                        internal_error, __FILE__, __LINE__);
+
+                unsigned long long offset = 0, size = 0;
+                istringstream offset_ss(parser->xml_attrs["offset"].value);
+                offset_ss >> offset;
+                dc->set_offset(offset);
+
+                istringstream size_ss(parser->xml_attrs["nBytes"].value);
+                size_ss >> size;
+                dc->set_size(size);
+
+                //parser->xml_attrs["md5"].value
+                //parser->xml_attrs["uuid"].value
             }
         	break;
 
