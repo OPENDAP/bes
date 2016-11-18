@@ -893,8 +893,8 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
         DDS *dds = bdds->get_dds();
 
-        BaseTypeFactory* factory = new BaseTypeFactory ;
-        dds->set_factory( factory ) ;
+        //BaseTypeFactory* factory = new BaseTypeFactory ;
+        //dds->set_factory( factory ) ;
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
@@ -1165,8 +1165,8 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
-        BaseTypeFactory* factory = new BaseTypeFactory ;
-        dds->set_factory( factory ) ;
+        //BaseTypeFactory* factory = new BaseTypeFactory ;
+        //dds->set_factory( factory ) ;
 
         string base_file_name = basename(dhi.container->access());
 
