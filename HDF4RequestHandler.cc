@@ -280,7 +280,10 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             if (-1 == gridfd) {
                 SDend(sdfd);
                 Hclose(fileid);
-                throw Error(cannot_read_file,"HDF-EOS GDopen error");
+                string invalid_file_msg="HDF-EOS GDopen error for the file ";
+                invalid_file_msg +=filename;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg);
             }
 
             // Swath open 
