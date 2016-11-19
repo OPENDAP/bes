@@ -628,6 +628,9 @@ void DmrppParserSax2::dmr_end_document(void * p)
     if (!parser->empty_basetype() || parser->empty_group())
     	DmrppParserSax2::dmr_error(parser, "The document did not contain a valid root Group or contained unbalanced tags.");
 
+
+    if (parser->debug()) parser->top_group()->dump(cerr);
+
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();
 }
