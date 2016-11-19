@@ -45,6 +45,8 @@ public:
     virtual libdap::BaseType *ptr_duplicate();
 
     virtual bool read();
+
+    virtual void dump(ostream & strm) const;
 };
 
 #endif // _dmrpp_uint32_h

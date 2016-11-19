@@ -85,3 +85,15 @@ DmrppInt64::read()
 
     return true;
 }
+
+
+void DmrppInt64::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppInt64::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    Int64::dump(strm);
+    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    DapIndent::UnIndent();
+}

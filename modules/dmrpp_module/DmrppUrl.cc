@@ -85,3 +85,15 @@ DmrppUrl::read()
 
     return true;
 }
+
+
+void DmrppUrl::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    Url::dump(strm);
+    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    DapIndent::UnIndent();
+}

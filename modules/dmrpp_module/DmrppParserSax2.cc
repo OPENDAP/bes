@@ -46,7 +46,7 @@
 #include <DapXmlNamespaces.h>
 #include <util.h>
 
-#include <BESDapError.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 #include "DmrppParserSax2.h"
@@ -835,20 +835,45 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
                 DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
                 if (!dc)
-                    throw BESDapError("Could not cast BaseType to DmrppType in the drmpp handler.", true,
-                        internal_error, __FILE__, __LINE__);
+                    throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
-                unsigned long long offset = 0, size = 0;
-                istringstream offset_ss(parser->xml_attrs["offset"].value);
-                offset_ss >> offset;
-                dc->set_offset(offset);
 
-                istringstream size_ss(parser->xml_attrs["nBytes"].value);
-                size_ss >> size;
-                dc->set_size(size);
+                if (parser->check_required_attribute("offset")) {
+                    unsigned long long offset = 0;
+                    istringstream offset_ss(parser->xml_attrs["offset"].value);
+                    offset_ss >> offset;
+                    dc->set_offset(offset);
+                    if (parser->debug()) cerr << "Processed attribute 'offset=\""<< offset << "\"'" << endl;
+                }
+                else {
+                    dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'offset'.");
+                }
 
-                //parser->xml_attrs["md5"].value
-                //parser->xml_attrs["uuid"].value
+                if (parser->check_required_attribute("nBytes")) {
+                    unsigned long long size = 0;
+                    istringstream size_ss(parser->xml_attrs["nBytes"].value);
+                    size_ss >> size;
+                    dc->set_size(size);
+                    if (parser->debug()) cerr << "Processed attribute 'nBytes=\""<< size << "\"'" << endl;
+                }
+                else {
+                    dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
+                }
+
+                if (parser->check_required_attribute("md5")) {
+                    if (parser->debug()) cerr << "Found attribute 'md5' SKIPPING" << endl;
+                }
+                else {
+                    if (parser->debug()) cerr << "No attribute 'md5' located" << endl;
+
+                }
+                if (parser->check_required_attribute("uuid")) {
+                    if (parser->debug()) cerr << "Found attribute 'uuid' SKIPPING" << endl;
+                }
+                else {
+                    if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;
+
+                }
             }
         	break;
 

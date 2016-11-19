@@ -85,3 +85,15 @@ DmrppD4Sequence::read()
 
     return true;
 }
+
+void DmrppD4Sequence::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppD4Sequence::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    D4Sequence::dump(strm);
+    strm << DapIndent::LMarg << "value: " << "----" << /*d_buf <<*/ endl;
+    DapIndent::UnIndent();
+}
+

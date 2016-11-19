@@ -85,3 +85,15 @@ DmrppD4Opaque::read()
 
     return true;
 }
+
+
+void DmrppD4Opaque::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppD4Opaque::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    D4Opaque::dump(strm);
+    strm << DapIndent::LMarg << "value: " << "----" << /*d_buf <<*/ endl;
+    DapIndent::UnIndent();
+}

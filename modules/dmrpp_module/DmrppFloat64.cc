@@ -85,3 +85,14 @@ DmrppFloat64::read()
 
     return true;
 }
+
+void DmrppFloat64::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppFloat64::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    Float64::dump(strm);
+    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    DapIndent::UnIndent();
+}

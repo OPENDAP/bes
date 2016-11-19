@@ -85,3 +85,15 @@ DmrppStructure::read()
 
     return true;
 }
+
+
+void DmrppStructure::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    Structure::dump(strm);
+    strm << DapIndent::LMarg << "value: " << "----" << /*d_buf <<*/ endl;
+    DapIndent::UnIndent();
+}

@@ -85,3 +85,14 @@ DmrppInt8::read()
 
     return true;
 }
+
+void DmrppInt8::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppInt8::dump - (" << (void *) this << ")" << endl;
+    strm << "offset: " << get_offset() << endl;
+    strm << "size: " << get_size() << endl;
+    DapIndent::Indent();
+    Int8::dump(strm);
+    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    DapIndent::UnIndent();
+}
