@@ -64,7 +64,6 @@
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
 #include <BESDapError.h>
-#include <BESNotFoundError.h>
 #include <BESInternalFatalError.h>
 #include <TheBESKeys.h>
 #include <BESDebug.h>
@@ -219,7 +218,6 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     if( !bdas )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
     try {
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
@@ -234,6 +232,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         }
         else {
 
+            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
             if (true == _usecf) {
 
                 cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -252,8 +251,13 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             else {// Default option
                 hid_t fileid = get_fileid(filename.c_str());
                 if (fileid < 0) {
-                    throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                                   + filename, __FILE__, __LINE__);
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+ 
                 }
 
                 find_gloattr(fileid, *das);
@@ -324,6 +328,7 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
 
         else {
 
+            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
             if (!container_name.empty()) 
                 dds->container_name(container_name);
             dds->filename(filename);
@@ -333,8 +338,12 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
            
                 cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
                 if (cf_fileid < 0){
-                    throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                                   + filename, __FILE__, __LINE__);
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
                 read_cfdds(*dds,filename,cf_fileid);
 
@@ -343,9 +352,12 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
 
                 fileid = get_fileid(filename.c_str());
                 if (fileid < 0) {
-                    throw BESNotFoundError(string("hdf5_build_dds: ")
-                                           + "Could not open hdf5 file: "
-                                           + filename, __FILE__, __LINE__);
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
 
                 depth_first(fileid, (char*)"/", *dds, filename.c_str());
@@ -573,11 +585,16 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
     hid_t cf_fileid = -1;
 
     string filename = dhi.container->access();
-
+    
+    H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (cf_fileid < 0){
-        throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                               + filename, __FILE__, __LINE__);
+        string invalid_file_msg="Could not open this HDF5 file ";
+        invalid_file_msg +=filename;
+        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+        invalid_file_msg +=" distributor.";
+        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
     }
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -672,6 +689,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         }
         else {// No cache
 
+            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
             D4BaseTypeFactory MyD4TypeFactory;
             dmr->set_factory(&MyD4TypeFactory);
  
@@ -682,8 +700,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
                 cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
                 if (cf_fileid < 0){
-                	throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                    	               + filename, __FILE__, __LINE__);
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             	}
 
             	BaseTypeFactory factory;
@@ -716,9 +738,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 // Obtain the HDF5 file ID. 
                 fileid = get_fileid(filename.c_str());
                 if (fileid < 0) {
-                    throw BESNotFoundError(string("hdf5_build_dmr: ")
-                       	                   + "Could not open hdf5 file: "
-                               	           + filename, __FILE__, __LINE__);
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             	}
 
             	bool use_dimscale = check_dimscale(fileid);
@@ -808,10 +833,15 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
     hid_t cf_fileid = -1;
 
+    H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (cf_fileid < 0){
-         throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                               + filename, __FILE__, __LINE__);
+        string invalid_file_msg="Could not open this HDF5 file ";
+        invalid_file_msg +=filename;
+        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+        invalid_file_msg +=" distributor.";
+        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
     }
 
     BaseTypeFactory factory;
