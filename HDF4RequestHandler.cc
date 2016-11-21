@@ -258,14 +258,22 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             // Obtain HDF4 file IDs
             //SDstart
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
-
+            if( -1 == sdfd){
+                //throw Error(cannot_read_file,"HDF4 SDstart error");
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
+ 
             // H open
             fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
-                throw Error(cannot_read_file,"HDF4 Hopen error");
+                string invalid_file_msg="HDF4 Hopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
 #ifdef USE_HDFEOS2_LIB
@@ -281,9 +289,9 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
                 SDend(sdfd);
                 Hclose(fileid);
                 string invalid_file_msg="HDF-EOS GDopen error for the file ";
-                invalid_file_msg +=filename;
+                invalid_file_msg +=accessed;
                 invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
-                throw BESInternalError(invalid_file_msg);
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
             // Swath open 
@@ -292,7 +300,10 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
                 SDend(sdfd);
                 Hclose(fileid);
                 GDclose(gridfd);
-                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+                string invalid_file_msg="HDF-EOS SWopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
             
             try {
@@ -418,14 +429,21 @@ gettimeofday(&start_time,NULL);
             // Obtain HDF4 file IDs
             //SDstart
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
+            if( -1 == sdfd){
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
 
             // H open
             fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
-                throw Error(cannot_read_file,"HDF4 Hopen error");
+                string invalid_file_msg="HDF4 Hopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
 #ifdef USE_HDFEOS2_LIB        
@@ -441,7 +459,10 @@ gettimeofday(&start_time,NULL);
             if (-1 == gridfd) {
                 SDend(sdfd);
                 Hclose(fileid);
-                throw Error(cannot_read_file,"HDF-EOS GDopen error");
+                string invalid_file_msg="HDF-EOS GDopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
             // Swath open 
@@ -450,7 +471,10 @@ gettimeofday(&start_time,NULL);
                 SDend(sdfd);
                 Hclose(fileid);
                 GDclose(gridfd);
-                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+                string invalid_file_msg="HDF-EOS SWopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
  
             try {
@@ -605,14 +629,21 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
             // Obtain HDF4 file IDs
             //SDstart
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
+            if( -1 == sdfd) {
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
 
             // H open
             fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
-                throw Error(cannot_read_file,"HDF4 Hopen error");
+                string invalid_file_msg="HDF4 Hopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
 
@@ -628,7 +659,10 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
             if (-1 == gridfd) {
                 SDend(sdfd);
                 Hclose(fileid);
-                throw Error(cannot_read_file,"HDF-EOS GDopen error");
+                string invalid_file_msg="HDF-EOS GDopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
             // Swath open 
@@ -637,7 +671,11 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
                 SDend(sdfd);
                 Hclose(fileid);
                 GDclose(gridfd);
-                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+                string invalid_file_msg="HDF-EOS SWopen error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+ 
             }
 
             try {
@@ -763,14 +801,20 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         // Obtain HDF4 file IDs
         //SDstart
         sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-        if( -1 == sdfd)
-            throw Error(cannot_read_file,"HDF4 SDstart error");
-
+        if( -1 == sdfd) {
+            string invalid_file_msg="HDF4 SDstart error for the file ";
+            invalid_file_msg +=accessed;
+            invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+            throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+        }
         // H open
         fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
         if (-1 == fileid) {
             SDend(sdfd);
-            throw Error(cannot_read_file,"HDF4 Hopen error");
+            string invalid_file_msg="HDF4 Hopen error for the file ";
+            invalid_file_msg +=accessed;
+            invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+            throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
         }
 
 #ifdef USE_HDFEOS2_LIB        
@@ -783,7 +827,10 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         if (-1 == gridfd) {
             SDend(sdfd);
             Hclose(fileid);
-            throw Error(cannot_read_file,"HDF-EOS GDopen error");
+            string invalid_file_msg="HDF-EOS GDopen error for the file ";
+            invalid_file_msg +=accessed;
+            invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+            throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
         }
 
         // Swath open 
@@ -792,7 +839,10 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
             SDend(sdfd);
             Hclose(fileid);
             GDclose(gridfd);
-            throw Error(cannot_read_file,"HDF-EOS SWopen error");
+            string invalid_file_msg="HDF-EOS SWopen error for the file ";
+            invalid_file_msg +=accessed;
+            invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+            throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
         }
 
         hdds->setHDF4Dataset(sdfd,fileid,gridfd,swathfd);
@@ -957,8 +1007,13 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
             // Obtain SD ID, this is the only ID we need to use.
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
+            if( -1 == sdfd) {
+
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
 
 
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
@@ -1088,8 +1143,12 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
         if(false == das_get_cache) {
             // Obtain SD ID.
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
+            if( -1 == sdfd){
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
 
 
 #if 0
@@ -1210,8 +1269,12 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
 
             // Obtain HDF4 SD ID
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
+            if( -1 == sdfd){
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=accessed;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
 
 
             // Here we will check if ECS_Metadata key if set. For DataDDS, 
@@ -1315,8 +1378,12 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 
         //Obtain SD ID. 
         sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
-        if( -1 == sdfd)
-            throw Error(cannot_read_file,"HDF4 SDstart error");
+        if( -1 == sdfd) {
+            string invalid_file_msg="HDF4 SDstart error for the file ";
+            invalid_file_msg +=accessed;
+            invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+            throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+        }
 
         hdds->setHDF4Dataset(sdfd,-1);
 
@@ -1418,14 +1485,21 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             // Obtain HDF4 file IDs
             //SDstart
             sdfd = SDstart (const_cast < char *>(data_path.c_str()), DFACC_READ);
-            if( -1 == sdfd)
-                throw Error(cannot_read_file,"HDF4 SDstart error");
+            if( -1 == sdfd){
+                string invalid_file_msg="HDF4 SDstart error for the file ";
+                invalid_file_msg +=data_path;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
 
             // H open
             fileid = Hopen(const_cast<char *>(data_path.c_str()), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
-                throw Error(cannot_read_file,"HDF4 Hopen error");
+                string invalid_file_msg="HDF4 Hopen error for the file ";
+                invalid_file_msg +=data_path;
+                invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
 #ifdef USE_HDFEOS2_LIB        
@@ -1441,7 +1515,10 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             if (-1 == gridfd) {
                 SDend(sdfd);
                 Hclose(fileid);
-                throw Error(cannot_read_file,"HDF-EOS GDopen error");
+                string invalid_file_msg="HDF-EOS GDopen error for the file ";
+                invalid_file_msg +=data_path;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
             // Swath open 
@@ -1450,7 +1527,10 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
                 SDend(sdfd);
                 Hclose(fileid);
                 GDclose(gridfd);
-                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+                string invalid_file_msg="HDF-EOS SWopen error for the file ";
+                invalid_file_msg +=data_path;
+                invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
             }
 
  
@@ -1590,14 +1670,21 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     // Obtain HDF4 file IDs
     //SDstart
     sdfd = SDstart (const_cast < char *>(data_path.c_str()), DFACC_READ);
-    if( -1 == sdfd)
-        throw Error(cannot_read_file,"HDF4 SDstart error");
+    if( -1 == sdfd){
+        string invalid_file_msg="HDF4 SDstart error for the file ";
+        invalid_file_msg +=data_path;
+        invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+    }
 
     // H open
     fileid = Hopen(const_cast<char *>(data_path.c_str()), DFACC_READ,0);
     if (-1 == fileid) {
         SDend(sdfd);
-        throw Error(cannot_read_file,"HDF4 Hopen error");
+        string invalid_file_msg="HDF4 SDstart error for the file ";
+        invalid_file_msg +=data_path;
+        invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
     }
 
 
@@ -1613,7 +1700,11 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     if (-1 == gridfd) {
         SDend(sdfd);
         Hclose(fileid);
-        throw Error(cannot_read_file,"HDF-EOS GDopen error");
+        string invalid_file_msg="HDF4 SDstart error for the file ";
+        invalid_file_msg +=data_path;
+        invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
+        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+
     }
 
     // Swath open 
@@ -1622,7 +1713,11 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
         SDend(sdfd);
         Hclose(fileid);
         GDclose(gridfd);
-        throw Error(cannot_read_file,"HDF-EOS SWopen error");
+        string invalid_file_msg="HDF-EOS SWopen error for the file ";
+        invalid_file_msg +=data_path;
+        invalid_file_msg +=". It is very possible that this file is not an HDF-EOS2 file. ";
+        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+
     }
  
     // Here we will check if ECS_Metadata key if set. For DAP4's DMR, 
