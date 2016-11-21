@@ -13,8 +13,6 @@ AM_CPPFLAGS = -I$(top_srcdir) $(XML2_CFLAGS) $(DAP_CFLAGS)
 AM_LDADD =  $(DAP_SERVER_LIBS) 
 endif
 
-
-# AM_CPPFLAGS = -I$(top_srcdir)  $(XML2_CFLAGS)
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 AM_LDADD += $(CPPUNIT_LIBS)
@@ -63,8 +61,14 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../DmrppParserSax2.o 
+SRCS = 
 
-DmrppParserTest_SOURCES =  DmrppParserTest.cc 
-DmrppParserTest_LDADD =  $(OBJS) $(AM_LDADD) $(DAP_LIBS)
+# Linking with the .so modules produces a warning, but lets ignore it.
+# The alternative is to link with objects in the parent dir _but_, we
+# still will get a warning rom linking with the bes dap module which
+# we have to link against since we're using BESDapError. jhrg 11/21/16
+
+DmrppParserTest_SOURCES = DmrppParserTest.cc 
+DmrppParserTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
+	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 

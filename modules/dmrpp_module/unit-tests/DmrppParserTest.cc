@@ -1,10 +1,12 @@
+
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
 // Copyright (c) 2016 OPeNDAP, Inc.
-// Author: Nathan David Potter <ndp@opendap.org>
+// Author: Nathan David Potter <ndp@opendap.org>, James Gallagher
+// <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,15 +24,49 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <memory>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <DMR.h>
+
 #include <BESDebug.h>
 
+#include "DmrppArray.h"
+#include "DmrppByte.h"
+#include "DmrppCommon.h"
+#include "DmrppD4Enum.h"
+#include "DmrppD4Group.h"
+#include "DmrppD4Opaque.h"
+#include "DmrppD4Sequence.h"
+#include "DmrppFloat32.h"
+#include "DmrppFloat64.h"
+#include "DmrppInt16.h"
+#include "DmrppInt32.h"
+#include "DmrppInt64.h"
+#include "DmrppInt8.h"
+#include "DmrppModule.h"
+#include "DmrppStr.h"
+#include "DmrppStructure.h"
+#include "DmrppUInt16.h"
+#include "DmrppUInt32.h"
+#include "DmrppUInt64.h"
+#include "DmrppUrl.h"
+
+#include "DmrppParserSax2.h"
+#include "DmrppRequestHandler.h"
+#include "DmrppTypeFactory.h"
+
 #include "GetOpt.h"
+#include "test_config.h"
+
+using namespace libdap;
 
 static bool debug = false;
+
+namespace dmrpp {
 
 class DmrppParserTest: public CppUnit::TestFixture {
 private:
@@ -61,19 +97,38 @@ public:
     void test_integers()
     {
         auto_ptr<DMR> dmr(new DMR);
-        dmr->set_factory();
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
 
-        parser->intern(in, dmr, debug);
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("d_int.h5.dmrpp");
+        BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
+
+        ifstream in(int_h5);
+        parser.intern(in, dmr.get(), debug);
+
+        D4Group *root = dmr->root();
+        CPPUNIT_ASSERT(root);
+
+        CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 4);
+
+        D4Group::Vars_iter v = root->var_begin();
+        BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
+        CPPUNIT_ASSERT(dc->get_offset() == 2216);
+        CPPUNIT_ASSERT(dc->get_size() == 4);
     }
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
+    CPPUNIT_TEST(test_integers);
 
     CPPUNIT_TEST_SUITE_END();
         
  };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DmrppParserTest);
+
+} // namespace dmrpp
 
 int main(int argc, char*argv[])
 {
@@ -101,9 +156,9 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("DmrppParserTest::") + argv[i++];
+            test = string("dmrpp::DmrppParserTest::") + argv[i++];
 
-            DBG(cerr << endl << "Running test " << test << endl << endl);
+            cerr << endl << "Running test " << test << endl << endl;
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -111,3 +166,4 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
+
