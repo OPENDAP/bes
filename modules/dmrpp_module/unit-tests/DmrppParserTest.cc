@@ -113,9 +113,34 @@ public:
 
         D4Group::Vars_iter v = root->var_begin();
         BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
+        CPPUNIT_ASSERT((*v)->name() == "d16_1");
         DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
         CPPUNIT_ASSERT(dc->get_offset() == 2216);
         CPPUNIT_ASSERT(dc->get_size() == 4);
+
+        v++;
+
+        BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
+        CPPUNIT_ASSERT((*v)->name() == "d16_2");
+        dc = dynamic_cast<DmrppCommon*>(*v);
+        CPPUNIT_ASSERT(dc->get_offset() == 2220);
+        CPPUNIT_ASSERT(dc->get_size() == 8);
+
+        v++;
+
+        BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
+        CPPUNIT_ASSERT((*v)->name() == "d32_1");
+        dc = dynamic_cast<DmrppCommon*>(*v);
+        CPPUNIT_ASSERT(dc->get_offset() == 2228);
+        CPPUNIT_ASSERT(dc->get_size() == 32);
+
+        v++;
+
+        BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
+        CPPUNIT_ASSERT((*v)->name() == "d32_2");
+        dc = dynamic_cast<DmrppCommon*>(*v);
+        CPPUNIT_ASSERT(dc->get_offset() == 2260);
+        CPPUNIT_ASSERT(dc->get_size() == 128);
     }
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
