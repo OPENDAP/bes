@@ -90,3 +90,15 @@ DmrppD4Enum::read()
 
     return true;
 }
+
+void DmrppD4Enum::dump(ostream & strm) const
+{
+    strm << DapIndent::LMarg << "DmrppD4Enum::dump - (" << (void *) this << ")" << endl;
+    DapIndent::Indent();
+    strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
+    strm << DapIndent::LMarg << "size: " << get_size() << endl;
+    D4Enum::dump(strm);
+    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    DapIndent::UnIndent();
+}
+
