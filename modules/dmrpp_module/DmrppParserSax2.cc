@@ -677,6 +677,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             if (parser->check_attribute("base"))
                 parser->dmr()->set_request_xml_base(parser->xml_attrs["base"].value);
 
+            if (parser->debug()) cerr << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl;
+
             if (!parser->root_ns.empty())
                 parser->dmr()->set_namespace(parser->root_ns);
 

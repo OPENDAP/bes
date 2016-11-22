@@ -97,8 +97,8 @@ public:
 
     /**
      * Evaluates a BaseType pointer believed to be an instance of DrmppCommon.
-     * This checks the variables name, offset, and size. against expected values
-     * passed as parameters.
+     * This checks the variables name, offset, size, md5, and uuid attributes
+     * against expected values passed as parameters.
      */
     void checkDmrppVariable(BaseType *bt,
     		string name,
