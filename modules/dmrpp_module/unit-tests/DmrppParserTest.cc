@@ -94,6 +94,47 @@ public:
     {
     }
 
+
+    /**
+     * Evaluates a BaseType pointer believed to be an instance of DrmppCommon.
+     * This checks the variables name, offset, and size. against expected values
+     * passed as parameters.
+     */
+    void checkDmrppVariable(BaseType *bt, string name, unsigned long long offset, unsigned long long size){
+
+  	  CPPUNIT_ASSERT(bt);
+
+  	  BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
+        CPPUNIT_ASSERT(bt->name() == name);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
+        CPPUNIT_ASSERT(dc);
+        CPPUNIT_ASSERT(dc->get_offset() == offset);
+        CPPUNIT_ASSERT(dc->get_size() == size);
+    }
+
+    /**
+     * Evaluates a D4Group against exected values for the name, number of child
+     * groups and the number of child variables.
+     */
+    void checkGroupsAndVars(D4Group *grp,  string name, int expectedNumGrps,  int expectedNumVars){
+
+        CPPUNIT_ASSERT(grp);
+        BESDEBUG("dmrpp", "Checking D4Group '" << grp->name() << "'" << endl);
+
+        CPPUNIT_ASSERT(grp->name() ==  name);
+
+  	  int numGroups = grp->grp_end() - grp->grp_begin();
+        BESDEBUG("dmrpp", "The D4Group '" << grp->name() << "' has " << numGroups << " child groups." << endl);
+        CPPUNIT_ASSERT( numGroups == expectedNumGrps);
+
+        int numVars = grp->var_end() - grp->var_begin();
+        BESDEBUG("dmrpp", "The D4Group '" << grp->name() << "' has " << numVars << " child variables." << endl);
+        CPPUNIT_ASSERT( numVars == expectedNumVars);
+
+    }
+
+
+
     /******************************************************
      *
      */
@@ -112,20 +153,12 @@ public:
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
-        CPPUNIT_ASSERT(root);
-        BESDEBUG("dmrpp", "Got root Group"<< endl);
 
-        CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 1);
-        BESDEBUG("dmrpp", "Found one variable."<< endl);
-
+        checkGroupsAndVars(root,"/",0,1);
 
         D4Group::Vars_iter v = root->var_begin();
-        BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-        CPPUNIT_ASSERT((*v)->name() == "scalar");
-        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-        //CPPUNIT_ASSERT(dc->get_offset() == 2144);
-        // CPPUNIT_ASSERT(dc->get_size() == 4);
 
+        checkDmrppVariable(*v,"scalar",2144,4);
 
     }
 
@@ -145,42 +178,24 @@ public:
        parser.intern(in, dmr.get(), debug);
 
        D4Group *root = dmr->root();
-       CPPUNIT_ASSERT(root);
-       BESDEBUG("dmrpp", "Got root Group"<< endl);
-
-       CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 4);
-       BESDEBUG("dmrpp", "Found 4 variables."<< endl);
+       checkGroupsAndVars(root,"/",0,4);
 
        D4Group::Vars_iter v = root->var_begin();
-       BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-       CPPUNIT_ASSERT((*v)->name() == "d16_1");
-       DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-       CPPUNIT_ASSERT(dc->get_offset() == 2216);
-       CPPUNIT_ASSERT(dc->get_size() == 4);
+
+       checkDmrppVariable(*v,"d16_1",2216,4);
 
        v++;
 
-       BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-       CPPUNIT_ASSERT((*v)->name() == "d16_2");
-       dc = dynamic_cast<DmrppCommon*>(*v);
-       CPPUNIT_ASSERT(dc->get_offset() == 2220);
-       CPPUNIT_ASSERT(dc->get_size() == 8);
+       checkDmrppVariable(*v,"d16_2",2220,8);
 
        v++;
 
-       BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-       CPPUNIT_ASSERT((*v)->name() == "d32_1");
-       dc = dynamic_cast<DmrppCommon*>(*v);
-       CPPUNIT_ASSERT(dc->get_offset() == 2228);
-       CPPUNIT_ASSERT(dc->get_size() == 32);
+       checkDmrppVariable(*v,"d32_1",2228,32);
 
        v++;
 
-       BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-       CPPUNIT_ASSERT((*v)->name() == "d32_2");
-       dc = dynamic_cast<DmrppCommon*>(*v);
-       CPPUNIT_ASSERT(dc->get_offset() == 2260);
-       CPPUNIT_ASSERT(dc->get_size() == 128);
+       checkDmrppVariable(*v,"d32_2",2260,128);
+
    }
 
 
@@ -201,40 +216,26 @@ public:
       parser.intern(in, dmr.get(), debug);
 
       D4Group *root = dmr->root();
-      CPPUNIT_ASSERT(root);
 
-      CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 4);
+      checkGroupsAndVars(root,"/",0,4);
+
 
       D4Group::Vars_iter v = root->var_begin();
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d32_1");
-      DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 2216);
-      CPPUNIT_ASSERT(dc->get_size() == 8);
+
+      checkDmrppVariable(*v,"d32_1",2216,8);
 
       v++;
 
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d32_2");
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 2224);
-      CPPUNIT_ASSERT(dc->get_size() == 16);
+      checkDmrppVariable(*v,"d32_2",2224,16);
 
       v++;
 
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d64_1");
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 2240);
-      CPPUNIT_ASSERT(dc->get_size() == 64);
+      checkDmrppVariable(*v,"d64_1",2240,64);
 
       v++;
 
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d64_2");
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 2304);
-      CPPUNIT_ASSERT(dc->get_size() == 256);
+      checkDmrppVariable(*v,"d64_2",2304,256);
+
   }
 
 
@@ -255,108 +256,49 @@ public:
       parser.intern(in, dmr.get(), debug);
 
       D4Group *root = dmr->root();
-      CPPUNIT_ASSERT(root);
 
-      int numGroups = root->grp_end() - root->grp_begin();
-      BESDEBUG("dmrpp", "Found " << numGroups << " top level groups." << endl);
-      CPPUNIT_ASSERT( numGroups == 2);
-
-      int numVars = root->var_end() - root->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " top level variables." << endl);
-      CPPUNIT_ASSERT( numVars == 0);
+      checkGroupsAndVars(root,"/",2,0);
 
       D4Group::groupsIter top_level_grp_itr = root->grp_begin();
+
       D4Group *hdfeos_grp = (*top_level_grp_itr);
-      BESDEBUG("dmrpp", "Looking at top level group: " << hdfeos_grp->name() << endl);
-      CPPUNIT_ASSERT(hdfeos_grp->name() == "HDFEOS");
 
-      numGroups = hdfeos_grp->grp_end() - hdfeos_grp->grp_begin();
-      BESDEBUG("dmrpp", "Found " << numGroups << " HDFEOS child groups." << endl);
-      CPPUNIT_ASSERT( numGroups == 2);
-
-      numVars = hdfeos_grp->var_end() - hdfeos_grp->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " HDFEOS child variables." << endl);
-      CPPUNIT_ASSERT( numVars == 0);
+      checkGroupsAndVars(hdfeos_grp,"HDFEOS",2,0);
 
 
       D4Group::groupsIter hdfeos_child_grp_itr = hdfeos_grp->grp_begin();
-      BESDEBUG("dmrpp", "Looking at HDFEOS child group: " << (*hdfeos_child_grp_itr)->name() << endl);
-      CPPUNIT_ASSERT((*hdfeos_child_grp_itr)->name() == "ADDITIONAL");
+
+      checkGroupsAndVars(*hdfeos_child_grp_itr,"ADDITIONAL",1,0);
 
       hdfeos_child_grp_itr++;
 
       D4Group *grids_grp = *hdfeos_child_grp_itr;
-      BESDEBUG("dmrpp", "Looking at HDFEOS child group: " << grids_grp->name() << endl);
-      CPPUNIT_ASSERT(grids_grp->name() == "GRIDS");
 
-      numGroups = grids_grp->grp_end() - grids_grp->grp_begin();
-      BESDEBUG("dmrpp", "Found " << numGroups << " GRIDS child groups." << endl);
-      CPPUNIT_ASSERT( numGroups == 1);
-
-      numVars = grids_grp->var_end() - grids_grp->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " GRIDS child variables." << endl);
-      CPPUNIT_ASSERT( numVars == 0);
-
-
+      checkGroupsAndVars(*hdfeos_child_grp_itr,"GRIDS",1,0);
 
       D4Group *geogrid_grp = *(grids_grp->grp_begin());
-      CPPUNIT_ASSERT(geogrid_grp->name() == "GeoGrid");
 
-      numGroups = geogrid_grp->grp_end() - geogrid_grp->grp_begin();
-      BESDEBUG("dmrpp", "Found " << numGroups << " GeoGrid child groups." << endl);
-      CPPUNIT_ASSERT( numGroups == 1);
-
-      numVars = geogrid_grp->var_end() - geogrid_grp->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " GeoGrid child variables." << endl);
-      CPPUNIT_ASSERT( numVars == 0);
-
-
-
+      checkGroupsAndVars(geogrid_grp,"GeoGrid",1,0);
 
       D4Group *datafields_grp = *(geogrid_grp->grp_begin());
-      CPPUNIT_ASSERT(datafields_grp->name() == "Data Fields");
 
-      numGroups = datafields_grp->grp_end() - datafields_grp->grp_begin();
-      BESDEBUG("dmrpp", "Found " << numGroups << " 'Data Fields' child groups." << endl);
-      CPPUNIT_ASSERT( numGroups == 0);
-
-      numVars = datafields_grp->var_end() - datafields_grp->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " 'Data Fields' child variables." << endl);
-      CPPUNIT_ASSERT( numVars == 1);
-
+      checkGroupsAndVars(datafields_grp,"Data Fields",0,1);
 
       D4Group::Vars_iter v = datafields_grp->var_begin();
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "temperature");
-      DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 40672);
-      CPPUNIT_ASSERT(dc->get_size() == 128);
+
+      checkDmrppVariable(*v,"temperature",40672,128);
 
       top_level_grp_itr++;
-      BESDEBUG("dmrpp", "Looking at top level group: " << (*top_level_grp_itr)->name() << endl);
-      CPPUNIT_ASSERT((*top_level_grp_itr)->name() == "HDFEOS INFORMATION");
-
       D4Group *hdfeos_info_grp = *top_level_grp_itr;
 
-      numVars = hdfeos_info_grp->var_end() - hdfeos_info_grp->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " 'HDFEOS INFORMATION' child variables." << endl);
-      CPPUNIT_ASSERT( numVars == 1);
-
-      numGroups = hdfeos_info_grp->grp_end() - hdfeos_info_grp->grp_begin();
-      BESDEBUG("dmrpp", "Found " << numGroups << " GRIDS child groups." << endl);
-      CPPUNIT_ASSERT( numGroups == 0);
-
+      checkGroupsAndVars(hdfeos_info_grp,"HDFEOS INFORMATION",0,1);
 
       v = hdfeos_info_grp->var_begin();
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "StructMetadata.0");
 
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 5304);
-      CPPUNIT_ASSERT(dc->get_size() == 32000);
-
+      checkDmrppVariable(*v,"StructMetadata.0",5304,32000);
 
   }
+
 
   /******************************************************
    *
@@ -374,43 +316,25 @@ public:
       parser.intern(in, dmr.get(), debug);
 
       D4Group *root = dmr->root();
-      CPPUNIT_ASSERT(root);
 
-      int numVars = root->var_end() - root->var_begin();
-      BESDEBUG("dmrpp", "Found " << numVars << " top level entities." << endl);
-
-      CPPUNIT_ASSERT( numVars == 2);
+      checkGroupsAndVars(root, "/", 1, 2);
 
       D4Group::Vars_iter v = root->var_begin();
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "dim1");
-      DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 6192);
-      CPPUNIT_ASSERT(dc->get_size() == 8);
+      checkDmrppVariable(*v,"dim1",6192,8);
+      v++;
+      checkDmrppVariable(*v,"d1",6200,8);
+
+      D4Group::groupsIter top_level_grp_itr = root->grp_begin();
+      D4Group *g1_grp = (*top_level_grp_itr);
+
+      checkGroupsAndVars(g1_grp, "g1", 0, 2);
+
+      v = g1_grp->var_begin();
+      checkDmrppVariable(*v,"dim2",6208,12);
 
       v++;
+      checkDmrppVariable(*v,"d2",6220,24);
 
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d1");
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 6200);
-      CPPUNIT_ASSERT(dc->get_size() == 8);
-
-      v++;
-
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d64_1");
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 2240);
-      CPPUNIT_ASSERT(dc->get_size() == 64);
-
-      v++;
-
-      BESDEBUG("dmrpp", "Looking at variable: " << (*v)->name() << endl);
-      CPPUNIT_ASSERT((*v)->name() == "d64_2");
-      dc = dynamic_cast<DmrppCommon*>(*v);
-      CPPUNIT_ASSERT(dc->get_offset() == 2304);
-      CPPUNIT_ASSERT(dc->get_size() == 256);
   }
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
