@@ -94,7 +94,6 @@ public:
     {
     }
 
-
     /**
      * Evaluates a BaseType pointer believed to be an instance of DrmppCommon.
      * This checks the variables name, offset, size, md5, and uuid attributes
@@ -127,24 +126,21 @@ public:
      * Evaluates a D4Group against exected values for the name, number of child
      * groups and the number of child variables.
      */
-    void checkGroupsAndVars(D4Group *grp,  string name, int expectedNumGrps,  int expectedNumVars){
+    void checkGroupsAndVars(D4Group *grp,  string name, int expectedNumGrps,  int expectedNumVars) {
 
         CPPUNIT_ASSERT(grp);
         BESDEBUG("dmrpp", "Checking D4Group '" << grp->name() << "'" << endl);
 
         CPPUNIT_ASSERT(grp->name() ==  name);
 
-  	  int numGroups = grp->grp_end() - grp->grp_begin();
+        int numGroups = grp->grp_end() - grp->grp_begin();
         BESDEBUG("dmrpp", "The D4Group '" << grp->name() << "' has " << numGroups << " child groups." << endl);
         CPPUNIT_ASSERT( numGroups == expectedNumGrps);
 
         int numVars = grp->var_end() - grp->var_begin();
         BESDEBUG("dmrpp", "The D4Group '" << grp->name() << "' has " << numVars << " child variables." << endl);
         CPPUNIT_ASSERT( numVars == expectedNumVars);
-
     }
-
-
 
     /******************************************************
      *
@@ -181,7 +177,7 @@ public:
    /******************************************************
     *
     */
-  void test_integer_arrays()
+   void test_integer_arrays()
    {
        auto_ptr<DMR> dmr(new DMR);
        DmrppTypeFactory dtf;
@@ -231,10 +227,7 @@ public:
     		   128,
     		   "780c27c624c158fb88305f41a767459d",
     		   "49d12a6c-cda0-49b5-8fce-12e8d160b4f7");
-
    }
-
-
 
   /******************************************************
    *
@@ -291,10 +284,7 @@ public:
     		  256,
     		  "88a376f14f1b9b5564b5930b931d3a1a",
     		  "e16c36b1-9d21-4015-9c8f-b1c88de67078");
-
   }
-
-
 
   /******************************************************
    *
@@ -362,9 +352,7 @@ public:
     		  32000,
     		  "a1d84a9da910f58677226bf71fa9d1dd",
     		  "1721dd71-90df-4781-af2f-4098eb28baca");
-
   }
-
 
   /******************************************************
    *
@@ -420,8 +408,6 @@ public:
     		  24,
     		  "2162ed0aecd0db6abb21fd1b4d56af73",
     		  "62569081-e56e-47b5-ab10-ea9132cc8ef2");
-
-
   }
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
@@ -435,7 +421,7 @@ public:
 
     CPPUNIT_TEST_SUITE_END();
         
- };
+     };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DmrppParserTest);
 
@@ -452,7 +438,6 @@ int main(int argc, char*argv[])
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
-            BESDebug::SetUp("cerr,ugrid");
             break;
         default:
             break;

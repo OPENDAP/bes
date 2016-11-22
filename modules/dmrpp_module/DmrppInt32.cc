@@ -25,10 +25,13 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
 
+#include <BESDapError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppInt32.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -71,6 +74,36 @@ DmrppInt32::operator=(const DmrppInt32 &rhs)
     return *this;
 }
 
+/**
+ * @brief Callback passed to libcurl to handle reading a single byte.
+ *
+ * This callback assumes that the size of the data is small enough
+ * that all of the bytes will be either read at once or that a local
+ * temporary buffer can be used to build up the values.
+ *
+ * @param buffer Data from libcurl
+ * @param size Number of bytes
+ * @param nmemb Total size of data in this call is 'size * nmemb'
+ * @param data Pointer to this
+ * @return The number of bytes read
+ */
+static size_t int32_write_data(void *buffer, size_t size, size_t nmemb, void *data)
+{
+    size_t nbytes = size * nmemb;
+
+    //void *memmove(void *dst, const void *src, size_t len);
+    if (sizeof(dods_int32) == nbytes) {
+        DmrppInt32 *di32 = reinterpret_cast<DmrppInt32*>(data);
+        di32->set_value(*reinterpret_cast<dods_int32*>(buffer));
+    }
+    else {
+        // FIXME It could be that only one byte is read at a time... jhrg 11/22/16
+        throw BESDapError("DmrppInt32: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+    }
+
+    return nbytes;
+}
+
 bool
 DmrppInt32::read()
 {
@@ -79,7 +112,11 @@ DmrppInt32::read()
     if (read_p())
         return true;
 
-    // FIXME
+    ostringstream range;   // range-get needs a string arg for the range
+    range << get_offset() << "-" << get_offset() + get_size();
+
+    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+    curl_read_bytes(get_data_url().c_str(), range.str(), int32_write_data, this);
 
     set_read_p(true);
 

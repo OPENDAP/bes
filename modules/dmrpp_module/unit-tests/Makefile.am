@@ -48,7 +48,7 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = DmrppParserTest
+UNIT_TESTS = DmrppParserTest DmrppTypeReadTest
 else
 UNIT_TESTS =
 
@@ -70,5 +70,9 @@ SRCS =
 
 DmrppParserTest_SOURCES = DmrppParserTest.cc 
 DmrppParserTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
+	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+
+DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc 
+DmrppTypeReadTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
 	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 

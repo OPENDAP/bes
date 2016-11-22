@@ -37,6 +37,8 @@ class DmrppCommon {
     std::string d_md5;
     std::string d_uuid;
 
+    std::string d_data_url;
+
 protected:
     void _duplicate(const DmrppCommon &dc) {
         d_size   = dc.d_size;
@@ -76,7 +78,7 @@ public:
     /**
      * @brief Get the md5 string for this variable's data block
      */
-    virtual string get_md5() const { return d_md5; }
+    virtual std::string get_md5() const { return d_md5; }
 
     /**
      * @brief Set the md5 for this variable's data block.
@@ -88,7 +90,7 @@ public:
     /**
      * @brief Get the uuid string for this variable's data block
      */
-    virtual string get_uuid() const { return d_uuid; }
+    virtual std::string get_uuid() const { return d_uuid; }
 
     /**
      * @brief Set the uuid for this variable's data block.
@@ -96,7 +98,16 @@ public:
      */
     virtual void set_uuid(string uuid) { d_uuid = uuid; }
 
+    /**
+     * @brief Get the Data URL. Read data from this URL.
+     */
+    virtual std::string get_data_url() const { return d_data_url; }
 
+    /**
+     * @brief Set the Data URL
+     * @param data_url Read data from this URL.
+     */
+    virtual void set_data_url(const std::string &data_url) { d_data_url = data_url; }
 };
 
 #endif // _dmrpp_common_h

@@ -842,6 +842,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (!dc)
                     throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
+                // This bit of magic sets the URL used to get the data
+                dc->set_data_url(parser->dmr()->request_xml_base());
 
                 if (parser->check_required_attribute("offset")) {
                     unsigned long long offset = 0;

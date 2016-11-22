@@ -25,10 +25,13 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
 
+#include <BESDapError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppByte.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -71,15 +74,45 @@ DmrppByte::operator=(const DmrppByte &rhs)
     return *this;
 }
 
-bool
-DmrppByte::read()
+/**
+ * @brief Callback passed to libcurl to handle reading a single byte.
+ *
+ * This callback assumes that the size of the data is small enough
+ * that all of the bytes will be either read at once or that a local
+ * temporary buffer can be used to build up the values.
+ *
+ * @param buffer Data from libcurl
+ * @param size Number of bytes
+ * @param nmemb Total size of data in this call is 'size * nmemb'
+ * @param data Pointer to this
+ * @return The number of bytes read
+ */
+static size_t byte_write_data(void *buffer, size_t size, size_t nmemb, void *data)
+{
+    size_t nbytes = size * nmemb;
+
+    //void *memmove(void *dst, const void *src, size_t len);
+    if (sizeof(dods_byte) == nbytes) {
+        DmrppByte *db = reinterpret_cast<DmrppByte*>(data);
+        db->set_value(*reinterpret_cast<dods_byte*>(buffer));
+    }
+    else {
+        throw BESDapError("DmrppByte: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+    }
+
+    return nbytes;
+}
+
+bool DmrppByte::read()
 {
     BESDEBUG("dmrpp", "Entering DmrppByte::read for " << name() << endl);
 
-    if (read_p())
-        return true;
+    if (read_p()) return true;
 
-    // FIXME
+    ostringstream range;   // range-get needs a string arg for the range
+    range << get_offset() << "-" << get_offset() + get_size();
+
+    curl_read_bytes("http://example.com", range.str(), byte_write_data, this);
 
     set_read_p(true);
 
