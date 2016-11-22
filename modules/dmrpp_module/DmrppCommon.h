@@ -25,6 +25,8 @@
 #ifndef _dmrpp_common_h
 #define _dmrpp_common_h 1
 
+#include <string>
+
 /**
  * Interface for the size and offset information of data described by
  * DMR++ files.
@@ -32,15 +34,19 @@
 class DmrppCommon {
     unsigned long long d_size;
     unsigned long long d_offset;
+    std::string d_md5;
+    std::string d_uuid;
 
 protected:
     void _duplicate(const DmrppCommon &dc) {
-        d_size = dc.d_size;
+        d_size   = dc.d_size;
         d_offset = dc.d_offset;
+        d_md5    = dc.d_md5;
+        d_uuid   = dc.d_uuid;
     }
 
 public:
-    DmrppCommon() : d_size(0), d_offset(0) { }
+    DmrppCommon() : d_size(0), d_offset(0), d_md5(""), d_uuid("") { }
     DmrppCommon(const DmrppCommon &dc) { _duplicate(dc); }
     virtual ~DmrppCommon() { }
 
@@ -65,6 +71,32 @@ public:
      * @param offset The offset to this variable's data block
      */
     virtual void set_offset(unsigned long long offset) { d_offset = offset; }
+
+
+    /**
+     * @brief Get the md5 string for this variable's data block
+     */
+    virtual string get_md5() const { return d_md5; }
+
+    /**
+     * @brief Set the md5 for this variable's data block.
+     * @param offset The md5 of this variable's data block
+     */
+    virtual void set_md5(string md5) { d_md5 = md5; }
+
+
+    /**
+     * @brief Get the uuid string for this variable's data block
+     */
+    virtual string get_uuid() const { return d_uuid; }
+
+    /**
+     * @brief Set the uuid for this variable's data block.
+     * @param offset The uuid of this variable's data block
+     */
+    virtual void set_uuid(string uuid) { d_uuid = uuid; }
+
+
 };
 
 #endif // _dmrpp_common_h

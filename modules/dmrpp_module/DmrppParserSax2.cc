@@ -864,14 +864,19 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 }
 
                 if (parser->check_required_attribute("md5")) {
-                    if (parser->debug()) cerr << "Found attribute 'md5' SKIPPING" << endl;
+                    istringstream md5_ss(parser->xml_attrs["md5"].value);
+                    dc->set_md5(md5_ss.str());
+                    if (parser->debug()) cerr << "Found attribute 'md5' value: "<< md5_ss.str() << endl;
+
                 }
                 else {
                     if (parser->debug()) cerr << "No attribute 'md5' located" << endl;
 
                 }
                 if (parser->check_required_attribute("uuid")) {
-                    if (parser->debug()) cerr << "Found attribute 'uuid' SKIPPING" << endl;
+                    istringstream uuid_ss(parser->xml_attrs["uuid"].value);
+                    dc->set_uuid(uuid_ss.str());
+                    if (parser->debug()) cerr << "Found attribute 'uuid' value: "<< uuid_ss.str() << endl;
                 }
                 else {
                     if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;

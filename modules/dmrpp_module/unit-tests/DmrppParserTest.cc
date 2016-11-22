@@ -100,16 +100,27 @@ public:
      * This checks the variables name, offset, and size. against expected values
      * passed as parameters.
      */
-    void checkDmrppVariable(BaseType *bt, string name, unsigned long long offset, unsigned long long size){
+    void checkDmrppVariable(BaseType *bt,
+    		string name,
+    		unsigned long long offset,
+    		unsigned long long size,
+    		string md5,
+    		string uuid){
 
-  	  CPPUNIT_ASSERT(bt);
+		CPPUNIT_ASSERT(bt);
 
-  	  BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
-        CPPUNIT_ASSERT(bt->name() == name);
-        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
-        CPPUNIT_ASSERT(dc);
-        CPPUNIT_ASSERT(dc->get_offset() == offset);
-        CPPUNIT_ASSERT(dc->get_size() == size);
+		BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
+		CPPUNIT_ASSERT(bt->name() == name);
+		DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
+		CPPUNIT_ASSERT(dc);
+		CPPUNIT_ASSERT(dc->get_offset() == offset);
+		BESDEBUG("dmrpp", bt->name() << " offset: " << offset << endl);
+		CPPUNIT_ASSERT(dc->get_size() == size);
+		BESDEBUG("dmrpp", bt->name() << " size: " << size << endl);
+		CPPUNIT_ASSERT(dc->get_md5() == md5);
+		BESDEBUG("dmrpp", bt->name() << " md5: " << md5 << endl);
+		CPPUNIT_ASSERT(dc->get_uuid() == uuid);
+		BESDEBUG("dmrpp", bt->name() << " uuid: " << uuid << endl);
     }
 
     /**
@@ -158,7 +169,12 @@ public:
 
         D4Group::Vars_iter v = root->var_begin();
 
-        checkDmrppVariable(*v,"scalar",2144,4);
+        checkDmrppVariable(*v,
+        		"scalar",
+        		2144,
+        		4,
+        		"1ebc4541e985d612a5ff7ed2ee92bf3d",
+        		"6609c41e-0feb-4c00-a11b-48ae9a493542");
 
     }
 
@@ -182,19 +198,39 @@ public:
 
        D4Group::Vars_iter v = root->var_begin();
 
-       checkDmrppVariable(*v,"d16_1",2216,4);
+       checkDmrppVariable(*v,
+    		   "d16_1",
+    		   2216,
+    		   4,
+    		   "094e70793148a97742191430ccea74c7",
+    		   "4a0e86ee-484a-44f7-8c03-9c39b202d680");
 
        v++;
 
-       checkDmrppVariable(*v,"d16_2",2220,8);
+       checkDmrppVariable(*v,
+    		   "d16_2",
+    		   2220,
+    		   8,
+    		   "7d881b5a33bbc8bb7d21d3a24f803c6c",
+    		   "2ebf051a-cb32-45ae-b846-172a4ea451f9");
 
        v++;
 
-       checkDmrppVariable(*v,"d32_1",2228,32);
+       checkDmrppVariable(*v,
+    		   "d32_1",
+    		   2228,
+    		   32,
+    		   "a9a3743b60524ab66f4d16546893f06b",
+    		   "0ba99033-541d-44c6-8b7c-330ba3ce782e");
 
        v++;
 
-       checkDmrppVariable(*v,"d32_2",2260,128);
+       checkDmrppVariable(*v,
+    		   "d32_2",
+    		   2260,
+    		   128,
+    		   "780c27c624c158fb88305f41a767459d",
+    		   "49d12a6c-cda0-49b5-8fce-12e8d160b4f7");
 
    }
 
@@ -222,19 +258,39 @@ public:
 
       D4Group::Vars_iter v = root->var_begin();
 
-      checkDmrppVariable(*v,"d32_1",2216,8);
+      checkDmrppVariable(*v,
+    		  "d32_1",
+    		  2216,
+    		  8,
+    		  "ec2b3d664cfbfd9217e74738bbcd281f",
+    		  "c498ba62-0915-4641-bbda-e583daeae899");
 
       v++;
 
-      checkDmrppVariable(*v,"d32_2",2224,16);
+      checkDmrppVariable(*v,
+    		  "d32_2",
+    		  2224,
+    		  16,
+    		  "aeaafe45df3d2e57fe3c68f9887c60b0",
+    		  "e5cb51bc-ed3f-4f66-89da-9793fdbd7667");
 
       v++;
 
-      checkDmrppVariable(*v,"d64_1",2240,64);
+      checkDmrppVariable(*v,
+    		  "d64_1",
+    		  2240,
+    		  64,
+    		  "f1e57dab82f2500507cad0888d520c08",
+    		  "eef57d69-e7ee-4199-a14b-c97e63e865c6");
 
       v++;
 
-      checkDmrppVariable(*v,"d64_2",2304,256);
+      checkDmrppVariable(*v,
+    		  "d64_2",
+    		  2304,
+    		  256,
+    		  "88a376f14f1b9b5564b5930b931d3a1a",
+    		  "e16c36b1-9d21-4015-9c8f-b1c88de67078");
 
   }
 
@@ -286,7 +342,12 @@ public:
 
       D4Group::Vars_iter v = datafields_grp->var_begin();
 
-      checkDmrppVariable(*v,"temperature",40672,128);
+      checkDmrppVariable(*v,
+    		  "temperature",
+    		  40672,
+    		  128,
+    		  "3b37566bd3a2587a88e4787820e0d36f",
+    		  "3fd2c024-4934-4732-ad47-063539472602");
 
       top_level_grp_itr++;
       D4Group *hdfeos_info_grp = *top_level_grp_itr;
@@ -295,7 +356,12 @@ public:
 
       v = hdfeos_info_grp->var_begin();
 
-      checkDmrppVariable(*v,"StructMetadata.0",5304,32000);
+      checkDmrppVariable(*v,
+    		  "StructMetadata.0",
+    		  5304,
+    		  32000,
+    		  "a1d84a9da910f58677226bf71fa9d1dd",
+    		  "1721dd71-90df-4781-af2f-4098eb28baca");
 
   }
 
@@ -320,9 +386,19 @@ public:
       checkGroupsAndVars(root, "/", 1, 2);
 
       D4Group::Vars_iter v = root->var_begin();
-      checkDmrppVariable(*v,"dim1",6192,8);
+      checkDmrppVariable(*v,
+    		  "dim1",
+    		  6192,
+    		  8,
+    		  "a068b90f3c19bf407f80db4945944e29",
+    		  "d6d6cbc9-04bf-4d3d-8827-4d7c52939e6d");
       v++;
-      checkDmrppVariable(*v,"d1",6200,8);
+      checkDmrppVariable(*v,
+    		  "d1",
+    		  6200,
+    		  8,
+    		  "53163d5fb838cd8dabfd4425feda2b12",
+    		  "55d3ca3d-4e1b-472e-822b-23d48838cf4d");
 
       D4Group::groupsIter top_level_grp_itr = root->grp_begin();
       D4Group *g1_grp = (*top_level_grp_itr);
@@ -330,10 +406,21 @@ public:
       checkGroupsAndVars(g1_grp, "g1", 0, 2);
 
       v = g1_grp->var_begin();
-      checkDmrppVariable(*v,"dim2",6208,12);
+      checkDmrppVariable(*v,
+    		  "dim2",
+    		  6208,
+    		  12,
+    		  "1719bc13ae9f2ad5aa50c720edc400a6",
+    		  "4c91c3f7-73a1-43d5-a0fc-cfa23e92b3d2");
 
       v++;
-      checkDmrppVariable(*v,"d2",6220,24);
+      checkDmrppVariable(*v,
+    		  "d2",
+    		  6220,
+    		  24,
+    		  "2162ed0aecd0db6abb21fd1b4d56af73",
+    		  "62569081-e56e-47b5-ab10-ea9132cc8ef2");
+
 
   }
 

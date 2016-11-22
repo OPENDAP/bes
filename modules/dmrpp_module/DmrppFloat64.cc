@@ -91,7 +91,9 @@ void DmrppFloat64::dump(ostream & strm) const
     strm << DapIndent::LMarg << "DmrppFloat64::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
     strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size: " << get_size() << endl;
+    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
     Float64::dump(strm);
     strm << DapIndent::LMarg << "value: " << d_buf << endl;
     DapIndent::UnIndent();

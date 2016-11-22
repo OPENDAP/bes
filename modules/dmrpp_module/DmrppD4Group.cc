@@ -92,7 +92,9 @@ void DmrppD4Group::dump(ostream & strm) const
     strm << DapIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
     strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size: " << get_size() << endl;
+    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
     D4Group::dump(strm);
     strm << DapIndent::LMarg << "value: " << "----" << /*d_buf <<*/ endl;
     DapIndent::UnIndent();
