@@ -344,7 +344,7 @@ public:
     CPPUNIT_TEST(test_float_arrays);
 
     CPPUNIT_TEST(test_grid_1_2d);
-    //CPPUNIT_TEST(test_nc4_group_ataomic);
+    CPPUNIT_TEST(test_nc4_group_ataomic);
 
     CPPUNIT_TEST_SUITE_END();
         
