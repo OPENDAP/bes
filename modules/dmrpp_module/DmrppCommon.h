@@ -38,13 +38,19 @@ class DmrppCommon {
     std::string d_uuid;
     std::string d_data_url;
 
+    // These are used only during the libcurl callback;
+    // they are not duplicated by the copy ctor or assignment
+    // operator.
     unsigned long long d_bytes_read;
     unsigned char *d_read_buffer;
     unsigned long long d_read_buffer_size;
+
 protected:
     void _duplicate(const DmrppCommon &dc) {
-    	//FIXME Should we copy this value or not?
-    	d_bytes_read  = dc.d_bytes_read;
+        // See above
+    	d_bytes_read = 0;
+    	d_read_buffer = 0;
+    	d_read_buffer_size = 0;
 
     	// These vars are easy to duplicate.
         d_size   = dc.d_size;
@@ -52,9 +58,6 @@ protected:
         d_md5    = dc.d_md5;
         d_uuid   = dc.d_uuid;
         d_data_url   = dc.d_data_url;
-
-        // FIXME What about the buffer?
-        // Do we make new space and copy content using d_bytes_read?
     }
 
 public:
@@ -162,10 +165,9 @@ public:
     	d_read_buffer = new unsigned char[size];
     	d_read_buffer_size = size;
     	set_bytes_read(0);
-
     }
 
-    virtual unsigned char * get_rbuf() {
+    virtual unsigned char *get_rbuf() {
     	return d_read_buffer;
     }
 

@@ -26,6 +26,7 @@
 
 #include <string>
 #include <sstream>
+#include <cassert>
 
 #include <BESDapError.h>
 #include <BESDEBUG.h>
@@ -74,81 +75,33 @@ DmrppInt32::operator=(const DmrppInt32 &rhs)
     return *this;
 }
 
-/**
- * @brief Callback passed to libcurl to handle reading a single byte.
- *
- * This callback assumes that the size of the data is small enough
- * that all of the bytes will be either read at once or that a local
- * temporary buffer can be used to build up the values.
- *
- * @param buffer Data from libcurl
- * @param size Number of bytes
- * @param nmemb Total size of data in this call is 'size * nmemb'
- * @param data Pointer to this
- * @return The number of bytes read
- */
-static size_t int32_write_data(void *buffer, size_t size, size_t nmemb, void *data)
-{
-    DmrppInt32 *di32 = reinterpret_cast<DmrppInt32*>(data);
-    unsigned long long target_size = sizeof(dods_int32);
-
-    size_t nbytes = size * nmemb;
-
-    unsigned long long bytes_read = di32->get_bytes_read();
-
-    unsigned char *rbuf = di32->get_rbuf();
-    unsigned char *src_buf;
-
-    src_buf = reinterpret_cast<unsigned char*>(buffer);
-
-    for(size_t i=0; i<nbytes && bytes_read<target_size ;i++, bytes_read++){
-    	rbuf[bytes_read] =  src_buf[i];
-    }
-
-    //void *memmove(void *dst, const void *src, size_t len);
-
-    if (target_size == bytes_read) {
-        di32->set_value(*reinterpret_cast<dods_int32*>(rbuf));
-    }
-    else if (target_size < bytes_read) {
-
-        // FIXME It could be that only one byte is read at a time... jhrg 11/22/16
-        throw BESDapError("DmrppInt32: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
-    }
-#if 0
-    size_t nbytes = size * nmemb;
-
-    //void *memmove(void *dst, const void *src, size_t len);
-
-    if (sizeof(dods_int32) == nbytes) {
-        DmrppInt32 *di32 = reinterpret_cast<DmrppInt32*>(data);
-        di32->set_value(*reinterpret_cast<dods_int32*>(buffer));
-    }
-    else {
-        // FIXME It could be that only one byte is read at a time... jhrg 11/22/16
-        throw BESDapError("DmrppInt32: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
-    }
-#endif
-
-
-    return nbytes;
-}
-
 bool
 DmrppInt32::read()
 {
-    BESDEBUG("dmrpp", "Entering DmrppInt32::read for " << name() << endl);
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
 
     if (read_p())
         return true;
 
     rbuf_size(sizeof(dods_int32));
+    set_bytes_read(0);
 
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size();
 
     BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
-    curl_read_bytes(get_data_url(), range.str(), int32_write_data, this);
+
+    curl_read_bytes(get_data_url(), range.str(), this);
+
+    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
+    if (sizeof(dods_int32) != get_bytes_read()) {
+        ostringstream oss;
+        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_int32)
+            << " but found " << get_bytes_read() << endl;
+        throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+    }
+
+    set_value(*reinterpret_cast<dods_int32*>(get_rbuf()));
 
     set_read_p(true);
 

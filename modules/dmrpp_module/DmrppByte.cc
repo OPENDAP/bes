@@ -74,45 +74,32 @@ DmrppByte::operator=(const DmrppByte &rhs)
     return *this;
 }
 
-/**
- * @brief Callback passed to libcurl to handle reading a single byte.
- *
- * This callback assumes that the size of the data is small enough
- * that all of the bytes will be either read at once or that a local
- * temporary buffer can be used to build up the values.
- *
- * @param buffer Data from libcurl
- * @param size Number of bytes
- * @param nmemb Total size of data in this call is 'size * nmemb'
- * @param data Pointer to this
- * @return The number of bytes read
- */
-static size_t byte_write_data(void *buffer, size_t size, size_t nmemb, void *data)
-{
-    size_t nbytes = size * nmemb;
-
-    //void *memmove(void *dst, const void *src, size_t len);
-    if (sizeof(dods_byte) == nbytes) {
-        DmrppByte *db = reinterpret_cast<DmrppByte*>(data);
-        db->set_value(*reinterpret_cast<dods_byte*>(buffer));
-    }
-    else {
-        throw BESDapError("DmrppByte: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
-    }
-
-    return nbytes;
-}
-
 bool DmrppByte::read()
 {
-    BESDEBUG("dmrpp", "Entering DmrppByte::read for " << name() << endl);
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
 
-    if (read_p()) return true;
+    if (read_p())
+        return true;
+
+    rbuf_size(sizeof(dods_byte));
+    set_bytes_read(0);
 
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size();
 
-    curl_read_bytes("http://example.com", range.str(), byte_write_data, this);
+    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+
+    curl_read_bytes(get_data_url(), range.str(), this);
+
+    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
+    if (sizeof(dods_byte) != get_bytes_read()) {
+        ostringstream oss;
+        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_byte)
+            << " but found " << get_bytes_read() << endl;
+        throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+    }
+
+    set_value(*reinterpret_cast<dods_byte*>(get_rbuf()));
 
     set_read_p(true);
 
