@@ -174,11 +174,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     vector<hsize_t>hstep;
     int nelms = 1;
 
-    if (rank < 0) 
+    if (rank <= 0) 
         throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of the variable is negative.");
-    else if (rank == 0) 
-        nelms = 1;
+                          "The number of dimension of the variable is <=0 for an array.");
     else {
 
         offset.resize(rank);
@@ -231,8 +229,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    if (rank > 0) {
-        if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
+    if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                                &hoffset[0], &hstep[0],
                                &hcount[0], NULL) < 0) {
 
@@ -243,9 +240,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             eherr << "The selection of hyperslab of the HDF5 dataset " << varname
                   << " fails. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
-        }
+    }
 
-        mspace = H5Screate_simple(rank, &hcount[0],NULL);
+    mspace = H5Screate_simple(rank, &hcount[0],NULL);
         if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid); 
@@ -256,7 +253,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
                   << " fails. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
-    }
 
 
     if ((dtypeid = H5Dget_type(dsetid)) < 0) {
