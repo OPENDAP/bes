@@ -25,10 +25,14 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
+#include <cassert>
 
+#include <BESError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppUrl.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -74,6 +78,7 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 bool
 DmrppUrl::read()
 {
+#if 0
     BESDEBUG("dmrpp", "Entering DmrppUrl::read for " << name() << endl);
 
     if (read_p())
@@ -84,6 +89,12 @@ DmrppUrl::read()
     set_read_p(true);
 
     return true;
+#endif
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    throw BESError("Unsupported type libdap::D4Structure (dmrpp::DmrppStructure)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+
 }
 
 
@@ -91,11 +102,12 @@ void DmrppUrl::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-    strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
+    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
     Url::dump(strm);
-    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();
 }

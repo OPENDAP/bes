@@ -91,11 +91,12 @@ void DmrppUInt32::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppUInt32::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-    strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
+    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
     UInt32::dump(strm);
-    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();
 }
