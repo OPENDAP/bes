@@ -1,9 +1,9 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of the BES
+// This file is part of libdap, A C++ implementation of the OPeNDAP Data
+// Access Protocol.
 
-// Copyright (c) 2016 OPeNDAP, Inc.
+// Copyright (c) 2015 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -22,34 +22,36 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _dmrpp_array_h
-#define _dmrpp_array_h 1
+#include "config.h"
 
-#include <string>
+#include <vector>
 
-#include <Array.h>
-#include "DmrppCommon.h"
+#include <Error.h>
 
-class DmrppArray: public libdap::Array, public DmrppCommon {
-    void _duplicate(const DmrppArray &ts);
+#include "Odometer.h"
 
-    bool is_projected();
+using namespace std;
+using namespace libdap;
 
-public:
-    DmrppArray(const std::string &n, libdap::BaseType *v);
-    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v);
-    DmrppArray(const DmrppArray &rhs);
+namespace dmrpp {
 
-    virtual ~DmrppArray() {}
+// documentation in the header file
+unsigned int Odometer::next_safe()
+{
+    if (d_offset == end()) throw Error("Attempt to move beyond the end of an array in the indexing software.");
 
-    DmrppArray &operator=(const DmrppArray &rhs);
+    // About 3.3 seconds for 10^9 elements
+    vector<unsigned int>::reverse_iterator si = d_shape.rbegin();
+    for (vector<unsigned int>::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+        if (++(*i) == *si) {
+            *i = 0;
+        }
+        else {
+            break;
+        }
+    }
 
-    virtual libdap::BaseType *ptr_duplicate();
+    return ++d_offset;
+}
 
-    virtual bool read();
-
-    virtual void dump(ostream & strm) const;
-};
-
-#endif // _dmrpp_array_h
-
+} // namespace function

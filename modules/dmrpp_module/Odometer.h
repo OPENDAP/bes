@@ -27,7 +27,7 @@
 
 #include <vector>
 
-namespace functions {
+namespace dmrpp {
 
 /**
  * Map the indices of a N-dimensional array to the offset into memory
@@ -76,24 +76,7 @@ public:
 
         d_indices.resize(d_rank, 0);
     }
-#if 0
-    // This might be a good idea, but I didn't need it. The three D case is probably
-    // more important. jhrg 5/26/15
-    Odometer(unsigned int x, unsigned int y) : d_offset(0)
-    {
-        d_rank = 2;
-        d_shape.push_back(x);
-        d_shape.push_back(y);
 
-        // compute the highest offset value based on the array shape
-        d_highest_offset = 1;
-        for (unsigned int i = 0; i < d_rank; ++i) {
-            d_highest_offset *= d_shape.at(i);
-        }
-
-        d_indices.resize(d_rank, 0);
-    }
-#endif
     /*
      * 	reset(): zero internal state
      * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
@@ -155,10 +138,7 @@ public:
     inline unsigned int set_indices(const shape &indices)
     {
         d_indices = indices;
-#if 0
-        d_offset = 0;
-        unsigned int chunk_size = 1;
-#endif
+
         // I copied this algorithm from Nathan's code in NDimenensionalArray in the
         // ugrid function module. jhrg 5/22/15
 #if 0
@@ -169,6 +149,7 @@ public:
             chunk_size *= *si;
         }
 #endif
+
         shape::reverse_iterator shape_index = d_shape.rbegin();
         shape::reverse_iterator index = d_indices.rbegin(), index_end = d_indices.rend();
         d_offset = *index++;
