@@ -27,7 +27,7 @@
 #include <string>
 #include <sstream>
 
-#include <BESDapError.h>
+#include <BESError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppByte.h"
@@ -95,7 +95,7 @@ bool DmrppByte::read()
         ostringstream oss;
         oss << "DmrppByte: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_byte)
             << " but found " << get_bytes_read() << endl;
-        throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+        throw BESError(oss.str(),BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     set_value(*reinterpret_cast<dods_byte*>(get_rbuf()));

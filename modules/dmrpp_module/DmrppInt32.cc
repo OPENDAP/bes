@@ -28,8 +28,8 @@
 #include <sstream>
 #include <cassert>
 
-#include <BESDapError.h>
-#include <BESDEBUG.h>
+#include <BESError.h>
+#include <BESDebug.h>
 
 #include "DmrppInt32.h"
 #include "DmrppUtil.h"
@@ -101,7 +101,7 @@ DmrppInt32::read()
         ostringstream oss;
         oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_int32)
             << " but found " << get_bytes_read() << endl;
-        throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+        throw BESError(oss.str(),BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     set_value(*reinterpret_cast<dods_int32*>(get_rbuf()));
@@ -115,11 +115,12 @@ void DmrppInt32::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppInt32::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-    strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
+    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
     Int32::dump(strm);
-    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();
 }

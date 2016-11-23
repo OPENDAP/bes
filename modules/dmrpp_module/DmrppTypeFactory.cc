@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include <BESDapError.h>
+#include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppByte.h"
@@ -117,7 +117,7 @@ BaseType *DmrppTypeFactory::NewVariable(Type t, const string &name) const
 		return NewGroup(name);
 
 	default:
-		throw BESDapError("Unimplemented type in DAP4.", true /*fatal*/, internal_error, __FILE__, __LINE__);
+		throw BESError("Unimplemented type in DAP4.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 	}
 }
 
