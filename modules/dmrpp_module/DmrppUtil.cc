@@ -12,7 +12,7 @@
 
 #include <curl/curl.h>
 
-#include <BESDapError.h>
+#include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppCommon.h"
@@ -71,30 +71,30 @@ void curl_read_bytes(const string &url, const string &range, void *user_data)
     if (curl) {
         CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str() /*"http://example.com"*/);
         if (res != CURLE_OK)
-            throw BESDapError(string(curl_easy_strerror(res)), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+            throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Use CURLOPT_ERRORBUFFER for a human-readable message
         char buf[CURL_ERROR_SIZE];
         res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, buf);
         if (res != CURLE_OK)
-            throw BESDapError(string(curl_easy_strerror(res)), true, unknown_error, __FILE__, __LINE__);
+            throw BESError(string(curl_easy_strerror(res)),BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-            throw BESDapError(string("HTTP Error: ").append(buf), true, unknown_error, __FILE__, __LINE__);
+            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Pass all data to the 'write_data' function
         if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, dmrpp_write_data))
-            throw BESDapError(string("HTTP Error: ").append(buf), true, unknown_error, __FILE__, __LINE__);
+            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument
         if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, user_data))
-            throw BESDapError(string("HTTP Error: ").append(buf), true, unknown_error, __FILE__, __LINE__);
+            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Perform the request
         if (CURLE_OK != curl_easy_perform(curl)) {
             curl_easy_cleanup(curl);
-            throw BESDapError(string("HTTP Error: ").append(buf), false, unknown_error, __FILE__, __LINE__);
+            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
 
         curl_easy_cleanup(curl);

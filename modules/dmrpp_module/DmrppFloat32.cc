@@ -25,10 +25,14 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
+#include <cassert>
 
+#include <BESError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppFloat32.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -74,6 +78,7 @@ DmrppFloat32::operator=(const DmrppFloat32 &rhs)
 bool
 DmrppFloat32::read()
 {
+#if 0
     BESDEBUG("dmrpp", "Entering DmrppFloat32::read for " << name() << endl);
 
     if (read_p())
@@ -84,18 +89,52 @@ DmrppFloat32::read()
     set_read_p(true);
 
     return true;
+#endif
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    if (read_p())
+        return true;
+
+    rbuf_size(sizeof(dods_float32));
+
+    std::ostringstream range;   // range-get needs a string arg for the range
+    range << get_offset() << "-" << get_offset() + get_size() - 1;
+
+    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+
+    // Slice 'this' to just the DmrppCommon parts. Needed because the generic
+    // version of the 'write_data' callback only knows about DmrppCommon. Passing
+    // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
+    // will leave the code using garbage memory. jhrg 11/23/16
+    curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
+
+    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
+    if (sizeof(dods_float32) != get_bytes_read()) {
+        ostringstream oss;
+        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_float32)
+            << " but found " << get_bytes_read() << endl;
+        throw BESError(oss.str(),BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    set_value(*reinterpret_cast<dods_float32*>(get_rbuf()));
+
+    set_read_p(true);
+
+    return true;
+
 }
 
 void DmrppFloat32::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppFloat32::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-    strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
+    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
     Float32::dump(strm);
-    strm << DapIndent::LMarg << "value: " << d_buf << endl;
+    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();
 }
 
