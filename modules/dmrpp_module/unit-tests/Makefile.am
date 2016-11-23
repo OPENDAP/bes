@@ -61,18 +61,25 @@ check-local:
 	@echo ""
 endif
 
-SRCS = 
+VPATH = src:../
+
+SRCS = DmrppArray.cc DmrppByte.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc\
+DmrppD4Sequence.cc DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc \
+DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
+DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
+DmrppTypeFactory.cc DrmppCommon.h
+
 
 # Linking with the .so modules produces a warning, but lets ignore it.
 # The alternative is to link with objects in the parent dir _but_, we
 # still will get a warning rom linking with the bes dap module which
 # we have to link against since we're using BESDapError. jhrg 11/21/16
 
-DmrppParserTest_SOURCES = DmrppParserTest.cc 
+DmrppParserTest_SOURCES = DmrppParserTest.cc $(SRCS)
 DmrppParserTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
 	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc 
+DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc $(SRCS) 
 DmrppTypeReadTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
 	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 

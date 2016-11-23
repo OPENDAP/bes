@@ -56,7 +56,14 @@ static size_t dmrpp_write_data(void *buffer, size_t size, size_t nmemb, void *da
     return nbytes;
 }
 
-
+/**
+ * @brief Read data using HTTP/File Range GET
+ *
+ * @see https://curl.haxx.se/libcurl/c/libcurl.html
+ * @param url Get dat from this URL
+ * @param range ...and this byte range
+ * @param user_data A pinter to a DmrppCommon instnace
+ */
 void curl_read_bytes(const string &url, const string &range, void *user_data)
 {
     // See https://curl.haxx.se/libcurl/c/CURLOPT_RANGE.html, etc.

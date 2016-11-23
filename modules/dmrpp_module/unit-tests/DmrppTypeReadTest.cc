@@ -160,7 +160,7 @@ public:
 
         CPPUNIT_ASSERT("Passed");
     }
-#if 1
+
     void test_integer_arrays() {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -274,7 +274,6 @@ public:
 
         CPPUNIT_ASSERT("Passed");
     }
-#endif
 
     CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
