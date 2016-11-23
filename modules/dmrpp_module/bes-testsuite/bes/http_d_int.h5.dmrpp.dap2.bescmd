@@ -5,12 +5,14 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/data/d_int.h5.dmrpp</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/data/http_d_int.h5.dmrpp</bes:setContainer>
   
   <bes:define name="d1" space="default">
-    <bes:container name="c"/>
+    <bes:container name="c">
+        <bes:dap4constraint>d32_2</bes:dap4constraint>
+    </bes:container>
   </bes:define>
   
-  <bes:get type="dmr" definition="d1" />
+  <bes:get type="dap" definition="d1" />
   
 </bes:request>
