@@ -11,3 +11,9 @@ AT_BESCMD_RESPONSE_TEST([bes/grid_1_2d.h5.dmrpp.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([bes/nc4_group_atomic.h5.dmrpp.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([bes/t_int_scalar.h5.dmrpp.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([bes/t_float.h5.dmrpp.dmr.bescmd])
+
+## we have only limited support for scalars and arrays now. jhrg 11.23.16
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/http_d_int.h5.dmrpp.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/http_d_int.h5.dmrpp.dap2.bescmd])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/http_t_int_scalar.h5.dmrpp.dap.bescmd])

@@ -84,7 +84,8 @@ DmrppArray::read()
     if (read_p())
         return true;
 
-    unsigned long long array_nbytes = width();
+    // First cut at subsetting; read the whole thing and then subset that.
+    unsigned long long array_nbytes = get_size(); //width();
 
     rbuf_size(array_nbytes);
 
@@ -102,6 +103,7 @@ DmrppArray::read()
             << " but found " << get_bytes_read() << endl;
         throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
     }
+
 
     val2buf(get_rbuf());    // yes, it's not type-safe
 
