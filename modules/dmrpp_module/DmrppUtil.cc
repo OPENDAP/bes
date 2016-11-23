@@ -17,7 +17,7 @@
 
 using namespace std;
 
-void curl_read_bytes(const string &url, const string& range, curl_write_data write_data, void *user_data)
+void curl_read_bytes(const string &url, const string &range, curl_write_data write_data, void *user_data)
 {
     // See https://curl.haxx.se/libcurl/c/CURLOPT_RANGE.html, etc.
     CURL* curl = curl_easy_init();

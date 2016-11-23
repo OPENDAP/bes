@@ -92,6 +92,7 @@ static size_t int32_write_data(void *buffer, size_t size, size_t nmemb, void *da
     size_t nbytes = size * nmemb;
 
     //void *memmove(void *dst, const void *src, size_t len);
+
     if (sizeof(dods_int32) == nbytes) {
         DmrppInt32 *di32 = reinterpret_cast<DmrppInt32*>(data);
         di32->set_value(*reinterpret_cast<dods_int32*>(buffer));
@@ -116,7 +117,7 @@ DmrppInt32::read()
     range << get_offset() << "-" << get_offset() + get_size();
 
     BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
-    curl_read_bytes(get_data_url().c_str(), range.str(), int32_write_data, this);
+    curl_read_bytes(get_data_url(), range.str(), int32_write_data, this);
 
     set_read_p(true);
 
