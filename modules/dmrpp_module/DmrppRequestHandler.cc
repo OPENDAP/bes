@@ -37,7 +37,7 @@
 #include <BESUtil.h>
 #include <TheBESKeys.h>
 
-#include <BESError.h>
+#include <BESDapError.h>
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
 
