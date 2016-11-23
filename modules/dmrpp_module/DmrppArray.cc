@@ -25,10 +25,13 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
 
+#include <BESDapError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppArray.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -71,15 +74,37 @@ DmrppArray::operator=(const DmrppArray &rhs)
     return *this;
 }
 
+// FIXME This version of read() should work for unconstrained accesses where
+// we don't have to think about chunking. jhrg 11/23/16
 bool
 DmrppArray::read()
 {
-    BESDEBUG("dmrpp", "Entering DmrppArray::read for " << name() << endl);
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
 
     if (read_p())
         return true;
 
-    // FIXME Look at libdap::TestArray for some decent example code for Array::read()
+    unsigned long long array_nbytes = width();
+
+    rbuf_size(array_nbytes);
+    set_bytes_read(0);
+
+    ostringstream range;   // range-get needs a string arg for the range
+    range << get_offset() << "-" << get_offset() + get_size();
+
+    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+
+    curl_read_bytes(get_data_url(), range.str(), this);
+
+    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
+    if (array_nbytes != get_bytes_read()) {
+        ostringstream oss;
+        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << array_nbytes
+            << " but found " << get_bytes_read() << endl;
+        throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+    }
+
+    val2buf(get_rbuf());    // yes, it's not type-safe
 
     set_read_p(true);
 

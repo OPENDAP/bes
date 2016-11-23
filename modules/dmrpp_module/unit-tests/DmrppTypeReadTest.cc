@@ -159,13 +159,60 @@ public:
         }
 
         CPPUNIT_ASSERT("Passed");
-     }
+    }
+#if 0
+    void test_integer_arrays() {
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("d_int.h5.dmrpp");
+        BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
+
+        ifstream in(int_h5);
+        parser.intern(in, dmr.get(), debug);
+        BESDEBUG("dmrpp", "Parsing complete"<< endl);
+
+        D4Group *root = dmr->root();
+
+        checkGroupsAndVars(root, "/", 0, 1);
+
+        D4Group::Vars_iter v = root->var_begin();
+
+        DmrppInt32 *di32 = dynamic_cast<DmrppInt32*>(*v);
+
+        CPPUNIT_ASSERT(di32);
+
+        try {
+            // Hack for libcurl
+            string data_url = string("file://").append(TEST_DATA_DIR).append(di32->get_data_url());
+            di32->set_data_url(data_url);
+
+            di32->read();
+
+            BESDEBUG("dmrpp", "Value: " << di32->value() << endl);
+            CPPUNIT_ASSERT(di32->value() == 45);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        CPPUNIT_ASSERT("Passed");
+    }
+#endif
 
     CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
     CPPUNIT_TEST(test_integer_scalar);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DmrppTypeReadTest);
