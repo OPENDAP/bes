@@ -139,7 +139,14 @@ public:
         CPPUNIT_ASSERT(di32);
 
         try {
+            // Hack for libcurl
+            string data_url = string("file://").append(TEST_DATA_DIR).append(di32->get_data_url());
+            di32->set_data_url(data_url);
+
             di32->read();
+
+            BESDEBUG("dmrpp", "Value: " << di32->value() << endl);
+            CPPUNIT_ASSERT(di32->value() == 45);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());

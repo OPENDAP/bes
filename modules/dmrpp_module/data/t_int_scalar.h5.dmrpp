@@ -5,7 +5,7 @@
     dapVersion="4.0" 
     dmrVersion="1.0"
     name="t_int_scalar.h5"
-    xml:base="file:///data/t_int_scalar.h5">
+    xml:base="/t_int_scalar.h5">
   <Int32 name="scalar">
     <Attribute name="value" type="Int32">
       <Value>45</Value>
