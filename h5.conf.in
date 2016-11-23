@@ -280,9 +280,11 @@ H5.LargeDataMemCacheEntries=0
 H5.LargeDataMemCacheConfig=false
 #H5.LargeDataMemCacheConfig=true
 
+# The directory where the configuration file is located.
 H5.DataCachePath=
 #H5.DataCachePath=/opt/tmp
 
+# The configuration file that stores the info. to cache variable values.
 H5.LargeDataMemCacheFileName=
 #H5.LargeDataMemCacheFileName=ldatamem.conf
 
