@@ -89,7 +89,7 @@ bool DmrppByte::read()
 
     BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
 
-    curl_read_bytes(get_data_url(), range.str(), this);
+    curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
 
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (sizeof(dods_byte) != get_bytes_read()) {

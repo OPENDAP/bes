@@ -44,8 +44,9 @@ static size_t dmrpp_write_data(void *buffer, size_t size, size_t nmemb, void *da
     unsigned long long bytes_read = dc->get_bytes_read();
     size_t nbytes = size * nmemb;
 
-    // If this fails, the code will write beyond the buffer.
     BESDEBUG("dmrpp", "bytes_read: " << bytes_read << ", nbytes: " << nbytes << ", rbuf_size: " << dc->get_rbuf_size() << endl);
+
+    // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= dc->get_rbuf_size());
 
     memcpy(dc->get_rbuf() + bytes_read, buffer, nbytes);

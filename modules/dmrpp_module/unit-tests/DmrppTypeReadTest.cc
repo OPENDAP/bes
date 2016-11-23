@@ -160,7 +160,7 @@ public:
 
         CPPUNIT_ASSERT("Passed");
     }
-#if 0
+#if 1
     void test_integer_arrays() {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -175,23 +175,92 @@ public:
 
         D4Group *root = dmr->root();
 
-        checkGroupsAndVars(root, "/", 0, 1);
+        checkGroupsAndVars(root, "/", 0, 4);
 
         D4Group::Vars_iter v = root->var_begin();
 
-        DmrppInt32 *di32 = dynamic_cast<DmrppInt32*>(*v);
-
-        CPPUNIT_ASSERT(di32);
-
         try {
+            DmrppArray *da = dynamic_cast<DmrppArray*>(*v);
+
+            CPPUNIT_ASSERT(da);
+            CPPUNIT_ASSERT(da->name() == "d16_1");
+
             // Hack for libcurl
-            string data_url = string("file://").append(TEST_DATA_DIR).append(di32->get_data_url());
-            di32->set_data_url(data_url);
+            string data_url = string("file://").append(TEST_DATA_DIR).append(da->get_data_url());
+            da->set_data_url(data_url);
 
-            di32->read();
+            da->read();
 
-            BESDEBUG("dmrpp", "Value: " << di32->value() << endl);
-            CPPUNIT_ASSERT(di32->value() == 45);
+            CPPUNIT_ASSERT(da->length() == 2);
+
+            vector<dods_int16> v16(da->length());
+            da->value(&v16[0]);
+            BESDEBUG("dmrpp", "v16[0]: " << v16[0] << ", v16[1]: " << v16[1] << endl);
+            CPPUNIT_ASSERT(v16[0] == -32768);
+            CPPUNIT_ASSERT(v16[1] == 32767);
+
+            ++v;    // next
+            da = dynamic_cast<DmrppArray*>(*v);
+
+            CPPUNIT_ASSERT(da);
+            CPPUNIT_ASSERT(da->name() == "d16_2");
+
+            // Hack for libcurl
+            da->set_data_url(data_url);
+
+            da->read();
+
+            CPPUNIT_ASSERT(da->length() == 4);
+
+            vector<dods_int16> v16_2(da->length());
+            da->value(&v16_2[0]);
+
+            if (debug) copy(v16_2.begin(), v16_2.end(), ostream_iterator<dods_int16>(cerr, " "));
+
+            CPPUNIT_ASSERT(v16_2[0] == -32768);
+            CPPUNIT_ASSERT(v16_2[3] == 32767);
+
+            ++v;    // next
+            da = dynamic_cast<DmrppArray*>(*v);
+
+            CPPUNIT_ASSERT(da);
+            CPPUNIT_ASSERT(da->name() == "d32_1");
+
+            // Hack for libcurl
+            da->set_data_url(data_url);
+
+            da->read();
+
+            CPPUNIT_ASSERT(da->length() == 8);
+
+            vector<dods_int32> v32(da->length());
+            da->value(&v32[0]);
+
+            if (debug) copy(v32.begin(), v32.end(), ostream_iterator<dods_int32>(cerr, " "));
+
+            CPPUNIT_ASSERT(v32[0] == -2147483648);
+            CPPUNIT_ASSERT(v32[7] == 2147483647);
+
+            ++v;    // next
+            da = dynamic_cast<DmrppArray*>(*v);
+
+            CPPUNIT_ASSERT(da);
+            CPPUNIT_ASSERT(da->name() == "d32_2");
+
+            // Hack for libcurl
+            da->set_data_url(data_url);
+
+            da->read();
+
+            CPPUNIT_ASSERT(da->length() == 32);
+
+            vector<dods_int32> v32_2(da->length());
+            da->value(&v32_2[0]);
+
+            if (debug) copy(v32_2.begin(), v32_2.end(), ostream_iterator<dods_int32>(cerr, " "));
+
+            CPPUNIT_ASSERT(v32_2[0] == -2147483648);
+            CPPUNIT_ASSERT(v32_2[31] == 2147483647);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -210,9 +279,9 @@ public:
     CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
     CPPUNIT_TEST(test_integer_scalar);
+    CPPUNIT_TEST(test_integer_arrays);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DmrppTypeReadTest);

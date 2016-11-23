@@ -87,7 +87,7 @@ DmrppInt32::read()
     set_bytes_read(0);
 
     ostringstream range;   // range-get needs a string arg for the range
-    range << get_offset() << "-" << get_offset() + get_size();
+    range << get_offset() << "-" << get_offset() + get_size() - 1;
 
     BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
 
