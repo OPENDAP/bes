@@ -82,7 +82,6 @@ bool DmrppByte::read()
         return true;
 
     rbuf_size(sizeof(dods_byte));
-    set_bytes_read(0);
 
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size();
@@ -94,7 +93,7 @@ bool DmrppByte::read()
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (sizeof(dods_byte) != get_bytes_read()) {
         ostringstream oss;
-        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_byte)
+        oss << "DmrppByte: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_byte)
             << " but found " << get_bytes_read() << endl;
         throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
     }

@@ -84,7 +84,6 @@ DmrppInt32::read()
         return true;
 
     rbuf_size(sizeof(dods_int32));
-    set_bytes_read(0);
 
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size() - 1;

@@ -87,7 +87,6 @@ DmrppArray::read()
     unsigned long long array_nbytes = width();
 
     rbuf_size(array_nbytes);
-    set_bytes_read(0);
 
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size() - 1;
@@ -99,7 +98,7 @@ DmrppArray::read()
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (array_nbytes != get_bytes_read()) {
         ostringstream oss;
-        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << array_nbytes
+        oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << array_nbytes
             << " but found " << get_bytes_read() << endl;
         throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
     }
