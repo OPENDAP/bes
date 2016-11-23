@@ -89,6 +89,33 @@ DmrppInt32::operator=(const DmrppInt32 &rhs)
  */
 static size_t int32_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
+    DmrppInt32 *di32 = reinterpret_cast<DmrppInt32*>(data);
+    unsigned long long target_size = sizeof(dods_int32);
+
+    size_t nbytes = size * nmemb;
+
+    unsigned long long bytes_read = di32->get_bytes_read();
+
+    unsigned char *rbuf = di32->get_rbuf();
+    unsigned char *src_buf;
+
+    src_buf = reinterpret_cast<unsigned char*>(buffer);
+
+    for(size_t i=0; i<nbytes && bytes_read<target_size ;i++, bytes_read++){
+    	rbuf[bytes_read] =  src_buf[i];
+    }
+
+    //void *memmove(void *dst, const void *src, size_t len);
+
+    if (target_size == bytes_read) {
+        di32->set_value(*reinterpret_cast<dods_int32*>(rbuf));
+    }
+    else if (target_size < bytes_read) {
+
+        // FIXME It could be that only one byte is read at a time... jhrg 11/22/16
+        throw BESDapError("DmrppInt32: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+    }
+#if 0
     size_t nbytes = size * nmemb;
 
     //void *memmove(void *dst, const void *src, size_t len);
@@ -101,6 +128,8 @@ static size_t int32_write_data(void *buffer, size_t size, size_t nmemb, void *da
         // FIXME It could be that only one byte is read at a time... jhrg 11/22/16
         throw BESDapError("DmrppInt32: Could not read data.", /*fatal*/ true, unknown_error, __FILE__, __LINE__);
     }
+#endif
+
 
     return nbytes;
 }
@@ -112,6 +141,8 @@ DmrppInt32::read()
 
     if (read_p())
         return true;
+
+    rbuf_size(sizeof(dods_int32));
 
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size();
