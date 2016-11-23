@@ -25,10 +25,15 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
+#include <cassert>
 
-#include <BESDEBUG.h>
+#include <BESError.h>
+#include <BESDebug.h>
+
 
 #include "DmrppD4Opaque.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -74,6 +79,7 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
 bool
 DmrppD4Opaque::read()
 {
+#if 0
     BESDEBUG("dmrpp", "Entering DmrppD4Opaque::read for " << name() << endl);
 
     if (read_p())
@@ -84,6 +90,11 @@ DmrppD4Opaque::read()
     set_read_p(true);
 
     return true;
+#endif
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    throw BESError("Unsupported type libdap::D4Opaque (dmrpp::DmrppOpaque)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
 }
 
 

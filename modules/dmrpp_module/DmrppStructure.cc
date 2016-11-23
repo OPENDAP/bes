@@ -25,10 +25,14 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
+#include <cassert>
 
+#include <BESError.h>
 #include <BESDEBUG.h>
 
 #include "DmrppStructure.h"
+#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -74,6 +78,7 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
 bool
 DmrppStructure::read()
 {
+#if 0
     BESDEBUG("dmrpp", "Entering DmrppStructure::read for " << name() << endl);
 
     if (read_p())
@@ -84,6 +89,12 @@ DmrppStructure::read()
     set_read_p(true);
 
     return true;
+#endif
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    throw BESError("Unsupported type libdap::D4Structure (dmrpp::DmrppStructure)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+
 }
 
 
