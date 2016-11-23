@@ -30,9 +30,11 @@
 #include <BESDapError.h>
 #include <BESDEBUG.h>
 
+#include "Odometer.h"
 #include "DmrppArray.h"
 #include "DmrppUtil.h"
 
+using namespace dmrpp;
 using namespace libdap;
 using namespace std;
 
@@ -74,6 +76,20 @@ DmrppArray::operator=(const DmrppArray &rhs)
     return *this;
 }
 
+/**
+ * @brief Is this Array subset?
+ * @return True if the array has a projection expression, false otherwise
+ */
+bool
+DmrppArray::is_projected()
+{
+    for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
+        if (dimension_size(p, true) != dimension_size(p, true))
+            return true;
+
+    return false;
+}
+
 // FIXME This version of read() should work for unconstrained accesses where
 // we don't have to think about chunking. jhrg 11/23/16
 bool
@@ -105,7 +121,23 @@ DmrppArray::read()
     }
 
 
-    val2buf(get_rbuf());    // yes, it's not type-safe
+    if (!is_projected()) {      // if there is no projection constraint
+        val2buf(get_rbuf());    // yes, it's not type-safe
+    }
+    // else
+    // Get the start, stop values for each dimension
+    // Determine the size of the destination buffer (should match length() / width())
+    // Allocate the dest buffer in the array
+    // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
+    else {
+        Odometer::shape full_shape, constrained_shape;
+        for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p) {
+            full_shape.push_back(dimension_size(p, false));
+            constrained_shape.push_back(dimension_size(p, true));
+        }
+
+
+    }
 
     set_read_p(true);
 
