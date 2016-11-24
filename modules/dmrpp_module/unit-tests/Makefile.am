@@ -7,15 +7,15 @@ AUTOMAKE_OPTIONS = foreign
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-AM_LDADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LDADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 else
 AM_CPPFLAGS = -I$(top_srcdir) $(XML2_CFLAGS) $(DAP_CFLAGS)
-AM_LDADD =  $(DAP_SERVER_LIBS) 
+LDADD =  $(DAP_SERVER_LIBS) 
 endif
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
-AM_LDADD += $(CPPUNIT_LIBS)
+LDADD += $(CPPUNIT_LIBS)
 endif
 
 if USE_VALGRIND
@@ -76,13 +76,10 @@ DmrppTypeFactory.cc DrmppCommon.h
 # we have to link against since we're using BESDapError. jhrg 11/21/16
 
 DmrppParserTest_SOURCES = DmrppParserTest.cc $(SRCS)
-DmrppParserTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
-	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppParserTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
 DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc $(SRCS) 
-DmrppTypeReadTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
-	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppTypeReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
 DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc $(SRCS) 
-DmrppHttpReadTest_LDFLAGS =  $(AM_LDADD) -L\$(top_builddir)/dap -ldap_module \
-	-L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppHttpReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module

@@ -95,7 +95,7 @@ bool DmrppByte::read()
         ostringstream oss;
         oss << "DmrppByte: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_byte)
             << " but found " << get_bytes_read() << endl;
-        throw BESError(oss.str(),BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     set_value(*reinterpret_cast<dods_byte*>(get_rbuf()));

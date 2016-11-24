@@ -27,7 +27,7 @@
 #include <string>
 #include <sstream>
 
-#include <BESDapError.h>
+#include <BESError.h>
 #include <BESDEBUG.h>
 
 #include "Odometer.h"
@@ -117,7 +117,7 @@ DmrppArray::read()
         ostringstream oss;
         oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << array_nbytes
             << " but found " << get_bytes_read() << endl;
-        throw BESDapError(oss.str(), /*fatal*/ true, unknown_error, __FILE__, __LINE__);
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
 
