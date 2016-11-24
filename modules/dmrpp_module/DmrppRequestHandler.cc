@@ -54,8 +54,6 @@
 using namespace libdap;
 using namespace std;
 
-int test_variable_sleep_interval = 0;
-
 const string module = "dmrpp";
 
 #if 0
