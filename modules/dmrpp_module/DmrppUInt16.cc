@@ -25,9 +25,13 @@
 #include "config.h"
 
 #include <string>
+#include <sstream>
+#include <cassert>
 
+#include <BESError.h>
 #include <BESDEBUG.h>
 
+#include "DmrppUtil.h"
 #include "DmrppUInt16.h"
 
 using namespace libdap;
@@ -74,6 +78,7 @@ DmrppUInt16::operator=(const DmrppUInt16 &rhs)
 bool
 DmrppUInt16::read()
 {
+#if 0
     BESDEBUG("dmrpp", "Entering DmrppUInt16::read for " << name() << endl);
 
     if (read_p())
@@ -84,6 +89,39 @@ DmrppUInt16::read()
     set_read_p(true);
 
     return true;
+#endif
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    if (read_p())
+        return true;
+
+    rbuf_size(sizeof(dods_uint16));
+
+    ostringstream range;   // range-get needs a string arg for the range
+    range << get_offset() << "-" << get_offset() + get_size() - 1;
+
+    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+
+    // Slice 'this' to just the DmrppCommon parts. Needed because the generic
+    // version of the 'write_data' callback only knows about DmrppCommon. Passing
+    // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
+    // will leave the code using garbage memory. jhrg 11/23/16
+    curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
+
+    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
+    if (sizeof(dods_uint16) != get_bytes_read()) {
+        ostringstream oss;
+        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_uint16)
+            << " but found " << get_bytes_read() << endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    set_value(*reinterpret_cast<dods_uint16*>(get_rbuf()));
+
+    set_read_p(true);
+
+    return true;
+
 }
 
 
