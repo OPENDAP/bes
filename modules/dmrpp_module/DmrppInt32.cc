@@ -31,8 +31,8 @@
 #include <BESError.h>
 #include <BESDEBUG.h>
 
-#include "DmrppInt32.h"
 #include "DmrppUtil.h"
+#include "DmrppInt32.h"
 
 using namespace libdap;
 using namespace std;
