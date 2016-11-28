@@ -76,12 +76,9 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         throw InternalErr (__FILE__, __LINE__,
                           "The datatype of the special product is not right.");
 
-    if (rank < 0) 
+    if (rank <= 0) 
         throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of the variable is negative.");
-
-    else if (rank == 0) 
-        nelms = 1;
+                          "The number of dimension of the variable is <=0 for this array.");
     else {
 
         offset.resize(rank);
@@ -137,8 +134,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     }
 
 
-    if (rank > 0) {
-        if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
+    if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                            &hoffset[0], &hstep[0],
                            &hcount[0], NULL) < 0) {
 
@@ -149,10 +145,10 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             eherr << "The selection of hyperslab of the HDF5 dataset " << varname
                   << " fails. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
-        }
+    }
 
-        mspace = H5Screate_simple(rank, (const hsize_t*)&hcount[0],NULL);
-        if (mspace < 0) {
+    mspace = H5Screate_simple(rank, (const hsize_t*)&hcount[0],NULL);
+    if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid);
             HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
@@ -160,14 +156,11 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             eherr << "The creation of the memory space of the  HDF5 dataset " << varname
                   << " fails. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
-        }
-
     }
 
 
     if ((dtypeid = H5Dget_type(dsetid)) < 0) {
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
@@ -179,8 +172,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
 
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         H5Dclose(dsetid);
@@ -195,8 +187,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     H5T_class_t ty_class = H5Tget_class(dtypeid);
     if (ty_class < 0) {
 
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Tclose(memtype);
         H5Sclose(dspace);
@@ -210,8 +201,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     }
 
     if (ty_class !=H5T_INTEGER) {
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Tclose(memtype);
         H5Sclose(dspace);
@@ -225,8 +215,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     size_t ty_size = H5Tget_size(dtypeid);
     if (ty_size != H5Tget_size(H5T_STD_I64LE)) {
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Tclose(memtype);
         H5Sclose(dspace);
@@ -247,14 +236,9 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     vector<int> val;
     val.resize(nelms);
  
-    if (0 == rank) 
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&orig_val[0]);
-    else 
-        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&orig_val[0]);
-
+    read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&orig_val[0]);
     if (read_ret < 0) {
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Tclose(memtype);
         H5Sclose(dspace);
@@ -289,8 +273,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     set_value ((dods_int32 *)&val[0],nelms);
        
-    if (rank >0) 
-        H5Sclose(mspace);
+    H5Sclose(mspace);
     H5Tclose(dtypeid);
     H5Tclose(memtype);
     H5Sclose(dspace);

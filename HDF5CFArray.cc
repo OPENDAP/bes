@@ -243,7 +243,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     }
 
     mspace = H5Screate_simple(rank, &hcount[0],NULL);
-        if (mspace < 0) {
+    if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid); 
             HDF5CFUtil::close_fileid(fileid,pass_fileid);
@@ -252,13 +252,12 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             eherr << "The creation of the memory space of the  HDF5 dataset " << varname
                   << " fails. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
-        }
+    }
 
 
     if ((dtypeid = H5Dget_type(dsetid)) < 0) {
             
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,pass_fileid);
@@ -271,8 +270,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
 
-        if (rank >0) 
-            H5Sclose(mspace);
+        H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         H5Dclose(dsetid);
@@ -290,8 +288,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     if(true == add_cache) {
         read_ret= H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,buf);
         if(read_ret <0){ 
-            if (rank >0) 
-                H5Sclose(mspace);
+            H5Sclose(mspace);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
             H5Dclose(dsetid);
@@ -311,14 +308,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             vector<unsigned char> val;
             val.resize(nelms);
             
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
             if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -341,15 +333,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             vector<char> val;
             val.resize(nelms);
 
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
             if (read_ret < 0) {
 
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -378,15 +365,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             vector<short>val;
             val.resize(nelms);
                 
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
             if (read_ret < 0) {
 
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -408,14 +390,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             {
                 vector<unsigned short> val;
                 val.resize(nelms);
-                if (0 == rank) 
-                   read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-                else 
-                   read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
                 if (read_ret < 0) {
 
-                    if (rank > 0) H5Sclose(mspace);
+                    H5Sclose(mspace);
                     H5Tclose(memtype);
                     H5Tclose(dtypeid);
                     H5Sclose(dspace);
@@ -436,14 +414,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         {
             vector<int>val;
             val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
             if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -463,15 +436,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         {
             vector<unsigned int>val;
             val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
             if (read_ret < 0) {
-
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -493,14 +460,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             vector<float>val;
             val.resize(nelms);
 
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
-
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
             if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -522,14 +484,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
             vector<double>val;
             val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&val[0]);
 
             if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -550,8 +508,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         {
             size_t ty_size = H5Tget_size(dtypeid);
             if (ty_size == 0) {
-                if (rank >0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -565,14 +522,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
             vector <char> strval;
             strval.resize(nelms*ty_size);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&strval[0]);
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&strval[0]);
 
             if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -611,8 +564,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         {
             size_t ty_size = H5Tget_size(memtype);
             if (ty_size == 0) {
-                if (rank >0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -625,14 +577,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             }
             vector <char> strval;
             strval.resize(nelms*ty_size);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&strval[0]);
+            read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&strval[0]);
 
             if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
@@ -660,13 +608,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
             if (false == strval.empty()) {
                 herr_t ret_vlen_claim;
-                if (0 == rank) 
-                    ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)&strval[0]);
-                else 
-                    ret_vlen_claim = H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)&strval[0]);
+                ret_vlen_claim = H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)&strval[0]);
                 if (ret_vlen_claim < 0){
-                    if (rank >0) 
-                        H5Sclose(mspace);
+                    H5Sclose(mspace);
                     H5Tclose(memtype);
                     H5Tclose(dtypeid);
                     H5Sclose(dspace);
@@ -701,8 +645,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
         {
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
-                if (0 == rank) 
-                    H5Sclose(mspace);
+                H5Sclose(mspace);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
                 HDF5CFUtil::close_fileid(fileid,pass_fileid);
@@ -715,8 +658,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
     H5Tclose(memtype);
     H5Tclose(dtypeid);
-    if (rank == 0)
-        H5Sclose(mspace);
+    H5Sclose(mspace);
     H5Sclose(dspace);
     H5Dclose(dsetid);
     HDF5CFUtil::close_fileid(fileid,pass_fileid);

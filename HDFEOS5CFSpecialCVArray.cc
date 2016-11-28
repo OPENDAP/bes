@@ -64,12 +64,10 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool add_cache, void*
     vector<int>step;
     int nelms = 0;
 
-    if (rank < 0) 
+    if (rank <= 0) 
         throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of the variable is negative.");
+                          "The number of dimension of the variable is <=0 for this array.");
 
-    else if (rank == 0) 
-        nelms = 1;
     else {
         offset.resize(rank);
         count.resize(rank);
