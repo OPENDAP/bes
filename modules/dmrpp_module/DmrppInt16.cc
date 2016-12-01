@@ -29,7 +29,7 @@
 #include <cassert>
 
 #include <BESError.h>
-#include <BESDEBUG.h>
+#include <BESDebug.h>
 
 #include "DmrppUtil.h"
 #include "DmrppInt16.h"

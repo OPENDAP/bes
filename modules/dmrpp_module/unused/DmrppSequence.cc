@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include <BESDEBUG.h>
+#include <BESDebug.h>
 
 #include "DmrppSequence.h"
 
