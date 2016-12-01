@@ -1,4 +1,3 @@
-
 # Automake file for dap-handler
 #
 # 5/17/2005 jhrg
@@ -10,6 +9,12 @@ AUTOMAKE_OPTIONS = foreign check-news
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
+
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=dmrpp_module
+M_VER=0.4.0
+
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -57,18 +62,8 @@ EXTRA_DIST = data dmrpp.conf.in
 
 CLEANFILES = *~ dmrpp.conf
 
-#sample_datadir = $(datadir)/hyrax/data/dmrpp
-#sample_data_DATA = data/dap2/fnoc1.das data/dap2/fnoc1.dds data/dap2/fnoc1.data
-
-#dap4_datadir = $(datadir)/hyrax/data/dmrpp/dap4
-#dap4_data_DATA = data/dap4/dap4.html 
-
-#D4_xml_datadir = $(datadir)/hyrax/data/dmrpp/dap4/D4-xml
-#D4_xml_data_DATA = data/dap4/D4-xml/DMR_0.xml	
-
-#dmr_testsuite_datadir = $(datadir)/hyrax/data/dmrpp/dap4/dmr-testsuite
-#dmr_testsuite_data_DATA = data/dap4/dmr-testsuite/test_array_1.xml
-
+sample_datadir = $(datadir)/hyrax/data/dmrpp
+sample_data_DATA = data/*
 
 install-data-local: dmrpp.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
@@ -83,15 +78,6 @@ uninstall-local:
 
 dmrpp.conf: dmrpp.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dmrpp.conf
-
-#reader.conf: reader.conf.in $(top_builddir)/config.status
-#	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-#                -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-#                -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
-#                -e "s%[@]datarootdir[@]%${datarootdir}%" \
-#                -e "s%[@]datadir[@]%${datadir}%" \
-#                -e "s%[@]bindir[@]%${bindir}%" \
-#                -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > reader.conf
 
 distclean-local:
 

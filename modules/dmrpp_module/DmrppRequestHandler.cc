@@ -19,6 +19,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
+
 #include "config.h"
 
 #include <string>
@@ -248,7 +249,7 @@ bool DmrppRequestHandler::dap_build_vers(BESDataHandlerInterface &dhi)
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw BESInternalFatalError("Expected a BESVersionInfo instance.", __FILE__, __LINE__);
 
-    info->add_module(DAPREADER_PACKAGE, DAPREADER_VERSION);
+    info->add_module(MODULE_NAME, MODULE_VERSION);
     return true;
 }
 
@@ -260,8 +261,8 @@ bool DmrppRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
     map<string, string> attrs;
-    attrs["name"] = DAPREADER_PACKAGE /* PACKAGE_NAME */;
-    attrs["version"] = DAPREADER_VERSION /* PACKAGE_VERSION */;
+    attrs["name"] = MODULE_NAME /* PACKAGE_NAME */;
+    attrs["version"] = MODULE_VERSION /* PACKAGE_VERSION */;
     list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(module, services);
     if (services.size() > 0) {
