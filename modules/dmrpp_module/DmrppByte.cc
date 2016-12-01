@@ -28,7 +28,7 @@
 #include <sstream>
 
 #include <BESError.h>
-#include <BESDEBUG.h>
+#include <BESDebug.h>
 
 #include "DmrppByte.h"
 #include "DmrppUtil.h"
