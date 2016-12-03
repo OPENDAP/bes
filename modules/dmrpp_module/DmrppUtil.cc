@@ -1,9 +1,26 @@
-/*
- * DmrppUtil.cc
- *
- *  Created on: Nov 22, 2016
- *      Author: jimg
- */
+
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES
+
+// Copyright (c) 2016 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
 
@@ -64,7 +81,7 @@ static size_t dmrpp_write_data(void *buffer, size_t size, size_t nmemb, void *da
  * @see https://curl.haxx.se/libcurl/c/libcurl.html
  * @param url Get dat from this URL
  * @param range ...and this byte range
- * @param user_data A pinter to a DmrppCommon instnace
+ * @param user_data A pinter to a DmrppCommon instance
  */
 void curl_read_bytes(const string &url, const string &range, void *user_data)
 {
@@ -98,7 +115,9 @@ void curl_read_bytes(const string &url, const string &range, void *user_data)
             curl_easy_cleanup(curl);
             throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
-
+#if 0
+        dc->set_bytes_read(0);
+#endif
         curl_easy_cleanup(curl);
     }
 }
