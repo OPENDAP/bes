@@ -74,7 +74,7 @@ public:
     DmrppCommon(const DmrppCommon &dc) { _duplicate(dc); }
 
     virtual ~DmrppCommon() {
-    	delete d_read_buffer;
+    	delete[] d_read_buffer;
     }
 
     /**
@@ -160,7 +160,7 @@ public:
 
     	// Calling delete on a null pointer is fine, so we don;t need to check
     	// to see if this is the first call.
-    	delete d_read_buffer;
+    	delete[] d_read_buffer;
 
     	d_read_buffer = new unsigned char[size];
     	d_read_buffer_size = size;
