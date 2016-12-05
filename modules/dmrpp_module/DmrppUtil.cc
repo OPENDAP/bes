@@ -86,6 +86,7 @@ static size_t dmrpp_write_data(void *buffer, size_t size, size_t nmemb, void *da
 void curl_read_bytes(const string &url, const string &range, void *user_data)
 {
     // See https://curl.haxx.se/libcurl/c/CURLOPT_RANGE.html, etc.
+
     CURL* curl = curl_easy_init();
     if (curl) {
         CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str() /*"http://example.com"*/);
@@ -115,9 +116,7 @@ void curl_read_bytes(const string &url, const string &range, void *user_data)
             curl_easy_cleanup(curl);
             throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
-#if 0
-        dc->set_bytes_read(0);
-#endif
+
         curl_easy_cleanup(curl);
     }
 }

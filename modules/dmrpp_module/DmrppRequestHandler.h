@@ -42,7 +42,7 @@ class DmrppRequestHandler: public BESRequestHandler {
 
 public:
 	DmrppRequestHandler(const std::string &name);
-	virtual ~DmrppRequestHandler(void) { }
+	virtual ~DmrppRequestHandler();
 
 #if DAP2
 	static bool dap_build_das(BESDataHandlerInterface &dhi);

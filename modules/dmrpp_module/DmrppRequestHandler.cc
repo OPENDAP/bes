@@ -25,6 +25,8 @@
 #include <string>
 #include <memory>
 
+#include <curl/curl.h>
+
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
 #include <BESVersionInfo.h>
@@ -104,6 +106,13 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value("DR.UseTestTypes", d_use_test_types, d_use_test_types_set);
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
 #endif
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+}
+
+DmrppRequestHandler::~DmrppRequestHandler()
+{
+    curl_global_cleanup();
 }
 
 void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool /*explicit_containers*/, DMR* dmr)
