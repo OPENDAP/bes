@@ -90,6 +90,68 @@ DmrppArray::is_projected()
     return false;
 }
 
+
+
+
+
+void
+DmrppArray::read_constrained(Odometer &odometer, Dim_iter p, unsigned long &target_index, Odometer::shape &subsetAddress){
+
+	Dim_iter myDim = p;
+
+	int start = this->dimension_start(myDim,true);
+	int stop = this->dimension_stop(myDim,true);
+	int stride = this->dimension_stride(myDim,true);
+
+    p++;
+
+    if(p==dim_end() && stride==1){
+    	subsetAddress.push_back(start);
+		unsigned int start_index = odometer.set_indices(subsetAddress);
+    	subsetAddress.pop_back();
+
+    	subsetAddress.push_back(stop);
+		unsigned int stop_index = odometer.set_indices(subsetAddress);
+    	subsetAddress.pop_back();
+
+    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    	// @TODO Copy data block from start_index to stop_index
+    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    	target_index += stop-start;
+    }
+    else {
+    	for(int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
+    		// Is it the last dimension?
+    		if(p!=dim_end()){
+    			// Nope!
+    			// then we recurse to the last dimension to read stuff
+    			subsetAddress.push_back(myDimIndex);
+    			read_constrained(odometer,p,target_index,subsetAddress);
+    			subsetAddress.pop_back();
+    		}
+    		else {
+				// We are at the last (inner most) dimension.
+				// So it's time to copy values.
+				subsetAddress.push_back(myDimIndex);
+				unsigned int sourceIndex = odometer.set_indices(subsetAddress);
+
+		    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				// @TODO Copy value here.
+		    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+				target_index++;
+				subsetAddress.pop_back();
+
+    		}
+    	}
+
+    }
+
+
+
+}
+
 // FIXME This version of read() should work for unconstrained accesses where
 // we don't have to think about chunking. jhrg 11/23/16
 bool
@@ -130,19 +192,25 @@ DmrppArray::read()
     // Allocate the dest buffer in the array
     // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
     else {
-        Odometer::shape full_shape, constrained_shape;
-        for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p) {
-            full_shape.push_back(dimension_size(p, false));
-            constrained_shape.push_back(dimension_size(p, true));
+        Odometer::shape full_shape, subset;
+        for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
+        	full_shape.push_back(dimension_size(dim,false));
         }
-
-
+        Odometer odometer(full_shape);
+        Dim_iter dimension = dim_begin();
+        unsigned long target_index = 0;
+        read_constrained(odometer, dimension, target_index, subset);
     }
 
     set_read_p(true);
 
     return true;
 }
+
+
+
+
+
 
 void DmrppArray::dump(ostream & strm) const
 {

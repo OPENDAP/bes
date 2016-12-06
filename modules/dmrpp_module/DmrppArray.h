@@ -29,11 +29,16 @@
 
 #include <Array.h>
 #include "DmrppCommon.h"
+#include "Odometer.h"
 
 class DmrppArray: public libdap::Array, public DmrppCommon {
     void _duplicate(const DmrppArray &ts);
 
     bool is_projected();
+
+private:
+    void read_constrained(dmrpp::Odometer &odometer, Dim_iter p, unsigned long &target_index, dmrpp::Odometer::shape &subsetAddress);
+
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
