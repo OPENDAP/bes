@@ -17,8 +17,10 @@ noinst_DATA = bes.conf bes.with_hdfeos2.conf
 
 CLEANFILES = bes.conf bes.with_hdfeos2.conf
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4 atlocal.in		\
-bes.conf.in bes.with_hdfeos2.conf.in bes.conf.modules.in		\
+EXTRA_DIST = $(srcdir)/hdf4_handlerTest.with_hdfeos2 \
+$(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/hdf4_handlerTest \
+$(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4 atlocal.in \
+bes.conf.in bes.with_hdfeos2.conf.in bes.conf.modules.in \
 bes.with_hdfeos2.conf.modules.in generate_metadata_baseline.sh.in \
 h4 h4.cf h4.nasa.with_hdfeos2 h4.with_hdfeos2
 
