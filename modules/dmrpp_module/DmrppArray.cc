@@ -121,6 +121,10 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter p, unsigned long &targ
     	target_index += stop-start;
     }
     else {
+		unsigned char *sourceBuf = get_rbuf();
+	    unsigned int bytesPerElt = d_proto->width();
+		unsigned char *targetBuf = this->d_buf;
+
     	for(int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
     		// Is it the last dimension?
     		if(p!=dim_end()){
@@ -136,9 +140,18 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter p, unsigned long &targ
 				subsetAddress.push_back(myDimIndex);
 				unsigned int sourceIndex = odometer.set_indices(subsetAddress);
 
+
 		    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				// @TODO Copy value here.
-		    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+			    sourceIndex = bytesPerElt * sourceIndex;
+
+			    for(unsigned int i=0; i< bytesPerElt ; i++){
+			    	targetBuf[target_index] = sourceBuf[sourceIndex];
+			    }
+
+
+			    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 				target_index++;
 				subsetAddress.pop_back();
@@ -193,12 +206,15 @@ DmrppArray::read()
     // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
     else {
         Odometer::shape full_shape, subset;
+        unsigned long long constrained_size = 1;
         for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
         	full_shape.push_back(dimension_size(dim,false));
+        	constrained_size *= dimension_size(dim,true);
         }
         Odometer odometer(full_shape);
         Dim_iter dimension = dim_begin();
         unsigned long target_index = 0;
+        reserve_value_capacity(constrained_size);
         read_constrained(odometer, dimension, target_index, subset);
     }
 
