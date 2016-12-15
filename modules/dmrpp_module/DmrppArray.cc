@@ -126,6 +126,7 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long
         BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stop_index:  " << stop_index << endl);
 
     	// Copy data block from start_index to stop_index
+        // @FIXME I had to make the test <= instead of < and I think that's not right, but it works. HELP?
     	for(unsigned int sourceIndex=start_index; sourceIndex<=stop_index ;sourceIndex++,target_index++){
     		unsigned long target_byte = *target_index * bytesPerElt;
 		    unsigned long source_byte = sourceIndex  * bytesPerElt;
