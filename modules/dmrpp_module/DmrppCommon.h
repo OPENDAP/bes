@@ -42,7 +42,7 @@ class DmrppCommon {
     // they are not duplicated by the copy ctor or assignment
     // operator.
     unsigned long long d_bytes_read;
-    unsigned char *d_read_buffer;
+    char *d_read_buffer;
     unsigned long long d_read_buffer_size;
 
 protected:
@@ -162,12 +162,12 @@ public:
     	// to see if this is the first call.
     	delete[] d_read_buffer;
 
-    	d_read_buffer = new unsigned char[size];
+    	d_read_buffer = new char[size];
     	d_read_buffer_size = size;
     	set_bytes_read(0);
     }
 
-    virtual unsigned char *get_rbuf() {
+    virtual char *get_rbuf() {
     	return d_read_buffer;
     }
 

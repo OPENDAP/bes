@@ -84,7 +84,7 @@ bool
 DmrppArray::is_projected()
 {
     for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
-        if (dimension_size(p, true) != dimension_size(p, true))
+        if (dimension_size(p, true) != dimension_size(p, false))
             return true;
 
     return false;
@@ -95,17 +95,25 @@ DmrppArray::is_projected()
 
 
 void
-DmrppArray::read_constrained(Odometer &odometer, Dim_iter p, unsigned long &target_index, Odometer::shape &subsetAddress){
+DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long *target_index, Odometer::shape &subsetAddress){
 
-	Dim_iter myDim = p;
+    BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size()  << endl);
 
-	int start = this->dimension_start(myDim,true);
-	int stop = this->dimension_stop(myDim,true);
-	int stride = this->dimension_stride(myDim,true);
+    unsigned int bytesPerElt = prototype()->width();
+	char *sourceBuf = get_rbuf();
+	char *targetBuf = get_buf();
 
-    p++;
+	Dim_iter myDim = dimIter;
+	unsigned int start = this->dimension_start(myDim,true);
+	unsigned int stop = this->dimension_stop(myDim,true);
+	unsigned int stride = this->dimension_stride(myDim,true);
+    BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: "<< stop << endl);
 
-    if(p==dim_end() && stride==1){
+    dimIter++;
+
+    if( dimIter==dim_end()  &&  stride==1){
+        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stride is 1, copying from all values from start to stop." << endl);
+
     	subsetAddress.push_back(start);
 		unsigned int start_index = odometer.set_indices(subsetAddress);
     	subsetAddress.pop_back();
@@ -114,55 +122,50 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter p, unsigned long &targ
 		unsigned int stop_index = odometer.set_indices(subsetAddress);
     	subsetAddress.pop_back();
 
-    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    	// @TODO Copy data block from start_index to stop_index
-    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - start_index: " << start_index << endl);
+        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stop_index:  " << stop_index << endl);
 
-    	target_index += stop-start;
+    	// Copy data block from start_index to stop_index
+    	for(unsigned int sourceIndex=start_index; sourceIndex<=stop_index ;sourceIndex++,target_index++){
+    		unsigned long target_byte = *target_index * bytesPerElt;
+		    unsigned long source_byte = sourceIndex  * bytesPerElt;
+			// Copy a single value.
+		    for(unsigned int i=0; i< bytesPerElt ; i++){
+		    	targetBuf[target_byte++] = sourceBuf[source_byte++];
+		    }
+		    (*target_index)++;
+    	}
     }
     else {
-		unsigned char *sourceBuf = get_rbuf();
-	    unsigned int bytesPerElt = d_proto->width();
-		unsigned char *targetBuf = this->d_buf;
 
-    	for(int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
+    	for(unsigned int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
     		// Is it the last dimension?
-    		if(p!=dim_end()){
+    		if(dimIter != dim_end()){
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);
-    			read_constrained(odometer,p,target_index,subsetAddress);
+    			read_constrained(odometer,dimIter,target_index,subsetAddress);
     			subsetAddress.pop_back();
     		}
     		else {
+
 				// We are at the last (inner most) dimension.
 				// So it's time to copy values.
 				subsetAddress.push_back(myDimIndex);
 				unsigned int sourceIndex = odometer.set_indices(subsetAddress);
-
-
-		    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				// @TODO Copy value here.
-
-			    sourceIndex = bytesPerElt * sourceIndex;
-
-			    for(unsigned int i=0; i< bytesPerElt ; i++){
-			    	targetBuf[target_index] = sourceBuf[sourceIndex];
-			    }
-
-
-			    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-				target_index++;
 				subsetAddress.pop_back();
+    	        BESDEBUG("dmrpp", "DmrppArray::read_constrained()  - Copying source value at sourceIndex: " << sourceIndex << endl);
+				// Copy a single value.
+	    		unsigned long target_byte = *target_index * bytesPerElt;
+			    unsigned long source_byte = sourceIndex  * bytesPerElt;
+			    for(unsigned int i=0; i< bytesPerElt ; i++){
+			    	targetBuf[target_byte++] = sourceBuf[source_byte++];
+			    }
+			    (*target_index)++;
 
     		}
     	}
-
     }
-
-
-
 }
 
 // FIXME This version of read() should work for unconstrained accesses where
@@ -170,7 +173,7 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter p, unsigned long &targ
 bool
 DmrppArray::read()
 {
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
+    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " BEGIN"<< endl);
 
     if (read_p())
         return true;
@@ -183,7 +186,7 @@ DmrppArray::read()
     ostringstream range;   // range-get needs a string arg for the range
     range << get_offset() << "-" << get_offset() + get_size() - 1;
 
-    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << get_data_url() << ": " << range.str() << endl);
 
     curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
 
@@ -197,6 +200,7 @@ DmrppArray::read()
 
 
     if (!is_projected()) {      // if there is no projection constraint
+        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - No projection, copying all values into array. " << endl);
         val2buf(get_rbuf());    // yes, it's not type-safe
     }
     // else
@@ -206,19 +210,25 @@ DmrppArray::read()
     // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
     else {
         Odometer::shape full_shape, subset;
+        // number of array elements in the constrained array
         unsigned long long constrained_size = 1;
         for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
         	full_shape.push_back(dimension_size(dim,false));
         	constrained_size *= dimension_size(dim,true);
         }
+        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - constrained_size:  " << constrained_size << endl);
+
         Odometer odometer(full_shape);
         Dim_iter dimension = dim_begin();
         unsigned long target_index = 0;
         reserve_value_capacity(constrained_size);
-        read_constrained(odometer, dimension, target_index, subset);
+        read_constrained(odometer, dimension, &target_index, subset);
+        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
     }
 
     set_read_p(true);
+
+    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " END"<< endl);
 
     return true;
 }
