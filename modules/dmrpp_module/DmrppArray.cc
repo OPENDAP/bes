@@ -95,23 +95,26 @@ DmrppArray::is_projected()
 
 
 void
-DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long *target_index, Odometer::shape &subsetAddress){
-
-    BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size()  << endl);
+DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long *target_index, Odometer::shape &subsetAddress)
+{
+    BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
     unsigned int bytesPerElt = prototype()->width();
 	char *sourceBuf = get_rbuf();
 	char *targetBuf = get_buf();
 
-	Dim_iter myDim = dimIter;
+	Dim_iter myDim = dimIter; // TODO Remove. jhrg
 	unsigned int start = this->dimension_start(myDim,true);
 	unsigned int stop = this->dimension_stop(myDim,true);
 	unsigned int stride = this->dimension_stride(myDim,true);
-    BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: "<< stop << endl);
+    BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: " << stop << endl);
 
     dimIter++;
 
-    if( dimIter==dim_end()  &&  stride==1){
+    // This is the end case for the recursion.
+    // TODO stride == 1 belongs inside this or else rewrite this as if else if else
+    // see below.
+    if (dimIter == dim_end() && stride == 1) {
         BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stride is 1, copying from all values from start to stop." << endl);
 
     	subsetAddress.push_back(start);
@@ -174,13 +177,13 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long
 bool
 DmrppArray::read()
 {
-    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " BEGIN"<< endl);
+    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " BEGIN" << endl);
 
     if (read_p())
         return true;
 
     // First cut at subsetting; read the whole thing and then subset that.
-    unsigned long long array_nbytes = get_size(); //width();
+    unsigned long long array_nbytes = get_size();	// TODO remove. jhrg
 
     rbuf_size(array_nbytes);
 
@@ -191,14 +194,13 @@ DmrppArray::read()
 
     curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
 
-    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
+    // If the expected byte count was not read, it's an error.
     if (array_nbytes != get_bytes_read()) {
         ostringstream oss;
         oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << array_nbytes
             << " but found " << get_bytes_read() << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
-
 
     if (!is_projected()) {      // if there is no projection constraint
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - No projection, copying all values into array. " << endl);
@@ -220,10 +222,10 @@ DmrppArray::read()
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - constrained_size:  " << constrained_size << endl);
 
         Odometer odometer(full_shape);
-        Dim_iter dimension = dim_begin();
+        Dim_iter dimension = dim_begin();	// TODO Remove this. jhrg
         unsigned long target_index = 0;
         reserve_value_capacity(constrained_size);
-        read_constrained(odometer, dimension, &target_index, subset);
+        read_constrained(odometer, dimension, &target_index, subset); // TODO rename; something other than read. jhrg
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
     }
 
@@ -234,10 +236,81 @@ DmrppArray::read()
     return true;
 }
 
+#if 0
+/**
+ * This is a simplistic version of read() that looks at the one and two-dimensional
+ * cases and solves them with minimal fuss. It might not support stride, we'll see.
+ * It certainly won't build, but it can be made 'buildable' with just a bit of work.
+ * jhrg
+ */
+static bool
+faux_read()
+{
+    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " BEGIN" << endl);
+
+    if (read_p())
+        return true;
+
+    // allocate the DMR++ Common read buffer
+    rbuf_size(get_size(););
+
+    ostringstream range;   // range-get needs a string arg for the range
+    range << get_offset() << "-" << get_offset() + get_size() - 1;
+
+    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << get_data_url() << ": " << range.str() << endl);
+
+    // Read the entire array.
+    curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
+
+    // If the expected byte count was not read, it's an error.
+    if (get_size(); != get_bytes_read()) {
+        ostringstream oss;
+        oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << get_size();
+            << " but found " << get_bytes_read() << endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    if (!is_projected()) {      // if there is no projection constraint
+        BESDEBUG("dmrpp", "No projection, copying all values into array." << endl);
+        val2buf(get_rbuf());    // yes, it's not type-safe
+    }
+    // else
+    // Get the start, stop values for each dimension
+    // Determine the size of the destination buffer (should match length() / width())
+    // Allocate the dest buffer in the array
+    // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
+    else {
+    	switch (dimensions()) {
+    	case 1:
+    		// Access dimension start and stop and use memcpy
+    		unsigned long start = dimension_start(dim_begin(), true);
+
+    		start *= sizeof();
+
+    		reserve_value_capacity(length());
+
+    		memcpy(get_buf(), get_rbuf() + start, width());
 
 
+    		break;
+    	case 2:
+    		// Access outer dim start and stop and use for loop
+    		// Access inner dim start and stop and use memcpy.
+    		break;
+    	default:
+    		// Add general purpose version here
+			throw BESError("The DMR++ hander only supports constraints on one and two-dimensional arrays.",
+					BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    	}
+    }
 
+    set_read_p(true);
 
+    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " END"<< endl);
+
+    return true;
+}
+#endif
 
 void DmrppArray::dump(ostream & strm) const
 {

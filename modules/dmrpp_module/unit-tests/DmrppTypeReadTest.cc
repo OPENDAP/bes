@@ -298,7 +298,9 @@ public:
 
         try {
         	// Now we drill down into the Group Hierarchy
-        	// Firswt, the top Level HDFEOS group
+        	// First, the top Level HDFEOS group
+
+        	// TODO move this to a different test. jhrg
         	D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
             checkGroupsAndVars(grp_hdfeos, "HDFEOS", 2, 0);
 
@@ -320,6 +322,7 @@ public:
             D4Group *grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_1->grp_begin());
             checkGroupsAndVars(grp_data_fields, "Data Fields", 0, 1);
 
+            // TODO This is where the read() test starts. jhrg
             // "Data Fields" contains a single Float32 var called temperature
 			DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
 			CPPUNIT_ASSERT(temperature);
@@ -346,6 +349,8 @@ public:
             }
 
             // Next child of  GRIDS group
+
+            // TODO Same as above. just test read() jhrg
             grids_gIter++;
         	D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
             checkGroupsAndVars(grp_geogrid_2, "GeoGrid2", 1, 0);
@@ -442,7 +447,7 @@ public:
 			CPPUNIT_ASSERT(temperature);
 			CPPUNIT_ASSERT(temperature->name() == "temperature");
 
-
+			// TODO Change this. Do one dimension then two dims. separeate tests. make up data if needed jhrg
 
             BESDEBUG("dmrpp", "temperature->dimensions(): " << temperature->dimensions() << endl);
             CPPUNIT_ASSERT(temperature->dimensions() == 2);
