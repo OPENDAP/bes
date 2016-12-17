@@ -597,55 +597,182 @@ public:
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
+        // Check to make sure we have something that smells like coads_climatology
         D4Group *root = dmr->root();
-
-        // (D4Group *grp, string group_name, int expectedNumGrps, int expectedNumVars)
-
-
         checkGroupsAndVars(root, "/", 0, 7);
-
+        // Walk the vars and testy testy
         D4Group::Vars_iter vIter = root->var_begin();
-
         try {
+            // ######################################
+            // Check COADSX variable
             DmrppArray *coadsx = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(coadsx,"COADSX",180);
             vector<dods_float64> coadsx_vals(coadsx->length());
             coadsx->value(&coadsx_vals[0]);
+            // first element
             BESDEBUG("dmrpp", "coadsx_vals[0]: " << coadsx_vals[0] << endl);
             CPPUNIT_ASSERT(coadsx_vals[0] == 21);
+            // last element
             BESDEBUG("dmrpp", "coadsx_vals[179]: " << coadsx_vals[179] << endl);
             CPPUNIT_ASSERT(coadsx_vals[179] == 379);
 
-
-
-
+            // ######################################
+            // Check COADSY variable
             vIter++;
             DmrppArray *coadsy = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(coadsy,"COADSY",90);
+            vector<dods_float64> coadsy_vals(coadsy->length());
+            coadsy->value(&coadsy_vals[0]);
+            // first element
+            BESDEBUG("dmrpp", "coadsy_vals[0]: " << coadsy_vals[0] << endl);
+            CPPUNIT_ASSERT(coadsy_vals[0] == -89);
+            // last element
+            BESDEBUG("dmrpp", "coadsx_vals[89]: " << coadsy_vals[89] << endl);
+            CPPUNIT_ASSERT(coadsy_vals[89] == 89);
+
+            // ######################################
+            // Check TIME variable
             vIter++;
             DmrppArray *time = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(time,"TIME",12);
+            vector<dods_float64> time_vals(time->length());
+            time->value(&time_vals[0]);
+            // first element
+            BESDEBUG("dmrpp", "time_vals[0]: " << time_vals[0] << endl);
+            CPPUNIT_ASSERT(time_vals[0] == 366);
+            // last element
+            BESDEBUG("dmrpp", "time_vals[11]: " << time_vals[11] << endl);
+            CPPUNIT_ASSERT(time_vals[11] == 8401.335);
 
+            // ######################################
+            // Check SST variable
             vIter++;
             DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(sst,"SST",194400);
             vector<dods_float32> sst_vals(sst->length());
             sst->value(&sst_vals[0]);
-            int index = 0;
-            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << endl);
-            index =  12*180 - 7;
-            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << endl);
+            int index;
+            dods_float32 test_val;
 
+            // check [0][0][0]
+            index = 0;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(sst_vals[index] == test_val);
 
+            // check [0][13][0]
+            index =  13*180;
+            test_val = 0.88125;
+            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(sst_vals[index] == test_val);
 
-            CPPUNIT_ASSERT(sst_vals[index] == 16.4473);
+            // check [11][15][2]
+            index =  11*90*180  + 15*180 + 2;
+            test_val = -0.3675;
+            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(sst_vals[index] == test_val);
 
+            // check [11][89][179]
+            index =  12*90*180 - 1 ;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(sst_vals[index] == test_val);
 
-
+            // ######################################
+            // Check AIRT variable
             vIter++;
             DmrppArray *airt = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(airt,"AIRT",194400);
+            vector<dods_float32> airt_vals(airt->length());
+            airt->value(&airt_vals[0]);
+
+            // check [0][0][0]
+            index = 0;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(airt_vals[index] == test_val);
+
+            // check [3][73][0]
+            index =  3*90*180  + 73*180 + 0;
+            test_val = 3.3;
+            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(airt_vals[index] == test_val);
+
+            // check [9][24][0]
+            index =  9*90*180  + 24*180 + 0;
+            test_val = 14.764;
+            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(airt_vals[index] == test_val);
+
+            // check [11][89][179]
+            index =  12*90*180 - 1 ;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(airt_vals[index] == test_val);
+
+            // ######################################
+            // Check UWND variable
             vIter++;
             DmrppArray *uwnd = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(uwnd,"UWND",194400);
+            vector<dods_float32> uwnd_vals(uwnd->length());
+            uwnd->value(&uwnd_vals[0]);
+
+            // check [0][0][0]
+            index = 0;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
+
+            // check [5][77][10]
+            index =  5*90*180  + 77*180 + 0;
+            test_val =  0.42;
+            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
+
+            // check [9][60][10]
+            index =  9*90*180  + 60*180 + 0;
+            test_val =  0.5075;
+            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
+
+            // check [11][89][179]
+            index =  12*90*180 - 1 ;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
+
+            // ######################################
+            // Check VWND variable
             vIter++;
             DmrppArray *vwnd = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(vwnd,"VWND",194400);
+            vector<dods_float32> vwnd_vals(vwnd->length());
+            vwnd->value(&vwnd_vals[0]);
+
+            // check [0][0][0]
+            index = 0;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(vwnd_vals[index] == test_val);
+
+            // check [2][37][13]
+            index = 2*90*180 + 37*180 + 13;
+            test_val = 0.3;
+            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(vwnd_vals[index] == test_val);
+
+            // check [4][36][8]
+            index = 4*90*180 + 36*180 + 8;
+            test_val = 3.35;
+            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(vwnd_vals[index] == test_val);
+
+            // check [11][89][179]
+            index =  12*90*180 - 1 ;
+            test_val = -1e+34;
+            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_val: " << test_val << endl);
+            CPPUNIT_ASSERT(vwnd_vals[index] == test_val);
 
 
 

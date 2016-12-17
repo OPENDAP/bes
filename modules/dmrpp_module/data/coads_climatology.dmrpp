@@ -21,6 +21,7 @@
         <Attribute name="point_spacing" type="String">
             <Value>even</Value>
         </Attribute>
+        <!-- h4:byteStream offset="0" nBytes="1440" uuid="COADSX.COADSX" md5="foo"/ -->
         <h4:byteStream offset="3110400" nBytes="1440" uuid="COADSX.COADSX" md5="foo"/>
     </Float64>
     <Float64 name="COADSY">
