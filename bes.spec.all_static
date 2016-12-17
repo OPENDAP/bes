@@ -161,8 +161,8 @@ exit 0
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
 
 # Added 10/25/16 jhrg. See below for the installation of the logrotate file.
-%dir %{_sysconfdir}/logrotate.d
-%config(noreplace) %{_sysconfdir}/logrotate.d/besd.logrotate
+# %dir %{_sysconfdir}/logrotate.d
+# %config(noreplace) %{_sysconfdir}/logrotate.d/besd.logrotate
 
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
