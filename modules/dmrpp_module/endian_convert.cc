@@ -30,8 +30,7 @@ long long get_file_size(std::string filename) {
 void invert_byte_order(char *vals, int width) {
 
 	if (debug) {
-		std::cerr << "BEFORE vals: "
-				<< static_cast<void*>(vals) << endl;
+		std::cerr << "BEFORE vals: " << static_cast<void*>(vals) << endl;
 		for (int i = 0; i < width; i++) {
 			std::cerr << "vals[" << i << "]: " << +vals[i] << endl;
 		}
@@ -46,8 +45,7 @@ void invert_byte_order(char *vals, int width) {
 			vals[i] = tmp[j];
 	}
 	if (debug) {
-		std::cerr << "AFTER  vals: "
-				<< static_cast<void*>(vals) << endl;
+		std::cerr << "AFTER  vals: " << static_cast<void*>(vals) << endl;
 		for (int i = 0; i < width; i++) {
 			std::cerr << "vals[" << i << "]: " << +vals[i] << endl;
 		}
@@ -87,7 +85,7 @@ int main(int argc, char **argv) {
 		qc_flag = true;
 	}
 	if (width == 0) {
-		std::cerr << "Type width name must be set using the -w option"
+		std::cerr << "Type width must be set using the -w option"
 				<< std::endl;
 		qc_flag = true;
 	}
@@ -114,18 +112,15 @@ int main(int argc, char **argv) {
 			std::cerr << "File has been read successfully." << endl;
 	} else {
 		std::cerr << "ERROR: only " << source_file_is.gcount()
-				<< " could be read" << endl;
+				<< " of "<< file_size << " bytes could be read" << endl;
 		return 1;
 	}
 	source_file_is.close();
 
-	char *vptr = 0;
 	// Invert byte order for each "word" of size width
 	for (long long i = 0; i < file_size; i += width) {
-		if (debug)
-			std::cerr << "i: " << i << endl;
-		vptr = &values[i];
-		invert_byte_order(vptr, width);
+		if (debug) std::cerr << "i: " << i << endl;
+		invert_byte_order(&values[i], width);
 	}
 
 	// Write the result to stdout
