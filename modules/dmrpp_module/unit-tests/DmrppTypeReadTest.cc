@@ -301,6 +301,11 @@ public:
         	// First, the top Level HDFEOS group
 
         	// TODO move this to a different test. jhrg
+            // TODO I fail to see why you would want to remove this. Drilling down
+            // TODO through the complex HDF5 Group stack requires that
+            // TODO we check to see if each layer contains the expected content.
+            // TODO Otherwise we can;t be sure we're looking at the right thing
+            // TODO Also: null pointer exceptions. ndp
         	D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
             checkGroupsAndVars(grp_hdfeos, "HDFEOS", 2, 0);
 
@@ -351,6 +356,7 @@ public:
             // Next child of  GRIDS group
 
             // TODO Same as above. just test read() jhrg
+
             grids_gIter++;
         	D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
             checkGroupsAndVars(grp_geogrid_2, "GeoGrid2", 1, 0);
@@ -568,12 +574,257 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
+    void read_var_check_name_and_length(DmrppArray *array, string name, int length){
+        BESDEBUG("dmrpp", "array->name(): " << array->name() << endl);
+        CPPUNIT_ASSERT(array->name() == name);
+        string data_url = string("file://").append(TEST_DATA_DIR).append(array->get_data_url());
+        array->set_data_url(data_url);
+        BESDEBUG("dmrpp", "array->get_data_url(): " << array->get_data_url() << endl);
+        array->read();
+        BESDEBUG("dmrpp", "array->length(): " << array->length() << endl);
+        CPPUNIT_ASSERT(array->length() == length);
+    }
+
+    void test_stripped_coads_climatology() {
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string coads = string(TEST_DATA_DIR).append("/").append("coads_climatology.dmrpp");
+        BESDEBUG("dmrpp", "Opening: " << coads << endl);
+
+        ifstream in(coads);
+        parser.intern(in, dmr.get(), debug);
+        BESDEBUG("dmrpp", "Parsing complete"<< endl);
+
+        D4Group *root = dmr->root();
+
+        // (D4Group *grp, string group_name, int expectedNumGrps, int expectedNumVars)
+
+
+        checkGroupsAndVars(root, "/", 0, 7);
+
+        D4Group::Vars_iter vIter = root->var_begin();
+
+        try {
+            DmrppArray *coadsx = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(coadsx,"COADSX",180);
+            vector<dods_float64> coadsx_vals(coadsx->length());
+            coadsx->value(&coadsx_vals[0]);
+            BESDEBUG("dmrpp", "coadsx_vals[0]: " << coadsx_vals[0] << endl);
+            CPPUNIT_ASSERT(coadsx_vals[0] == 21);
+            BESDEBUG("dmrpp", "coadsx_vals[179]: " << coadsx_vals[179] << endl);
+            CPPUNIT_ASSERT(coadsx_vals[179] == 379);
+
+
+
+
+            vIter++;
+            DmrppArray *coadsy = dynamic_cast<DmrppArray*>(*vIter);
+            vIter++;
+            DmrppArray *time = dynamic_cast<DmrppArray*>(*vIter);
+
+            vIter++;
+            DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(sst,"SST",194400);
+            vector<dods_float32> sst_vals(sst->length());
+            sst->value(&sst_vals[0]);
+            int index = 0;
+            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << endl);
+            index =  12*180 - 7;
+            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << endl);
+
+
+
+            CPPUNIT_ASSERT(sst_vals[index] == 16.4473);
+
+
+
+            vIter++;
+            DmrppArray *airt = dynamic_cast<DmrppArray*>(*vIter);
+            vIter++;
+            DmrppArray *uwnd = dynamic_cast<DmrppArray*>(*vIter);
+            vIter++;
+            DmrppArray *vwnd = dynamic_cast<DmrppArray*>(*vIter);
+
+
+
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+#if 0
+        // Root group iterator
+        D4Group::groupsIter root_gIter = root->grp_begin();
+
+        try {
+        	// Now we drill down into the Group Hierarchy
+        	// Firswt, the top Level HDFEOS group
+        	D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
+            checkGroupsAndVars(grp_hdfeos, "HDFEOS", 2, 0);
+
+            // Look at the child groups
+            D4Group::groupsIter hdfeos_gIter = grp_hdfeos->grp_begin();
+        	D4Group *grp_additional = dynamic_cast<D4Group*>(*hdfeos_gIter);
+            checkGroupsAndVars(grp_additional, "ADDITIONAL", 1, 0);
+
+        	hdfeos_gIter++;
+        	D4Group *grp_grids = dynamic_cast<D4Group*>(*hdfeos_gIter);
+            checkGroupsAndVars(grp_grids, "GRIDS", 2, 0);
+
+            // Drill into the GRIDS group
+            D4Group::groupsIter grids_gIter = grp_grids->grp_begin();
+            //First child is GeoGrid1
+        	D4Group *grp_geogrid_1 = dynamic_cast<D4Group*>(*grids_gIter);
+            checkGroupsAndVars(grp_geogrid_1, "GeoGrid1", 1, 0);
+
+            D4Group *grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_1->grp_begin());
+            checkGroupsAndVars(grp_data_fields, "Data Fields", 0, 1);
+
+            // "Data Fields" contains a single Float32 var called temperature
+			DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
+			CPPUNIT_ASSERT(temperature);
+			CPPUNIT_ASSERT(temperature->name() == "temperature");
+
+			// TODO Change this. Do one dimension then two dims. separeate tests. make up data if needed jhrg
+
+            BESDEBUG("dmrpp", "temperature->dimensions(): " << temperature->dimensions() << endl);
+            CPPUNIT_ASSERT(temperature->dimensions() == 2);
+
+            for(DmrppArray::Dim_iter dimIter = temperature->dim_begin();
+            		dimIter!=temperature->dim_end(); dimIter++){
+                BESDEBUG("dmrpp", "Dimension name: '" <<
+                		temperature->dimension_name(dimIter) <<
+						"' size: " << temperature->dimension_size(dimIter,true) <<
+						endl);
+            }
+
+
+            // Now we constrain the temperature array
+            DmrppArray::Dim_iter dimIter = temperature->dim_begin();
+            temperature->add_constraint(dimIter,1,1,2);
+
+            {
+            ostringstream ss;
+            ss  << "[" << temperature->dimension_start(dimIter,true) <<
+                               ":" << temperature->dimension_stride(dimIter,true) <<
+							   ":" << temperature->dimension_stop(dimIter,true) << "]";
+            dimIter++;
+            temperature->add_constraint(dimIter,1,2,5);
+            ss  << "[" << temperature->dimension_start(dimIter,true) <<
+                               ":" << temperature->dimension_stride(dimIter,true) <<
+							   ":" << temperature->dimension_stop(dimIter,true) << "]";
+
+            BESDEBUG("dmrpp", "Constrained array temperature" << ss.str() << endl);
+            }
+
+            string data_url = string("file://").append(TEST_DATA_DIR).append(temperature->get_data_url());
+            temperature->set_data_url(data_url);
+            BESDEBUG("dmrpp", "temperature->get_data_url(): " << temperature->get_data_url() << endl);
+
+            temperature->read();
+            BESDEBUG("dmrpp", "temperature->length(): " << temperature->length() << endl);
+            CPPUNIT_ASSERT(temperature->length() == 6);
+
+            {
+            vector<dods_float32> f32(temperature->length());
+            temperature->value(&f32[0]);
+            BESDEBUG("dmrpp", "temperature[0]: " << f32[0] << endl);
+            CPPUNIT_ASSERT(f32[0] == 11);
+            BESDEBUG("dmrpp", "temperature[1]:  " << f32[1] << endl);
+            CPPUNIT_ASSERT(f32[1] == 11);
+            BESDEBUG("dmrpp", "temperature[2]:  " << f32[2] << endl);
+            CPPUNIT_ASSERT(f32[2] == 11);
+            BESDEBUG("dmrpp", "temperature[3]: " << f32[3] << endl);
+            CPPUNIT_ASSERT(f32[3] == 12);
+            BESDEBUG("dmrpp", "temperature[4]: " << f32[4] << endl);
+            CPPUNIT_ASSERT(f32[4] == 12);
+            BESDEBUG("dmrpp", "temperature[5]: " << f32[5] << endl);
+            CPPUNIT_ASSERT(f32[5] == 12);
+            }
+
+            BESDEBUG("dmrpp", "------------------------" << endl);
+
+            // Next child of  GRIDS group
+            grids_gIter++;
+        	D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
+            checkGroupsAndVars(grp_geogrid_2, "GeoGrid2", 1, 0);
+
+            grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_2->grp_begin());
+            checkGroupsAndVars(grp_data_fields, "Data Fields", 0, 1);
+
+            // "Data Fields" contains a single Float32 var called temperature
+            DmrppArray *t2 = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
+			CPPUNIT_ASSERT(t2);
+			CPPUNIT_ASSERT(t2->name() == "temperature");
+
+
+            dimIter = t2->dim_begin();
+            t2->add_constraint(dimIter,0,1,3);
+            {
+            ostringstream ss;
+            ss  << "[" << t2->dimension_start(dimIter,true) <<
+                               ":" << t2->dimension_stride(dimIter,true) <<
+							   ":" << t2->dimension_stop(dimIter,true) << "]";
+            dimIter++;
+            t2->add_constraint(dimIter,0,1,0);
+            ss  << "[" << t2->dimension_start(dimIter,true) <<
+                               ":" << t2->dimension_stride(dimIter,true) <<
+							   ":" << t2->dimension_stop(dimIter,true) << "]";
+
+            BESDEBUG("dmrpp", "Constrained array t2" << ss.str() << endl);
+            }
+
+            t2->set_data_url(data_url);
+            BESDEBUG("dmrpp", "t2->get_data_url(): " << t2->get_data_url() << endl);
+            t2->read();
+            BESDEBUG("dmrpp", "t2->length(): " << t2->length() << endl);
+            CPPUNIT_ASSERT(t2->length() == 4);
+
+            {
+            vector<dods_float32> f32(t2->length());
+            t2->value(&f32[0]);
+            BESDEBUG("dmrpp", "t2[0]:  " << f32[0] << endl);
+            CPPUNIT_ASSERT(f32[0] == 10);
+            BESDEBUG("dmrpp", "t2[1]:  " << f32[1] << endl);
+            CPPUNIT_ASSERT(f32[1] == 11);
+            BESDEBUG("dmrpp", "t2[2]: " << f32[2] << endl);
+            CPPUNIT_ASSERT(f32[2] == 12);
+            BESDEBUG("dmrpp", "t2[3]: " << f32[3] << endl);
+            CPPUNIT_ASSERT(f32[3] == 13);
+            }
+
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+#endif
+        CPPUNIT_ASSERT("Passed");
+    }
+
+
+
     CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
     CPPUNIT_TEST(test_integer_scalar);
     CPPUNIT_TEST(test_integer_arrays);
     CPPUNIT_TEST(test_float_grids);
     CPPUNIT_TEST(test_constrained_arrays);
+    CPPUNIT_TEST(test_stripped_coads_climatology);
+
 
     CPPUNIT_TEST_SUITE_END();
 };
