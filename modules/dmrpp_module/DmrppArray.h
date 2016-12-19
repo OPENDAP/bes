@@ -37,7 +37,12 @@ class DmrppArray: public libdap::Array, public DmrppCommon {
     bool is_projected();
 
 private:
-    void read_constrained(dmrpp::Odometer &odometer, Dim_iter p, unsigned long *target_index, dmrpp::Odometer::shape &subsetAddress);
+    void read_constrained(
+			Dim_iter p,
+			unsigned long *target_index,
+			vector<unsigned int> &subsetAddress,
+			const vector<unsigned int> &array_shape
+			);
 
 
 public:

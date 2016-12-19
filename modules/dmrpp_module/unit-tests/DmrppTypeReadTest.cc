@@ -611,10 +611,10 @@ public:
             coadsx->value(&coadsx_vals[0]);
             // first element
             BESDEBUG("dmrpp", "coadsx_vals[0]: " << coadsx_vals[0] << endl);
-            CPPUNIT_ASSERT(coadsx_vals[0] == 21);
+            CPPUNIT_ASSERT(coadsx_vals[0] == 21.0);
             // last element
             BESDEBUG("dmrpp", "coadsx_vals[179]: " << coadsx_vals[179] << endl);
-            CPPUNIT_ASSERT(coadsx_vals[179] == 379);
+            CPPUNIT_ASSERT(coadsx_vals[179] == 379.0);
 
             // ######################################
             // Check COADSY variable
@@ -625,10 +625,10 @@ public:
             coadsy->value(&coadsy_vals[0]);
             // first element
             BESDEBUG("dmrpp", "coadsy_vals[0]: " << coadsy_vals[0] << endl);
-            CPPUNIT_ASSERT(coadsy_vals[0] == -89);
+            CPPUNIT_ASSERT(coadsy_vals[0] == -89.0);
             // last element
             BESDEBUG("dmrpp", "coadsx_vals[89]: " << coadsy_vals[89] << endl);
-            CPPUNIT_ASSERT(coadsy_vals[89] == 89);
+            CPPUNIT_ASSERT(coadsy_vals[89] == 89.0);
 
             // ######################################
             // Check TIME variable
@@ -639,7 +639,7 @@ public:
             time->value(&time_vals[0]);
             // first element
             BESDEBUG("dmrpp", "time_vals[0]: " << time_vals[0] << endl);
-            CPPUNIT_ASSERT(time_vals[0] == 366);
+            CPPUNIT_ASSERT(time_vals[0] == 366.0);
             // last element
             BESDEBUG("dmrpp", "time_vals[11]: " << time_vals[11] << endl);
             CPPUNIT_ASSERT(time_vals[11] == 8401.335);
@@ -724,17 +724,39 @@ public:
             BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
             CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
 
-            // check [5][77][10]
+            // check [5][77][0]
             index =  5*90*180  + 77*180 + 0;
             test_val =  0.42;
             BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
             CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
 
-            // check [9][60][10]
+            // Here's a C++11 way to compare two floats that uses strings.
+            CPPUNIT_ASSERT(to_string(test_val) == to_string(uwnd_vals[index]));
+
+            // check [9][60][0]
             index =  9*90*180  + 60*180 + 0;
             test_val =  0.5075;
             BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_val: " << test_val << endl);
             CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
+
+
+
+            //########################################################
+            index =  5*90*180  + 77*180 + 1;
+            test_val = 1.381034;
+            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] <<
+            		"  test_val: " << test_val << endl);
+//            CPPUNIT_ASSERT(uwnd_vals[index] == 1.381034);
+//            CPPUNIT_ASSERT(uwnd_vals[index] == test_val);
+            string tval_str = to_string(test_val);
+            string uwnd_val_str = to_string(uwnd_vals[index]);
+            BESDEBUG("dmrpp", "uwnd_val_str: " << uwnd_val_str <<
+            		"  tval_str: " << tval_str << endl);
+
+            CPPUNIT_ASSERT(tval_str == uwnd_val_str);
+            //########################################################
+
+
 
             // check [11][89][179]
             index =  12*90*180 - 1 ;
