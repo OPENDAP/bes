@@ -122,8 +122,6 @@ unsigned long long get_index(vector<unsigned int> address_in_target, const vecto
 	return subject_index;
 }
 
-
-
 /**
  * @brief This recursive private method collects values from the rbuf and copies
  * them into buf. It supports stop, stride, and start and while correct is not
@@ -180,7 +178,7 @@ DmrppArray::read_constrained(
     else {
     	for(unsigned int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
     		// Is it the last dimension?
-    		if(dimIter != dim_end()){
+    		if (dimIter != dim_end()) {
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);
