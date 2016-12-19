@@ -815,24 +815,19 @@ public:
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
-
         string coads = string(TEST_DATA_DIR).append("/").append("coads_climatology.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << coads << endl);
-
         ifstream in(coads);
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
-
         // Check to make sure we have something that smells like coads_climatology
         D4Group *root = dmr->root();
         checkGroupsAndVars(root, "/", 0, 7);
-
-        // Walk the vars
+        // Walk through the vars
         D4Group::Vars_iter vIter = root->var_begin();
         vIter++; // COADSY
         vIter++; // TIME
         vIter++; // SST  (woot! we'll work on this one)
-
         try {
         	DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
             DmrppArray::Dim_iter dimIter = sst->dim_begin();
@@ -848,7 +843,7 @@ public:
         	// Grab the stuff
             vector<dods_float32> sst_vals(sst->length());
             sst->value(&sst_vals[0]);
-            //Check the values
+            // Check the values against expected result
             dods_float32 sst_expected[] = {
 				13.43333, 12.61500, 15.27133, 13.46167, 15.03625,
 				-1e+34, 27.77918, 28.75823, 26.95918, -1e+34,
@@ -863,7 +858,6 @@ public:
                 		    " sst_expected[" << i << "]: " << sst_expected[i] << endl);
                 CPPUNIT_ASSERT(double_eq(sst_vals[i], sst_expected[i]));
             }
-
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -876,8 +870,6 @@ public:
         }
         CPPUNIT_ASSERT("Passed");
     }
-
-
 
     CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
