@@ -63,7 +63,16 @@ public:
      *
      * Initially, the Odometer object is set to index 0, 0, ..., 0 that
      * matches the offset 0
+     *
+     * 	reset(): zero internal state
+     * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
+     * 			Calling next() when the object is at the last element should return one past the last element. calling next() after that should throw an exception.
+     * 	vector<int> indices(): for the given state of the odometer, return the indices that match the offset.
+     * 	offset(): return the offset
+     * 	end(): should return one past the last valid offset - the value returned by next() when it indicates all elements/indices have been visited.
+     *
      */
+
     Odometer(shape shape) : d_shape(shape), d_offset(0)
     {
         d_rank = d_shape.size();
@@ -77,15 +86,10 @@ public:
         d_indices.resize(d_rank, 0);
     }
 
-    /*
-     * 	reset(): zero internal state
-     * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
-     * 			Calling next() when the object is at the last element should return one past the last element. calling next() after that should throw an exception.
-     * 	vector<int> indices(): for the given state of the odometer, return the indices that match the offset.
-     * 	offset(): return the offset
-     * 	end(): should return one past the last valid offset - the value returned by next() when it indicates all elements/indices have been visited.
-     *
-     */
+    const shape get_shape(){
+    	return d_shape;
+    }
+
 
     /**
      * Reset the internal state. The offset is reset to the 0th element

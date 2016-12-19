@@ -30,9 +30,9 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "Odometer.h"
 #include "DmrppArray.h"
 #include "DmrppUtil.h"
+#include "Odometer.h"
 
 using namespace dmrpp;
 using namespace libdap;
@@ -90,18 +90,49 @@ DmrppArray::is_projected()
     return false;
 }
 
-
+/**
+ * @brief Compute the index of the address_in_target for an an array of target_shape.
+ * Since we store multidimensional arrays as a single one dimensional array
+ * internally we need to be able to locate a particular address in the one dimensional
+ * storage utilizing an n-tuple (where n is the dimension of the array). The get_index
+ * function does this by computing the location based on the n-tuple address_in_target
+ * and the shape of the array, passed in as target_shape.
+ */
+unsigned long long get_index(vector<unsigned int> address_in_target, const vector<unsigned int> target_shape){
+	if(address_in_target.size() != target_shape.size()){
+		ostringstream oss;
+		oss << "The target_shape  (size: "<< target_shape.size() << ")" <<
+				" and the address_in_target (size: " << address_in_target.size() << ")" <<
+				" have different dimensionality.";
+		throw  BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+	}
+	unsigned long long digit_multiplier=1;
+	unsigned long long subject_index = 0;
+	for(int i=target_shape.size()-1; i>=0 ;i--){
+		if(address_in_target[i]>target_shape[i]){
+			ostringstream oss;
+			oss << "The address_in_target["<< i << "]: " << address_in_target[i] <<
+					" is larger than  target_shape[" << i << "]: " << target_shape[i] <<
+					" This will make the bad things happen.";
+			throw  BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+		}
+		subject_index += address_in_target[i]*digit_multiplier;
+		digit_multiplier *= target_shape[i];
+	}
+	return subject_index;
+}
 
 /**
- * Read data - there must be a better description
- *
- * @param odometer
- * @param dim
- * @param target_index
- * @param subsetAddress
+ * @brief This recursive private method collects values from the rbuf and copies
+ * them into buf. It supports stop, stride, and start and while correct is not
+ * efficient.
  */
 void
-DmrppArray::read_constrained(Odometer &odometer, Dim_iter dim, unsigned long *target_index, Odometer::shape &subsetAddress)
+DmrppArray::read_constrained(
+		Dim_iter dimIter,
+		unsigned long *target_index,
+		vector<unsigned int> &subsetAddress,
+		const vector<unsigned int> &array_shape)
 {
     BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
@@ -109,10 +140,9 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dim, unsigned long *ta
 	char *sourceBuf = get_rbuf();
 	char *targetBuf = get_buf();
 
-	// Dim_iter myDim = dim; // TODO Remove. jhrg
-	unsigned int start = this->dimension_start(dim,true);
-	unsigned int stop = this->dimension_stop(dim,true);
-	unsigned int stride = this->dimension_stride(dim,true);
+	unsigned int start = this->dimension_start(dimIter);
+	unsigned int stop = this->dimension_stop(dimIter,true);
+	unsigned int stride = this->dimension_stride(dimIter,true);
     BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: " << stop << endl);
 
     dim++;
@@ -124,18 +154,17 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dim, unsigned long *ta
         BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stride is 1, copying from all values from start to stop." << endl);
 
     	subsetAddress.push_back(start);
-		unsigned int start_index = odometer.set_indices(subsetAddress);
+		unsigned int start_index = get_index(subsetAddress,array_shape);
+        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - start_index: " << start_index << endl);
     	subsetAddress.pop_back();
 
     	subsetAddress.push_back(stop);
-		unsigned int stop_index = odometer.set_indices(subsetAddress);
+		unsigned int stop_index = get_index(subsetAddress,array_shape);
+        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stop_index: " << start_index << endl);
     	subsetAddress.pop_back();
 
-        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - start_index: " << start_index << endl);
-        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stop_index:  " << stop_index << endl);
-
     	// Copy data block from start_index to stop_index
-        // @FIXME I had to make the test <= instead of < and I think that's not right, but it works. HELP?
+    	// FIXME Replace this loop with a call to std::memcpy()
     	for(unsigned int sourceIndex=start_index; sourceIndex<=stop_index ;sourceIndex++,target_index++){
     		unsigned long target_byte = *target_index * bytesPerElt;
 		    unsigned long source_byte = sourceIndex  * bytesPerElt;
@@ -147,32 +176,32 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dim, unsigned long *ta
     	}
     }
     else {
-
     	for(unsigned int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
     		// Is it the last dimension?
     		if(dim != dim_end()){
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);
-    			read_constrained(odometer,dim,target_index,subsetAddress);
+    			read_constrained(dimIter,target_index,subsetAddress, array_shape);
     			subsetAddress.pop_back();
     		}
     		else {
-
 				// We are at the last (inner most) dimension.
 				// So it's time to copy values.
 				subsetAddress.push_back(myDimIndex);
-				unsigned int sourceIndex = odometer.set_indices(subsetAddress);
+				unsigned int sourceIndex = get_index(subsetAddress,array_shape);
+    	        BESDEBUG("dmrpp", "DmrppArray::read_constrained()  - "
+    	        		"Copying source value at sourceIndex: " << sourceIndex << endl);
 				subsetAddress.pop_back();
-    	        BESDEBUG("dmrpp", "DmrppArray::read_constrained()  - Copying source value at sourceIndex: " << sourceIndex << endl);
 				// Copy a single value.
 	    		unsigned long target_byte = *target_index * bytesPerElt;
 			    unsigned long source_byte = sourceIndex  * bytesPerElt;
+
+			    // FIXME Replace this loop with a call to std::memcpy()
 			    for(unsigned int i=0; i< bytesPerElt ; i++){
 			    	targetBuf[target_byte++] = sourceBuf[source_byte++];
 			    }
 			    (*target_index)++;
-
     		}
     	}
     }
@@ -218,21 +247,48 @@ DmrppArray::read()
     // Allocate the dest buffer in the array
     // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
     else {
-        Odometer::shape full_shape, subset;
+        vector<unsigned int> array_shape, subset;
         // number of array elements in the constrained array
         unsigned long long constrained_size = 1;
         for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
-        	full_shape.push_back(dimension_size(dim,false));
+        	array_shape.push_back(dimension_size(dim,false));
         	constrained_size *= dimension_size(dim,true);
         }
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - constrained_size:  " << constrained_size << endl);
 
-        Odometer odometer(full_shape);
-        Dim_iter dimension = dim_begin();	// TODO Remove this. jhrg
-        unsigned long target_index = 0;
         reserve_value_capacity(constrained_size);
-        read_constrained(odometer, dimension, &target_index, subset); // TODO rename; something other than read. jhrg
+        unsigned long target_index = 0;
+        read_constrained(dim_begin(), &target_index, subset, array_shape); // TODO rename; something other than read. jhrg
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
+
+
+#if 0  // This code, using the Odometer, doesn't work for stride which makes me think that the Odometer could be improved
+
+        Odometer::shape array_shape, subset_shape;
+        // number of array elements in the constrained array
+        unsigned long long constrained_size = 1;
+        for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
+        	array_shape.push_back(dimension_size(dim,false));
+        	subset_shape.push_back(dimension_size(dim,true));
+        	constrained_size *= dimension_size(dim,true);
+        }
+        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - constrained_size:  " << constrained_size << endl);
+
+        Odometer odometer(array_shape);
+        reserve_value_capacity(constrained_size);
+        unsigned long target_index = 0, offset;
+
+        odometer.indices(subset_shape);
+        offset = odometer.next();
+        while(target_index<constrained_size && offset!=odometer.end()){
+        	get_buf()[target_index] = get_rbuf()[offset];
+            offset = odometer.next();
+            target_index++;
+        }
+        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
+
+#endif
+
     }
 
     set_read_p(true);
