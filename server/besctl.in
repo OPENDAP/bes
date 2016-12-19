@@ -72,7 +72,11 @@ stopBES()
     then
 	if test $BES_PID
 	then
-	    kill $BES_PID
+		# Use the kill process group version of kill here so that we can stop
+		# all of the child listeners. This is needed to make operations like
+		# log rotation on Unix work. At least that seems to be the case. See
+		# the Jira ticket hyrax-292. jhrg. 12/16/16
+	    kill -TERM -- -$BES_PID
 	    retval=$?
 	    if test $retval != 0
 	    then
