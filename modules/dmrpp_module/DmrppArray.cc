@@ -124,7 +124,11 @@ unsigned long long get_index(vector<unsigned int> address_in_target, const vecto
 
 
 
-
+/**
+ * @brief This recursive private method collects values from the rbuf and copies
+ * them into buf. It supports stop, stride, and start and while correct is not
+ * efficient.
+ */
 void
 DmrppArray::read_constrained(
 		Dim_iter dimIter,
@@ -161,8 +165,8 @@ DmrppArray::read_constrained(
         BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stop_index: " << start_index << endl);
     	subsetAddress.pop_back();
 
-    	// FIXME Replace this loop with a call to std::memcpy()
     	// Copy data block from start_index to stop_index
+    	// FIXME Replace this loop with a call to std::memcpy()
     	for(unsigned int sourceIndex=start_index; sourceIndex<=stop_index ;sourceIndex++,target_index++){
     		unsigned long target_byte = *target_index * bytesPerElt;
 		    unsigned long source_byte = sourceIndex  * bytesPerElt;
