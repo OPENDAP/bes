@@ -1,27 +1,52 @@
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES
+
+// Copyright (c) 2016 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+#include "config.h"
+
+// Added copyright, config.h and removed unused headers. jhrg
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <GetOpt.h>
 
-#include <XDRStreamUnMarshaller.h>
-#include <Type.h>
+static bool debug = false;
+using namespace std;
 
-bool debug = false;
+// Code used and didn't use '' (likely a header has using... in it).
+// I switched to using... because it was too much work to put '' everywhere.
+// jhrg
 
-string usage(string progName) {
-	std::ostringstream ss;
-	ss << "usage: " << progName << "[-d] -f <file> -w <word_width>]" << std::endl;
+string usage(string prog_name) {
+	ostringstream ss;
+	ss << "usage: " << prog_name << "[-d] -f <file> -w <word_width>]" << endl;
 	return ss.str();
 }
 
-long long get_file_size(std::string filename) {
+long long get_file_size(string filename) {
 	long long size;
-	std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+	ifstream in(filename, ifstream::ate | ifstream::binary);
 	size = in.tellg();
 	in.close();
 	return size;
@@ -30,9 +55,9 @@ long long get_file_size(std::string filename) {
 void invert_byte_order(char *vals, int width) {
 
 	if (debug) {
-		std::cerr << "BEFORE vals: " << static_cast<void*>(vals) << endl;
+		cerr << "BEFORE vals: " << static_cast<void*>(vals) << endl;
 		for (int i = 0; i < width; i++) {
-			std::cerr << "vals[" << i << "]: " << +vals[i] << endl;
+			cerr << "vals[" << i << "]: " << +vals[i] << endl;
 		}
 	}
 	// Make a copy
@@ -45,15 +70,15 @@ void invert_byte_order(char *vals, int width) {
 			vals[i] = tmp[j];
 	}
 	if (debug) {
-		std::cerr << "AFTER  vals: " << static_cast<void*>(vals) << endl;
+		cerr << "AFTER  vals: " << static_cast<void*>(vals) << endl;
 		for (int i = 0; i < width; i++) {
-			std::cerr << "vals[" << i << "]: " << +vals[i] << endl;
+			cerr << "vals[" << i << "]: " << +vals[i] << endl;
 		}
 	}
 }
 
 int main(int argc, char **argv) {
-	std::string file;
+	string file;
 	unsigned int width = 0;
 
 	GetOpt getopt(argc, argv, "df:w:");
@@ -70,23 +95,23 @@ int main(int argc, char **argv) {
 			width = stol(getopt.optarg);
 			break;
 		case '?':
-			std::cerr << usage(argv[0]);
+			cerr << usage(argv[0]);
 		}
 	}
-	std::cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
+	cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
 	if (debug) {
-		std::cerr << "InputFile: '" << file << "'" << std::endl;
-		std::cerr << "TypeWidth: " << width << std::endl;
+		cerr << "InputFile: '" << file << "'" << endl;
+		cerr << "TypeWidth: " << width << endl;
 	}
 
 	bool qc_flag = false;
 	if (file.empty()) {
-		std::cerr << "File name must be set using the -f option" << std::endl;
+		cerr << "File name must be set using the -f option" << endl;
 		qc_flag = true;
 	}
 	if (width == 0) {
-		std::cerr << "Type width must be set using the -w option"
-				<< std::endl;
+		cerr << "Type width must be set using the -w option"
+				<< endl;
 		qc_flag = true;
 	}
 	if (qc_flag) {
@@ -100,26 +125,26 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	if (debug)
-		std::cerr << "File Size: " << file_size << " (bytes)" << std::endl;
+		cerr << "File Size: " << file_size << " (bytes)" << endl;
 
 	// Read the whole thing into memory
 	char values[file_size];
-	std::ifstream source_file_is(file,
-			std::ifstream::in | std::ifstream::binary);
+	ifstream source_file_is(file, ifstream::in | ifstream::binary);
 	source_file_is.read(values, file_size);
-	if (source_file_is) {
-		if(debug)
-			std::cerr << "File has been read successfully." << endl;
-	} else {
-		std::cerr << "ERROR: only " << source_file_is.gcount()
+	if (!source_file_is) {
+		cerr << "ERROR: only " << source_file_is.gcount()
 				<< " of "<< file_size << " bytes could be read" << endl;
-		return 1;
+				return 1;
 	}
+	if(debug)
+		cerr << "File has been read successfully." << endl;
+
+	// Don't need to close this object. jhrg
 	source_file_is.close();
 
 	// Invert byte order for each "word" of size width
 	for (long long i = 0; i < file_size; i += width) {
-		if (debug) std::cerr << "i: " << i << endl;
+		if (debug) cerr << "i: " << i << endl;
 		invert_byte_order(&values[i], width);
 	}
 
