@@ -145,12 +145,12 @@ DmrppArray::read_constrained(
 	unsigned int stride = this->dimension_stride(dimIter,true);
     BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: " << stop << endl);
 
-    dim++;
+    dimIter++;
 
     // This is the end case for the recursion.
     // TODO stride == 1 belongs inside this or else rewrite this as if else if else
     // see below.
-    if (dim == dim_end() && stride == 1) {
+    if (dimIter == dim_end() && stride == 1) {
         BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stride is 1, copying from all values from start to stop." << endl);
 
     	subsetAddress.push_back(start);
@@ -178,7 +178,7 @@ DmrppArray::read_constrained(
     else {
     	for(unsigned int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
     		// Is it the last dimension?
-    		if(dim != dim_end()){
+    		if (dimIter != dim_end()) {
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);

@@ -3,7 +3,7 @@
 // This file is part of the BES
 
 // Copyright (c) 2016 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
+// Author: Nathan David Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,15 @@ long long get_file_size(string filename) {
 	return size;
 }
 
+/**
+ * Invert the 'width' bytes pointed to by 'vals'
+ *
+ * Invert means transform from big-endian to little-endian
+ * or vice-versa.
+ *
+ * @param vals Start of bytes to invert
+ * @param width Number of bytes to invert
+ */
 void invert_byte_order(char *vals, int width) {
 
 	if (debug) {
@@ -136,7 +145,7 @@ int main(int argc, char **argv) {
 				<< " of "<< file_size << " bytes could be read" << endl;
 				return 1;
 	}
-	if(debug)
+	if (debug)
 		cerr << "File has been read successfully." << endl;
 
 	// Don't need to close this object. jhrg
