@@ -1,8 +1,0 @@
-
-
-#ifndef _ENDIAN_CONVERT_H_
-#define _ENDIAN_CONVERT_H_ 1
-
-
-
-#endif /* MODULES_DMRPP_MODULE_DMRPPUTIL_H_ */

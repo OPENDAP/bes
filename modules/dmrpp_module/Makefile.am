@@ -43,11 +43,6 @@ DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 DmrppUtil.h Odometer.h 
 
-noinst_PROGRAMS = endian_convert
-endian_convert_SOURCES = endian_convert.cc endian_convert.h
-endian_convert_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-endian_convert_LDADD = $(DAP_SERVER_LIBS)
-
 # hack. This is probably not needed and is currently not used, but
 # I'm leaving it in for now. If there are run-time issues with this
 # module, add '$(BES_LIBS) $(OPENSSL_LIBS)' to LIBADD below.
