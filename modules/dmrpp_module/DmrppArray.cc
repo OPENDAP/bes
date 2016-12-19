@@ -92,10 +92,16 @@ DmrppArray::is_projected()
 
 
 
-
-
+/**
+ * Read data - there must be a better description
+ *
+ * @param odometer
+ * @param dim
+ * @param target_index
+ * @param subsetAddress
+ */
 void
-DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long *target_index, Odometer::shape &subsetAddress)
+DmrppArray::read_constrained(Odometer &odometer, Dim_iter dim, unsigned long *target_index, Odometer::shape &subsetAddress)
 {
     BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
@@ -103,18 +109,18 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long
 	char *sourceBuf = get_rbuf();
 	char *targetBuf = get_buf();
 
-	Dim_iter myDim = dimIter; // TODO Remove. jhrg
-	unsigned int start = this->dimension_start(myDim,true);
-	unsigned int stop = this->dimension_stop(myDim,true);
-	unsigned int stride = this->dimension_stride(myDim,true);
+	// Dim_iter myDim = dim; // TODO Remove. jhrg
+	unsigned int start = this->dimension_start(dim,true);
+	unsigned int stop = this->dimension_stop(dim,true);
+	unsigned int stride = this->dimension_stride(dim,true);
     BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: " << stop << endl);
 
-    dimIter++;
+    dim++;
 
     // This is the end case for the recursion.
     // TODO stride == 1 belongs inside this or else rewrite this as if else if else
     // see below.
-    if (dimIter == dim_end() && stride == 1) {
+    if (dim == dim_end() && stride == 1) {
         BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stride is 1, copying from all values from start to stop." << endl);
 
     	subsetAddress.push_back(start);
@@ -144,11 +150,11 @@ DmrppArray::read_constrained(Odometer &odometer, Dim_iter dimIter, unsigned long
 
     	for(unsigned int myDimIndex=start; myDimIndex<=stop ;myDimIndex+=stride){
     		// Is it the last dimension?
-    		if(dimIter != dim_end()){
+    		if(dim != dim_end()){
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);
-    			read_constrained(odometer,dimIter,target_index,subsetAddress);
+    			read_constrained(odometer,dim,target_index,subsetAddress);
     			subsetAddress.pop_back();
     		}
     		else {
