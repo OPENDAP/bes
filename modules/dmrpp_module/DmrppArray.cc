@@ -94,9 +94,9 @@ DmrppArray::is_projected()
  * @brief Compute the index of the address_in_target for an an array of target_shape.
  * Since we store multidimensional arrays as a single one dimensional array
  * internally we need to be able to locate a particular address in the one dimensional
- * storage utilizing an n-tuple (where n is the dimension of the array). The function
- * does this by computing the location based on the n-tuple address_in_target and the
- * shape of the array, passed in as target_shape.
+ * storage utilizing an n-tuple (where n is the dimension of the array). The get_index
+ * function does this by computing the location based on the n-tuple address_in_target
+ * and the shape of the array, passed in as target_shape.
  */
 unsigned long long get_index(vector<unsigned int> address_in_target, const vector<unsigned int> target_shape){
 	if(address_in_target.size() != target_shape.size()){
