@@ -4,6 +4,8 @@
     sharedscripts
     delaycompress
     postrotate
-        /sbin/service besd restart > /dev/null 2>/dev/null || true
+        /sbin/service besd stop > /dev/null 2>/dev/null || true
+        # Ask the OLFS to stop the current bes child listener
+        /sbin/service besd start > /dev/null 2>/dev/null || true
     endscript
 }
