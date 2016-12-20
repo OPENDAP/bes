@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
 	if (!source_file_is) {
 		cerr << "ERROR: only " << source_file_is.gcount()
 				<< " of "<< file_size << " bytes could be read" << endl;
-				return 1;
+		return 1;
 	}
 	if (debug)
 		cerr << "File has been read successfully." << endl;
