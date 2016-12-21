@@ -88,12 +88,17 @@ struct byteStream {
 
     /**
      * Parses the passed string as a set of space separated integer values
-     * and stores them in the internal vector. If the string is empty
-     * then nothing is done.
+     * and stores them in the internal vector.
+     * Since this is essentially a setter method any previous postion_in_array
+     * content is discarded.
+     * If the passed string parameter is empty then nothing is done.
      */
     void ingest_position_in_array(std::string pia){
     	if(!pia.length())
     		return;
+    	// Clear the thing if it's got stuff in it.
+    	if(d_chunkPositionInArray.size())
+    		d_chunkPositionInArray.clear();
 
     	std::string space = " ";
     	std::size_t strPos = 0;
