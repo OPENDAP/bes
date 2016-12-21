@@ -823,7 +823,7 @@ public:
         // Check to make sure we have something that smells like coads_climatology
         D4Group *root = dmr->root();
         checkGroupsAndVars(root, "/", 0, 7);
-        // Walk through the vars
+        // Walk through the vars, the first one is COADSX
         D4Group::Vars_iter vIter = root->var_begin();
         vIter++; // COADSY
         vIter++; // TIME
