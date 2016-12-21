@@ -26,6 +26,89 @@
 #define _dmrpp_common_h 1
 
 #include <string>
+#include <vector>
+
+/**
+ * This rich structure is used to hold the information held in an
+ * hdf4:byteStream object.
+ */
+struct byteStream {
+    unsigned long long d_size;
+    unsigned long long d_offset;
+    std::string d_md5;
+    std::string d_uuid;
+    std::string d_data_url;
+    std::vector<unsigned int> d_chunkPositionInArray;
+
+    // These are used only during the libcurl callback;
+    // they are not duplicated by the copy ctor or assignment
+    // operator.
+    unsigned long long d_bytes_read;
+    char *d_read_buffer;
+    unsigned long long d_read_buffer_size;
+
+    byteStream():
+    	d_size(0),
+    	d_offset(0),
+    	d_md5(""),
+    	d_uuid(""),
+    	d_data_url(""),
+    	d_bytes_read(0),
+    	d_read_buffer(0),
+    	d_read_buffer_size(0) { }
+
+    byteStream(
+    		unsigned long long size,
+			unsigned long long offset,
+			std::string md5,
+			std::string uuid,
+			std::string data_url,
+			std::string positionInArray = ""):
+			d_size(size),
+			d_offset(offset),
+    		d_md5(md5),
+			d_uuid(uuid),
+			d_data_url(data_url){
+    	ingest_position_in_array(positionInArray);
+    }
+
+    void _duplicate(const byteStream &bs) {
+        // See above
+    	d_bytes_read = 0;
+    	d_read_buffer = 0;
+    	d_read_buffer_size = 0;
+    	// These vars are easy to duplicate.
+        d_size   = bs.d_size;
+        d_offset = bs.d_offset;
+        d_md5    = bs.d_md5;
+        d_uuid   = bs.d_uuid;
+        d_data_url   = bs.d_data_url;
+        d_chunkPositionInArray = bs.d_chunkPositionInArray;
+    }
+
+    /**
+     * Parses the passed string as a set of space separated integer values
+     * and stores them in the internal vector. If the string is empty
+     * then nothing is done.
+     */
+    void ingest_position_in_array(std::string pia){
+    	if(!pia.length())
+    		return;
+
+    	std::string space = " ";
+    	std::size_t strPos = 0;
+    	std::string strVal;
+
+    	while ((strPos = pia.find(space)) != std::string::npos) {
+    		strVal = pia.substr(0, strPos);
+    	    std::cout << strVal << std::endl;
+    	    d_chunkPositionInArray.push_back(std::stol(strVal));
+    	    pia.erase(0, strPos + space.length());
+    	}
+
+    }
+
+};
 
 /**
  * Interface for the size and offset information of data described by
@@ -58,6 +141,7 @@ protected:
         d_md5    = dc.d_md5;
         d_uuid   = dc.d_uuid;
         d_data_url   = dc.d_data_url;
+
     }
 
 public:
