@@ -38,7 +38,7 @@ struct byteStream {
     std::string d_md5;
     std::string d_uuid;
     std::string d_data_url;
-    std::vector<unsigned int> d_chunkPositionInArray;
+    std::vector<unsigned int> d_chunk_position_in_array;
 
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
@@ -83,7 +83,7 @@ struct byteStream {
         d_md5    = bs.d_md5;
         d_uuid   = bs.d_uuid;
         d_data_url   = bs.d_data_url;
-        d_chunkPositionInArray = bs.d_chunkPositionInArray;
+        d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
 
     /**
@@ -97,8 +97,8 @@ struct byteStream {
     	if(!pia.length())
     		return;
     	// Clear the thing if it's got stuff in it.
-    	if(d_chunkPositionInArray.size())
-    		d_chunkPositionInArray.clear();
+    	if(d_chunk_position_in_array.size())
+    		d_chunk_position_in_array.clear();
 
     	std::string space = " ";
     	std::size_t strPos = 0;
@@ -107,12 +107,11 @@ struct byteStream {
     	while ((strPos = pia.find(space)) != std::string::npos) {
     		strVal = pia.substr(0, strPos);
     	    std::cout << strVal << std::endl;
-    	    d_chunkPositionInArray.push_back(std::stol(strVal));
+    	    // BEWARE: This call to std::stol() is a C++11 thang.
+    	    d_chunk_position_in_array.push_back(std::stol(strVal));
     	    pia.erase(0, strPos + space.length());
     	}
-
     }
-
 };
 
 /**
