@@ -33,6 +33,7 @@
 
 #include <BESDebug.h>
 
+#include "H4ByteStream.h"
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppCommon.h"
@@ -578,9 +579,21 @@ public:
     void read_var_check_name_and_length(DmrppArray *array, string name, int length){
         BESDEBUG("dmrpp", "array->name(): " << array->name() << endl);
         CPPUNIT_ASSERT(array->name() == name);
-        string data_url = string("file://").append(TEST_DATA_DIR).append(array->get_data_url());
-        array->set_data_url(data_url);
-        BESDEBUG("dmrpp", "array->get_data_url(): " << array->get_data_url() << endl);
+        // Get the chunks and make sure there's at least one
+        vector<H4ByteStream> chunk_refs = array->get_chunk_refs();
+        CPPUNIT_ASSERT(chunk_refs.size() > 0);
+        // Tweak the data URLs for the test
+        for(unsigned int i=0; i<chunk_refs.size() ;i++){
+            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << chunk_refs[i].to_string() << endl);
+        }
+        for(unsigned int i=0; i<chunk_refs.size() ;i++){
+            string data_url = string("file://").append(TEST_DATA_DIR).append(chunk_refs[i].get_data_url());
+            chunk_refs[i].set_data_url(data_url);
+        }
+        for(unsigned int i=0; i<chunk_refs.size() ;i++){
+            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << chunk_refs[i].to_string() << endl);
+        }
+        // Read the data
         array->read();
         BESDEBUG("dmrpp", "array->length(): " << array->length() << endl);
         CPPUNIT_ASSERT(array->length() == length);

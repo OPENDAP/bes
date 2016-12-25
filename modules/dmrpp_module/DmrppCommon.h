@@ -28,97 +28,16 @@
 #include <string>
 #include <vector>
 
-/**
- * This rich structure is used to hold the information held in an
- * hdf4:byteStream object.
- */
-struct byteStream {
-    unsigned long long d_size;
-    unsigned long long d_offset;
-    std::string d_md5;
-    std::string d_uuid;
-    std::string d_data_url;
-    std::vector<unsigned int> d_chunk_position_in_array;
-
-    // These are used only during the libcurl callback;
-    // they are not duplicated by the copy ctor or assignment
-    // operator.
-    unsigned long long d_bytes_read;
-    char *d_read_buffer;
-    unsigned long long d_read_buffer_size;
-
-    byteStream():
-    	d_size(0),
-    	d_offset(0),
-    	d_md5(""),
-    	d_uuid(""),
-    	d_data_url(""),
-    	d_bytes_read(0),
-    	d_read_buffer(0),
-    	d_read_buffer_size(0) { }
-
-    byteStream(
-    		unsigned long long size,
-			unsigned long long offset,
-			std::string md5,
-			std::string uuid,
-			std::string data_url,
-			std::string positionInArray = ""):
-			d_size(size),
-			d_offset(offset),
-    		d_md5(md5),
-			d_uuid(uuid),
-			d_data_url(data_url){
-    	ingest_position_in_array(positionInArray);
-    }
-
-    void _duplicate(const byteStream &bs) {
-        // See above
-    	d_bytes_read = 0;
-    	d_read_buffer = 0;
-    	d_read_buffer_size = 0;
-    	// These vars are easy to duplicate.
-        d_size   = bs.d_size;
-        d_offset = bs.d_offset;
-        d_md5    = bs.d_md5;
-        d_uuid   = bs.d_uuid;
-        d_data_url   = bs.d_data_url;
-        d_chunk_position_in_array = bs.d_chunk_position_in_array;
-    }
-
-    /**
-     * Parses the passed string as a set of space separated integer values
-     * and stores them in the internal vector.
-     * Since this is essentially a setter method any previous postion_in_array
-     * content is discarded.
-     * If the passed string parameter is empty then nothing is done.
-     */
-    void ingest_position_in_array(std::string pia){
-    	if(!pia.length())
-    		return;
-    	// Clear the thing if it's got stuff in it.
-    	if(d_chunk_position_in_array.size())
-    		d_chunk_position_in_array.clear();
-
-    	std::string space = " ";
-    	std::size_t strPos = 0;
-    	std::string strVal;
-
-    	while ((strPos = pia.find(space)) != std::string::npos) {
-    		strVal = pia.substr(0, strPos);
-    	    std::cout << strVal << std::endl;
-    	    // BEWARE: This call to std::stol() is a C++11 thang.
-    	    d_chunk_position_in_array.push_back(std::stol(strVal));
-    	    pia.erase(0, strPos + space.length());
-    	}
-    }
-};
+#include "H4ByteStream.h"
 
 /**
  * Interface for the size and offset information of data described by
  * DMR++ files.
  */
 class DmrppCommon {
+
+	std::vector<H4ByteStream> d_chunk_refs;
+
     unsigned long long d_size;
     unsigned long long d_offset;
     std::string d_md5;
@@ -166,6 +85,27 @@ public:
     }
 
     /**
+     * @brief Add a new chunk as defined by an h4:byteStream element
+     * @return The number of chunk refs (byteStreams) held.
+     */
+    virtual unsigned long add_chunk(std::string data_url,
+    		unsigned long long size,
+			unsigned long long offset,
+			std::string md5,
+			std::string uuid,
+			std::string position_in_array = ""){
+
+    	d_chunk_refs.push_back(
+    			H4ByteStream(data_url,size,offset,md5,uuid,position_in_array)
+				);
+    	return d_chunk_refs.size();
+    }
+
+    virtual std::vector<H4ByteStream> get_chunk_refs() const {
+    	return d_chunk_refs;
+    }
+
+    /**
      * @brief Get the size of this variable's data block
      */
     virtual unsigned long long get_size() const { return d_size; }
@@ -197,7 +137,7 @@ public:
      * @brief Set the md5 for this variable's data block.
      * @param offset The md5 of this variable's data block
      */
-    virtual void set_md5(string md5) { d_md5 = md5; }
+    virtual void set_md5(const std::string md5) { d_md5 = md5; }
 
 
     /**
@@ -209,7 +149,7 @@ public:
      * @brief Set the uuid for this variable's data block.
      * @param offset The uuid of this variable's data block
      */
-    virtual void set_uuid(string uuid) { d_uuid = uuid; }
+    virtual void set_uuid(const std::string uuid) { d_uuid = uuid; }
 
     /**
      * @brief Get the Data URL. Read data from this URL.
@@ -220,7 +160,14 @@ public:
      * @brief Set the Data URL
      * @param data_url Read data from this URL.
      */
-    virtual void set_data_url(const std::string &data_url) { d_data_url = data_url; }
+    virtual void set_data_url(const std::string &data_url) {
+    	d_data_url = data_url;
+    	// FIXME Do we really need each byteStream to have a data URL? YES
+    	// FIXME Aren't they always the same as the parent variable? NO
+    	for(unsigned long i=0; i<d_chunk_refs.size(); i++){
+    		d_chunk_refs[i].set_data_url(data_url);
+    	}
+    }
 
     /**
      * @brief Get the size of this variable's data block

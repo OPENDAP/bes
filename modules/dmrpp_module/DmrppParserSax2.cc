@@ -88,6 +88,7 @@ static const char *states[] = {
 
         // FIXME "inside_h4_byte_stream",
         "not_dap4_element",
+        "inside_h4_object",
 
         "parser_unknown",
         "parser_error",
@@ -651,7 +652,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         string dap4_ns_name = DapXmlNamspaces::getDapNamespaceString(DAP_4_0);
         if (parser->debug()) cerr << "dap4_ns_name:         " << dap4_ns_name << endl;
 
-        if (this_element_ns_name != dap4_ns_name) {
+        if (this_element_ns_name == hdf4_namespace) {
+            if (parser->debug()) cerr << "Start of element in hdf4 namespace: " << localname << " detected." << endl;
+        	parser->push_state(inside_h4_object);
+        }
+        else if (this_element_ns_name != dap4_ns_name) {
             if (parser->debug()) cerr << "Start of non DAP4 element: " << localname << " detected." << endl;
         	parser->push_state(not_dap4_element);
         }
@@ -828,7 +833,12 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             break;
 
         case not_dap4_element:
-            if (parser->debug()) cerr << "Inside non DAP4 element. localname: " << localname << endl;
+            if (parser->debug())
+            	cerr << "SKIPPING unexpected element. localname: " << localname << "namespace: " << this_element_ns_name << endl;
+        	break;
+
+        case inside_h4_object:
+            if (parser->debug()) cerr << "Inside hdf4 namespaced element. localname: " << localname << endl;
 
             if (strcmp(localname, "byteStream") == 0 && this_element_ns_name == hdf4_namespace) {
                 // Check for a h4:byteStream and process if found
@@ -842,11 +852,17 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (!dc)
                     throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
-                // This bit of magic sets the URL used to get the data
-                dc->set_data_url(parser->dmr()->request_xml_base());
+                // This bit of magic sets the URL used to get the data and it's
+                // magic in part because it may be a file or an http URL
+                string data_url = parser->dmr()->request_xml_base();
+                unsigned long long offset = 0;
+                unsigned long long size = 0;
+                string md5="";
+                string uuid="";
+                string chunk_position_in_array="";
+
 
                 if (parser->check_required_attribute("offset")) {
-                    unsigned long long offset = 0;
                     istringstream offset_ss(parser->xml_attrs["offset"].value);
                     offset_ss >> offset;
                     dc->set_offset(offset);
@@ -857,7 +873,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 }
 
                 if (parser->check_required_attribute("nBytes")) {
-                    unsigned long long size = 0;
                     istringstream size_ss(parser->xml_attrs["nBytes"].value);
                     size_ss >> size;
                     dc->set_size(size);
@@ -869,23 +884,38 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
                 if (parser->check_required_attribute("md5")) {
                     istringstream md5_ss(parser->xml_attrs["md5"].value);
-                    dc->set_md5(md5_ss.str());
+                    md5 = md5_ss.str();
+                    dc->set_md5(md5);
                     if (parser->debug()) cerr << "Found attribute 'md5' value: "<< md5_ss.str() << endl;
 
                 }
                 else {
                     if (parser->debug()) cerr << "No attribute 'md5' located" << endl;
-
                 }
+
                 if (parser->check_required_attribute("uuid")) {
                     istringstream uuid_ss(parser->xml_attrs["uuid"].value);
-                    dc->set_uuid(uuid_ss.str());
+                    uuid = uuid_ss.str();
+                    dc->set_uuid(uuid);
                     if (parser->debug()) cerr << "Found attribute 'uuid' value: "<< uuid_ss.str() << endl;
                 }
                 else {
                     if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;
-
                 }
+
+                if (parser->check_attribute("chunkPositionInArray")) {
+                    istringstream chunk_position_ss(parser->xml_attrs["chunkPositionInArray"].value);
+                    chunk_position_in_array = chunk_position_ss.str();
+                    if (parser->debug()) cerr << "Found attribute 'chunkPositionInArray' value: "<< chunk_position_ss.str() << endl;
+                }
+                else {
+                    if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
+                }
+
+                dc->add_chunk(data_url,size,offset,md5,uuid,chunk_position_in_array);
+
+                dc->set_data_url(data_url);
+
             }
         	break;
 
@@ -1131,6 +1161,11 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
 
     case not_dap4_element:
         if (parser->debug()) cerr << "End of non DAP4 element: " << localname << endl;
+        parser->pop_state();
+    	break;
+
+    case inside_h4_object:
+        if (parser->debug()) cerr << "End of h4 namespace element: " << localname << endl;
         parser->pop_state();
     	break;
 

@@ -29,14 +29,16 @@ SUBDIRS = . unit-tests bes-testsuite
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
+BES_SRCS = H4ByteStream.cc \
+DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
 DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
 DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
 DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppUtil.cc \
 Odometer.cc 
 
-BES_HDRS = DmrppCommon.h DmrppModule.h DmrppRequestHandler.h DmrppByte.h \
+BES_HDRS = DmrppCommon.h H4ByteStream.h \
+DmrppModule.h DmrppRequestHandler.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
 DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
@@ -51,7 +53,7 @@ BES_LIBS = $(top_builddir)/xmlcommand/libbes_xml_command.la \
 $(top_builddir)/ppt/libbes_ppt.la \
 $(top_builddir)/dispatch/libbes_dispatch.la
 
-libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) 
+libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS)
 libdmrpp_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module 
 libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 

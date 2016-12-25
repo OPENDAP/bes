@@ -83,12 +83,26 @@ bool DmrppByte::read()
 
     rbuf_size(sizeof(dods_byte));
 
-    ostringstream range;   // range-get needs a string arg for the range
-    range << get_offset() << "-" << get_offset() + get_size();
+    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    if(chunk_refs.size() == 0){
+        ostringstream oss;
+        oss << "DmrppByte::read() - Unable to obtain a byteStream objects for array " << name()
+        		<< " Without a byteStream we cannot read! "<< endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+    else {
+		BESDEBUG("dmrpp", "DmrppByte::read() - Found H4ByteStream (chunks): " << endl);
+    	for(unsigned long i=0; i<chunk_refs.size(); i++){
+    		BESDEBUG("dmrpp", "DmrppByte::read() - chunk[" << i << "]: " << chunk_refs[i].to_string() << endl);
+    	}
+    }
 
-    BESDEBUG("dmrpp", "Reading  " << get_data_url() << ": " << range.str() << endl);
+    // For now we only handle the one chunk case.
+    H4ByteStream h4bs = chunk_refs[0];
 
-    curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
+    // Do a range get with libcurl
+    BESDEBUG("dmrpp", "DmrppByte::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
+    curl_read_bytes(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<DmrppCommon*>(this));
 
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (sizeof(dods_byte) != get_bytes_read()) {
@@ -109,11 +123,21 @@ void DmrppByte::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppByte::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
+#if 0
     strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
     strm << DapIndent::LMarg << "size:     " << get_size() << endl;
     strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
     strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
     strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
+#endif
+    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
+    		<< (chunk_refs.size()?"":"None Found.") << endl;
+    DapIndent::Indent();
+    for(unsigned int i=0; i<chunk_refs.size() ;i++){
+        strm << DapIndent::LMarg << chunk_refs[i].to_string() << endl;
+    }
+    DapIndent::UnIndent();
     Byte::dump(strm);
     strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();

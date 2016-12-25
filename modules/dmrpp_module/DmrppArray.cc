@@ -217,17 +217,31 @@ DmrppArray::read()
     if (read_p())
         return true;
 
+    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    if(chunk_refs.size() == 0){
+        ostringstream oss;
+        oss << "DmrppArray::read() - Unable to obtain a byteStream object for array " << name()
+        		<< " Without a byteStream we cannot read! "<< endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+    else {
+		BESDEBUG("dmrpp", "DmrppArray::read() - Found chunks: " << endl);
+    	for(unsigned long i=0; i<chunk_refs.size(); i++){
+    		BESDEBUG("dmrpp", "DmrppArray::read() - chunk[" << i << "]: " << chunk_refs[i].to_string() << endl);
+    	}
+    }
+
+    // For now we only handle the one chunk case.
+    H4ByteStream h4bs = chunk_refs[0];
+
     // First cut at subsetting; read the whole thing and then subset that.
-    unsigned long long array_nbytes = get_size();	// TODO remove. jhrg
+    unsigned long long array_nbytes = h4bs.get_size();	// TODO remove. jhrg
 
     rbuf_size(array_nbytes);
 
-    ostringstream range;   // range-get needs a string arg for the range
-    range << get_offset() << "-" << get_offset() + get_size() - 1;
+    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
 
-    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << get_data_url() << ": " << range.str() << endl);
-
-    curl_read_bytes(get_data_url(), range.str(), dynamic_cast<DmrppCommon*>(this));
+    curl_read_bytes(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<DmrppCommon*>(this));
 
     // If the expected byte count was not read, it's an error.
     if (array_nbytes != get_bytes_read()) {
@@ -378,10 +392,21 @@ void DmrppArray::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppArray::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-    strm << DapIndent::LMarg << "offset: " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:   " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:    " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:   " << get_uuid() << endl;
+#if 0
+    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
+    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
+    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
+    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
+    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
+#endif
+    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
+    		<< (chunk_refs.size()?"":"None Found.") << endl;
+    DapIndent::Indent();
+    for(unsigned int i=0; i<chunk_refs.size() ;i++){
+        strm << DapIndent::LMarg << chunk_refs[i].to_string() << endl;
+    }
+    DapIndent::UnIndent();
     Array::dump(strm);
     strm << DapIndent::LMarg << "value: " << "----" << /*d_buf <<*/ endl;
     DapIndent::UnIndent();

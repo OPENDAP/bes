@@ -91,6 +91,7 @@ private:
 
         // FIXMEinside_h4_byte_stream,
         not_dap4_element,
+        inside_h4_object,
 
         parser_unknown,
         parser_error,
@@ -229,6 +230,7 @@ private:
     bool process_group(const char *name, const xmlChar **attrs, int nb_attributes);
     bool process_enum_def(const char *name, const xmlChar **attrs, int nb_attributes);
     bool process_enum_const(const char *name, const xmlChar **attrs, int nb_attributes);
+    bool process_h4_object(const char *name, const xmlChar **attrs, int nb_attributes);
 
     void finish_variable(const char *tag, libdap::Type t, const char *expected);
     //@}
