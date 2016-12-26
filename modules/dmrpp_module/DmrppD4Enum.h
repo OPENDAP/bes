@@ -30,6 +30,8 @@
 #include <D4Enum.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppD4Enum: public libdap::D4Enum, public DmrppCommon {
     void _duplicate(const DmrppD4Enum &ts);
 
@@ -50,5 +52,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_d4enum_h

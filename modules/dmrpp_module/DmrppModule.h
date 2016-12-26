@@ -25,6 +25,8 @@
 
 #include "BESAbstractModule.h"
 
+namespace dmrpp {
+
 class DmrppModule: public BESAbstractModule {
 public:
 	DmrppModule() { }
@@ -34,5 +36,7 @@ public:
 
 	virtual void dump(ostream &strm) const;
 };
+
+} //  namespace dmrpp
 
 #endif // I_DmrppModule_H

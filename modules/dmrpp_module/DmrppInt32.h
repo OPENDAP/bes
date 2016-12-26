@@ -30,6 +30,9 @@
 #include <Int32.h>
 #include "DmrppCommon.h"
 
+
+namespace dmrpp {
+
 class DmrppInt32: public libdap::Int32, public DmrppCommon {
     void _duplicate(const DmrppInt32 &ts);
 
@@ -48,5 +51,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_int32_h

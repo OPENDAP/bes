@@ -38,6 +38,8 @@ using namespace std;
 
 #define DAP_CATALOG "catalog"
 
+namespace dmrpp {
+
 void DmrppModule::initialize(const string &modname)
 {
     BESDebug::Register(modname);
@@ -85,4 +87,6 @@ void DmrppModule::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "DmrppModule::dump - (" << (void *) this << ")" << endl;
 }
+
+} // namespace dmrpp
 

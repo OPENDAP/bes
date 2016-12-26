@@ -30,6 +30,8 @@
 #include <Url.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppUrl: public libdap::Url, public DmrppCommon {
     void _duplicate(const DmrppUrl &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_url_h

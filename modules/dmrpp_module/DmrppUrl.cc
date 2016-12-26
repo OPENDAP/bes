@@ -37,6 +37,8 @@
 using namespace libdap;
 using namespace std;
 
+namespace dmrpp {
+
 void
 DmrppUrl::_duplicate(const DmrppUrl &)
 {
@@ -109,7 +111,7 @@ void DmrppUrl::dump(ostream & strm) const
     strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
     strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
 #endif
-    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
     strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
     		<< (chunk_refs.size()?"":"None Found.") << endl;
     DapIndent::Indent();
@@ -121,3 +123,6 @@ void DmrppUrl::dump(ostream & strm) const
     strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();
 }
+
+} // namespace dmrpp
+

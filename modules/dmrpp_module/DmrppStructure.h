@@ -30,6 +30,8 @@
 #include <Structure.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppStructure: public libdap::Structure, public DmrppCommon {
     void _duplicate(const DmrppStructure &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_structure_h

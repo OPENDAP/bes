@@ -30,6 +30,8 @@
 #include <D4Sequence.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppD4Sequence: public libdap::D4Sequence, public DmrppCommon {
     void _duplicate(const DmrppD4Sequence &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_d4sequence_h

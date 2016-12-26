@@ -30,6 +30,8 @@
 #include <Str.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppStr: public libdap::Str, public DmrppCommon {
     void _duplicate(const DmrppStr &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_str_h

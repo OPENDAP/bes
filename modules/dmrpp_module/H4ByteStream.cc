@@ -32,6 +32,8 @@
 
 using namespace std;
 
+namespace dmrpp {
+
 void
 H4ByteStream::ingest_position_in_array(string pia){
 	if(!pia.length())
@@ -93,4 +95,7 @@ H4ByteStream::to_string(){
 	oss << ")]";
 	return oss.str();
 }
+
+} // namespace dmrpp
+
 

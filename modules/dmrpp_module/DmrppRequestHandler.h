@@ -35,6 +35,8 @@ namespace libdap {
 	class DDS;
 }
 
+namespace dmrpp {
+
 class DmrppRequestHandler: public BESRequestHandler {
 
 	// These are static because they are used by the static public methods.
@@ -58,5 +60,7 @@ public:
 
 	virtual void dump(std::ostream &strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // DmrppRequestHandler.h

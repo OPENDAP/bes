@@ -28,6 +28,8 @@
 #include <string>
 #include <vector>
 
+namespace dmrpp {
+
 /**
  * This rich structure is used to hold the information held in an
  * hdf4:byteStream object.
@@ -131,5 +133,6 @@ public:
     virtual std::string to_string();
 };
 
+} // namespace dmrpp
 
 #endif // _H4ByteStream_h

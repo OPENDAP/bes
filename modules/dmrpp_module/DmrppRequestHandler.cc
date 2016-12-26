@@ -57,6 +57,9 @@
 using namespace libdap;
 using namespace std;
 
+
+namespace dmrpp {
+
 const string module = "dmrpp";
 
 #if 0
@@ -292,3 +295,4 @@ void DmrppRequestHandler::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+} // namespace dmrpp

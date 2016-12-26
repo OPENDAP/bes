@@ -30,6 +30,8 @@
 #include <D4Opaque.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
     void _duplicate(const DmrppD4Opaque &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_d4opaque_h

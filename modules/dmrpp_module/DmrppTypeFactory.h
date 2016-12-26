@@ -29,6 +29,8 @@
 
 #include <D4BaseTypeFactory.h>
 
+namespace dmrpp {
+
 /**
  * A factory for the DAP4 DmrppByte, ...,  types.
  *
@@ -77,5 +79,7 @@ public:
 
     virtual libdap::D4Group *NewGroup(const std::string &n = "") const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_type_factory_h

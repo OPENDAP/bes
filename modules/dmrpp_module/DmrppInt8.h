@@ -30,6 +30,8 @@
 #include <Int8.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppInt8: public libdap::Int8, public DmrppCommon {
     void _duplicate(const DmrppInt8 &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_int8_h

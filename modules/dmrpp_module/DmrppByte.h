@@ -30,6 +30,8 @@
 #include <Byte.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppByte: public libdap::Byte, public DmrppCommon {
     void _duplicate(const DmrppByte &ts);
 
@@ -49,4 +51,5 @@ public:
     virtual void dump(ostream & strm) const;
 };
 
+} // namespace dmrpp
 #endif // _dmrpp_byte_h

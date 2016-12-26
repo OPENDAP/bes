@@ -118,6 +118,41 @@ public:
 
     }
 
+    /**
+     * This is a test hack in which we captilize on the fact that we know
+     * that the test Dmrpp files all have "local" names stored for their
+     * xml:base URLs. Here we make these full paths on the file system
+     * so that the source data files can be located at test runtime.
+     */
+    void set_data_url_in_chunks(DmrppCommon *dc){
+        // Get the chunks and make sure there's at least one
+        vector<H4ByteStream> *chunks = dc->get_chunk_vec();
+        CPPUNIT_ASSERT((*chunks).size() > 0);
+        // Tweak the data URLs for the test
+        for(unsigned int i=0; i<(*chunks).size() ;i++){
+            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
+        }
+        for(unsigned int i=0; i<(*chunks).size() ;i++){
+            string data_url = string("file://").append(TEST_DATA_DIR).append((*chunks)[i].get_data_url());
+            (*chunks)[i].set_data_url(data_url);
+        }
+        for(unsigned int i=0; i<(*chunks).size() ;i++){
+            BESDEBUG("dmrpp", "altered chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
+        }
+    }
+    void read_var_check_name_and_length(DmrppArray *array, string name, int length){
+        BESDEBUG("dmrpp", "array->name(): " << array->name() << endl);
+        CPPUNIT_ASSERT(array->name() == name);
+
+        set_data_url_in_chunks(array);
+
+        // Read the data
+        array->read();
+        BESDEBUG("dmrpp", "array->length(): " << array->length() << endl);
+        CPPUNIT_ASSERT(array->length() == length);
+    }
+
+
     void test_integer_scalar() {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -141,12 +176,10 @@ public:
         CPPUNIT_ASSERT(di32);
 
         try {
+
             // Hack for libcurl
-            string data_url = string("file://").append(TEST_DATA_DIR).append(di32->get_data_url());
-            di32->set_data_url(data_url);
-
+        	set_data_url_in_chunks(di32);
             di32->read();
-
             BESDEBUG("dmrpp", "Value: " << di32->value() << endl);
             CPPUNIT_ASSERT(di32->value() == 45);
         }
@@ -184,14 +217,16 @@ public:
         try {
             DmrppArray *da = dynamic_cast<DmrppArray*>(*v);
 
+#if 0
             CPPUNIT_ASSERT(da);
             CPPUNIT_ASSERT(da->name() == "d16_1");
-
             // Hack for libcurl
             string data_url = string("file://").append(TEST_DATA_DIR).append(da->get_data_url());
             da->set_data_url(data_url);
-
             da->read();
+#endif
+
+            read_var_check_name_and_length(da,"d16_1",2);
 
             CPPUNIT_ASSERT(da->length() == 2);
 
@@ -203,17 +238,8 @@ public:
 
             ++v;    // next
             da = dynamic_cast<DmrppArray*>(*v);
-
             CPPUNIT_ASSERT(da);
-            CPPUNIT_ASSERT(da->name() == "d16_2");
-
-            // Hack for libcurl
-            da->set_data_url(data_url);
-
-            da->read();
-
-            CPPUNIT_ASSERT(da->length() == 4);
-
+            read_var_check_name_and_length(da,"d16_2",4);
             vector<dods_int16> v16_2(da->length());
             da->value(&v16_2[0]);
 
@@ -226,15 +252,7 @@ public:
             da = dynamic_cast<DmrppArray*>(*v);
 
             CPPUNIT_ASSERT(da);
-            CPPUNIT_ASSERT(da->name() == "d32_1");
-
-            // Hack for libcurl
-            da->set_data_url(data_url);
-
-            da->read();
-
-            CPPUNIT_ASSERT(da->length() == 8);
-
+            read_var_check_name_and_length(da,"d32_1",8);
             vector<dods_int32> v32(da->length());
             da->value(&v32[0]);
 
@@ -247,15 +265,7 @@ public:
             da = dynamic_cast<DmrppArray*>(*v);
 
             CPPUNIT_ASSERT(da);
-            CPPUNIT_ASSERT(da->name() == "d32_2");
-
-            // Hack for libcurl
-            da->set_data_url(data_url);
-
-            da->read();
-
-            CPPUNIT_ASSERT(da->length() == 32);
-
+            read_var_check_name_and_length(da,"d32_2",32);
             vector<dods_int32> v32_2(da->length());
             da->value(&v32_2[0]);
 
@@ -333,15 +343,7 @@ public:
             // "Data Fields" contains a single Float32 var called temperature
 			DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
 			CPPUNIT_ASSERT(temperature);
-			CPPUNIT_ASSERT(temperature->name() == "temperature");
-
-            string data_url = string("file://").append(TEST_DATA_DIR).append(temperature->get_data_url());
-            temperature->set_data_url(data_url);
-
-            temperature->read();
-            BESDEBUG("dmrpp", "temperature->length(): " << temperature->length() << endl);
-            CPPUNIT_ASSERT(temperature->length() == 32);
-
+			read_var_check_name_and_length(temperature,"temperature",32);
             {
             vector<dods_float32> f32(temperature->length());
             temperature->value(&f32[0]);
@@ -369,15 +371,7 @@ public:
             // "Data Fields" contains a single Float32 var called temperature
 			temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
 			CPPUNIT_ASSERT(temperature);
-			CPPUNIT_ASSERT(temperature->name() == "temperature");
-
-            data_url = string("file://").append(TEST_DATA_DIR).append(temperature->get_data_url());
-            temperature->set_data_url(data_url);
-
-            temperature->read();
-            BESDEBUG("dmrpp", "temperature->length(): " << temperature->length() << endl);
-            CPPUNIT_ASSERT(temperature->length() == 32);
-
+			read_var_check_name_and_length(temperature,"temperature",32);
             {
             vector<dods_float32> f32(temperature->length());
             temperature->value(&f32[0]);
@@ -487,14 +481,7 @@ public:
             BESDEBUG("dmrpp", "Constrained array temperature" << ss.str() << endl);
             }
 
-            string data_url = string("file://").append(TEST_DATA_DIR).append(temperature->get_data_url());
-            temperature->set_data_url(data_url);
-            BESDEBUG("dmrpp", "temperature->get_data_url(): " << temperature->get_data_url() << endl);
-
-            temperature->read();
-            BESDEBUG("dmrpp", "temperature->length(): " << temperature->length() << endl);
-            CPPUNIT_ASSERT(temperature->length() == 6);
-
+			read_var_check_name_and_length(temperature,"temperature",6);
             {
             vector<dods_float32> f32(temperature->length());
             temperature->value(&f32[0]);
@@ -544,12 +531,7 @@ public:
             BESDEBUG("dmrpp", "Constrained array t2" << ss.str() << endl);
             }
 
-            t2->set_data_url(data_url);
-            BESDEBUG("dmrpp", "t2->get_data_url(): " << t2->get_data_url() << endl);
-            t2->read();
-            BESDEBUG("dmrpp", "t2->length(): " << t2->length() << endl);
-            CPPUNIT_ASSERT(t2->length() == 4);
-
+			read_var_check_name_and_length(t2,"temperature",4);
             {
             vector<dods_float32> f32(t2->length());
             t2->value(&f32[0]);
@@ -576,28 +558,7 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-    void read_var_check_name_and_length(DmrppArray *array, string name, int length){
-        BESDEBUG("dmrpp", "array->name(): " << array->name() << endl);
-        CPPUNIT_ASSERT(array->name() == name);
-        // Get the chunks and make sure there's at least one
-        vector<H4ByteStream> chunk_refs = array->get_chunk_refs();
-        CPPUNIT_ASSERT(chunk_refs.size() > 0);
-        // Tweak the data URLs for the test
-        for(unsigned int i=0; i<chunk_refs.size() ;i++){
-            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << chunk_refs[i].to_string() << endl);
-        }
-        for(unsigned int i=0; i<chunk_refs.size() ;i++){
-            string data_url = string("file://").append(TEST_DATA_DIR).append(chunk_refs[i].get_data_url());
-            chunk_refs[i].set_data_url(data_url);
-        }
-        for(unsigned int i=0; i<chunk_refs.size() ;i++){
-            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << chunk_refs[i].to_string() << endl);
-        }
-        // Read the data
-        array->read();
-        BESDEBUG("dmrpp", "array->length(): " << array->length() << endl);
-        CPPUNIT_ASSERT(array->length() == length);
-    }
+
 
     void test_read_coads_climatology() {
         auto_ptr<DMR> dmr(new DMR);

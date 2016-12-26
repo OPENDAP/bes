@@ -58,6 +58,9 @@ static const string hdf4_namespace  = "http://www.hdfgroup.org/HDF4/XML/schema/H
 using namespace libdap;
 using namespace std;
 
+namespace dmrpp {
+
+
 static const char *states[] = {
         "parser_start",
 
@@ -911,11 +914,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 else {
                     if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
                 }
-
                 dc->add_chunk(data_url,size,offset,md5,uuid,chunk_position_in_array);
-
-                dc->set_data_url(data_url);
-
             }
         	break;
 
@@ -1445,3 +1444,5 @@ void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool d
     // an exception if it's not (i.e., the loop exited with gcount() == 0).
     cleanup_parse();
 }
+
+} // namespace dmrpp

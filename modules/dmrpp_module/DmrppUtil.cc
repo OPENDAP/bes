@@ -39,6 +39,8 @@
 
 using namespace std;
 
+namespace dmrpp {
+
 /**
  * @brief Callback passed to libcurl to handle reading a single byte.
  *
@@ -120,3 +122,4 @@ void curl_read_bytes(const string &url, const string &range, void *user_data)
         curl_easy_cleanup(curl);
     }
 }
+}// namespace dmrpp

@@ -30,6 +30,8 @@
 #include <UInt64.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppUInt64: public libdap::UInt64, public DmrppCommon {
     void _duplicate(const DmrppUInt64 &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_uint64_h

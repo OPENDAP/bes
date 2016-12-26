@@ -30,6 +30,8 @@
 #include <D4Group.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppD4Group: public libdap::D4Group, public DmrppCommon {
     void _duplicate(const DmrppD4Group &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_d4group_h

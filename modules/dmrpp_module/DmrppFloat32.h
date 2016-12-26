@@ -30,6 +30,8 @@
 #include <Float32.h>
 #include "DmrppCommon.h"
 
+namespace dmrpp {
+
 class DmrppFloat32: public libdap::Float32, public DmrppCommon {
     void _duplicate(const DmrppFloat32 &ts);
 
@@ -48,5 +50,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_float32_h

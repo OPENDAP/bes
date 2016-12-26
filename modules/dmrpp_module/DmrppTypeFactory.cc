@@ -61,6 +61,8 @@
 using namespace libdap;
 using namespace std;
 
+namespace dmrpp {
+
 BaseType *DmrppTypeFactory::NewVariable(Type t, const string &name) const
 {
 	switch (t) {
@@ -255,3 +257,4 @@ DmrppTypeFactory::NewGroup(const string &n) const
 	return new DmrppD4Group(n);
 }
 
+} // namespace dmrpp

@@ -31,6 +31,8 @@
 #include "DmrppCommon.h"
 #include "Odometer.h"
 
+namespace dmrpp {
+
 class DmrppArray: public libdap::Array, public DmrppCommon {
     void _duplicate(const DmrppArray &ts);
 
@@ -60,6 +62,8 @@ public:
 
     virtual void dump(ostream & strm) const;
 };
+
+} // namespace dmrpp
 
 #endif // _dmrpp_array_h
 

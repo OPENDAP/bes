@@ -37,6 +37,8 @@
 using namespace libdap;
 using namespace std;
 
+namespace dmrpp {
+
 void
 DmrppFloat64::_duplicate(const DmrppFloat64 &)
 {
@@ -97,7 +99,7 @@ DmrppFloat64::read()
 
     rbuf_size(sizeof(dods_float64));
 
-    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
     if(chunk_refs.size() == 0){
         ostringstream oss;
         oss << "DmrppFloat64::read() - Unable to obtain a byteStream object for DmrppFloat64 " << name()
@@ -150,7 +152,7 @@ void DmrppFloat64::dump(ostream & strm) const
     strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
     strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
 #endif
-    vector<H4ByteStream> chunk_refs = get_chunk_refs();
+    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
     strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
     		<< (chunk_refs.size()?"":"None Found.") << endl;
     DapIndent::Indent();
@@ -162,3 +164,7 @@ void DmrppFloat64::dump(ostream & strm) const
     strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();
 }
+
+} // namespace dmrpp
+
+

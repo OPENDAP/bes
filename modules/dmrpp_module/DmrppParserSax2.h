@@ -49,6 +49,7 @@ class D4EnumDef;
 class D4Dimension;
 }
 
+namespace dmrpp {
 /**
  * Hacked DMR parser copied from libdap. This version of the parser processes
  * h4:byteStream elements and stores their information (xml attributes) in
@@ -304,5 +305,7 @@ public:
     static void dmr_fatal_error(void *parser, const char *msg, ...);
     static void dmr_error(void *parser, const char *msg, ...);
 };
+
+} // namespace dmrpp
 
 #endif // dmrpp_parser_sax2_h

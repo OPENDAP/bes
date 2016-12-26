@@ -30,12 +30,16 @@
 
 #include "H4ByteStream.h"
 
+namespace dmrpp {
 /**
  * Interface for the size and offset information of data described by
  * DMR++ files.
  */
 class DmrppCommon {
 
+	friend class DmrppTypeReadTest;
+
+private:
 	std::vector<H4ByteStream> d_chunk_refs;
 
     unsigned long long d_size;
@@ -65,6 +69,14 @@ protected:
         d_uuid   = dc.d_uuid;
         d_data_url   = dc.d_data_url;
 
+    }
+
+    /**
+     * @brief Returns a pointer to the internal vector of
+     * H4ByteStream objects so that they can be manipulated.
+     */
+    virtual std::vector<H4ByteStream> *get_chunk_vec() {
+    	return &d_chunk_refs;
     }
 
 public:
@@ -101,9 +113,10 @@ public:
     	return d_chunk_refs.size();
     }
 
-    virtual std::vector<H4ByteStream> get_chunk_refs() const {
+    virtual std::vector<H4ByteStream> get_immutable_chunks() const {
     	return d_chunk_refs;
     }
+
 
     /**
      * @brief Get the size of this variable's data block
@@ -151,23 +164,6 @@ public:
      */
     virtual void set_uuid(const std::string uuid) { d_uuid = uuid; }
 
-    /**
-     * @brief Get the Data URL. Read data from this URL.
-     */
-    virtual std::string get_data_url() const { return d_data_url; }
-
-    /**
-     * @brief Set the Data URL
-     * @param data_url Read data from this URL.
-     */
-    virtual void set_data_url(const std::string &data_url) {
-    	d_data_url = data_url;
-    	// FIXME Do we really need each byteStream to have a data URL? YES
-    	// FIXME Aren't they always the same as the parent variable? NO
-    	for(unsigned long i=0; i<d_chunk_refs.size(); i++){
-    		d_chunk_refs[i].set_data_url(data_url);
-    	}
-    }
 
     /**
      * @brief Get the size of this variable's data block
@@ -210,7 +206,11 @@ public:
     	return d_read_buffer_size;
     }
 
+
+
 };
+
+} // namepsace dmrpp
 
 #endif // _dmrpp_common_h
 
