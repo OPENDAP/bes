@@ -42,12 +42,6 @@ class DmrppCommon {
 private:
 	std::vector<H4ByteStream> d_chunk_refs;
 
-    unsigned long long d_size;
-    unsigned long long d_offset;
-    std::string d_md5;
-    std::string d_uuid;
-    std::string d_data_url;
-
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
     // operator.
@@ -62,13 +56,7 @@ protected:
     	d_read_buffer = 0;
     	d_read_buffer_size = 0;
 
-    	// These vars are easy to duplicate.
-        d_size   = dc.d_size;
-        d_offset = dc.d_offset;
-        d_md5    = dc.d_md5;
-        d_uuid   = dc.d_uuid;
-        d_data_url   = dc.d_data_url;
-
+    	d_chunk_refs =  dc.d_chunk_refs;
     }
 
     /**
@@ -81,11 +69,6 @@ protected:
 
 public:
     DmrppCommon() :
-    	d_size(0),
-    	d_offset(0),
-    	d_md5(""),
-    	d_uuid(""),
-    	d_data_url(""),
     	d_bytes_read(0),
     	d_read_buffer(0),
     	d_read_buffer_size(0) { }
@@ -117,7 +100,7 @@ public:
     	return d_chunk_refs;
     }
 
-
+#if 0
     /**
      * @brief Get the size of this variable's data block
      */
@@ -156,7 +139,7 @@ public:
     /**
      * @brief Get the uuid string for this variable's data block
      */
-    virtual std::string get_uuid() const { return d_uuid; }
+    // virtual std::string get_uuid() const { return d_uuid; }
 
     /**
      * @brief Set the uuid for this variable's data block.
@@ -164,6 +147,7 @@ public:
      */
     virtual void set_uuid(const std::string uuid) { d_uuid = uuid; }
 
+#endif
 
     /**
      * @brief Get the size of this variable's data block

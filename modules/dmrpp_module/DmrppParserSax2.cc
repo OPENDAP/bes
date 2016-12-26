@@ -868,7 +868,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("offset")) {
                     istringstream offset_ss(parser->xml_attrs["offset"].value);
                     offset_ss >> offset;
-                    dc->set_offset(offset);
+                    //dc->set_offset(offset);
                     if (parser->debug()) cerr << "Processed attribute 'offset=\""<< offset << "\"'" << endl;
                 }
                 else {
@@ -878,7 +878,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("nBytes")) {
                     istringstream size_ss(parser->xml_attrs["nBytes"].value);
                     size_ss >> size;
-                    dc->set_size(size);
+                    //dc->set_size(size);
                     if (parser->debug()) cerr << "Processed attribute 'nBytes=\""<< size << "\"'" << endl;
                 }
                 else {
@@ -888,7 +888,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("md5")) {
                     istringstream md5_ss(parser->xml_attrs["md5"].value);
                     md5 = md5_ss.str();
-                    dc->set_md5(md5);
+                    //dc->set_md5(md5);
                     if (parser->debug()) cerr << "Found attribute 'md5' value: "<< md5_ss.str() << endl;
 
                 }
@@ -899,7 +899,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("uuid")) {
                     istringstream uuid_ss(parser->xml_attrs["uuid"].value);
                     uuid = uuid_ss.str();
-                    dc->set_uuid(uuid);
+                    //dc->set_uuid(uuid);
                     if (parser->debug()) cerr << "Found attribute 'uuid' value: "<< uuid_ss.str() << endl;
                 }
                 else {

@@ -95,11 +95,33 @@ public:
     }
 
     /**
-     * Evaluates a BaseType pointer believed to be an instance of DrmppCommon.
+     * Evaluates a H4ByteStream instance.
+     * This checks the offset, size, md5, and uuid attributes
+     * against expected values passed as parameters.
+     */
+    void checkByteStream(string name, H4ByteStream h4bs,
+    		unsigned long long offset,
+    		unsigned long long size,
+    		string md5,
+    		string uuid){
+
+		CPPUNIT_ASSERT(h4bs.get_offset() == offset);
+		BESDEBUG("dmrpp", name << " offset: " << offset << endl);
+		CPPUNIT_ASSERT(h4bs.get_size() == size);
+		BESDEBUG("dmrpp", name << " size: " << size << endl);
+		CPPUNIT_ASSERT(h4bs.get_md5() == md5);
+		BESDEBUG("dmrpp", name << " md5: " << md5 << endl);
+		CPPUNIT_ASSERT(h4bs.get_uuid() == uuid);
+		BESDEBUG("dmrpp", name << " uuid: " << uuid << endl);
+    }
+
+    /**
+     * Evaluates a BaseType pointer believed to be an instance of DrmppCommon
+     * with a single "chunk" (H4ByteStream) member.
      * This checks the variables name, offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkDmrppVariable(BaseType *bt,
+    void checkDmrppVariableWithSingleChunk(BaseType *bt,
     		string name,
     		unsigned long long offset,
     		unsigned long long size,
@@ -112,14 +134,11 @@ public:
 		CPPUNIT_ASSERT(bt->name() == name);
 		DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
 		CPPUNIT_ASSERT(dc);
-		CPPUNIT_ASSERT(dc->get_offset() == offset);
-		BESDEBUG("dmrpp", bt->name() << " offset: " << offset << endl);
-		CPPUNIT_ASSERT(dc->get_size() == size);
-		BESDEBUG("dmrpp", bt->name() << " size: " << size << endl);
-		CPPUNIT_ASSERT(dc->get_md5() == md5);
-		BESDEBUG("dmrpp", bt->name() << " md5: " << md5 << endl);
-		CPPUNIT_ASSERT(dc->get_uuid() == uuid);
-		BESDEBUG("dmrpp", bt->name() << " uuid: " << uuid << endl);
+
+		vector<H4ByteStream> chunks = dc->get_immutable_chunks();
+		CPPUNIT_ASSERT(chunks.size() == 1);
+		checkByteStream(bt->name(), chunks[0],offset,size,md5,uuid);
+
     }
 
     /**
@@ -165,7 +184,7 @@ public:
 
         D4Group::Vars_iter v = root->var_begin();
 
-        checkDmrppVariable(*v,
+        checkDmrppVariableWithSingleChunk(*v,
         		"scalar",
         		2144,
         		4,
@@ -194,7 +213,7 @@ public:
 
        D4Group::Vars_iter v = root->var_begin();
 
-       checkDmrppVariable(*v,
+       checkDmrppVariableWithSingleChunk(*v,
     		   "d16_1",
     		   2216,
     		   4,
@@ -203,7 +222,7 @@ public:
 
        v++;
 
-       checkDmrppVariable(*v,
+       checkDmrppVariableWithSingleChunk(*v,
     		   "d16_2",
     		   2220,
     		   8,
@@ -212,7 +231,7 @@ public:
 
        v++;
 
-       checkDmrppVariable(*v,
+       checkDmrppVariableWithSingleChunk(*v,
     		   "d32_1",
     		   2228,
     		   32,
@@ -221,7 +240,7 @@ public:
 
        v++;
 
-       checkDmrppVariable(*v,
+       checkDmrppVariableWithSingleChunk(*v,
     		   "d32_2",
     		   2260,
     		   128,
@@ -251,7 +270,7 @@ public:
 
       D4Group::Vars_iter v = root->var_begin();
 
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "d32_1",
     		  2216,
     		  8,
@@ -260,7 +279,7 @@ public:
 
       v++;
 
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "d32_2",
     		  2224,
     		  16,
@@ -269,7 +288,7 @@ public:
 
       v++;
 
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "d64_1",
     		  2240,
     		  64,
@@ -278,7 +297,7 @@ public:
 
       v++;
 
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "d64_2",
     		  2304,
     		  256,
@@ -332,7 +351,7 @@ public:
 
       D4Group::Vars_iter v = datafields_grp->var_begin();
 
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "temperature",
     		  40672,
     		  128,
@@ -346,7 +365,7 @@ public:
 
       v = hdfeos_info_grp->var_begin();
 
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "StructMetadata.0",
     		  5304,
     		  32000,
@@ -374,14 +393,14 @@ public:
       checkGroupsAndVars(root, "/", 1, 2);
 
       D4Group::Vars_iter v = root->var_begin();
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "dim1",
     		  6192,
     		  8,
     		  "a068b90f3c19bf407f80db4945944e29",
     		  "d6d6cbc9-04bf-4d3d-8827-4d7c52939e6d");
       v++;
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "d1",
     		  6200,
     		  8,
@@ -394,7 +413,7 @@ public:
       checkGroupsAndVars(g1_grp, "g1", 0, 2);
 
       v = g1_grp->var_begin();
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "dim2",
     		  6208,
     		  12,
@@ -402,7 +421,7 @@ public:
     		  "4c91c3f7-73a1-43d5-a0fc-cfa23e92b3d2");
 
       v++;
-      checkDmrppVariable(*v,
+      checkDmrppVariableWithSingleChunk(*v,
     		  "d2",
     		  6220,
     		  24,
