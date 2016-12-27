@@ -119,7 +119,7 @@ public:
     }
 
     /**
-     * This is a test hack in which we captilize on the fact that we know
+     * This is a test hack in which we capitalize on the fact that we know
      * that the test Dmrpp files all have "local" names stored for their
      * xml:base URLs. Here we make these full paths on the file system
      * so that the source data files can be located at test runtime.

@@ -134,12 +134,13 @@ DmrppArray::read_constrained(
 		Dim_iter dimIter,
 		unsigned long *target_index,
 		vector<unsigned int> &subsetAddress,
-		const vector<unsigned int> &array_shape)
+		const vector<unsigned int> &array_shape,
+		H4ByteStream *h4bytestream)
 {
     BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
     unsigned int bytesPerElt = prototype()->width();
-	char *sourceBuf = get_rbuf();
+	char *sourceBuf = h4bytestream->get_rbuf();
 	char *targetBuf = get_buf();
 
 	unsigned int start = this->dimension_start(dimIter);
@@ -184,7 +185,7 @@ DmrppArray::read_constrained(
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);
-    			read_constrained(dimIter,target_index,subsetAddress, array_shape);
+    			read_constrained(dimIter,target_index,subsetAddress, array_shape,h4bytestream);
     			subsetAddress.pop_back();
     		}
     		else {
@@ -219,8 +220,8 @@ DmrppArray::read()
     if (read_p())
         return true;
 
-    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    if(chunk_refs.size() == 0){
+    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+    if(chunk_refs->size() == 0){
         ostringstream oss;
         oss << "DmrppArray::read() - Unable to obtain a byteStream object for array " << name()
         		<< " Without a byteStream we cannot read! "<< endl;
@@ -228,34 +229,30 @@ DmrppArray::read()
     }
     else {
 		BESDEBUG("dmrpp", "DmrppArray::read() - Found chunks: " << endl);
-    	for(unsigned long i=0; i<chunk_refs.size(); i++){
-    		BESDEBUG("dmrpp", "DmrppArray::read() - chunk[" << i << "]: " << chunk_refs[i].to_string() << endl);
+    	for(unsigned long i=0; i<chunk_refs->size(); i++){
+    		BESDEBUG("dmrpp", "DmrppArray::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
     	}
     }
 
     // For now we only handle the one chunk case.
-    H4ByteStream h4bs = chunk_refs[0];
-
+    H4ByteStream h4_byte_stream = (*chunk_refs)[0];
+    h4_byte_stream.set_rbuf_to_size();
     // First cut at subsetting; read the whole thing and then subset that.
-    unsigned long long array_nbytes = h4bs.get_size();	// TODO remove. jhrg
+    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4_byte_stream.get_size() << " bytes from "<< h4_byte_stream.get_data_url() << ": " << h4_byte_stream.get_curl_range_arg_string() << endl);
 
-    rbuf_size(array_nbytes);
-
-    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-
-    curl_read_bytes(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<DmrppCommon*>(this));
+    curl_read_byteStream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4_byte_stream));
 
     // If the expected byte count was not read, it's an error.
-    if (array_nbytes != get_bytes_read()) {
+    if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {
         ostringstream oss;
-        oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << array_nbytes
-            << " but found " << get_bytes_read() << endl;
+        oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << h4_byte_stream.get_size()
+            << " but found " << h4_byte_stream.get_bytes_read() << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     if (!is_projected()) {      // if there is no projection constraint
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - No projection, copying all values into array. " << endl);
-        val2buf(get_rbuf());    // yes, it's not type-safe
+        val2buf(h4_byte_stream.get_rbuf());    // yes, it's not type-safe
     }
     // else
     // Get the start, stop values for each dimension
@@ -274,7 +271,7 @@ DmrppArray::read()
 
         reserve_value_capacity(constrained_size);
         unsigned long target_index = 0;
-        read_constrained(dim_begin(), &target_index, subset, array_shape); // TODO rename; something other than read. jhrg
+        read_constrained(dim_begin(), &target_index, subset, array_shape, &h4_byte_stream); // TODO rename; something other than read. jhrg
         BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
 
 

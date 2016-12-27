@@ -83,8 +83,8 @@ H4ByteStream::to_string(){
     ostringstream oss;
     oss << "H4ByteStream";
     oss << "[data_url='" <<  d_data_url  << "']";
-    oss << "[size=" <<  d_size  << "]";
     oss << "[offset=" <<  d_offset  << "]";
+    oss << "[size=" <<  d_size  << "]";
     oss << "[md5=" <<  d_md5  << "]";
     oss << "[uuid=" <<  d_uuid  << "]";
     oss << "[chunk_position_in_array=(";

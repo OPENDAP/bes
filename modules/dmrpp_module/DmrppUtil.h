@@ -31,9 +31,13 @@ namespace dmrpp {
 #if 0
 typedef size_t (*curl_write_data)(void *buffer, size_t size, size_t nmemb, void *data);
 size_t dmrpp_write_data(void *buffer, size_t size, size_t nmemb, void *data);
+
+//old way...
+void curl_read_bytes(const std::string &url, const std::string& range, /*curl_write_data write_data,*/ void *user_data);
 #endif
 
-void curl_read_bytes(const std::string &url, const std::string& range, /*curl_write_data write_data,*/ void *user_data);
+
+void curl_read_byteStream(const std::string &url, const std::string& range, /*curl_write_data write_data,*/ void *user_data);
 
 } // namespace dmrpp
 

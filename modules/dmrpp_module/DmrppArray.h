@@ -43,8 +43,8 @@ private:
 			Dim_iter p,
 			unsigned long *target_index,
 			vector<unsigned int> &subsetAddress,
-			const vector<unsigned int> &array_shape
-			);
+			const vector<unsigned int> &array_shape,
+			H4ByteStream *h4bytestream);
 
 
 public:

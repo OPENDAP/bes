@@ -42,20 +42,24 @@ class DmrppCommon {
 private:
 	std::vector<H4ByteStream> d_chunk_refs;
 
+#if 0
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
     // operator.
     unsigned long long d_bytes_read;
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
+#endif
 
 protected:
     void _duplicate(const DmrppCommon &dc) {
+
+#if 0
         // See above
     	d_bytes_read = 0;
     	d_read_buffer = 0;
     	d_read_buffer_size = 0;
-
+#endif
     	d_chunk_refs =  dc.d_chunk_refs;
     }
 
@@ -68,15 +72,12 @@ protected:
     }
 
 public:
-    DmrppCommon() :
-    	d_bytes_read(0),
-    	d_read_buffer(0),
-    	d_read_buffer_size(0) { }
+    DmrppCommon() { }
 
     DmrppCommon(const DmrppCommon &dc) { _duplicate(dc); }
 
     virtual ~DmrppCommon() {
-    	delete[] d_read_buffer;
+    	// delete[] d_read_buffer;
     }
 
     /**
@@ -147,7 +148,6 @@ public:
      */
     virtual void set_uuid(const std::string uuid) { d_uuid = uuid; }
 
-#endif
 
     /**
      * @brief Get the size of this variable's data block
@@ -189,6 +189,7 @@ public:
     virtual unsigned long long get_rbuf_size() {
     	return d_read_buffer_size;
     }
+#endif
 
 
 

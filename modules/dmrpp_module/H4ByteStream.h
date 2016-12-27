@@ -78,7 +78,10 @@ public:
 			d_size(size),
 			d_offset(offset),
     		d_md5(md5),
-			d_uuid(uuid){
+			d_uuid(uuid),
+	    	d_bytes_read(0),
+	    	d_read_buffer(0),
+	    	d_read_buffer_size(0) {
     	ingest_position_in_array(position_in_array);
     }
 
@@ -156,6 +159,8 @@ public:
 		d_read_buffer_size = size;
 		set_bytes_read(0);
    }
+
+   virtual void set_rbuf_to_size() { rbuf_size(d_size);}
 
    /**
     * Returns a pointer to the memory buffer for this byteStream. The

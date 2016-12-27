@@ -80,27 +80,13 @@ DmrppFloat32::operator=(const DmrppFloat32 &rhs)
 bool
 DmrppFloat32::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppFloat32::read for " << name() << endl);
-
-    if (read_p())
-        return true;
-
-    // FIXME
-
-    set_read_p(true);
-
-    return true;
-#endif
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (read_p())
         return true;
 
-    rbuf_size(sizeof(dods_float32));
-
-    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    if(chunk_refs.size() == 0){
+    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+    if((*chunk_refs).size() == 0){
         ostringstream oss;
         oss << "DmrppFloat32::read() - Unable to obtain a byteStream object for DmrppFloat32 " << name()
         		<< " Without a byteStream we cannot read! "<< endl;
@@ -108,29 +94,31 @@ DmrppFloat32::read()
     }
     else {
 		BESDEBUG("dmrpp", "DmrppFloat32::read() - Found H4ByteStream (chunks): " << endl);
-    	for(unsigned long i=0; i<chunk_refs.size(); i++){
-    		BESDEBUG("dmrpp", "DmrppFloat32::read() - chunk[" << i << "]: " << chunk_refs[i].to_string() << endl);
+    	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
+    		BESDEBUG("dmrpp", "DmrppFloat32::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
     	}
     }
     // For now we only handle the one chunk case.
-    H4ByteStream h4bs = chunk_refs[0];
+    H4ByteStream h4bs = (*chunk_refs)[0];
+    h4bs.set_rbuf_to_size();
+
     // Do a range get with libcurl
     // Slice 'this' to just the DmrppCommon parts. Needed because the generic
     // version of the 'write_data' callback only knows about DmrppCommon. Passing
     // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
     // will leave the code using garbage memory. jhrg 11/23/16
     BESDEBUG("dmrpp", "DmrppFloat32::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-    curl_read_bytes(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<DmrppCommon*>(this));
+    curl_read_byteStream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4bs));
 
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
-    if (sizeof(dods_float32) != get_bytes_read()) {
+    if (sizeof(dods_float32) != h4bs.get_bytes_read()) {
         ostringstream oss;
         oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_float32)
-            << " but found " << get_bytes_read() << endl;
+            << " but found " << h4bs.get_bytes_read() << endl;
         throw BESError(oss.str(),BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
-    set_value(*reinterpret_cast<dods_float32*>(get_rbuf()));
+    set_value(*reinterpret_cast<dods_float32*>(h4bs.get_rbuf()));
 
     set_read_p(true);
 

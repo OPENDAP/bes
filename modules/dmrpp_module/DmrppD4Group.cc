@@ -103,13 +103,6 @@ void DmrppD4Group::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-#if 0
-    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
-    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
-#endif
     vector<H4ByteStream> chunk_refs = get_immutable_chunks();
     strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
     		<< (chunk_refs.size()?"":"None Found.") << endl;

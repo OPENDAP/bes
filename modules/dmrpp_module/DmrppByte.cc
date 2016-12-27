@@ -82,38 +82,37 @@ bool DmrppByte::read()
     if (read_p())
         return true;
 
-    rbuf_size(sizeof(dods_byte));
-
-    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    if(chunk_refs.size() == 0){
+    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+    if((*chunk_refs).size() == 0){
         ostringstream oss;
-        oss << "DmrppByte::read() - Unable to obtain a byteStream objects for array " << name()
+        oss << "DmrppByte::read() - Unable to obtain byteStream objects for array " << name()
         		<< " Without a byteStream we cannot read! "<< endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     else {
 		BESDEBUG("dmrpp", "DmrppByte::read() - Found H4ByteStream (chunks): " << endl);
-    	for(unsigned long i=0; i<chunk_refs.size(); i++){
-    		BESDEBUG("dmrpp", "DmrppByte::read() - chunk[" << i << "]: " << chunk_refs[i].to_string() << endl);
+    	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
+    		BESDEBUG("dmrpp", "DmrppByte::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
     	}
     }
 
     // For now we only handle the one chunk case.
-    H4ByteStream h4bs = chunk_refs[0];
+    H4ByteStream h4_byte_stream = (*chunk_refs)[0];
+    h4_byte_stream.set_rbuf_to_size();
+    // First cut at subsetting; read the whole thing and then subset that.
+    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4_byte_stream.get_size() << " bytes from "<< h4_byte_stream.get_data_url() << ": " << h4_byte_stream.get_curl_range_arg_string() << endl);
 
-    // Do a range get with libcurl
-    BESDEBUG("dmrpp", "DmrppByte::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-    curl_read_bytes(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<DmrppCommon*>(this));
+    curl_read_byteStream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4_byte_stream));
 
-    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
-    if (sizeof(dods_byte) != get_bytes_read()) {
+    // If the expected byte count was not read, it's an error.
+    if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {
         ostringstream oss;
-        oss << "DmrppByte: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_byte)
-            << " but found " << get_bytes_read() << endl;
+        oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << h4_byte_stream.get_size()
+            << " but found " << h4_byte_stream.get_bytes_read() << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
-    set_value(*reinterpret_cast<dods_byte*>(get_rbuf()));
+    set_value(*reinterpret_cast<dods_byte*>(h4_byte_stream.get_rbuf()));
 
     set_read_p(true);
 
@@ -124,15 +123,8 @@ void DmrppByte::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppByte::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-#if 0
-    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
-    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
-#endif
     vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
+    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks): "
     		<< (chunk_refs.size()?"":"None Found.") << endl;
     DapIndent::Indent();
     for(unsigned int i=0; i<chunk_refs.size() ;i++){
