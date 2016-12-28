@@ -55,6 +55,20 @@ private:
 
 protected:
 
+    void _duplicate(const H4ByteStream &bs) {
+        // See above
+    	d_bytes_read = 0;
+    	d_read_buffer = 0;
+    	d_read_buffer_size = 0;
+    	// These vars are easy to duplicate.
+        d_size   = bs.d_size;
+        d_offset = bs.d_offset;
+        d_md5    = bs.d_md5;
+        d_uuid   = bs.d_uuid;
+        d_data_url   = bs.d_data_url;
+        d_chunk_position_in_array = bs.d_chunk_position_in_array;
+    }
+
 public:
 
     H4ByteStream():
@@ -85,19 +99,13 @@ public:
     	ingest_position_in_array(position_in_array);
     }
 
-    void _duplicate(const H4ByteStream &bs) {
-        // See above
-    	d_bytes_read = 0;
-    	d_read_buffer = 0;
-    	d_read_buffer_size = 0;
-    	// These vars are easy to duplicate.
-        d_size   = bs.d_size;
-        d_offset = bs.d_offset;
-        d_md5    = bs.d_md5;
-        d_uuid   = bs.d_uuid;
-        d_data_url   = bs.d_data_url;
-        d_chunk_position_in_array = bs.d_chunk_position_in_array;
+    H4ByteStream(const H4ByteStream &h4bs){
+    	_duplicate(h4bs);
     }
+
+    virtual ~H4ByteStream(){}
+
+
     /**
      * @brief Get the size of this byteStream's data block
      */
