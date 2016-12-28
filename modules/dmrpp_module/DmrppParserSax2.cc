@@ -841,25 +841,26 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         	break;
 
         case inside_h4_object:
+        {
             if (parser->debug()) cerr << "Inside hdf4 namespaced element. localname: " << localname << endl;
+            assert( this_element_ns_name == hdf4_namespace);
 
-            if (strcmp(localname, "chunks") == 0 && this_element_ns_name == hdf4_namespace) {
+            parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+
+            BaseType *bt = parser->top_basetype();
+            if (!bt)
+                throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
+
+            DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
+            if (!dc)
+                throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+
+            if (strcmp(localname, "chunks") == 0) {
                 if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
-
-                parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
-
-                DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
-                if (!dc)
-                    throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
-
-                BaseType *bt = parser->top_basetype();
-                if (!bt)
-                    throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
 
                 // This bit of magic sets the URL used to get the data and it's
                 // magic in part because it may be a file or an http URL
                 unsigned int deflate_level = 0;
-
 
                 if (parser->check_attribute("deflate_level")) {
                     istringstream deflate_level_ss(parser->xml_attrs["deflate_level"].value);
@@ -882,36 +883,16 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     if (parser->debug()) cerr << "There was no 'compressionType' attribute associated with the variable '"
                     		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
                 }
-
             }
-
-            if (strcmp(localname, "chunkDimensionSizes") == 0 && this_element_ns_name == hdf4_namespace) {
+            else if (strcmp(localname, "chunkDimensionSizes") == 0) {
                 if (parser->debug()) cerr << "Inside HDF4 chunkDimensionSizes element. localname: " << localname << endl;
-                parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
-
-                DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
-                if (!dc)
-                    throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
-
-                BaseType *bt = parser->top_basetype();
-                if (!bt)
-                    throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
 
                 dc->ingest_chunk_dimension_sizes(parser->char_data);
                 if (parser->debug()) cerr << "Processed 'chunkDimensionSizes' value string '"<< parser->char_data << "'" << endl;
             }
-
-            if (strcmp(localname, "byteStream") == 0 && this_element_ns_name == hdf4_namespace) {
+            else if (strcmp(localname, "byteStream") == 0) {
                 // Check for a h4:byteStream and process if found
                 // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
-
-                if (parser->debug()) cerr << "Inside HDF4 byteStream: " << localname << endl;
-
-                parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
-
-                DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
-                if (!dc)
-                    throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
                 // This bit of magic sets the URL used to get the data and it's
                 // magic in part because it may be a file or an http URL
@@ -921,7 +902,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 string md5="";
                 string uuid="";
                 string chunk_position_in_array="";
-
 
                 if (parser->check_required_attribute("offset")) {
                     istringstream offset_ss(parser->xml_attrs["offset"].value);
@@ -970,6 +950,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 }
                 dc->add_chunk(data_url,size,offset,md5,uuid,chunk_position_in_array);
             }
+        }
         	break;
 
         case parser_unknown:
