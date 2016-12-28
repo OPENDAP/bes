@@ -25,7 +25,6 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = . unit-tests bes-testsuite data
-DIST_SUBDIRS = unit-tests bes-testsuite data
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
