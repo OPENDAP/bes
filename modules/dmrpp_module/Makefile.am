@@ -24,7 +24,8 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = . unit-tests bes-testsuite
+SUBDIRS = . unit-tests bes-testsuite data
+DIST_SUBDIRS = unit-tests bes-testsuite data
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
@@ -80,9 +81,6 @@ uninstall-local:
 
 dmrpp.conf: dmrpp.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dmrpp.conf
-
-# endian_convert: endian_convert.o
-#	gcc -o endian_convert endian_convert.cc
 
 distclean-local:
 

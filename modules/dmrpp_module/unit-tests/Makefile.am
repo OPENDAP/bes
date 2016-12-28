@@ -61,6 +61,8 @@ check-local:
 	@echo ""
 endif
 
+# The VPATH and SRCS are not used. We link with the library even though
+# that results in warnings that are annoying. jhrg 12/28/16
 VPATH = src:../
 
 SRCS = DmrppArray.cc DmrppByte.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc\
@@ -69,17 +71,16 @@ DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
 DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
 DmrppTypeFactory.cc DrmppCommon.h
 
-
 # Linking with the .so modules produces a warning, but lets ignore it.
 # The alternative is to link with objects in the parent dir _but_, we
 # still will get a warning rom linking with the bes dap module which
 # we have to link against since we're using BESDapError. jhrg 11/21/16
 
-DmrppParserTest_SOURCES = DmrppParserTest.cc $(SRCS)
+DmrppParserTest_SOURCES = DmrppParserTest.cc
 DmrppParserTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc $(SRCS) 
+DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
 DmrppTypeReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc $(SRCS) 
+DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
 DmrppHttpReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
