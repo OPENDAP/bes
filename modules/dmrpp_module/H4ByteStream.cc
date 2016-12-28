@@ -42,15 +42,26 @@ H4ByteStream::ingest_position_in_array(string pia){
 	if(d_chunk_position_in_array.size())
 		d_chunk_position_in_array.clear();
 
-	string space = " ";
+    string open_sqr_brckt("[");
+    string close_sqr_brckt("]");
+	string comma(",");
 	size_t strPos = 0;
-	string strVal;
+    string strVal;
 
-	while ((strPos = pia.find(space)) != string::npos) {
+    // Drop leading square bracket
+    if (!pia.compare(0, 1, open_sqr_brckt))
+		pia.erase(0, 1);
+
+    // Drop trailing square bracket
+   if (!pia.compare(pia.length()-1, 1, close_sqr_brckt))
+		pia.erase(pia.length()-1, 1);
+
+   // Process comma delimited content
+	while ((strPos = pia.find(comma)) != string::npos) {
 		strVal = pia.substr(0, strPos);
 		BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
 		d_chunk_position_in_array.push_back(strtol(strVal.c_str(),NULL,10));
-		pia.erase(0, strPos + space.length());
+		pia.erase(0, strPos + comma.length());
 	}
 }
 

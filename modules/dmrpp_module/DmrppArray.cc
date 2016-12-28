@@ -237,6 +237,7 @@ DmrppArray::read()
     // For now we only handle the one chunk case.
     H4ByteStream h4_byte_stream = (*chunk_refs)[0];
     h4_byte_stream.set_rbuf_to_size();
+
     // First cut at subsetting; read the whole thing and then subset that.
     BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4_byte_stream.get_size() << " bytes from "<< h4_byte_stream.get_data_url() << ": " << h4_byte_stream.get_curl_range_arg_string() << endl);
 

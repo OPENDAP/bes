@@ -648,9 +648,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
     string this_element_ns_name(URI ? (char *)URI: "null");
 
-    if (parser->debug()) cerr << "Start element " << localname << "  prefix:  "<< (prefix?(char *)prefix:"null")
-        << "  ns: " << this_element_ns_name  << " (state: " << states[parser->get_state()] << ")" << endl;
-
     if (parser->get_state() != parser_error) {
         string dap4_ns_name = DapXmlNamspaces::getDapNamespaceString(DAP_4_0);
         if (parser->debug()) cerr << "dap4_ns_name:         " << dap4_ns_name << endl;
@@ -664,6 +661,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         	parser->push_state(not_dap4_element);
         }
     }
+
+    if (parser->debug()) cerr << "Start element " << localname << "  prefix:  "<< (prefix?(char *)prefix:"null")
+        << "  ns: " << this_element_ns_name  << " (state: " << states[parser->get_state()] << ")" << endl;
 
     switch (parser->get_state()) {
         case parser_start:
@@ -843,6 +843,64 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         case inside_h4_object:
             if (parser->debug()) cerr << "Inside hdf4 namespaced element. localname: " << localname << endl;
 
+            if (strcmp(localname, "chunks") == 0 && this_element_ns_name == hdf4_namespace) {
+                if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
+
+                parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+
+                DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
+                if (!dc)
+                    throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+
+                BaseType *bt = parser->top_basetype();
+                if (!bt)
+                    throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
+
+                // This bit of magic sets the URL used to get the data and it's
+                // magic in part because it may be a file or an http URL
+                unsigned int deflate_level = 0;
+
+
+                if (parser->check_attribute("deflate_level")) {
+                    istringstream deflate_level_ss(parser->xml_attrs["deflate_level"].value);
+                    deflate_level_ss >> deflate_level;
+                    dc->set_deflate_level(deflate_level);
+                    if (parser->debug()) cerr << "Processed attribute 'deflate_level=\""<< deflate_level << "\"'" << endl;
+                }
+                else {
+                    if (parser->debug()) cerr << "There was no 'deflate_level' attribute associated with the variable '"
+                    		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
+                }
+
+                if (parser->check_attribute("compressionType")) {
+                    string compression_type_string(parser->xml_attrs["compressionType"].value);
+                    dc->ingest_compression_type(compression_type_string);
+
+                    if (parser->debug()) cerr << "Processed attribute 'compressionType=\""<< compression_type_string << "\"'" << endl;
+                }
+                else {
+                    if (parser->debug()) cerr << "There was no 'compressionType' attribute associated with the variable '"
+                    		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
+                }
+
+            }
+
+            if (strcmp(localname, "chunkDimensionSizes") == 0 && this_element_ns_name == hdf4_namespace) {
+                if (parser->debug()) cerr << "Inside HDF4 chunkDimensionSizes element. localname: " << localname << endl;
+                parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+
+                DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
+                if (!dc)
+                    throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+
+                BaseType *bt = parser->top_basetype();
+                if (!bt)
+                    throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
+
+                dc->ingest_chunk_dimension_sizes(parser->char_data);
+                if (parser->debug()) cerr << "Processed 'chunkDimensionSizes' value string '"<< parser->char_data << "'" << endl;
+            }
+
             if (strcmp(localname, "byteStream") == 0 && this_element_ns_name == hdf4_namespace) {
                 // Check for a h4:byteStream and process if found
                 // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
@@ -868,7 +926,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("offset")) {
                     istringstream offset_ss(parser->xml_attrs["offset"].value);
                     offset_ss >> offset;
-                    //dc->set_offset(offset);
                     if (parser->debug()) cerr << "Processed attribute 'offset=\""<< offset << "\"'" << endl;
                 }
                 else {
@@ -878,7 +935,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("nBytes")) {
                     istringstream size_ss(parser->xml_attrs["nBytes"].value);
                     size_ss >> size;
-                    //dc->set_size(size);
                     if (parser->debug()) cerr << "Processed attribute 'nBytes=\""<< size << "\"'" << endl;
                 }
                 else {
@@ -888,7 +944,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("md5")) {
                     istringstream md5_ss(parser->xml_attrs["md5"].value);
                     md5 = md5_ss.str();
-                    //dc->set_md5(md5);
                     if (parser->debug()) cerr << "Found attribute 'md5' value: "<< md5_ss.str() << endl;
 
                 }
@@ -899,7 +954,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->check_required_attribute("uuid")) {
                     istringstream uuid_ss(parser->xml_attrs["uuid"].value);
                     uuid = uuid_ss.str();
-                    //dc->set_uuid(uuid);
                     if (parser->debug()) cerr << "Found attribute 'uuid' value: "<< uuid_ss.str() << endl;
                 }
                 else {

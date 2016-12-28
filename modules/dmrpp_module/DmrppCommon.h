@@ -35,31 +35,25 @@ namespace dmrpp {
  * Interface for the size and offset information of data described by
  * DMR++ files.
  */
+
 class DmrppCommon {
 
 	friend class DmrppTypeReadTest;
 
 private:
+	unsigned int d_deflate_level;
+	bool d_compression_type_deflate;
+	bool d_compression_type_shuffle;
+	std::vector<unsigned int> d_chunk_dimension_sizes;
 	std::vector<H4ByteStream> d_chunk_refs;
 
-#if 0
-    // These are used only during the libcurl callback;
-    // they are not duplicated by the copy ctor or assignment
-    // operator.
-    unsigned long long d_bytes_read;
-    char *d_read_buffer;
-    unsigned long long d_read_buffer_size;
-#endif
 
 protected:
     void _duplicate(const DmrppCommon &dc) {
-
-#if 0
-        // See above
-    	d_bytes_read = 0;
-    	d_read_buffer = 0;
-    	d_read_buffer_size = 0;
-#endif
+    	d_deflate_level =  dc.d_deflate_level;
+    	d_compression_type_deflate = dc.d_compression_type_deflate;
+    	d_compression_type_shuffle = dc.d_compression_type_shuffle;
+    	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunk_refs =  dc.d_chunk_refs;
     }
 
@@ -72,12 +66,47 @@ protected:
     }
 
 public:
-    DmrppCommon() { }
+    DmrppCommon():
+    	d_deflate_level(0),
+		d_compression_type_deflate(false),
+		d_compression_type_shuffle(false){ }
 
     DmrppCommon(const DmrppCommon &dc) { _duplicate(dc); }
 
     virtual ~DmrppCommon() {
     	// delete[] d_read_buffer;
+    }
+
+
+    /**
+     * @brief Returns true if this object utilizes deflate compression.
+     */
+    virtual bool is_deflate_compression(){
+        return d_compression_type_deflate;
+    }
+
+    /**
+     * @brief Returns true if this object utilizes shuffle compression.
+     */
+    virtual bool is_shuffle_compression(){
+        return d_compression_type_shuffle;
+    }
+
+    /**
+     * @brief Sets the deflate level for this object to deflate_level.
+     * Returns the previous valu of deflate level.
+     */
+    virtual unsigned int set_deflate_level(unsigned int deflate_level){
+    	unsigned int old_level = deflate_level;
+    	d_deflate_level = deflate_level;
+    	return old_level;
+    }
+
+    /**
+     * @brief Returns the current value of this objects deflate level.
+     */
+    virtual unsigned int get_deflate_level(){
+    	return d_deflate_level;
     }
 
     /**
@@ -101,7 +130,21 @@ public:
     	return d_chunk_refs;
     }
 
-#if 0
+
+    /**
+     * @brief Parses the text content of the XML element h4:chunkDimensionSizes
+     * into the internal vector<unsigned int> representation.
+     */
+    virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+
+    /**
+     * @brief Parses the text content of the XML element h4:chunkDimensionSizes
+     * into the internal vector<unsigned int> representation.
+     */
+    virtual void ingest_compression_type(std::string compression_type_string);
+
+
+#if 0     // This block Moved to H4ByteStream
     /**
      * @brief Get the size of this variable's data block
      */
@@ -191,6 +234,53 @@ public:
     }
 #endif
 
+#if 0
+    bool readAtomic()
+    {
+        // BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
+
+        if (read_p())
+            return true;
+
+        vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+        if((*chunk_refs).size() == 0){
+            ostringstream oss;
+            oss << "DmrppByte::read() - Unable to obtain byteStream objects for " << name()
+            		<< " Without a byteStream we cannot read! "<< endl;
+            throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
+        else {
+    		//BESDEBUG("dmrpp", "DmrppByte::read() - Found H4ByteStream (chunks): " << endl);
+        	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
+        		//BESDEBUG("dmrpp", "DmrppByte::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+        	;
+        	}
+        }
+
+        // For now we only handle the one chunk case.
+        H4ByteStream h4_byte_stream = (*chunk_refs)[0];
+        h4_byte_stream.set_rbuf_to_size();
+        // First cut at subsetting; read the whole thing and then subset that.
+       // BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4_byte_stream.get_size() << " bytes from "<< h4_byte_stream.get_data_url() << ": " << h4_byte_stream.get_curl_range_arg_string() << endl);
+
+        curl_read_byteStream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4_byte_stream));
+
+        // If the expected byte count was not read, it's an error.
+        if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {
+            ostringstream oss;
+            oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << h4_byte_stream.get_size()
+                << " but found " << h4_byte_stream.get_bytes_read() << endl;
+            throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
+
+        set_value(*reinterpret_cast<dods_byte*>(h4_byte_stream.get_rbuf()));
+
+        set_read_p(true);
+
+        return true;
+    }
+
+#endif
 
 
 };

@@ -29,7 +29,7 @@ SUBDIRS = . unit-tests bes-testsuite
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = H4ByteStream.cc \
+BES_SRCS = DmrppCommon.cc H4ByteStream.cc \
 DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
 DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
 DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
