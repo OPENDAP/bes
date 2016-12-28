@@ -855,6 +855,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             if (!dc)
                 throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
+            // Ingest the h4:chunks element and it attributes
             if (strcmp(localname, "chunks") == 0) {
                 if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
 
@@ -884,12 +885,14 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
                 }
             }
+            // Ingest the h4:chunkDimensionSizes element text content
             else if (strcmp(localname, "chunkDimensionSizes") == 0) {
                 if (parser->debug()) cerr << "Inside HDF4 chunkDimensionSizes element. localname: " << localname << endl;
 
                 dc->ingest_chunk_dimension_sizes(parser->char_data);
                 if (parser->debug()) cerr << "Processed 'chunkDimensionSizes' value string '"<< parser->char_data << "'" << endl;
             }
+            // Ingest an h4:byteStream element and its attributes
             else if (strcmp(localname, "byteStream") == 0) {
                 // Check for a h4:byteStream and process if found
                 // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
