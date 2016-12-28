@@ -1469,7 +1469,7 @@ void DmrppParserSax2::intern(const string &document, DMR *dest_dmr, bool debug)
  * @param document Read the DMR from this string.
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
- * @param debug If true, ouput helpful debugging messages, False by default
+ * @param debug If true, output helpful debugging messages, False by default
  *
  * @exception Error Thrown if the XML document could not be read or parsed.
  * @exception InternalErr Thrown if an internal error is found.
