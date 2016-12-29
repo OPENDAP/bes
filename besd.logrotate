@@ -1,8 +1,17 @@
 /var/log/bes/*log {
+    # BES logs are pretty verbose even when verbose mode is
+    # off, so until we get that under control, rotate every
+    # day. Keep one week plus a day.
+    daily
+    rotate 8
+    
     missingok
     notifempty
     sharedscripts
+    
+    compress
     delaycompress
+    
     postrotate
 	# This is a brute-force way to get the BES to rotate its
 	# log. The tomcat will end any current access that does
