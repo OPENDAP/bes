@@ -104,14 +104,7 @@ void DmrppUrl::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
-    		<< (chunk_refs.size()?"":"None Found.") << endl;
-    DapIndent::Indent();
-    for(unsigned int i=0; i<chunk_refs.size() ;i++){
-        strm << DapIndent::LMarg << chunk_refs[i].to_string() << endl;
-    }
-    DapIndent::UnIndent();
+    DmrppCommon::dump(strm);
     Url::dump(strm);
     strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();

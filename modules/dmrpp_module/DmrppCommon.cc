@@ -25,12 +25,14 @@
 #include <string>
 #include <vector>
 
+#include <DapIndent.h>
 #include <BESDebug.h>
 
 #include "DmrppCommon.h"
 #include "H4ByteStream.h"
 
 using namespace std;
+using namespace libdap;
 
 namespace dmrpp {
 /**
@@ -52,13 +54,20 @@ namespace dmrpp {
     	size_t strPos = 0;
         string strVal;
 
-       // Process comma delimited content
-    	while ((strPos = chunk_dim_sizes_string.find(space)) != string::npos) {
-    		strVal = chunk_dim_sizes_string.substr(0, strPos);
-    		BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
-    		d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(),NULL,10));
-    		chunk_dim_sizes_string.erase(0, strPos + space.length());
-    	}
+        // Are there spaces or multiple values?
+        if(chunk_dim_sizes_string.find(space) != string::npos){
+            // Process space delimited content
+			while ((strPos = chunk_dim_sizes_string.find(space)) != string::npos) {
+				strVal = chunk_dim_sizes_string.substr(0, strPos);
+				BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
+				d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(),NULL,10));
+				chunk_dim_sizes_string.erase(0, strPos + space.length());
+			}
+        }
+        else {
+        	// It may be single valued, let's try that.
+			d_chunk_dimension_sizes.push_back(strtol(chunk_dim_sizes_string.c_str(),NULL,10));
+        }
     }
 
     void
@@ -89,6 +98,54 @@ namespace dmrpp {
 				"d_compression_type_shuffle: " << (d_compression_type_shuffle?"true":"false") <<
 				"d_compression_type_deflate: " << (d_compression_type_deflate?"true":"false") << endl);
     }
+
+    /**
+     * @brief Add a new chunk as defined by an h4:byteStream element
+     * @return The number of chunk refs (byteStreams) held.
+     */
+    unsigned long
+	DmrppCommon::add_chunk(std::string data_url,
+    		unsigned long long size,
+			unsigned long long offset,
+			std::string md5,
+			std::string uuid,
+			std::string position_in_array){
+
+    	d_chunk_refs.push_back(
+    			H4ByteStream(data_url,size,offset,md5,uuid,position_in_array)
+				);
+
+		BESDEBUG("dmrpp", "DmrppCommon::add_chunk() - Added chunk " << d_chunk_refs.size()  << ": "
+				<< 		d_chunk_refs.back().to_string() << endl);
+
+    	return d_chunk_refs.size();
+    }
+    void DmrppCommon::dump(ostream & strm) const {
+        strm << DapIndent::LMarg << "is_deflate:             " << (is_deflate_compression()?"true":"false") << endl;
+        strm << DapIndent::LMarg << "deflate_level:          " << (get_deflate_level()?"true":"false") << endl;
+        strm << DapIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression()?"true":"false") << endl;
+
+        vector<unsigned int> chunk_dim_sizes = get_chunk_dimension_sizes();
+
+        strm << DapIndent::LMarg << "chunk dimension sizes:  [";
+        for(unsigned int i=0; i<chunk_dim_sizes.size() ;i++){
+            strm << (i?"][":"") << chunk_dim_sizes[i];
+        }
+        strm << "]" << endl;
+
+        vector<H4ByteStream> chunk_refs = get_immutable_chunks();
+        strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
+        		<< (chunk_refs.size()?"":"None Found.") << endl;
+        DapIndent::Indent();
+        for(unsigned int i=0; i<chunk_refs.size() ;i++){
+            strm << DapIndent::LMarg;
+            chunk_refs[i].dump(strm);
+            strm << endl;
+        }
+        DapIndent::UnIndent();
+
+    }
+
 
 } // namepsace dmrpp
 

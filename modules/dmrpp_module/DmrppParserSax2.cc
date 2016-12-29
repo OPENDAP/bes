@@ -92,6 +92,7 @@ static const char *states[] = {
         // FIXME "inside_h4_byte_stream",
         "not_dap4_element",
         "inside_h4_object",
+		"inside_h4_chunkDimensionSizes_element",
 
         "parser_unknown",
         "parser_error",
@@ -653,8 +654,17 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (parser->debug()) cerr << "dap4_ns_name:         " << dap4_ns_name << endl;
 
         if (this_element_ns_name == hdf4_namespace) {
-            if (parser->debug()) cerr << "Start of element in hdf4 namespace: " << localname << " detected." << endl;
-        	parser->push_state(inside_h4_object);
+            if (strcmp(localname, "chunkDimensionSizes") == 0) {
+                if (parser->debug()) cerr << "Found h4:chunkDimensionSizes element. Pushing state." << endl;
+                parser->push_state(inside_h4_chunkDimensionSizes_element);
+            }
+            else {
+				if (parser->debug()) cerr << "Start of element in hdf4 namespace: " << localname << " detected." << endl;
+				parser->push_state(inside_h4_object);
+				// Ingest the h4:chunkDimensionSizes element text content
+            }
+
+
         }
         else if (this_element_ns_name != dap4_ns_name) {
             if (parser->debug()) cerr << "Start of non DAP4 element: " << localname << " detected." << endl;
@@ -885,13 +895,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
                 }
             }
-            // Ingest the h4:chunkDimensionSizes element text content
-            else if (strcmp(localname, "chunkDimensionSizes") == 0) {
-                if (parser->debug()) cerr << "Inside HDF4 chunkDimensionSizes element. localname: " << localname << endl;
-
-                dc->ingest_chunk_dimension_sizes(parser->char_data);
-                if (parser->debug()) cerr << "Processed 'chunkDimensionSizes' value string '"<< parser->char_data << "'" << endl;
-            }
             // Ingest an h4:byteStream element and its attributes
             else if (strcmp(localname, "byteStream") == 0) {
                 // Check for a h4:byteStream and process if found
@@ -955,6 +958,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             }
         }
         	break;
+
+        case inside_h4_chunkDimensionSizes_element:
+            // The h4:chunkDimensionSizes value is processed by the end element code.
+            break;
 
         case parser_unknown:
         case parser_error:
@@ -1206,6 +1213,23 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         parser->pop_state();
     	break;
 
+    case inside_h4_chunkDimensionSizes_element:
+    {
+        if (parser->debug()) cerr << "End of chunkDimensionSizes element. localname: " << localname << endl;
+
+        if (is_not(localname, "chunkDimensionSizes"))
+            DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(parser->top_basetype());   // Get the Dmrpp common info
+        if (!dc)
+            throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+        string element_text(parser->char_data);
+        if (parser->debug()) cerr << "chunkDimensionSizes element_text: '" << element_text << "'" << endl;
+        dc->ingest_chunk_dimension_sizes(element_text);
+        parser->char_data = ""; // Null this after use.
+        parser->pop_state();
+    	break;
+    }
+
     case parser_unknown:
         parser->pop_state();
         break;
@@ -1230,7 +1254,8 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
 
     switch (parser->get_state()) {
-        case inside_attribute_value:
+    	case inside_attribute_value:
+    	case inside_h4_chunkDimensionSizes_element:
             parser->char_data.append((const char *) (ch), len);
             BESDEBUG(module, "Characters: '" << parser->char_data << "'" << endl);
             break;

@@ -194,6 +194,7 @@ public:
      */
     virtual void ingest_position_in_array(std::string pia);
     virtual std::string get_curl_range_arg_string();
+    virtual void dump(std::ostream & strm) const;
     virtual std::string to_string();
 };
 

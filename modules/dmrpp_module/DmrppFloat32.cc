@@ -130,21 +130,7 @@ void DmrppFloat32::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppFloat32::dump - (" << (void *) this << ")" << endl;
     DapIndent::Indent();
-#if 0
-    strm << DapIndent::LMarg << "offset:   " << get_offset() << endl;
-    strm << DapIndent::LMarg << "size:     " << get_size() << endl;
-    strm << DapIndent::LMarg << "md5:      " << get_md5() << endl;
-    strm << DapIndent::LMarg << "uuid:     " << get_uuid() << endl;
-    strm << DapIndent::LMarg << "data_url: " << get_data_url() << endl;
-#endif
-    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):"
-    		<< (chunk_refs.size()?"":"None Found.") << endl;
-    DapIndent::Indent();
-    for(unsigned int i=0; i<chunk_refs.size() ;i++){
-        strm << DapIndent::LMarg << chunk_refs[i].to_string() << endl;
-    }
-    DapIndent::UnIndent();
+    DmrppCommon::dump(strm);
     Float32::dump(strm);
     strm << DapIndent::LMarg << "value:    " << d_buf << endl;
     DapIndent::UnIndent();

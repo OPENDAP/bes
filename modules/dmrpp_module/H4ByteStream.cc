@@ -36,33 +36,50 @@ namespace dmrpp {
 
 void
 H4ByteStream::ingest_position_in_array(string pia){
-	if(!pia.length())
-		return;
-	// Clear the thing if it's got stuff in it.
-	if(d_chunk_position_in_array.size())
-		d_chunk_position_in_array.clear();
+	BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  BEGIN" << " -  Parsing: " << pia << "'" << endl);
 
-    string open_sqr_brckt("[");
-    string close_sqr_brckt("]");
-	string comma(",");
-	size_t strPos = 0;
-    string strVal;
+	if(!pia.empty()){
+		BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  string '"<< pia << "' is not empty." << endl);
+		// Clear the thing if it's got stuff in it.
+		if(d_chunk_position_in_array.size())
+			d_chunk_position_in_array.clear();
 
-    // Drop leading square bracket
-    if (!pia.compare(0, 1, open_sqr_brckt))
-		pia.erase(0, 1);
+	    string open_sqr_brckt("[");
+	    string close_sqr_brckt("]");
+		string comma(",");
+		size_t strPos = 0;
+	    string strVal;
 
-    // Drop trailing square bracket
-   if (!pia.compare(pia.length()-1, 1, close_sqr_brckt))
-		pia.erase(pia.length()-1, 1);
+	    // Drop leading square bracket
+	    if (!pia.compare(0, 1, open_sqr_brckt)){
+			pia.erase(0, 1);
+			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  dropping leading '[' result: '"<< pia << "'" << endl);
+	    }
 
-   // Process comma delimited content
-	while ((strPos = pia.find(comma)) != string::npos) {
-		strVal = pia.substr(0, strPos);
-		BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
-		d_chunk_position_in_array.push_back(strtol(strVal.c_str(),NULL,10));
-		pia.erase(0, strPos + comma.length());
+	    // Drop trailing square bracket
+	   if (!pia.compare(pia.length()-1, 1, close_sqr_brckt)){
+			pia.erase(pia.length()-1, 1);
+			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  dropping trailing ']' result: '"<< pia << "'" << endl);
+	   }
+
+	   // Is it multi-valued? We check for commas  to find out.
+	   if((strPos = pia.find(comma)) != string::npos){
+			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  Position string appears to contain multiple values..." << endl);
+		   // Process comma delimited content
+			while ((strPos = pia.find(comma)) != string::npos) {
+				strVal = pia.substr(0, strPos);
+				BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
+				d_chunk_position_in_array.push_back(strtol(strVal.c_str(),NULL,10));
+				pia.erase(0, strPos + comma.length());
+			}
+	   }
+	   else { // It may just have a single value, let's try that!
+			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  Position string appears to have a single value..." << endl);
+			d_chunk_position_in_array.push_back(strtol(pia.c_str(),NULL,10));
+	   }
 	}
+	BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  END" << " -  Parsed " << pia << "'" << endl);
+
 }
 
 /**
@@ -89,9 +106,8 @@ H4ByteStream::get_curl_range_arg_string(){
  *  std::vector<unsigned int> d_chunk_position_in_array;
  *
  */
-std::string
-H4ByteStream::to_string(){
-    ostringstream oss;
+void
+H4ByteStream::dump(ostream &oss) const {
     oss << "H4ByteStream";
     oss << "[data_url='" <<  d_data_url  << "']";
     oss << "[offset=" <<  d_offset  << "]";
@@ -104,6 +120,12 @@ H4ByteStream::to_string(){
 		oss << d_chunk_position_in_array[i];
 	}
 	oss << ")]";
+}
+
+std::string
+H4ByteStream::to_string(){
+	std::ostringstream oss;
+	dump(oss);
 	return oss.str();
 }
 

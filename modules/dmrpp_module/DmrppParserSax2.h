@@ -93,6 +93,7 @@ private:
         // FIXMEinside_h4_byte_stream,
         not_dap4_element,
         inside_h4_object,
+        inside_h4_chunkDimensionSizes_element,
 
         parser_unknown,
         parser_error,

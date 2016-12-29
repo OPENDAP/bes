@@ -48,7 +48,7 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = DmrppParserTest DmrppTypeReadTest DmrppHttpReadTest
+UNIT_TESTS = DmrppParserTest DmrppTypeReadTest DmrppChunkedReadTest DmrppHttpReadTest
 else
 UNIT_TESTS =
 
@@ -81,6 +81,10 @@ DmrppParserTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module 
 
 DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
 DmrppTypeReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+
+DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
+DmrppChunkedReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+
 
 DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
 DmrppHttpReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
