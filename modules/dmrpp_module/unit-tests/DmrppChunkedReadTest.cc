@@ -184,23 +184,25 @@ public:
             read_var_check_name_and_length(d_4_chunks,"d_4_chunks",40000);
             vector<dods_float32> d_4_chunks_vals(d_4_chunks->length());
             d_4_chunks->value(&d_4_chunks_vals[0]);
-            // first element
+            // first element, begin chunk 0
             index = 0;
             test_float32 = 0.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
             CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
 
+            // end of chunk 0
             index = 9999;
             test_float32 = 9999.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
             CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
 
+            // begin chunk 1
             index = 10000;
             test_float32 = 10000.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
             CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
 
-            // last element
+            // end chunk 3
             index = 39999;
             test_float32 = 39999.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
