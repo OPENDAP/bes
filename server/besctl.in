@@ -72,7 +72,7 @@ stopBES()
     then
 	if test $BES_PID
 	then
-	    kill $BES_PID
+	    kill -TERM $BES_PID
 	    retval=$?
 	    if test $retval != 0
 	    then
