@@ -43,6 +43,7 @@ private:
     unsigned long long d_offset;
     std::string d_md5;
     std::string d_uuid;
+    bool d_is_read;
     std::vector<unsigned int> d_chunk_position_in_array;
 
     // These are used only during the libcurl callback;
@@ -60,6 +61,7 @@ protected:
     	d_bytes_read = 0;
     	d_read_buffer = 0;
     	d_read_buffer_size = 0;
+    	d_is_read = false;
     	// These vars are easy to duplicate.
         d_size   = bs.d_size;
         d_offset = bs.d_offset;
@@ -77,6 +79,7 @@ public:
     	d_offset(0),
     	d_md5(""),
     	d_uuid(""),
+		d_is_read(false),
     	d_bytes_read(0),
     	d_read_buffer(0),
     	d_read_buffer_size(0) { }
@@ -93,6 +96,7 @@ public:
 			d_offset(offset),
     		d_md5(md5),
 			d_uuid(uuid),
+			d_is_read(false),
 	    	d_bytes_read(0),
 	    	d_read_buffer(0),
 	    	d_read_buffer_size(0) {
@@ -195,7 +199,9 @@ public:
     virtual void ingest_position_in_array(std::string pia);
     virtual std::string get_curl_range_arg_string();
     virtual void dump(std::ostream & strm) const;
+    virtual void read();
     virtual std::string to_string();
+    virtual std::vector<unsigned int> get_position_in_array() const { return d_chunk_position_in_array;}
 };
 
 } // namespace dmrpp

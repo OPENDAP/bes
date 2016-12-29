@@ -27,8 +27,10 @@
 #include <sstream>
 #include <cstdlib>
 #include <BESDebug.h>
+#include <BESError.h>
 
 #include "H4ByteStream.h"
+#include "DmrppUtil.h"
 
 using namespace std;
 
@@ -122,12 +124,41 @@ H4ByteStream::dump(ostream &oss) const {
 	oss << ")]";
 }
 
+void
+H4ByteStream::read(){
+	if(d_is_read){
+	    BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - Already been read! Returning." << endl);
+		return;
+	}
+
+    set_rbuf_to_size();
+    // First cut at subsetting; read the whole thing and then subset that.
+    BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes from "<< get_data_url() << ": " << get_curl_range_arg_string() << endl);
+    curl_read_byteStream(get_data_url(), get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(this));
+    // If the expected byte count was not read, it's an error.
+    if (get_size() != get_bytes_read()) {
+        ostringstream oss;
+        oss << "H4ByteStream: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
+            << " but found " << get_bytes_read() << endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+}
+
+
+
+
+
+
 std::string
 H4ByteStream::to_string(){
 	std::ostringstream oss;
 	dump(oss);
 	return oss.str();
 }
+
+
+
 
 } // namespace dmrpp
 

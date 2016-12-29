@@ -189,15 +189,20 @@ public:
             test_float32 = 0.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
             CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
-            // last element
+
             index = 9999;
             test_float32 = 9999.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
             CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
 
-            // last element
             index = 10000;
             test_float32 = 10000.0;
+            BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
+
+            // last element
+            index = 39999;
+            test_float32 = 39999.0;
             BESDEBUG("dmrpp", "d_4_chunks_vals[" << index << "]: " << d_4_chunks_vals[index] << "  test_float32: " << test_float32 << endl);
             CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[index], test_float32 ));
 

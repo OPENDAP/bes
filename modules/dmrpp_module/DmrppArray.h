@@ -39,12 +39,15 @@ class DmrppArray: public libdap::Array, public DmrppCommon {
     bool is_projected();
 
 private:
-    void read_constrained(
+    void read_constrained_no_chunks(
 			Dim_iter p,
 			unsigned long *target_index,
 			vector<unsigned int> &subsetAddress,
 			const vector<unsigned int> &array_shape,
 			H4ByteStream *h4bytestream);
+
+    virtual bool read_no_chunks();
+    virtual bool read_chunked();
 
 
 public:

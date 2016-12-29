@@ -130,14 +130,14 @@ unsigned long long get_index(vector<unsigned int> address_in_target, const vecto
  * efficient.
  */
 void
-DmrppArray::read_constrained(
+DmrppArray::read_constrained_no_chunks(
 		Dim_iter dimIter,
 		unsigned long *target_index,
 		vector<unsigned int> &subsetAddress,
 		const vector<unsigned int> &array_shape,
 		H4ByteStream *h4bytestream)
 {
-    BESDEBUG("dmrpp", "DmrppArray::read_constrained() - subsetAddress.size(): " << subsetAddress.size() << endl);
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
     unsigned int bytesPerElt = prototype()->width();
 	char *sourceBuf = h4bytestream->get_rbuf();
@@ -146,7 +146,7 @@ DmrppArray::read_constrained(
 	unsigned int start = this->dimension_start(dimIter);
 	unsigned int stop = this->dimension_stop(dimIter,true);
 	unsigned int stride = this->dimension_stride(dimIter,true);
-    BESDEBUG("dmrpp","DmrppArray::read_constrained() - start: " << start << " stride: " << stride << " stop: " << stop << endl);
+    BESDEBUG("dmrpp","DmrppArray::"<< __func__ << "() - start: " << start << " stride: " << stride << " stop: " << stop << endl);
 
     dimIter++;
 
@@ -154,16 +154,16 @@ DmrppArray::read_constrained(
     // TODO stride == 1 belongs inside this or else rewrite this as if else if else
     // see below.
     if (dimIter == dim_end() && stride == 1) {
-        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stride is 1, copying from all values from start to stop." << endl);
+        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - stride is 1, copying from all values from start to stop." << endl);
 
     	subsetAddress.push_back(start);
 		unsigned int start_index = get_index(subsetAddress,array_shape);
-        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - start_index: " << start_index << endl);
+        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - start_index: " << start_index << endl);
     	subsetAddress.pop_back();
 
     	subsetAddress.push_back(stop);
 		unsigned int stop_index = get_index(subsetAddress,array_shape);
-        BESDEBUG("dmrpp", "DmrppArray::read_constrained() - stop_index: " << start_index << endl);
+        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - stop_index: " << start_index << endl);
     	subsetAddress.pop_back();
 
     	// Copy data block from start_index to stop_index
@@ -185,7 +185,7 @@ DmrppArray::read_constrained(
     			// Nope!
     			// then we recurse to the last dimension to read stuff
     			subsetAddress.push_back(myDimIndex);
-    			read_constrained(dimIter,target_index,subsetAddress, array_shape,h4bytestream);
+    			read_constrained_no_chunks(dimIter,target_index,subsetAddress, array_shape,h4bytestream);
     			subsetAddress.pop_back();
     		}
     		else {
@@ -193,7 +193,7 @@ DmrppArray::read_constrained(
 				// So it's time to copy values.
 				subsetAddress.push_back(myDimIndex);
 				unsigned int sourceIndex = get_index(subsetAddress,array_shape);
-    	        BESDEBUG("dmrpp", "DmrppArray::read_constrained()  - "
+    	        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - "
     	        		"Copying source value at sourceIndex: " << sourceIndex << endl);
 				subsetAddress.pop_back();
 				// Copy a single value.
@@ -213,9 +213,9 @@ DmrppArray::read_constrained(
 // FIXME This version of read() should work for unconstrained accesses where
 // we don't have to think about chunking. jhrg 11/23/16
 bool
-DmrppArray::read()
+DmrppArray::read_no_chunks()
 {
-    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " BEGIN" << endl);
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name()  << " BEGIN" << endl);
 
     if (read_p())
         return true;
@@ -223,36 +223,23 @@ DmrppArray::read()
     vector<H4ByteStream> *chunk_refs = get_chunk_vec();
     if(chunk_refs->size() == 0){
         ostringstream oss;
-        oss << "DmrppArray::read() - Unable to obtain a byteStream object for array " << name()
+        oss << "DmrppArray::"<< __func__ << "() - Unable to obtain a byteStream object for array " << name()
         		<< " Without a byteStream we cannot read! "<< endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     else {
-		BESDEBUG("dmrpp", "DmrppArray::read() - Found chunks: " << endl);
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Found chunks: " << endl);
     	for(unsigned long i=0; i<chunk_refs->size(); i++){
-    		BESDEBUG("dmrpp", "DmrppArray::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+    		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
     	}
     }
 
     // For now we only handle the one chunk case.
     H4ByteStream h4_byte_stream = (*chunk_refs)[0];
-    h4_byte_stream.set_rbuf_to_size();
-
-    // First cut at subsetting; read the whole thing and then subset that.
-    BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4_byte_stream.get_size() << " bytes from "<< h4_byte_stream.get_data_url() << ": " << h4_byte_stream.get_curl_range_arg_string() << endl);
-
-    curl_read_byteStream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4_byte_stream));
-
-    // If the expected byte count was not read, it's an error.
-    if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {
-        ostringstream oss;
-        oss << "DmrppArray: Wrong number of bytes read for '" << name() << "'; expected " << h4_byte_stream.get_size()
-            << " but found " << h4_byte_stream.get_bytes_read() << endl;
-        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-    }
+    h4_byte_stream.read();
 
     if (!is_projected()) {      // if there is no projection constraint
-        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - No projection, copying all values into array. " << endl);
+        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - No projection, copying all values into array. " << endl);
         val2buf(h4_byte_stream.get_rbuf());    // yes, it's not type-safe
     }
     // else
@@ -268,12 +255,12 @@ DmrppArray::read()
         	array_shape.push_back(dimension_size(dim,false));
         	constrained_size *= dimension_size(dim,true);
         }
-        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - constrained_size:  " << constrained_size << endl);
+        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - constrained_size:  " << constrained_size << endl);
 
         reserve_value_capacity(constrained_size);
         unsigned long target_index = 0;
-        read_constrained(dim_begin(), &target_index, subset, array_shape, &h4_byte_stream); // TODO rename; something other than read. jhrg
-        BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
+        read_constrained_no_chunks(dim_begin(), &target_index, subset, array_shape, &h4_byte_stream); // TODO rename; something other than read. jhrg
+        BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Copied " << target_index << " constrained  values." << endl);
 
 
 #if 0  // This code, using the Odometer, doesn't work for stride which makes me think that the Odometer could be improved
@@ -307,7 +294,7 @@ DmrppArray::read()
 
     set_read_p(true);
 
-    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " END"<< endl);
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name()  << " END"<< endl);
 
     return true;
 }
@@ -388,9 +375,125 @@ faux_read()
 }
 #endif
 
+bool
+DmrppArray::read(){
+	if(get_chunk_dimension_sizes().empty()){
+		if(get_immutable_chunks().size()==1){
+			// This handles the case for arrays that have exactly one h4:byteStream
+			// and no chunking setup.
+			return read_no_chunks();
+		}
+		else {
+		    ostringstream oss;
+		    oss << "DmrppArray: Unchunked arrays must have exactly one H4ByteStream object. "
+		    		"This one has " << get_immutable_chunks().size() << endl;
+		    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+		}
+	}
+    // so now we know we are handling the chunks
+	return read_chunked();
+}
+
+
+bool
+DmrppArray::read_chunked(){
+
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name()  << " BEGIN" << endl);
+
+    if (read_p())
+        return true;
+
+    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+    if(chunk_refs->size() == 0){
+        ostringstream oss;
+        oss << "DmrppArray::"<< __func__ << "() - Unable to obtain a byteStream object for array " << name()
+        		<< " Without a byteStream we cannot read! "<< endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+	reserve_value_capacity(length());
+
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
+
+    unsigned int bytesPerElt = prototype()->width();
+
+
+    for(unsigned long i=0; i<chunk_refs->size(); i++){
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+	    H4ByteStream h4bs = (*chunk_refs)[i];
+	    h4bs.read();
+	    char * source_buffer = h4bs.get_rbuf();
+	    char * target_buffer = get_buf();
+	    vector<unsigned int> start_position = h4bs.get_position_in_array();
+	    // oneD case for now.
+	    unsigned long long start = start_position[0] * bytesPerElt;
+
+	    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Start: " << start << endl);
+
+		memcpy(target_buffer+start, source_buffer, h4bs.get_rbuf_size());
+
+	}
+
+
+#if 0
+    if (!is_projected()) {      // if there is no projection constraint
+        BESDEBUG("dmrpp", "No projection, copying all values into array." << endl);
+        val2buf(get_rbuf());    // yes, it's not type-safe
+    }
+    // else
+    // Get the start, stop values for each dimension
+    // Determine the size of the destination buffer (should match length() / width())
+    // Allocate the dest buffer in the array
+    // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
+    else {
+    	switch (dimensions()) {
+    	case 1:
+    		// Access dimension start and stop and use memcpy
+    		unsigned long start = dimension_start(dim_begin(), true);
+
+    		start *= sizeof();
+
+    		reserve_value_capacity(length());
+
+    		memcpy(get_buf(), get_rbuf() + start, width());
+
+
+    		break;
+    	case 2:
+    		// Access outer dim start and stop and use for loop
+    		// Access inner dim start and stop and use memcpy.
+    		break;
+    	default:
+    		// Add general purpose version here
+			throw BESError("The DMR++ hander only supports constraints on one and two-dimensional arrays.",
+					BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    	}
+    }
+
+    set_read_p(true);
+
+    BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " END"<< endl);
+
+    return true;
+    ostringstream oss;
+    oss << "DmrppArray: Reading chunked arrays not implemented '" << endl;
+    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    #endif
+
+
+    return true;
+
+
+
+
+
+
+
+}
 void DmrppArray::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppArray::dump - (" << (void *) this << ")" << endl;
+    strm << DapIndent::LMarg << "DmrppArray::"<< __func__ << "(" << (void *) this << ")" << endl;
     DapIndent::Indent();
     DmrppCommon::dump(strm);
     Array::dump(strm);
