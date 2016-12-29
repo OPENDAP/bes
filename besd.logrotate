@@ -4,15 +4,17 @@
     sharedscripts
     delaycompress
     postrotate
-	# This is  brute-force way to get the BES to rotate its
-	# log. The OLFS will stop any current access that does
-	# not finish in 10s. If the OLFS is not stopped, then 
-	# active beslisteners will hang around and keep the bes
-	# restart from working. Forcing all of the beslisteners
-	# to stop will leave the OLFS in an inconsistent state.
+	# This is a brute-force way to get the BES to rotate its
+	# log. The tomcat will end any current access that does
+	# not finish in 10s after the shutdown command is run, so
+	# active connections will be lost. However, if the OLFS
+	# is not stopped, active beslisteners will hang around
+	# and keep the bes restart from working. Alternatively,
+	# forcing all of the beslisteners to stop will leave the
+	# OLFS in an inconsistent state.
+	#
 	# We will need to add to the admin interface to get a
 	# robust log rotation feature for the BES. jhrg 12/28/16
-
 	/sbin/service tomcat stop > /dev/null 2>&1 || true
         /sbin/service besd stop > /dev/null 2>&1 || true
 
