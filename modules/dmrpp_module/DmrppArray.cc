@@ -479,7 +479,6 @@ DmrppArray::read_chunked(){
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunks: "
 					 << " chunk_inner_dim_bytes: " << chunk_inner_dim_bytes << endl);
 
-
 			for(unsigned int i=0; i<chunk_shape[0] ;i++){
 				BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
 						"target_char_index: " << target_char_index <<
