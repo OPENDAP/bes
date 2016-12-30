@@ -442,7 +442,7 @@ DmrppArray::read_chunked(){
 	switch (dimensions()) {
 	//########################### OneD Arrays ###############################
 	case 1: {
-		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - 1D Array. Reading " << chunk_refs->size() << " chunks" << endl);
 		for(unsigned long i=0; i<chunk_refs->size(); i++){
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
 			H4ByteStream h4bs = (*chunk_refs)[i];
@@ -458,14 +458,49 @@ DmrppArray::read_chunked(){
 	} break;
 	//########################### TwoD Arrays ###############################
 	case 2: {
-		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - 2D Array. Reading " << chunk_refs->size() << " chunks" << endl);
+		char * target_buffer = get_buf();
+		vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 		for(unsigned long i=0; i<chunk_refs->size(); i++){
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
 			H4ByteStream h4bs = (*chunk_refs)[i];
 			h4bs.read();
 			char * source_buffer = h4bs.get_rbuf();
-			char * target_buffer = get_buf();
-			vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+			vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
+			unsigned long long target_element_index = get_index(chunk_origin,array_shape);
+			unsigned long long target_char_index = target_element_index * prototype()->width();
+			unsigned long long source_element_index = 0;
+			unsigned long long source_char_index = source_element_index * prototype()->width();
+			unsigned long long chunk_inner_dim_bytes = chunk_shape[1] * prototype()->width();
+
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunks: "
+					 << " chunk_inner_dim_bytes: " << chunk_inner_dim_bytes << endl);
+
+			for(unsigned int i=0; i<array_shape[0] ;i++){
+				BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+						"target_char_index: " << target_char_index <<
+						" source_char_index: " << source_char_index << endl);
+				memcpy(target_buffer+target_char_index, source_buffer+source_char_index, chunk_inner_dim_bytes);
+				target_element_index += array_shape[1];
+				target_char_index = target_element_index * prototype()->width();
+				source_element_index += chunk_shape[1];
+				source_char_index = source_element_index * prototype()->width();
+			}
+		}
+
+	} break;
+	//########################### ThreeD Arrays ###############################
+	case 3: {
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - 3D Array. Reading " << chunk_refs->size() << " chunks" << endl);
+
+		char * target_buffer = get_buf();
+		vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+
+		for(unsigned long i=0; i<chunk_refs->size(); i++){
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+			H4ByteStream h4bs = (*chunk_refs)[i];
+			h4bs.read();
+			char * source_buffer = h4bs.get_rbuf();
 			vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
 			unsigned long long target_element_index = get_index(chunk_origin,array_shape);
 			unsigned long long target_char_index = target_element_index * prototype()->width();
