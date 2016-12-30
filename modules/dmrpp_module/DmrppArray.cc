@@ -470,7 +470,6 @@ DmrppArray::read_chunked(){
 			unsigned long long target_char_index = target_element_index * prototype()->width();
 			unsigned long long source_element_index = 0;
 			unsigned long long source_char_index = source_element_index * prototype()->width();
-
 			unsigned long long chunk_inner_dim_bytes = chunk_shape[1] * prototype()->width();
 
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunks: "
@@ -486,13 +485,15 @@ DmrppArray::read_chunked(){
 				source_element_index += chunk_shape[1];
 				source_char_index = source_element_index * prototype()->width();
 			}
-
-
 		}
 
 	} break;
 
 	default: {
+	    ostringstream oss;
+	    oss << "DmrppArray: Reading chunked arrays of dimension " << dimensions() <<
+	    		" is not yet implemented '" << endl;
+	    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
 	} break;
 
@@ -539,9 +540,6 @@ DmrppArray::read_chunked(){
     BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " for " << name()  << " END"<< endl);
 
     return true;
-    ostringstream oss;
-    oss << "DmrppArray: Reading chunked arrays not implemented '" << endl;
-    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
     #endif
 
