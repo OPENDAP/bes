@@ -27,6 +27,8 @@
 #include <string>
 #include <sstream>
 
+#include <cstring>
+
 #include <BESError.h>
 #include <BESDebug.h>
 

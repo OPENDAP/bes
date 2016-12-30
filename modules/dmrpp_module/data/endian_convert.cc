@@ -29,6 +29,9 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+
+#include <cstdlib>
+
 #include <GetOpt.h>
 
 static bool debug = false;
@@ -46,7 +49,7 @@ string usage(string prog_name) {
 
 long long get_file_size(string filename) {
 	long long size;
-	ifstream in(filename, ifstream::ate | ifstream::binary);
+	ifstream in(filename.c_str(), ifstream::ate | ifstream::binary);
 	size = in.tellg();
 	in.close();
 	return size;
@@ -101,7 +104,7 @@ int main(int argc, char **argv) {
 			file = getopt.optarg;
 			break;
 		case 'w':
-			width = stol(getopt.optarg);
+		    width = strtol(getopt.optarg, 0, 10);
 			break;
 		case '?':
 			cerr << usage(argv[0]);
@@ -138,7 +141,7 @@ int main(int argc, char **argv) {
 
 	// Read the whole thing into memory
 	char values[file_size];
-	ifstream source_file_is(file, ifstream::in | ifstream::binary);
+	ifstream source_file_is(file.c_str(), ifstream::in | ifstream::binary);
 	source_file_is.read(values, file_size);
 	if (!source_file_is) {
 		cerr << "ERROR: only " << source_file_is.gcount()
