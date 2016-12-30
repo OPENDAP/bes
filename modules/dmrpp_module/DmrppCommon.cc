@@ -64,10 +64,10 @@ namespace dmrpp {
 				chunk_dim_sizes_string.erase(0, strPos + space.length());
 			}
         }
-        else {
-        	// It may be single valued, let's try that.
-			d_chunk_dimension_sizes.push_back(strtol(chunk_dim_sizes_string.c_str(),NULL,10));
-        }
+		// If it's multi valued there's still one more value left to process
+        // If it's single valued the same is true, so let's ingest that.
+		d_chunk_dimension_sizes.push_back(strtol(chunk_dim_sizes_string.c_str(),NULL,10));
+
     }
 
     void

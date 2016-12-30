@@ -210,6 +210,25 @@ DmrppArray::read_constrained_no_chunks(
     }
 }
 
+vector<unsigned int>
+DmrppArray::get_shape(bool constrained){
+    vector<unsigned int> array_shape;
+    for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
+    	array_shape.push_back(dimension_size(dim,constrained));
+    }
+    return array_shape;
+}
+
+unsigned long long
+DmrppArray::get_size(bool constrained){
+    // number of array elements in the constrained array
+    unsigned long long constrained_size = 1;
+    for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
+    	constrained_size *= dimension_size(dim,constrained);
+    }
+    return constrained_size;
+}
+
 // FIXME This version of read() should work for unconstrained accesses where
 // we don't have to think about chunking. jhrg 11/23/16
 bool
@@ -248,17 +267,15 @@ DmrppArray::read_no_chunks()
     // Allocate the dest buffer in the array
     // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
     else {
-        vector<unsigned int> array_shape, subset;
+        vector<unsigned int> array_shape = get_shape(false);
         // number of array elements in the constrained array
-        unsigned long long constrained_size = 1;
-        for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
-        	array_shape.push_back(dimension_size(dim,false));
-        	constrained_size *= dimension_size(dim,true);
-        }
+        unsigned long long constrained_size = get_size(true);
+
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - constrained_size:  " << constrained_size << endl);
 
         reserve_value_capacity(constrained_size);
         unsigned long target_index = 0;
+        vector<unsigned int> subset;
         read_constrained_no_chunks(dim_begin(), &target_index, subset, array_shape, &h4_byte_stream); // TODO rename; something other than read. jhrg
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Copied " << target_index << " constrained  values." << endl);
 
@@ -398,7 +415,7 @@ DmrppArray::read(){
 bool
 DmrppArray::read_chunked(){
 
-    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name()  << " BEGIN" << endl);
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for variable '" << name()  << "' - BEGIN" << endl);
 
     if (read_p())
         return true;
@@ -410,27 +427,74 @@ DmrppArray::read_chunked(){
         		<< " Without a byteStream we cannot read! "<< endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
-
+    // Allocate target memory.
 	reserve_value_capacity(length());
+	vector<unsigned int> array_shape = get_shape(false);
 
-    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dimensions(): " << dimensions(false)  <<
+			" array_shape.size(): " << array_shape.size() << endl);
 
-    unsigned int bytesPerElt = prototype()->width();
+	if(this->dimensions(false) != array_shape.size()){
+        ostringstream oss;
+        oss << "DmrppArray::"<< __func__ << "() - array_shape does not match the number of array dimensions! "<< endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+	}
+	switch (dimensions()) {
+	case 1: {
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
+		for(unsigned long i=0; i<chunk_refs->size(); i++){
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+			H4ByteStream h4bs = (*chunk_refs)[i];
+			h4bs.read();
+			char * source_buffer = h4bs.get_rbuf();
+			char * target_buffer = get_buf();
+			vector<unsigned int> start_position = h4bs.get_position_in_array();
+			// oneD case for now.
+			unsigned long long start_char_index = start_position[0] * prototype()->width();
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - start_char_index: " << start_char_index << " start_position: " << start_position[0] << endl);
+			memcpy(target_buffer+start_char_index, source_buffer, h4bs.get_rbuf_size());
+		}
+	} break;
+
+	case 2: {
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
+		for(unsigned long i=0; i<chunk_refs->size(); i++){
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+			H4ByteStream h4bs = (*chunk_refs)[i];
+			h4bs.read();
+			char * source_buffer = h4bs.get_rbuf();
+			char * target_buffer = get_buf();
+			vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+			vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
+			unsigned long long target_element_index = get_index(chunk_origin,array_shape);
+			unsigned long long target_char_index = target_element_index * prototype()->width();
+			unsigned long long source_element_index = 0;
+			unsigned long long source_char_index = source_element_index * prototype()->width();
+
+			unsigned long long chunk_inner_dim_bytes = chunk_shape[1] * prototype()->width();
+
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunks: "
+					 << " chunk_inner_dim_bytes: " << chunk_inner_dim_bytes << endl);
+
+			for(unsigned int i=0; i<array_shape[0] ;i++){
+				BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+						"target_char_index: " << target_char_index <<
+						" source_char_index: " << source_char_index << endl);
+				memcpy(target_buffer+target_char_index, source_buffer+source_char_index, chunk_inner_dim_bytes);
+				target_element_index += array_shape[1];
+				target_char_index = target_element_index * prototype()->width();
+				source_element_index += chunk_shape[1];
+				source_char_index = source_element_index * prototype()->width();
+			}
 
 
-    for(unsigned long i=0; i<chunk_refs->size(); i++){
-		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-	    H4ByteStream h4bs = (*chunk_refs)[i];
-	    h4bs.read();
-	    char * source_buffer = h4bs.get_rbuf();
-	    char * target_buffer = get_buf();
-	    vector<unsigned int> start_position = h4bs.get_position_in_array();
-	    // oneD case for now.
-	    unsigned long long start = start_position[0] * bytesPerElt;
+		}
 
-	    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Start: " << start << endl);
+	} break;
 
-		memcpy(target_buffer+start, source_buffer, h4bs.get_rbuf_size());
+	default: {
+
+	} break;
 
 	}
 
@@ -481,16 +545,10 @@ DmrppArray::read_chunked(){
 
     #endif
 
-
     return true;
-
-
-
-
-
-
-
 }
+
+
 void DmrppArray::dump(ostream & strm) const
 {
     strm << DapIndent::LMarg << "DmrppArray::"<< __func__ << "(" << (void *) this << ")" << endl;

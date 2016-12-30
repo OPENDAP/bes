@@ -64,6 +64,10 @@ public:
     virtual bool read();
 
     virtual void dump(ostream & strm) const;
+
+    virtual unsigned long long get_size(bool constrained=false);
+    virtual vector<unsigned int> get_shape(bool constrained);
+
 };
 
 } // namespace dmrpp

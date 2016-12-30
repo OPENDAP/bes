@@ -46,39 +46,40 @@ H4ByteStream::ingest_position_in_array(string pia){
 		if(d_chunk_position_in_array.size())
 			d_chunk_position_in_array.clear();
 
-	    string open_sqr_brckt("[");
-	    string close_sqr_brckt("]");
+		string open_sqr_brckt("[");
+		string close_sqr_brckt("]");
 		string comma(",");
 		size_t strPos = 0;
-	    string strVal;
+		string strVal;
 
-	    // Drop leading square bracket
-	    if (!pia.compare(0, 1, open_sqr_brckt)){
+		// Drop leading square bracket
+		if (!pia.compare(0, 1, open_sqr_brckt)){
 			pia.erase(0, 1);
 			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  dropping leading '[' result: '"<< pia << "'" << endl);
-	    }
+		}
 
-	    // Drop trailing square bracket
-	   if (!pia.compare(pia.length()-1, 1, close_sqr_brckt)){
+		// Drop trailing square bracket
+		if (!pia.compare(pia.length()-1, 1, close_sqr_brckt)){
 			pia.erase(pia.length()-1, 1);
 			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  dropping trailing ']' result: '"<< pia << "'" << endl);
-	   }
+		}
 
-	   // Is it multi-valued? We check for commas  to find out.
-	   if((strPos = pia.find(comma)) != string::npos){
+		// Is it multi-valued? We check for commas  to find out.
+		if((strPos = pia.find(comma)) != string::npos){
 			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  Position string appears to contain multiple values..." << endl);
-		   // Process comma delimited content
+			// Process comma delimited content
 			while ((strPos = pia.find(comma)) != string::npos) {
 				strVal = pia.substr(0, strPos);
 				BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
 				d_chunk_position_in_array.push_back(strtol(strVal.c_str(),NULL,10));
 				pia.erase(0, strPos + comma.length());
 			}
-	   }
-	   else { // It may just have a single value, let's try that!
-			BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  Position string appears to have a single value..." << endl);
-			d_chunk_position_in_array.push_back(strtol(pia.c_str(),NULL,10));
-	   }
+		}
+		// A single value, remains after multi-valued processing, or there was only
+		// Every a single value, so let's ingest that!
+		BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  Position string appears to have a single value..." << endl);
+		d_chunk_position_in_array.push_back(strtol(pia.c_str(),NULL,10));
+
 	}
 	BESDEBUG("dmrpp", "H4ByteStream::ingest_position_in_array() -  END" << " -  Parsed " << pia << "'" << endl);
 
