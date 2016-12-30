@@ -107,7 +107,9 @@ public:
     	_duplicate(h4bs);
     }
 
-    virtual ~H4ByteStream(){}
+    virtual ~H4ByteStream(){
+		delete[] d_read_buffer;
+    }
 
 
     /**

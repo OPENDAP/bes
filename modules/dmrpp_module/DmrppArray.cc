@@ -467,6 +467,7 @@ DmrppArray::read_chunked(){
 			h4bs.read();
 			char * source_buffer = h4bs.get_rbuf();
 			vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
+			vector<unsigned int> chunk_row_address = chunk_origin;
 			unsigned long long target_element_index = get_index(chunk_origin,array_shape);
 			unsigned long long target_char_index = target_element_index * prototype()->width();
 			unsigned long long source_element_index = 0;
@@ -476,12 +477,14 @@ DmrppArray::read_chunked(){
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunks: "
 					 << " chunk_inner_dim_bytes: " << chunk_inner_dim_bytes << endl);
 
-			for(unsigned int i=0; i<array_shape[0] ;i++){
+
+			for(unsigned int i=0; i<chunk_shape[0] ;i++){
 				BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
 						"target_char_index: " << target_char_index <<
 						" source_char_index: " << source_char_index << endl);
 				memcpy(target_buffer+target_char_index, source_buffer+source_char_index, chunk_inner_dim_bytes);
-				target_element_index += array_shape[1];
+				chunk_row_address[0] += 1;
+				target_element_index = get_index(chunk_row_address,array_shape);
 				target_char_index = target_element_index * prototype()->width();
 				source_element_index += chunk_shape[1];
 				source_char_index = source_element_index * prototype()->width();
