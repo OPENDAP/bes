@@ -24,6 +24,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
+#include <iterator>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -124,7 +125,7 @@ public:
         string int_h5 = string(TEST_DATA_DIR).append("/").append("http_t_int_scalar.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5);
+        ifstream in(int_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -165,7 +166,7 @@ public:
         string int_h5 = string(TEST_DATA_DIR).append("/").append("http_d_int.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5);
+        ifstream in(int_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 

@@ -5,13 +5,13 @@ SUBDIRS =
 
 AUTOMAKE_OPTIONS = foreign
 
-if DAP_MODULES
+# if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LDADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-else
-AM_CPPFLAGS = -I$(top_srcdir) $(XML2_CFLAGS) $(DAP_CFLAGS)
-LDADD =  $(DAP_SERVER_LIBS) 
-endif
+# else
+# AM_CPPFLAGS = -I$(top_srcdir) $(XML2_CFLAGS) $(DAP_CFLAGS)
+# LDADD =  $(DAP_SERVER_LIBS) 
+# endif
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -65,26 +65,34 @@ endif
 # that results in warnings that are annoying. jhrg 12/28/16
 VPATH = src:../
 
+HDRS = DmrppArray.h DmrppByte.h DmrppD4Enum.h DmrppD4Group.h DmrppD4Opaque.h\
+DmrppD4Sequence.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
+DmrppInt64.h DmrppInt8.h DmrppParserSax2.h DmrppStr.h DmrppStructure.h \
+DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h DmrppUrl.h DmrppUtil.h \
+DmrppTypeFactory.h DmrppCommon.h H4ByteStream.h
+
 SRCS = DmrppArray.cc DmrppByte.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc\
 DmrppD4Sequence.cc DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc \
 DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
 DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
-DmrppTypeFactory.cc DrmppCommon.h
+DmrppTypeFactory.cc DmrppCommon.cc H4ByteStream.cc $(HDRS)
 
 # Linking with the .so modules produces a warning, but lets ignore it.
 # The alternative is to link with objects in the parent dir _but_, we
 # still will get a warning rom linking with the bes dap module which
 # we have to link against since we're using BESDapError. jhrg 11/21/16
 
-DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppParserTest_SOURCES = DmrppParserTest.cc $(SRCS)
+DmrppParserTest_LDFLAGS =  $(LDADD) 
 
-DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
-DmrppTypeReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+# -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
-DmrppChunkedReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc $(SRCS)
+DmrppTypeReadTest_LDFLAGS = $(LDADD)
+
+DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc $(SRCS)
+DmrppChunkedReadTest_LDFLAGS =  $(LDADD)
 
 
-DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
-DmrppHttpReadTest_LDFLAGS =  $(LDADD) -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc $(SRCS)
+DmrppHttpReadTest_LDFLAGS =  $(LDADD)
