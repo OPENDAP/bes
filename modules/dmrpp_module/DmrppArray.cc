@@ -440,6 +440,7 @@ DmrppArray::read_chunked(){
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 	}
 	switch (dimensions()) {
+	//########################### OneD Arrays ###############################
 	case 1: {
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
 		for(unsigned long i=0; i<chunk_refs->size(); i++){
@@ -455,7 +456,7 @@ DmrppArray::read_chunked(){
 			memcpy(target_buffer+start_char_index, source_buffer, h4bs.get_rbuf_size());
 		}
 	} break;
-
+	//########################### TwoD Arrays ###############################
 	case 2: {
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Reading " << chunk_refs->size() << " chunks" << endl);
 		for(unsigned long i=0; i<chunk_refs->size(); i++){
@@ -488,7 +489,7 @@ DmrppArray::read_chunked(){
 		}
 
 	} break;
-
+	//########################### N-D Arrays ###############################
 	default: {
 	    ostringstream oss;
 	    oss << "DmrppArray: Reading chunked arrays of dimension " << dimensions() <<
