@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 #include <DapIndent.h>
 #include <BESDebug.h>
