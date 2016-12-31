@@ -553,30 +553,40 @@ void BESInterface::execute_data_request_plan()
         alarm(timeout);
     }
 
+	try {
+		BESDEBUG("bes",
+				"Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
+		BESResponseHandler *rh = _dhi->response_handler;
+		if (rh) {
+			rh->execute(*_dhi);
+		} else {
+			BESDEBUG("bes", "FAILED" << endl);
+			string se = "The response handler \"" + _dhi->action
+					+ "\" does not exist";
+			throw BESInternalError(se, __FILE__, __LINE__);
+		}
+		BESDEBUG("bes", "OK" << endl);
 
-    BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
-    BESResponseHandler *rh = _dhi->response_handler;
-    if (rh) {
-        rh->execute(*_dhi);
-    }
-    else {
-        BESDEBUG("bes", "FAILED" << endl);
-        string se = "The response handler \"" + _dhi->action + "\" does not exist";
-        throw BESInternalError(se, __FILE__, __LINE__);
-    }
-    BESDEBUG("bes", "OK" << endl);
+		// Now we need to do the post processing piece of executing the request
+		invoke_aggregation();
 
-    // Now we need to do the post processing piece of executing the request
-    invoke_aggregation();
+		// And finally, transmit the response of this request
+		transmit_data();
+#if 0
+		// Only clear the timeout if it has been set.
+		if (timeout != 0) {
+#endif
+		timeout = 0;
+		alarm(0);
+#if 0
+	}
+#endif
+	} catch (...) {
+		timeout = 0;
+		alarm(0);
 
-    // And finally, transmit the response of this request
-    transmit_data();
-
-    // Only clear the timeout if it has been set.
-    if (timeout != 0) {
-        timeout = 0;
-        alarm(0);
-    }
+		throw;
+	}
 }
 
 /** @brief Aggregate the resulting response object

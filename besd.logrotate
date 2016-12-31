@@ -1,9 +1,33 @@
 /var/log/bes/*log {
+    # BES logs are pretty verbose even when verbose mode is
+    # off, so until we get that under control, rotate every
+    # day. Keep one week plus a day.
+    daily
+    rotate 8
+    
     missingok
     notifempty
     sharedscripts
+    
+    compress
     delaycompress
+    
     postrotate
-        /sbin/service besd restart > /dev/null 2>/dev/null || true
+	# This is a brute-force way to get the BES to rotate its
+	# log. The tomcat will end any current access that does
+	# not finish in 10s after the shutdown command is run, so
+	# active connections will be lost. However, if the OLFS
+	# is not stopped, active beslisteners will hang around
+	# and keep the bes restart from working. Alternatively,
+	# forcing all of the beslisteners to stop will leave the
+	# OLFS in an inconsistent state.
+	#
+	# We will need to add to the admin interface to get a
+	# robust log rotation feature for the BES. jhrg 12/28/16
+	/sbin/service tomcat stop > /dev/null 2>&1 || true
+        /sbin/service besd stop > /dev/null 2>&1 || true
+
+        /sbin/service besd start > /dev/null 2>&1 || true
+	/sbin/service tomcat start > /dev/null 2>&1 || true
     endscript
 }
