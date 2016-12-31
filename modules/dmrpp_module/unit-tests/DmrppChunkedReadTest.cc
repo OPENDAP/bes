@@ -167,7 +167,7 @@ public:
         string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_oneD.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << chnkd_oneD << endl);
 
-        ifstream in(chnkd_oneD);
+        ifstream in(chnkd_oneD.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -213,7 +213,7 @@ public:
         string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_twoD.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << chnkd_twoD << endl);
 
-        ifstream in(chnkd_twoD);
+        ifstream in(chnkd_twoD.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 

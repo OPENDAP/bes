@@ -174,7 +174,7 @@ public:
         string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_scalar.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5);
+        ifstream in(int_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -205,7 +205,7 @@ public:
        string int_h5 = string(TEST_DATA_DIR).append("/").append("d_int.h5.dmrpp");
        BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
-       ifstream in(int_h5);
+       ifstream in(int_h5.c_str());
        parser.intern(in, dmr.get(), debug);
 
        D4Group *root = dmr->root();
@@ -260,7 +260,7 @@ public:
       string float_h5 = string(TEST_DATA_DIR).append("/").append("t_float.h5.dmrpp");
       BESDEBUG("dmrpp", "Opening: " << float_h5 << endl);
 
-      ifstream in(float_h5);
+      ifstream in(float_h5.c_str());
       parser.intern(in, dmr.get(), debug);
 
       D4Group *root = dmr->root();
@@ -317,7 +317,7 @@ public:
       string grid_2d = string(TEST_DATA_DIR).append("/").append("grid_1_2d.h5.dmrpp");
       BESDEBUG("dmrpp", "Opening: " << grid_2d << endl);
 
-      ifstream in(grid_2d);
+      ifstream in(grid_2d.c_str());
       parser.intern(in, dmr.get(), debug);
 
       D4Group *root = dmr->root();
@@ -385,7 +385,7 @@ public:
       string nc4_group_atomic = string(TEST_DATA_DIR).append("/").append("nc4_group_atomic.h5.dmrpp");
       BESDEBUG("dmrpp", "Opening: " << nc4_group_atomic << endl);
 
-      ifstream in(nc4_group_atomic);
+      ifstream in(nc4_group_atomic.c_str());
       parser.intern(in, dmr.get(), debug);
 
       D4Group *root = dmr->root();

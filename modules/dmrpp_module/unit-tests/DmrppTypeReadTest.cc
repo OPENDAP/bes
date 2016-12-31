@@ -24,6 +24,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
+#include <iterator>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -161,7 +162,7 @@ public:
         string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_scalar.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5);
+        ifstream in(int_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -204,7 +205,7 @@ public:
         string int_h5 = string(TEST_DATA_DIR).append("/").append("d_int.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5);
+        ifstream in(int_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -295,7 +296,7 @@ public:
         string grid_h5 = string(TEST_DATA_DIR).append("/").append("grid_2_2d.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << grid_h5 << endl);
 
-        ifstream in(grid_h5);
+        ifstream in(grid_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -406,7 +407,7 @@ public:
         string grid_h5 = string(TEST_DATA_DIR).append("/").append("grid_2_2d.h5.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << grid_h5 << endl);
 
-        ifstream in(grid_h5);
+        ifstream in(grid_h5.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -571,7 +572,7 @@ public:
         string coads = string(TEST_DATA_DIR).append("/").append("coads_climatology.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << coads << endl);
 
-        ifstream in(coads);
+        ifstream in(coads.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
@@ -791,7 +792,7 @@ public:
         dmr->set_factory(&dtf);
         string coads = string(TEST_DATA_DIR).append("/").append("coads_climatology.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << coads << endl);
-        ifstream in(coads);
+        ifstream in(coads.c_str());
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
         // Check to make sure we have something that smells like coads_climatology
