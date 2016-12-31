@@ -532,7 +532,7 @@ DmrppArray::read_chunked(){
 	default: {
 	    ostringstream oss;
 	    oss << "DmrppArray: Reading chunked arrays of dimension " << dimensions() <<
-	    		" is not yet implemented '" << endl;
+	    		" is not yet supported/implemented '" << endl;
 	    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
 	} break;

@@ -171,7 +171,7 @@ public:
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
-        // Check to make sure we have something that smells like coads_climatology
+        // Check to make sure we have something that smells like our test array
         D4Group *root = dmr->root();
         checkGroupsAndVars(root, "/", 0, 1);
         // Walk the vars and testy testy
@@ -191,7 +191,6 @@ public:
                 BESDEBUG("dmrpp", "d_4_chunks_vals[" << a_index << "]: " << d_4_chunks_vals[a_index] << "  test_float32: " << test_float32 << endl);
                 CPPUNIT_ASSERT(double_eq(d_4_chunks_vals[a_index], test_float32 ));
             }
-
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -202,7 +201,6 @@ public:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
-
         CPPUNIT_ASSERT("Passed");
     }
 
@@ -219,7 +217,7 @@ public:
         parser.intern(in, dmr.get(), debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
-        // Check to make sure we have something that smells like coads_climatology
+        // Check to make sure we have something that smells like our test array
         D4Group *root = dmr->root();
         checkGroupsAndVars(root, "/", 0, 1);
         // Walk the vars and testy testy
@@ -249,7 +247,6 @@ public:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
-
         CPPUNIT_ASSERT("Passed");
     }
 
