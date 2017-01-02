@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0" 
+    dmrVersion="1.0" 
+    name="chunked_threeD.h5"
+    xml:base="/chunked_threeD.h5">
+  <Float32 name="d_8_chunks">
+    <Dim size="100"/>
+    <Dim size="100"/>
+    <Dim size="100"/>
+    <Attribute name="origname" type="String">
+      <Value>d_8_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_8_chunks</Value>
+    </Attribute>
+    <h4:chunks>
+      <h4:chunkDimensionSizes>50 50 50</h4:chunkDimensionSizes>
+      <h4:byteStream offset="4208" uuid="8a10b9da-8fa3-49e1-b675-720e98cd9431" nBytes="500000" chunkPositionInArray="[0,0,0]" md5="bc77f320af6c34abf7d645297940afce"/>
+      <h4:byteStream offset="504208" uuid="34542407-8531-4f10-974f-6a48654073c4" nBytes="500000" chunkPositionInArray="[0,0,50]" md5="10a5cffc73e2ca3a66fa01eafc7b9db8"/>
+      <h4:byteStream offset="1004208" uuid="5887f966-11f8-4094-92ac-822dcc090a1b" nBytes="500000" chunkPositionInArray="[0,50,0]" md5="0bfc29686af0b7b8c693cdd4306a5567"/>
+      <h4:byteStream offset="1504208" uuid="402ef07f-ea51-4a25-a04a-e3e463d85cb8" nBytes="500000" chunkPositionInArray="[0,50,50]" md5="2a3771f0a5a03403af5d92c98c0a287f"/>
+      <h4:byteStream offset="2004208" uuid="a58087e1-c3f4-4f05-913a-2a38a310ae8a" nBytes="500000" chunkPositionInArray="[50,0,0]" md5="a04512a18fc80136f1e1564eb683ced2"/>
+      <h4:byteStream offset="2504208" uuid="d38fbfc9-59fd-4847-b6bb-851a1e28997e" nBytes="500000" chunkPositionInArray="[50,0,50]" md5="b15753f22fc12b8ac5e4fd55c7b27965"/>
+      <h4:byteStream offset="3006256" uuid="dfc2adc9-1dfa-4c93-a0f0-f9dcf3a2b409" nBytes="500000" chunkPositionInArray="[50,50,0]" md5="47a3d0164f787f0daa3fb5b753ba89e7"/>
+      <h4:byteStream offset="3506256" uuid="38396183-72dc-4fba-904b-a1483d6a1e05" nBytes="500000" chunkPositionInArray="[50,50,50]" md5="d4757eb10dd9da2d5eba0cdab708921b"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>
