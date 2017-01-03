@@ -54,6 +54,7 @@ private:
     		vector<unsigned int> *chunk_row_insertion_point_address,
     		H4ByteStream *chunk);
 
+    virtual void insert_chunk(H4ByteStream *chunk);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
