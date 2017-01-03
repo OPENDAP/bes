@@ -439,32 +439,11 @@ DmrppArray::insert_chunk(H4ByteStream *chunk){
 	bool done = false;
 	while(!done){
 		for(unsigned int dim=0; dim<chunk_shape.size() ;dim++){
-			if(dim<last_dim){
-				// Not the last dimension, so we continue to proceed down the Recursion Branch.
-				chunk_row_insertion_point_address[dim] = chunk_origin[dim] + chunk_row_addr_offsets[dim];
-				BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
-						<< "dim: " << dim  << " chunk_row_addr_offsets["<<dim<< "]: " << chunk_row_addr_offsets[dim] <<
-						" chunk_row_insertion_point_address: " << vec2str(chunk_row_insertion_point_address) << endl);
-				chunk_row_addr_offsets[dim]++;
-			}
-			else {
-			    unsigned int chunk_last_dim_bytes = chunk_shape[last_dim] * prototype()->width();
-				unsigned int target_element_index = get_index(chunk_row_insertion_point_address,get_shape(false));
-				unsigned int target_char_index = target_element_index * prototype()->width();
-				char *target_buffer = get_buf();
-
-				BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - TAIL CALL: Copying chunk inner row.  "
-						<< "dim: " << dim  <<
-						" target_element_index: " << target_element_index <<
-						" target_char_index: " << target_char_index <<
-						" chunk_row_insertion_point_address: " << vec2str(chunk_row_insertion_point_address) <<
-						" bytes: " << chunk_last_dim_bytes << endl);
-
-				memcpy(target_buffer+target_char_index, chunk->get_read_pointer(),chunk_last_dim_bytes);
-
-				chunk->increment_read_pointer(chunk_last_dim_bytes);
-
-			}
+			chunk_row_insertion_point_address[dim] = chunk_origin[dim] + chunk_row_addr_offsets[dim];
+			BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+					<< "dim: " << dim  << " chunk_row_addr_offsets["<<dim<< "]: " << chunk_row_addr_offsets[dim] <<
+					" chunk_row_insertion_point_address: " << vec2str(chunk_row_insertion_point_address) << endl);
+			chunk_row_addr_offsets[dim]++;
 		}
 
 	}
