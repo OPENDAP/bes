@@ -49,6 +49,11 @@ private:
     virtual bool read_no_chunks();
     virtual bool read_chunked();
 
+    virtual void insert_chunk(
+    		unsigned int dim,
+    		vector<unsigned int> *chunk_row_insertion_point_address,
+    		H4ByteStream *chunk);
+
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);

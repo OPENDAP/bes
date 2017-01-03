@@ -53,6 +53,8 @@ private:
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
 
+    unsigned long long d_read_pointer;
+
 
 protected:
 
@@ -61,6 +63,7 @@ protected:
     	d_bytes_read = 0;
     	d_read_buffer = 0;
     	d_read_buffer_size = 0;
+    	d_read_pointer = 0;
     	d_is_read = false;
     	// These vars are easy to duplicate.
         d_size   = bs.d_size;
@@ -82,7 +85,8 @@ public:
 		d_is_read(false),
     	d_bytes_read(0),
     	d_read_buffer(0),
-    	d_read_buffer_size(0) { }
+    	d_read_buffer_size(0),
+		d_read_pointer(0){ }
 
     H4ByteStream(
 			std::string data_url,
@@ -99,7 +103,8 @@ public:
 			d_is_read(false),
 	    	d_bytes_read(0),
 	    	d_read_buffer(0),
-	    	d_read_buffer_size(0) {
+	    	d_read_buffer_size(0),
+			d_read_pointer(0){
     	ingest_position_in_array(position_in_array);
     }
 
@@ -111,6 +116,17 @@ public:
 		delete[] d_read_buffer;
     }
 
+    void reset_read_pointer(){
+    	d_read_pointer = 0;
+    }
+
+    void increment_read_pointer(unsigned long long size){
+    	d_read_pointer += size;
+    }
+
+    char *get_read_pointer(){
+    	return get_rbuf() + d_read_pointer;
+    }
 
     /**
      * @brief Get the size of this byteStream's data block
