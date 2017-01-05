@@ -954,6 +954,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 else {
                     if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
                 }
+
                 dc->add_chunk(data_url,size,offset,md5,uuid,chunk_position_in_array);
             }
         }

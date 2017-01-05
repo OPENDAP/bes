@@ -461,25 +461,132 @@ DmrppArray::read_chunked(){
 #if 1
 	//########################### OneD Arrays ###############################
 	case 1: {
-	    if (!is_projected()) {      // if there is no projection constraint
-			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - 1D Array. Reading " << chunk_refs->size() << " chunks" << endl);
-			for(unsigned long i=0; i<chunk_refs->size(); i++){
-				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-				H4ByteStream h4bs = (*chunk_refs)[i];
+		for(unsigned long i=0; i<chunk_refs->size(); i++){
+			H4ByteStream h4bs = (*chunk_refs)[i];
+			BESDEBUG("dmrpp", "----------------------------------------------------------------------------" << endl);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Processing chunk[" << i << "]: BEGIN" << endl);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - " << h4bs.to_string() << endl);
+
+			if (!is_projected()) {  // is there a projection constraint?
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ################## There is no constraint. Getting entire chunk." << endl);
+				// Apparently not, so we send it all!
+				// read the data
 				h4bs.read();
+				// Get the source (read) and write (target) buffers.
 				char * source_buffer = h4bs.get_rbuf();
 				char * target_buffer = get_buf();
+				// Compute insertion point for this chunk's inner (only) row data.
 				vector<unsigned int> start_position = h4bs.get_position_in_array();
-				// oneD case for now.
 				unsigned long long start_char_index = start_position[0] * prototype()->width();
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - start_char_index: " << start_char_index << " start_position: " << start_position[0] << endl);
+				// if there is no projection constraint then just copy those bytes.
 				memcpy(target_buffer+start_char_index, source_buffer, h4bs.get_rbuf_size());
 			}
-	    }
-	    else {
-	    	// There is a projection constraint.
-	    	//
-	    }
+			else {
+
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Found constraint expression." << endl);
+
+				// There is a projection constraint.
+				// Recover constraint information for this (the first and only) dim.
+				Dim_iter this_dim = dim_begin();
+				unsigned int ce_start = dimension_start(this_dim,true);
+				unsigned int ce_stride = dimension_stride(this_dim,true);
+				unsigned int ce_stop = dimension_stop(this_dim,true);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ce_start:  " << ce_start << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ce_stride: " << ce_stride << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ce_stop:   " << ce_stop << endl);
+
+				// Gather chunk information
+				unsigned int chunk_inner_row_start = h4bs.get_position_in_array()[0];
+				unsigned int chunk_inner_row_size  = get_chunk_dimension_sizes()[0];
+				unsigned int chunk_inner_row_end =  chunk_inner_row_start + chunk_inner_row_size;
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_inner_row_start: " << chunk_inner_row_start << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_inner_row_size:  " << chunk_inner_row_size << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_inner_row_end:   " << chunk_inner_row_end << endl);
+
+
+				// Do we even want this chunk?
+				if( ce_start > chunk_inner_row_end || ce_stop < chunk_inner_row_start){
+					// No, no we don't. Skip this.
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Chunk not accessed by CE. SKIPPING." << endl);
+				}
+				else {
+					// We want this chunk.
+					// Read the chunk.
+					h4bs.read();
+
+					unsigned long long chunk_start_element, chunk_end_element;
+
+					int first_element_offset = 0;
+					if(ce_start < chunk_inner_row_start){
+						// This case means that we must find the first element matching
+						// a stride that started at ce_start, somewhere up the line from
+						// this chunk. So, we subtract the ce_start from the chunk start to align
+						// the values for modulo arithmetic on the stride value.
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_inner_row_start: " << chunk_inner_row_start << endl);
+
+						if(ce_stride!=1)
+							first_element_offset = ce_stride - (chunk_inner_row_start - ce_start) % ce_stride;
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - first_element_offset: " << first_element_offset << endl);
+					}
+					else {
+						first_element_offset = ce_start - chunk_inner_row_start;
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ce_start is in this chunk. first_element_offset: " << first_element_offset <<  endl);
+					}
+					chunk_start_element = (chunk_inner_row_start + first_element_offset);
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_start_element: " << chunk_start_element <<  endl);
+
+					chunk_end_element = chunk_inner_row_end;
+					if(ce_stop<chunk_inner_row_end){
+						chunk_end_element = ce_stop;
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ce_stop is in this chunk. " <<  endl);
+					}
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_end_element: " << chunk_end_element <<  endl);
+
+
+					// Compute the read() address and length for this chunk's inner (only) row data.
+					unsigned long long element_count = chunk_end_element - chunk_start_element + 1;
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - element_count: " << element_count <<  endl);
+					unsigned long long length =  element_count * prototype()->width();
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - length: " << length <<  endl);
+
+					if(ce_stride==1){
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ################## Copy contiguous block mode." <<  endl);
+						// Since the stride is 1 we are getting everything between start
+						// and stop, so memcopy!
+						// Get the source (read) and write (target) buffers.
+						char * source_buffer = h4bs.get_rbuf();
+						char * target_buffer = get_buf();
+						unsigned int target_char_start_index = ((chunk_start_element - ce_start) / ce_stride ) * prototype()->width();
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_char_start_index: " << target_char_start_index <<  endl);
+						unsigned long long source_char_start_index = first_element_offset * prototype()->width();
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - source_char_start_index: " << source_char_start_index << endl);
+						// if there is no projection constraint then just copy those bytes.
+						memcpy(target_buffer+target_char_start_index, source_buffer + source_char_start_index,length);
+					}
+					else {
+
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ##################  Copy individual elements mode." <<  endl);
+
+						// Get the source (read) and write (target) buffers.
+						char * source_buffer = h4bs.get_rbuf();
+						char * target_buffer = get_buf();
+						// Since stride is not equal to 1 we have to copy individual values
+						for(unsigned int element_index=chunk_start_element; element_index<=chunk_end_element;element_index+=ce_stride){
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - element_index: " << element_index <<  endl);
+							unsigned int target_char_start_index = ((element_index - ce_start) / ce_stride ) * prototype()->width();
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_char_start_index: " << target_char_start_index <<  endl);
+							unsigned int chunk_char_start_index = (element_index - chunk_inner_row_start) * prototype()->width();
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_char_start_index: " << chunk_char_start_index <<  endl);
+							memcpy(target_buffer+target_char_start_index, source_buffer + chunk_char_start_index,prototype()->width());
+						}
+					}
+				}
+			}
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Processing chunk[" << i << "]:  END" << endl);
+		}
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - END ##################  END" <<  endl);
+
 	} break;
 	//########################### TwoD Arrays ###############################
 	case 2: {
@@ -721,7 +828,7 @@ void
 DmrppArray::insert_chunk(H4ByteStream *chunk){
 
 	vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
-    unsigned int last_dim = chunk_shape.size() - 1;
+    // unsigned int last_dim = chunk_shape.size() - 1;
 	vector<unsigned int> chunk_origin = chunk->get_position_in_array();
 	vector<unsigned int> chunk_row_insertion_point_address = chunk_origin;
 	std::vector<int> chunk_row_addr_offsets(chunk_shape.size(), 0);
