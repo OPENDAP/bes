@@ -93,6 +93,5 @@ DmrppTypeReadTest_LDFLAGS = $(LDADD)
 DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc $(SRCS)
 DmrppChunkedReadTest_LDFLAGS =  $(LDADD)
 
-
 DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc $(SRCS)
 DmrppHttpReadTest_LDFLAGS =  $(LDADD)
