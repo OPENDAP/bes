@@ -1,3 +1,42 @@
+2016-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added both palin and hdfeos tests to the Makefile.am
+
+2016-11-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-261, update the sample shell script to test.
+
+	HYRAX-261, improve error handling as suggested by Nathan
+
+2016-11-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-261, add the error handling.
+
+	HFVHANDLER-299, found a memory leak during the valgrind. This may be caused by the recent update of libdap4 and BES. Fixed it.
+
+2016-11-18  kyang2014  <myang6@hdfgroup.org>
+
+	HFRHANDLER-299, follow the HDF5 handler to handle the format_constraint. Now the empty array can be handled. The validation of the expression constraint is simplified.
+
+2016-11-16  kyang2014  <myang6@hdfgroup.org>
+
+	Update the format_constraint function to handle the empty array case and the condition to check the start and stop.
+
+	Minor editing
+
+	minor format editing.
+
+	HFRHANDLER-129,HFRHANDLER-159,HFRHANDLER-117, update the README file to document the "know but won't fix" issues in the HDF4 handler jira tickets.
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+	deleted:    bes-testsuite/h4.cf/tvset.hdf.das.bescmd.baseline
 2016-09-23  James Gallagher  <jgallagher@opendap.org>
 
 	Merge branch 'master' into response_cache
