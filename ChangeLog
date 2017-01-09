@@ -1,3 +1,212 @@
+2016-11-28  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-203, remove the redundant case(rank==0) in these codes. Run basic and NASA tests at CentOS 7. Valgrind tests are also run. Everything works fine.
+
+2016-11-23  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-193, remove rank = 0
+
+	Add comments about the configuration file and directory.
+
+2016-11-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-260, Use BESInternalError instead of BESNotFoundError. The error message is more descriptive. The internal error messges in the HDF5 library are turned off.
+
+2016-11-17  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, make sure bes configuration files for the testsuite to include the new memory cache keys
+
+2016-11-16  kyang2014  <myang6@hdfgroup.org>
+
+	The first check-in on HYRAX-260. Add more meaningful messages.
+
+2016-11-10  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-204, update the README file.
+
+	HFVHANDLER-204, edit the memory cache description at h5.conf.in
+
+2016-11-09  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-204, add more information to h5.conf.in
+
+2016-11-09  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-204, add more information to h5.conf.in
+
+2016-11-08  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, add more information to h5.conf.in
+
+	HFVHANDLER-204, adding more information at h5.conf.in
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Hyrax 1.13.2
+
+2016-11-01  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, fix a typo in h5.conf.in.Add other comments.
+
+2016-10-21  Kent Yang  <myang6@hdfgroup.org>
+
+	remove an unused baseline file.
+
+	HFVHANDLER-202, minor clean up debugging information
+
+2016-10-20  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, the data cache entries are not updated. Updated it. The retrieving of coordinata variables causes the memory leaking. Fixing it. Add more debugging information to understand the behaviour of memory cache purging process.
+
+	HFVHANDLER-202, add a GPM 2A bescmd file for easy checking the CV response.
+
+2016-10-18  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, add another directory for lat/lon
+
+	HFVHANDLER-202, add two more test baseline files.
+
+	HFVHANDLER-202, fix a difficult bug to check if the CV is latitude/longitude for HDF-EOS5 products. The final names of all C++ objects should be the newname instead of name. This also includes attribute. Now seems all NASA and fake memory cache tests behave as they are supposed to behave.
+
+	HFVHANDLER-202, change string.back to use index since back() is only supported by C11.
+
+2016-10-17  Muqun (Kent) Yang  <myang6@idap.ad.hdfgroup.org>
+
+	resolved merge conflicts
+
+	HFVHANDLER-202, some coordinate functions(Handle_Coor_Attr) need to be called to obtain the units of coordinate variables
+
+2016-10-17  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, MacOS 10 needs to have -g to use with curl when[] appears in the URL.
+
+	HFVHANDLER-202, update the at file for NASA memory cache.
+
+	HFVHANDLER-202, Add testing files for special configurations of NASA HDF5 file tests when the memory cache is turned on. A configuration file is also added.
+
+2016-10-14  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, add five swdb files to the NASA sample file repository.
+
+	HFVHANDLER-202, adding curl output files for NASA file tests when the memory cache is turned on.
+
+	HFVHANDLER-202, adding an OBPG example to retrieve lat/lon.
+
+	HFVHANDLER-202, forgot saving the missed latitude/longitude values into the memory cache.
+
+2016-10-13  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, fix a bug not to include the total number of elements for the special coordinate variables that needs to duplicate correctly.
+
+	HFVHANDLER-202, use quadigraphs to represent the [ ] inside the autotest.
+
+2016-10-12  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, modify .at file to test the data subset.
+
+	HFVHANDLER-202,delete old subset curl output file.
+
+	HFVHANDLER-202, adding a subset curlout file.
+
+2016-10-12  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, handling the memory cache for missing coordinate variables for HDF-EOS5 and general HDF5 products.
+
+	HFVHANDLER-202, add the testing at file to test NASA files when mem_cache is turned on.
+
+2016-10-11  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, fix a bug that causes the infinite loop when checking the variable path that has space, also add a configuration file to specify memory cache for data.
+
+	HFVHANDLER-202, handle a case when space is inserted in the variable path. Not tested.
+
+	HFVHANDLER-202, add another at file for testing the retrieval of common latitude/longitude values shared by a common directory and latitude/longitude not cached in the memory.
+
+2016-10-10  muqun yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into mem_cache
+
+2016-10-10  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, add testing curl output when the memory cache is turned on. The tests are the same as the CF fake files tests under the condition that the web server should be set properly.
+
+2016-10-07  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, fix a bug to obtain the var name list for memory cache.
+
+	HFVHANDLER-202, fix a bug for not retrieving latitude units for memory cache.
+
+2016-10-07  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, minor fix
+
+2016-10-06  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, adding more functions to handle cases of various data cache configuration options
+
+2016-10-06  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, re-arrange the case to handle memory cache. Now the common functions are moved to HDF5BaseArray.cc. I also tune several logics to make the programming flow clear.
+
+	HFVHANDLER-202, check the intermedidate code before a major re-organization. Not compiled.
+
+2016-10-05  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLE-202, handle different memory cache cases.
+
+2016-10-05  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, implement memory cache for data.
+
+2016-10-04  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, fix minor bugs to read cache info.
+
+	HFVHANDLER-202, add the function to read cache configuration information.
+
+2016-10-03  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, adding code to retrieve common directory that generates the cache files. Not Compiled yet.
+
+2016-09-30  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, re-arrange code to use HDF5BaseArray.
+
+2016-09-30  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, code-rearragement to handle the data reading from  the memory cache
+
+	HFVHANDLER-202, use HDF5BaseArray as the Base class of various HDF5 Array classes in CF option.
+
+	HFVHANDLER-202, use HDF5BaseArray as the abstract class to access all coordinate variables that use the memory cache feature.
+
+2016-09-29  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, start adding cache code to other coordinate variables.
+
+2016-09-29  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, add the check whether this CV is the latitude or longitude. This will be used to cache the same latitude/longitude for all files of the same product.
+
+2016-09-29  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, start handing the coordinate variables
+
+2016-09-28  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, the memory cache code for data variables can be compiled and work for a simple example. More tuning needed
+
+2016-09-27  kyang2014  <myang6@hdfgroup.org>
+
+	HFVHANDLER-202, finish the coding, compiled.
+
+2016-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+	Conflicts:
+		HDF5RequestHandler.cc
 2016-09-26  James Gallagher  <jgallagher@opendap.org>
 
 	Merge branch 'master' into response_cache
