@@ -627,6 +627,8 @@ DmrppArray::read_chunked(){
 			}
 		}
 		else {
+
+#if 0
 			char * target_buffer = get_buf();
 			vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 
@@ -687,6 +689,7 @@ DmrppArray::read_chunked(){
 
 
 
+
 					vector<unsigned int> chunk_row_address = chunk_origin;
 
 					// There is a projection constraint.
@@ -733,25 +736,32 @@ DmrppArray::read_chunked(){
 						}
 						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_end_element: " << inner_end_element <<  endl);
 
-						unsigned long long chunk_inner_dim_bytes = ((inner_end_element-inner_start_element)/inner_stride) * prototype()->width();
+						unsigned long long chunk_inner_dim_elements = ((1 + inner_end_element-inner_start_element)/inner_stride);
+						unsigned long long chunk_inner_dim_bytes = chunk_inner_dim_elements * prototype()->width();
 
+						unsigned int target_char_start_index = 0;
 
-						for(unsigned int odim_index=outer_first_element_offset; odim_index<=outer_end ;odim_index+=outer_stride){
+						for(unsigned int odim_index=outer_start; odim_index<=outer_end ;odim_index+=outer_stride){
 							BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
 									"odim_index: " << odim_index << endl);
 							chunk_row_address[outer_dim] = chunk_origin[outer_dim] + odim_index;
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_row_address: " << vec2str(chunk_row_address) <<  endl);
+
+
+
 							if(inner_stride==1){
-								BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - The innermost stride is 1. Using memcopy() to transfer"
-										<<  (inner_end_element-inner_start_element) << " values." << endl);
+								BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - The innermost stride is 1. Using memcopy() to transfer "
+										<<  chunk_inner_dim_elements << " values." << endl);
 
 
-								unsigned int target_char_start_index = ((inner_start_element - inner_start) / inner_stride ) * prototype()->width();
+								// unsigned int target_char_start_index = ((inner_start_element - inner_start) / inner_stride ) * prototype()->width();
 								BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_char_start_index: " << target_char_start_index <<  endl);
 
 								unsigned int chunk_char_start_index = (inner_start_element - chunk_origin[inner_dim]) * prototype()->width();
 								BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_char_start_index: " << chunk_char_start_index <<  endl);
 
 								memcpy(target_buffer+target_char_start_index, source_buffer+chunk_char_start_index, chunk_inner_dim_bytes);
+								target_char_start_index += chunk_inner_dim_bytes;
 							}
 							else {
 								BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - The innermost stride is " << inner_stride
@@ -775,7 +785,11 @@ DmrppArray::read_chunked(){
 					}
 				}
 			}
+#else
+			throw BESError("DmrppArray: Constraints are not yet implmented for 2D arrays.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+#endif
 		}
+
 	} break;
 #endif
 #if 0
@@ -898,6 +912,11 @@ DmrppArray::read_chunked(){
 #endif
 	//########################### N-Dimensional Arrays ###############################
 	default: {
+		if(is_projected()){
+			ostringstream oss;
+			oss << "DmrppArray: Constraints are not yet implemented for " << dimensions() << "D arrays.";
+			throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+		}
 		for(unsigned long i=0; i<chunk_refs->size(); i++){
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
 			H4ByteStream h4bs = (*chunk_refs)[i];

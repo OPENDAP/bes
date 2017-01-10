@@ -323,8 +323,8 @@ public:
         	array_length = 1;
         	// Constrain the outer dim
         	unsigned int start = 9;
-        	unsigned int stride = 10;
-        	unsigned int stop = 49;
+        	unsigned int stride = 1;
+        	unsigned int stop = 28;
         	unsigned int dim_length = 1 + (stop - start) / stride;
         	array_length *= dim_length;
             BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
@@ -339,9 +339,9 @@ public:
 
         	// Constrain the inner dim
             dim++;
-        	start = 59;
-        	stride = 10;
-        	stop = 99;
+        	start = 20;
+        	stride = 1;
+        	stop = 30;
         	dim_length = 1 + (stop - start) / stride;
         	array_length *= dim_length;
             BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
@@ -570,9 +570,8 @@ public:
     CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
 
-    CPPUNIT_TEST(test_chunked_twoD_CE_00);
 
-#if 0
+#if 1
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
     CPPUNIT_TEST(test_read_oneD_chunked_array);
@@ -581,6 +580,9 @@ public:
     CPPUNIT_TEST(test_read_threeD_chunked_array);
     CPPUNIT_TEST(test_read_threeD_chunked_asymmetric_array);
     CPPUNIT_TEST(test_read_fourD_chunked_array);
+#else
+    CPPUNIT_TEST(test_chunked_twoD_CE_00);
+
 #endif
 
     CPPUNIT_TEST_SUITE_END();
