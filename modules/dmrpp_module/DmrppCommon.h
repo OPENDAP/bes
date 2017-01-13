@@ -39,7 +39,7 @@ namespace dmrpp {
 class DmrppCommon {
 
 	friend class DmrppTypeReadTest;
-
+	friend class DmrppChunkedReadTest;
 private:
 	unsigned int d_deflate_level;
 	bool d_compression_type_deflate;

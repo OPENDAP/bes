@@ -69,19 +69,19 @@ static bool debug = false;
 
 namespace dmrpp {
 
-class DmrppTypeReadTest: public CppUnit::TestFixture {
+class DmrppChunkedReadTest: public CppUnit::TestFixture {
 private:
     DmrppParserSax2 parser;
 
 public:
     // Called once before everything gets tested
-    DmrppTypeReadTest() :
+    DmrppChunkedReadTest() :
         parser()
     {
     }
 
     // Called at the end of the test
-    ~DmrppTypeReadTest()
+    ~DmrppChunkedReadTest()
     {
     }
 
@@ -568,11 +568,8 @@ public:
 
 
 
-    CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
+    CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
-
-
-#if 0
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
     CPPUNIT_TEST(test_read_oneD_chunked_array);
@@ -581,15 +578,12 @@ public:
     CPPUNIT_TEST(test_read_threeD_chunked_array);
     CPPUNIT_TEST(test_read_threeD_chunked_asymmetric_array);
     CPPUNIT_TEST(test_read_fourD_chunked_array);
-#else
     CPPUNIT_TEST(test_chunked_twoD_CE_00);
-
-#endif
 
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(DmrppTypeReadTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(DmrppChunkedReadTest);
 
 } // namespace dmrpp
 
@@ -618,7 +612,7 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("dmrpp::DmrppTypeReadTest::") + argv[i++];
+            test = string("dmrpp::DmrppChunkedReadTest::") + argv[i++];
 
             cerr << endl << "Running test " << test << endl << endl;
 
