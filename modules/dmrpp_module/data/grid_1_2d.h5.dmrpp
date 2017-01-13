@@ -5,7 +5,7 @@
     dapVersion="4.0" 
     dmrVersion="1.0"
     name="grid_1_2d.h5"
-    xml:base="file:///./data/grid_1_2d.h5">
+    xml:base="data/grid_1_2d.h5">
   <Group name="HDFEOS">
     <Group name="ADDITIONAL">
       <Group name="FILE_ATTRIBUTES"/>

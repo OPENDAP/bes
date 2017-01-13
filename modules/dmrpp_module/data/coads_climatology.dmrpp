@@ -2,10 +2,10 @@
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#"
     xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
-    xml:base="/coads_climatology.bin" 
     dapVersion="4.0" 
     dmrVersion="1.0" 
-    name="coads_climatology">
+    name="coads_climatology"
+    xml:base="data/coads_climatology.bin">
         
     <Dimension name="COADSX" size="180"/>
     <Dimension name="COADSY" size="90"/>

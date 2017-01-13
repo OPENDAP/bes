@@ -33,6 +33,7 @@
 #include <DMR.h>
 
 #include <BESDebug.h>
+#include <BESUtil.h>
 
 #include "H4ByteStream.h"
 #include "DmrppArray.h"
@@ -134,8 +135,10 @@ public:
             BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
         }
         for(unsigned int i=0; i<(*chunks).size() ;i++){
-            string data_url = string("file://").append(TEST_DATA_DIR).append((*chunks)[i].get_data_url());
+            string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG,(*chunks)[i].get_data_url(),true);
+            data_url =  "file://" + data_url;
             (*chunks)[i].set_data_url(data_url);
+
         }
         for(unsigned int i=0; i<(*chunks).size() ;i++){
             BESDEBUG("dmrpp", "altered chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
