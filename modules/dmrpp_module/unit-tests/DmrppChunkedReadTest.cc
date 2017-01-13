@@ -133,7 +133,8 @@ public:
             BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
         }
         for(unsigned int i=0; i<(*chunks).size() ;i++){
-            string data_url = string("file://").append(TEST_DATA_DIR).append((*chunks)[i].get_data_url());
+            string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG,(*chunks)[i].get_data_url(),true);
+            data_url =  "file://" + data_url;
             (*chunks)[i].set_data_url(data_url);
         }
         for(unsigned int i=0; i<(*chunks).size() ;i++){
@@ -322,9 +323,9 @@ public:
 
         	array_length = 1;
         	// Constrain the outer dim
-        	unsigned int start = 9;
-        	unsigned int stride = 1;
-        	unsigned int stop = 28;
+        	unsigned int start = 44;
+        	unsigned int stride = 7;
+        	unsigned int stop = 61;
         	unsigned int dim_length = 1 + (stop - start) / stride;
         	array_length *= dim_length;
             BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
@@ -571,7 +572,7 @@ public:
 
 
 
-#if 1
+#if 0
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
     CPPUNIT_TEST(test_read_oneD_chunked_array);

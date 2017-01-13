@@ -3,6 +3,7 @@
 
 #define TEST_SRC_DIR "@abs_srcdir@"
 #define TEST_DATA_DIR "@abs_top_srcdir@/modules/dmrpp_module/data"
+#define TEST_DMRPP_CATALOG "@abs_top_srcdir@/modules/dmrpp_module"
 
 #endif
 

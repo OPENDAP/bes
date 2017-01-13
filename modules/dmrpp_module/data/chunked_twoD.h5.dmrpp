@@ -5,7 +5,7 @@
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="chunked_twoD.h5"
-    xml:base="/chunked_twoD.h5">
+    xml:base="data/chunked_twoD.h5">
   <Float32 name="d_4_chunks">
     <Dim size="100"/>
     <Dim size="100"/>

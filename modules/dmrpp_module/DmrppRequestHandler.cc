@@ -130,7 +130,8 @@ void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool /*exp
 
     DmrppParserSax2 parser;
     ifstream in(accessed.c_str(), ios::in);
-    parser.intern(in, dmr);
+
+    parser.intern(in, dmr, BESDebug::IsSet(module));
 
     dmr->set_factory(0);
 

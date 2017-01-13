@@ -627,6 +627,168 @@ DmrppArray::read_chunked(){
 			}
 		}
 		else {
+			char * target_buffer = get_buf();
+
+			vector<unsigned int> array_shape = get_shape(false);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - array_shape: " << vec2str(array_shape) <<  endl);
+
+			vector<unsigned int> constrained_array_shape = get_shape(true);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - constrained_array_shape: " << vec2str(constrained_array_shape) <<  endl);
+
+			vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_shape: " << vec2str(chunk_shape) <<  endl);
+
+			// There is a projection constraint.
+			// Recover constraint information for the first/outer dim.
+			Dim_iter outer_dim_itr = dim_begin();
+			Dim_iter inner_dim_itr = dim_begin();
+			inner_dim_itr++;
+			unsigned int outer_dim = 0;
+			unsigned int inner_dim = 1;
+			unsigned int outer_start = dimension_start(outer_dim_itr,true);
+			unsigned int outer_stride = dimension_stride(outer_dim_itr,true);
+			unsigned int outer_stop = dimension_stop(outer_dim_itr,true);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_start:  " << outer_start << endl);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_stride: " << outer_stride << endl);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_stop:   " << outer_stop << endl);
+
+			// There is a projection constraint.
+			// Recover constraint information for the inner/outer dim.
+			unsigned int inner_start = dimension_start(inner_dim_itr,true);
+			unsigned int inner_stride = dimension_stride(inner_dim_itr,true);
+			unsigned int inner_stop = dimension_stop(inner_dim_itr,true);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_start:  " << inner_start << endl);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_stride: " << inner_stride << endl);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_stop:   " << inner_stop << endl);
+
+			for(unsigned long i=0; i<chunk_refs->size(); i++){
+				BESDEBUG("dmrpp", "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - " <<  endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Processing chunk[" << i << "]: " <<  endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__  << (*chunk_refs)[i].to_string() << endl);
+				H4ByteStream h4bs = (*chunk_refs)[i];
+				vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_origin:   " << vec2str(chunk_origin) << endl);
+
+				// What's the first row/element that we are going to access for the outer dimension of the chunk?
+				int outer_first_element_offset = 0;
+				if(outer_start < chunk_origin[outer_dim]){
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_start: " << outer_start << endl);
+					if(outer_stride!=1){
+						outer_first_element_offset = (chunk_origin[outer_dim] - outer_start) % outer_stride;
+						if(outer_first_element_offset!=0)
+							outer_first_element_offset = outer_stride - outer_first_element_offset;
+					}
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_first_element_offset: " << outer_first_element_offset << endl);
+				}
+				else {
+					outer_first_element_offset = outer_start - chunk_origin[outer_dim];
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_start is in this chunk. outer_first_element_offset: " << outer_first_element_offset <<  endl);
+				}
+				unsigned long long outer_start_element = chunk_origin[outer_dim] + outer_first_element_offset;
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_start_element: " << outer_start_element <<  endl);
+
+
+
+				// Now we figure out the correct last element, based on the subset expression
+				unsigned long long outer_end_element = chunk_origin[outer_dim] + chunk_shape[outer_dim] - 1;
+				if(outer_stop<outer_end_element){
+					outer_end_element = outer_stop;
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_stop is in this chunk. " <<  endl);
+				}
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - outer_end_element: " << outer_end_element <<  endl);
+
+
+
+				// What's the first row/element that we are going to access for the inner dimension of the chunk?
+				int inner_first_element_offset = 0;
+				if(inner_start < chunk_origin[inner_dim]){
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_start: " << inner_start << endl);
+					if(inner_stride!=1)
+						inner_first_element_offset = inner_stride - (chunk_origin[inner_dim] - inner_start) % inner_stride;
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_first_element_offset: " << inner_first_element_offset << endl);
+				}
+				else {
+					inner_first_element_offset = inner_start - chunk_origin[inner_dim];
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_start is in this chunk. inner_first_element_offset: " << inner_first_element_offset <<  endl);
+				}
+				unsigned long long inner_start_element = chunk_origin[inner_dim] + inner_first_element_offset;
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_start_element: " << inner_start_element <<  endl);
+
+				// Now we figure out the correct last element, based on the subset expression
+				unsigned long long inner_end_element = chunk_origin[inner_dim] + chunk_shape[inner_dim];
+				if(inner_stop<inner_end_element){
+					inner_end_element = inner_stop;
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_stop is in this chunk. " <<  endl);
+				}
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_end_element: " << inner_end_element <<  endl);
+
+
+
+				// Do we even want this chunk?
+				if( outer_start > (chunk_origin[outer_dim]+chunk_shape[outer_dim]) || outer_stop < chunk_origin[outer_dim]){
+					// No. No, we do not. Skip this.
+					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Chunk not accessed by CE (outer_dim). SKIPPING." << endl);
+				}
+				else if( inner_start > (chunk_origin[inner_dim]+chunk_shape[inner_dim])
+							|| inner_stop < chunk_origin[inner_dim]){
+						// No. No, we do not. Skip this.
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Chunk not accessed by CE (inner_dim). SKIPPING." << endl);
+				}
+				else {
+					// Read and Process chunk
+
+					// Now. Now we are going to read this thing.
+					h4bs.read();
+					char * source_buffer = h4bs.get_rbuf();
+
+					vector<unsigned int> chunk_row_address = chunk_origin;
+					unsigned long long outer_chunk_end = outer_end_element - chunk_origin[outer_dim];
+					unsigned long long outer_chunk_start = outer_start_element - chunk_origin[outer_dim];
+					unsigned int outer_result_position = 0;
+					unsigned int inner_result_position = 0;
+					vector<unsigned int> target_address;
+					target_address.push_back(0);
+					target_address.push_back(0);
+					unsigned long long chunk_inner_dim_bytes =  constrained_array_shape[inner_dim] * prototype()->width();
+					for(unsigned int odim_index=outer_chunk_start; odim_index<=outer_chunk_end ;odim_index+=outer_stride){
+						BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+								"odim_index: " << odim_index << endl);
+						chunk_row_address[outer_dim] = chunk_origin[outer_dim] + odim_index;
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_row_address: " << vec2str(chunk_row_address) <<  endl);
+
+						target_address[outer_dim] = (chunk_row_address[outer_dim] - outer_start)/outer_stride;
+						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_address: " << vec2str(target_address) <<  endl);
+
+						if(inner_stride==1){
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - The innermost stride is 1. Using memcopy() to transfer "
+									<<  constrained_array_shape[inner_dim] << " values." << endl);
+
+							unsigned int target_start_element_index = get_index(target_address,constrained_array_shape);
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_start_element_index: " << target_start_element_index <<  endl);
+
+							unsigned int target_char_start_index =  target_start_element_index* prototype()->width();
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_char_start_index: " << target_char_start_index <<  endl);
+
+							vector<unsigned int> chunk_source_address;
+							chunk_source_address.push_back(odim_index);
+							chunk_source_address.push_back(inner_first_element_offset);
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_source_address: " << vec2str(chunk_source_address) <<  endl);
+
+							unsigned int chunk_start_element_index = get_index(chunk_source_address,chunk_shape);
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_start_element_index: " << chunk_start_element_index <<  endl);
+
+							unsigned int chunk_char_start_index = chunk_start_element_index * prototype()->width();
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_char_start_index: " << chunk_char_start_index <<  endl);
+
+							memcpy(target_buffer+target_char_start_index, source_buffer+chunk_char_start_index, chunk_inner_dim_bytes);
+						}
+						else {
+							throw BESError("Constraints for 2D arrays are only supported when the stride value is 1", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+						}
+					}
+				}
+			}
 
 #if 0
 			char * target_buffer = get_buf();
@@ -785,9 +947,8 @@ DmrppArray::read_chunked(){
 					}
 				}
 			}
-#else
-			throw BESError("DmrppArray: Constraints are not yet implmented for 2D arrays.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 #endif
+
 		}
 
 	} break;
