@@ -9,7 +9,8 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:dap4constraint>d_4_chunks[13:7:44][47:1:53]</bes:dap4constraint>
+      <!-- only 3rd quadrant -->
+      <bes:dap4constraint>d_4_chunks[61:8:97][13:1:38]</bes:dap4constraint>
     </bes:container>
   </bes:define>
   
