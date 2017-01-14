@@ -703,8 +703,11 @@ DmrppArray::read_chunked(){
 				int inner_first_element_offset = 0;
 				if(inner_start < chunk_origin[inner_dim]){
 					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_start: " << inner_start << endl);
-					if(inner_stride!=1)
+					if(inner_stride!=1){
 						inner_first_element_offset = inner_stride - (chunk_origin[inner_dim] - inner_start) % inner_stride;
+						if(inner_first_element_offset!=0)
+							inner_first_element_offset = inner_stride - inner_first_element_offset;
+					}
 					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_first_element_offset: " << inner_first_element_offset << endl);
 				}
 				else {
@@ -715,7 +718,7 @@ DmrppArray::read_chunked(){
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_start_element: " << inner_start_element <<  endl);
 
 				// Now we figure out the correct last element, based on the subset expression
-				unsigned long long inner_end_element = chunk_origin[inner_dim] + chunk_shape[inner_dim];
+				unsigned long long inner_end_element = chunk_origin[inner_dim] + chunk_shape[inner_dim] - 1;
 				if(inner_stop<inner_end_element){
 					inner_end_element = inner_stop;
 					BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - inner_stop is in this chunk. " <<  endl);
@@ -751,17 +754,26 @@ DmrppArray::read_chunked(){
 					target_address.push_back(0);
 					unsigned long long chunk_inner_dim_bytes =  constrained_array_shape[inner_dim] * prototype()->width();
 					for(unsigned int odim_index=outer_chunk_start; odim_index<=outer_chunk_end ;odim_index+=outer_stride){
-						BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+						BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() ------- "
 								"odim_index: " << odim_index << endl);
 						chunk_row_address[outer_dim] = chunk_origin[outer_dim] + odim_index;
 						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_row_address: " << vec2str(chunk_row_address) <<  endl);
 
 						target_address[outer_dim] = (chunk_row_address[outer_dim] - outer_start)/outer_stride;
-						BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_address: " << vec2str(target_address) <<  endl);
 
 						if(inner_stride==1){
-							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - The innermost stride is 1. Using memcopy() to transfer "
-									<<  constrained_array_shape[inner_dim] << " values." << endl);
+
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - The innermost stride is 1." << endl);
+
+							unsigned long long chunk_constrained_inner_dim_elements = inner_end_element - inner_start_element + 1;
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_constrained_inner_dim_elements: " << chunk_constrained_inner_dim_elements <<  endl);
+
+							unsigned long long chunk_constrained_inner_dim_bytes = chunk_constrained_inner_dim_elements * prototype()->width();
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_constrained_inner_dim_bytes: " << chunk_constrained_inner_dim_bytes <<  endl);
+
+							target_address[inner_dim] = (inner_start_element - inner_start ) / inner_stride;
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_address: " << vec2str(target_address) <<  endl);
+
 
 							unsigned int target_start_element_index = get_index(target_address,constrained_array_shape);
 							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_start_element_index: " << target_start_element_index <<  endl);
@@ -780,10 +792,14 @@ DmrppArray::read_chunked(){
 							unsigned int chunk_char_start_index = chunk_start_element_index * prototype()->width();
 							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_char_start_index: " << chunk_char_start_index <<  endl);
 
-							memcpy(target_buffer+target_char_start_index, source_buffer+chunk_char_start_index, chunk_inner_dim_bytes);
+							BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Using memcpy to transfer " << chunk_constrained_inner_dim_bytes << " bytes." <<  endl);
+
+
+
+							memcpy(target_buffer+target_char_start_index, source_buffer+chunk_char_start_index, chunk_constrained_inner_dim_bytes);
 						}
 						else {
-							throw BESError("Constraints for 2D arrays are only supported when the stride value is 1", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+							throw BESError("Constraints for 2D arrays are only supported when the stride value for the inner most dimension is 1", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
 						}
 					}
