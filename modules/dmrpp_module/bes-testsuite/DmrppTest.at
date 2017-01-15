@@ -25,6 +25,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_CE_quads_1-3.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_CE_quads_2-4.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_CE_quads_3-4.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_CE_all_quads.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_CE_all_quads_01.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_CE_all_quads_02.bescmd])
 
 
 
