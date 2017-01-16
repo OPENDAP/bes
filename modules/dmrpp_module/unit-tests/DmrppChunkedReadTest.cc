@@ -284,102 +284,6 @@ public:
 
     }
 
-    /**
-     * Here we use a CE which:
-     * a) Does not retrieve from all chunks
-     * b) Uses a stride of 1
-     * Against the chunked oneD test array. The stride==1 means that
-     * contiguous blocks may be copied.
-     */
-    void test_chunked_twoD_CE_00(){
-
-        string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_twoD.h5.dmrpp");
-
-		unsigned long long array_length;
-		string variable_name = "d_4_chunks";
-        string filename = chnkd_twoD;
-        auto_ptr<DMR> dmr(new DMR);
-        DmrppTypeFactory dtf;
-        dmr->set_factory(&dtf);
-        dods_float32 test_float32;
-
-        BESDEBUG("dmrpp", __func__ << "() - Opening: " << filename << endl);
-
-        ifstream in(filename.c_str());
-        parser.intern(in, dmr.get(), debug);
-        BESDEBUG("dmrpp", __func__ << "() - Parsing complete"<< endl);
-
-        // Check to make sure we have something that smells like our test array
-        D4Group *root = dmr->root();
-        checkGroupsAndVars(root, "/", 0, 1);
-        // Walk the vars and testy testy
-        D4Group::Vars_iter vIter = root->var_begin();
-        try {
-        	DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
-
-        	unsigned int dim_index = 0, array_length=1;
-        	vector<unsigned int> constrained_shape;
-        	DmrppArray::Dim_iter dim=var->dim_begin();
-
-        	array_length = 1;
-        	// Constrain the outer dim
-        	unsigned int start = 44;
-        	unsigned int stride = 7;
-        	unsigned int stop = 61;
-        	unsigned int dim_length = 1 + (stop - start) / stride;
-        	array_length *= dim_length;
-            BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
-            var->add_constraint(dim,start,stride,stop);
-
-            BESDEBUG("dmrpp", __func__ << "() - dim_start:  " << var->dimension_start(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - dim_stop:   " << var->dimension_stop(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
-
-
-        	// Constrain the inner dim
-            dim++;
-        	start = 20;
-        	stride = 1;
-        	stop = 30;
-        	dim_length = 1 + (stop - start) / stride;
-        	array_length *= dim_length;
-            BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
-            var->add_constraint(dim,start,stride,stop);
-
-            BESDEBUG("dmrpp", __func__ << "() - dim_start:  " << var->dimension_start(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - dim_stop:   " << var->dimension_stop(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(dim) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
-
-
-            // Read the variable and transfer the data
-            read_var_check_name_and_length(var,variable_name,array_length);
-            vector<dods_float32> values(var->length());
-            var->value(&values[0]);
-
-            // Test data set is incrementally valued: Check Them All!
-            for(unsigned long long a_index=0; a_index < array_length ;a_index++){
-                test_float32 = a_index;
-                //if(!double_eq(values[a_index], test_float32))
-                	BESDEBUG("dmrpp", "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
-                //CPPUNIT_ASSERT(double_eq(values[a_index], test_float32 ));
-            }
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL(e.get_message());
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL(e.get_error_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL(e.what());
-        }
-        CPPUNIT_ASSERT("Passed");
-
-    }
 
 
 
@@ -494,7 +398,7 @@ public:
 
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
-#if 0
+#if 1
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
     CPPUNIT_TEST(test_read_oneD_chunked_array);
@@ -504,7 +408,6 @@ public:
     CPPUNIT_TEST(test_read_threeD_chunked_asymmetric_array);
     CPPUNIT_TEST(test_read_fourD_chunked_array);
 #endif
-    CPPUNIT_TEST(test_chunked_twoD_CE_00);
 
     CPPUNIT_TEST_SUITE_END();
 };
