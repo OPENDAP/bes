@@ -218,6 +218,7 @@ public:
     virtual std::string get_curl_range_arg_string();
     virtual void dump(std::ostream & strm) const;
     virtual void read();
+    virtual bool is_read();
     virtual std::string to_string();
     virtual std::vector<unsigned int> get_position_in_array() const { return d_chunk_position_in_array;}
 };

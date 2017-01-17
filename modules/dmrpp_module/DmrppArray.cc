@@ -979,7 +979,6 @@ DmrppArray::read_chunked(){
 
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - STARTING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
 				H4ByteStream h4bs = (*chunk_refs)[i];
-				h4bs.read();
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunk[" << i << "]"
 						<< " chunk_origin: " << vec2str(h4bs.get_position_in_array()) << endl);
 				vector<unsigned int> target_element_address = h4bs.get_position_in_array();
@@ -989,7 +988,8 @@ DmrppArray::read_chunked(){
 				// is initialized to the chunk origin point in the array.
 				insert_constrained_chunk(0,&target_element_address,&chunk_source_address,&h4bs);
 				// insert_chunk(&h4bs);
-				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - COMPLETED chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - COMPLETED chunk[" << i << "] was " <<
+						(h4bs.is_read()?"READ ":"SKIPPED ") << (*chunk_refs)[i].to_string() << endl);
 			}
 
 

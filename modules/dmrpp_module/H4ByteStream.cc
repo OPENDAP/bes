@@ -125,6 +125,11 @@ H4ByteStream::dump(ostream &oss) const {
 	oss << ")]";
 }
 
+bool
+H4ByteStream::is_read(){
+	return d_is_read;
+}
+
 void
 H4ByteStream::read(){
 	if(d_is_read){
@@ -143,6 +148,7 @@ H4ByteStream::read(){
             << " but found " << get_bytes_read() << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
+    d_is_read = true;
 
 }
 
