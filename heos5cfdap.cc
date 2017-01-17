@@ -118,7 +118,10 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         he5dds_scan_string(st_str.c_str());
         he5ddsparse(&p);
         he5ddslex_destroy();
-        //  p.print();
+
+        // Retrieve ProjParams from StructMetadata
+        p.add_projparams(st_str);
+        //p.print();
         // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
@@ -130,9 +133,12 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
             throw InternalErr("The HDF-EOS5 is missing project code ");
         }
 
+// Just check 
+#if 0
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
+#endif
        
         // HDF-EOS5 provides default pixel and origin values if they are not defined.
         c.set_grids_missing_pixreg_orig(&p);
@@ -314,10 +320,12 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         if (c.check_grids_missing_projcode(&p)) {
             throw InternalErr("The HDF-EOS5 is missing project code ");
         }
-
+//Just check 
+#if 0
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
+#endif
         c.set_grids_missing_pixreg_orig(&p);
 
         // cerr<<"after unknown parameters "<<endl;
