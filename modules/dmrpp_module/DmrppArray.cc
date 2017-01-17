@@ -979,6 +979,7 @@ DmrppArray::read_chunked(){
 
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - STARTING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
 				H4ByteStream h4bs = (*chunk_refs)[i];
+
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunk[" << i << "]"
 						<< " chunk_origin: " << vec2str(h4bs.get_position_in_array()) << endl);
 				vector<unsigned int> target_element_address = h4bs.get_position_in_array();
@@ -1136,7 +1137,7 @@ DmrppArray::insert_constrained_chunk(
 			" stop " << thisDim.stop <<
 		    endl);
 	// What's the first row/element that we are going to access for the outer dimension of the chunk?
-	int first_element_offset = 0;
+	unsigned int first_element_offset = 0;
 	if((unsigned)thisDim.start < chunk_origin[dim]){
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<<dim <<
 				" thisDim.start: " << thisDim.start << endl);
@@ -1153,6 +1154,13 @@ DmrppArray::insert_constrained_chunk(
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
 				" thisDim.start is in this chunk. first_element_offset: " << first_element_offset <<  endl);
 	}
+	// Is the next point to be sent in this chunk at all?
+	if(first_element_offset > chunk_shape[dim]){
+		// Nope! Time to bail
+		return;
+	}
+
+
 	unsigned long long start_element = chunk_origin[dim] + first_element_offset;
 	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
 			" start_element: " << start_element <<  endl);
@@ -1166,7 +1174,7 @@ DmrppArray::insert_constrained_chunk(
 	}
 	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
 			" end_element: " << end_element <<  endl);
-\
+
 	// Do we even want this chunk?
 	if( (unsigned)thisDim.start > (chunk_origin[dim]+chunk_shape[dim]) || (unsigned)thisDim.stop < chunk_origin[dim]){
 		// No. No, we do not. Skip this.

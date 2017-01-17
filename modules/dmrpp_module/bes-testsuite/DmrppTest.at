@@ -37,6 +37,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_asym_CE_chunk_5.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_asym_CE_chunk_6.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_asym_CE_chunk_7.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_asym_CE_all_chunks.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_asym_CE_stride_skip_chunks_2-3.bescmd])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asym_CE_chunk_0.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asym_CE_chunk_1.bescmd])

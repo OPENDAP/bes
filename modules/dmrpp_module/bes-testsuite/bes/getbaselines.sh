@@ -60,7 +60,7 @@ function mk2D(){
 ###############################################################
 # chunked_twoD_asymmetric.h5
 #
-#     Float32 d_8_chunks[100][50][200];
+#     Float32 d_8_chunks[100][200];
 #     <h4:chunkDimensionSizes>50 50</h4:chunkDimensionSizes>
 function mk2DAsym(){
     echo "MAKING Constrained 2D Asymmetric Array Baselines"
@@ -73,6 +73,10 @@ function mk2DAsym(){
     getit chunked_twoD_asym_CE_chunk_6.bescmd chunked_twoD_asymmetric.h5 d_8_chunks[71:2:83][106:2:132]
     getit chunked_twoD_asym_CE_chunk_7.bescmd chunked_twoD_asymmetric.h5 d_8_chunks[53:5:67][156:5:187]
     getit chunked_twoD_asym_CE_all_chunks.bescmd chunked_twoD_asymmetric.h5 d_8_chunks[13:9:87][11:15:187]
+    
+    # This one tests if we can skip chunks that don't fall in stride
+    getit chunked_twoD_asym_CE_stride_skip_chunks_2-3.bescmd chunked_twoD_asymmetric.h5 d_8_chunks[13:7:44][0:161:199]
+
     echo "END Constrained 2D Asymmetric Array Baselines"
 }
 
@@ -129,12 +133,19 @@ function mk4D(){
     echo "END Constrained 4D Array Baselines"
 }
 
+function mkStuff(){
+    echo "MAKING Constrained 4D Array Baselines"
+    getit chunked_fourD_CE_chunk_00.bescmd chunked_fourD.h5 d_16_chunks[0:2:39][0:2:7][0:2:7][0:2:7]
+    echo "END Constrained 4D Array Baselines"
+}
 
 
-mk2D;
-mk2DAsym;
-mk3DAsym;
-mk4D;
+
+#mk2D;
+#mk2DAsym;
+#mk3DAsym;
+#mk4D;
+
 
 
 
