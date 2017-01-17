@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="data/chunked_twoD_asymmetric.h5" dapVersion="4.0" dmrVersion="1.0" name="chunked_twoD_asymmetric.h5">
+    <Float32 name="d_8_chunks">
+        <Dim size="9"/>
+        <Dim size="12"/>
+        <Attribute name="origname" type="String">
+            <Value>d_8_chunks</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d_8_chunks</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>794d2f9c</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 d_8_chunks[9][12] = {{2611, 2626, 2641, 2656, 2671, 2686, 2701, 2716, 2731, 2746, 2761, 2776},{4411, 4426, 4441, 4456, 4471, 4486, 4501, 4516, 4531, 4546, 4561, 4576},{6211, 6226, 6241, 6256, 6271, 6286, 6301, 6316, 6331, 6346, 6361, 6376},{8011, 8026, 8041, 8056, 8071, 8086, 8101, 8116, 8131, 8146, 8161, 8176},{9811, 9826, 9841, 9856, 9871, 9886, 9901, 9916, 9931, 9946, 9961, 9976},{11611, 11626, 11641, 11656, 11671, 11686, 11701, 11716, 11731, 11746, 11761, 11776},{13411, 13426, 13441, 13456, 13471, 13486, 13501, 13516, 13531, 13546, 13561, 13576},{15211, 15226, 15241, 15256, 15271, 15286, 15301, 15316, 15331, 15346, 15361, 15376},{17011, 17026, 17041, 17056, 17071, 17086, 17101, 17116, 17131, 17146, 17161, 17176}};
+
