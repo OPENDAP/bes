@@ -108,7 +108,7 @@ DmrppFloat64::read()
     // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
     // will leave the code using garbage memory. jhrg 11/23/16
     BESDEBUG("dmrpp", "DmrppFloat64::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-    curl_read_byteStream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4bs));
+    curl_read_byte_stream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4bs));
 
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (sizeof(dods_float64) != h4bs.get_bytes_read()) {

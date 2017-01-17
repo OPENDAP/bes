@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the BES
@@ -55,172 +54,243 @@ private:
 
     unsigned long long d_read_pointer;
 
+    friend class H4ByteStreamTest;
 
 protected:
 
-    void _duplicate(const H4ByteStream &bs) {
+    void _duplicate(const H4ByteStream &bs)
+    {
         // See above
-    	d_bytes_read = 0;
-    	d_read_buffer = 0;
-    	d_read_buffer_size = 0;
-    	d_read_pointer = 0;
-    	d_is_read = false;
-    	// These vars are easy to duplicate.
-        d_size   = bs.d_size;
+        d_bytes_read = 0;
+        d_read_buffer = 0;
+        d_read_buffer_size = 0;
+        d_read_pointer = 0;
+        d_is_read = false;
+
+        // These vars are easy to duplicate.
+        d_size = bs.d_size;
         d_offset = bs.d_offset;
-        d_md5    = bs.d_md5;
-        d_uuid   = bs.d_uuid;
-        d_data_url   = bs.d_data_url;
+        d_md5 = bs.d_md5;
+        d_uuid = bs.d_uuid;
+        d_data_url = bs.d_data_url;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
 
 public:
 
-    H4ByteStream():
-    	d_data_url(""),
-    	d_size(0),
-    	d_offset(0),
-    	d_md5(""),
-    	d_uuid(""),
-		d_is_read(false),
-    	d_bytes_read(0),
-    	d_read_buffer(0),
-    	d_read_buffer_size(0),
-		d_read_pointer(0){ }
-
-    H4ByteStream(
-			std::string data_url,
-			unsigned long long size,
-			unsigned long long offset,
-			std::string md5,
-			std::string uuid,
-			std::string position_in_array = ""):
-			d_data_url(data_url),
-			d_size(size),
-			d_offset(offset),
-    		d_md5(md5),
-			d_uuid(uuid),
-			d_is_read(false),
-	    	d_bytes_read(0),
-	    	d_read_buffer(0),
-	    	d_read_buffer_size(0),
-			d_read_pointer(0){
-    	ingest_position_in_array(position_in_array);
+    H4ByteStream() :
+            d_data_url(""), d_size(0), d_offset(0), d_md5(""), d_uuid(""), d_is_read(false), d_bytes_read(0),
+            d_read_buffer(0), d_read_buffer_size(0), d_read_pointer(0)
+    {
     }
 
-    H4ByteStream(const H4ByteStream &h4bs){
-    	_duplicate(h4bs);
+    H4ByteStream(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
+            std::string uuid, std::string position_in_array = "") :
+            d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid), d_is_read(false),
+            d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), d_read_pointer(0)
+    {
+        ingest_position_in_array(position_in_array);
     }
 
-    virtual ~H4ByteStream(){
-		delete[] d_read_buffer;
+    H4ByteStream(const H4ByteStream &h4bs)
+    {
+        _duplicate(h4bs);
     }
 
-    void reset_read_pointer(){
-    	d_read_pointer = 0;
+    virtual ~H4ByteStream()
+    {
+        delete[] d_read_buffer;
     }
 
-    void increment_read_pointer(unsigned long long size){
-    	d_read_pointer += size;
+    void reset_read_pointer()
+    {
+        d_read_pointer = 0;
     }
 
-    char *get_read_pointer(){
-    	return get_rbuf() + d_read_pointer;
+    void increment_read_pointer(unsigned long long size)
+    {
+        d_read_pointer += size;
+    }
+
+    char *get_read_pointer()
+    {
+        return get_rbuf() + d_read_pointer;
     }
 
     /**
-     * @brief Get the size of this byteStream's data block
+     * @brief Get the size of this byteStream's data block on disk
      */
-    virtual unsigned long long get_size() const { return d_size; }
+    virtual unsigned long long get_size() const
+    {
+        return d_size;
+    }
     /**
      * @brief Get the offset to this byteStream's data block
      */
-    virtual unsigned long long get_offset() const { return d_offset; }
+    virtual unsigned long long get_offset() const
+    {
+        return d_offset;
+    }
     /**
      * @brief Get the md5 string for this byteStream's data block
      */
-    virtual std::string get_md5() const { return d_md5; }
+    virtual std::string get_md5() const
+    {
+        return d_md5;
+    }
     /**
      * @brief Get the uuid string for this byteStream's data block
      */
-    virtual std::string get_uuid() const { return d_uuid; }
-
-    /**
-     * @brief Get the data url string for this byteStream's data block
-     */
-    virtual std::string get_data_url() const { return d_data_url; }
-    /**
-     * @brief Get the data url string for this byteStream's data block
-     */
-   virtual void set_data_url(const std::string &data_url) {
-    	d_data_url = data_url;
+    virtual std::string get_uuid() const
+    {
+        return d_uuid;
     }
 
-   /**
-    * @brief Get the size of the data block associated with this byteStream.
-    */
-   virtual unsigned long long get_bytes_read() const { return d_bytes_read; }
-
-   /**
-    * @brief Set the size of this byteStream's data block
-    * @param size Size of the data in bytes
-    */
-   virtual void set_bytes_read(unsigned long long bytes_read) { d_bytes_read = bytes_read; }
-
-   /**
-    * @brief Sets the size of the internal read buffer.
-    *
-    * The memory management of the read buffer is managed internal to this
-    * class. This means that calling this method will release any previously
-    * allocated read buffer memory and then allocates a new memory block. Since
-    * this method always dumps the exiting read buffer the bytes_read counter is
-    * set to zero.
-    *
-    * @param size Size of the internal read buffer.
-    */
-   virtual void rbuf_size(unsigned long long size) {
-
-		// Calling delete on a null pointer is fine, so we don't need to check
-		// to see if this is the first call.
-		delete[] d_read_buffer;
-		d_read_buffer_size = 0;
-
-		d_read_buffer = new char[size];
-		d_read_buffer_size = size;
-		set_bytes_read(0);
-   }
-
-   virtual void set_rbuf_to_size() { rbuf_size(d_size);}
-
-   /**
-    * Returns a pointer to the memory buffer for this byteStream. The
-    * return value is NULL if no memory has been allocated.
-    */
-   virtual char *get_rbuf() {
-   	return d_read_buffer;
-   }
-
-   /**
-    * Returns the size, in bytes, of the read buffer for this byteStream.
-    */
-   virtual unsigned long long get_rbuf_size() {
-   	return d_read_buffer_size;
-   }
+    /**
+     * @brief Get the data url string for this byteStream's data block
+     */
+    virtual std::string get_data_url() const
+    {
+        return d_data_url;
+    }
+    /**
+     * @brief Get the data url string for this byteStream's data block
+     */
+    virtual void set_data_url(const std::string &data_url)
+    {
+        d_data_url = data_url;
+    }
 
     /**
-     * Parses the passed string as a set of space separated integer values
-     * and stores them in the internal vector.
+     * @brief Get the size of the data block associated with this byteStream.
+     */
+    virtual unsigned long long get_bytes_read() const
+    {
+        return d_bytes_read;
+    }
+
+    /**
+     * @brief Set the size of this byteStream's data block
+     * @param size Size of the data in bytes
+     */
+    virtual void set_bytes_read(unsigned long long bytes_read)
+    {
+        d_bytes_read = bytes_read;
+    }
+
+    /**
+     * @brief Sets the size of the internal read buffer.
+     * @deprecated
+     * @see set_rbuf_to_size()
+     * @param size Size of the internal read buffer.
+     */
+    virtual void rbuf_size(unsigned long long size)
+    {
+        // Calling delete on a null pointer is fine, so we don't need to check
+        // to see if this is the first call.
+        delete[] d_read_buffer;
+        d_read_buffer_size = 0;
+
+        d_read_buffer = new char[size];
+        d_read_buffer_size = size;
+        set_bytes_read(0);
+    }
+
+    /**
+     * @brief Sets the size of the internal read buffer.
+     *
+     * The memory management of the read buffer is managed internal to this
+     * class. This means that calling this method will release any previously
+     * allocated read buffer memory and then allocates a new memory block. Since
+     * this method always dumps the exiting read buffer the bytes_read counter is
+     * set to zero.
+     *
+     * @param size Size of the internal read buffer.
+     */
+    virtual void set_rbuf_to_size()
+    {
+        rbuf_size(d_size);
+    }
+
+    /**
+     * Returns a pointer to the memory buffer for this byteStream. The
+     * return value is NULL if no memory has been allocated.
+     */
+    virtual char *get_rbuf()
+    {
+        return d_read_buffer;
+    }
+
+    /**
+     * @brief Set the read buffer
+     *
+     * Transfer control of the buffer to this object. The buffer must have been
+     * allocated using 'new char[size]'. This object will delete any previously
+     * allocated buffer and take control of the one passes in with this method.
+     * The size and number of bytes read are set to the value of 'size.'
+     *
+     * @param buf The new buffer to be used by this instance.
+     * @param size The size of the new buffer.
+     */
+    virtual void set_rbuf(char *buf, unsigned int size)
+    {
+        // Calling delete on a null pointer is fine, so we don't need to check
+        // to see if this is the first call.
+        delete[] d_read_buffer;
+        d_read_buffer_size = 0;
+
+        d_read_buffer = buf;
+        d_read_buffer_size = size;
+        set_bytes_read(size);
+    }
+
+    /**
+     * Returns the size, in bytes, of the read buffer for this byteStream.
+     */
+    virtual unsigned long long get_rbuf_size() const
+    {
+        return d_read_buffer_size;
+    }
+
+    virtual std::vector<unsigned int> get_position_in_array() const
+    {
+        return d_chunk_position_in_array;
+    }
+
+    /**
+     * @brief Parse the dimension string store the sizes in an internal vector.
+     *
+     * The dimension information is a string of the form '[x,y,...,z]' Parse the
+     * integer dimension sizes and store them in the d_position_in_array vector.
      * Since this is essentially a setter method any previous postion_in_array
-     * content is discarded.
-     * If the passed string parameter is empty then nothing is done.
+     * content is discarded. If the passed string parameter is empty then nothing
+     * is done.
+     *
+     * @param pia The dimension string
      */
     virtual void ingest_position_in_array(std::string pia);
-    virtual std::string get_curl_range_arg_string();
-    virtual void dump(std::ostream & strm) const;
-    virtual void read();
+
+    /**
+     * @brief An alternate impl of ingest_position_in_array
+     *
+     * @note It would be much easier to parse this string if it didn't have the
+     * unneeded [, ], and comma (,) characters. The integers could be separated
+     * by whitespace. Then an istringstream and a while loop would be all that's
+     * needed.
+     *
+     * @param pia The dimension string.
+     */
+    virtual void set_position_in_array(const std::string &pia);
+
+    virtual void read(bool deflate = false, unsigned int chunk_size = 0);
     virtual bool is_read();
+
+    virtual std::string get_curl_range_arg_string();
+
+    virtual void dump(std::ostream & strm) const;
+
     virtual std::string to_string();
-    virtual std::vector<unsigned int> get_position_in_array() const { return d_chunk_position_in_array;}
+
 };
 
 } // namespace dmrpp
