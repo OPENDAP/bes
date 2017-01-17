@@ -443,6 +443,7 @@ DmrppArray::read_chunked(){
 		throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 	}
 	// Allocate target memory.
+	// Fix me - I think this needs to be the constrained size!
 	reserve_value_capacity(length());
 	vector<unsigned int> array_shape = get_shape(false);
 
@@ -458,7 +459,7 @@ DmrppArray::read_chunked(){
 	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - "<< dimensions() << "D Array. Reading " << chunk_refs->size() << " chunks" << endl);
 
 	switch (dimensions()) {
-#if 1
+#if 0
 	//########################### OneD Arrays ###############################
 	case 1: {
 		for(unsigned long i=0; i<chunk_refs->size(); i++){
@@ -973,22 +974,47 @@ DmrppArray::read_chunked(){
 	//########################### N-Dimensional Arrays ###############################
 	default: {
 		if(is_projected()){
+
+			for(unsigned long i=0; i<chunk_refs->size(); i++){
+
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - STARTING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+				H4ByteStream h4bs = (*chunk_refs)[i];
+				h4bs.read();
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunk[" << i << "]"
+						<< " chunk_origin: " << vec2str(h4bs.get_position_in_array()) << endl);
+				vector<unsigned int> target_element_address = h4bs.get_position_in_array();
+				vector<unsigned int> chunk_source_address(dimensions(),0);
+				// Begins recursive insertion operation.
+				// Starting with dimension 0 and the chunk_row_insertion_point_address
+				// is initialized to the chunk origin point in the array.
+				insert_constrained_chunk(0,&target_element_address,&chunk_source_address,&h4bs);
+				// insert_chunk(&h4bs);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - COMPLETED chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+			}
+
+
+#if 0
 			ostringstream oss;
 			oss << "DmrppArray: Constraints are not yet implemented for " << dimensions() << "D arrays.";
 			throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+#endif
+
 		}
-		for(unsigned long i=0; i<chunk_refs->size(); i++){
-			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-			H4ByteStream h4bs = (*chunk_refs)[i];
-			h4bs.read();
-			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunk[" << i << "]"
-					<< " chunk_origin: " << vec2str(h4bs.get_position_in_array()) << endl);
-			vector<unsigned int> chunk_row_insertion_point_address = h4bs.get_position_in_array();
-			// Begins recursive insertion operation.
-			// Starting with dimension 0 and the chunk_row_insertion_point_address
-			// is initialized to the chunk origin point in the array.
-			insert_chunk(0,&chunk_row_insertion_point_address,&h4bs);
-			// insert_chunk(&h4bs);
+		else {
+
+			for(unsigned long i=0; i<chunk_refs->size(); i++){
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+				H4ByteStream h4bs = (*chunk_refs)[i];
+				h4bs.read();
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunk[" << i << "]"
+						<< " chunk_origin: " << vec2str(h4bs.get_position_in_array()) << endl);
+				vector<unsigned int> chunk_row_insertion_point_address = h4bs.get_position_in_array();
+				// Begins recursive insertion operation.
+				// Starting with dimension 0 and the chunk_row_insertion_point_address
+				// is initialized to the chunk origin point in the array.
+				insert_chunk(0,&chunk_row_insertion_point_address,&h4bs);
+				// insert_chunk(&h4bs);
+			}
 		}
 	} break;
 
@@ -1054,6 +1080,228 @@ DmrppArray::insert_chunk(
 		chunk->increment_read_pointer(chunk_last_dim_bytes);
 	}
 }
+
+DmrppArray::dimension
+DmrppArray::get_dimension(unsigned int dim_num){
+	Dim_iter dimIter = dim_begin();
+	unsigned int dim_index = 0;
+
+	while(dimIter!=dim_end()){
+		if(dim_num==dim_index)
+			return *dimIter;
+		dimIter++;
+		dim_index++;
+	}
+	ostringstream oss;
+	oss << "DmrppArray::get_dimension() -" <<
+			" The array " << name() << " does not have " << dim_num << " dimensions!";
+	throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+}
+/**
+ * @brief This recursive call inserts a (previously read) chunk's data into the appropriate parts of the
+ * Array object's internal memory.
+ *
+ * Successive calls climb into the array to the insertion point for the
+ * current chunk's innermost row. Once located, this row is copied into the array at the insertion point. The
+ * next row for insertion is located by returning from the insertion call to the next dimension iteration
+ * in the call recursive call stack.
+ *
+ * This starts with dimension 0 and the chunk_row_insertion_point_address set to the chunks origin point
+ *
+ * @parameter dim is the dimension on which we are working. We recurse from dimension 0 to the last dimension
+ * @parameter chunk_row_insertion_point_address - this is where we build the location vector for each
+ * inner dimension row insertion point.
+ * @parameter chunk The H4ByteStream containing the read data values to insert.
+ */
+void
+DmrppArray::insert_constrained_chunk(
+		unsigned int dim, // The dimension being processed.
+		vector<unsigned int> *target_element_address,
+		vector<unsigned int> *chunk_source_address,
+		H4ByteStream *chunk){
+
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " BEGIN "<< endl);
+
+	vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+	unsigned int last_dim = chunk_shape.size() - 1;
+	vector<unsigned int> chunk_origin = chunk->get_position_in_array();
+
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Retrieving dimension "<< dim
+			<< endl);
+
+	dimension  thisDim = this->get_dimension(dim);
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - thisDim: "<< thisDim.name <<
+			" start " << thisDim.start <<
+			" stride " << thisDim.stride <<
+			" stop " << thisDim.stop <<
+		    endl);
+	// What's the first row/element that we are going to access for the outer dimension of the chunk?
+	int first_element_offset = 0;
+	if((unsigned)thisDim.start < chunk_origin[dim]){
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<<dim <<
+				" thisDim.start: " << thisDim.start << endl);
+		if(thisDim.stride!=1){
+			first_element_offset = (chunk_origin[dim] - thisDim.start) % thisDim.stride;
+			if(first_element_offset!=0)
+				first_element_offset = thisDim.stride - first_element_offset;
+		}
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
+				" first_element_offset: " << first_element_offset << endl);
+	}
+	else {
+		first_element_offset = thisDim.start - chunk_origin[dim];
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
+				" thisDim.start is in this chunk. first_element_offset: " << first_element_offset <<  endl);
+	}
+	unsigned long long start_element = chunk_origin[dim] + first_element_offset;
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
+			" start_element: " << start_element <<  endl);
+
+	// Now we figure out the correct last element, based on the subset expression
+	unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
+	if((unsigned)thisDim.stop < end_element){
+		end_element = thisDim.stop;
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
+				" thisDim.stop is in this chunk. " <<  endl);
+	}
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
+			" end_element: " << end_element <<  endl);
+\
+	// Do we even want this chunk?
+	if( (unsigned)thisDim.start > (chunk_origin[dim]+chunk_shape[dim]) || (unsigned)thisDim.stop < chunk_origin[dim]){
+		// No. No, we do not. Skip this.
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+				" Chunk not accessed by CE. SKIPPING." << endl);
+		return;
+	}
+
+	unsigned long long chunk_start = start_element - chunk_origin[dim];
+	unsigned long long chunk_end = end_element - chunk_origin[dim];
+
+
+
+	if(dim == last_dim){
+
+		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " THIS IS LAST DIM. WRITING. "<< endl);
+
+		// Now. Now we are going to read this thing.
+		// Read and Process chunk
+		chunk->read();
+		char * source_buffer = chunk->get_rbuf();
+
+
+		if(thisDim.stride==1){
+			//#############################################################################
+			// ND - inner_stride == 1
+
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" The stride is 1." << endl);
+
+			// Compute how much we are going to copy
+			unsigned long long chunk_constrained_inner_dim_elements = end_element - start_element + 1;
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" chunk_constrained_inner_dim_elements: " << chunk_constrained_inner_dim_elements <<  endl);
+
+			unsigned long long chunk_constrained_inner_dim_bytes = chunk_constrained_inner_dim_elements * prototype()->width();
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" chunk_constrained_inner_dim_bytes: " << chunk_constrained_inner_dim_bytes <<  endl);
+
+			// Compute where we need to put it.
+			(*target_element_address)[dim] = (start_element - thisDim.start ) / thisDim.stride;
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" target_element_address: " << vec2str(*target_element_address) <<  endl);
+
+			unsigned int target_start_element_index = get_index(*target_element_address,get_shape(true));
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" target_start_element_index: " << target_start_element_index <<  endl);
+
+			unsigned int target_char_start_index =  target_start_element_index* prototype()->width();
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" target_char_start_index: " << target_char_start_index <<  endl);
+
+			// Compute where we are going to read it from
+			(*chunk_source_address)[dim] = first_element_offset;
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" chunk_source_address: " << vec2str(*chunk_source_address) <<  endl);
+
+			unsigned int chunk_start_element_index = get_index(*chunk_source_address,chunk_shape);
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" chunk_start_element_index: " << chunk_start_element_index <<  endl);
+
+			unsigned int chunk_char_start_index = chunk_start_element_index * prototype()->width();
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" chunk_char_start_index: " << chunk_char_start_index <<  endl);
+
+			char *target_buffer = get_buf();
+
+			// Copy the bytes
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: " << dim <<
+					" Using memcpy to transfer " << chunk_constrained_inner_dim_bytes << " bytes." <<  endl);
+			memcpy(target_buffer+target_char_start_index, source_buffer+chunk_char_start_index, chunk_constrained_inner_dim_bytes);
+		}
+		else {
+			//#############################################################################
+			// inner_stride != 1
+			unsigned long long vals_in_chunk =  1 + (end_element-start_element)/thisDim.stride;
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<<dim<<" InnerMostStride is equal to " << thisDim.stride
+					<< ". Copying " << vals_in_chunk << " individual values." <<  endl);
+
+			unsigned long long chunk_start = start_element - chunk_origin[dim];
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - ichunk_start: " << chunk_start <<  endl);
+
+			unsigned long long chunk_end = end_element - chunk_origin[dim];
+			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_end: " << chunk_end <<  endl);
+
+			for(unsigned int idim_index=chunk_start; idim_index<=chunk_end ; idim_index+=thisDim.stride){
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() --------- idim_index: " << idim_index <<  endl);
+
+				// Compute where we need to put it.
+				(*target_element_address)[dim] = ( idim_index + chunk_origin[dim] - thisDim.start ) / thisDim.stride;
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_element_address: " << vec2str(*target_element_address) <<  endl);
+
+				unsigned int target_start_element_index = get_index(*target_element_address,get_shape(true));
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_start_element_index: " << target_start_element_index <<  endl);
+
+				unsigned int target_char_start_index =  target_start_element_index* prototype()->width();
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_char_start_index: " << target_char_start_index <<  endl);
+
+				// Compute where we are going to read it from
+				(*chunk_source_address)[dim] = idim_index;
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_source_address: " << vec2str(*chunk_source_address) <<  endl);
+
+				unsigned int chunk_start_element_index = get_index(*chunk_source_address,chunk_shape);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_start_element_index: " << chunk_start_element_index <<  endl);
+
+				unsigned int chunk_char_start_index = chunk_start_element_index * prototype()->width();
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_char_start_index: " << chunk_char_start_index <<  endl);
+
+				char *target_buffer = get_buf();
+
+				// Copy the bytes
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Using memcpy to transfer " << prototype()->width() << " bytes." <<  endl);
+				memcpy(target_buffer+target_char_start_index, source_buffer+chunk_char_start_index, prototype()->width());
+			}
+		}
+	}
+	else {
+		// Not the last dimension, so we continue to proceed down the Recursion Branch.
+		for(unsigned int dim_index=chunk_start; dim_index<=chunk_end; dim_index+=thisDim.stride){
+			(*target_element_address)[dim] = (chunk_origin[dim] + dim_index - thisDim.start)/thisDim.stride;
+			(*chunk_source_address)[dim] = dim_index;
+			BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - RECURSION STEP - "
+					<< "Departing dim: " << dim  << " dim_index: " << dim_index <<
+					" target_element_address: " << vec2str((*target_element_address)) <<
+					" chunk_source_address: " << vec2str((*chunk_source_address)) <<
+					endl);
+			// Re-entry here:
+			insert_constrained_chunk(dim+1,target_element_address,chunk_source_address,chunk);
+		}
+	}
+}
+
+
+
+
 
 void DmrppArray::dump(ostream & strm) const
 {

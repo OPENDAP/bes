@@ -244,7 +244,7 @@ public:
         	DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
 
         	unsigned int start = 10;
-        	unsigned int stride = 100;
+        	unsigned int stride = 1;//100
         	unsigned int stop = 35010;
         	// Constrain the array
         	array_length = 1 + (stop - start) / stride;
@@ -398,16 +398,15 @@ public:
 
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
-#if 1
-    CPPUNIT_TEST(test_chunked_oneD_CE_00);
-    CPPUNIT_TEST(test_chunked_oneD_CE_01);
+
     CPPUNIT_TEST(test_read_oneD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_asymmetric_array);
     CPPUNIT_TEST(test_read_threeD_chunked_array);
     CPPUNIT_TEST(test_read_threeD_chunked_asymmetric_array);
     CPPUNIT_TEST(test_read_fourD_chunked_array);
-#endif
+    CPPUNIT_TEST(test_chunked_oneD_CE_00);
+    CPPUNIT_TEST(test_chunked_oneD_CE_01);
 
     CPPUNIT_TEST_SUITE_END();
 };
