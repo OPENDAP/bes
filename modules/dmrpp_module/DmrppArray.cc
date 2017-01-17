@@ -128,7 +128,7 @@ unsigned long long get_index(vector<unsigned int> address_in_target, const vecto
 		if(address_in_target[i]>target_shape[i]){
 			ostringstream oss;
 			oss << "The address_in_target["<< i << "]: " << address_in_target[i] <<
-					" is larger than  target_shape[" << i << "]: " << target_shape[i] <<
+					" is larger than target_shape[" << i << "]: " << target_shape[i] <<
 					" This will make the bad things happen.";
 			throw  BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 		}
@@ -456,7 +456,7 @@ DmrppArray::read_chunked(){
 		throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 	}
 
-	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - "<< dimensions() << "D Array. Reading " << chunk_refs->size() << " chunks" << endl);
+	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - "<< dimensions() << "D Array. Processing " << chunk_refs->size() << " chunks" << endl);
 
 	switch (dimensions()) {
 #if 0
@@ -1048,28 +1048,29 @@ DmrppArray::insert_chunk(
 		vector<unsigned int> *chunk_row_insertion_point_address,
 		H4ByteStream *chunk){
 
+	vector<unsigned int> chunk_origin = chunk->get_position_in_array();
 	vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
-	unsigned int last_dim = chunk_shape.size() - 1;
+	vector<unsigned int> array_shape = get_shape(false);
 
-	if(dim < last_dim){
-		// Not the last dimension, so we continue to proceed down the Recursion Branch.
-		vector<unsigned int> chunk_origin = chunk->get_position_in_array();
-		for(unsigned int dim_index=0; dim_index<chunk_shape[dim]; dim_index++){
-			(*chunk_row_insertion_point_address)[dim] = chunk_origin[dim] + dim_index;
-			BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
-					<< "dim: " << dim  << " dim_index: " << dim_index <<
-					" chunk_row_insertion_point_address: " << vec2str((*chunk_row_insertion_point_address)) << endl);
-			// Re-entry here:
-			insert_chunk(dim+1,chunk_row_insertion_point_address,chunk);
-		}
+	unsigned int last_dim = chunk_shape.size() - 1;
+	unsigned int dim_end = chunk_shape[dim];
+	if((chunk_shape[dim] + chunk_origin[dim]) > array_shape[dim]){
+		dim_end = chunk_shape[dim] + chunk_origin[dim] - array_shape[dim];
+		BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+				<< "dim: " << dim  << " End of array was detected inside this chunk. Adjusting..."<<endl);
 	}
-	else {
-		unsigned int chunk_last_dim_bytes = chunk_shape[last_dim] * prototype()->width();
+	BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+			<< "dim: " << dim  << " dim_end: " << dim_end
+			<< " chunk_shape"<< vec2str(chunk_shape) << endl);
+
+
+	if(dim >= last_dim){
+		unsigned int chunk_last_dim_bytes = dim_end * prototype()->width();
 		unsigned int target_element_index = get_index((*chunk_row_insertion_point_address),get_shape(false));
 		unsigned int target_char_index = target_element_index * prototype()->width();
 		char *target_buffer = get_buf();
 
-		BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - TAIL CALL: Copying chunk inner row.  "
+		BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - DATA COPY: Copying chunk inner row.  "
 				<< "dim: " << dim  <<
 				" target_element_index: " << target_element_index <<
 				" target_char_index: " << target_char_index <<
@@ -1079,6 +1080,20 @@ DmrppArray::insert_chunk(
 		memcpy(target_buffer+target_char_index, chunk->get_read_pointer(),chunk_last_dim_bytes);
 
 		chunk->increment_read_pointer(chunk_last_dim_bytes);
+
+	}
+	else {
+		// Not the last dimension, so we continue to proceed down the Recursion Branch.
+
+		for(unsigned int dim_index=0; dim_index<dim_end; dim_index++){
+			(*chunk_row_insertion_point_address)[dim] = chunk_origin[dim] + dim_index;
+			BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - RECURSING "
+					<< "dim: " << dim  << " dim_index: " << dim_index <<
+					" chunk_row_insertion_point_address: " << vec2str((*chunk_row_insertion_point_address)) << endl);
+			// Re-entry here:
+			insert_chunk(dim+1,chunk_row_insertion_point_address,chunk);
+		}
+
 	}
 }
 

@@ -133,10 +133,21 @@ function mk4D(){
     echo "END Constrained 4D Array Baselines"
 }
 
+function mkBadChunkAlignmentTests(){
+    echo "MAKING Bad Chunk Alignment Baselines"
+    getit chunked_threeD_asymmetric_uneven_entire_array.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks
+    getit chunked_threeD_asymmetric_uneven_CE_00.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:1:99][0:1:49][0:1:199]
+    getit chunked_threeD_asymmetric_uneven_CE_01.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:1:99][0:25:49][0:1:199]
+    getit chunked_threeD_asymmetric_uneven_CE_02.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:2:99][0:2:49][0:2:199]
+    getit chunked_threeD_asymmetric_uneven_CE_03.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:3:99][0:3:49][0:3:199]
+    getit chunked_threeD_asymmetric_uneven_CE_04.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:25:99][0:25:49][0:50:199]
+    echo "END Bad Chunk Alignment Baselines"
+}
+
 function mkStuff(){
-    echo "MAKING Constrained 4D Array Baselines"
-    getit chunked_fourD_CE_chunk_00.bescmd chunked_fourD.h5 d_16_chunks[0:2:39][0:2:7][0:2:7][0:2:7]
-    echo "END Constrained 4D Array Baselines"
+    echo "MAKING Stuff"
+    getit chunked_fourD_CE_chunk_00.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[13:9:87][2:2:4][11:15:187]
+    echo "END Stuff"
 }
 
 
@@ -145,6 +156,8 @@ function mkStuff(){
 #mk2DAsym;
 #mk3DAsym;
 #mk4D;
+
+mkBadChunkAlignmentTests;
 
 
 
