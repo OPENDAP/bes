@@ -5,6 +5,14 @@ m4_include([../../handler_tests_macros.m4])
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_entire_array.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_00.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_01.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_02.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_03.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_04.h5.bescmd])
+
+
 AT_BESCMD_RESPONSE_TEST([bes/d_int.h5.dmrpp.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([bes/grid_1_2d.h5.dmrpp.dmr.bescmd])
 
