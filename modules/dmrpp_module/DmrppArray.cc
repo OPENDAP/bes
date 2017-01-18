@@ -1210,19 +1210,25 @@ DmrppArray::get_dimension(unsigned int dim_num){
 	throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 }
 /**
- * @brief This recursive call inserts a (previously read) chunk's data into the appropriate parts of the
- * Array object's internal memory.
+ * @brief This recursive call inserts a (previously read) chunk's data into the
+ * appropriate parts of the Array object's internal memory.
  *
- * Successive calls climb into the array to the insertion point for the
- * current chunk's innermost row. Once located, this row is copied into the array at the insertion point. The
- * next row for insertion is located by returning from the insertion call to the next dimension iteration
- * in the call recursive call stack.
+ * Successive calls climb into the array to the insertion point for the current
+ * chunk's innermost row. Once located, this row is copied into the array at the
+ * insertion point. The next row for insertion is located by returning from the
+ * insertion call to the next dimension iteration in the call recursive call
+ * stack.
  *
- * This starts with dimension 0 and the chunk_row_insertion_point_address set to the chunks origin point
+ * This starts with dimension 0 and the chunk_row_insertion_point_address set
+ * to the chunks origin point
  *
- * @parameter dim is the dimension on which we are working. We recurse from dimension 0 to the last dimension
- * @parameter chunk_row_insertion_point_address - this is where we build the location vector for each
- * inner dimension row insertion point.
+ * @parameter dim is the dimension on which we are working. We recurse from
+ * dimension 0 to the last dimension
+ * @parameter target_element_address - This vector is used to hold the element
+ * address in the result array to where this chunk's data will be written.
+ * @parameter chunk_source_address - This vector is used to hold the chunk
+ * element address from where data wil be read. The values of this are relative to
+ * the chunk's origin (position in array).
  * @parameter chunk The H4ByteStream containing the read data values to insert.
  */
 void
@@ -1234,8 +1240,13 @@ DmrppArray::insert_constrained_chunk(
 
 	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " BEGIN "<< endl);
 
+	// The size, in elements, of each of the chunks dimensions.
 	vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+
+	// The array index of the last dimension
 	unsigned int last_dim = chunk_shape.size() - 1;
+
+	// The chunk's origin point a.k.a. its "position in array".
 	vector<unsigned int> chunk_origin = chunk->get_position_in_array();
 
 	BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Retrieving dimension "<< dim
@@ -1247,15 +1258,20 @@ DmrppArray::insert_constrained_chunk(
 			" stride " << thisDim.stride <<
 			" stop " << thisDim.stop <<
 		    endl);
-	// What's the first row/element that we are going to access for the outer dimension of the chunk?
-	unsigned int first_element_offset = 0;
+	// What's the first element that we are going to access for this dimension of the chunk?
+	unsigned int first_element_offset = 0; // start with 0
 	if((unsigned)thisDim.start < chunk_origin[dim]){
+		// If the start is behind this chunk, then it's special.
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<<dim <<
 				" thisDim.start: " << thisDim.start << endl);
-		if(thisDim.stride!=1){
+		if(thisDim.stride!=1){ // And if the stride isn't 1,
+			// we have to figure our where to begin in this chunk.
 			first_element_offset = (chunk_origin[dim] - thisDim.start) % thisDim.stride;
-			if(first_element_offset!=0)
+			// If it's zero great!
+			if(first_element_offset!=0){
+				// otherwise we adjustment to get correct first element.
 				first_element_offset = thisDim.stride - first_element_offset;
+			}
 		}
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
 				" first_element_offset: " << first_element_offset << endl);
@@ -1263,7 +1279,7 @@ DmrppArray::insert_constrained_chunk(
 	else {
 		first_element_offset = thisDim.start - chunk_origin[dim];
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim <<
-				" thisDim.start is in this chunk. first_element_offset: " << first_element_offset <<  endl);
+				" thisDim.start is beyond the chunk origin at this dim. first_element_offset: " << first_element_offset <<  endl);
 	}
 	// Is the next point to be sent in this chunk at all?
 	if(first_element_offset > chunk_shape[dim]){
