@@ -294,35 +294,6 @@ DmrppArray::read_no_chunks()
 		vector<unsigned int> subset;
 		read_constrained_no_chunks(dim_begin(), &target_index, subset, array_shape, &h4_byte_stream); // TODO rename; something other than read. jhrg
 		BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - Copied " << target_index << " constrained  values." << endl);
-
-
-#if 0  // This code, using the Odometer, doesn't work for stride which makes me think that the Odometer could be improved
-
-		Odometer::shape array_shape, subset_shape;
-		// number of array elements in the constrained array
-		unsigned long long constrained_size = 1;
-		for(Dim_iter dim=dim_begin(); dim!=dim_end(); dim++){
-			array_shape.push_back(dimension_size(dim,false));
-			subset_shape.push_back(dimension_size(dim,true));
-			constrained_size *= dimension_size(dim,true);
-		}
-		BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " - constrained_size:  " << constrained_size << endl);
-
-		Odometer odometer(array_shape);
-		reserve_value_capacity(constrained_size);
-		unsigned long target_index = 0, offset;
-
-		odometer.indices(subset_shape);
-		offset = odometer.next();
-		while(target_index<constrained_size && offset!=odometer.end()){
-			get_buf()[target_index] = get_rbuf()[offset];
-			offset = odometer.next();
-			target_index++;
-		}
-		BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " Copied " << target_index << " constrained  values." << endl);
-
-#endif
-
 	}
 
 	set_read_p(true);
