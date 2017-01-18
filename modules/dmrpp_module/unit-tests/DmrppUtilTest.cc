@@ -105,7 +105,15 @@ public:
     }
 
     void test_compressed_chunk() {
+        // chunk holds float data
+        const unsigned int chunk_size = 40000; // bytes
+        vector<char> buf = read_chunk(test_data_dir + "/chunked_oneD.h5", 3496, chunk_size);
 
+        for (unsigned int i = 0; i < chunk_size / sizeof(dods_float32); ++i) {
+            dods_float32 value = *(reinterpret_cast<dods_float32*>(&buf[0] + i * sizeof(dods_float32)));
+            BESDEBUG("dmrpp", "FAIL - buf[" << i << "]: " << value << endl);
+            CPPUNIT_ASSERT(double_eq(value, i));
+        }
     }
 
     CPPUNIT_TEST_SUITE( DmrppUtilTest );
