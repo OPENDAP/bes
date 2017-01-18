@@ -31,11 +31,11 @@
 #include "H4ByteStream.h"
 
 namespace dmrpp {
+
 /**
  * Interface for the size and offset information of data described by
  * DMR++ files.
  */
-
 class DmrppCommon {
 
 	friend class DmrppTypeReadTest;
