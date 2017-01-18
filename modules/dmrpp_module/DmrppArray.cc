@@ -1055,13 +1055,16 @@ DmrppArray::insert_chunk(
 	unsigned int last_dim = chunk_shape.size() - 1;
 	unsigned int dim_end = chunk_shape[dim];
 	if((chunk_shape[dim] + chunk_origin[dim]) > array_shape[dim]){
-		dim_end = chunk_shape[dim] + chunk_origin[dim] - array_shape[dim];
+		dim_end =  array_shape[dim] - chunk_origin[dim];
 		BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
 				<< "dim: " << dim  << " End of array was detected inside this chunk. Adjusting..."<<endl);
 	}
 	BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
 			<< "dim: " << dim  << " dim_end: " << dim_end
-			<< " chunk_shape"<< vec2str(chunk_shape) << endl);
+			<< " chunk_shape"<< vec2str(chunk_shape)
+			<< " chunk_origin"<< vec2str(chunk_origin)
+			<< " array_shape"<< vec2str(array_shape)
+			<< endl);
 
 
 	if(dim >= last_dim){
