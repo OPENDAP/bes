@@ -5,13 +5,8 @@ SUBDIRS =
 
 AUTOMAKE_OPTIONS = foreign
 
-# if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LDADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-# else
-# AM_CPPFLAGS = -I$(top_srcdir) $(XML2_CFLAGS) $(DAP_CFLAGS)
-# LDADD =  $(DAP_SERVER_LIBS) 
-# endif
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -48,7 +43,8 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = DmrppParserTest DmrppTypeReadTest DmrppChunkedReadTest DmrppHttpReadTest
+UNIT_TESTS = DmrppParserTest DmrppTypeReadTest DmrppChunkedReadTest \
+DmrppHttpReadTest DmrppUtilTest
 else
 UNIT_TESTS =
 
@@ -95,3 +91,7 @@ DmrppChunkedReadTest_LDFLAGS =  $(LDADD)
 
 DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc $(SRCS)
 DmrppHttpReadTest_LDFLAGS =  $(LDADD)
+
+DmrppUtilTest_SOURCES = DmrppUtilTest.cc $(SRCS)
+DmrppUtilTest_LDFLAGS =  $(LDADD)
+
