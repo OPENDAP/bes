@@ -26,6 +26,7 @@
 
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 #include <cstring>
 #include <stack>
@@ -993,28 +994,44 @@ DmrppArray::read_chunked(){
 						(h4bs.is_read()?"READ ":"SKIPPED ") << (*chunk_refs)[i].to_string() << endl);
 			}
 
-
-#if 0
-			ostringstream oss;
-			oss << "DmrppArray: Constraints are not yet implemented for " << dimensions() << "D arrays.";
-			throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-#endif
-
 		}
 		else {
 
 			for(unsigned long i=0; i<chunk_refs->size(); i++){
-				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Processing chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_shape[" << i << "]: " << vec2str(get_chunk_dimension_sizes()) << endl);
+
 				H4ByteStream h4bs = (*chunk_refs)[i];
 				h4bs.read();
+
+#if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
+				if(BESDebug::IsSet("dmrpp")){
+					unsigned long long chunk_buf_size = h4bs.get_rbuf_size();
+					dods_float32 *vals = (dods_float32 *) h4bs.get_rbuf();
+					ostream *os = BESDebug::GetStrm();
+					(*os) << std::fixed <<
+							std::setfill('_') <<
+							std::setw(10) <<
+							std::setprecision(0)
+					;
+					(*os) << "DmrppArray::"<< __func__ <<"() - Chunk[" << i << "]: " << endl;
+					for(unsigned long long k=0; k< chunk_buf_size/prototype()->width(); k++){
+						(*os) << vals[k] << ", " << ((k==0)|((k+1)%10)?"":"\n");
+					}
+
+				}
+#endif
+
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Packing Array From Chunk[" << i << "]"
 						<< " chunk_origin: " << vec2str(h4bs.get_position_in_array()) << endl);
-				vector<unsigned int> chunk_row_insertion_point_address = h4bs.get_position_in_array();
-				// Begins recursive insertion operation.
+				vector<unsigned int> target_element_address = h4bs.get_position_in_array();
+				vector<unsigned int> chunk_source_address(dimensions(),0);				// Begins recursive insertion operation.
 				// Starting with dimension 0 and the chunk_row_insertion_point_address
 				// is initialized to the chunk origin point in the array.
-				insert_chunk(0,&chunk_row_insertion_point_address,&h4bs);
+				insert_constrained_chunk(0,&target_element_address,&chunk_source_address,&h4bs);
 				// insert_chunk(&h4bs);
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - COMPLETED chunk[" << i << "] was " <<
+						(h4bs.is_read()?"READ ":"SKIPPED ") << (*chunk_refs)[i].to_string() << endl);
 			}
 		}
 	} break;
@@ -1025,7 +1042,81 @@ DmrppArray::read_chunked(){
 
 
 
+#if 0
+/**
+ * @brief This recursive call inserts a (previously read) chunk's data into the appropriate parts of the
+ * Array object's internal memory.
+ *
+ * Successive calls climb into the array to the insertion point for the
+ * current chunk's innermost row. Once located, this row is copied into the array at the insertion point. The
+ * next row for insertion is located by returning from the insertion call to the next dimension iteration
+ * in the call recursive call stack.
+ *
+ * This starts with dimension 0 and the chunk_row_insertion_point_address set to the chunks origin point
+ *
+ * @parameter dim is the dimension on which we are working. We recurse from dimension 0 to the last dimension
+ * @parameter chunk_row_insertion_point_address - this is where we build the location vector for each
+ * inner dimension row insertion point.
+ * @parameter chunk The H4ByteStream containing the read data values to insert.
+ */
+void
+DmrppArray::insert_chunk(
+		unsigned int dim, // The dimension being processed.
+		vector<unsigned int> *target_element_address,
+		vector<unsigned int> *chunk_source_address,
+		H4ByteStream *chunk){
 
+	vector<unsigned int> chunk_origin = chunk->get_position_in_array();
+	vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+	vector<unsigned int> array_shape = get_shape(false);
+
+	unsigned int last_dim = chunk_shape.size() - 1;
+	unsigned int dim_end = chunk_shape[dim];
+	if((chunk_shape[dim] + chunk_origin[dim]) > array_shape[dim]){
+		dim_end =  array_shape[dim] - chunk_origin[dim];
+		BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+				<< "dim: " << dim  << " End of array was detected inside this chunk. Adjusting..."<<endl);
+	}
+	BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - "
+			<< "dim: " << dim  << " dim_end: " << dim_end
+			<< " chunk_shape"<< vec2str(chunk_shape)
+			<< " chunk_origin"<< vec2str(chunk_origin)
+			<< " array_shape"<< vec2str(array_shape)
+			<< endl);
+
+
+	if(dim >= last_dim){
+		unsigned int chunk_last_dim_bytes = dim_end * prototype()->width();
+		unsigned int target_element_index = get_index((*chunk_row_insertion_point_address),get_shape(false));
+		unsigned int target_char_index = target_element_index * prototype()->width();
+		char *target_buffer = get_buf();
+
+		BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - DATA COPY: Copying chunk inner row.  "
+				<< "dim: " << dim  <<
+				" target_element_index: " << target_element_index <<
+				" target_char_index: " << target_char_index <<
+				" chunk_row_insertion_point_address: " << vec2str((*chunk_row_insertion_point_address)) <<
+				" bytes: " << chunk_last_dim_bytes << endl);
+
+		memcpy(target_buffer+target_char_index, chunk->get_read_pointer(),chunk_last_dim_bytes);
+
+		chunk->increment_read_pointer(chunk_last_dim_bytes);
+
+	}
+	else {
+		// Not the last dimension, so we continue to proceed down the Recursion Branch.
+
+		for(unsigned int dim_index=0; dim_index<dim_end; dim_index++){
+			(*chunk_row_insertion_point_address)[dim] = chunk_origin[dim] + dim_index;
+			BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - RECURSING "
+					<< "dim: " << dim  << " dim_index: " << dim_index <<
+					" chunk_row_insertion_point_address: " << vec2str((*chunk_row_insertion_point_address)) << endl);
+			// Re-entry here:
+			insert_chunk(dim+1,chunk_row_insertion_point_address,chunk);
+		}
+
+	}
+}
 /**
  * @brief This recursive call inserts a (previously read) chunk's data into the appropriate parts of the
  * Array object's internal memory.
@@ -1100,6 +1191,8 @@ DmrppArray::insert_chunk(
 	}
 }
 
+
+#endif
 DmrppArray::dimension
 DmrppArray::get_dimension(unsigned int dim_num){
 	Dim_iter dimIter = dim_begin();
@@ -1278,11 +1371,11 @@ DmrppArray::insert_constrained_chunk(
 			unsigned long long chunk_end = end_element - chunk_origin[dim];
 			BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_end: " << chunk_end <<  endl);
 
-			for(unsigned int idim_index=chunk_start; idim_index<=chunk_end ; idim_index+=thisDim.stride){
-				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() --------- idim_index: " << idim_index <<  endl);
+			for(unsigned int chunk_index=chunk_start; chunk_index<=chunk_end ; chunk_index+=thisDim.stride){
+				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() --------- idim_index: " << chunk_index <<  endl);
 
 				// Compute where we need to put it.
-				(*target_element_address)[dim] = ( idim_index + chunk_origin[dim] - thisDim.start ) / thisDim.stride;
+				(*target_element_address)[dim] = ( chunk_index + chunk_origin[dim] - thisDim.start ) / thisDim.stride;
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_element_address: " << vec2str(*target_element_address) <<  endl);
 
 				unsigned int target_start_element_index = get_index(*target_element_address,get_shape(true));
@@ -1292,7 +1385,7 @@ DmrppArray::insert_constrained_chunk(
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - target_char_start_index: " << target_char_start_index <<  endl);
 
 				// Compute where we are going to read it from
-				(*chunk_source_address)[dim] = idim_index;
+				(*chunk_source_address)[dim] = chunk_index;
 				BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_source_address: " << vec2str(*chunk_source_address) <<  endl);
 
 				unsigned int chunk_start_element_index = get_index(*chunk_source_address,chunk_shape);

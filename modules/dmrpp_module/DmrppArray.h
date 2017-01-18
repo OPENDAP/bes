@@ -49,12 +49,12 @@ private:
     virtual bool read_no_chunks();
     virtual bool read_chunked();
 
-
+#if 0
     virtual void insert_chunk(
     		unsigned int dim,
     		vector<unsigned int> *chunk_row_insertion_point_address,
     		H4ByteStream *chunk);
-
+#endif
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     virtual void insert_constrained_chunk(

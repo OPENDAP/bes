@@ -5,13 +5,6 @@ m4_include([../../handler_tests_macros.m4])
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_entire_array.h5.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_00.h5.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_01.h5.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_02.h5.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_03.h5.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_04.h5.bescmd])
-
 
 AT_BESCMD_RESPONSE_TEST([bes/d_int.h5.dmrpp.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([bes/grid_1_2d.h5.dmrpp.dmr.bescmd])
@@ -74,6 +67,31 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_13.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_14.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_15.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_all_chunks.bescmd])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_entire_array.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_CE_00.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_CE_chunk_0.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_CE_chunk_1.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_CE_chunk_2.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_CE_chunk_3.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_CE_chunk_4.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_skip_chunks.h5.bescmd])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_entire_array.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_CE_chunk_0.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_CE_chunk_1.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_CE_chunk_2.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_CE_chunk_3.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_CE_chunk_4.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_CE_chunk_5.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_twoD_uneven_all_chunks.h5.bescmd])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_entire_array.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_00.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_01.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_02.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_03.h5.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_04.h5.bescmd])
 
 
 ## we have only limited support for scalars and arrays now. jhrg 11.23.16
