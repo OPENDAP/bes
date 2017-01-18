@@ -76,43 +76,70 @@ public:
      * @param size
      * @return Return a char vector with the data
      */
-    vector<char> read_chunk(const string &file, unsigned int offset, unsigned int size) {
+    vector<char> read_chunk(const string &file, unsigned int offset, unsigned int size)
+    {
         BESDEBUG("dmrpp", __FUNCTION__ << " opening: " << file << endl);
         ifstream ifs(file.c_str());
-        if (!ifs)
-            throw BESError("Could not open file: " + file, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        if (!ifs) throw BESError("Could not open file: " + file, BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         ifs.seekg(offset);
         vector<char> buf(size);
         ifs.read(&buf[0], size);
 
-        if (ifs.bad() || ifs.fail())
-            throw BESError("Could not open file: " + file, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        if (ifs.bad() || ifs.fail()) throw BESError("Could not open file: " + file, BES_INTERNAL_ERROR, __FILE__,
+        __LINE__);
 
         return buf;
     }
 
-    void test_uncompressed_chunk() {
-        // chunk holds float data
-        const unsigned int chunk_size = 40000; // bytes
-        vector<char> buf = read_chunk(test_data_dir + "/chunked_oneD.h5", 3496, chunk_size);
+    void test_uncompressed_chunk()
+    {
+        try {
+            // chunk holds float data
+            const unsigned int chunk_size = 40000; // bytes
+            vector<char> buf = read_chunk(test_data_dir + "/chunked_oneD.h5", 3496, chunk_size);
 
-        for(unsigned int  i = 0; i < chunk_size / sizeof(dods_float32); ++i) {
-            dods_float32 value = *(reinterpret_cast<dods_float32*>(&buf[0] + i * sizeof(dods_float32)));
-            BESDEBUG("dmrpp", "FAIL - buf[" << i << "]: " << value << endl);
-            CPPUNIT_ASSERT(double_eq(value, i));
+            for (unsigned int i = 0; i < chunk_size / sizeof(dods_float32); ++i) {
+                dods_float32 value = *(reinterpret_cast<dods_float32*>(&buf[0] + i * sizeof(dods_float32)));
+                BESDEBUG("dmrpp", "buf[" << i << "]: " << value << endl);
+                CPPUNIT_ASSERT(double_eq(value, i));
+            }
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (exception &e) {
+            CPPUNIT_FAIL(e.what());
         }
     }
 
-    void test_compressed_chunk() {
-        // chunk holds float data
-        const unsigned int chunk_size = 40000; // bytes
-        vector<char> buf = read_chunk(test_data_dir + "/chunked_oneD.h5", 3496, chunk_size);
+    void test_compressed_chunk()
+    {
+        try {
+            // chunk holds float data
+            const unsigned int uncomp_size = 40000; // bytes
+            const unsigned int comp_size = 11393; // bytes
+            vector<char> buf = read_chunk(test_data_dir + "/chunked_gzipped_oneD.h5", 3496, comp_size);
 
-        for (unsigned int i = 0; i < chunk_size / sizeof(dods_float32); ++i) {
-            dods_float32 value = *(reinterpret_cast<dods_float32*>(&buf[0] + i * sizeof(dods_float32)));
-            BESDEBUG("dmrpp", "FAIL - buf[" << i << "]: " << value << endl);
-            CPPUNIT_ASSERT(double_eq(value, i));
+            for (unsigned int i = 0; i < comp_size; ++i) {
+                BESDEBUG("dmrpp", "Compressed data - buf[" << i << "]: " << (unsigned int)buf[i] << endl);
+            }
+
+            vector<char> dest(uncomp_size);
+
+            deflate(&dest[0], dest.size(), &buf[0], buf.size());
+
+            for (unsigned int i = 0; i < dest.size() / sizeof(dods_float32); ++i) {
+                dods_float32 value = *(reinterpret_cast<dods_float32*>(&dest[0] + i * sizeof(dods_float32)));
+                BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
+                CPPUNIT_ASSERT(double_eq(value, i));
+            }
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (exception &e) {
+            CPPUNIT_FAIL(e.what());
         }
     }
 
@@ -152,7 +179,7 @@ int main(int argc, char*argv[])
     string test = "";
     int i = getopt.optind;
     if (i == argc) {
-        // run them all
+// run them all
         wasSuccessful = runner.run("");
     }
     else {

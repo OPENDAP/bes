@@ -31,11 +31,11 @@
 #include "H4ByteStream.h"
 
 namespace dmrpp {
+
 /**
  * Interface for the size and offset information of data described by
  * DMR++ files.
  */
-
 class DmrppCommon {
 
 	friend class DmrppTypeReadTest;
@@ -92,9 +92,12 @@ public:
         return d_compression_type_shuffle;
     }
 
+    // TODO These next two methods are not actually needed since the deflate level
+    // is not used when deflating stuff. jhrg
     /**
      * @brief Sets the deflate level for this object to deflate_level.
-     * Returns the previous valu of deflate level.
+     * @return The previous value of deflate level.
+     * @deprecated Not needed to deflate data
      */
     virtual unsigned int set_deflate_level(unsigned int deflate_level){
     	unsigned int old_level = deflate_level;
@@ -104,6 +107,7 @@ public:
 
     /**
      * @brief Returns the current value of this objects deflate level.
+     * @deprecated Not needed to deflate data
      */
     virtual unsigned int get_deflate_level() const {
     	return d_deflate_level;
@@ -120,12 +124,30 @@ public:
 			std::string uuid,
 			std::string position_in_array = "");
 
+    // TODO this is not really an immutable reference, but a copy
     virtual std::vector<H4ByteStream> get_immutable_chunks() const {
     	return d_chunk_refs;
     }
 
     virtual std::vector<unsigned int> get_chunk_dimension_sizes() const {
     	return d_chunk_dimension_sizes;
+    }
+
+    /**
+     * @brief Get the byte number of elements in this chunk
+     * One use for this is set the size of a destination buffer when decompressing
+     * a chunk. Because this is in Common, we don't know the size of the elements,
+     * so the caller will have to get that information and use the element count
+     * to determine the number of bytes to allocate for the dest buffer.
+     */
+    virtual unsigned int get_chunk_size() const {
+        unsigned int elements = 1;
+        for (std::vector<unsigned int>::const_iterator i = d_chunk_dimension_sizes.begin(),
+                e = d_chunk_dimension_sizes.end(); i != e; ++i) {
+            elements *= *i;
+        }
+
+        return elements;
     }
 
     /**
@@ -140,10 +162,7 @@ public:
      */
     virtual void ingest_compression_type(std::string compression_type_string);
 
-
     virtual void dump(std::ostream & strm) const;
-
-
 
 #if 0
     bool readAtomic()
@@ -190,10 +209,7 @@ public:
 
         return true;
     }
-
 #endif
-
-
 };
 
 } // namepsace dmrpp
