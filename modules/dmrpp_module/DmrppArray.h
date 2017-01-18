@@ -49,7 +49,6 @@ private:
     virtual bool read_no_chunks();
     virtual bool read_chunked();
 
-
     virtual void insert_chunk(
     		unsigned int dim,
     		vector<unsigned int> *chunk_row_insertion_point_address,
@@ -82,7 +81,6 @@ public:
 
     virtual unsigned long long get_size(bool constrained=false);
     virtual vector<unsigned int> get_shape(bool constrained);
-
 };
 
 } // namespace dmrpp

@@ -244,8 +244,6 @@ DmrppArray::get_size(bool constrained){
 	return constrained_size;
 }
 
-// FIXME This version of read() should work for unconstrained accesses where
-// we don't have to think about chunking. jhrg 11/23/16
 bool
 DmrppArray::read_no_chunks()
 {
