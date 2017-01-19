@@ -33,36 +33,40 @@
 
 namespace dmrpp {
 
+/**
+ * @brief Extend libdap::Array so that a handler can read data using a DMR++ file.
+ *
+ * @note A key feature of HDF5 is that is can 'chunk' data, breaking up an
+ * array into a number of smaller pieces, each of which can be compressed.
+ * This code will read both array data that are chunked (and possibly compressed)
+ * as well as code that is not (essentially the entire array is written in a
+ * single 'chunk'). Because the two cases are different and susceptible to
+ * different kinds of optimizations, we have implemented two different read()
+ * methods, one for the 'no chunks' case and one for arrays 'with chunks.'
+ */
 class DmrppArray: public libdap::Array, public DmrppCommon {
     void _duplicate(const DmrppArray &ts);
 
     bool is_projected();
 
 private:
-    void read_constrained_no_chunks(
+    DmrppArray::dimension get_dimension(unsigned int dim_num);
+
+    virtual bool read_no_chunks();
+    virtual bool read_chunks();
+
+    void insert_constrained_no_chunk(
 			Dim_iter p,
 			unsigned long *target_index,
 			vector<unsigned int> &subsetAddress,
 			const vector<unsigned int> &array_shape,
 			H4ByteStream *h4bytestream);
 
-    virtual bool read_no_chunks();
-    virtual bool read_chunked();
-
-    virtual void insert_chunk(
-    		unsigned int dim,
-    		vector<unsigned int> *chunk_row_insertion_point_address,
-    		H4ByteStream *chunk);
-
-    DmrppArray::dimension get_dimension(unsigned int dim_num);
-
     virtual void insert_constrained_chunk(
     		unsigned int dim,
 			vector<unsigned int> *target_address,
 			vector<unsigned int> *chunk_source_address,
     		H4ByteStream *chunk);
-
-    // virtual void insert_chunk(H4ByteStream *chunk);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);

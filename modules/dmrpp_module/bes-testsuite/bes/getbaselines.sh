@@ -134,14 +134,39 @@ function mk4D(){
 }
 
 function mkBadChunkAlignmentTests(){
-    echo "MAKING Bad Chunk Alignment Baselines"
+    echo "BEGIN - Make Bad Chunk Alignment Baselines"
+    
+    #     Float32 d_5_odd_chunks[40000];
+    #     <h4:chunkDimensionSizes>9501</h4:chunkDimensionSizes>
+    getit chunked_oneD_uneven_entire_array.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks
+    getit chunked_oneD_uneven_CE_00.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[0:1:39999]
+    getit chunked_oneD_uneven_CE_chunk_0.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[0:100:500]
+    getit chunked_oneD_uneven_CE_chunk_1.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[10000:100:10500]
+    getit chunked_oneD_uneven_CE_chunk_2.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[20000:100:20500]
+    getit chunked_oneD_uneven_CE_chunk_3.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[30000:100:30500]
+    getit chunked_oneD_uneven_CE_chunk_4.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[38500:100:39000]
+    getit chunked_oneD_uneven_skip_chunks.h5.bescmd chunked_oneD_uneven.h5 d_5_odd_chunks[0:22000:39999]
+
+    #     Float32 d_10_odd_chunks[100][100];
+    #      <h4:chunkDimensionSizes>50 41</h4:chunkDimensionSizes>
+    getit chunked_twoD_uneven_entire_array.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks
+    getit chunked_twoD_uneven_CE_chunk_0.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[0:10:30][0:10:30]
+    getit chunked_twoD_uneven_CE_chunk_1.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[0:10:30][50:10:70]
+    getit chunked_twoD_uneven_CE_chunk_2.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[0:10:30][85:1:95]
+    getit chunked_twoD_uneven_CE_chunk_3.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[60:10:80][0:10:30]
+    getit chunked_twoD_uneven_CE_chunk_4.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[60:10:80][50:10:70]
+    getit chunked_twoD_uneven_CE_chunk_5.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[60:10:80][85:1:95]
+    getit chunked_twoD_uneven_all_chunks.h5.bescmd chunked_twoD_uneven.h5 d_10_odd_chunks[25:50:75][0:45:99]
+
+    #     Float32 d_odd_chunks[100][50][200];
+    #     <h4:chunkDimensionSizes>41 50 53</h4:chunkDimensionSizes>
     getit chunked_threeD_asymmetric_uneven_entire_array.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks
     getit chunked_threeD_asymmetric_uneven_CE_00.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:1:99][0:1:49][0:1:199]
     getit chunked_threeD_asymmetric_uneven_CE_01.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:1:99][0:25:49][0:1:199]
     getit chunked_threeD_asymmetric_uneven_CE_02.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:2:99][0:2:49][0:2:199]
     getit chunked_threeD_asymmetric_uneven_CE_03.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:3:99][0:3:49][0:3:199]
     getit chunked_threeD_asymmetric_uneven_CE_04.h5.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[0:25:99][0:25:49][0:50:199]
-    echo "END Bad Chunk Alignment Baselines"
+    echo "END - Make Bad Chunk Alignment Baselines"
 }
 
 function mkStuff(){

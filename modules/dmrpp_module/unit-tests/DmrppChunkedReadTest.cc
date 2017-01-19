@@ -368,9 +368,19 @@ public:
         check_f32_test_array(chnkd_oneD, "d_4_chunks", 40000);
     }
 
+    void test_read_oneD_uneven_chunked_array() {
+        string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_oneD_uneven.h5.dmrpp");
+        check_f32_test_array(chnkd_oneD, "d_5_odd_chunks", 40000);
+    }
+
     void test_read_twoD_chunked_array() {
         string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_twoD.h5.dmrpp");
         check_f32_test_array(chnkd_twoD, "d_4_chunks", 10000);
+    }
+
+    void test_read_twoD_uneven_chunked_array() {
+        string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_twoD_uneven.h5.dmrpp");
+        check_f32_test_array(chnkd_twoD, "d_10_odd_chunks", 10000);
     }
 
     void test_read_twoD_chunked_asymmetric_array() {
@@ -407,6 +417,11 @@ public:
     CPPUNIT_TEST(test_read_fourD_chunked_array);
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
+
+#if 0
+    CPPUNIT_TEST(test_read_oneD_uneven_chunked_array);
+    CPPUNIT_TEST(test_read_twoD_uneven_chunked_array);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };
