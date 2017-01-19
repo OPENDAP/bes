@@ -418,7 +418,7 @@ public:
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
 
-#if 0
+#if 1
     CPPUNIT_TEST(test_read_oneD_uneven_chunked_array);
     CPPUNIT_TEST(test_read_twoD_uneven_chunked_array);
 #endif
