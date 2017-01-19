@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="data/chunked_gzipped_threeD.h5" dapVersion="4.0" dmrVersion="1.0" name="chunked_gzipped_threeD.h5">
+    <Float32 name="d_8_gzipped_chunks">
+        <Dim size="7"/>
+        <Dim size="5"/>
+        <Dim size="2"/>
+        <Attribute name="origname" type="String">
+            <Value>d_8_gzipped_chunks</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d_8_gzipped_chunks</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>ac80976e</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 d_8_gzipped_chunks[7][5][2] = {{{718102, 718107},{718502, 718507},{718902, 718907},{719302, 719307},{719702, 719707}},{{738102, 738107},{738502, 738507},{738902, 738907},{739302, 739307},{739702, 739707}},{{758102, 758107},{758502, 758507},{758902, 758907},{759302, 759307},{759702, 759707}},{{778102, 778107},{778502, 778507},{778902, 778907},{779302, 779307},{779702, 779707}},{{798102, 798107},{798502, 798507},{798902, 798907},{799302, 799307},{799702, 799707}},{{818102, 818107},{818502, 818507},{818902, 818907},{819302, 819307},{819702, 819707}},{{838102, 838107},{838502, 838507},{838902, 838907},{839302, 839307},{839702, 839707}}};
+

@@ -169,6 +169,31 @@ function mkBadChunkAlignmentTests(){
     echo "END - Make Bad Chunk Alignment Baselines"
 }
 
+function mkZippedChunksTests(){
+    echo "MAKING - Zipped Chunks Tests"
+    #     Float32 d_4_chunks[100][100];
+    #     <h4:chunkDimensionSizes>50 50</h4:chunkDimensionSizes>
+    getit chunked_gzipped_twoD_CE_chunks_0-1.bescmd chunked_gzipped_twoD.h5 d_4_gzipped_chunks[13:7:44][47:1:53]
+    getit chunked_gzipped_twoD_CE_chunks_0-2.bescmd chunked_gzipped_twoD.h5 d_4_gzipped_chunks[13:7:64][17:1:41]
+    getit chunked_gzipped_twoD_CE_chunks_1-3.bescmd chunked_gzipped_twoD.h5 d_4_gzipped_chunks[13:5:76][62:1:87]
+    getit chunked_gzipped_twoD_CE_chunks_2-3.bescmd chunked_gzipped_twoD.h5 d_4_gzipped_chunks[77:3:99][36:1:61]
+    getit chunked_gzipped_twoD_CE_all_chunks.bescmd chunked_gzipped_twoD.h5 d_4_gzipped_chunks[13:7:69][34:1:60]
+
+    #     Float32 d_4_chunks[100][100][100];
+    #     <h4:chunkDimensionSizes>50 50 50</h4:chunkDimensionSizes>
+    getit chunked_gzipped_threeD_CE_chunk_6.bescmd chunked_gzipped_threeD.h5 d_8_gzipped_chunks[71:2:83][81:4:99][2:5:10]
+    getit chunked_gzipped_threeD_CE_chunk_7.bescmd chunked_gzipped_threeD.h5 d_8_gzipped_chunks[53:5:67][67:5:95][81:4:99]    
+    getit chunked_gzipped_threeD_CE_all_chunks.bescmd chunked_gzipped_threeD.h5 d_8_gzipped_chunks[13:9:87][2:12:85][23:15:99]
+
+    #     Float32 d_8_chunks[40][40][40];
+    #     <h4:chunkDimensionSizes>20 20 20 20</h4:chunkDimensionSizes>
+    getit chunked_gzipped_fourD_CE_chunk_14.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][21:2:29][21:2:29][0:2:7]
+    getit chunked_gzipped_fourD_CE_chunk_15.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][21:2:29][21:2:29][21:2:29]
+    getit chunked_gzipped_fourD_CE_all_chunks.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[0:9:29][5:7:29][11:5:33][3:11:31]
+
+    echo "END - Zipped Chunks Tests"
+}
+
 function mkStuff(){
     echo "MAKING Stuff"
     getit chunked_fourD_CE_chunk_00.bescmd chunked_threeD_asymmetric_uneven.h5 d_odd_chunks[13:9:87][2:2:4][11:15:187]
@@ -181,9 +206,9 @@ function mkStuff(){
 #mk2DAsym;
 #mk3DAsym;
 #mk4D;
+#mkBadChunkAlignmentTests;
 
-mkBadChunkAlignmentTests;
-
+mkZippedChunksTests
 
 
 

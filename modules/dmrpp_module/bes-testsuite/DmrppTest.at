@@ -94,6 +94,21 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_03.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asymmetric_uneven_CE_04.h5.bescmd])
 
 
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_twoD_CE_chunks_0-1.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_twoD_CE_chunks_0-2.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_twoD_CE_chunks_1-3.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_twoD_CE_chunks_2-3.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_twoD_CE_all_chunks.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_threeD_CE_chunk_6.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_threeD_CE_chunk_7.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_threeD_CE_all_chunks.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_14.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_15.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_all_chunks.bescmd])
+
+
+
 ## we have only limited support for scalars and arrays now. jhrg 11.23.16
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/http_d_int.h5.dmrpp.dap.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/http_d_int.h5.dmrpp.dap.2.bescmd])
