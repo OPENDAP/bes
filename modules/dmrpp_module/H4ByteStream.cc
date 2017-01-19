@@ -193,6 +193,25 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
         }
     }
 
+
+#if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
+				if(BESDebug::IsSet("dmrpp")){
+					unsigned long long chunk_buf_size = get_rbuf_size();
+					dods_float32 *vals = (dods_float32 *) get_rbuf();
+					ostream *os = BESDebug::GetStrm();
+					(*os) << std::fixed <<
+							std::setfill('_') <<
+							std::setw(10) <<
+							std::setprecision(0)
+					;
+					(*os) << "DmrppArray::"<< __func__ <<"() - Chunk[" << i << "]: " << endl;
+					for(unsigned long long k=0; k< chunk_buf_size/prototype()->width(); k++){
+						(*os) << vals[k] << ", " << ((k==0)|((k+1)%10)?"":"\n");
+					}
+
+				}
+#endif
+
     d_is_read = true;
 }
 
