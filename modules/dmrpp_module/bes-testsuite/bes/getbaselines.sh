@@ -187,9 +187,15 @@ function mkZippedChunksTests(){
 
     #     Float32 d_8_chunks[40][40][40];
     #     <h4:chunkDimensionSizes>20 20 20 20</h4:chunkDimensionSizes>
+    getit chunked_gzipped_fourD_CE_chunk_09.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][0:2:7][0:2:7][21:2:29]
+    getit chunked_gzipped_fourD_CE_chunk_10.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][0:2:7][21:2:29][0:2:7]
+    getit chunked_gzipped_fourD_CE_chunk_11.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][0:2:7][21:2:29][21:2:29]    
+    getit chunked_gzipped_fourD_CE_chunk_12.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][21:2:29][0:2:7][0:2:7]
+    getit chunked_gzipped_fourD_CE_chunk_13.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][21:2:29][0:2:7][21:2:29]
     getit chunked_gzipped_fourD_CE_chunk_14.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][21:2:29][21:2:29][0:2:7]
     getit chunked_gzipped_fourD_CE_chunk_15.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[21:2:29][21:2:29][21:2:29][21:2:29]
     getit chunked_gzipped_fourD_CE_all_chunks.bescmd chunked_gzipped_fourD.h5 d_16_gzipped_chunks[0:9:29][5:7:29][11:5:33][3:11:31]
+
 
     echo "END - Zipped Chunks Tests"
 }
