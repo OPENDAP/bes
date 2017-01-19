@@ -43,7 +43,13 @@ using namespace std;
 
 namespace dmrpp {
 
-string vec2str(vector<unsigned int> v)
+/**
+ * @brief Write an int vector to a string.
+ * @note Only used by BESDEBUG calls
+ * @param v
+ * @return The string
+ */
+static string vec2str(vector<unsigned int> v)
 {
     ostringstream oss;
     oss << "(";
@@ -136,6 +142,30 @@ unsigned long long get_index(vector<unsigned int> address_in_target, const vecto
     return subject_index;
 }
 
+vector<unsigned int> DmrppArray::get_shape(bool constrained)
+{
+    vector<unsigned int> array_shape;
+    for (Dim_iter dim = dim_begin(); dim != dim_end(); dim++) {
+        array_shape.push_back(dimension_size(dim, constrained));
+    }
+    return array_shape;
+}
+
+DmrppArray::dimension DmrppArray::get_dimension(unsigned int dim_num)
+{
+    Dim_iter dimIter = dim_begin();
+    unsigned int dim_index = 0;
+
+    while (dimIter != dim_end()) {
+        if (dim_num == dim_index) return *dimIter;
+        dimIter++;
+        dim_index++;
+    }
+    ostringstream oss;
+    oss << "DmrppArray::get_dimension() -" << " The array " << name() << " does not have " << dim_num << " dimensions!";
+    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+}
+
 /**
  * @brief This recursive private method collects values from the rbuf and copies
  * them into buf. It supports stop, stride, and start and while correct is not
@@ -219,15 +249,6 @@ void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *ta
     }
 }
 
-vector<unsigned int> DmrppArray::get_shape(bool constrained)
-{
-    vector<unsigned int> array_shape;
-    for (Dim_iter dim = dim_begin(); dim != dim_end(); dim++) {
-        array_shape.push_back(dimension_size(dim, constrained));
-    }
-    return array_shape;
-}
-
 unsigned long long DmrppArray::get_size(bool constrained)
 {
     // number of array elements in the constrained array
@@ -258,14 +279,8 @@ bool DmrppArray::read_no_chunks()
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - No projection, copying all values into array. " << endl);
         val2buf(h4_byte_stream.get_rbuf());    // yes, it's not type-safe
     }
-    // else
-    // Get the start, stop values for each dimension
-    // Determine the size of the destination buffer (should match length() / width())
-    // Allocate the dest buffer in the array
-    // Use odometer code to copy data out of the rbuf and into the dest buffer of the array
     else {
         vector<unsigned int> array_shape = get_shape(false);
-        // number of array elements in the constrained array
         unsigned long long constrained_size = get_size(true);
 
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - constrained_size:  " << constrained_size << endl);
@@ -840,21 +855,6 @@ bool DmrppArray::read_chunks()
     }
 
     return true;
-}
-
-DmrppArray::dimension DmrppArray::get_dimension(unsigned int dim_num)
-{
-    Dim_iter dimIter = dim_begin();
-    unsigned int dim_index = 0;
-
-    while (dimIter != dim_end()) {
-        if (dim_num == dim_index) return *dimIter;
-        dimIter++;
-        dim_index++;
-    }
-    ostringstream oss;
-    oss << "DmrppArray::get_dimension() -" << " The array " << name() << " does not have " << dim_num << " dimensions!";
-    throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 }
 
 /**
