@@ -402,15 +402,36 @@ public:
         check_f32_test_array(chnkd_fourD, "d_16_chunks", 2560000);
     }
 
-    /**
-     * Same as the oneD case above, but now with gzipped chunks.
-     */
+    void test_chunked_gzipped_oneD()
+    {
+        string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_gzipped_oneD.h5.dmrpp");
+        check_f32_test_array(chnkd_oneD, "d_4_gzipped_chunks", 40000);
+    }
+
+    void test_chunked_gzipped_twoD()
+    {
+        string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_gzipped_twoD.h5.dmrpp");
+        check_f32_test_array(chnkd_twoD, "d_4_gzipped_chunks", 100*100);
+    }
+
+    void test_chunked_gzipped_threeD()
+    {
+        string chnkd_threeD = string(TEST_DATA_DIR).append("/").append("chunked_gzipped_threeD.h5.dmrpp");
+        check_f32_test_array(chnkd_threeD, "d_8_gzipped_chunks", 100*100*100);
+    }
+    void test_chunked_gzipped_fourD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_16_gzipped_chunks", 40*40*40*40);
+    }
+
+
     void test_chunked_gzipped_oneD_CE_00()
     {
         string chnkd_oneD = test_data_dir + "/chunked_gzipped_oneD.h5.dmrpp";
 
         unsigned long long array_length = 40000;
-        string variable_name = "d_4_chunks";
+        string variable_name = "d_4_gzipped_chunks";
         string filename = chnkd_oneD;
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -482,11 +503,14 @@ public:
     CPPUNIT_TEST(test_read_fourD_chunked_array);
     CPPUNIT_TEST(test_chunked_oneD_CE_00);
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
-
-#if 1
     CPPUNIT_TEST(test_read_oneD_uneven_chunked_array);
     CPPUNIT_TEST(test_read_twoD_uneven_chunked_array);
-#endif
+
+    CPPUNIT_TEST(test_chunked_gzipped_oneD);
+    CPPUNIT_TEST(test_chunked_gzipped_twoD);
+    CPPUNIT_TEST(test_chunked_gzipped_threeD);
+    CPPUNIT_TEST(test_chunked_gzipped_fourD);
+    CPPUNIT_TEST(test_chunked_gzipped_oneD_CE_00);
 
     CPPUNIT_TEST_SUITE_END();
 };
