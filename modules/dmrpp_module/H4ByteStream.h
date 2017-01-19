@@ -241,6 +241,11 @@ public:
 
         d_read_buffer = buf;
         d_read_buffer_size = size;
+        // FIXME Setting d_byes_read to 'size' may break code that tests to see that the
+        // correct number of bytes were actually read. I think this is patched, but we
+        // should think about what this field really means - the number of bytes read or
+        // the size of the current read_buffer? For now this works given a mod in
+        //H4ByteStream::read(...). jhrg 1/18/17
         set_bytes_read(size);
     }
 

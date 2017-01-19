@@ -165,6 +165,14 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
 
     curl_read_byte_stream(get_data_url(), get_curl_range_arg_string(), this); //dynamic_cast<H4ByteStream*>(this));
 
+    // If the expected byte count was not read, it's an error.
+    if (get_size() != get_bytes_read()) {
+        ostringstream oss;
+        oss << "H4ByteStream: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
+                << " but found " << get_bytes_read() << endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
     // If data are compressed/encoded, then decode them here.
     // At this point, the bytes_read property would be changed.
     // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
@@ -183,14 +191,6 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
             delete[] dest;
             throw;
         }
-    }
-
-    // If the expected byte count was not read, it's an error.
-    if (get_size() != get_bytes_read()) {
-        ostringstream oss;
-        oss << "H4ByteStream: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
-                << " but found " << get_bytes_read() << endl;
-        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     d_is_read = true;
