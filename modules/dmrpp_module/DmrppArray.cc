@@ -838,7 +838,8 @@ bool DmrppArray::read_chunks()
     default:
         for (unsigned long i = 0; i < chunk_refs->size(); i++) {
 
-            BESDEBUG("dmrpp", __FUNCTION__ <<": chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+            BESDEBUG("dmrpp",
+            		"DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
 
             H4ByteStream h4bs = (*chunk_refs)[i];
 
@@ -849,7 +850,7 @@ bool DmrppArray::read_chunks()
             insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs);
 
             BESDEBUG("dmrpp",
-                    __FUNCTION__ <<": chunk[" << i << "] was " << (h4bs.is_read()?"READ ":"SKIPPED ") << endl);
+            		"DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_read()?"READ":"SKIPPED") << ")"<< endl);
         }
         break;
     }
