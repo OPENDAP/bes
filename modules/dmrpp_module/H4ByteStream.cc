@@ -165,7 +165,6 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
 
     curl_read_byte_stream(get_data_url(), get_curl_range_arg_string(), this); //dynamic_cast<H4ByteStream*>(this));
 
-#if 1
     // If data are compressed/encoded, then decode them here.
     // At this point, the bytes_read property would be changed.
     // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
@@ -185,7 +184,6 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
             throw;
         }
     }
-#endif
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {

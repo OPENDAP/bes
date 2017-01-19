@@ -76,7 +76,7 @@ private:
 public:
     // Called once before everything gets tested
     DmrppChunkedReadTest() :
-        parser()
+            parser()
     {
     }
 
@@ -102,7 +102,6 @@ public:
      */
     void checkGroupsAndVars(D4Group *grp, string name, int expectedNumGrps, int expectedNumVars)
     {
-
         CPPUNIT_ASSERT(grp);
         BESDEBUG("dmrpp", "Checking D4Group '" << grp->name() << "'" << endl);
 
@@ -115,7 +114,6 @@ public:
         int numVars = grp->var_end() - grp->var_begin();
         BESDEBUG("dmrpp", "The D4Group '" << grp->name() << "' has " << numVars << " child variables." << endl);
         CPPUNIT_ASSERT(numVars == expectedNumVars);
-
     }
 
     /**
@@ -124,27 +122,30 @@ public:
      * xml:base URLs. Here we make these full paths on the file system
      * so that the source data files can be located at test runtime.
      */
-    void set_data_url_in_chunks(DmrppCommon *dc){
+    void set_data_url_in_chunks(DmrppCommon *dc)
+    {
         // Get the chunks and make sure there's at least one
         vector<H4ByteStream> *chunks = dc->get_chunk_vec();
         CPPUNIT_ASSERT((*chunks).size() > 0);
         // Tweak the data URLs for the test
-        for(unsigned int i=0; i<(*chunks).size() ;i++){
+        for (unsigned int i = 0; i < (*chunks).size(); i++) {
             BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
         }
-        for(unsigned int i=0; i<(*chunks).size() ;i++){
-            string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG,(*chunks)[i].get_data_url(),true);
-            data_url =  "file://" + data_url;
+        for (unsigned int i = 0; i < (*chunks).size(); i++) {
+            string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG, (*chunks)[i].get_data_url(), true);
+            data_url = "file://" + data_url;
             (*chunks)[i].set_data_url(data_url);
         }
-        for(unsigned int i=0; i<(*chunks).size() ;i++){
+        for (unsigned int i = 0; i < (*chunks).size(); i++) {
             BESDEBUG("dmrpp", "altered chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
         }
     }
+
     /**
      * Checks name, reads data, checks # of read bytes.
      */
-    void read_var_check_name_and_length(DmrppArray *array, string name, int length){
+    void read_var_check_name_and_length(DmrppArray *array, string name, int length)
+    {
         BESDEBUG("dmrpp", __func__ << "() - array->name(): " << array->name() << endl);
         CPPUNIT_ASSERT(array->name() == name);
 
@@ -156,15 +157,12 @@ public:
         CPPUNIT_ASSERT(array->length() == length);
     }
 
-
     /**
      * Since we have a lot of test data files that contain a single array here
      * is a complete test of reading the array and verifying its content.
      */
-    void check_f32_test_array(
-    		string filename,
-			string variable_name,
-			unsigned long long array_length){
+    void check_f32_test_array(string filename, string variable_name, unsigned long long array_length)
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -183,17 +181,18 @@ public:
         D4Group::Vars_iter vIter = root->var_begin();
         try {
             // Read the variable and transfer the data
-        	DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(var,variable_name,array_length);
+            DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
+            read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
             var->value(&values[0]);
 
             // Test data set is incrementally valued: Check Them All!
-            for(unsigned long long a_index=0; a_index < array_length ;a_index++){
+            for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
                 test_float32 = a_index;
-                if(!double_eq(values[a_index], test_float32))
-                	BESDEBUG("dmrpp", "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
-                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32 ));
+                if (!double_eq(values[a_index], test_float32))
+                BESDEBUG("dmrpp",
+                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
         catch (BESError &e) {
@@ -205,24 +204,21 @@ public:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
+
         CPPUNIT_ASSERT("Passed");
-
     }
-
-
-
 
     /**
      * Tests oneD array against a CE with start stride and stop that
      * retrieves data from all chunks. The stride >1 means that each value
      * must be individually copied.
      */
-    void test_chunked_oneD_CE_00(){
-
+    void test_chunked_oneD_CE_00()
+    {
         string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_oneD.h5.dmrpp");
 
-		unsigned long long array_length = 40000;
-		string variable_name = "d_4_chunks";
+        unsigned long long array_length = 40000;
+        string variable_name = "d_4_chunks";
         string filename = chnkd_oneD;
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -241,15 +237,15 @@ public:
         // Walk the vars and testy testy
         D4Group::Vars_iter vIter = root->var_begin();
         try {
-        	DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
+            DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
 
-        	unsigned int start = 10;
-        	unsigned int stride = 1;//100
-        	unsigned int stop = 35010;
-        	// Constrain the array
-        	array_length = 1 + (stop - start) / stride;
+            unsigned int start = 10;
+            unsigned int stride = 1; //100
+            unsigned int stop = 35010;
+            // Constrain the array
+            array_length = 1 + (stop - start) / stride;
             BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
-            var->add_constraint(var->dim_begin(),start,stride,stop);
+            var->add_constraint(var->dim_begin(), start, stride, stop);
 
             BESDEBUG("dmrpp", __func__ << "() - dim_start:  " << var->dimension_start(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(var->dim_begin()) << endl);
@@ -257,18 +253,18 @@ public:
             BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
 
-
             // Read the variable and transfer the data
-            read_var_check_name_and_length(var,variable_name,array_length);
+            read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
             var->value(&values[0]);
 
             // Test data set is incrementally valued: Check Them All!
-            for(unsigned long long a_index=0; a_index < array_length ;a_index++){
-                test_float32 = a_index*stride + start;
-                if(!double_eq(values[a_index], test_float32))
-                	BESDEBUG("dmrpp", "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
-                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32 ));
+            for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
+                test_float32 = a_index * stride + start;
+                if (!double_eq(values[a_index], test_float32))
+                BESDEBUG("dmrpp",
+                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
         catch (BESError &e) {
@@ -280,12 +276,9 @@ public:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
+
         CPPUNIT_ASSERT("Passed");
-
     }
-
-
-
 
     /**
      * Here we use a CE which:
@@ -294,12 +287,12 @@ public:
      * Against the chunked oneD test array. The stride==1 means that
      * contiguous blocks may be copied.
      */
-    void test_chunked_oneD_CE_01(){
-
+    void test_chunked_oneD_CE_01()
+    {
         string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_oneD.h5.dmrpp");
 
-		unsigned long long array_length = 40000;
-		string variable_name = "d_4_chunks";
+        unsigned long long array_length = 40000;
+        string variable_name = "d_4_chunks";
         string filename = chnkd_oneD;
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -318,15 +311,15 @@ public:
         // Walk the vars and testy testy
         D4Group::Vars_iter vIter = root->var_begin();
         try {
-        	DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
+            DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
 
-        	unsigned int start = 10;
-        	unsigned int stride = 1;
-        	unsigned int stop = 15009;
-        	// Constrain the array
-        	array_length = 1 + (stop - start) / stride;
+            unsigned int start = 10;
+            unsigned int stride = 1;
+            unsigned int stop = 15009;
+            // Constrain the array
+            array_length = 1 + (stop - start) / stride;
             BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
-            var->add_constraint(var->dim_begin(),start,stride,stop);
+            var->add_constraint(var->dim_begin(), start, stride, stop);
 
             BESDEBUG("dmrpp", __func__ << "() - dim_start:  " << var->dimension_start(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(var->dim_begin()) << endl);
@@ -334,18 +327,18 @@ public:
             BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
 
-
             // Read the variable and transfer the data
-            read_var_check_name_and_length(var,variable_name,array_length);
+            read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
             var->value(&values[0]);
 
             // Test data set is incrementally valued: Check Them All!
-            for(unsigned long long a_index=0; a_index < array_length ;a_index++){
+            for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
                 test_float32 = a_index + 10;
-                if(!double_eq(values[a_index], test_float32))
-                	BESDEBUG("dmrpp", "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
-                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32 ));
+                if (!double_eq(values[a_index], test_float32))
+                BESDEBUG("dmrpp",
+                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
         catch (BESError &e) {
@@ -357,55 +350,127 @@ public:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
-        CPPUNIT_ASSERT("Passed");
 
+        CPPUNIT_ASSERT("Passed");
     }
 
-
-
-    void test_read_oneD_chunked_array() {
+    void test_read_oneD_chunked_array()
+    {
         string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_oneD.h5.dmrpp");
         check_f32_test_array(chnkd_oneD, "d_4_chunks", 40000);
     }
 
-    void test_read_oneD_uneven_chunked_array() {
+    void test_read_oneD_uneven_chunked_array()
+    {
         string chnkd_oneD = string(TEST_DATA_DIR).append("/").append("chunked_oneD_uneven.h5.dmrpp");
         check_f32_test_array(chnkd_oneD, "d_5_odd_chunks", 40000);
     }
 
-    void test_read_twoD_chunked_array() {
+    void test_read_twoD_chunked_array()
+    {
         string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_twoD.h5.dmrpp");
         check_f32_test_array(chnkd_twoD, "d_4_chunks", 10000);
     }
 
-    void test_read_twoD_uneven_chunked_array() {
+    void test_read_twoD_uneven_chunked_array()
+    {
         string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("chunked_twoD_uneven.h5.dmrpp");
         check_f32_test_array(chnkd_twoD, "d_10_odd_chunks", 10000);
     }
 
-    void test_read_twoD_chunked_asymmetric_array() {
-    	string chnkd_twoD_asym = string(TEST_DATA_DIR).append("/").append("chunked_twoD_asymmetric.h5.dmrpp");
+    void test_read_twoD_chunked_asymmetric_array()
+    {
+        string chnkd_twoD_asym = string(TEST_DATA_DIR).append("/").append("chunked_twoD_asymmetric.h5.dmrpp");
         check_f32_test_array(chnkd_twoD_asym, "d_8_chunks", 20000);
     }
 
-    void test_read_threeD_chunked_array() {
+    void test_read_threeD_chunked_array()
+    {
         string chnkd_threeD = string(TEST_DATA_DIR).append("/").append("chunked_threeD.h5.dmrpp");
         check_f32_test_array(chnkd_threeD, "d_8_chunks", 1000000);
     }
 
-    void test_read_threeD_chunked_asymmetric_array() {
+    void test_read_threeD_chunked_asymmetric_array()
+    {
         string chnkd_threeD_asym = string(TEST_DATA_DIR).append("/").append("chunked_threeD_asymmetric.h5.dmrpp");
         check_f32_test_array(chnkd_threeD_asym, "d_8_chunks", 1000000);
     }
 
-    void test_read_fourD_chunked_array() {
+    void test_read_fourD_chunked_array()
+    {
         string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5.dmrpp");
         check_f32_test_array(chnkd_fourD, "d_16_chunks", 2560000);
     }
 
+    /**
+     * Same as the oneD case above, but now with gzipped chunks.
+     */
+    void test_chunked_gzipped_oneD_CE_00()
+    {
+        string chnkd_oneD = test_data_dir + "/chunked_gzipped_oneD.h5.dmrpp";
 
+        unsigned long long array_length = 40000;
+        string variable_name = "d_4_chunks";
+        string filename = chnkd_oneD;
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+        dods_float32 test_float32;
 
+        BESDEBUG("dmrpp", __func__ << "() - Opening: " << filename << endl);
 
+        ifstream in(filename.c_str());
+        parser.intern(in, dmr.get(), debug);
+        BESDEBUG("dmrpp", __func__ << "() - Parsing complete"<< endl);
+
+        // Check to make sure we have something that smells like our test array
+        D4Group *root = dmr->root();
+        checkGroupsAndVars(root, "/", 0, 1);
+        // Walk the vars and testy testy
+        D4Group::Vars_iter vIter = root->var_begin();
+        try {
+            DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
+
+            unsigned int start = 10;
+            unsigned int stride = 1; //100
+            unsigned int stop = 35010;
+            // Constrain the array
+            array_length = 1 + (stop - start) / stride;
+            BESDEBUG("dmrpp", __func__ << "() - array_length:  " << array_length << endl);
+            var->add_constraint(var->dim_begin(), start, stride, stop);
+
+            BESDEBUG("dmrpp", __func__ << "() - dim_start:  " << var->dimension_start(var->dim_begin()) << endl);
+            BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(var->dim_begin()) << endl);
+            BESDEBUG("dmrpp", __func__ << "() - dim_stop:   " << var->dimension_stop(var->dim_begin()) << endl);
+            BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(var->dim_begin()) << endl);
+            BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
+
+            // Read the variable and transfer the data
+            read_var_check_name_and_length(var, variable_name, array_length);
+            vector<dods_float32> values(var->length());
+            var->value(&values[0]);
+
+            // Test data set is incrementally valued: Check Them All!
+            for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
+                test_float32 = a_index * stride + start;
+                if (!double_eq(values[a_index], test_float32))
+                BESDEBUG("dmrpp",
+                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
+            }
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        CPPUNIT_ASSERT("Passed");
+    }
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 

@@ -273,7 +273,7 @@ bool DmrppArray::read_no_chunks()
 
     // For now we only handle the one chunk case.
     H4ByteStream h4_byte_stream = (*chunk_refs)[0];
-    h4_byte_stream.read();
+    h4_byte_stream.read(); // Use the default vlaues for deflate (false) and chunk size (0)
 
     if (!is_projected()) {      // if there is no projection constraint
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - No projection, copying all values into array. " << endl);
@@ -958,7 +958,7 @@ void DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
         // Now. Now we are going to read this thing.
         // Read and Process chunk
-        chunk->read(); // FIXME Add code for deflate here. jhrg 1/18/17
+        chunk->read(is_deflate_compression(), get_total_chunk_size());
         char * source_buffer = chunk->get_rbuf();
 
         if (thisDim.stride == 1) {

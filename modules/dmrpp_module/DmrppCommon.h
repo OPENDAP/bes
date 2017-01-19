@@ -140,7 +140,7 @@ public:
      * so the caller will have to get that information and use the element count
      * to determine the number of bytes to allocate for the dest buffer.
      */
-    virtual unsigned int get_chunk_size() const {
+    virtual unsigned int get_total_chunk_size() const {
         unsigned int elements = 1;
         for (std::vector<unsigned int>::const_iterator i = d_chunk_dimension_sizes.begin(),
                 e = d_chunk_dimension_sizes.end(); i != e; ++i) {
