@@ -134,7 +134,7 @@ void curl_read_byte_stream(const string &url, const string &range, void *user_da
  * @param src Compressed data
  * @param src_len Size of the compressed data
  */
-void deflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
+void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 {
     /* Sanity check */
     assert(src_len > 0);
@@ -210,16 +210,29 @@ void deflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
  *
  * @note Stolen from HDF5 and hacked to fit
  *
+ * @note We use src size as a param because the buffer might be larger than
+ * elems * width (e.g., 1020 byte buffer will hold 127 doubles with 4 extra).
+ * If we used elems * width, the the buffer size will be too small for those
+ * extra bytes. Code at the end of this function will transfer them.
+ *
+ * @note Do not call this when the number of elements or the element width
+ * is 1. In the HDF5 library chunks that fit that description are never shuffled
+ * (because there really is nothing to shuffle). The function will handle that
+ * case, but by not calling it you can save the allocation of a buffer and a
+ * call to memcpy.
+ *
  * @param dest Put the result here.
  * @param src Shuffled data source
- * @param elems Number of elements, each one width bytes
+ * @param src_size Number of bytes in both src and dest
  * @param width Number of bytes in an element
  */
-void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems, unsigned int width)
+void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int src_size, unsigned int width)
 {
+    unsigned int elems = src_size / width;  // int division rounds down
+
     /* Don't do anything for 1-byte elements, or "fractional" elements */
     if (!(width > 1 && elems > 1)) {
-        dest = const_cast<unsigned char*>(src);
+        memcpy(dest, const_cast<unsigned char*>(src), src_size);
     }
     else {
         /* Get the pointer to the source buffer (Alias for source buffer) */
@@ -272,7 +285,7 @@ void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems
         } /* end for i = 0 to width*/
 
         /* Compute the leftover bytes if there are any */
-        size_t leftover = (elems * width) % width;
+        size_t leftover = src_size % width;
 
         /* Add leftover to the end of data */
         if (leftover > 0) {
