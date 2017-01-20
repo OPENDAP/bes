@@ -29,6 +29,7 @@
 
 #include <BESDebug.h>
 #include <BESError.h>
+#include <BESContextManager.h>
 
 #include "H4ByteStream.h"
 #include "DmrppUtil.h"
@@ -159,11 +160,37 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
 
     set_rbuf_to_size();
 
-    // First cut at subsetting; read the whole thing and then subset that.
-    BESDEBUG(debug,
-            "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes from "<< get_data_url() << ": " << get_curl_range_arg_string() << endl);
+    string data_access_url = get_data_url();
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
 
-    curl_read_byte_stream(get_data_url(), get_curl_range_arg_string(), this); //dynamic_cast<H4ByteStream*>(this));
+    /**
+     * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
+     */
+    std::string aws_s3_url("https://s3.amazonaws.com/");
+    // Is it an AWS S3 access?
+    if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
+    	// Yup, S3.
+		string cloudydap_context("cloudydap");
+        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
+        		"AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
+		bool found;
+		string cloudydap_context_value;
+		cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
+		if (found) {
+		    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Found '"<<
+		    		cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
+			data_access_url += "?cloudydap=" + cloudydap_context_value;
+		}
+		else {
+	        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Unable to locate context "
+	        		"key '" << cloudydap_context << "'" << endl);
+		}
+	}
+    BESDEBUG(debug,
+            "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
+            		"from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
+
+    curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this); //dynamic_cast<H4ByteStream*>(this));
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
