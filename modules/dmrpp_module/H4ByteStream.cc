@@ -163,13 +163,13 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
     string data_access_url = get_data_url();
     BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
 
-    /**
+    /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
      */
     std::string aws_s3_url("https://s3.amazonaws.com/");
     // Is it an AWS S3 access?
     if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
-    	// Yup, S3.
+    	// Yup, headed to S3.
 		string cloudydap_context("cloudydap");
         BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
         		"AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
@@ -186,6 +186,8 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
 	        		"key '" << cloudydap_context << "'" << endl);
 		}
 	}
+    /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
     BESDEBUG(debug,
             "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
             		"from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
