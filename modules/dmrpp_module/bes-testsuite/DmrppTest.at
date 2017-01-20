@@ -5,7 +5,6 @@ m4_include([../../handler_tests_macros.m4])
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
 
-
 AT_BESCMD_RESPONSE_TEST([bes/d_int.h5.dmrpp.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([bes/grid_1_2d.h5.dmrpp.dmr.bescmd])
 
@@ -50,6 +49,11 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asym_CE_chunk_6.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asym_CE_chunk_7.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_threeD_asym_CE_all_chunks.bescmd])
 
+# The disabled tests in the following block failed to test correctly across
+# different systems, not because the actual data values differed but because 
+# of the way that large (10^6) Float32 vals are converted to strings by 
+# different systems. These tests verify that we are only reading the chunks
+# required to fulfill the request. - ndp 01/19/17
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_00.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_01.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_02.bescmd])
@@ -77,7 +81,6 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_12.bescmd])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_13.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_14.bescmd])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_chunk_15.bescmd])
-
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_fourD_CE_all_chunks.bescmd])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_oneD_uneven_entire_array.h5.bescmd])
@@ -113,7 +116,15 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_twoD_CE_all_chunks.besc
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_threeD_CE_chunk_6.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_threeD_CE_chunk_7.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_threeD_CE_all_chunks.bescmd])
+
 # See comment above. jhrg 1/19/17
+
+# The disabled tests in the following block failed to test correctly across
+# different systems, not because the actual data values differed but because 
+# of the way that large (10^6) Float32 vals are converted to strings by 
+# different systems. These tests verify that we are only reading the chunks
+# required to fulfill the request. - ndp 01/19/17
+
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_09.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_10.bescmd])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_11.bescmd])
@@ -122,8 +133,6 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_12.bescm
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_14.bescmd])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_chunk_15.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/chunked_gzipped_fourD_CE_all_chunks.bescmd])
-
-
 
 ## we have only limited support for scalars and arrays now. jhrg 11.23.16
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bes/http_d_int.h5.dmrpp.dap.bescmd])
