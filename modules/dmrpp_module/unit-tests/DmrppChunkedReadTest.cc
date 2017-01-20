@@ -426,6 +426,7 @@ public:
     }
 
 
+
     void test_chunked_gzipped_oneD_CE_00()
     {
         string chnkd_oneD = test_data_dir + "/chunked_gzipped_oneD.h5.dmrpp";
@@ -493,6 +494,54 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
+
+    void test_chunked_shuffled_oneD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shuffled_oneD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_4_shuffled_chunks", 40000);
+    }
+
+    void test_chunked_shuffled_twoD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shuffled_twoD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_4_shuffled_chunks", 10000);
+    }
+    void test_chunked_shuffled_threeD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shuffled_threeD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_8_shuffled_chunks", 1000000);
+    }
+    void test_chunked_shuffled_fourD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shuffled_fourD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_16_shuffled_chunks", 2560000);
+    }
+
+    void test_chunked_shuffled_zipped_oneD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shufzip_oneD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_4_shufzip_chunks", 40000);
+    }
+
+    void test_chunked_shuffled_zipped_twoD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shufzip_twoD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_4_shufzip_chunks", 10000);
+    }
+    void test_chunked_shuffled_zipped_threeD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shufzip_threeD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_8_shufzip_chunks", 1000000);
+    }
+    void test_chunked_shuffled_zipped_fourD()
+    {
+        string chnkd_fourD = string(TEST_DATA_DIR).append("/").append("chunked_shufzip_fourD.h5.dmrpp");
+        check_f32_test_array(chnkd_fourD, "d_16_shufzip_chunks", 2560000);
+    }
+
+
+
+
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
     CPPUNIT_TEST(test_read_oneD_chunked_array);
@@ -511,6 +560,19 @@ public:
     CPPUNIT_TEST(test_chunked_gzipped_threeD);
     CPPUNIT_TEST(test_chunked_gzipped_fourD);
     CPPUNIT_TEST(test_chunked_gzipped_oneD_CE_00);
+
+    CPPUNIT_TEST(test_chunked_gzipped_oneD_CE_00);
+
+    CPPUNIT_TEST(test_chunked_shuffled_oneD);
+    CPPUNIT_TEST(test_chunked_shuffled_twoD);
+    CPPUNIT_TEST(test_chunked_shuffled_threeD);
+    CPPUNIT_TEST(test_chunked_shuffled_fourD);
+
+
+    CPPUNIT_TEST(test_chunked_shuffled_zipped_oneD);
+    CPPUNIT_TEST(test_chunked_shuffled_zipped_twoD);
+    CPPUNIT_TEST(test_chunked_shuffled_zipped_threeD);
+    CPPUNIT_TEST(test_chunked_shuffled_zipped_fourD);
 
     CPPUNIT_TEST_SUITE_END();
 };

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0" 
+    dmrVersion="1.0" 
+    name="chunked_shuffled_threeD.h5"
+    xml:base="data/chunked_shuffled_threeD.h5">
+
+  <Float32 name="d_8_shuffled_chunks">
+    <Dim size="100"/>
+    <Dim size="100"/>
+    <Dim size="100"/>
+    <Attribute name="origname" type="String">
+      <Value>d_8_shuffled_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_8_shuffled_chunks</Value>
+    </Attribute>
+    <h4:chunks compressionType="shuffle">
+      <h4:chunkDimensionSizes>13 25 25</h4:chunkDimensionSizes>
+      <h4:byteStream chunkPositionInArray="[0,0,0]" offset="4208" nBytes="32500" md5="a571abdd22ff46081d9ec718e2d8917e" uuid="8059a66d-1c34-4dbd-82a7-24d0fd01a72c"/>
+      <h4:byteStream chunkPositionInArray="[0,0,25]" offset="36708" nBytes="32500" md5="8079e97665af9dfb791f41eebd060825" uuid="6bbe1240-2d4b-4920-924e-6837fe69a5c5"/>
+      <h4:byteStream chunkPositionInArray="[0,0,50]" offset="69208" nBytes="32500" md5="8a789e230d7ab95cf39a1bf8a79850e6" uuid="bbd4b3f0-67f5-410b-99f0-2cf429ca8f07"/>
+      <h4:byteStream chunkPositionInArray="[0,0,75]" offset="101708" nBytes="32500" md5="a2a4f5ea3ddc78a0d45e7b6370433725" uuid="706de901-f929-46b8-b956-cb9735f5bf65"/>
+      <h4:byteStream chunkPositionInArray="[0,25,0]" offset="134208" nBytes="32500" md5="4a05727d163a9970ea61cdc7f7da15b5" uuid="16e79eed-5b29-4f27-98ce-a94d717c6eeb"/>
+      <h4:byteStream chunkPositionInArray="[0,25,25]" offset="166708" nBytes="32500" md5="c8953f988c11b8a2f99261260c88abcc" uuid="b68cdbb8-ae01-4547-beff-ea36d08698b1"/>
+      <h4:byteStream chunkPositionInArray="[0,25,50]" offset="199208" nBytes="32500" md5="0475fedd59767cfe9b4bd5afa92ee99d" uuid="51fce60c-a019-424b-8b72-fd129ea7928d"/>
+      <h4:byteStream chunkPositionInArray="[0,25,75]" offset="231708" nBytes="32500" md5="c1f9d28b3dafbef06ac30478497d1682" uuid="fd5c023c-5115-40ee-9d14-e816b7223366"/>
+      <h4:byteStream chunkPositionInArray="[0,50,0]" offset="264208" nBytes="32500" md5="6c9d91f9540266e69bff2816ac79c3a1" uuid="b1d0f415-5168-4750-b0a9-39f81df109e3"/>
+      <h4:byteStream chunkPositionInArray="[0,50,25]" offset="296708" nBytes="32500" md5="79f820ecbb7937830b1eaeb048300b8f" uuid="3c60eae3-711c-4385-92f5-36daeb3c736b"/>
+      <h4:byteStream chunkPositionInArray="[0,50,50]" offset="329208" nBytes="32500" md5="1176653ac11e99874d7f76b74fc0db0f" uuid="c593a020-9db7-4a4b-993f-45d91fc36967"/>
+      <h4:byteStream chunkPositionInArray="[0,50,75]" offset="361708" nBytes="32500" md5="e74a82a960b76a1ee44b11b6af841c67" uuid="d6076bc8-4904-445d-a1f5-6351aafb7305"/>
+      <h4:byteStream chunkPositionInArray="[0,75,0]" offset="394208" nBytes="32500" md5="d4ec2656907acb5adf2e0414e1ea2549" uuid="f462b0b3-fb92-4630-87fd-91fcd573664f"/>
+      <h4:byteStream chunkPositionInArray="[0,75,25]" offset="426708" nBytes="32500" md5="a23892065fbfbbb6e7a5557f9d88985a" uuid="3a429bba-80ab-427b-b1d4-333a6eca56ea"/>
+      <h4:byteStream chunkPositionInArray="[0,75,50]" offset="459208" nBytes="32500" md5="9e6f07e80b1870e8dabd94184383f53e" uuid="b779db45-8ed2-49c8-beff-7a7619dcf37e"/>
+      <h4:byteStream chunkPositionInArray="[0,75,75]" offset="491708" nBytes="32500" md5="5a794c8ca002cb591c9c09e9b18d543a" uuid="f5c87c8e-39e0-4fb9-a5c8-e72458cee620"/>
+      <h4:byteStream chunkPositionInArray="[13,0,0]" offset="524208" nBytes="32500" md5="d19e71f9450e65f1b5827cf4d3febc1d" uuid="dab5374d-1083-441e-945d-895737a8f88b"/>
+      <h4:byteStream chunkPositionInArray="[13,0,25]" offset="556708" nBytes="32500" md5="f3a44a898332397cafda527e0939a62f" uuid="cbeaa083-1b0b-40ee-8c55-88facf7e4c67"/>
+      <h4:byteStream chunkPositionInArray="[13,0,50]" offset="589208" nBytes="32500" md5="6017b37f587aa1a1daa5c68734699000" uuid="49d3c516-d3a3-43d1-ad27-c995794a2790"/>
+      <h4:byteStream chunkPositionInArray="[13,0,75]" offset="621708" nBytes="32500" md5="dfa91cfea426b3e54ec06fd3033be7bd" uuid="5ddf6926-8cab-40c3-806d-ec6d3808c4e6"/>
+      <h4:byteStream chunkPositionInArray="[13,25,0]" offset="654208" nBytes="32500" md5="4141feaa10cf064f5c2a1dc3c97de4d0" uuid="e4abbba3-b306-4bad-9baa-c99687556c8b"/>
+      <h4:byteStream chunkPositionInArray="[13,25,25]" offset="686708" nBytes="32500" md5="456a76f2852e6bdec0252b18f7c44bc6" uuid="e09d68b0-8b9e-4eae-976a-89ceff60b0ef"/>
+      <h4:byteStream chunkPositionInArray="[13,25,50]" offset="719208" nBytes="32500" md5="f99d6e46e53bc1973dd1978c7155a265" uuid="16d18851-7d75-48ef-a0a1-5747d7073049"/>
+      <h4:byteStream chunkPositionInArray="[13,25,75]" offset="751708" nBytes="32500" md5="f8e5c4c395c3d600dac4f86b30a81933" uuid="4fb25a88-55fe-4d7c-86b5-5a9db49061f5"/>
+      <h4:byteStream chunkPositionInArray="[13,50,0]" offset="784208" nBytes="32500" md5="6d7398e932dc090fafe825c25cfc8229" uuid="d42a4415-9701-4ae6-aa1b-850ceb6d8177"/>
+      <h4:byteStream chunkPositionInArray="[13,50,25]" offset="816708" nBytes="32500" md5="8c50a7cd6f710eceacc3d681ec4c8502" uuid="2aa0cb1e-864c-46cf-8f23-852db9608999"/>
+      <h4:byteStream chunkPositionInArray="[13,50,50]" offset="849208" nBytes="32500" md5="6ddabbb1069d45ba4ad7b1856965b8a6" uuid="a35b4627-2fa8-452e-8452-b5fe86a0bc37"/>
+      <h4:byteStream chunkPositionInArray="[13,50,75]" offset="881708" nBytes="32500" md5="4f2d0943269e5ff299795bbd529f51c7" uuid="0069d7b8-4243-4fdf-a837-d7fe32f99417"/>
+      <h4:byteStream chunkPositionInArray="[13,75,0]" offset="914208" nBytes="32500" md5="64f74c354ff55405a530e598bd6b5db0" uuid="3fd63b18-41f9-4f22-85e4-90201009f28b"/>
+      <h4:byteStream chunkPositionInArray="[13,75,25]" offset="946708" nBytes="32500" md5="2c7972bb5abdcaaa56a8e65659efc2ac" uuid="4018376f-30e1-4f2b-859b-666eedd6f92d"/>
+      <h4:byteStream chunkPositionInArray="[13,75,50]" offset="979208" nBytes="32500" md5="b189ed2a260f3736a86f26e09337a4d1" uuid="335029b9-5556-4a80-a7d8-8b1966f2beb0"/>
+      <h4:byteStream chunkPositionInArray="[13,75,75]" offset="1011708" nBytes="32500" md5="26b4ca6df317b3564a5b7194ae9d71c2" uuid="1ef0dba3-0dd7-42f5-ad12-26276061b6b6"/>
+      <h4:byteStream chunkPositionInArray="[26,0,0]" offset="1044208" nBytes="32500" md5="98f3d20be29d58a46ab5467125d09f2b" uuid="9d44a301-5c5b-40ea-906c-a520a7129464"/>
+      <h4:byteStream chunkPositionInArray="[26,0,25]" offset="1076708" nBytes="32500" md5="968f7379b0201dcfc543810160342d47" uuid="494efc12-b0a8-4475-965c-08230dc1a2cc"/>
+      <h4:byteStream chunkPositionInArray="[26,0,50]" offset="1109208" nBytes="32500" md5="b69d08c20098e7133071b4dc142ae1eb" uuid="32dd1454-8d7f-42d9-8a59-2c230b302e03"/>
+      <h4:byteStream chunkPositionInArray="[26,0,75]" offset="1141708" nBytes="32500" md5="b57ce8b9202134d037574a781a0dd02e" uuid="e9edbde3-fc0f-496a-92ee-bd1d016bb373"/>
+      <h4:byteStream chunkPositionInArray="[26,25,0]" offset="1174208" nBytes="32500" md5="d20c3a1270304e39f4ca6bd187026c1e" uuid="26eb245b-3c91-497d-9a83-a35cfda60266"/>
+      <h4:byteStream chunkPositionInArray="[26,25,25]" offset="1206708" nBytes="32500" md5="2db5a1e8c50bfe4b09f2b9dc54c8b539" uuid="520646be-762b-4b65-9a0d-91c99159e56d"/>
+      <h4:byteStream chunkPositionInArray="[26,25,50]" offset="1239208" nBytes="32500" md5="8b2281967f888f1f67902121b52b0e7b" uuid="134bb176-200c-480b-a61f-5ee6b756978a"/>
+      <h4:byteStream chunkPositionInArray="[26,25,75]" offset="1271708" nBytes="32500" md5="dd2e86f61c97d4ceed5e13453bbdb19f" uuid="450b6b35-aa51-4597-b6b2-c8a7b8753ebf"/>
+      <h4:byteStream chunkPositionInArray="[26,50,0]" offset="1304208" nBytes="32500" md5="a2bdbda4f32d8ac500bdd5ce3355d360" uuid="70d10607-abdb-4173-ab23-13d1aca53019"/>
+      <h4:byteStream chunkPositionInArray="[26,50,25]" offset="1336708" nBytes="32500" md5="365d715b8d7057d1cd7c82e9450addff" uuid="ed0edfac-aa13-47dc-ba3e-1397c0ab0c8d"/>
+      <h4:byteStream chunkPositionInArray="[26,50,50]" offset="1369208" nBytes="32500" md5="5f4049597a5c9667a9a43a81edcf25a8" uuid="062db9e2-7bd6-470f-82db-787fb722ffe6"/>
+      <h4:byteStream chunkPositionInArray="[26,50,75]" offset="1401708" nBytes="32500" md5="00d524dfe18190239c71720fc77ef474" uuid="fe9445b5-9557-42c3-9729-b6edb50a6c13"/>
+      <h4:byteStream chunkPositionInArray="[26,75,0]" offset="1434208" nBytes="32500" md5="c7e292df31c10124c46ca3f9be1dd85a" uuid="b9130abd-a249-4891-9785-9aa366e0bee8"/>
+      <h4:byteStream chunkPositionInArray="[26,75,25]" offset="1466708" nBytes="32500" md5="95d0784d67cb70fa6cf338827837169b" uuid="4b1bba2b-feef-4d2f-838a-e70890f120af"/>
+      <h4:byteStream chunkPositionInArray="[26,75,50]" offset="1499208" nBytes="32500" md5="f29bbe61c35bc850d0f63ad57de2c461" uuid="7e090add-3555-4b50-954b-0e1b8037a40f"/>
+      <h4:byteStream chunkPositionInArray="[26,75,75]" offset="1531708" nBytes="32500" md5="aade4391058b65db7687c84970cd805c" uuid="47df46bf-1dbd-498e-b40a-08500903cc35"/>
+      <h4:byteStream chunkPositionInArray="[39,0,0]" offset="1564208" nBytes="32500" md5="0dd922e448022bc81eec050274b7b023" uuid="db4ed17b-70c1-4269-9784-3954a9fd2ae8"/>
+      <h4:byteStream chunkPositionInArray="[39,0,25]" offset="1596708" nBytes="32500" md5="959e2116b4d2414272ee3f8f731fd0a6" uuid="c3bfeadc-a15f-4df2-8200-2e86bcfaeb93"/>
+      <h4:byteStream chunkPositionInArray="[39,0,50]" offset="1629208" nBytes="32500" md5="194e3244801befd356f351356b123969" uuid="be3152a9-9726-43ac-b9b9-f7e69a9528ea"/>
+      <h4:byteStream chunkPositionInArray="[39,0,75]" offset="1661708" nBytes="32500" md5="50b9e694e01251290c3c04bb7f59cca8" uuid="94ac6b60-9a6f-4927-82e5-775329e85509"/>
+      <h4:byteStream chunkPositionInArray="[39,25,0]" offset="1694208" nBytes="32500" md5="d7b8b11fc6b359cb6fc047e4689fa9f4" uuid="71abee7b-6950-4943-bc3d-84845deca0a9"/>
+      <h4:byteStream chunkPositionInArray="[39,25,25]" offset="1726708" nBytes="32500" md5="328cf0ffa5c2d2220b13bf08537dc88c" uuid="411f669d-f55f-4cec-9d8b-7264658d7cb0"/>
+      <h4:byteStream chunkPositionInArray="[39,25,50]" offset="1759208" nBytes="32500" md5="be662154fb7b0a15f92af21b0e1da25a" uuid="3d7d423a-05f8-4034-b16d-d45eea21b987"/>
+      <h4:byteStream chunkPositionInArray="[39,25,75]" offset="1791708" nBytes="32500" md5="a149b498e53632cecdb6bc9307e7df04" uuid="99e527e7-e725-403e-aa5e-d77b428332bc"/>
+      <h4:byteStream chunkPositionInArray="[39,50,0]" offset="1824208" nBytes="32500" md5="135ad14de29526f722e47bd153991fe5" uuid="7e0bd216-5684-4799-83c0-8ccf951c3268"/>
+      <h4:byteStream chunkPositionInArray="[39,50,25]" offset="1856708" nBytes="32500" md5="a6aedffc5e14f019c56789f79d7d64de" uuid="99bf96bc-c9d6-4d2b-a02d-6d7d387fd121"/>
+      <h4:byteStream chunkPositionInArray="[39,50,50]" offset="1889208" nBytes="32500" md5="15ba4a963912188704155520ff1debb9" uuid="4b861d74-bf14-448c-8a78-1e6f0ca9261b"/>
+      <h4:byteStream chunkPositionInArray="[39,50,75]" offset="1921708" nBytes="32500" md5="32c429a044f25c5584ec4fbc64833237" uuid="ed44f770-3e0a-4523-8bb3-589415c7f8ab"/>
+      <h4:byteStream chunkPositionInArray="[39,75,0]" offset="1954208" nBytes="32500" md5="cbe56857d50ef8fdd27fbe5c5626664a" uuid="a6108cbe-8de0-4e81-9375-8b854dfee105"/>
+      <h4:byteStream chunkPositionInArray="[39,75,25]" offset="1986708" nBytes="32500" md5="00565e0d3477d8acce1dc83484e7c875" uuid="68cdb70e-34e4-4898-85fb-11d10e180686"/>
+      <h4:byteStream chunkPositionInArray="[39,75,50]" offset="2019208" nBytes="32500" md5="d78ef4ca5fcfdf6fb1718c7debe6266d" uuid="5e23e9f8-a00e-462b-a60b-118c944bf356"/>
+      <h4:byteStream chunkPositionInArray="[39,75,75]" offset="2051708" nBytes="32500" md5="1b8e8f45c6213b58a488c8c5611e57cc" uuid="18797d63-1597-41fb-b602-68cc78e65297"/>
+      <h4:byteStream chunkPositionInArray="[52,0,0]" offset="2084208" nBytes="32500" md5="09a161045eed5c6945ea551755b54145" uuid="5a04260d-36de-4fff-bf73-b97a4c6ed10d"/>
+      <h4:byteStream chunkPositionInArray="[52,0,25]" offset="2122980" nBytes="32500" md5="137aaf0dd356fe4f28090a062163c2f7" uuid="13da0301-60cb-46d0-b4f5-00efd80fde34"/>
+      <h4:byteStream chunkPositionInArray="[52,0,50]" offset="2155480" nBytes="32500" md5="e7ee28c05f056430fb35de385891f70e" uuid="19ab5c00-6a3a-4f5d-bdee-2cc715c120ee"/>
+      <h4:byteStream chunkPositionInArray="[52,0,75]" offset="2187980" nBytes="32500" md5="98dea70323a007f1dccb3e90020c5538" uuid="cc9675d9-6ccd-41e6-a337-14a7472bf04f"/>
+      <h4:byteStream chunkPositionInArray="[52,25,0]" offset="2220480" nBytes="32500" md5="301237f39daeebf5633d0e2f62010243" uuid="78251e6b-cb39-4d7c-b715-aeebe6cd794d"/>
+      <h4:byteStream chunkPositionInArray="[52,25,25]" offset="2252980" nBytes="32500" md5="95d601da98e964e8146ec2f3ac0d8570" uuid="ae5fc261-6deb-44b2-8f14-88bac1d598b6"/>
+      <h4:byteStream chunkPositionInArray="[52,25,50]" offset="2285480" nBytes="32500" md5="2524ae812d74870ac55d529fdb670805" uuid="936d8977-d69c-482d-924a-c3ce76638de1"/>
+      <h4:byteStream chunkPositionInArray="[52,25,75]" offset="2317980" nBytes="32500" md5="b781428cb589f467e48c61f2bc4cbe73" uuid="8702e657-825e-4e13-a90a-fa00f48ff4fa"/>
+      <h4:byteStream chunkPositionInArray="[52,50,0]" offset="2350480" nBytes="32500" md5="b9f4c9502c3cebcc740f0859dda612c6" uuid="46956769-d680-4dd8-843a-747e4db36643"/>
+      <h4:byteStream chunkPositionInArray="[52,50,25]" offset="2382980" nBytes="32500" md5="2532c91c538806c6c8c0f3801084db74" uuid="607e2022-c8bf-4f66-a4f7-e2a0f1751003"/>
+      <h4:byteStream chunkPositionInArray="[52,50,50]" offset="2415480" nBytes="32500" md5="e640487e2f08fa0bae81be1613932615" uuid="9eceb48b-27c7-44cd-8777-03c9ffa81a18"/>
+      <h4:byteStream chunkPositionInArray="[52,50,75]" offset="2447980" nBytes="32500" md5="4f84b4a2e713bfe6157bd4b395bdbe69" uuid="169a411e-8ff7-41a1-a3db-056dcedea2ed"/>
+      <h4:byteStream chunkPositionInArray="[52,75,0]" offset="2480480" nBytes="32500" md5="e4f8660ff188d6540c12b38e12ca634b" uuid="e1557764-42fb-4998-879a-c7b798739a3f"/>
+      <h4:byteStream chunkPositionInArray="[52,75,25]" offset="2512980" nBytes="32500" md5="530ce2981a28b02ebd85e6e0cf2488a5" uuid="ef35e9d0-4af0-4bff-a217-81fb1c12bf5f"/>
+      <h4:byteStream chunkPositionInArray="[52,75,50]" offset="2545480" nBytes="32500" md5="45f6747633eb76fcb6595cd330225fee" uuid="4b16fc2e-5c78-42bb-a7c0-6acc1fa89cf6"/>
+      <h4:byteStream chunkPositionInArray="[52,75,75]" offset="2577980" nBytes="32500" md5="be49e7ec5301b775d8c877aa7170f868" uuid="9a457d43-c7ae-44d0-8748-e2a52364792c"/>
+      <h4:byteStream chunkPositionInArray="[65,0,0]" offset="2610480" nBytes="32500" md5="3ed42c260609c5f1fab0a43fab571091" uuid="95edc7fe-62a8-4e71-9596-ec62dddb1089"/>
+      <h4:byteStream chunkPositionInArray="[65,0,25]" offset="2642980" nBytes="32500" md5="9b01e77e5b40ff673e67d162c58fef41" uuid="6684aed8-3074-4ebd-8b4c-f8ee13f3a6ac"/>
+      <h4:byteStream chunkPositionInArray="[65,0,50]" offset="2675480" nBytes="32500" md5="b6922cd8967ce7c0f01e401cfacd29d5" uuid="fdd7fe45-11f0-4ee2-ad82-2cf57e69d439"/>
+      <h4:byteStream chunkPositionInArray="[65,0,75]" offset="2707980" nBytes="32500" md5="cb16ccd5df018f780c2d98ca6eb05fec" uuid="295e138c-8376-4360-81fe-2d17b85cd9a1"/>
+      <h4:byteStream chunkPositionInArray="[65,25,0]" offset="2740480" nBytes="32500" md5="78fabe4596e3912eb7e974ff1e2ab9eb" uuid="ee41ed71-dd7d-4fee-a117-f110d1ca9079"/>
+      <h4:byteStream chunkPositionInArray="[65,25,25]" offset="2772980" nBytes="32500" md5="3b30838b136d0ae795416ab75458c6a3" uuid="0b75639b-9261-4d7f-baf7-afc30e821363"/>
+      <h4:byteStream chunkPositionInArray="[65,25,50]" offset="2805480" nBytes="32500" md5="75ad2787e22d46546422612ecbdc520a" uuid="a1010931-9e28-4fc9-937e-285c7b4cc2e9"/>
+      <h4:byteStream chunkPositionInArray="[65,25,75]" offset="2837980" nBytes="32500" md5="80ad944999ed9c1d5802da3ad3deadec" uuid="c781a1b8-50c3-4538-901e-d512b549b9c9"/>
+      <h4:byteStream chunkPositionInArray="[65,50,0]" offset="2870480" nBytes="32500" md5="dc2dae61aeb63ddb4b20107ebe3335c3" uuid="3451812d-26ca-4ff7-b895-9d279fc1b500"/>
+      <h4:byteStream chunkPositionInArray="[65,50,25]" offset="2902980" nBytes="32500" md5="7a4bd874c1c0a47a06d2c55d9b203797" uuid="515de1d9-ef20-4a85-ac82-8c36631f4e96"/>
+      <h4:byteStream chunkPositionInArray="[65,50,50]" offset="2935480" nBytes="32500" md5="58bbcd4078dd8dbabcde759ed2ecc4a5" uuid="5d3cd4dc-3e44-4f0a-9ff6-bdfe1b791806"/>
+      <h4:byteStream chunkPositionInArray="[65,50,75]" offset="2967980" nBytes="32500" md5="a27631bcf1b117a8c913e83ef8e7566d" uuid="17652063-45cc-42cb-b05d-b47754c24819"/>
+      <h4:byteStream chunkPositionInArray="[65,75,0]" offset="3000480" nBytes="32500" md5="571e46c112164e46a562a5f912ff2e04" uuid="8e769c83-80e8-4e94-8325-ac2b5792be31"/>
+      <h4:byteStream chunkPositionInArray="[65,75,25]" offset="3032980" nBytes="32500" md5="1cc2f3b5d611efa577175d232d6ca622" uuid="b5a792ef-b3fc-4b44-9e82-1d2a14131796"/>
+      <h4:byteStream chunkPositionInArray="[65,75,50]" offset="3065480" nBytes="32500" md5="68509f86ef4b82c0b01571a6fc360cec" uuid="c56be687-58ae-4ff1-8a4c-804d8cc90734"/>
+      <h4:byteStream chunkPositionInArray="[65,75,75]" offset="3097980" nBytes="32500" md5="a0a0761c96bbec4437bf61fcff4074e6" uuid="295eb56a-65af-4579-93d7-08bca2d49f31"/>
+      <h4:byteStream chunkPositionInArray="[78,0,0]" offset="3132528" nBytes="32500" md5="1644772ff1cc525d8e86501f831c8642" uuid="755d9de2-8ba6-4a3b-97f9-9042dab6e6f9"/>
+      <h4:byteStream chunkPositionInArray="[78,0,25]" offset="3165028" nBytes="32500" md5="fa427f706306fedd0a8e9ec904a49e03" uuid="82454943-d8ef-48f3-801d-c39e253a86c6"/>
+      <h4:byteStream chunkPositionInArray="[78,0,50]" offset="3197528" nBytes="32500" md5="b99ba1ab70a0e60a0819510348ccacc4" uuid="861cd459-dea2-4d33-81b0-c7e58bfb1295"/>
+      <h4:byteStream chunkPositionInArray="[78,0,75]" offset="3230028" nBytes="32500" md5="bd323bb2d20bcae84104bb618af2eebf" uuid="6c2474e5-7842-406a-b8e2-e2eec84f3023"/>
+      <h4:byteStream chunkPositionInArray="[78,25,0]" offset="3262528" nBytes="32500" md5="5eea264786176a0354e9fa13e01effa4" uuid="2f8692a4-8a4b-47ae-b171-8e42a654e64f"/>
+      <h4:byteStream chunkPositionInArray="[78,25,25]" offset="3295028" nBytes="32500" md5="ae7ba512a2ca81944dc1bd387938e069" uuid="c90516ed-6f03-4088-9623-6171cf5f1698"/>
+      <h4:byteStream chunkPositionInArray="[78,25,50]" offset="3327528" nBytes="32500" md5="cf802af012f277cd807c7343b5bcc801" uuid="5a884096-5005-4ebd-9140-f8a1b8f5d8a2"/>
+      <h4:byteStream chunkPositionInArray="[78,25,75]" offset="3360028" nBytes="32500" md5="66bc5c81bb82cc80cad10fae376b0453" uuid="a21b7000-670a-449f-9c95-c4aba65f2cc4"/>
+      <h4:byteStream chunkPositionInArray="[78,50,0]" offset="3392528" nBytes="32500" md5="1980c5f632a7284caa621486ad25b2b4" uuid="e8995330-c263-4790-80aa-d360825b1d55"/>
+      <h4:byteStream chunkPositionInArray="[78,50,25]" offset="3425028" nBytes="32500" md5="9ebc57446f907586b411eb4b47fa30f2" uuid="c94fdea0-af13-4b37-8c07-4512cd7ebea7"/>
+      <h4:byteStream chunkPositionInArray="[78,50,50]" offset="3457528" nBytes="32500" md5="4b2595e9dbe74dc8bc225673e7e4c9d8" uuid="d52243e9-da26-405d-8fe0-8c0efe3b6ac7"/>
+      <h4:byteStream chunkPositionInArray="[78,50,75]" offset="3490028" nBytes="32500" md5="e6048bb56217e6884ca66e21f035892a" uuid="059db96a-abc9-4739-8eb8-1cd7b232d689"/>
+      <h4:byteStream chunkPositionInArray="[78,75,0]" offset="3522528" nBytes="32500" md5="0101eddbdfdc5447dedb0e09f694343b" uuid="9ca30036-63d5-4c26-b20a-6b2017ec3a87"/>
+      <h4:byteStream chunkPositionInArray="[78,75,25]" offset="3555028" nBytes="32500" md5="73ea1bb4f9b470b441d52935221f2010" uuid="a0bb6740-3ea7-4980-8657-1e8e0dc1f775"/>
+      <h4:byteStream chunkPositionInArray="[78,75,50]" offset="3587528" nBytes="32500" md5="942c0a7b2c2d33d34387c0ecd951e6ea" uuid="2eca133b-41b2-482e-9b7c-aba5ca1a8119"/>
+      <h4:byteStream chunkPositionInArray="[78,75,75]" offset="3620028" nBytes="32500" md5="da2e002c91a5910d3d6a81376e75b15b" uuid="7879b379-4ef0-4350-a154-5b73f9f599a4"/>
+      <h4:byteStream chunkPositionInArray="[91,0,0]" offset="3652528" nBytes="32500" md5="c68d0059c67c12964641d5bf9affbe9c" uuid="3f8b6d90-d004-4b12-8616-e816213d0f75"/>
+      <h4:byteStream chunkPositionInArray="[91,0,25]" offset="3685028" nBytes="32500" md5="0315cb9c6950b5d656d7d4a4aa3cfc3e" uuid="502caf57-0d4a-4f8c-8ebb-7590635b2107"/>
+      <h4:byteStream chunkPositionInArray="[91,0,50]" offset="3717528" nBytes="32500" md5="c4eba9d2f0da3beee118431bbeab1801" uuid="0f0ca3a8-81c9-47fc-b8cd-a7d89732c282"/>
+      <h4:byteStream chunkPositionInArray="[91,0,75]" offset="3750028" nBytes="32500" md5="0cbcd4cb9af9c4d7d0ec72884d62dbfe" uuid="85783067-41ee-485e-b714-3faa952e686f"/>
+      <h4:byteStream chunkPositionInArray="[91,25,0]" offset="3782528" nBytes="32500" md5="b59e04c5f506cfe85f5bc588f5d6e5f2" uuid="a283b4c5-53ca-43e0-a6e8-fb955225d0ea"/>
+      <h4:byteStream chunkPositionInArray="[91,25,25]" offset="3815028" nBytes="32500" md5="c87b12e92ddfd0032e65e08cf0a241b2" uuid="87388edf-8dcb-49c5-96a2-443a92645929"/>
+      <h4:byteStream chunkPositionInArray="[91,25,50]" offset="3847528" nBytes="32500" md5="41802c35888f66d8919cbc1e9774e80c" uuid="d1603b85-5a81-4102-ade8-aeb25c77068e"/>
+      <h4:byteStream chunkPositionInArray="[91,25,75]" offset="3880028" nBytes="32500" md5="f2ba73a88ed999e50db1d98fcd582ff2" uuid="3e780490-0c15-4c85-8038-ff1aaad51b31"/>
+      <h4:byteStream chunkPositionInArray="[91,50,0]" offset="3912528" nBytes="32500" md5="6ed84b388e13c5ce59dea7a2600310d7" uuid="ba72251f-70a2-47ca-86b5-08aefb6b9536"/>
+      <h4:byteStream chunkPositionInArray="[91,50,25]" offset="3945028" nBytes="32500" md5="691938fe177527c41a67ec92aecb463d" uuid="31eb3765-0a19-4f49-8518-aea68448a81c"/>
+      <h4:byteStream chunkPositionInArray="[91,50,50]" offset="3980664" nBytes="32500" md5="df45abecd4f61559535c8779fdd967f7" uuid="3e259413-05e5-4363-88fc-288c864dcd7b"/>
+      <h4:byteStream chunkPositionInArray="[91,50,75]" offset="4013164" nBytes="32500" md5="9512c431d48da837549a6a563e87beb7" uuid="237e3f0e-5d2f-48c7-8bbc-e26b3ecb1748"/>
+      <h4:byteStream chunkPositionInArray="[91,75,0]" offset="4045664" nBytes="32500" md5="378ac5ed1c23fe9e124236870ef6da61" uuid="1f625acf-4373-40c6-b64b-9b5624538abf"/>
+      <h4:byteStream chunkPositionInArray="[91,75,25]" offset="4078164" nBytes="32500" md5="331a9020b8eea94f0a65828f27742024" uuid="565f416e-5bfd-4e39-acc7-533e82d3f45d"/>
+      <h4:byteStream chunkPositionInArray="[91,75,50]" offset="4110664" nBytes="32500" md5="be472be60e7af7f89574a24387e518ed" uuid="00bfb403-1adb-432c-9e65-d90b3b3eabad"/>
+      <h4:byteStream chunkPositionInArray="[91,75,75]" offset="4143164" nBytes="32500" md5="4fa35911caaac0adcb7d64db0ab0c01b" uuid="26e7c4a5-e016-4ba2-99a3-66dbab8343ed"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>
