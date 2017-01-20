@@ -153,7 +153,7 @@ bool H4ByteStream::is_read()
  * @param shuffle_chunk True if the chunk was shuffled.
  * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
  */
-void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size, bool shuffle_chunk, unsigned int elem_width)
+void H4ByteStream::read(bool deflate_chunk, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
     if (d_is_read) {
         BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - Already been read! Returning." << endl);
@@ -245,7 +245,7 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size, bool shuffl
         }
     }
 
-    if (shuffle_chunk) {
+    if (shuffle) {
         // The internal buffer is chunk's full size at this point.
         char *dest = new char[get_rbuf_size()];
         try {
