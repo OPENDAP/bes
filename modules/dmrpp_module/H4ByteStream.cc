@@ -163,13 +163,22 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
     string data_access_url = get_data_url();
     BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
 
-    // Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
-    // TODO Would it be easier to follow if this was it's own method? It is called in
-    // only two places. jhrg 1/19/17
+#if 1
+    /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
+     * in order to track S3 requests. The tag is submitted as a BESContext with the
+     * request. Here we check to see if the request is for an AWS S3 object, if
+     * it is AND we have the magic BESContext "cloudydap" then we add a query
+     * parameter to the S3 URL for tracking purposes.
+     *
+     * Should this be a function? FFS why? This is the ONLY place where this needs
+     * happen, as close to the curl call as possible and we can just turn it off
+     * down the road. - ndp 1/20/17 (EOD)
+     */
     std::string aws_s3_url("https://s3.amazonaws.com/");
     // Is it an AWS S3 access?
     if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
-    	// Yup, S3.
+    	// Yup, headed to S3.
 		string cloudydap_context("cloudydap");
 
         BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
@@ -188,6 +197,8 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
 	        		"key '" << cloudydap_context << "'" << endl);
 		}
 	}
+    /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+#endif
 
     BESDEBUG(debug,
             "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
