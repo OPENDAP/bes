@@ -104,6 +104,15 @@ struct HDF5CFUtil {
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
                static void close_fileid(hid_t,bool);
+
+#if 0
+               static int GDij2ll(int projcode, int zonecode, double projparm[],
+        int spherecode, int xdimsize, int ydimsize,
+        double upleftpt[], double lowrightpt[],
+        int npnts, int row[], int col[],
+        double longitude[], double latitude[], int pixcen, int pixcnr);
+#endif
+
                //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                //                           const std::vector < size_t > &pos);
 
@@ -146,7 +155,14 @@ struct HDF5CFUtil {
     return sum;
 }
 #endif
+        int GDij2ll(int projcode, int zonecode, double projparm[],
+        int spherecode, int xdimsize, int ydimsize,
+        double upleftpt[], double lowrightpt[],
+        int npnts, int row[], int col[],
+        double longitude[], double latitude[], int pixcen, int pixcnr);
 
+//extern int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
 
-
+//extern int for_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*for_trans[])(double, double, double *, double *));
+       double HE5_EHconvAng(double inAngle, int code);
 #endif

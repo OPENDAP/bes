@@ -308,3 +308,6 @@ H5.SmallDataMemCacheEntries=0
 
 # H5.CachePurgeLevel = 0.2
 
+#  State Plane Projection east and north files: Must provide the absolute path
+H5.STPEastFileName=/usr/tmp/nad27sp_le
+H5.STPNorthFileName=/usr/tmp/nad83sp_le

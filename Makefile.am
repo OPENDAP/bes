@@ -8,17 +8,20 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf5_handler
-M_VER=2.3.4
+M_VER=2.3.5
+GCTP_LIBS=gctp/src/libGctp.a
+GCTP_CPPFLAGS=-I gctp/include
+
 
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
 if DAP_MODULES
-AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS)
+AM_CPPFLAGS = $(GCTP_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(GCTP_LIBS)
 else
-AM_CPPFLAGS = $(H5_CPPFLAGS) $(BES_CPPFLAGS)
-LIBADD = $(BES_DAP_LIBS) $(H5_LDFLAGS) $(H5_LIBS)
+AM_CPPFLAGS = $(GCTP_CPPFLAGS) $(H5_CPPFLAGS) $(BES_CPPFLAGS)
+LIBADD = $(BES_DAP_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(GCTP_LIBS)
 # -L${hdf5_path}/lib -lhdf5 -lz
 endif
 
@@ -27,7 +30,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 BUILT_SOURCES = $(GRAM_SRCS)
 
-SUBDIRS = . bes-testsuite
+SUBDIRS = gctp . bes-testsuite 
 # DIST_SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes

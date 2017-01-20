@@ -118,6 +118,8 @@ bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 bool HDF5RequestHandler::_common_cache_dirs            = false;
+string HDF5RequestHandler::_stp_east_filename;
+string HDF5RequestHandler::_stp_north_filename;
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
@@ -180,6 +182,9 @@ cerr<<"No specific cache info"<<endl;
 //cerr<<"small memory data cache "<<endl;
 
         }
+
+        _stp_east_filename = get_beskeys("H5.STPEastFileName");
+        _stp_north_filename = get_beskeys("H5.STPNorthFileName");
 //        else 
 //cerr<<"no small memory data cache "<<endl;
     }
