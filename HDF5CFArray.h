@@ -38,6 +38,7 @@
 #include "HDF5CF.h"
 //#include <Array.h>
 #include "HDF5BaseArray.h"
+#include "HDF5DiskCache.h"
 
 using namespace libdap;
 

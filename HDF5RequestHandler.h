@@ -69,7 +69,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_fillvalue_check() { return _fillvalue_check;}
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
 
-    // Handling Cache
+    // Handling Memory Cache
     static unsigned int get_mdcache_entries() { return _mdcache_entries;}
     static unsigned int get_lrdcache_entries() { return _lrdcache_entries;}
     static unsigned int get_srdcache_entries() { return _srdcache_entries;}
@@ -95,6 +95,10 @@ class HDF5RequestHandler:public BESRequestHandler {
                                               { cur_lrd_var_cache_file_list = lrd_var_cache_file_list;}
 
                                               
+    // Handling Disk Cache
+    static string get_disk_cache_dir() { return _disk_cache_dir;}
+    static string get_disk_cachefile_prefix() { return _disk_cachefile_prefix;}
+    static long get_disk_cache_size() {return _disk_cache_size;}
 
   private:
      //cache variables. 
@@ -125,6 +129,11 @@ class HDF5RequestHandler:public BESRequestHandler {
      //static bool _sd_mcache_config;
      
      static bool _common_cache_dirs;
+     static string _disk_cache_dir;
+     static string _disk_cachefile_prefix;
+     static long _disk_cache_size;
+
+         
      static vector<string> lrd_cache_dir_list;
      static vector<string> lrd_non_cache_dir_list;
      static vector<string> lrd_var_cache_file_list;

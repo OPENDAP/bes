@@ -118,6 +118,12 @@ bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 bool HDF5RequestHandler::_common_cache_dirs            = false;
+
+
+string HDF5RequestHandler::_disk_cache_dir            ="";
+string HDF5RequestHandler::_disk_cachefile_prefix     ="";
+long HDF5RequestHandler::_disk_cache_size             =0;
+
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
@@ -162,6 +168,9 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _drop_long_string            = check_beskeys("H5.EnableDropLongString");
     _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
+    _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
+    _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
+    _disk_cache_size             = get_uint_key("H5.DiskCacheSize",0);
 
     if(get_usecf()) {
         if(get_lrdcache_entries()) {

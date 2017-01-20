@@ -57,11 +57,11 @@ HDF5CFDTYPE_HDRS =  HDF5GMSPCFArray.h HDF5GMCFFillIndexArray.h HDF5GMCFMissLLArr
                     HDF5CFByte.h HDF5CFUInt16.h HDF5CFInt16.h HDF5CFInt32.h HDF5CFUInt32.h \
 	            HDF5CFFloat32.h HDF5CFFloat64.h HDF5CFStr.h 
 
-HDF5CF_SRCS = h5cfdap.cc HDF5CFModule.cc heos5cfdap.cc h5gmcfdap.cc h5commoncfdap.cc HDFEOS5CF.cc HDF5GMCF.cc HDF5GCFProduct.cc HDF5CF.cc h5cfdaputil.cc HDF5CFUtil.cc \
+HDF5CF_SRCS = h5cfdap.cc HDF5CFModule.cc heos5cfdap.cc h5gmcfdap.cc h5commoncfdap.cc HDFEOS5CF.cc HDF5GMCF.cc HDF5GCFProduct.cc HDF5CF.cc h5cfdaputil.cc HDF5CFUtil.cc HDF5DiskCache.cc\
 	he5das.tab.cc  lex.he5das.cc he5dds.tab.cc  lex.he5dds.cc \
 	HE5Parser.cc HE5Checker.cc
 
-HDF5CF_HDRS = h5cfdap.h HDF5CFModule.h  heos5cfdap.h h5gmcfdap.h h5commoncfdap.h HDF5GCFProduct.h HDF5CF.h h5cfdaputil.h HDF5CFUtil.h HE5Parser.h HE5GridPara.h\
+HDF5CF_HDRS = h5cfdap.h HDF5CFModule.h  heos5cfdap.h h5gmcfdap.h h5commoncfdap.h HDF5GCFProduct.h HDF5CF.h h5cfdaputil.h HDF5CFUtil.h HDF5DiskCache.h HE5Parser.h HE5GridPara.h\
  HE5Dim.h HE5Var.h HE5Grid.h HE5Swath.h HE5Za.h HE5Checker.h he5das.tab.hh  he5dds.tab.hh 
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc HDF5_DataMemCache.cc

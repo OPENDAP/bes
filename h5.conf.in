@@ -308,3 +308,31 @@ H5.SmallDataMemCacheEntries=0
 
 # H5.CachePurgeLevel = 0.2
 
+# HDF5 variable disk data cache key for the CF option
+# 
+# When the H5.EnableDiskDataCache is set to true, the variable data
+# will write to a binary file in the
+# server. Data will be read in from the cached file since the second
+# fetch. Several associated keys must be set correctly when this key
+# is set to true.
+#
+#
+# # The description of these associated keys are:
+# #
+# # H5.DiskCacheDataPath - An existing directory with read and write
+# # permissions for the BES process.
+# #
+# # H5.DiskCacheFilePrefix - The cache file prefix, it must be given
+# # for the cache to work. This requirement comes from the hyrax BES.
+#
+# # H5.DiskCacheSize - The size of the cache in megabytes, the
+# # must must be > 0.
+# #
+# # Example:
+# # H5.EnableDiskDataCache=true
+# # H5.DiskCacheDataPath=/opt/tmp
+# # H5.DiskCacheSize=20000
+H5.EnableDiskDataCache=true
+H5.DiskCacheDataPath=/opt/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheSize=20000
