@@ -127,7 +127,7 @@ public:
 
             vector<char> dest(uncomp_size);
 
-            deflate(&dest[0], dest.size(), &buf[0], buf.size());
+            inflate(&dest[0], dest.size(), &buf[0], buf.size());
 
             for (unsigned int i = 0; i < dest.size() / sizeof(dods_float32); ++i) {
                 dods_float32 value = *(reinterpret_cast<dods_float32*>(&dest[0] + i * sizeof(dods_float32)));
@@ -143,10 +143,117 @@ public:
         }
     }
 
+    // make a fake 'shuffled' array of ints and see if the code can un-shuffle it.
+    void test_unshuffle() {
+        try {
+            unsigned int elems = 4;
+            unsigned int width = sizeof(dods_int32); // 4 bytes
+
+            // load in the values: if the four numbers are 1, 2, 3, 4, the (little endian) hex will be:
+            // 0x 01 00 00 00; 02 00 00 00; 03 00 00 00; 04 00 00 00 and shuffled this will be:
+            //    01 02 03 04  00 00 00 00  00 00 00 00  00 00 00 00
+            unsigned char src[] = {1, 2, 3, 4,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0};
+
+            vector<unsigned char> dest(elems * width);
+
+            unshuffle(&dest[0], src, elems * width, width);
+
+            for (unsigned int i = 0; i < elems; ++i) {
+                dods_int32 value = *(reinterpret_cast<dods_int32*>(&dest[0] + i * sizeof(dods_int32)));
+                BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
+                CPPUNIT_ASSERT(value == (dods_int32)i + 1);
+            }
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+    }
+
+    // The same values as above, but now we add some 'left over' bytes because the chunk
+    // is not an integral multiple of the element size.
+    void test_unshuffle2() {
+        try {
+            unsigned int elems = 4;
+            unsigned int width = sizeof(dods_int32); // 4 bytes
+
+            unsigned int src_size = elems * width + 3;
+
+            // load in the values: if the four numbers are 1, 2, 3, 4, the (little endian) hex will be:
+            // 0x 01 00 00 00; 02 00 00 00; 03 00 00 00; 04 00 00 00 and shuffled this will be:
+            //    01 02 03 04  00 00 00 00  00 00 00 00  00 00 00 00
+            unsigned char src[] = {1, 2, 3, 4,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  16, 17, 18};
+
+            vector<unsigned char> dest(src_size);
+
+            unshuffle(&dest[0], src, src_size, width);
+
+            for (unsigned int i = 0; i < elems; ++i) {
+                dods_int32 value = *(reinterpret_cast<dods_int32*>(&dest[0] + i * sizeof(dods_int32)));
+                BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
+                CPPUNIT_ASSERT(value == (dods_int32)i + 1);
+            }
+
+            // Now look for the left behind...
+            CPPUNIT_ASSERT(dest[16] == 16);
+            CPPUNIT_ASSERT(dest[17] == 17);
+            CPPUNIT_ASSERT(dest[18] == 18);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+    }
+
+    // Now test byte values
+    void test_unshuffle3() {
+        try {
+            unsigned int elems = 16;
+            unsigned int width = sizeof(dods_byte); // 1
+
+            unsigned int src_size = elems * width;
+
+            unsigned char src[] = {0, 1, 2, 3,  4, 5, 6, 7,  8, 9, 10, 11,  12, 13, 14, 15};
+
+            vector<unsigned char> dest(src_size);
+
+            unshuffle(&dest[0], src, src_size, width);
+
+            for (unsigned int i = 0; i < elems; ++i) {
+                dods_byte value = *(reinterpret_cast<dods_byte*>(&dest[0] + i * sizeof(dods_byte)));
+                BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
+                CPPUNIT_ASSERT(value == (dods_byte)i);
+            }
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+    }
+
     CPPUNIT_TEST_SUITE( DmrppUtilTest );
 
     CPPUNIT_TEST(test_uncompressed_chunk);
     CPPUNIT_TEST(test_compressed_chunk);
+
+    // __BYTE_ORDER__ is documented for gcc and, works on the llvm/gcc that
+    // ships with OSX. So these tests are run on OSX (10.12 tested; 1/20/17).
+    // I added this because I'm pretty sure the code will work on a big endian
+    // machine but I know the tests will fail because the values will be wrong.
+    //
+    // The tests could be rewritten to just test shuffling of bytes ...
+
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    CPPUNIT_TEST(test_unshuffle);
+    CPPUNIT_TEST(test_unshuffle2);
+#endif
+    CPPUNIT_TEST(test_unshuffle3);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -179,7 +286,7 @@ int main(int argc, char*argv[])
     string test = "";
     int i = getopt.optind;
     if (i == argc) {
-// run them all
+        // run them all
         wasSuccessful = runner.run("");
     }
     else {

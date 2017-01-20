@@ -225,7 +225,7 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
     if (deflate_chunk) {
         char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
         try {
-            deflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
+            inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
             // This replaces (and deletes) the original read_buffer with dest.
             set_rbuf(dest, chunk_size);
         }
