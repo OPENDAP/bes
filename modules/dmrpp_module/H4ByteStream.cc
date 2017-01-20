@@ -148,7 +148,7 @@ bool H4ByteStream::is_read()
 /**
  * @brief Read the chunk associated with this H4ByteStream
  *
- * @param deflate True if we should deflate the date; defaults to false
+ * @param deflate True if we should deflate the data; defaults to false
  * @param chunk_size The size of the chunk once deflated; defaults to 0
  */
 void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
@@ -163,16 +163,18 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
     string data_access_url = get_data_url();
     BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
 
-    /**
-     * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
-     */
+    // Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
+    // TODO Would it be easier to follow if this was it's own method? It is called in
+    // only two places. jhrg 1/19/17
     std::string aws_s3_url("https://s3.amazonaws.com/");
     // Is it an AWS S3 access?
     if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
     	// Yup, S3.
 		string cloudydap_context("cloudydap");
+
         BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
         		"AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
+
 		bool found;
 		string cloudydap_context_value;
 		cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
@@ -186,11 +188,12 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
 	        		"key '" << cloudydap_context << "'" << endl);
 		}
 	}
+
     BESDEBUG(debug,
             "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
             		"from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
 
-    curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this); //dynamic_cast<H4ByteStream*>(this));
+    curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
@@ -212,6 +215,7 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
         char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
         try {
             deflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
+            // This replaces (and deletes) the original read_buffer with dest.
             set_rbuf(dest, chunk_size);
         }
         catch (...) {
@@ -219,7 +223,6 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
             throw;
         }
     }
-
 
 #if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
 				if(BESDebug::IsSet("dmrpp")){

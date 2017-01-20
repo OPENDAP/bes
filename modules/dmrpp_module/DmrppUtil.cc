@@ -127,6 +127,8 @@ void curl_read_byte_stream(const string &url, const string &range, void *user_da
 /**
  * @brief Deflate data. This is the zlib algorithm.
  *
+ * @note Stolen from the HDF5 library and hacked to fit.
+ *
  * @param dest Write the 'inflated' data here
  * @param dest_len Size of the destination buffer
  * @param src Compressed data
@@ -169,11 +171,14 @@ void deflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
             throw BESError("Failed to deflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
-            /* If we're not done and just ran out of buffer space, get more */
+            /* If we're not done and just ran out of buffer space, it's an error.
+             * The HDF5 library code would extend the buffer as needed, but for
+             * this handler, we always know the size of the uncompressed chunk.
+             */
             if (0 == z_strm.avail_out) {
                 throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
 #if 0
+                /* Here's how to extend the buffer if needed. This might be useful someday... */
                 void *new_outbuf; /* Pointer to new output buffer */
 
                 /* Allocate a buffer twice as big */
@@ -194,6 +199,88 @@ void deflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 
     /* Finish uncompressing the stream */
     (void) inflateEnd(&z_strm);
+}
+
+// TODO #undef this to enable the duff's device loop unrolling code.
+// jhrg 1/19/17
+#define NO_DUFFS_DEVICE
+
+/**
+ * @brief Un-shuffle data.
+ * @note Stolen from HDF5 and hacked to fit
+ * @param dest Put the result here.
+ * @param src Shuffled data source
+ * @param elems Number of elements, each one width bytes
+ * @param width Number of bytes in an element
+ */
+void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems, unsigned int width)
+{
+    /* Compute the number of elements in buffer */
+    unsigned int nbytes = elems * width;
+
+    unsigned char *_src = 0;    // Alias for source buffer
+    unsigned char *_dest = 0;   // Alias for destination buffer
+
+    /* Don't do anything for 1-byte elements, or "fractional" elements */
+    if (width > 1 && elems > 1) {
+        /* Compute the leftover bytes if there are any */
+        size_t leftover = nbytes % width;
+
+        /* Get the pointer to the source buffer */
+        _src = const_cast<unsigned char*>(src);
+
+        /* Input; unshuffle */
+        for (unsigned int i = 0; i < width; i++) {
+            _dest = dest + i;
+#ifdef NO_DUFFS_DEVICE
+            size_t j = elems;
+            while(j > 0) {
+                *_dest = *_src++;
+                _dest += width;
+
+                j--;
+            }
+#else /* NO_DUFFS_DEVICE */
+            {
+                size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
+                switch (elems % 8) {
+                default:
+                    assert(0 && "This Should never be executed!");
+                    break;
+                case 0:
+                    do {
+                        // This macro save repeating the same line 8 times
+#define DUFF_GUTS       *_dest = *_src++; _dest += width;
+
+                        DUFF_GUTS
+                        case 7:
+                        DUFF_GUTS
+                        case 6:
+                        DUFF_GUTS
+                        case 5:
+                        DUFF_GUTS
+                        case 4:
+                        DUFF_GUTS
+                        case 3:
+                        DUFF_GUTS
+                        case 2:
+                        DUFF_GUTS
+                        case 1:
+                        DUFF_GUTS
+                    } while (--duffs_index > 0);
+                } /* end switch */
+            }
+#endif /* NO_DUFFS_DEVICE */
+
+        } /* end for i = 0 to width*/
+
+        /* Add leftover to the end of data */
+        if (leftover > 0) {
+            /* Adjust back to end of shuffled bytes */
+            _dest -= (width - 1); /*lint !e794 _dest is initialized */
+            memcpy((void*) _dest, (void*) _src, leftover);
+        }
+    } /* end if width and elems both > 1 */
 }
 
 }    // namespace dmrpp
