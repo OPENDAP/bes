@@ -152,9 +152,9 @@ public:
             // load in the values: if the four numbers are 1, 2, 3, 4, the (little endian) hex will be:
             // 0x 01 00 00 00; 02 00 00 00; 03 00 00 00; 04 00 00 00 and shuffled this will be:
             //    01 02 03 04  00 00 00 00  00 00 00 00  00 00 00 00
-            unsigned char src[] = {1, 2, 3, 4,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0};
+            char src[] = {1, 2, 3, 4,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0};
 
-            vector<unsigned char> dest(elems * width);
+            vector<char> dest(elems * width);
 
             unshuffle(&dest[0], src, elems * width, width);
 
@@ -184,9 +184,9 @@ public:
             // load in the values: if the four numbers are 1, 2, 3, 4, the (little endian) hex will be:
             // 0x 01 00 00 00; 02 00 00 00; 03 00 00 00; 04 00 00 00 and shuffled this will be:
             //    01 02 03 04  00 00 00 00  00 00 00 00  00 00 00 00
-            unsigned char src[] = {1, 2, 3, 4,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  16, 17, 18};
+            char src[] = {1, 2, 3, 4,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  16, 17, 18};
 
-            vector<unsigned char> dest(src_size);
+            vector<char> dest(src_size);
 
             unshuffle(&dest[0], src, src_size, width);
 
@@ -217,9 +217,9 @@ public:
 
             unsigned int src_size = elems * width;
 
-            unsigned char src[] = {0, 1, 2, 3,  4, 5, 6, 7,  8, 9, 10, 11,  12, 13, 14, 15};
+            char src[] = {0, 1, 2, 3,  4, 5, 6, 7,  8, 9, 10, 11,  12, 13, 14, 15};
 
-            vector<unsigned char> dest(src_size);
+            vector<char> dest(src_size);
 
             unshuffle(&dest[0], src, src_size, width);
 
@@ -253,6 +253,7 @@ public:
     CPPUNIT_TEST(test_unshuffle);
     CPPUNIT_TEST(test_unshuffle2);
 #endif
+
     CPPUNIT_TEST(test_unshuffle3);
 
     CPPUNIT_TEST_SUITE_END();

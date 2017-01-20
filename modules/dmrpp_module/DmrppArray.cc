@@ -959,7 +959,8 @@ void DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
         // Now. Now we are going to read this thing.
         // Read and Process chunk
-        chunk->read(is_deflate_compression(), get_chunk_size_in_elements() * var()->width());
+        chunk->read(is_deflate_compression(), get_chunk_size_in_elements() * var()->width(),
+                is_deflate_compression(), var()->width());
         char * source_buffer = chunk->get_rbuf();
 
         if (thisDim.stride == 1) {

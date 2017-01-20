@@ -288,7 +288,15 @@ public:
      */
     virtual void set_position_in_array(const std::string &pia);
 
-    virtual void read(bool deflate = false, unsigned int chunk_size = 0);
+    /**
+     * @brief default version of read() for types that are not chunked
+     */
+    virtual void read() {
+
+    }
+
+    virtual void read(bool deflate, unsigned int chunk_size, bool shuffle_chunk, unsigned int elem_size);
+
     virtual bool is_read();
 
     virtual std::string get_curl_range_arg_string();

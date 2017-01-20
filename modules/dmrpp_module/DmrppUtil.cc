@@ -226,18 +226,18 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
  * @param src_size Number of bytes in both src and dest
  * @param width Number of bytes in an element
  */
-void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int src_size, unsigned int width)
+void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width)
 {
     unsigned int elems = src_size / width;  // int division rounds down
 
     /* Don't do anything for 1-byte elements, or "fractional" elements */
     if (!(width > 1 && elems > 1)) {
-        memcpy(dest, const_cast<unsigned char*>(src), src_size);
+        memcpy(dest, const_cast<char*>(src), src_size);
     }
     else {
         /* Get the pointer to the source buffer (Alias for source buffer) */
-        unsigned char *_src = const_cast<unsigned char*>(src);
-        unsigned char *_dest = 0;   // Alias for destination buffer
+        char *_src = const_cast<char*>(src);
+        char *_dest = 0;   // Alias for destination buffer
 
         /* Input; unshuffle */
         for (unsigned int i = 0; i < width; i++) {

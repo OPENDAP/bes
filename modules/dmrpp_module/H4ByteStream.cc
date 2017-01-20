@@ -148,19 +148,23 @@ bool H4ByteStream::is_read()
 /**
  * @brief Read the chunk associated with this H4ByteStream
  *
- * @param deflate True if we should deflate the data; defaults to false
- * @param chunk_size The size of the chunk once deflated; defaults to 0
+ * @param deflate True if we should deflate the data
+ * @param chunk_size The size of the chunk once deflated; ignored with deflate is false
+ * @param shuffle_chunk True if the chunk was shuffled.
+ * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
  */
-void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
+void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size, bool shuffle_chunk, unsigned int elem_width)
 {
     if (d_is_read) {
         BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - Already been read! Returning." << endl);
         return;
     }
 
+    // This call uses the internal size param and allocates the buffer's memory
     set_rbuf_to_size();
 
     string data_access_url = get_data_url();
+
     BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
 
 #if 1
@@ -217,17 +221,36 @@ void H4ByteStream::read(bool deflate_chunk, unsigned int chunk_size)
     // If data are compressed/encoded, then decode them here.
     // At this point, the bytes_read property would be changed.
     // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
+    // The file that implements the shuffle filter is H5Zshuffle.c.
 
     // TODO This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
     // simple zlib deflate working.jhrg 1/15/17
+    // Added support for shuffle. Assuming unshuffle always is applied _after_
+    // inflating the data (reversing the shuffle --> deflate process). It is
+    // possible that data could just be deflated or shuffled (because we
+    // have test data are use only shuffle). jhrg 1/20/17
+
     if (deflate_chunk) {
         char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
         try {
             inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
             // This replaces (and deletes) the original read_buffer with dest.
             set_rbuf(dest, chunk_size);
+        }
+        catch (...) {
+            delete[] dest;
+            throw;
+        }
+    }
+
+    if (shuffle_chunk) {
+        // The internal buffer is chunk's full size at this point.
+        char *dest = new char[get_rbuf_size()];
+        try {
+            unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
+            set_rbuf(dest, get_rbuf_size());
         }
         catch (...) {
             delete[] dest;

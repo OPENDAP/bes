@@ -33,7 +33,8 @@ void curl_read_byte_stream(const std::string &url, const std::string& range, voi
 
 void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len);
 
-void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int src_size, unsigned int width);
+void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width);
+
 } // namespace dmrpp
 
 #endif /* MODULES_DMRPP_MODULE_DMRPPUTIL_H_ */
