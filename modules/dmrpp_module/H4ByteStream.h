@@ -241,6 +241,7 @@ public:
 
         d_read_buffer = buf;
         d_read_buffer_size = size;
+
         // FIXME Setting d_byes_read to 'size' may break code that tests to see that the
         // correct number of bytes were actually read. I think this is patched, but we
         // should think about what this field really means - the number of bytes read or

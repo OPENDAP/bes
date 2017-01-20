@@ -201,13 +201,15 @@ void deflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
     (void) inflateEnd(&z_strm);
 }
 
-// TODO #undef this to enable the duff's device loop unrolling code.
+// TODO #define this to enable the duff's device loop unrolling code.
 // jhrg 1/19/17
-#define NO_DUFFS_DEVICE
+#define DUFFS_DEVICE
 
 /**
  * @brief Un-shuffle data.
+ *
  * @note Stolen from HDF5 and hacked to fit
+ *
  * @param dest Put the result here.
  * @param src Shuffled data source
  * @param elems Number of elements, each one width bytes
@@ -215,24 +217,19 @@ void deflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
  */
 void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems, unsigned int width)
 {
-    /* Compute the number of elements in buffer */
-    unsigned int nbytes = elems * width;
-
-    unsigned char *_src = 0;    // Alias for source buffer
-    unsigned char *_dest = 0;   // Alias for destination buffer
-
     /* Don't do anything for 1-byte elements, or "fractional" elements */
-    if (width > 1 && elems > 1) {
-        /* Compute the leftover bytes if there are any */
-        size_t leftover = nbytes % width;
-
-        /* Get the pointer to the source buffer */
-        _src = const_cast<unsigned char*>(src);
+    if (!(width > 1 && elems > 1)) {
+        dest = const_cast<unsigned char*>(src);
+    }
+    else {
+        /* Get the pointer to the source buffer (Alias for source buffer) */
+        unsigned char *_src = const_cast<unsigned char*>(src);
+        unsigned char *_dest = 0;   // Alias for destination buffer
 
         /* Input; unshuffle */
         for (unsigned int i = 0; i < width; i++) {
             _dest = dest + i;
-#ifdef NO_DUFFS_DEVICE
+#ifndef DUFFS_DEVICE
             size_t j = elems;
             while(j > 0) {
                 *_dest = *_src++;
@@ -240,7 +237,7 @@ void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems
 
                 j--;
             }
-#else /* NO_DUFFS_DEVICE */
+#else /* DUFFS_DEVICE */
             {
                 size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
                 switch (elems % 8) {
@@ -249,7 +246,7 @@ void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems
                     break;
                 case 0:
                     do {
-                        // This macro save repeating the same line 8 times
+                        // This macro saves repeating the same line 8 times
 #define DUFF_GUTS       *_dest = *_src++; _dest += width;
 
                         DUFF_GUTS
@@ -269,10 +266,13 @@ void unshuffle(unsigned char *dest, const unsigned char *src, unsigned int elems
                         DUFF_GUTS
                     } while (--duffs_index > 0);
                 } /* end switch */
-            }
-#endif /* NO_DUFFS_DEVICE */
+            } /* end block */
+#endif /* DUFFS_DEVICE */
 
         } /* end for i = 0 to width*/
+
+        /* Compute the leftover bytes if there are any */
+        size_t leftover = (elems * width) % width;
 
         /* Add leftover to the end of data */
         if (leftover > 0) {
