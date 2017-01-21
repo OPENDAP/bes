@@ -292,10 +292,10 @@ public:
      * @brief default version of read() for types that are not chunked
      */
     virtual void read() {
-        read(false, false, 0, 0);   // default values for no compression
+        read(false, 0, false, 0);   // default values for no compression
     }
 
-    virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
+    virtual void read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_size);
 
     virtual bool is_read();
 
