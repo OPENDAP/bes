@@ -545,6 +545,7 @@ public:
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
     CPPUNIT_TEST(test_read_oneD_chunked_array);
+#if 1
     CPPUNIT_TEST(test_read_twoD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_asymmetric_array);
     CPPUNIT_TEST(test_read_threeD_chunked_array);
@@ -562,7 +563,6 @@ public:
     CPPUNIT_TEST(test_chunked_gzipped_oneD_CE_00);
 
     CPPUNIT_TEST(test_chunked_gzipped_oneD_CE_00);
-
     CPPUNIT_TEST(test_chunked_shuffled_oneD);
     CPPUNIT_TEST(test_chunked_shuffled_twoD);
     CPPUNIT_TEST(test_chunked_shuffled_threeD);
@@ -573,7 +573,7 @@ public:
     CPPUNIT_TEST(test_chunked_shuffled_zipped_twoD);
     CPPUNIT_TEST(test_chunked_shuffled_zipped_threeD);
     CPPUNIT_TEST(test_chunked_shuffled_zipped_fourD);
-
+#endif
     CPPUNIT_TEST_SUITE_END();
 };
 
