@@ -201,6 +201,10 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
         }
 
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(var->getRank());
+        for(int i = 0; i <var->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
 
         HDF5CFArray *ar = NULL;
         try {
@@ -209,6 +213,7 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
                                   file_id,
                                   filename,
                                   var->getType(),
+                                  dimsizes,
                                   var->getFullPath(),
                                   var->getTotalElems(),
                                   CV_UNSUPPORTED,

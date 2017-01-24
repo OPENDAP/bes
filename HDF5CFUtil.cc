@@ -32,7 +32,9 @@
 #include "HDF5CFUtil.h"
 #include <set>
 #include <sstream>
+#include <algorithm>
 #include <stdlib.h>
+#include <unistd.h>
 #include<InternalErr.h>
 using namespace libdap;
 
@@ -548,6 +550,32 @@ int HDF5CFUtil::subset(
 } // end of template<typename T> static int 
 #endif
 
+// Need to wrap a 'read buffer' from a pure file call here since read() is also a DAP function to read DAP data.
+ssize_t HDF5CFUtil::read_buffer_from_file(int fd,  void*buf, size_t total_read) {
+
+     ssize_t ret_val;
+         ret_val = read(fd,buf,total_read);
+
+             return ret_val;
+}
+
+// Obtain the cache name. Since AIRS version 6 level 3 all share the same latitude and longitude,
+// we provide one set of latitude and longitude cache files for all AIRS level 3 version 6 products.
+string HDF5CFUtil::obtain_cache_fname(const string & fprefix, const string &fname, const string &vname) {
+
+     string cache_fname = fprefix;
+
+     string correct_fname = fname;
+     std::replace(correct_fname.begin(),correct_fname.end(),'/','_');
+     
+     string correct_vname = vname;
+     std::replace(correct_vname.begin(),correct_vname.end(),'/','_');
+
+
+     cache_fname = cache_fname +correct_fname +"_"+correct_vname;
+
+     return cache_fname;
+}
 size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                                  const std::vector < size_t > &pos){
     //

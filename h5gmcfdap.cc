@@ -494,6 +494,11 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
         const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(cvar->getRank());
+        for(int i = 0; i <cvar->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
+
 
         if(dims.size() == 0) 
             throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
@@ -514,6 +519,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                                     file_id,
                                     filename,
                                     cvar->getType(),
+                                    dimsizes,
                                     cvar->getFullPath(),
                                     cvar->getTotalElems(),
                                     CV_EXIST,

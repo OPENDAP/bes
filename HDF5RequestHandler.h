@@ -96,6 +96,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
                                               
     // Handling Disk Cache
+    static bool get_use_disk_cache() {return _use_disk_cache;}
     static string get_disk_cache_dir() { return _disk_cache_dir;}
     static string get_disk_cachefile_prefix() { return _disk_cachefile_prefix;}
     static long get_disk_cache_size() {return _disk_cache_size;}
@@ -128,12 +129,13 @@ class HDF5RequestHandler:public BESRequestHandler {
      //static bool _ld_mcache_config;
      //static bool _sd_mcache_config;
      
-     static bool _common_cache_dirs;
+     static bool _use_disk_cache;
      static string _disk_cache_dir;
      static string _disk_cachefile_prefix;
      static long _disk_cache_size;
 
          
+     static bool _common_cache_dirs;
      static vector<string> lrd_cache_dir_list;
      static vector<string> lrd_non_cache_dir_list;
      static vector<string> lrd_var_cache_file_list;

@@ -468,6 +468,11 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
         const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(cvar->getRank());
+        for(int i = 0; i <cvar->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
+
 
         if(dims.size() == 0)
             throw InternalErr(__FILE__,__LINE__,"the coordinate variables cannot be scalar.");
@@ -494,6 +499,7 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
                                           file_id,
                                           filename,
                                           cvar->getType(),
+                                          dimsizes,
                                           cvar->getFullPath(),
                                           cvar->getTotalElems(),
                                           CV_EXIST,

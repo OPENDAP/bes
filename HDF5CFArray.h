@@ -48,6 +48,7 @@ class HDF5CFArray:public HDF5BaseArray {
                     const hid_t h5_file_id,
                     const string & h5_filename, 
                     H5DataType h5_dtype, 
+                    const vector<size_t>& h5_dimsizes,
                     const string &varfullpath, 
                     const size_t h5_total_elems,
                     const CVType h5_cvtype,
@@ -59,6 +60,7 @@ class HDF5CFArray:public HDF5BaseArray {
                     fileid(h5_file_id),
                     filename(h5_filename),
                     dtype(h5_dtype),
+                    dimsizes(h5_dimsizes),
                     total_elems(h5_total_elems),
                     cvtype(h5_cvtype),
                     islatlon(h5_islatlon),
@@ -71,6 +73,7 @@ class HDF5CFArray:public HDF5BaseArray {
     virtual BaseType *ptr_duplicate();
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+   
     //void read_data_from_mem_cache(void*buf);
     //void read_data_from_file(bool add_cache,void*buf);
     //int format_constraint (int *cor, int *step, int *edg);
@@ -84,6 +87,10 @@ class HDF5CFArray:public HDF5BaseArray {
         size_t total_elems;
         CVType cvtype;
         bool islatlon;
+        vector<size_t>dimsizes;
+        bool valid_disk_cache();
+        bool obtain_cached_data(HDF5DiskCache*,const string&,int, vector<int>&,vector<int>&,size_t,short);
+        void write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,hid_t memtype, const string& cache_fpath,short dtype_size,const vector<char> &buf, int nelms);
 };
 
 #endif                          // _HDF5CFARRAY_H

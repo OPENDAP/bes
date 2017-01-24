@@ -104,6 +104,11 @@ struct HDF5CFUtil {
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
                static void close_fileid(hid_t,bool);
+
+               // wrap function of Unix read to a buffer. Memory for the buffer should be allocated.
+               static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
+               static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname);
+               
                //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                //                           const std::vector < size_t > &pos);
 
