@@ -571,13 +571,11 @@ void BESInterface::execute_data_request_plan()
         // Now we need to do the post processing piece of executing the request
         invoke_aggregation();
 
-        // Before transmission starts, clear the timeout. This is done so users
-        // on slow links are not penalized. jhrg 1/24/17
-        bes_timeout = 0;
-        alarm(0);
-
         // And finally, transmit the response of this request
         transmit_data();
+
+        bes_timeout = 0;
+        alarm(0);
     }
     catch (...) {
         bes_timeout = 0;

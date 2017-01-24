@@ -78,14 +78,11 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     _response = 0;
 
     // Hack. We put this here because the bes timeout period should not
-    // include the time it takes to send the data, just the compute time
-    // to build the response. Most (all other?) data transmissions take
-    // place in BESInterface::transmit_data() and we reset the time out
-    // just before that call. This code, however, is run before that, so
-    // this patch/hack is needed.
+    // include the time it takes to send  data for a file transfer response.
     //
     // An alternative would be to implement a BESTransmitter for the "get stream"
     // operation and have that run from the call to BESInterface::transmist_data().
+    // pcw talks about that below.
     // jhrg 1/24/17
     if (bes_timeout != 0) {
         bes_timeout = 0;
