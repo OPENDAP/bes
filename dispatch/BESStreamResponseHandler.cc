@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,16 +30,18 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <unistd.h>
+
 #include <cerrno>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cstring>
 
-using std::ifstream ;
-using std::ios ;
-using std::endl ;
-using std::string ;
+using std::ifstream;
+using std::ios;
+using std::endl;
+using std::string;
 
 #include "BESStreamResponseHandler.h"
 #include "BESRequestHandlerList.h"
@@ -50,16 +52,18 @@ using std::string ;
 
 #define BES_STREAM_BUFFER_SIZE 4096
 
-BESStreamResponseHandler::BESStreamResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESStreamResponseHandler::BESStreamResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESStreamResponseHandler::~BESStreamResponseHandler( )
+BESStreamResponseHandler::~BESStreamResponseHandler()
 {
 }
 
-/** @brief executes the command 'get file &lt;filename&gt;;' by
+extern volatile int bes_timeout; // defined in BESInterface. jhrg 1/24/17
+
+/** @brief executes the command 'get file <filename>;' by
  * streaming the specified file
  *
  * @param dhi structure that holds request and response information
@@ -69,10 +73,24 @@ BESStreamResponseHandler::~BESStreamResponseHandler( )
  * @see BESHTMLInfo
  * @see BESRequestHandlerList
  */
-void
-BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    _response = 0 ;
+    _response = 0;
+
+    // Hack. We put this here because the bes timeout period should not
+    // include the time it takes to send the data, just the compute time
+    // to build the response. Most (all other?) data transmissions take
+    // place in BESInterface::transmit_data() and we reset the time out
+    // just before that call. This code, however, is run before that, so
+    // this patch/hack is needed.
+    //
+    // An alternative would be to implement a BESTransmitter for the "get stream"
+    // operation and have that run from the call to BESInterface::transmist_data().
+    // jhrg 1/24/17
+    if (bes_timeout != 0) {
+        bes_timeout = 0;
+        alarm(bes_timeout);
+    }
 
     // What if there is a special way to stream back a data file?
     // Should we pass this off to the request handlers and put
@@ -84,53 +102,45 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
     // request, so kept it here. Plus the idea expressed above
     // led me to leave the code in the execute method.
     // pcw 10/11/06
-    if( dhi.containers.size() != 1 )
-    {
-	string err = (string)"Unable to stream file: "
-	             + "no container specified" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    if (dhi.containers.size() != 1) {
+        string err = (string) "Unable to stream file: " + "no container specified";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    dhi.first_container() ;
-    BESContainer *container = dhi.container ;
-    string filename = container->access() ;
-    if( filename.empty() )
-    {
-	string err = (string)"Unable to stream file: "
-	             + "filename not specified" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    dhi.first_container();
+    BESContainer *container = dhi.container;
+    string filename = container->access();
+    if (filename.empty()) {
+        string err = (string) "Unable to stream file: " + "filename not specified";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    int bytes = 0 ;
-    ifstream os ;
-    os.open( filename.c_str(), ios::in ) ;
-    int myerrno = errno ;
-    if( !os )
-    {
-	string serr = (string)"Unable to stream file: "
-	              + "cannot open file "
-		      + filename + ": " ;
-	char *err = strerror( myerrno ) ;
-	if( err )
-	    serr += err ;
-	else
-	    serr += "Unknown error" ;
+    int bytes = 0;
+    ifstream os;
+    os.open(filename.c_str(), ios::in);
+    int myerrno = errno;
+    if (!os) {
+        string serr = (string) "Unable to stream file: " + "cannot open file " + filename + ": ";
+        char *err = strerror(myerrno);
+        if (err)
+            serr += err;
+        else
+            serr += "Unknown error";
 
-	throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
+        throw BESNotFoundError(err, __FILE__, __LINE__);
     }
 
-    int nbytes ;
-    char block[BES_STREAM_BUFFER_SIZE] ;
-    os.read( block, sizeof block ) ;
-    nbytes = os.gcount() ;
-    while( nbytes )
-    {
-	bytes += nbytes ;
-	dhi.get_output_stream().write( (char*)block, nbytes ) ;
-	os.read( block, sizeof block ) ;
-	nbytes = os.gcount() ;
+    int nbytes;
+    char block[BES_STREAM_BUFFER_SIZE];
+    os.read(block, sizeof block);
+    nbytes = os.gcount();
+    while (nbytes) {
+        bytes += nbytes;
+        dhi.get_output_stream().write((char*) block, nbytes);
+        os.read(block, sizeof block);
+        nbytes = os.gcount();
     }
-    os.close() ;
+    os.close();
 }
 
 /** @brief transmit the file, streaming it back to the client
@@ -140,12 +150,10 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESStreamResponseHandler::transmit( BESTransmitter */*transmitter*/,
-                                    BESDataHandlerInterface &/*dhi*/ )
+void BESStreamResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
     // The Data is transmitted when it is read, dumped to stdout, so there is nothing
-    // to transmot here.
+    // to transmit here.
 }
 
 /** @brief dumps information about this object
@@ -154,19 +162,17 @@ BESStreamResponseHandler::transmit( BESTransmitter */*transmitter*/,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESStreamResponseHandler::dump( ostream &strm ) const
+void BESStreamResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESStreamResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESStreamResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESStreamResponseHandler::BESStreamResponseBuilder( const string &name )
+BESStreamResponseHandler::BESStreamResponseBuilder(const string &name)
 {
-    return new BESStreamResponseHandler( name ) ;
+    return new BESStreamResponseHandler(name);
 }
 
