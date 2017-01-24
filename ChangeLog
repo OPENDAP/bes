@@ -1,3 +1,61 @@
+2016-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	besd.logrotate modified to rotate logs every day.
+	I also fixed some issues with the file (added compression), set the
+	retention number (all old logs were deleted in the previous version).
+
+	Fixed some language in the new besd.logrotate script
+
+	Merge pull request #27 from OPENDAP/hyrax-292
+	Hyrax 292
+
+2016-12-28  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the log rotate bug.
+	I tried using the process group to stop all of the beslisteners,
+	but that was not going to work since the OLFS keeps the connections
+	active. I modified the besd.logroate script instead. Seems to work.
+
+	Merge branch 'master' into hyrax-292
+
+2016-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	New module hashes
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	New commit hashs for submodules
+
+2016-12-19  James Gallagher  <jgallagher@opendap.org>
+
+	Attempt to use process groups to restart server and fix logrotate bug.
+
+2016-12-16  James Gallagher  <jgallagher@opendap.org>
+
+	For now, do not install the logrotate script in the RPM package.
+	Using logrotate breaks the BES until we sort out how best to stop all of the
+	child listeners talking to the OLFS.
+
+	Catch exceptions in the BESInterface code that resets the timeout alarm.
+
+2016-11-08  ndp-opendap  <ndp@opendap.org>
+
+	Sync
+
+	Added more control features to getDAP.
+
+2016-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for fileout_netcdf (Hyrax-282)
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Modules updated, commited and pushed for Hyrax 1.13.2 bes 1.17.3
+
+	Version 3.17.3
+
+	Added TestFunction.h to Makefile.am EXTRA_DIST for distcheck
+
 2016-11-02  James Gallagher  <jgallagher@opendap.org>
 
 	Added TestFunction.h to Makefile.am EXTRA_DIST for distcheck
