@@ -134,9 +134,11 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     while (nbytes) {
         bytes += nbytes;
         dhi.get_output_stream().write((char*) block, nbytes);
+
         os.read(block, sizeof block);
         nbytes = os.gcount();
     }
+
     os.close();
 }
 

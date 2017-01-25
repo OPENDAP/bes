@@ -393,34 +393,6 @@ int BESInterface::finish(int /*status*/)
 {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << " ***" << endl);
 
-#if 0
-    int status = 0;
-    try {
-        // if there was an error during initialization, validation,
-        // execution or transmit of the response then we need to transmit
-        // the error information. Once printed, delete the error
-        // information since we are done with it.
-        if (_dhi->error_info) {
-            transmit_data();
-            delete _dhi->error_info;
-            _dhi->error_info = 0;
-        }
-    }
-    catch (BESError &ex) {
-        status = exception_manager(ex);
-    }
-    catch (bad_alloc &) {
-        string serr = "BES out of memory";
-        BESInternalFatalError ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
-    }
-    catch (...) {
-        string serr = "An undefined exception has been thrown";
-        BESInternalError ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
-    }
-#endif
-
     // If there is error information then the transmit of the error failed,
     // print it to standard out. Once printed, delete the error
     // information since we are done with it.
