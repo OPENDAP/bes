@@ -481,7 +481,17 @@ File:: Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) throw(Exception)
    
         hsize_t dstorage_size = H5Dget_storage_size(dset_id);
         if(dstorage_size >0 && var->total_elems>0) {
-            comp_ratio = ((float)(var->total_elems))/dstorage_size;
+hid_t ty_id = -1;
+
+     // Obtain the data type of the variable.
+      if ((ty_id = H5Dget_type(dset_id)) < 0)
+                 throw1("unable to obtain hdf5 datatype for the dataset ");
+size_t type_size = H5Tget_size(ty_id);
+if(type_size <0) 
+               throw1("unable to obtain hdf5 datatype for the dataset ");
+    //
+            comp_ratio = ((float)(var->total_elems)*type_size)/dstorage_size;
+         H5Tclose(ty_id);
         }
 
     }
