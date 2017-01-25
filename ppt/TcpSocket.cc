@@ -87,7 +87,9 @@ void TcpSocket::connect()
     struct protoent *pProtoEnt;
     struct sockaddr_in sin = {};
     struct hostent *ph;
+#if 0
     long address;
+#endif
     if (isdigit(_host[0])) {
         if (0 == inet_aton(_host.c_str(), &sin.sin_addr)) {
             throw BESInternalError(string("Invalid host ip address ") + _host, __FILE__, __LINE__);
