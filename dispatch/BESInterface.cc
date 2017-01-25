@@ -83,7 +83,10 @@ static bool timeout_jump_valid = false;
 
 // timeout period in seconds; 0 --> no timeout. This is a static value so
 // that it can be accessed by the signal handler. jhrg 1/4/16
-static volatile int timeout = 0;
+// I've made this globally visible so that other code that might want to
+// alter the time out value can do so and this variable can be kept consistent.
+// See BESStreamResponseHandler::execute() for an example. jhrg 1/24/17
+volatile int bes_timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
@@ -99,7 +102,7 @@ static volatile int timeout = 0;
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        LOG("Child listener timeout after " << timeout << " seconds, exiting." << endl);
+        LOG("Child listener timeout after " << bes_timeout << " seconds, exiting." << endl);
 
         // Causes setjmp() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
@@ -185,7 +188,7 @@ static void* alarm_wait(void * /* arg */)
     }
     else {
         stringstream oss;
-        oss << "While waiting for a timeout, found signal '" << result << "' in "  << __PRETTY_FUNCTION__ << ends;
+        oss << "While waiting for a timeout, found signal '" << result << "' in " << __PRETTY_FUNCTION__ << ends;
         BESDEBUG("bes", oss.str() << endl);
         throw BESInternalFatalError(oss.str(), __FILE__, __LINE__);
     }
@@ -193,18 +196,18 @@ static void* alarm_wait(void * /* arg */)
 
 static void wait_for_timeout()
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     pthread_attr_t thread_attr;
 
     if (pthread_attr_init(&thread_attr) != 0)
-        throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
     if (pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED /*PTHREAD_CREATE_JOINABLE*/) != 0)
-        throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
 
     int status = pthread_create(&alarm_thread, &thread_attr, alarm_wait, NULL);
     if (status != 0)
-        throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
 }
 #endif
 
@@ -282,7 +285,7 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 
 int BESInterface::execute_request(const string &from)
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     if (!_dhi) {
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
@@ -348,7 +351,7 @@ int BESInterface::execute_request(const string &from)
         }
         else {
             ostringstream oss;
-            oss << "BES listener timeout after " << timeout << " seconds." << ends;
+            oss << "BES listener timeout after " << bes_timeout << " seconds." << ends;
             throw BESTimeoutError(oss.str(), __FILE__, __LINE__);
         }
 
@@ -388,35 +391,7 @@ int BESInterface::execute_request(const string &from)
 // call is redundant. This means that so is the param 'status'. jhrg 12/23/15
 int BESInterface::finish(int /*status*/)
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << " ***" << endl);
-
-#if 0
-    int status = 0;
-    try {
-        // if there was an error during initialization, validation,
-        // execution or transmit of the response then we need to transmit
-        // the error information. Once printed, delete the error
-        // information since we are done with it.
-        if (_dhi->error_info) {
-            transmit_data();
-            delete _dhi->error_info;
-            _dhi->error_info = 0;
-        }
-    }
-    catch (BESError &ex) {
-        status = exception_manager(ex);
-    }
-    catch (bad_alloc &) {
-        string serr = "BES out of memory";
-        BESInternalFatalError ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
-    }
-    catch (...) {
-        string serr = "An undefined exception has been thrown";
-        BESInternalError ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
-    }
-#endif
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << " ***" << endl);
 
     // If there is error information then the transmit of the error failed,
     // print it to standard out. Once printed, delete the error
@@ -543,50 +518,43 @@ void BESInterface::execute_data_request_plan()
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
-        timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE("Set request timeout to " << timeout << " seconds (from context)." << endl);
-        alarm(timeout);
+        bes_timeout = strtol(context.c_str(), NULL, 10);
+        VERBOSE("Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+        alarm(bes_timeout);
     }
     else if (_timeout_from_keys != 0) {
-        timeout = _timeout_from_keys;
-        VERBOSE("Set request timeout to " << timeout << " seconds (from keys)." << endl);
-        alarm(timeout);
+        bes_timeout = _timeout_from_keys;
+        VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
+        alarm(bes_timeout);
     }
 
-	try {
-		BESDEBUG("bes",
-				"Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
-		BESResponseHandler *rh = _dhi->response_handler;
-		if (rh) {
-			rh->execute(*_dhi);
-		} else {
-			BESDEBUG("bes", "FAILED" << endl);
-			string se = "The response handler \"" + _dhi->action
-					+ "\" does not exist";
-			throw BESInternalError(se, __FILE__, __LINE__);
-		}
-		BESDEBUG("bes", "OK" << endl);
+    try {
+        BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
+        if (_dhi->response_handler) {
+            _dhi->response_handler->execute(*_dhi);
+        }
+        else {
+            BESDEBUG("bes", "FAILED" << endl);
+            throw BESInternalError(string("The response handler \"") + _dhi->action + "\" does not exist", __FILE__,
+                __LINE__);
+        }
+        BESDEBUG("bes", "OK" << endl);
 
-		// Now we need to do the post processing piece of executing the request
-		invoke_aggregation();
+        // Now we need to do the post processing piece of executing the request
+        invoke_aggregation();
 
-		// And finally, transmit the response of this request
-		transmit_data();
-#if 0
-		// Only clear the timeout if it has been set.
-		if (timeout != 0) {
-#endif
-		timeout = 0;
-		alarm(0);
-#if 0
-	}
-#endif
-	} catch (...) {
-		timeout = 0;
-		alarm(0);
+        // And finally, transmit the response of this request
+        transmit_data();
 
-		throw;
-	}
+        bes_timeout = 0;
+        alarm(0);
+    }
+    catch (...) {
+        bes_timeout = 0;
+        alarm(0);
+
+        throw;
+    }
 }
 
 /** @brief Aggregate the resulting response object
@@ -630,39 +598,21 @@ void BESInterface::transmit_data()
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", _dhi->data[REQUEST_ID]);
 
     BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting request: " << _dhi->data[DATA_REQUEST] << endl);
-#if 0
-    if (_transmitter) {
-#endif
-        if (_dhi->error_info) {
-            ostringstream strm;
-            _dhi->error_info->print(strm);
-            (*BESLog::TheLog()) << strm.str() << endl;
-            BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
 
-            _dhi->error_info->transmit(_transmitter, *_dhi);
-        }
-        else if (_dhi->response_handler) {
-            BESDEBUG("bes", "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+    if (_dhi->error_info) {
+        ostringstream strm;
+        _dhi->error_info->print(strm);
+        (*BESLog::TheLog()) << strm.str() << endl;
+        BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
 
-            _dhi->response_handler->transmit(_transmitter, *_dhi);
-        }
-#if 0
-   }
-    else {
-
-        if (_dhi->error_info) {
-            BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting error info using cout ... " << endl);
-            _dhi->error_info->print(cout);
-            delete _dhi->error_info;
-            _dhi->error_info = 0;
-        }
-        else {
-            BESDEBUG("bes", "BESInterface::transmit_data() - Unable to transmit the response ... FAILED " << endl);
-            //string err = ;
-            throw BESInternalError("Unable to transmit the response, no transmitter", __FILE__, __LINE__);
-        }
+        _dhi->error_info->transmit(_transmitter, *_dhi);
     }
-#endif
+    else if (_dhi->response_handler) {
+        BESDEBUG("bes",
+            "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+
+        _dhi->response_handler->transmit(_transmitter, *_dhi);
+    }
 
     BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl);
 }
