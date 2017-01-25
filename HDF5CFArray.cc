@@ -166,7 +166,7 @@ bool HDF5CFArray::read()
 }
 
 // Reading data not from memory cache: The data can be read from the disk cache or can be read via the HDF5 APIs
-void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
+void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
     vector<int>offset;
     vector<int>count;
@@ -201,18 +201,18 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     hid_t dtypeid = -1;
     hid_t memtype = -1;
 
-    bool data_from_cache = false;
-    bool data_to_cache = false;
+    bool data_from_disk_cache = false;
+    bool data_to_disk_cache = false;
 
     // Check if the disk cache can be applied.
     bool use_disk_cache = valid_disk_cache();
  
     string cache_fpath;
+
     if(true == use_disk_cache) {
 
         string diskcache_dir = HDF5RequestHandler::get_disk_cache_dir();
         string diskcache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
-
 
         string cache_fname=HDF5CFUtil::obtain_cache_fname(diskcache_prefix,filename,varname);
         cache_fpath = diskcache_dir + "/"+ cache_fname;
@@ -249,19 +249,18 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
  
             /// Read the data from the cache
             else 
-                data_from_cache = obtain_cached_data(disk_cache,cache_fpath,fd, step,count,total_read,dtype_size);
+                data_from_disk_cache = obtain_cached_data(disk_cache,cache_fpath,fd, step,count,total_read,dtype_size);
 
         }
 
-        if(true == data_from_cache)
+        if(true == data_from_disk_cache)
             return;
         else 
-            data_to_cache = true;
+            data_to_disk_cache = true;
 
-     }
+    }
 
 // END CACHE
-
    
     bool pass_fileid = HDF5RequestHandler::get_pass_fileid();
     if(false == pass_fileid) {
@@ -274,7 +273,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     }
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
-
         HDF5CFUtil::close_fileid(fileid,pass_fileid);
         ostringstream eherr;
         eherr << "HDF5 dataset " << varname
@@ -348,7 +346,16 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
     hid_t read_ret = -1;
 
     // Before reading the data, we will check if the memory cache is turned on, 
-    if(true == add_cache) {
+    // The add_mem_cache  is only true when the data memory cache keys are on and  used. 
+    if(true == add_mem_cache) {
+        if(buf== NULL) {
+            H5Sclose(mspace);
+            H5Tclose(dtypeid);
+            H5Sclose(dspace);
+            H5Dclose(dsetid);
+            HDF5CFUtil::close_fileid(fileid,pass_fileid);
+            throw InternalErr(__FILE__,__LINE__,"The memory data cache buffer needs to be set");
+        }
         read_ret= H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,buf);
         if(read_ret <0){ 
             H5Sclose(mspace);
@@ -396,7 +403,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
 
             set_value ((dods_int16 *) &newval[0], nelms);
 
-            if(true == data_to_cache) {
+            if(true == data_to_disk_cache) {
                 try {
                     write_data_to_cache(dsetid,dspace,mspace,memtype,cache_fpath,2,val,nelms);
                 }
@@ -450,7 +457,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
             val2buf(&val[0]);
             set_read_p(true);
 
-            if(true == data_to_cache) {
+            if(true == data_to_disk_cache) {
                 try {
                     write_data_to_cache(dsetid,dspace,mspace,memtype,cache_fpath,dtype_size,val,nelms);
                 }
@@ -468,7 +475,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
                 }
 
             }
-        } // case H5UCHAR
+        } // case H5UCHAR...
             break;
 
 
@@ -785,6 +792,7 @@ bool HDF5CFArray::valid_disk_cache() {
 
     bool ret_value = false;
     if(true == HDF5RequestHandler::get_use_disk_cache()) {
+
         // Check if this is a valid numeric datatype we want to support
         if(dtype == H5CHAR || dtype ==H5UCHAR || dtype==H5INT16 || dtype ==H5UINT16 ||
            dtype == H5INT32 || dtype ==H5UINT32 || dtype ==H5FLOAT32 || dtype==H5FLOAT64 ||
@@ -818,15 +826,18 @@ bool HDF5CFArray::valid_disk_cache() {
                     }
                 }
             }
+            ret_value = true;
 
         }
     }
+    return ret_value;
 }
 
 bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & cache_fpath, int fd,vector<int> &cd_step, vector<int>&cd_count,size_t total_read,short dtype_size) {
 
     ssize_t ret_read_val = -1;
     vector<char>buf;
+
     //char* buf;
     //buf = malloc(total_read);
     buf.resize(total_read);
@@ -853,10 +864,12 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
             int nelms_to_send = 1;
             for(int i = 0; i <rank; i++)
                 nelms_to_send = nelms_to_send*cd_count[i];
+
             switch (dtype) {
 
                 case H5CHAR:
                 {
+#if 0
                      vector<int>total_val;
                      total_val.resize(total_read/dtype_size);
                      memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -874,13 +887,27 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                     set_value((dods_int32*)&final_val[0],nelms_to_send);
+#endif
+                     vector<short>final_val;
+                     subset<short>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+                     set_value((dods_int16*)&final_val[0],nelms_to_send);
 
                 }
 
                     break;
                 case H5UCHAR:
                 {
+#if 0
                     vector<unsigned char>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -898,6 +925,19 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
+#endif
+                    vector<unsigned char>final_val;
+                    subset<unsigned char>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
 
                     set_value ((dods_byte *) &final_val[0], nelms_to_send);
                 }
@@ -905,6 +945,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
                 case H5INT16:
                 {
+#if 0
                     vector<short>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -921,7 +962,20 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       cd_pos,
                                       0
                                      );
+#endif
 
+                    vector<short>final_val;
+                    subset<short>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
 
                     set_value ((dods_int16 *) &final_val[0], nelms_to_send);
                 }
@@ -929,6 +983,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
                 case H5UINT16:
                 {
+#if 0
                     vector<unsigned short>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -945,7 +1000,20 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       cd_pos,
                                       0
                                      );
+#endif
 
+                    vector<unsigned short>final_val;
+                    subset<unsigned short>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
 
                     set_value ((dods_uint16 *) &final_val[0], nelms_to_send);
                 }
@@ -953,6 +1021,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
                 case H5INT32:
                 {
+#if 0
                     vector<int>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -970,6 +1039,21 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
+#endif
+
+                    vector<int>final_val;
+                    subset<int>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+
 
                     set_value ((dods_int32 *) &final_val[0], nelms_to_send);
                 }
@@ -977,6 +1061,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
                 case H5UINT32:
                 {
+#if 0
                     vector<unsigned int>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -993,7 +1078,20 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       cd_pos,
                                       0
                                      );
+#endif
 
+                    vector<unsigned int>final_val;
+                    subset<unsigned int>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
 
                     set_value ((dods_uint32 *) &final_val[0], nelms_to_send);
                 }
@@ -1001,6 +1099,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
                 case H5FLOAT32:
                 {
+#if 0
                     vector<float>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -1017,6 +1116,20 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       cd_pos,
                                       0
                                      );
+#endif
+                    
+                    vector<float>final_val;
+                    subset<float>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
 
 
                     set_value ((dods_float32 *) &final_val[0], nelms_to_send);
@@ -1024,6 +1137,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                     break;
                 case H5FLOAT64:
                 {
+#if 0
                     vector<double>total_val;
                     total_val.resize(total_read/dtype_size);
                     memcpy(&total_val[0],(void*)&buf[0],total_read);
@@ -1031,6 +1145,19 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                     vector<double>final_val;
                     subset<double>(
                                       &total_val[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+#endif
+                    vector<double>final_val;
+                    subset<double>(
+                                      &buf[0],
                                       rank,
                                       dimsizes,
                                       &cd_start[0],
@@ -1061,24 +1188,26 @@ HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,
     int total_nelem = 1;
     for(int i = 0; i <rank; i++)
         total_nelem = total_nelem*dimsizes[i];
+
     vector<char>val;
+
     if(H5CHAR == dtype) {
  
-        vector<int>newval;
+        vector<short>newval;
         newval.resize(total_nelem);
         if(total_nelem == nelms) {
             for (int i = 0; i < total_nelem;i++)
-                newval[i] = (int)buf[i];
-            disk_cache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&newval[0]);
+                newval[i] = (short)buf[i];
+            disk_cache->write_cached_data2(cache_fpath,sizeof(short)*total_nelem,(const void*)&newval[0]);
         }
         else {
             vector<char>val2;
             val2.resize(total_nelem);
-            if(H5Dread(dset_id, memtype, mspace_id, dspace_id,H5P_DEFAULT, &val2[0])<0)
-                throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
+            if(H5Dread(dset_id, memtype, H5S_ALL, H5S_ALL,H5P_DEFAULT, &val2[0])<0)
+                throw InternalErr (__FILE__, __LINE__, "Cannot read the whole HDF5 dataset for the disk cache.");
             for (int i = 0; i < total_nelem;i++)
-                newval[i] = (int)val2[i];
-            disk_cache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&newval[0]);
+                newval[i] = (short)val2[i];
+            disk_cache->write_cached_data2(cache_fpath,sizeof(short)*total_nelem,(const void*)&newval[0]);
        }
     }
     else {
@@ -1087,7 +1216,7 @@ HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,
         }
         else {
             val.resize(dtype_size*total_nelem);
-            if(H5Dread(dset_id, memtype, mspace_id, dspace_id,H5P_DEFAULT, &val[0])<0)
+            if(H5Dread(dset_id, memtype, H5S_ALL, H5S_ALL,H5P_DEFAULT, &val[0])<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
 
             disk_cache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&val[0]);

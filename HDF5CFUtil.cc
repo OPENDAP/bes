@@ -553,10 +553,8 @@ int HDF5CFUtil::subset(
 // Need to wrap a 'read buffer' from a pure file call here since read() is also a DAP function to read DAP data.
 ssize_t HDF5CFUtil::read_buffer_from_file(int fd,  void*buf, size_t total_read) {
 
-     ssize_t ret_val;
-         ret_val = read(fd,buf,total_read);
-
-             return ret_val;
+     ssize_t ret_val = read(fd,buf,total_read);
+     return ret_val;
 }
 
 // Obtain the cache name. Since AIRS version 6 level 3 all share the same latitude and longitude,
@@ -569,10 +567,15 @@ string HDF5CFUtil::obtain_cache_fname(const string & fprefix, const string &fnam
      std::replace(correct_fname.begin(),correct_fname.end(),'/','_');
      
      string correct_vname = vname;
+
+     // Replace the '/' to '_'
      std::replace(correct_vname.begin(),correct_vname.end(),'/','_');
 
+     // Replace the ' ' to to '_" since space is not good for a file name
+     std::replace(correct_vname.begin(),correct_vname.end(),' ','_');
 
-     cache_fname = cache_fname +correct_fname +"_"+correct_vname;
+
+     cache_fname = cache_fname +correct_fname +correct_vname;
 
      return cache_fname;
 }

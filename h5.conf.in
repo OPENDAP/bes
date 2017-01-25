@@ -336,3 +336,6 @@ H5.EnableDiskDataCache=true
 H5.DiskCacheDataPath=/opt/tmp
 H5.DiskCacheFilePrefix=c
 H5.DiskCacheSize=20000
+
+H5.CacheFloatComp=true
+H5.DiskVariableSize=500
