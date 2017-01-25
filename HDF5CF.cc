@@ -390,6 +390,8 @@ throw(Exception) {
                     if (!this->unsupported_var_dspace && temp_unsup_var_dspace)
                         this->unsupported_var_dspace = true;
 
+                    var->comp_ratio = Retrieve_H5_VarCompRatio(var,cdset);
+
                     // Retrieve the attribute info. if asked
                     if (true == include_attr) {
 
@@ -459,6 +461,34 @@ throw(Exception) {
 
 }
 
+// Retrieve HDF5 dataset datatype
+const float 
+File:: Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) throw(Exception)
+{
+
+    float comp_ratio = 1.0;
+    // Obtain the data type of the variable. 
+    hid_t dset_create_plist = H5Dget_create_plist(dset_id);
+    if(dset_create_plist <0) 
+        throw1("unable to obtain hdf5 dataset creation property list ");
+    H5D_layout_t dset_layout = H5Pget_layout(dset_create_plist);   
+    if(dset_layout <0) {
+        H5Pclose(dset_create_plist);
+        throw1("unable to obtain hdf5 dataset creation property list storage layout");
+    }
+    
+    if(dset_layout ==H5D_CHUNKED) {
+   
+        hsize_t dstorage_size = H5Dget_storage_size(dset_id);
+        if(dstorage_size >0 && var->total_elems>0) {
+            comp_ratio = ((float)(var->total_elems))/dstorage_size;
+        }
+
+    }
+    H5Pclose(dset_create_plist);
+    return comp_ratio;
+
+}
 // Retrieve HDF5 dataset datatype
 void
 File:: Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname,bool &unsup_var_dtype)

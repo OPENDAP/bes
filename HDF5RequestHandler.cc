@@ -34,6 +34,7 @@
 
 #include<iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -125,6 +126,12 @@ string HDF5RequestHandler::_disk_cache_dir            ="";
 string HDF5RequestHandler::_disk_cachefile_prefix     ="";
 long HDF5RequestHandler::_disk_cache_size             =0;
 
+
+bool HDF5RequestHandler::_disk_cache_comp_data        =false;
+bool HDF5RequestHandler::_disk_cache_float_only_comp_data    =false;
+float HDF5RequestHandler::_disk_cache_comp_threshold        =1.0;
+long HDF5RequestHandler::_disk_cache_var_size        =0;
+
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
@@ -174,6 +181,11 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
     _disk_cache_size             = get_uint_key("H5.DiskCacheSize",0);
 
+    _disk_cache_comp_data        = check_beskeys("H5.DiskCacheComp");
+    _disk_cache_float_only_comp_data = check_beskeys("H5.DiskCacheFloatOnlyComp");
+    _disk_cache_comp_threshold   = get_float_key("H5.DiskCacheCompThreshold",1.0);
+    _disk_cache_var_size         = 1024*get_uint_key("H5.DiskCacheCompVarSize",0);
+
     if(get_usecf()) {
         if(get_lrdcache_entries()) {
             lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
@@ -190,6 +202,20 @@ cerr<<"No specific cache info"<<endl;
             srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
 //cerr<<"small memory data cache "<<endl;
 
+        }
+
+        if(_disk_cache_comp_data == true && _use_disk_cache == true) {
+            if(_disk_cache_comp_threshold < 1.0) {
+                ostringstream ss;
+                ss<< _disk_cache_comp_threshold;
+                string _comp_threshold_str(ss.str());
+                string invalid_comp_threshold ="The Compression Threshold is the total size of the variable array";
+                invalid_comp_threshold+=" divided by the storage size of compressed array. It should always be >1";
+                invalid_comp_threshold+=" The current threhold set at h5.conf is ";
+                invalid_comp_threshold+=_comp_threshold_str;
+                invalid_comp_threshold+=" . Go back to h5.conf and change the H5.DiskCacheCompThreshold to a >1.0 number.";
+                throw BESInternalError(invalid_comp_threshold,__FILE__,__LINE__);
+            }
         }
 //        else 
 //cerr<<"no small memory data cache "<<endl;

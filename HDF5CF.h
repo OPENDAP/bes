@@ -264,6 +264,7 @@ namespace HDF5CF
                    dtype (H5UNSUPTYPE), 
                    rank (-1),
                    total_elems(0),
+                   comp_ratio(1),
                    unsupported_attr_dtype(false),
                    unsupported_attr_dspace(false),
                    unsupported_dspace(false),
@@ -322,6 +323,9 @@ namespace HDF5CF
                 return this->dims;
             }
 
+            /// Get the compression ratio of this dataset 
+            const int getCompRatio() const { return this->comp_ratio;}
+
 
 	protected:
 
@@ -330,6 +334,7 @@ namespace HDF5CF
             std::string fullpath;
 	    H5DataType dtype;
 	    int rank;
+            int comp_ratio;
             size_t total_elems;
             bool unsupported_attr_dtype;
             bool unsupported_attr_dspace;
@@ -652,6 +657,8 @@ namespace HDF5CF
 
             void Retrieve_H5_VarType(Var*,hid_t dset_id, const string& varname, bool &unsup_var_dtype) throw(Exception);
             void Retrieve_H5_VarDim(Var*,hid_t dset_id,const string &varname, bool & unsup_var_dspace) throw(Exception);
+
+            const float Retrieve_H5_VarCompRatio(Var*,hid_t) throw(Exception);
 
             void Handle_Group_Unsupported_Dtype() throw(Exception);
             void Handle_Var_Unsupported_Dtype() throw(Exception);

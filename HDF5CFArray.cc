@@ -826,11 +826,37 @@ bool HDF5CFArray::valid_disk_cache() {
                     }
                 }
             }
-            ret_value = true;
+
+            short dtype_size = HDF5CFUtil::H5_numeric_atomic_type_size(dtype);
+            // Check if we only need to cache the specific compressed dat
+            if(true == HDF5RequestHandler::get_disk_cache_comp_data()) 
+                ret_value = valid_disk_cache_for_compressed_data(dtype_size);
+            else 
+                ret_value = true;
 
         }
+
     }
     return ret_value;
+}
+
+bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) {
+
+    bool ret_value = false;
+    // The compression ratio should be smaller then the threshold(hard to compress)
+    // and the total var size should be bigger than the defined size(bigger)
+    size_t total_byte = total_elems*dtype_size;
+    if((comp_ratio < HDF5RequestHandler::get_disk_comp_threshold()) 
+       && (total_elems*dtype_size>= HDF5RequestHandler::get_disk_var_size())) {
+        if( true == HDF5RequestHandler::get_disk_cache_float_only_comp()) {
+            if(dtype==H5FLOAT32 || dtype == H5FLOAT64) 
+                ret_value = true;
+        }
+        else 
+            ret_value = true;
+    }
+    return ret_value;
+
 }
 
 bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & cache_fpath, int fd,vector<int> &cd_step, vector<int>&cd_count,size_t total_read,short dtype_size) {

@@ -504,6 +504,7 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
                                           cvar->getTotalElems(),
                                           CV_EXIST,
                                           is_latlon,
+                                          cvar->getCompRatio(),
                                           cvar->getNewName(),
                                           bt);
                 }

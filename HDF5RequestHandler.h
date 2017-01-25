@@ -100,6 +100,10 @@ class HDF5RequestHandler:public BESRequestHandler {
     static string get_disk_cache_dir() { return _disk_cache_dir;}
     static string get_disk_cachefile_prefix() { return _disk_cachefile_prefix;}
     static long get_disk_cache_size() {return _disk_cache_size;}
+    static bool get_disk_cache_comp_data() { return _disk_cache_comp_data;}
+    static bool get_disk_cache_float_only_comp(){return _disk_cache_float_only_comp_data;}
+    static float get_disk_comp_threshold() {return _disk_cache_comp_threshold;}
+    static long get_disk_var_size() {return _disk_cache_var_size; }
 
   private:
      //cache variables. 
@@ -133,6 +137,10 @@ class HDF5RequestHandler:public BESRequestHandler {
      static string _disk_cache_dir;
      static string _disk_cachefile_prefix;
      static long _disk_cache_size;
+     static bool _disk_cache_comp_data;
+     static bool _disk_cache_float_only_comp_data;
+     static float _disk_cache_comp_threshold;
+     static long _disk_cache_var_size;
 
          
      static bool _common_cache_dirs;

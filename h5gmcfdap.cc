@@ -524,6 +524,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                                     cvar->getTotalElems(),
                                     CV_EXIST,
                                     is_latlon,
+                                    cvar->getCompRatio(),
                                     cvar->getNewName(),
                                     bt);
                 }
