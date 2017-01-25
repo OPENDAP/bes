@@ -39,14 +39,6 @@
 #include <iostream>
 #include <map>
 #include <string>
-#if 0
-using std::cerr ;
-using std::endl ;
-using std::std::ostream ;
-using std::map ;
-using std::string ;
-#endif
-//#include "BESUtil.h"
 
 #ifdef NDEBUG
 #define BESDEBUG( x, y )
@@ -67,6 +59,9 @@ using std::string ;
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< x << "] " << y ; } while( 0 )
 #endif
 
+#ifndef NDEBUG
+#define BESISDEBUG( x ) (false)
+#else
 /** @brief macro used to determine if the specified debug context is set
  *
  * If there is a lot of debugging information, use this macro to determine if
@@ -88,6 +83,7 @@ using std::string ;
  * @param x bes debug to check
  */
 #define BESISDEBUG( x ) BESDebug::IsSet( x )
+#endif
 
 class BESDebug
 {
