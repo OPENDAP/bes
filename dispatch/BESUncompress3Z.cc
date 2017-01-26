@@ -196,10 +196,10 @@ void BESUncompress3Z::uncompress(const string &src, int fd)
         resetbuf: ;
         {
             int i;
-            int e;
+            // int e;
             int o;
 
-            e = insize - (o = (posbits >> 3));
+            int e = insize - (o = (posbits >> 3));
 
             for (i = 0; i < e; ++i)
                 inbuf[i] = inbuf[i + o];
@@ -208,7 +208,7 @@ void BESUncompress3Z::uncompress(const string &src, int fd)
             posbits = 0;
         }
 
-        if (insize < sizeof(inbuf) - BUFSIZ) {
+        if ((unsigned int)insize < sizeof(inbuf) - BUFSIZ) {
             if ((rsize = read(srcFile, inbuf + insize, BUFSIZ)) < 0) {
                 string err = "Could not read file ";
                 err += src.c_str();
