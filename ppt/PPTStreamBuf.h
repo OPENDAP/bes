@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,31 +35,33 @@
 
 #include <streambuf>
 
-class PPTStreamBuf : public std::streambuf
-{
+class PPTStreamBuf: public std::streambuf {
 private:
-    unsigned		d_bufsize ;
-    int			d_fd ;
-    char *		d_buffer ;
-    unsigned int	count ;
+    unsigned d_bufsize;
+    int d_fd;
+    char * d_buffer;
+    unsigned int count;
 
-			PPTStreamBuf()
-			    : d_bufsize( 0 ),
-			      d_buffer( 0 ),
-			      count( 0 ) { }
+    PPTStreamBuf() :
+        d_bufsize(0), d_fd(-1), d_buffer(0), count(0)
+    {
+    }
 public:
-    			PPTStreamBuf(int fd, unsigned bufsize = 1) ;
-  virtual		~PPTStreamBuf() ;
+    PPTStreamBuf(int fd, unsigned bufsize = 1);
+    virtual ~PPTStreamBuf();
 
-  unsigned int		how_many(){ return count ; }
+    unsigned int how_many()
+    {
+        return count;
+    }
 
-  void			open( int fd, unsigned bufsize = 1 ) ;
+    void open(int fd, unsigned bufsize = 1);
 
-  int			sync() ;
+    int sync();
 
-  int			overflow(int c) ;
+    int overflow(int c);
 
-  void			finish() ;
+    void finish();
 };
 
 #endif // I_PPTStreamBuf_h 1
