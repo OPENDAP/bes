@@ -45,9 +45,13 @@ using std::stringstream;
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
 #include "BESReturnManager.h"
+#include "BESAggFactory.h"
+#include "BESAggregationServer.h"
+#include "BESTransmitterNames.h"
+
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
-    BESBasicInterface(strm)
+    BESInterface(strm)
 {
     _dhi = &_base_dhi;
     _dhi->data[DATA_REQUEST] = "xml document";
@@ -65,21 +69,51 @@ BESXMLInterface::~BESXMLInterface()
 
 int BESXMLInterface::execute_request(const string &from)
 {
+#if 0
     return BESBasicInterface::execute_request(from);
+#endif
+    return BESInterface::execute_request(from);
 }
 
 /** @brief Initialize the BES
  */
 void BESXMLInterface::initialize()
 {
-    BESBasicInterface::initialize();
+#if 0
+    // BESBasicInterface::initialize();
+#endif
+
+    // dhi has not been filled in at this point, so let's set a default
+    // transmitter given the protocol. The transmitter might change after
+    // parsing a request and given a return manager to use. This is done in
+    // build_data_plan.
+    //
+    // The reason I moved this from the build_data_plan method is because a
+    // registered initialization routine might throw an exception and we
+    // will need to transmit the exception info, which needs a transmitter.
+    // If an exception happens before this then the exception info is just
+    // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
+    BESDEBUG("bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl);
+
+    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
+    if (!_transmitter) {
+        string s = (string) "Unable to find transmitter " + BASIC_TRANSMITTER;
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    BESDEBUG("bes", "OK" << endl);
+
+    BESInterface::initialize();
+
 }
 
 /** @brief Validate the incoming request information
  */
 void BESXMLInterface::validate_data_request()
 {
+#if 0
     BESBasicInterface::validate_data_request();
+#endif
+    BESInterface::validate_data_request();
 }
 
 /** @brief Build the data request plan using the BESCmdParser.
@@ -238,7 +272,25 @@ void BESXMLInterface::build_data_request_plan()
 
     BESDEBUG("besxml", "Done building request plan" << endl);
 
+#if 0
     BESBasicInterface::build_data_request_plan();
+#endif
+
+    // The default _transmitter (either basic or http depending on the
+    // protocol passed) has been set in initialize. If the parsed command
+    // sets a RETURN_CMD (a different transmitter) then look it up here. If
+    // it's set but not found then this is an error. If it's not set then
+    // just use the defaults.
+
+    if (_dhi->data[RETURN_CMD] != "") {
+        BESDEBUG("bes", "Finding transmitter: " << _dhi->data[RETURN_CMD] << " ...  " << endl);
+
+        _transmitter = BESReturnManager::TheManager()->find_transmitter(_dhi->data[RETURN_CMD]);
+        if (!_transmitter) {
+            string s = (string) "Unable to find transmitter " + _dhi->data[RETURN_CMD];
+            throw BESSyntaxUserError(s, __FILE__, __LINE__);
+        }
+    }
 }
 
 /** @brief Execute the data request plan
@@ -250,7 +302,16 @@ void BESXMLInterface::execute_data_request_plan()
     for (; i != e; i++) {
         (*i)->prep_request();
         _dhi = &(*i)->get_dhi();
+
+#if 0
         BESBasicInterface::execute_data_request_plan();
+#endif
+
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "] executing" << endl;
+        }
+        BESInterface::execute_data_request_plan();
     }
 }
 
@@ -258,7 +319,32 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::invoke_aggregation()
 {
+#if 0
     BESBasicInterface::invoke_aggregation();
+#endif
+
+    if (_dhi->data[AGG_CMD] == "") {
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "]" << " not aggregating, command empty" << endl;
+        }
+    }
+    else {
+        BESAggregationServer *agg = BESAggFactory::TheFactory()->find_handler(_dhi->data[AGG_HANDLER]);
+        if (!agg) {
+            if (BESLog::TheLog()->is_verbose()) {
+                *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                    << _dhi->data[DATA_REQUEST] << "]" << " not aggregating, no handler" << endl;
+            }
+        }
+        else {
+            if (BESLog::TheLog()->is_verbose()) {
+                *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                    << _dhi->data[DATA_REQUEST] << "] aggregating" << endl;
+            }
+        }
+    }
+    BESInterface::invoke_aggregation();
 }
 
 /** @brief Transmit the response object
@@ -276,7 +362,15 @@ void BESXMLInterface::transmit_data()
         BESDEBUG("xml", "OK" << endl);
     }
 
+#if 0
     BESBasicInterface::transmit_data();
+#endif
+
+    if (BESLog::TheLog()->is_verbose()) {
+        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] transmitting" << endl;
+    }
+    BESInterface::transmit_data();
 }
 
 /** @brief Log the status of the request to the BESLog file
@@ -289,7 +383,18 @@ void BESXMLInterface::log_status()
     vector<BESXMLCommand *>::iterator e = _cmd_list.end();
     for (; i != e; i++) {
         _dhi = &(*i)->get_dhi();
+
+#if 0
         BESBasicInterface::log_status();
+#endif
+
+       // Following code is from BESBasicInterface::log_status.
+        string result = "completed";
+        if (_dhi->error_info) result = "failed";
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "] " << result << endl;
+        }
     }
 }
 
@@ -314,7 +419,12 @@ void BESXMLInterface::report_request()
     vector<BESXMLCommand *>::iterator e = _cmd_list.end();
     for (; i != e; i++) {
         _dhi = &(*i)->get_dhi();
+
+#if 0
         BESBasicInterface::report_request();
+#endif
+
+        BESInterface::report_request();
     }
 }
 
@@ -327,7 +437,16 @@ void BESXMLInterface::clean()
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
         _dhi = &cmd->get_dhi();
+
+#if 0
         BESBasicInterface::clean();
+#endif
+
+        BESInterface::clean();
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+        }
         delete cmd;
     }
     _cmd_list.clear();
@@ -343,7 +462,12 @@ void BESXMLInterface::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESXMLInterface::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    BESBasicInterface::dump(strm);
+
+#if 0
+    BESBasicInterface::dump();
+#endif
+
+    BESInterface::dump(strm);
     vector<BESXMLCommand *>::const_iterator i = _cmd_list.begin();
     vector<BESXMLCommand *>::const_iterator e = _cmd_list.end();
     for (; i != e; i++) {
