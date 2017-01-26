@@ -53,6 +53,8 @@ using std::string;
 
 #include <BESDebug.h>
 
+using std::endl;    // Added when I removed 'using' from BESDebug.h
+
 #if 0
 
 // This function is not used and is broken. The loop depends on i being less

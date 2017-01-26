@@ -64,6 +64,8 @@ using std::less;
 
 #include <BESDebug.h>
 
+using std::endl;    // Added when I removed 'using' from BESDebug.h
+
 static bool IsInternalVgroup(int32 fid, int32 ref);
 
 //
