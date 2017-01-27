@@ -1,0 +1,16 @@
+Dataset {
+    Structure {
+        Byte byte;
+        UInt16 ui16;
+        Float64 f64;
+        Structure {
+            Int16 i16;
+            UInt32 ui32;
+            String str;
+            Structure {
+                Int32 i32;
+                Float32 f32;
+            } s3;
+        } s2;
+    } s1;
+} virtual;

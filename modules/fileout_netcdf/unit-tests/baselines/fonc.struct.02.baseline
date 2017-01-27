@@ -1,0 +1,15 @@
+netcdf structT02 {
+dimensions:
+	s1.s2.str_len = 23 ;
+variables:
+	short s1.ui16 ;
+	char s1.s2.str(s1.s2.str_len) ;
+	int s1.s2.s3.i32 ;
+data:
+
+ s1.ui16 = 2048 ;
+
+ s1.s2.str = "This is a String Value" ;
+
+ s1.s2.s3.i32 = -105467 ;
+}

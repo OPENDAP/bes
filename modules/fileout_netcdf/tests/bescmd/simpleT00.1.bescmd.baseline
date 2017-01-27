@@ -1,0 +1,10 @@
+The data:
+Byte byte = 28;
+Int16 i16 = -2048;
+Int32 i32 = -105467;
+UInt16 ui16 = 2048;
+UInt32 ui32 = 105467;
+Float32 f32 = 5.7866;
+Float64 f64 = 10245.1234;
+String str = "This is a String Value";
+

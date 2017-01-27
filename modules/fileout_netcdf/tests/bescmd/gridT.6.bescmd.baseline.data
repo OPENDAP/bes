@@ -1,0 +1,12 @@
+netcdf test {
+dimensions:
+	j = 3 ;
+variables:
+	float j(j) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax gridT.dods?gstruct.shot.j" ;
+data:
+
+ j = 3.3, 6.6, 9.9 ;
+}

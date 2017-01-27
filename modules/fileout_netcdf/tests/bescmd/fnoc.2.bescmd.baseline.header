@@ -1,0 +1,30 @@
+netcdf test {
+dimensions:
+	time_a = 16 ;
+	lat = 17 ;
+	lon = 21 ;
+	time = 16 ;
+variables:
+	short u(time_a, lat, lon) ;
+		u:units = "meter per second" ;
+		u:long_name = "Vector wind eastward component" ;
+		u:missing_value = "-32767" ;
+		u:scale_factor = "0.005" ;
+	short v(time_a, lat, lon) ;
+		v:units = "meter per second" ;
+		v:long_name = "Vector wind northward component" ;
+		v:missing_value = "-32767" ;
+		v:scale_factor = "0.005" ;
+	float lat(lat) ;
+		lat:units = "degree North" ;
+	float lon(lon) ;
+		lon:units = "degree East" ;
+	float time(time) ;
+		time:units = "hours from base_time" ;
+
+// global attributes:
+		:base_time = "88- 10-00:00:00" ;
+		:title = " FNOC UV wind components from 1988- 10 to 1988- 13." ;
+		:DODS_EXTRA.Unlimited_Dimension = "time_a" ;
+		:history = "removed date-time Hyrax fnoc1.dods?" ;
+}

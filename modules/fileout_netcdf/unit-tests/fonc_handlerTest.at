@@ -1,0 +1,61 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf])
+# AT_COPYRIGHT([])
+
+AT_TESTED([ncdump])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([AT_FONC_TEST],
+[AT_SETUP([FONC $1])
+AT_KEYWORDS([fonc])
+AT_CHECK([$abs_builddir/$1 || true], [], [ignore], [ignore])
+AT_CHECK([ncdump $2 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $abs_srcdir/$3 stdout || diff -b -B $abs_srcdir/$3 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([AT_FONC_RTEST],
+[AT_SETUP([FONC $1])
+AT_KEYWORDS([fonc])
+AT_CHECK([$abs_builddir/$1 $2 || true], [], [ignore], [ignore])
+AT_CHECK([ncdump $3 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $abs_srcdir/$4 stdout || diff -b -B $abs_srcdir/$4 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+AT_FONC_TEST([simpleT00], [simpleT00.nc], [baselines/fonc.simple.00.baseline])
+AT_FONC_TEST([simpleT01], [simpleT01.nc], [baselines/fonc.simple.01.baseline])
+AT_FONC_TEST([simpleT02], [simpleT02.nc], [baselines/fonc.simple.02.baseline])
+AT_FONC_TEST([structT00], [structT00.nc], [baselines/fonc.struct.00.baseline])
+AT_FONC_TEST([arrayT], [arrayT.nc], [baselines/fonc.array.00.baseline])
+AT_FONC_TEST([structT01], [structT01.nc], [baselines/fonc.struct.01.baseline])
+AT_FONC_TEST([structT02], [structT02.nc], [baselines/fonc.struct.02.baseline])
+AT_FONC_TEST([arrayT01], [arrayT01.nc], [baselines/fonc.array.01.baseline])
+AT_FONC_TEST([gridT], [gridT.nc], [baselines/fonc.grid.00.baseline])
+AT_FONC_TEST([seqT], [seqT.nc], [baselines/fonc.seq.00.baseline])
+AT_FONC_TEST([attrT], [attrT.nc], [baselines/fonc.attr.00.baseline])
+AT_FONC_TEST([namesT], [namesT.nc], [baselines/fonc.names.00.baseline])
+
+AT_FONC_RTEST([readT], [cedar.dods], [cedar.dods.nc], [data/cedar.dump])
+
+# This test is disabled as the DODS object contains signed
+# bytes, however DODS bytes are by definition unsigned (see:
+# https://github.com/OPENDAP/libdap/blob/master/Byte.h).
+# A new object should be generated/validated for testing. 
+
+# AT_FONC_RTEST([readT], [fits.dods], [fits.dods.nc], [data/fits.dump])
+
+AT_FONC_RTEST([readT], [nc.dods], [nc.dods.nc], [data/nc.dump])
+AT_FONC_RTEST([readT], [hdf4.dods], [hdf4.dods.nc], [data/hdf4.dump])
+AT_FONC_RTEST([readT], [constraint.dods], [constraint.dods.nc], [data/constraint.dump])
+
+# There's nothing wrong with this test as of Hyrax 1.8 (fileout_netcdf
+# 1.1.1) but it fails on Linux when using netcdf 3.6.2 installed from
+# RPMs because of differences in the way ncdump formats character
+# output. I'm removing it from the build for now... jhrg 12/2/11
+#
+# AT_FONC_RTEST([readT], [agg.dods], [agg.dods.nc], [data/agg.dump])

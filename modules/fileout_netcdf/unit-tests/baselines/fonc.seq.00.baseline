@@ -1,0 +1,5 @@
+netcdf seqT {
+
+// global attributes:
+		:people = "The sequence people is a member of this dataset and has been elided." ;
+}

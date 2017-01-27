@@ -1,0 +1,40 @@
+netcdf test {
+dimensions:
+	i = 2 ;
+	j = 3 ;
+	k = 4 ;
+	k_len = 5 ;
+variables:
+	int i(i) ;
+	float j(j) ;
+	short order(i, j) ;
+	int gstruct.shot(i, j) ;
+	char k(k, k_len) ;
+	int bstruct.bears(i, k) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax gridT.dods?" ;
+data:
+
+ i = 2, 4 ;
+
+ j = 3.3, 6.6, 9.9 ;
+
+ order =
+  4, 8, 12,
+  5, 10, 15 ;
+
+ gstruct.shot =
+  6, 12, 18,
+  7, 14, 21 ;
+
+ k =
+  "str1",
+  "str2",
+  "str3",
+  "str4" ;
+
+ bstruct.bears =
+  8, 16, 24, 32,
+  9, 18, 27, 36 ;
+}

@@ -1,0 +1,33 @@
+netcdf test {
+dimensions:
+	byte_dim1 = 2 ;
+	byte_dim2 = 5 ;
+	i16_dim1 = 3 ;
+	i16_dim2 = 6 ;
+	i32_dim1 = 2 ;
+	i32_dim2 = 20 ;
+	ui16_dim1 = 3 ;
+	ui16_dim2 = 7 ;
+	ui32_dim1 = 3 ;
+	ui32_dim2 = 40 ;
+	f32_dim1 = 100 ;
+	f64_dim1 = 2 ;
+	f64_dim2 = 2 ;
+	f64_dim3 = 100 ;
+	str_dim1 = 2 ;
+	str_dim2 = 3 ;
+	str_dim3 = 6 ;
+	str_array_len = 10 ;
+variables:
+	short byte_array(byte_dim1, byte_dim2) ;
+	short i16_array(i16_dim1, i16_dim2) ;
+	int i32_array(i32_dim1, i32_dim2) ;
+	int ui16_array(ui16_dim1, ui16_dim2) ;
+	int ui32_array(ui32_dim1, ui32_dim2) ;
+	float f32_array(f32_dim1) ;
+	double f64_array(f64_dim1, f64_dim2, f64_dim3) ;
+	char str_array(str_dim1, str_dim2, str_dim3, str_array_len) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax arrayT.dods?" ;
+}
