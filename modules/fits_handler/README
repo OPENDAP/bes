@@ -1,0 +1,26 @@
+
+Updated for Version 1.0.11
+
+This is the OPeNDAP fits Data Handler. It is used along with OPeNDAP's
+Hyrax data server.
+
+For information about building the OPeNDAP Data Handler, see the
+INSTALL file.
+
+This data handler is a component of the OPeNDAP DAP Server; the server base
+software is designed to allow any number of handlers to be configured easily.
+See the DAP Server README and INSTALL files for information about
+configuration, including how to use this handler.
+
+Note that the BES has separate configuration files for each of its
+modules and the one for this handler is called fits.conf. It will be
+made automatically by the configure script and installed for you in
+$prefix/etc/bes/modules. You can edit this file to suit your needs.
+   
+Test data are also installed, so after installing this handler, Hyrax
+will have data to serve providing an easy way to test your new
+installation and to see how a working bes.conf should look. To use
+this, make sure that you first install the bes. Finally, every time
+you install or reinstall handlers, make sure to restart the BES and
+OLFS.
+
