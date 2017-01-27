@@ -1,0 +1,668 @@
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DataDDS include and libdap namespace after repairing the BESDataDDSResponse header
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in fvor of the DDS class.
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Cleaning up code for merge.
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Tests for function result promotion in transmitters. Test function wrapitup() added.
+
+	Added call to function output promoter to xml_data_handler
+
+2016-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Patch for gcc-6 from Orion Poplawski
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular:
+	1) Ensured that libdap::Error objects are converted to BESDapError objects 
+	when caught. and 2) Catch and rethrow BESError objects whenever they could 
+	be thrown so they don't get swept up as unidentified errors in a catch(...) 
+	clause.
+	
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+	
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/xml_data_handler
+
+	Fixed error in Makefile.am from update_version... script.
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/xml_data_handler
+
+	Removed hdf5 handler from tests bes.conf
+	It is not used; when it does not get built, the tests fail
+	even though it is not actually needed.
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/xml_data_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.0.6
+2015-03-25  James Gallagher  <jgallagher@opendap.org>
+
+	Accommodate autoconf 2.63
+	Changed the AT_ARG_OPTION_ARG macro so that it uses _ instead of - for
+	the word separator in multi-word options.
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac, Makefile.am and bes.conf.in after merging with 'modules'
+
+	Merge remote-tracking branch 'origin/modules'
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Updates for the hyrax-1.10 release
+	I updated the spec file dependencies and removed the OSX_Resources
+	dir from the EXTRA_DIST Makefile variable since that dir is empty
+	and git does not make empty dirs. If/When we start supporting those
+	builds again, we can revisit this decision.
+
+2014-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the modules branch bes.conf file.
+	The bes.conf file used with the bes modules branch now uses
+	the hdf 4 and 5 handlers, so all of the tests work.
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Removed hdf4 and hdf5 from the bes.conf build with from the bes modules branch build until those are working. Added the handler's conf file to gitignore.
+
+2014-11-24  James Gallagher  <jgallagher@opendap.org>
+
+	Changes for the modules build.
+	Modified the Makefile.am files, configure.ac and tweaked the
+	bes tests so that they use a bes.conf file built using either the
+	local configure (standard build) or the bes configure (modules
+	build).
+
+2014-10-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the unit tests.
+	M    unit-tests/Makefile.am
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac files. Fixed some param initializations; method overloads (virtual methods that lacked 'const'). Other warnings.
+
+2014-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.0.5
+	M    ChangeLog
+	M    INSTALL
+	M    Makefile.am
+	M    NEWS
+	M    README
+	M    configure.ac
+	M    tests/Makefile.am
+	M    unit-tests/Makefile.am
+	M    xml_data_handler.spec
+2014-05-02  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-05-02  James Gallagher <jgallagher@opendap.org>
+
+	Changes made after merging the trunk (Hyrax 1.9.3) to
+	code on the dap4 branch.
+
+	M    XDByte.cc
+	M    XDByte.h
+	M    XDFloat32.cc
+	M    XDFloat32.h
+	M    XDFloat64.cc
+	M    XDFloat64.h
+	M    XDGrid.cc
+	M    XDGrid.h
+	M    XDInt16.cc
+	M    XDInt16.h
+	M    XDInt32.cc
+	M    XDInt32.h
+	M    XDOutput.cc
+	M    XDOutput.h
+	M    XDOutputFactory.h
+	M    XDSequence.cc
+	M    XDSequence.h
+	M    XDStr.cc
+	M    XDStr.h
+	M    XDStructure.cc
+	M    XDStructure.h
+	M    XDUInt16.cc
+	M    XDUInt16.h
+	M    XDUInt32.cc
+	M    XDUInt32.h
+	M    XDUrl.cc
+	M    XDUrl.h
+	M    get_xml_data.cc
+	M    get_xml_data.h
+
+2014-04-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	xml_data_handler: Checking software version update and associated
+	release changes.
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	fixed libdap namespace
+
+	M    get_xml_data.h
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	Removed #define DODS_DEBUG
+
+	M    unit-tests/XDOutputTest.cc
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	fixed libdap namespace
+
+	M    get_xml_data.h
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	Removed #define DODS_DEBUG
+
+	M    unit-tests/XDOutputTest.cc
+
+2013-10-25  James Gallagher <jgallagher@opendap.org>
+
+	checkpoint
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the
+	new OSX compiler prints warnings about it and it seems to not make
+	a difference with newer g++ versions.
+
+2013-09-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	xml_data_handler: Updated ChangeLog, NEWS, INSTALL, etc. for Hyrax 1.9
+
+2013-05-20  James Gallagher <jgallagher@opendap.org>
+
+	Added an explicit encoding type so that the set_mime_*() functions
+	could differentiate between the new code moved to mime_util.cc/.h
+	from ResponseBuilder and the old, deprecated, code already in
+	mime_util.
+
+2013-01-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-01-22  James Gallagher <jgallagher@opendap.org>
+
+	Some tests fail, likely because the hdf4 handler changed out from under them.
+
+	M    tests/Makefile.in
+	M    unit-tests/XDOutputTest.cc
+	M    unit-tests/testsuite/xdoutputtest_e.xml
+	M    unit-tests/testsuite/xdoutputtest_a.xml
+	M    unit-tests/XDArrayTest.cc
+	M    XMLWriter.cc.moved_to_libdap
+
+2013-01-21  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the hyrax 1.8 branch
+
+	_M   .
+	M    XDStructure.cc
+	M    XDOutput.h
+	M    XDUrl.cc
+	M    XDByte.cc
+	M    XDByte.h
+	D    conf/libtool.m4
+	M    XDStr.cc
+	M    XDSequence.cc
+	M    XDFloat32.h
+	M    XDArray.h
+	M    BESXDRequestHandler.h
+	M    tests/Makefile.am
+	M    tests/testsuite.at
+	M    configure.ac
+	M    XDUInt32.h
+	M    INSTALL
+	M    BESXDResponseHandler.cc
+	M    XDUInt16.h
+	M    BESXDTransmit.cc
+	M    NEWS
+	M    BESXDTransmit.h
+	M    get_xml_data.h
+	M    XDInt32.cc
+	M    BESXDNames.h
+	M    xml_data_handler.spec
+	M    unit-tests/test_config.h.in
+	M    unit-tests/Makefile.am
+	M    unit-tests/testsuite/xdoutputtest_e.xml
+	M    unit-tests/testsuite/xdarraytest_a.xml
+	M    unit-tests/testsuite/xdarraytest_b.xml
+	M    unit-tests/testsuite/xdarraytest_c.xml
+	M    unit-tests/testsuite/xdoutputtest_a.xml
+	M    unit-tests/testsuite/xdarraytest_d.xml
+	M    unit-tests/testsuite/xdarraytest_e.xml
+	M    unit-tests/XDArrayTest.cc
+	M    XDOutput.cc
+	M    XDInt16.cc
+	M    XDInt32.h
+	M    XDStructure.h
+	M    XDInt16.h
+	M    XDUrl.h
+	M    ChangeLog
+	M    XDStr.h
+	M    XDSequence.h
+	M    XDFloat32.cc
+	M    README
+	M    XDArray.cc
+	M    XDFloat64.cc
+	M    BESXDModule.cc
+	M    BESXDRequestHandler.cc
+	M    XDFloat64.h
+	M    BESXDModule.h
+	A  + OSX_Resources
+	M    XDUInt32.cc
+	M    XDGrid.cc
+	M    XDUInt16.cc
+	M    XDGrid.h
+	M    BESXDResponseHandler.h
+	M    Makefile.am
+	M    get_xml_data.cc
+
+2012-09-28  James Gallagher <jgallagher@opendap.org>
+
+	Fixed problems with the XML response's root element and made a stab
+	at some imporvements in the tests.
+
+	D    XMLWriter.cc
+	D    XMLWriter.h
+	M    conf/libtool.m4
+	M    XDSequence.cc
+	A    tests/Makefile.in
+	A    tests/generate_data_baseline.sh.in
+	M    tests/baselines/coads_climatology.nc.xml_data
+	A    tests/generate_metadata_baseline.sh.in
+	M    tests/testsuite.at
+	M    configure.ac
+	M    BESXDResponseHandler.cc
+	M    BESXDTransmit.cc
+	M    unit-tests/XDOutputTest.cc
+	M    unit-tests/testsuite/xdoutputtest_e.xml
+	M    unit-tests/testsuite/xdoutputtest_g.xml
+	M    unit-tests/testsuite/xdarraytest_a.xml
+	M    unit-tests/testsuite/xdarraytest_b.xml
+	M    unit-tests/testsuite/xdarraytest_c.xml
+	M    unit-tests/testsuite/xdoutputtest_a.xml
+	M    unit-tests/testsuite/xdarraytest_d.xml
+	M    unit-tests/testsuite/xdarraytest_e.xml
+	M    unit-tests/XDArrayTest.cc
+	M    XDOutput.cc
+	M    BESXDModule.cc
+	M    BESXDRequestHandler.cc
+	A  + XMLWriter.cc.moved_to_libdap
+	M    Makefile.am
+	A  + XMLWriter.h.moved_to_libdap
+	M    get_xml_data.cc
+
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for CentOS 6; no longer links with libdapclient
+
+2012-01-11  James Gallagher <jgallagher@opendap.org>
+
+	Updated for Hyrax 1.8
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    xml_data_handler.spec
+	M    ChangeLog
+	M    README
+	M    Makefile.am
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	One missing null test addressed.
+
+	M    XDStructure.cc
+
+2011-12-02  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the rpm target - the .spec file had an extra directory
+	listed in it.
+
+	M    conf/libtool.m4
+	M    xml_data_handler.spec
+
+2011-12-02  James Gallagher <jgallagher@opendap.org>
+
+	rationalized the XMLWriter.h includes give its move into libdap.
+
+2011-12-02  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for the distcheck target. Variables like $abs_top_srcdir
+	work fine for 'check' but not for 'distcheck' because with
+	distcheck they have a '../' in them and when a path like that is
+	passed to the BES, it reports an error. The way around this is to
+	use readlink -f on the value of that variable and substitute the
+	result. One wrinkle on this is that OSX lacks a working version of
+	readlink. See configure.ac for the work-around.
+
+2011-11-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	xml_data_handler: Fixed type in spec file
+
+2011-11-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	xml_data_handler: Created an (empty) OSX_Resources dir so that
+	make distcheck wouldn't barf on the fact it wasn't there.
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Modified configure so that this code builds only the so version of
+	the library by default. Changed the copyrights so they are
+	correct. Fixed tests.
+
+2011-10-14  James Gallagher <jgallagher@opendap.org>
+
+	Removed XMLWriter in favor of the copy now in libdap; fixed unit
+	tests accordingly.
+
+2011-10-03  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a regression test that was using old options for the netcdf
+	handler
+
+	M    tests/baselines/coads_climatology.nc.xml_data
+
+2011-09-26  James Gallagher <jgallagher@opendap.org>
+
+	Minor updates to the Makefile and libtool.m4
+
+2011-09-26  James Gallagher <jgallagher@opendap.org>
+
+	Tried to banish the warning about linking against a loadable so,
+	but without luck.
+
+2011-09-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the unit tests - they were using some uninitialized
+	variables that, therefore, had random values.
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+2011-03-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2010-09-15  James Gallagher <jgallagher@opendap.org>
+
+	Version 1.0.0
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    xml_data_handler.spec
+	A    ChangeLog
+	M    README
+
+2010-08-10  James Gallagher <jgallagher@opendap.org>
+
+	Ignore Makefile, ..., files in here
+
+2010-08-10  James Gallagher <jgallagher@opendap.org>
+
+	Ignore .bescmd files in here
+
+2010-08-10  James Gallagher <jgallagher@opendap.org>
+
+	more test baselines...
+
+2010-08-10  James Gallagher <jgallagher@opendap.org>
+
+	Fixed lingering issues with xmlWriter API. Two problems: In some cases, start_xml_element() was called with element == "" and the xmlWriter function will not create an element like that! Odd that xmlGetLastError() did not return an error object... Second issue: One call to xmlWriterStartElement did not include the test < 0 so if the function returned 0 it was treated as an error. Oddly, it seems that the function often was returning a positive value often, so this condition didn't trigger an exception until several calls into making the document.
+
+2010-08-10  Patrick West <pwest@ucar.edu>
+
+	Made sure xml_data response added to dap service and description
+	correct.
+	M    BESXDModule.cc
+
+2010-08-10  Patrick West <pwest@ucar.edu>
+
+	Changed from 'get ascii' go get xml_data' found in the code and comments
+	the use of ascii instead of xd or xml_data_handler.
+	M    XDOutput.h
+	M    conf/libtool.m4
+	M    XDByte.h
+	M    XDFloat32.h
+	M    XDArray.h
+	M    BESXDResponseHandler.cc
+	M    XDUInt32.h
+	M    XDUInt16.h
+	M    XDOutputFactory.h
+	M    BESXDTransmit.h
+	M    get_xml_data.h
+	M    BESXDNames.h
+	M    XDInt32.h
+	M    XDStructure.h
+	M    XDInt16.h
+	M    XDUrl.h
+	M    XDSequence.h
+	M    XDStr.h
+	M    BESXDModule.cc
+	M    BESXDRequestHandler.cc
+	M    XDFloat64.h
+	M    XDGrid.h
+	M    BESXDResponseHandler.h
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-08-10  Patrick West <pwest@ucar.edu>
+
+	Made sure xml_data response added to dap service and description
+	correct.
+	M    BESXDModule.cc
+
+2010-08-10  Patrick West <pwest@ucar.edu>
+
+	Changed from 'get ascii' go get xml_data' found in the code and comments
+	the use of ascii instead of xd or xml_data_handler.
+	M    XDOutput.h
+	M    conf/libtool.m4
+	M    XDByte.h
+	M    XDFloat32.h
+	M    XDArray.h
+	M    BESXDResponseHandler.cc
+	M    XDUInt32.h
+	M    XDUInt16.h
+	M    XDOutputFactory.h
+	M    BESXDTransmit.h
+	M    get_xml_data.h
+	M    BESXDNames.h
+	M    XDInt32.h
+	M    XDStructure.h
+	M    XDInt16.h
+	M    XDUrl.h
+	M    XDSequence.h
+	M    XDStr.h
+	M    BESXDModule.cc
+	M    BESXDRequestHandler.cc
+	M    XDFloat64.h
+	M    XDGrid.h
+	M    BESXDResponseHandler.h
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Minor fixes for eclipse 3.6's autotools syntax stuff
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+	More tests... This version works for all types.
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Works; Grid projection to Structure bug fixed.
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Ignore a bunch of files (WRT svn)
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Regression tests - first version. There's a problem with Grids projected to Structures
+
+2010-08-03  James Gallagher <jgallagher@opendap.org>
+
+	unit-test fixes; header fixes and new code for Sequences.
+
+2010-08-03  James Gallagher <jgallagher@opendap.org>
+
+	Removed the float64 from the structure test because it was breaking things with a changing value - values depend on calling order and frequency.
+
+2010-08-02  James Gallagher <jgallagher@opendap.org>
+
+	Removed old code; added boilerplate versions of methods for Sequences.
+
+2010-08-02  James Gallagher <jgallagher@opendap.org>
+
+	Tests now use external files
+
+2010-08-02  James Gallagher <jgallagher@opendap.org>
+
+	Multi-dimensional arrays now have the information about dimensions 0 ... N-1 in enclosing <dim> elements. Consolodated the vector case to a single function.
+
+2010-08-02  James Gallagher <jgallagher@opendap.org>
+
+	This version handles complex arrays without crashing.
+
+2010-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Added support for 'complex' arrays - arrays of structures. Testing structure arrays that contain arrays themselves is not working...
+
+2010-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed problem with arrays. Now works for all types except Sequences and arrays of structures. Array printing still has hold-over code from the asciival days.
+
+2010-07-29  James Gallagher <jgallagher@opendap.org>
+
+	Not quite working...
+
+2010-07-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed stuff that's automatically generated - got added by import's over zealous algorithm
+
+2010-07-28  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+	A    .
+
