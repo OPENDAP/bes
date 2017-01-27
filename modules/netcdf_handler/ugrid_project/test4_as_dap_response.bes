@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request reqID="some_unique_value" >
+   <bes:setContext name="dap_format">dap2</bes:setContext>
+   <bes:setContainer name="c" space="catalog">/test4.nc</bes:setContainer>
+   <bes:define name="d">
+       <bes:container name="c">
+           <bes:constraint>ugrid_restrict(0,"nodedata&gt;0.0")</bes:constraint>
+       </bes:container>
+</bes:define>
+<bes:get type="dods" definition="d"/>
+</bes:request>

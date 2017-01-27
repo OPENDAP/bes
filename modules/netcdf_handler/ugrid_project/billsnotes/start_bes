@@ -1,0 +1,3 @@
+
+su billhowe -c "$prefix/bin/besctl start"
+

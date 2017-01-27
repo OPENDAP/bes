@@ -1,0 +1,172 @@
+# Microsoft Developer Studio Generated Dependency File for libnc-dods
+
+..\client.cc : \
+	"..\NCConnect.h"\
+	
+
+..\Dattr.cc : \
+	"..\Dncx.h"\
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	
+
+..\Ddim.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	
+
+..\Dnc.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCStructure.h"\
+	
+
+..\Dncx.cc : \
+	"..\Dncx.h"\
+	
+
+..\Dputget.cc : \
+	"..\Dncx.h"\
+	"..\Dnetcdf.h"\
+	"..\Dv2i.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\onstack.h"\
+	
+
+..\Dvar.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	
+
+..\inst.cc : \
+	"..\NCConnect.h"\
+	
+
+..\NCArray.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCArray.h"\
+	"..\NCConnect.h"\
+	
+
+..\NCByte.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCByte.h"\
+	"..\NCConnect.h"\
+	
+
+..\NCConnect.cc : \
+	"..\NCConnect.h"\
+	
+
+..\ncdas.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	
+
+..\ncdds.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCArray.h"\
+	"..\NCByte.h"\
+	"..\NCConnect.h"\
+	"..\NCFloat32.h"\
+	"..\NCFloat64.h"\
+	"..\NCGrid.h"\
+	"..\NCInt16.h"\
+	"..\NCInt32.h"\
+	"..\NCStr.h"\
+	"..\NCUInt16.h"\
+	"..\NCUInt32.h"\
+	
+
+..\NCFloat32.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCFloat32.h"\
+	
+
+..\NCFloat64.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCFloat64.h"\
+	
+
+..\NCGrid.cc : \
+	"..\NCGrid.h"\
+	
+
+..\NCInt16.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCInt16.h"\
+	
+
+..\NCInt32.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCInt32.h"\
+	
+
+..\NCList.cc : \
+	"..\NCList.h"\
+	
+
+..\NCSequence.cc : \
+	"..\NCSequence.h"\
+	
+
+..\NCStr.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCStr.h"\
+	
+
+..\NCStructure.cc : \
+	"..\NCStructure.h"\
+	
+
+..\NCUInt16.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCUInt16.h"\
+	
+
+..\NCUInt32.cc : \
+	"..\Dnetcdf.h"\
+	"..\lnetcdf.h"\
+	"..\NCConnect.h"\
+	"..\NCUInt32.h"\
+	
+
+..\NCUrl.cc : \
+	"..\NCUrl.h"\
+
+..\ncdump\ncdump.cc : \
+	"..\ncdump\ncdump.h"\
+	"..\ncdump\dumplib.h"\
+	"..\ncdump\vardata.h"\
+
+..\ncdump\dumplib.cc : \
+	"..\ncdump\ncdump.h"\
+	"..\lnetcdf\netcdf.h"\
+
+..\ncdump\vardata.cc : \
+	"..\ncdump\ncdump.h"\
+	"..\ncdump\dumplib.h"\
+	"..\ncdump\vardata.h"\
+
+
