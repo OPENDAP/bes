@@ -2,10 +2,6 @@
     path = modules/debug_functions
     url = https://github.com/opendap/debug_functions
     branch = master
-[submodule "modules/csv_handler"]
-	path = modules/csv_handler
-	url = https://github.com/opendap/csv_handler
-	branch = master
 [submodule "modules/xml_data_handler"]
 	path = modules/xml_data_handler
 	url = https://github.com/opendap/xml_data_handler
