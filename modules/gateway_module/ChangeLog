@@ -1,0 +1,641 @@
+2016-11-08  ndp-opendap  <ndp@opendap.org>
+
+	 Added Apple finder spoo to gitignore
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Minor patch to the REMOVE_RATE_TIME macro
+	The fonc_handler adds history information that has to be removed
+	for the test baseline to match and the server versiion is part of
+	this. For somereason we have a server version that fails to match
+	the simpler regexes that worked before.
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DataDDS include and libdap namespace after repairing the BESDataDDSResponse header
+
+2016-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed broken test
+	We added a History attribute to the stuff fileout netcdf
+	builds and the result is that one of our tests here needs
+	to strip date/time and server version info from the DAS.
+
+2016-09-21  ndp-opendap  <ndp@opendap.org>
+
+	gateway_module: Fixed baseline that shifted due to glbal attribute promotion in fnoc
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 
+	1) Ensured that libdap::Error objects are converted to BESDapError objects 
+	when caught. and 2) Catch and rethrow BESError objects whenever they could 
+	be thrown so they don't get swept up as unidentified errors in a catch(...) 
+	clause.
+	
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+	
+2015-10-07  Nathan Potter  <ndp@opendap.org>
+
+	Patched bug in new caching code.
+
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Small updates to cache_control_patch_02 prior to issuing pull request
+
+2015-10-05  Nathan Potter  <ndp@opendap.org>
+
+	Checking in for sync with james
+
+	 Added GAtewayCache class (to replace BESCache3)
+
+	Updated use of BESFileLockingCache in numerous places to conform
+	correctly to use pattern. Dropped BESCache3 from production and
+	replaced it with BESUncompressCache and GatewayCache as
+	appropriate.
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Converted gateway_module to use it's own cache configuration (and
+	cache control file)
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-07-14  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the tests to use the netcdf handler
+	...because the dapreader handler does not seem to be working.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/gateway_module
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.1.3
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac after merging with the modules branch
+
+	Merge remote-tracking branch 'origin/modules'
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Updated	the spec file to release 2.
+
+	Updated the spec file for hyrax 1.10
+
+2014-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added new tests based on the opendap test server.
+	The hope is that this server willbe more reliable than the RPI server.
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Changes for the BES modules build.
+	Added .gitignore and bes.conf.modules.in.
+	Changed the configure.ac and Makefile.am files.
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac files. Fixed some param initializations; method overloads (virtual methods that lacked 'const'). Other warnings.
+
+2014-05-02  James Gallagher  <jgallagher@opendap.org>
+
+	hanges	after merging the trunk	code (H	1.9.3) to the dap4 branch.
+	M    GatewayError.cc
+	M    Makefile.am
+
+2014-04-23  Nathan Potter  <ndp@opendap.org>
+
+	gateway_module: Checking software version update and associated release changes.
+2014-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Changes for OSX 10.9
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-27  James Gallagher <jgallagher@opendap.org>
+
+	svn ignore updated
+
+2013-09-27  James Gallagher <jgallagher@opendap.org>
+
+	Removed bes-testsuite/package.m4 (generated file)
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the new OSX compiler prints warnings about it and it seems to not make a difference with newer g++ versions.
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	gateway_module: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	gateway_module: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-08-15  James Gallagher <jgallagher@opendap.org>
+
+	Fixes to the bison/flex parser/scanner code so that it works iwth a modern version (2.5++) of bison.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2013-08-15  James Gallagher <jgallagher@opendap.org>
+
+	Fixes to the bison/flex parser/scanner code so that it works iwth a modern version (2.5++) of bison.
+
+2013-03-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Comments. Got rid of the FILE * stuff and just use file descriptors
+
+2013-03-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Comments. Got rid of the FILE * stuff and just use file descriptors
+
+2013-03-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Comments. Got rid of the FILE * stuff and just use file descriptors
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Ignored some files...
+
+2013-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Ignored some files...
+
+2013-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Formatted code and told SVN to ignore a bunch of generated files; some removed from SVN
+
+2013-01-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway: Updated support email to support@opendap.org
+
+2013-01-20  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the hyrax 1.8 branch
+
+	_M   .
+	M    bes-testsuite/bes.conf.in
+
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	After merge with hyrax 1.8 release branch and full build w/o test failures.
+
+	_M   .
+	M    ChangeLog
+	M    README
+	M    GatewayRequest.cc
+	M    gateway_module.spec
+	M    bes-testsuite/gateway/test.00.bescmd.baseline
+	M    bes-testsuite/gateway/test.01.bescmd.baseline
+	M    bes-testsuite/gateway/test.02.bescmd.baseline
+	M    bes-testsuite/package.m4
+	M    configure.ac
+	M    GatewayUtils.cc
+	M    INSTALL
+	M    GatewayUtils.h
+	M    NEWS
+
+
+2011-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Added a blurb about the NoProxy option
+
+	M    README
+
+2011-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8 updates
+
+	M    ChangeLog
+	M    gateway_module.spec
+	M    NEWS
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Modified configure so that this code builds only the so version of
+	the library by default.
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Modified configure so that this code builds only the so version of
+	the library by default.
+
+2011-10-10  James Gallagher <jgallagher@opendap.org>
+
+	Added the NoProxy parameter. Use this to skip using the proxy
+	server for certain URLs (e.g., localhost URLs that won't be
+	proxied by typical proxy server installations).
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+2011-08-24  James Gallagher <jgallagher@opendap.org>
+
+	Merge of Hyrax 1.7.1
+
+	_M   .
+	M    bes-testsuite/package.m4
+
+2011-06-30  Patrick West <pwest@ucar.edu>
+
+	Merge 1.7 branch back to trunk
+
+2011-05-28  Patrick West <pwest@ucar.edu>
+
+	Removing username and password from real_name when checking against
+	white list.
+	M    GatewayContainer.cc
+
+2011-05-20  Patrick West <pwest@ucar.edu>
+
+	Was ignoring the RCReader that was created, instead passing a new one.
+	Passing in an already created RCReader.
+	M    GatewayRequest.cc
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+2011-04-19  James Gallagher <jgallagher@opendap.org>
+
+	Added words about dynamic content and squid
+
+2011-04-16  Patrick West <pwest@ucar.edu>
+
+	When error, but partial response, issue with writing binary to XML
+	document. Still not quite fixed, but better. Also checking for
+	304, not just 200 on response status. Added more debug for
+	checking response type.
+	
+	M    GatewayRequest.cc
+	M    GatewayError.cc
+	M    bes-testsuite/gateway/test.00.bescmd.baseline
+	M    bes-testsuite/gateway/test.01.bescmd.baseline
+	M    GatewayUtils.cc
+
+2011-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Spelling
+
+2011-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added words about Squid
+
+2011-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for	h 1.7 osx meta package
+
+	M    config.h.in
+
+2011-04-05  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for caching - again. The libdap cache is hosed until we can
+	find time/$ to repair its operation when several processes try to
+	use it at the same time. Instead use squid for caching!
+
+	M    GatewayResponseNames.h
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+
+2011-04-04  James Gallagher <jgallagher@opendap.org>
+
+	Modified spec file,; now works
+
+	M    gateway_module.spec
+	M    config.h.in
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Added automated version numbers to OSX Package builds
+
+2011-03-10  James Gallagher <jgallagher@opendap.org>
+
+	Fixed rpm targets (Makefile.am)
+
+2011-03-03  Patrick West <pwest@ucar.edu>
+
+	whitelist defaults to localhost
+	M    gateway.conf.in
+
+2011-03-03  Patrick West <pwest@ucar.edu>
+
+	Caching works
+	M    GatewayContainer.cc
+	M    GatewayRequest.cc
+
+2011-03-01  Patrick West <pwest@ucar.edu>
+
+	Includes for strncpy and getenv
+	M    GatewayUtils.cc
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	distcheck now works
+	M    Makefile.am
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	Disabling cache for now
+	M    gateway.conf.in
+	M    GatewayRequest.cc
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	Turned on caching. Removed unneeded static functions in the request
+	handler.
+	M    GatewayRequestHandler.cc
+	M    GatewayRequest.cc
+	M    GatewayRequestHandler.h
+	M    INSTALL
+	M    Makefile.am
+
+2011-02-20  Patrick West <pwest@ucar.edu>
+
+	Added Protocol configuration for proxy
+	M    gateway.conf.in
+	M    GatewayResponseNames.h
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+
+2011-02-18  Patrick West <pwest@ucar.edu>
+
+	Added proxy host and port to configuration.
+	M    GatewayResponseNames.h
+	M    gateway.conf.in
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+
+2011-02-18  Patrick West <pwest@ucar.edu>
+
+	Updating version information
+	M    OSX_Resources/InstallationCheck.proto
+	M    OSX_Resources/Info.plist.proto
+	M    OSX_Resources/InstallationCheck.strings
+
+2011-02-18  Patrick West <pwest@ucar.edu>
+
+	Preparing for release
+	M    NEWS
+	A    INSTALL
+	M    README
+	M    gateway_module.spec
+
+2011-02-14  Patrick West <pwest@ucar.edu>
+
+	Corrected problems of checking for Content-Disposition and
+	Content-Type. Checking for variations on the disposition line as
+	well.
+	
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+
+2011-02-13  Patrick West <pwest@ucar.edu>
+
+	M    bes-testsuite/package.m4
+
+2011-02-11  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-11  Patrick West <pwest@ucar.edu>
+
+	Up to 0.3 now.
+	M    configure.ac
+
+2011-02-10  Patrick West <pwest@ucar.edu>
+
+	generalized check for content-disposition. Added check for content-type
+	if disppsition is not available. Added check of url against type match.
+	added bes-testsuite that relies on dapreader in bes.
+	M    GatewayContainer.cc
+	M    GatewayResponseNames.h
+	M    gateway.conf.in
+	M    GatewayModule.cc
+	M    GatewayRequest.cc
+	A    bes-testsuite
+	A    bes-testsuite/gateway
+	A    bes-testsuite/gateway/test.00.bescmd
+	A    bes-testsuite/gateway/test.00.bescmd.baseline
+	A    bes-testsuite/gateway/test.01.bescmd
+	A    bes-testsuite/gateway/test.01.bescmd.baseline
+	A    bes-testsuite/gateway/test.02.bescmd
+	A    bes-testsuite/gateway/test.02.bescmd.baseline
+	A    bes-testsuite/gateway_handlerTest.at
+	A    bes-testsuite/bes.conf.in
+	A    bes-testsuite/atlocal.in
+	A    bes-testsuite/config
+	A    bes-testsuite/config/unix.exp
+	A    bes-testsuite/Makefile.am
+	A    bes-testsuite/package.m4
+	M    configure.ac
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+	M    Makefile.am
+
+2011-02-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-09  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	shrew: More updates to production rules
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Fixed OSX package maker targets
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: In the gateway.conf.in I fixed the character
+	capitalization in the commented out white list examples.
+
+2011-02-02  Patrick West <pwest@ucar.edu>
+
+	Removed reference to WCS module
+	M    GatewayError.h
+
+2011-02-02  Patrick West <pwest@ucar.edu>
+
+	Added white list capabilities to the Gateway module. Only URLs
+	that match the items in the whitelist will be allowed. No regular
+	expression matching, just checking the beginning of the passed URL
+	to the values of the whitelist.
+	
+	M    GatewayContainer.cc
+	M    GatewayResponseNames.h
+	M    gateway.conf.in
+	M    GatewayModule.cc
+
+2011-01-29  Patrick West <pwest@ucar.edu>
+
+	Removed bin script that is no longer used.
+	M    Makefile.am
+
+2011-01-29  Patrick West <pwest@ucar.edu>
+
+	First release. Initial simple tests work.
+	A    GatewayContainerStorage.h
+	A    conf
+	A    conf/pkg.m4
+	A    conf/acinclude.m4
+	A    conf/bes.m4
+	A    conf/libdap.m4
+	A    GatewayContainer.cc
+	A    GatewayContainer.h
+	A    GatewayResponseNames.h
+	A    gateway.conf.in
+	A    GatewayModule.cc
+	A    GatewayRequestHandler.cc
+	A    GatewayModule.h
+	A    README
+	A    GatewayRequest.cc
+	A    GatewayRequestHandler.h
+	A    gateway_module.spec
+	A    GatewayError.cc
+	A    config.h.in
+	A    GatewayRequest.h
+	A    GatewayError.h
+	A    configure.ac
+	A    GatewayUtils.cc
+	A    COPYING
+	A    COPYRIGHT
+	A    GatewayUtils.h
+	A    Makefile.am
+	A    NEWS
+	A    GatewayContainerStorage.cc
+
+2011-01-29  Patrick West <pwest@ucar.edu>
+
+	New gateway module that passes through a URL request to a remote
+	server, determines the type of the response (netcdf, hdf4, hdf5,
+	error, etc..) and passes the response off to another request
+	handler. A http://scm.opendap.org/svn/trunk/gateway_module
