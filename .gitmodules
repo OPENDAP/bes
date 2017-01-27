@@ -14,10 +14,6 @@
 	path = modules/fileout_json
 	url = https://github.com/opendap/fileout_json
 	branch = master
-[submodule "modules/dap-server"]
-	path = modules/dap-server
-	url = https://github.com/opendap/dap-server
-	branch = master
 [submodule "modules/netcdf_handler"]
 	path = modules/netcdf_handler
 	url = https://github.com/opendap/netcdf_handler

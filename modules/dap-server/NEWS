@@ -1,0 +1,362 @@
+News for version 4.2.6
+
+Updates since 2016-09-27, see the ChangeLog
+
+News for version 4.2.5
+
+Updates since 2016-05-10, see the ChangeLog
+
+News for version 4.2.4
+
+Updates since 2016-01-26, see the ChangeLog
+
+News for version 4.2.3
+
+Minor updates, see the ChangeLog
+
+News for version 4.2.2
+
+Minor updates, see the ChangeLog
+
+News for version 4.2.1
+
+Minor updates, see the ChangeLog
+
+Version 4.1.6
+
+Applied LARC patch
+Fixes for the 'Get as NetCDF4' button on the HTML page.
+
+Version 4.1.5
+
+Memory leak fixes in asciival.
+
+Version 4.1.4
+
+Build fixes for OSX 10.9 and namespace stuff.
+
+Version 4.1.3
+
+Added an explicit encoding type so that the set_mime_*() functions
+could differentiate between the new code moved to mime_util.cc/.h from
+ResponseBuilder and the old, deprecated, code already in mime_util.
+
+Version 4.1.2
+
+Build and test fixes.
+
+Version 4.1.1
+
+Build fixes.
+
+Version 4.1.0 (14 Sept 2010)
+
+This version contains fixes for some annoying bugs - Grids are now
+represented sensibly in the HTML form, for example.
+
+Also, the ascii response supports constraints with multiple function
+calls.
+
+Version 4.0.0 (1 Feb 2010)
+
+This version of dap-server contains only C++ code intended for use
+with Hyrax (well, except for the old ais-tool code, but that's not
+really relevant). The old Perl code that implemented the data server
+based on the CGI specification is gone. We have removed all of the
+support for that server from the handlers.
+
+There are many bug fixes in this software; see ChangeLog.
+
+version 3.9.3 (9 June 2009)
+
+Fixes for ticket 1301, which address problems with the ASCII representation
+of Grids and Sequences. I've added the dap_asciival exec back in to keep the
+RPMs from breaking, but I suspect the tests may still not work. Those are
+testing the old CGI code, which nobody should be using anymore and which will
+be removed for the next major release.
+
+Version 3.9.2 (16 March 2009)
+
+Fixed the 'netCDF' button in the HTML form.
+
+version 3.9.1 (5 Feb 2009)
+
+Build fix - a libxml2 include file was not being found.
+
+version 3.9.0 (29 Jan 2009)
+
+Bug fixes and updates to work with the new libdap and bes changes.
+
+The HTML Form interface now works correctly with data sets that use the same
+field names in doubly-nested structures.
+
+The Form also now shows the type information for a Grid.
+
+Version 3.8.5 (03 Mar 2008)
+
+pkg build update to automate the creation of the .pkg and .dmg files using
+PackageManager and DropDMG respectively.
+
+Updated libdap usage to include libdap namespace.
+
+General bug fixes.
+
+Version 3.8.4 (03 Dec 2007)
+
+pkg and rpm build fixes
+
+Version 3.8.3 (14 Nov 2007)
+
+HDF5 Structure arrays now print correctly.
+
+Information added to README and INSTALL about the sample data and
+quasi-automatic configuration script (bes-dap-data.sh).
+
+Now supports using the new libdap iostream methods.
+
+Various fixes.
+
+Version 3.8.2 (3 July 2007)
+
+Changes to sanitize input to the ASCII, WWW and Usage handlers when they are
+run as part of the CGI-based server. Also repaired some resource-release
+issues. 
+
+Version 3.8.1 (28 June 2007)
+
+Applied the security patch from 27 April and removed the dodster Perl
+software (the patch simply disabled it). The dodster code also used curl in
+the same way that the directory listing software and also had a security
+vulnerability. 
+
+I set the version for this release to 3.8.1, not 3.8.0 since users of the
+server were instructed to set teh version number of the server to 3.8.0 after
+they applied the patch.
+
+Version 3.7.4 (13 March 2007)
+
+Fixed a bug in AsciiArray that showed up in the unit tests. The problem was
+that the vector values for dimensions were off by one. Also, we only need the
+_redirect object for _values_, not for the dinensions (since the constructor
+that builds an instance from a BaseType * copies the dimensions).
+
+Added files for the test data and auto configuration ticket. The handlers now
+'auto configure' meaning that when you type make install the bes.conf file is
+edited so that the bes will ind the newly installed handlers. This _should_
+work with the RPM version, too. The script is set to run once only, so
+subsequent installs will not modify the bes.conf file.
+
+Fixed bug #347: HDF-EOS attributes did not show up in the HTML form
+interface. The problem was that HDF-EOS attributes use conventions that the
+WWW Response Handler did not recognize. I modified the Response Handler so
+that it works with a DDX (i.e., a DDS loaded with attributes) and that fixes
+the problem, given that the form generator code already knew how to deal with
+nested attributes. One consequnce of this is that the attributes names in the
+Global Attributes section of the HTML now are prefaced with the names of
+various global attribute containers.
+
+I split up the README into README.cgi and README.hyrax so that the
+information about settig up the CGI server would be put in the dap-server-cgi
+package and so that the regular package would have a decent README. I also
+fixed some libgering issues in the spec file and Makefile.am
+
+Version 3.7.3
+
+This version cotains a fix for bug 766 where Grid dimensions did not show
+up in the HTML form interface. This problem was caused by an error in the way
+variables contained in a DDS built by a handler (e.g., the netcdf handler)
+were transformed into variables which could generate the form. The same 
+sort of problem (with variable transformation) was fixed in the ascii response
+code, too.
+
+Version 3.7.2
+
+This version includes bug fixes, performance enhancements and memory leak
+fixes. No new features have been added.
+
+Version 3.7.1
+
+We (I) hosed the source distribution; the www interface would not build the
+javascript.h file. Patrick and Nathan fixed this.
+
+Version 3.7.0
+
+This version includes a number of improvements/features/fixes needed for
+Server4. The BES (soon to be named besdaemon) now supports its own ascii,
+html and info commands using plugins built from this code. Previous versions
+of server4 used the Java front end to return these responses.
+
+Version 3.6.1
+
+Fixed a bug where the helper that builds the info response was not getting
+the cache_dir param (so the hdf4 handler would dump the cache files in the
+same directory as the data _or_ exit with a very obscure error message).
+
+The server should now return an error message when the configuration file
+cannot be read.
+
+The configuration file now supports data handler switches. Include these 
+right after the handler name in the configuration file. 
+
+Two formatting errors in the HTML form generator were fixed.
+
+Added common_tests.exp to the distribution.
+
+Version 3.6.0
+
+This package no longer includes its own copy of the Perl HTML::Parser
+module. The FilterDirHTML code now uses the current distribution's version
+of the Filter.pm module. That module is deprecated, so we'll need to rewrite
+our code or come up with a different solution. I hope that before too long 
+our servers will all use THREDDS catalogs in place of the 'filtered HTML'
+approach.
+
+In the past the Web Interface (or HTML response) used its own built-in help
+text. This was fairly simple and not very helpful. I changed the interface
+so that it now uses a web page stored at the opendap web site.
+
+The dap_asciival filter now uses a new variant of the Response class which
+reads and stores the version number correctly.
+
+This code has been updated to use libdap 3.6.0.
+
+Fixed a bug where getting data without providing a constraint expression 
+failed.
+
+Version 3.5.3
+
+ASCII returns for entire data source (i.e., with an empty Constraint 
+expression) were failing. Fixed.
+
+There were packaing problems with the included HTML Parser code. Fixed.
+
+New to this distribtion in the opendap_apache.conf file. Edit this, replacing
+<<prefix>> with the installaion prefix for your code and drop the file into 
+Apache's configuration file directory (/etc/httpd/conf.d on many linux 
+distributions) and restart Apache. No need to edit your main httpd.conf file!
+
+Version 3.5.2
+
+A bug in the HTML form and info response generators caused global attributes 
+to be 'lost.'
+
+Support for bzip2 compression was added to the server. If the gzip and bzip2
+tools are not located in /bin or /usr/bin on the server host, edit the file
+DODS_Cache.pm so that module will be able to locate them.
+
+Version 3.5.1
+
+Based on some testing I'm switching back to including HTML:Parser in the 
+distribution since newer versions don't work with our code. This should be
+fixed soon enough (3.6. hopefully).
+
+The version 3.5 server has a very different installation layout than previous
+versions. Now only the nph-dods CGI script and its configuration file are
+installed in a CGI bin directory. The other files are installed in
+/usr/local/share/dap-server and /usr/local/bin. See INSTALL for information
+about changing the prefix '/usr/local'.
+
+Also, it's no longer a requirement that data be stored under the WWW daemon's
+DocumentRoot. See the section about the configuration parameter 'data_root'
+in the README file.
+
+This version of the server will pass off a request for the DDX response to 
+the format handlers. Currently only the hdf4 and NetCDF handlers can return
+the response, the others return an error. This feature and the DDX objects
+themselves are prototype versions. We may change the design before releasing 
+a final version.
+
+Bug fixes
+
+* The compiled server binaries are no longer installed in $prefix/sbin but in
+$prefix/bin.
+
+* The ASCII and HTML responses are now built using local calls to the file
+system instead of network calls to the server. This means that those
+responses are more efficient and that secure servers are easier to configure.
+The additional step of opening access to he server for the localhost to
+enable these two reponses is no longer needed. Unfortunately, the directory
+response still makes a call to the server, so support for that feature will
+still require the additional configuration. See README-security and the FAQ
+for information about setting up a secure server
+(http://www.opendap.org/faq/server_security.html).
+
+All executables are now prefixed with 'dap_' to avoid situations where other
+packages use the same names (as was the case with 'usage').
+
+Updated for version 3.5.0
+
+* Server 3.5 is an update for the current CGI-based server whose dispatch code
+is written using Perl. The code is still Perl :-( but will have several
+enhancements suggested/implemented by various people over the past few
+months.
+
+* This version of the OPeNDAP server is built and distributed separately from
+the libdap library.
+
+* The server's configuration file is now named 'dap-server.rc.' We're going
+to keep the name 'nph-dods' so that existing links don't break. People
+upgrading servers should take their dods.rc file and make sure any
+customizations ae addedd to dap-server.rc.
+
+* Only the nph-dods script and dap_server.rc files will be installed in the
+cgi binary directory. The remainder of the Perl and the 'helper' programs are
+now stored elsewhere. This makes it much harder for people to hack the
+servers and also makes setting up several servers at one site simpler. This
+design change was suggested by John Allison at UCAR, I think, and I don't
+know why it has take me so long to release a version of the server that
+employs it... Others may have also suggested this and I was just to thick to
+pick up on it. ;-)
+
+* The code (except for nph-dods and dap_server.rc) now installs in regular
+directories as you'd expect with Unix/Linux. The Perl code installs in
+/usr/local/share/dap and the C++/C binaries install in /usr/local/sbin by
+default, although you can change this easily).
+
+* The server no longer requires data providers to use the web daemon's
+DocumentRoot as the root of the data. Instead the 'data root' is set from
+within the dap_server.rc file. This will make setting up secure servers simpler
+since it's no longer necessary to make two security configurations for the
+data. The old design where data security is based on securing the server is
+still the model used by this server, but at least the management of that has
+been cut in half. This was suggested by Neil Killeen at CSIRO. Note that if
+data_root is not set in the dap_server.rc file, the old behavior is used as a
+default. Thus existing sites don't need to mess with this at all; those
+configurations will continue to use DocumentRoot as the root of the data.
+
+* The server now uses a smaller number of helper applications, which I've
+called 'handlers' to process different types of files. Instead of having
+three programs for netCDF, three for HDF, et c., there's now just one handler
+for each format. (This was first implemented by Jake Hamby at JPL years ago
+and also by Jose Garcia and Patrick West from HAO). These handlers now have
+their own CVS/SVN modules and will be used by both this code and Server4.
+
+Still to be done:
+
+* The tools are helper programs that generate the info, ascii and HTML
+responses for the server. These have been moved into the server's directory.
+However, these programs still make a round-trip to the server to access data.
+The next release will fix this and these programs will read directly from the
+data sources using the handlers. This will not only speed up generating these
+reponses but also simplify security configurations since an extra setup step
+where local accesses are allowed for all will then be eliminated.
+
+Changes in version 3.4
+
+The server configuration file dods.ini is now called dods.rc. This name
+change brings the file in line with the other configuration files used by
+OPeNDAP software. Previously the configuration file was just used to match
+'handler' programs to data source (usually files). However, with the 3.4
+release we've migrated all the configuration information into this file
+(except for the experimental statistics software). The dods.rc file has
+comments which explain the various paramters.
+
+We've reduced our dependence on some Perl modules by replacing them with a
+compiled (C++) program called 'curl.' If you're upgrading a server, make sure
+you get this or features like ASCII and HTML responses will not work.
+
+We have had some issues in the past with serving data from files that are
+compressed using UNIX compress or gzip. See the special section below about
+serving these types of files for important configuration information!
+
+$Id$
