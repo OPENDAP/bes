@@ -1,0 +1,20 @@
+//
+// FF Format file for June 1998 avhrr file server database. 12/15/98 jhrg
+
+ASCII_input_data "GSO_AVHRR"
+satellite 1 1 text 0
+year 3 4 int32 0
+day_num 6 8 int32 0
+hh 10 11 int16 0
+mm 13 14 uint16 0
+ss 16 17 float 0
+DODS_URL 19 89 text 0
+
+ASCII_output_data "Test"
+year 1 2 int32 0
+day_num 4 6 int32 0
+hh 8 9 int32 0
+mm 11 12 int32 0
+ss 14 15 int32 0
+DODS_URL 17 87 text 0
+

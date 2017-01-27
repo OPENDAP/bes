@@ -1,0 +1,49 @@
+#!/bin/csh
+
+# this file calls all the freeform testing batch files for freeform
+#
+# set Test Suite directory environment variables
+#
+setenv TSHOME_DIR `pwd`
+setenv TSBAT_DIR $TSHOME_DIR
+setenv TSBIN_DIR `pwd`/../
+
+if (!(-e $TSBIN_DIR/readfile) || !(-e $TSBIN_DIR/newform)) then
+echo You must build newform and the ancillary utility readfile.
+echo Run the Makefile in the make directory
+exit
+endif
+
+date >&datef
+cat datef 
+cat space
+cd $TSHOME_DIR/test
+$TSHOME_DIR/testtest || exit 4
+cd $TSHOME_DIR/prec
+$TSHOME_DIR/testprec || exit 4
+cd $TSHOME_DIR/tutor
+$TSHOME_DIR/testtut || exit 4
+cd $TSHOME_DIR/eq
+$TSHOME_DIR/testeq || exit 4
+#cd ~/devel/test_suites/newform_test/prof
+#profnewf || exit 4
+#cd $TSHOME_DIR/hdrs
+#$TSHOME_DIR/testhdrs || exit 4
+cd $TSHOME_DIR/query
+$TSHOME_DIR/testquery
+cd $TSHOME_DIR/byteswap
+$TSHOME_DIR/testswap
+cd $TSHOME_DIR
+
+#cat space
+#cat space
+echo "********* Done with all tests and profiles"
+#echo " "
+#echo "Files created:"
+#echo "		prof.out - contains profiler for ascii & binary conversions"
+#cat space
+#echo "If an error occurs:"
+#echo "		errfile - contains stderr output"
+#echo "		trash   - contains results from diff"
+#cat space 
+#cat space 

@@ -1,0 +1,4 @@
+(([lvar1] < 0) && ([lvar2] < 0)) || (([lvar1] > 0) && ([lvar2] > 0)) 
+This query excludes all records where lvar1 and lvar2 are of different signs.
+It should behave identically to query2.qry; this query is only testing the 
+ability to use "&" or "&&", "|" or "||" interchangably.

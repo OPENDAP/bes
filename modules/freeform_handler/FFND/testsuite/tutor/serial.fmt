@@ -1,0 +1,23 @@
+/ This is the format description file for the data files time.dat, serial.bin, 
+/ and serial.dat. Each record of the ASCII file time.dat contains six 
+/ fields: year, month, day, hour, minute, second.
+
+ASCII_data "ASCII ymdhms date"
+year 2 5 ushort 0
+month 10 11 uchar 0
+day 19 20 uchar 0
+hour 28 29 uchar 0
+minute 37 38 uchar 0
+second 43 47 float 2
+
+/ Each record of the binary file serial.bin contains one field, 
+/ serial date, defined as a double that occupies 8 bytes and has 
+/ 8 places of precision.
+
+binary_data "binary serial date"
+serial_day_1980 1 8 double 8
+/ Each record of the ASCII file serial.dat contains one field, 
+/ serial date.
+
+ASCII_data "ASCII serial date"
+serial_day_1980 1 16 double 8
