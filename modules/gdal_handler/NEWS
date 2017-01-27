@@ -1,0 +1,40 @@
+News for version 1.0.7
+
+Updates since 2016-09-06, see the ChangeLog
+
+News for version 1.0.6
+
+Updates since 2016-05-26, see the ChangeLog
+
+News for version 1.0.5
+
+Fixed the obscure Hyrax-220 ticket - inside teh gdal library, the 
+pthread function pthread_setspecific() was returning an error after
+the first response (whcih always worked). The library was being 
+initialized in an odd way and fixing this fixed the problem.
+
+News for version 1.0.4
+
+Updates since 2015-10-27, see the ChangeLog
+
+News for version 1.0.3
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.2
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.1
+
+Minor updates, see the ChangeLog
+
+
+Updated for version 0.9.4 on 23 April 2014
+
+Minor Update.
+
+Updated for version 0.9.3 on 10 Sept. 2013
+
+This is the initial release of this hander, built from the
+old Server3 code - now completely reworked.
