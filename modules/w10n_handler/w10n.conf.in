@@ -1,0 +1,21 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP File Out NetCDF (FoJson) BES Module Configuration file          #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=w10n
+BES.module.w10n=@bes_modules_dir@/libw10n_handler.so
+
+# w10n module specific parameters"
+# w10n.Tempdir: Directory to store temporary netcdf files during transformation"
+# w10n.Reference: URL to the w10n Reference Page at docs.opendap.org"
+w10n.Tempdir=/tmp
+w10n.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_w10n_handler
