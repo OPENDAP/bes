@@ -1,39 +1,3 @@
-[submodule "modules/xml_data_handler"]
-	path = modules/xml_data_handler
-	url = https://github.com/opendap/xml_data_handler
-	branch = master
-[submodule "modules/freeform_handler"]
-	path = modules/freeform_handler
-	url = https://github.com/opendap/freeform_handler
-	branch = master
-[submodule "modules/fileout_json"]
-	path = modules/fileout_json
-	url = https://github.com/opendap/fileout_json
-	branch = master
-[submodule "modules/netcdf_handler"]
-	path = modules/netcdf_handler
-	url = https://github.com/opendap/netcdf_handler
-	branch = master
-[submodule "modules/fileout_netcdf"]
-	path = modules/fileout_netcdf
-	url = https://github.com/opendap/fileout_netcdf
-	branch = master
-[submodule "modules/gateway_module"]
-	path = modules/gateway_module
-	url = https://github.com/opendap/gateway_module
-	branch = master
-[submodule "modules/fileout_gdal"]
-	path = modules/fileout_gdal
-	url = https://github.com/opendap/fileout_gdal
-	branch = master
-[submodule "modules/fits_handler"]
-	path = modules/fits_handler
-	url = https://github.com/opendap/fits_handler
-	branch = master
-[submodule "modules/gdal_handler"]
-	path = modules/gdal_handler
-	url = https://github.com/opendap/gdal_handler
-	branch = master
 [submodule "modules/hdf4_handler"]
 	path = modules/hdf4_handler
 	url = https://github.com/opendap/hdf4_handler
@@ -42,14 +6,3 @@
 	path = modules/hdf5_handler
 	url = https://github.com/opendap/hdf5_handler
 	branch = master
-[submodule "modules/ncml_module"]
-	path = modules/ncml_module
-	url = https://github.com/opendap/ncml_module
-	branch = master
-[submodule "modules/ugrid_functions"]
-	path = modules/ugrid_functions
-	url = https://github.com/opendap/ugrid_functions
-	branch = master
-[submodule "modules/w10n_handler"]
-	path = modules/w10n_handler
-	url = https://github.com/opendap/w10n_handler
