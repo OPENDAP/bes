@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- An test example of a union aggregation nested two levels deep -->
+<netcdf>
+  
+  <!-- Top level agg -->
+  <aggregation type="union">
+    
+    <!-- First dataset top level, with nested aggregation! -->
+    <netcdf>
+      <attribute name="Description" type="string" value="Dataset 0 -- I should win!"/>
+      <variable name="Foo" type="string"><values>Foo the First!</values></variable>
+      <variable name="Var_0_0" type="string"><values>A variable at top agg level, first set.</values></variable>
+      
+      <!-- The nested aggregation -->
+      <aggregation type="union">
+	
+	<netcdf>	
+	  <attribute 
+	     name="FirstComer" type="string" 
+	     value="This attribute is in a nested agg, but is first instance of the attr in the file and should win."/>
+	</netcdf>
+	
+	<netcdf>
+	  <variable name="Var_1_0" type="string"><values>A variable at depth 2, first set.</values></variable>
+	</netcdf>
+
+	<netcdf>
+	  <variable name="Var_1_1" type="string"><values>A variable at depth 2, second set.</values></variable>
+	</netcdf>
+	
+      </aggregation>
+    </netcdf>
+
+    <!-- Second dataset top level -->
+    <netcdf>
+      <!-- This one should "lose" since it comes later... -->
+      <attribute name="Description" type="string" value="Dataset 1 -- I should not be in the output!"/>
+      
+      <!-- This one should also lose to the one in the nested agg above -->
+      <attribute name="FirstComer" type="string" value="I think I am the first comer, but I am not and better lose!"/>
+
+      <!-- Unique var to be unioned -->
+      <variable name="Var_0_1" type="string"><values>A variable at top agg level, second set.</values></variable>
+
+      <!-- This one should "lose" since it comes later... -->
+      <variable name="Foo" type="string">
+	<attribute name="Description" type="string" value="This var names Foo comes later and should NOT be in output."/>
+	<values>Foo_in_dataset_2</values>
+      </variable>    
+    </netcdf>
+    
+  </aggregation>
+
+</netcdf>

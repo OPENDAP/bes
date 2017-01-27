@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  
+  <!-- u_component doesn't exist, expected error -->
+  <variable name="wind_u" orgName="u_component"/>
+</netcdf>

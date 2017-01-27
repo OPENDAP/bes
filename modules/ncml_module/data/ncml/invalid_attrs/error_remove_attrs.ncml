@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes of remove element.  -->
+
+<netcdf>
+  <remove nname="I_am_an_invalid_attribute" theType="Me_too"/>
+</netcdf>

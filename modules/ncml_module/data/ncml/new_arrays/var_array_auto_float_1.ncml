@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Autogenerate the array -->
+  <dimension name="time" length="10"/>
+  <variable name="MyAutoFloatArray" type="float" shape="time">
+    <attribute name="Description" type="string">Testing autogeneration of values with start and increment</attribute>
+    <values start="0.5" increment="0.1"/>
+  </variable>
+</netcdf>

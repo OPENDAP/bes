@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Error to autogenerate a URL -->
+  <dimension name="time" length="10"/>
+  <variable name="MyAutoURLArray" type="URL" shape="time">
+    <attribute name="Description" type="string">Testing autogeneration of URL is error</attribute>
+    <values start="A" increment="B"/>
+  </variable>
+</netcdf>

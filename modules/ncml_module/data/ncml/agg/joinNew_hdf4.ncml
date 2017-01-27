@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A test for a joinNew aggregation on HDF4 data  -->
+
+<netcdf title="Sample joinNew Aggregation on HDF4 Datasets" location="data/ncml/agg/float_array_2.hdf">
+ 
+<!-- 
+ <aggregation type="joinNew" dimName="day">
+   <variableAgg name="AggTest_1"/>
+   <netcdf title="Sample Slice 1" location="data/ncml/agg/float_array_3.hdf">
+ </aggregation>
+-->
+ 
+</netcdf>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinExisting_virtual_fine.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Description" type="String">
+            <value>A global aggregation attribute.</value>
+        </Attribute>
+    </Attribute>
+    <Array name="V">
+        <Int32/>
+        <dimension name="sample" size="5"/>
+    </Array>
+    <Array name="V_expected">
+        <Attribute name="Description" type="String">
+            <value>A test attribute for V_expected</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="sample" size="5"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

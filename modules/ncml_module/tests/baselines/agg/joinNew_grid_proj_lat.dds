@@ -1,0 +1,5 @@
+Dataset {
+    Structure {
+        Float64 lat[64];
+    } dsp_band_1;
+} joinNew_grid.ncml;

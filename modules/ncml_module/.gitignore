@@ -1,0 +1,64 @@
+## directories
+.deps
+.libs
+autom4te.cache
+
+## files
+*~
+*.o
+*.lo
+*.Po
+*.output
+*.tab.cc
+*.tab.hh
+lex.*.cc
+*.la
+# Assuming there's a ...pc.in it's built from
+*.pc
+*.log
+*.trs
+
+## OS-X Finder spoo
+*.DS_Store
+
+.dirstamp
+
+Makefile
+Makefile.in
+conf/compile
+conf/config.guess
+conf/config.sub
+conf/depcomp
+conf/install-sh
+conf/libtool.m4
+conf/ltmain.sh
+conf/ltoptions.m4
+conf/ltsugar.m4
+conf/ltversion.m4
+conf/lt~obsolete.m4
+conf/missing
+conf/test-driver
+config.h
+config.h.in
+config.status
+configure
+stamp-h?
+aclocal.m4
+libtool
+atconfig
+atlocal
+
+## ncml module specific files
+
+ncml.conf
+
+tests/bes.conf
+tests/bes_no_nc_global.conf
+tests/package.m4
+tests/testsuite
+tests/testsuite.dir
+tests/work_on_failing_tests
+
+
+
+

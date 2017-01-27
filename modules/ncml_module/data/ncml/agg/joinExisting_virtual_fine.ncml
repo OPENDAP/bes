@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A simple pure virtual joinExisting aggregation of type Array
+in which all granules are fine-grained on outer dimension (i.e. 
+size is 1)-->
+<netcdf title="Sample joinExisting Aggregation on Pure NCML Datasets">
+  
+  <attribute name="Description" type="string"
+	     value="A global aggregation attribute."/>
+  
+  <aggregation type="joinExisting" 
+	       dimName="sample" >
+    
+    <!-- Datasets are one-dimensional Array<int>.
+    Note we specify the ncoords as well for testing -->
+
+    <netcdf title="Granule 1" ncoords="1">
+      <dimension name="sample" length="1"/>
+      <variable name="V" type="int" shape="sample">
+	<values>0</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Granule 2" ncoords="1">
+      <dimension name="sample" length="1"/>
+      <variable name="V" type="int" shape="sample">
+	<values>1</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Granule 3" ncoords="1">
+      <dimension name="sample" length="1"/>
+      <variable name="V" type="int" shape="sample">
+	<values>2</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Granule 4" ncoords="1">
+      <dimension name="sample" length="1"/>
+      <variable name="V" type="int" shape="sample">
+	<values>3</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Granule 5" ncoords="1">
+      <dimension name="sample" length="1"/>
+      <variable name="V" type="int" shape="sample">
+	<values>4</values>
+      </variable>
+    </netcdf>
+
+
+  </aggregation>
+
+  <!-- Here's the expected output of the aggregation.  
+       
+       NOTE: We will not create the dimension since the aggregation is
+       expected to do that!  Note that it will be of correct size == 9
+       at this scope post-aggregation! -->
+  <variable name = "V_expected" type="int" shape="sample">
+    <attribute name="Description" type="string" value="A test attribute for V_expected"/>
+    <values>0 1 2 3 4</values>
+  </variable>
+
+</netcdf>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test on netcdf Grid granules  -->
+<netcdf title="joinExisting test on netcdf Grid granules"
+	>
+  
+  <attribute name="Description" type="string"
+	     value=" joinExisting test on netcdf Grid granules"/>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <netcdf location="data/nc/PH_mday/PH2006001_2006031_ssta.nc" 
+	    ncoords="1"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/PH_mday/PH2006001_2006031_ssta.nc" />
+    </netcdf>
+    
+    
+    <netcdf location="data/nc/PH_mday/PH2006032_2006059_ssta.nc" 
+	    ncoords="1"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/PH_mday/PH2006032_2006059_ssta.nc" />
+    </netcdf>
+    
+    
+    <netcdf location="data/nc/PH_mday/PH2006060_2006090_ssta.nc" 
+	    ncoords="1"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/PH_mday/PH2006060_2006090_ssta.nc" />
+    </netcdf>
+
+
+  </aggregation>
+  
+</netcdf>

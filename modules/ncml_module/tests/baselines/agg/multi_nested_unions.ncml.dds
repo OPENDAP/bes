@@ -1,0 +1,7 @@
+Dataset {
+    String Foo;
+    String Var_0_0;
+    String Var_1_0;
+    String Var_1_1;
+    String Var_0_1;
+} multi_nested_unions.ncml;

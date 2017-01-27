@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A simple pure virtual joinNew aggregation of type Array<int>[5][2]  -->
+
+<netcdf title="Sample joinNew Aggregation on Pure NCML Datasets">
+  
+  <!-- joinNew forming new outer dimension "day" -->
+  <aggregation type="joinNew" dimName="day">
+    
+    <!-- For variables with this name in child datasets -->
+    <variableAgg name="V"/>
+
+    <!-- Datasets are one-dimensional Array<int> with cardinality 5. -->
+    <netcdf title="Sample Slice 1">
+      <!-- Must forward declare the dimension size -->
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<values>1 3 5 7 9</values>
+      </variable>
+    </netcdf>
+
+    <!-- Second slice must match shape! -->
+    <netcdf title="Sample Slice 2">
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<values>2 4 6 8 10</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+  <!-- This will be what the expected output aggregation will look like.
+       We can use the named dimensions for the shape here since the aggregation
+       comes first and the dimensions will be added to the parent dataset by now -->
+  <variable name="V_expected" type="int" shape="day station">
+    <!-- Row major values.  Since we create a new outer dimension, the slices are concatenated.
+	 This gives a 5x2 Array.
+	 We use the newline to show the dimension separation for the reader's benefit -->
+    <values>
+      1 3 5 7 9 
+      2 4 6 8 10
+    </values>
+  </variable>
+
+</netcdf>

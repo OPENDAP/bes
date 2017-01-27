@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mimicing structure for the original bug for ticket #1433-->
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  
+  <!-- New structure -->
+ <variable name="chlor" type="Structure">
+    
+   <!-- Not sure what original was, but this should suffice. --> 
+   <variable name="time" type="int" shape="3">
+     <values>1 2 3</values>
+   </variable> <!-- time -->
+
+  </variable> <!-- chlor -->
+  
+</netcdf>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This test and data is taken from the aggregation tutorial page at 
+http://www.unidata.ucar.edu/software/netcdf/ncml/v2.2/Aggregation.html -->
+<netcdf title="Test of joinNew aggregation using the scan element and dateFormatMark">
+  
+  <aggregation type="joinNew" dimName="fileTime">
+    <variableAgg name="CGusfc"/>  
+    <scan location="data/ncml/agg/dated" 
+	  suffix=".nc" 
+	  subdirs="false"
+	  regExp="^.*/[A-Z]_CG.[^/]*"
+	  dateFormatMark="A_CG#yyyyDDD_HHmmss"
+	  />
+  </aggregation> 
+
+</netcdf>

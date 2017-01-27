@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Testing olderThan attribute.  This is hard to test in the current testbed since
+we'd need to touch a file or something. This would be better tested using CPPUnit, so for now this
+file will only be used in a debugger setting. -->
+<netcdf title="Test example of joinNew Grid aggregation using the scan element with an olderThan attribute">
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <!-- We can have more than one scan element in an aggregation,
+        so I will just try all the accepted units strings in here and make
+	sure they go through the debugger. -->
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 minute"/>
+    <!--
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1000 s"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 sec"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1000 secs"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 second"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1000 seconds"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="10 m"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 min"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="5 mins"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 minute"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="5 minutes"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="10 h"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 hour"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="24 hours"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 day"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="7 days"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 week"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="2 weeks"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 month"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="3 months"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 year"/>
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="3 years"/>
+-->
+  </aggregation> 
+  
+</netcdf>

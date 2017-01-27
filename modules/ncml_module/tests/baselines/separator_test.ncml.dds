@@ -1,0 +1,5 @@
+Dataset {
+    String sorcerer;
+    String grue[3];
+    String dungeon_master[3];
+} separator_test.ncml;

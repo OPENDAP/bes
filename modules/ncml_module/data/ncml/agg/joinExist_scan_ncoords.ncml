@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test on netcdf Grid granules using scan@ncoords extension-->
+<netcdf title="joinExisting test on netcdf Grid granules using scan@ncoords"
+	>
+  
+  <attribute name="Description" type="string"
+	     value=" joinExisting test on netcdf Grid granules using scan@ncoords"/>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <!-- Test scan@ncoords extension where all files have the same sized agg dimension... -->
+    <!-- Should match the same set below -->
+    <scan location="data/nc/simple_test/"
+	  subdirs="false"
+	  suffix=".nc"
+	  regExp="test_grid_[0-9]*"
+	  ncoords="1"
+	  />
+ <!--
+ <netcdf location="data/nc/simple_test/test_grid_0.nc" 
+	    ncoords="1"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/simple_test/test_grid_0.nc" />
+    </netcdf>
+    
+    
+    <netcdf location="data/nc/simple_test/test_grid_1.nc"
+	    ncoords="1"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/simple_test/test_grid_1.nc" />
+    </netcdf>
+    
+    
+    <netcdf location="data/nc/simple_test/test_grid_2.nc" 
+	    ncoords="1"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/simple_test/test_grid_2.nc" />
+    </netcdf>
+-->
+
+  </aggregation>
+  
+</netcdf>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  
+  <!-- v already exists, expected error -->
+  <variable name="v" orgName="u"/>
+</netcdf>
+

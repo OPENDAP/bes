@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDDX>
+        <BESError>
+            <Type>5</Type>
+            <Message>Unable to access node /data/ncml/agg/float_array_2.hdf: No such file or directory</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+        </BESError>
+    </getDDX>
+</response>

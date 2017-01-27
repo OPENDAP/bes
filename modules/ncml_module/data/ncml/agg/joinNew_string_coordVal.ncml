@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A joinNew aggregation acceptance test on Array data
+     for the case of explicitly listed string-valued
+     netcdf@coordValue attributes.
+     -->
+
+<netcdf title="joinNew Aggregation with explicit string coordValue should create new map with those values.">
+  
+  <aggregation type="joinNew" dimName="source">
+    
+    <variableAgg name="u"/>
+    <variableAgg name="v"/>
+
+    <!-- Same dataset a few times, but with different coordVal -->
+    <netcdf title="Dataset 1" location="data/ncml/fnoc1.nc" coordValue="Station_1"/>
+    <netcdf title="Dataset 2" location="data/ncml/fnoc1.nc" coordValue="Station_2"/>
+    <netcdf title="Dataset 3" location="data/ncml/fnoc1.nc" coordValue="Station_3"/>
+
+  </aggregation>
+  
+</netcdf>

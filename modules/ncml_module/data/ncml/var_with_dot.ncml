@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="data/ncml/var_new_Structure.ncml">
+  
+  <!-- Make sure this is a NEW top level variable with a dot in the name
+       and DOES NOT FIND the nested variable. -->
+  <variable name="MyStructure.ContainedScalar1" type="int">
+    <values>7</values>
+  </variable>
+  
+  <!-- 
+       Contained dataset ....
+       <variable name="MyStructure" type="Structure">
+	 <attribute name="MyStructure_MetaData" type="String" value="Hi Mom!"/>
+	 <variable name="ContainedScalar1" type="String"><values>I live in a new structure!</values></variable>
+	 <variable name="DougAdamsSays" type="int"><values>42</values></variable>
+       </variable> 
+       -->
+</netcdf>

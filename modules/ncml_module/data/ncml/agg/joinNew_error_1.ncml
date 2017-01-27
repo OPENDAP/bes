@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Parse error test for joinNew aggregation.  -->
+
+<netcdf title="Parse error test for not being able to find the aggregation variable in all datasets.">
+  
+  <!-- joinNew and form new outer dimension "day" -->
+  <aggregation type="joinNew" dimName="day">
+    
+    <!-- For variables with this name in child datasets -->
+    <variableAgg name="V"/>
+
+    <netcdf title="Sample Slice 1">
+      <dimension name="station" length="5"/>
+      <!-- This dataset doesn't contain the aggregation variable so is an error -->
+     <variable name="Vel" type="int" shape="station">
+	<values>1 3 5 7 9</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Sample Slice 2">
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<values>2 4 6 8 10</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+
+</netcdf>

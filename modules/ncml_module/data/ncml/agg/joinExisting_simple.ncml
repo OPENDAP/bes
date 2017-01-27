@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test on netcdf Grid granules  -->
+<netcdf title="joinExisting test on netcdf Grid granules"
+	>
+  
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <netcdf location="data/nc/simple_test/test_grid_0.nc" 
+	    ncoords="1"> 
+    </netcdf>
+    
+  </aggregation>
+  
+</netcdf>

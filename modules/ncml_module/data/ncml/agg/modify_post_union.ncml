@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test to see if we can modify an attribute WITHIN an aggregation with an attribute element after the aggregation  -->
+<netcdf>
+  
+  <!-- These come before the aggregation so don't affect it -->
+  <attribute name="Dataset_Description" type="string" value="This is a union."/>
+  <variable name="SelfReferentialVariable" type="string">
+    <values>My name is "SelfReferentialVariable"</values>
+  </variable>
+  
+  <aggregation type="union">
+    
+    <netcdf>
+      <variable name="Foo" type="string">
+	<attribute name="Description" type="string" value="Winning Foo before we modify, should NOT be in output!"/>
+	<values>I am the winning Foo!</values>
+      </variable>
+    </netcdf>
+
+    <netcdf>
+      <variable name="Foo" type="string">
+	<attribute name="Description" type="string" value="I will be the losing Foo and should NOT be in output!"/>
+	<values>I am the losing Foo!</values>
+      </variable>
+
+      <variable name="Bar" type="string">
+	<attribute name="Description" type="string" value="I am the only Bar and will be in the output!"/>
+	<values>I am the winning Bar!</values>
+      </variable> 
+    </netcdf>
+    
+  </aggregation>
+
+  <!-- Now we modify the "winner" of the previous union -->
+  <variable name="Foo">
+    <attribute name="Description" type="string" value="I am Foo.Description and have modified the winning Foo and deserve to be in the output!"/>
+  </variable>
+  
+</netcdf>

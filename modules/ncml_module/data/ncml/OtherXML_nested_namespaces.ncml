@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test multiple nested ancestral namespaces get canonicalized into 
+     OtherXML attributes. -->
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2"
+	xmlns:a="http://www.a.edu/a"
+	>
+  <!-- Make an attribute container with it's own namespaces to test
+	lexical flattener -->
+  <attribute name="OtherXMLContainer" type="Structure"
+	     xmlns:b="http://www.b.org/b">
+    
+    <attribute name="TestOtherXML" type="OtherXML">
+      <!-- This element should get a, b and c defined on it in DDX out -->
+      <RandomXMLElement xmlns="" 
+			xmlns:c="http://www.c.com/c">
+	<RandomXMLChild>Some characters</RandomXMLChild>
+      </RandomXMLElement>
+    </attribute>
+
+  </attribute>
+  
+</netcdf>

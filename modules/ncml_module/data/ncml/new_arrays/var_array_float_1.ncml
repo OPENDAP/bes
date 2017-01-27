@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Create a new 1D array at Dataset global level with an explicit size -->
+  <variable name="MyFloatArray" type="float" shape="10">
+    <attribute name="Description" type="string">Testing with an integer constant for shape.</attribute>
+    <values>0.0 1.1 2.22 3.333 4.4444 5.55555 6.666666 7.7777777 8.88888888 9.999999999</values>
+  </variable>
+</netcdf>

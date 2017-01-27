@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Test of joinNew Grid aggregation using the scan element with a regexp">
+  
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <!-- Make sure suffix works along with it...
+	 This should find all hdf files that are in a "grids" dir -->
+    <scan 
+	location="data/" 
+	subdirs="true" 
+	suffix=".hdf"
+	regExp="^.*/grids/.*$"
+	/>
+  </aggregation> 
+  
+</netcdf>
