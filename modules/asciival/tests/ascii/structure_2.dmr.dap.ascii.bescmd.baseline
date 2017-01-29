@@ -1,0 +1,36 @@
+Dataset: structure_2
+/s[0]
+/s.i, /s.j
+123456789, 123456789
+/s[1]
+/s.i, /s.j
+123456789, 123456789
+/s[2]
+/s.i, /s.j
+123456789, 123456789
+/s[3]
+/s.i, /s.j
+123456789, 123456789
+/s[4]
+/s.i, /s.j
+123456789, 123456789
+/t[0]
+/t.i, 123456789
+/t.a, "Silly test string: 1", "Silly test string: 1", "Silly test string: 1"
+
+/t[1]
+/t.i, 123456789
+/t.a, "Silly test string: 1", "Silly test string: 1", "Silly test string: 1"
+
+/t[2]
+/t.i, 123456789
+/t.a, "Silly test string: 1", "Silly test string: 1", "Silly test string: 1"
+
+/t[3]
+/t.i, 123456789
+/t.a, "Silly test string: 1", "Silly test string: 1", "Silly test string: 1"
+
+/t[4]
+/t.i, 123456789
+/t.a, "Silly test string: 1", "Silly test string: 1", "Silly test string: 1"
+
