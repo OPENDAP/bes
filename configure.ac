@@ -92,13 +92,8 @@ AC_PROG_INSTALL
 dnl AC_PROG_LEX
 AM_PROG_LEX
 
-dnl echo "CC = $CC"
-if test "$CC" = "gcc"
-then
-    AM_CONDITIONAL([COMPILER_IS_GCC],[true])
-else
-    AM_CONDITIONAL([COMPILER_IS_GCC],[false])
-fi
+AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
+    [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which doesn't know how to make the parsers 
@@ -167,10 +162,12 @@ AC_CHECK_LIB( bz2, BZ2_bzReadOpen,
 	AC_DEFINE([HAVE_LIBBZ2], [1], [libbz2])
     ],
     [ AM_CONDITIONAL([BZ2UNCOMPRESS], [false]) ] )
+    
 AC_CHECK_LIB( z, gzopen, [BES_ZLIB_LIBS=-lz])
 
 dnl dl lib?
-AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen, [BES_DL_LIBS=-ldl]) ])
+AC_CHECK_FUNC(dlclose, [], [ AC_CHECK_LIB(dl, dlopen, [BES_DL_LIBS=-ldl]) ])
+
 LIBS=$BES_OLD_LIBS
 
 AC_SUBST(BES_DL_LIBS)
@@ -181,40 +178,40 @@ dnl Checks for libraries.
 
 # check for readline
 VL_LIB_READLINE
-if test "$vl_cv_lib_readline" = "no"; then
-   AC_MSG_ERROR([I could not find the readline library!])
-fi
+AS_IF([test "$vl_cv_lib_readline" = "no"], [AC_MSG_ERROR([I could not find the readline library!])])
 
 xmlprivatereq=
 xmlprivatelibs=
 xml_required_version=2.6.16
 libdap_pkgconfig_libxml2=yes
 libdap_libxml2_module='libxml-2.0 >= $xml_required_version'
-PKG_CHECK_MODULES([XML2],[$libdap_libxml2_module],,
-  [libdap_pkgconfig_libxml2=no])
-if test $libdap_pkgconfig_libxml2 = 'yes'
-then
-	xmlprivatereq=$libdap_libxml2_module
-	XML2_STATIC_LIBS="`$PKG_CONFIG --static --libs libxml-2.0`"
-	AC_MSG_RESULT([yes; used pkg-config])
-elif xml2-config --version > /dev/null 2>&1
-then
-	AC_MSG_RESULT([no; used pkg-config])
-        AC_MSG_CHECKING([for libxml2 version >= $xml_required_version])
-	version_libxml2=`xml2-config --version`
 
-        AS_VERSION_COMPARE(["$version_libxml2"], ["$xml_required_version"], 
-                [AC_MSG_RESULT([no])
-                 AC_MSG_ERROR([I could not find libxml2 $xml_required_version or newer, found $version_libxml2])])
-	
-	XML2_LIBS="`xml2-config --libs`"
-	XML2_STATIC_LIBS=$XML2_LIBS
-	XML2_CFLAGS="`xml2-config --cflags`"
-	xmlprivatelibs="`xml2-config --libs`" # `
-	AC_MSG_RESULT([yes; used xml2-config])
-else
-	AC_MSG_ERROR([I could not find libxml2])
-fi
+PKG_CHECK_MODULES([XML2],[$libdap_libxml2_module], [], [libdap_pkgconfig_libxml2=no])
+ 
+AS_IF([test $libdap_pkgconfig_libxml2 = 'yes'],
+    [
+    xmlprivatereq=$libdap_libxml2_module
+    XML2_STATIC_LIBS="`$PKG_CONFIG --static --libs libxml-2.0`"
+    AC_MSG_RESULT([yes; used pkg-config])
+    ],
+    [xml2-config --version > /dev/null 2>&1],
+    [
+    AC_MSG_RESULT([no; used pkg-config])
+    AC_MSG_CHECKING([for libxml2 version >= $xml_required_version])
+    version_libxml2=`xml2-config --version`
+    AS_VERSION_COMPARE(["$version_libxml2"], ["$xml_required_version"], 
+        [
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([I could not find libxml2 $xml_required_version or newer, found $version_libxml2])
+        ])
+    XML2_LIBS="`xml2-config --libs`"
+    XML2_STATIC_LIBS=$XML2_LIBS
+    XML2_CFLAGS="`xml2-config --cflags`"
+    xmlprivatelibs="`xml2-config --libs`" # `
+    AC_MSG_RESULT([yes; used xml2-config])
+    ],
+    [AC_MSG_ERROR([I could not find libxml2])])
+    
 AC_SUBST([xmlprivatereq])
 AC_SUBST([xmlprivatelibs])
 AC_SUBST([XML2_LIBS])
@@ -226,31 +223,24 @@ SIC_VAR_SYS_ERRLIST
 dnl jhrg 10/14/15 BES_CHECK_OPENSSL
 dnl BES_CHECK_KERBEROS
 
-AC_CHECK_LIBDAP([3.18.0],
-  [
-    AM_CONDITIONAL([LIBDAP], [true])
-  ],
-  [
-    AM_CONDITIONAL([LIBDAP], [false])
-  ]
-)
+AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
 
+dnl AS_CASE([$variable], [foo*], [run1], [bar*], [run2], [catchall])
+    
 dnl extra argument: --with-libwrap
 AC_MSG_CHECKING(whether to use libwrap)
 AC_ARG_WITH(libwrap,
-    [  --with-libwrap          Compile in libwrap (tcp_wrappers) support.],
-    [ case "$withval" in
-    yes) AC_MSG_RESULT(yes)
-	AC_CHECK_LIB(wrap, request_init, 
-	     [ LIBS="-lwrap $LIBS"
-	       AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
-	     [ AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap option to configure.) ])
-	;;
-    *) AC_MSG_RESULT(no);;
-    esac ],
-    AC_MSG_RESULT(no)
-)
-
+    [AS_HELP_STRING([--with-libwrap], [Compile in libwrap (tcp_wrappers) support.])],
+    [AS_CASE([$withval],
+        [yes],  
+        [
+            AC_MSG_RESULT(yes)
+            AC_CHECK_LIB(wrap, request_init, [LIBS="-lwrap $LIBS" AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
+                [AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap.)])
+        ],
+        [AC_MSG_RESULT(no)])],  dnl The default case (!= yes) is no.
+    [AC_MSG_RESULT(no)])
+    
 AC_HEADER_TR1_FUNCTIONAL
 
 AM_PATH_CPPUNIT(1.12.0,
@@ -396,31 +386,31 @@ dnl Only look for the openjpeg2000 library if GDAL was found
 
 AM_COND_IF([BUILD_GDAL], [
 
-# Which copy of OpenJPEG should be used for the build?
-OPENJPEG_FOUND=
+    dnl Which copy of OpenJPEG should be used for the build?
+    OPENJPEG_FOUND=
 
-AC_ARG_WITH(openjpeg, AS_HELP_STRING([--with-openjpeg], [Use the copy of openjpeg at this location]),
+    AC_ARG_WITH(openjpeg, AS_HELP_STRING([--with-openjpeg], [Use the copy of openjpeg at this location]),
             with_openjpeg_prefix="$withval", with_openjpeg_prefix="")
 
-AS_IF([test -z "$with_openjpeg_prefix" -a -n "$ac_bes_dependencies_prefix"],
-	[with_openjpeg_prefix=$ac_bes_dependencies_prefix])
+    AS_IF([test -z "$with_openjpeg_prefix" -a -n "$ac_bes_dependencies_prefix"],
+	   [with_openjpeg_prefix=$ac_bes_dependencies_prefix])
 
-save_LIBS=$LIBS
-LIBS="-L$with_openjpeg_prefix/lib $LIBS"
-AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [-lm])
-LIBS=$save_LIBS
+    save_LIBS=$LIBS
+    LIBS="-L$with_openjpeg_prefix/lib $LIBS"
+    AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [-lm])
+    LIBS=$save_LIBS
 
-AM_CONDITIONAL([OPENJPEG_FOUND], [test "x$OPENJPEG_FOUND" = "xyes"])
+    AM_CONDITIONAL([OPENJPEG_FOUND], [test "x$OPENJPEG_FOUND" = "xyes"])
 
-AS_IF([test "x$OPENJPEG_FOUND" = "xyes"], 
-  [ AC_MSG_NOTICE([Found OPENJPEG; building GMLJP2 support.]) ],
-  [ AC_MSG_NOTICE([I could not find OPENJPEG, not building GMLJP2 support.]) ])
+    AS_IF([test "x$OPENJPEG_FOUND" = "xyes"], 
+        [ AC_MSG_NOTICE([Found OPENJPEG; building GMLJP2 support.]) ],
+        [ AC_MSG_NOTICE([I could not find OPENJPEG, not building GMLJP2 support.]) ])
 
 ],[ # else AN_CONF_IF([BUILD_GDAL]
 
-dnl if we're not building the gdal-related things, make sure that 
-dnl OPENJPEG_FOUND is defined and is false
-AM_CONDITIONAL([OPENJPEG_FOUND], [false])
+    dnl if we're not building the gdal-related things, make sure that 
+    dnl OPENJPEG_FOUND is defined and is false
+    AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 
 ]) # AN_CONF_IF([BUILD_GDAL] 
 
@@ -469,6 +459,7 @@ AC_SUBST([CFITS_LIBS])],
 [ac_cfits_ok='no'],
 [-lm]
 )
+
 LDFLAGS="$ac_cfits_save_LDFLAGS"
 
 CFITS_CPPFLAGS=
@@ -481,9 +472,8 @@ AC_CHECK_HEADERS([fitsio.h],
 )
 CPPFLAGS=$ac_cfits_save_CPPFLAGS
 
-AS_IF([test "$ac_cfits_h" = 'yes' ],
-  [CFITS_CPPFLAGS="-I$CFITS_PATH_INC"]
-)
+AS_IF([test "$ac_cfits_h" = 'yes' ], [CFITS_CPPFLAGS="-I$CFITS_PATH_INC"])
+
 AC_SUBST([CFITS_CPPFLAGS])
 
 AS_IF([test "$ac_cfits_ok" = 'no' -o "$ac_cfits_h" = 'no'],
@@ -592,6 +582,12 @@ AC_ARG_ENABLE([gridfields],
     [ ],
     [enable_gridfields=yes])
 
+dnl ##################################################################
+
+dnl Refactor stoped here jhrg 1/28/17
+
+dnl ##################################################################
+ 
 if test "$libgf_ok" = "no" -a "$enable_gridfields" = "yes"
 then
 
@@ -752,13 +748,14 @@ AM_COND_IF([DAP_MODULES],
     modules/csv_handler/bes-testsuite/atlocal
 
     modules/dap-server/Makefile
-    modules/dap-server/asciival/Makefile
-    modules/dap-server/asciival/tests/Makefile
-    modules/dap-server/asciival/tests/atlocal
     
-    modules/dap-server/asciival/unit-tests/Makefile
-    modules/dap-server/asciival/unit-tests/test_config.h
-    modules/dap-server/www-interface/Makefile
+    modules/asciival/Makefile
+    modules/asciival/tests/Makefile
+    modules/asciival/tests/atlocal
+    modules/asciival/unit-tests/Makefile
+    modules/asciival/unit-tests/test_config.h
+
+    modules/www-interface/Makefile
 
     modules/debug_functions/Makefile
     modules/debug_functions/unit-tests/Makefile 
@@ -853,10 +850,10 @@ AM_COND_IF([DAP_MODULES],
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
     
 	dnl These can stay
-    AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
+    AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
-    AC_CONFIG_TESTDIR(modules/dap-server/asciival/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])

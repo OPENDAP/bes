@@ -22,8 +22,6 @@ endif
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-SUBDIRS = . asciival www-interface
-
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libusage_module.la
 besdir=$(datadir)/bes
