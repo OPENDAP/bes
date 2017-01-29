@@ -52,9 +52,8 @@ BESWWWRequestHandler::~BESWWWRequestHandler()
 bool
 BESWWWRequestHandler::dap_build_help( BESDataHandlerInterface & )
 {
-    // the usage request handler is already loading this and, since all
-    // three dap-server modules are usually loaded, we'll assume it's
-    // already taken care of
+    // the usage request handler provides help for this handler.
+    // A vestige of teh server 3 design. jhrg 1/29/17
 
     return true ;
 }

@@ -10,7 +10,7 @@ BES.LogVerbose=no
 BES.modules=dap,cmd,ascii,gd
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
-BES.module.ascii=@abs_top_builddir@/modules/dap-server/asciival/.libs/libascii_module.so
+BES.module.ascii=@abs_top_builddir@/modules/asciival/.libs/libascii_module.so
 BES.module.gd=@abs_top_builddir@/modules/gdal_handler/.libs/libgdal_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/gdal_handler

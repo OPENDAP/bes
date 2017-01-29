@@ -11,9 +11,9 @@ BES.modules=dap,cmd,dapreader,ascii
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs//libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
-BES.module.ascii=@abs_top_builddir@/modules/dap-server/asciival/.libs/libascii_module.so
+BES.module.ascii=@abs_top_builddir@/modules/asciival/.libs/libascii_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/dap-server/asciival
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/asciival
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=dapreader:.*\.(dds|data|dods|dmr|dap|xml)$;

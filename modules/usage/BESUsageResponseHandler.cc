@@ -30,16 +30,16 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <DDS.h>
+#include "../usage/BESUsageResponseHandler.h"
 
-#include "BESUsageResponseHandler.h"
+#include <DDS.h>
+#include "../usage/BESUsage.h"
+#include "../usage/BESUsageNames.h"
+#include "../usage/BESUsageTransmit.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
-#include "BESUsageNames.h"
-#include "BESUsage.h"
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
-#include "BESUsageTransmit.h"
 
 using namespace libdap;
 

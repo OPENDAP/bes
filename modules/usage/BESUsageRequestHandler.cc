@@ -31,7 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 
-#include "BESUsageRequestHandler.h"
+#include "../usage/BESUsageRequestHandler.h"
+
 #include "BESResponseHandler.h"
 #include "BESResponseNames.h"
 #include "BESVersionInfo.h"

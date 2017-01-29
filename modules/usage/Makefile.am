@@ -1,5 +1,5 @@
 
-# Automake file for dap-server
+# Automake file for usage
 #
 # 5/17/2005 jhrg
 #
@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
-M_NAME=dap-server/usage
+M_NAME=usage
 M_VER=4.2.6
 
 if DAP_MODULES
@@ -26,7 +26,7 @@ lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libusage_module.la
 besdir=$(datadir)/bes
 
-dist_bes_DATA = dap-server_help.html dap-server_help.txt
+dist_bes_DATA = usage_help.html usage_help.txt
 
 USAGE_SOURCES = usage.cc usage.h 
 
@@ -41,37 +41,33 @@ libusage_module_la_LDFLAGS = -avoid-version -module
 libusage_module_la_LIBADD = $(LIBADD) # $(BES_DAP_LIBS)
 
 EXTRA_DIST = COPYING COPYRIGHT_URI README \
-	dap-server.conf.in OSX_Resources
+	usage.conf.in OSX_Resources
 
 if !DAP_MODULES
-EXTRA_DIST += dap-server.spec
+EXTRA_DIST += usage.spec
 endif
 
-DISTCLEANFILES = stamp-nph-dods dap-server.conf
+DISTCLEANFILES = usage.conf
 
-install-data-local: dap-server.conf
+install-data-local: usage.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
 	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dap-server.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dap-server.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap-server.conf.$$currdate; \
-	$(INSTALL_DATA) dap-server.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap-server.conf
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf.$$currdate; \
+	$(INSTALL_DATA) usage.conf $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf
 
 uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/dap-server.conf
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf
 
-dap-server.conf: dap-server.conf.in $(top_srcdir)/config.status
-	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap-server.conf
+usage.conf: usage.conf.in $(top_srcdir)/config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > usage.conf
 
 C4_DIR=./cccc
 C4_USAGE=--html_outfile=cccc-usage.html --xml_outfile=cccc-usage.xml --db_outfile=cccc-usage.db
-C4_ASC=--html_outfile=cccc-asc.html --xml_outfile=cccc-asc.xml --db_outfile=cccc-asc.db
-C4_WWW=--html_outfile=cccc-www.html --xml_outfile=cccc-www.xml --db_outfile=cccc-www.db
 
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(C4_USAGE) $(libusage_module_la_SOURCES)
-	cccc --outdir=$(C4_DIR) $(C4_ASC) asciival/*.{cc,h}
-	cccc --outdir=$(C4_DIR) $(C4_WWW) www-interface/*.{cc,h}
 
 ###########################################################################
 

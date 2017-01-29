@@ -747,7 +747,7 @@ AM_COND_IF([DAP_MODULES],
     modules/csv_handler/bes-testsuite/Makefile
     modules/csv_handler/bes-testsuite/atlocal
 
-    modules/dap-server/Makefile
+    modules/usage/Makefile
     
     modules/asciival/Makefile
     modules/asciival/tests/Makefile

@@ -5,8 +5,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
--I$(top_srcdir)/modules/dap-server \
--I$(top_srcdir)/modules/dap-server/asciival $(DAP_CFLAGS)
+-I$(top_srcdir)/modules//asciival $(DAP_CFLAGS)
 LIBADD =  $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_CLIENT_LIBS)
 else
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/asciival $(BES_CPPFLAGS)

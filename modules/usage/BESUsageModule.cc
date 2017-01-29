@@ -33,21 +33,21 @@
 
 using std::endl ;
 
-#include "BESUsageModule.h"
+#include "../usage/BESUsageModule.h"
 
-#include "BESUsageNames.h"
+#include "../usage/BESUsageNames.h"
 #include "BESDapNames.h"
 #include "BESResponseNames.h"
 #include "BESResponseHandlerList.h"
 
-#include "BESUsageRequestHandler.h"
+#include "../usage/BESUsageRequestHandler.h"
 #include "BESRequestHandlerList.h"
 
-#include "BESUsageResponseHandler.h"
+#include "../usage/BESUsageResponseHandler.h"
 
 #include "BESDapService.h"
 
-#include "BESUsageTransmit.h"
+#include "../usage/BESUsageTransmit.h"
 #include "BESTransmitter.h"
 #include "BESReturnManager.h"
 #include "BESTransmitterNames.h"

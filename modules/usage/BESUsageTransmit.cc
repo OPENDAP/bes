@@ -30,14 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "../usage/BESUsageTransmit.h"
+
+#include "../usage/BESUsage.h"
+#include "../usage/usage.h"
 #include "BESDapTransmit.h"
-#include "BESUsageTransmit.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
 #include "mime_util.h"
-#include "BESUsage.h"
-#include "usage.h"
-
 #include "InternalErr.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
