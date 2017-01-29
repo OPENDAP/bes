@@ -1,0 +1,13 @@
+
+The new_new_build branch in corporates the modules in to the BES
+project directly (and looses the individual repo's history in the
+process). The build and various top-level autoconf/make files are the
+same.
+
+Here's what's left to be done:
+
+Decide on the way to handle the HDF modules
+Add options to configure to simplify THG's work
+Remove the two hack configure scripts
+Modify the configure script so that uses environment vars (?)
+
