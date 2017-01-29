@@ -11,7 +11,9 @@ Add options to configure to simplify THG's work
 
 DONE Remove the two hack configure scripts
 MAYBE Modify the configure script so that uses environment vars (?)
+DONE Move asciival and www-interface up to modules
 
+Rename dap-server to 'usage'
 Separate the BES configure from the part specific to the modules
     Use separate M4 calls in a different file and include them?
 Remove unused M4 macrons frm configure
