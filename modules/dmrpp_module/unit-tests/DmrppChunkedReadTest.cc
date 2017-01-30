@@ -146,14 +146,14 @@ public:
      */
     void read_var_check_name_and_length(DmrppArray *array, string name, int length)
     {
-        BESDEBUG("dmrpp", __func__ << "() - array->name(): " << array->name() << endl);
+        BESDEBUG("dmrpp", __func__ << "() - array->name(): " << array->name() << " expected_name: " << name << endl);
         CPPUNIT_ASSERT(array->name() == name);
 
         set_data_url_in_chunks(array);
 
         // Read the data
         array->read();
-        BESDEBUG("dmrpp", __func__ << "() - array->length(): " << array->length() << endl);
+        BESDEBUG("dmrpp", __func__ << "() - array->length(): " << array->length() << " expected_length: " << length << endl);
         CPPUNIT_ASSERT(array->length() == length);
     }
 
@@ -541,9 +541,25 @@ public:
 
 
 
+    void test_a2_local_twoD_chunked_array()
+    {
+        string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("a2_local_twoD.h5.dmrpp");
+        check_f32_test_array(chnkd_twoD, "d_4_chunks", 10000);
+    }
+
+    void test_a3_local_twoD_chunked_array()
+    {
+        string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("a3_local_twoD.h5.dmrpp");
+        check_f32_test_array(chnkd_twoD, "d_4_shufzip_chunks", 10000);
+    }
+
+
+
+
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
+#if 1
     CPPUNIT_TEST(test_read_oneD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_asymmetric_array);
@@ -571,6 +587,12 @@ public:
     CPPUNIT_TEST(test_chunked_shuffled_zipped_twoD);
     CPPUNIT_TEST(test_chunked_shuffled_zipped_threeD);
     CPPUNIT_TEST(test_chunked_shuffled_zipped_fourD);
+
+    CPPUNIT_TEST(test_a2_local_twoD_chunked_array);
+    CPPUNIT_TEST(test_a3_local_twoD_chunked_array);
+#endif
+
+
 
     CPPUNIT_TEST_SUITE_END();
 };

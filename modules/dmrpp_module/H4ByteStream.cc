@@ -197,8 +197,8 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
 			data_access_url += "?cloudydap=" + cloudydap_context_value;
 		}
 		else {
-	        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Unable to locate context "
-	        		"key '" << cloudydap_context << "'" << endl);
+	        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - The context "
+	        		"key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
 		}
 	}
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -904,35 +904,49 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // Check for a h4:byteStream and process if found
                 // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
 
-                // This bit of magic sets the URL used to get the data and it's
-                // magic in part because it may be a file or an http URL
-                string data_url = parser->dmr()->request_xml_base();
-                if (parser->debug()) cerr << "Processing xml:base into data_url. xml:base: '" << data_url << "'" << endl;
-                // First we make sure xml_base is not an actual HTTP URL
-                std::string http("http://");
-                std::string https("https://");
-                if (data_url.compare(0, http.size(), http) && data_url.compare(0, https.size(), https)){
-                    if (parser->debug()) cerr << "xml:base does NOT start with '" << http << "' or with '"<<https <<"'. "
-                    		"Retrieving default catalog root directory" << endl;
-                    // Now we try to find the default catalog. If we can't find it we punt an leave it be.
-                    string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
-                    if (parser->debug()) cerr << "default_catalog name '" << defcatname << "'" << endl;
-                    BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
-                    if (!defcat) {
-                    	// Not catalog. So we print something in debug but otherwise do nothing.
-                        string err = (string) "Not able to find the default catalog '"
-                                + defcatname +"'";
-                        if (parser->debug()) cerr << err << "'" << endl;
-                    }
-                    else {
-                    	// Yay! We found the catalog so we get the root dir
-                    	// and make a file URL.
-                        BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
-                        if (parser->debug()) cerr << "Found default catalog name '" << defcatname << "' root_dir: '"<< utils->get_root_dir()<<"'" << endl;
-                        data_url = BESUtil::assemblePath(utils->get_root_dir(),data_url,true);
-                        data_url = "file://"+data_url;
-                    }
+            	string data_url="unknown_data_location";
+                if (parser->check_attribute("href")) {
+                    istringstream data_url_ss(parser->xml_attrs["href"].value);
+                    data_url = data_url_ss.str();
+                    if (parser->debug()) cerr << "Processing 'href' value into data_url. href: "<< data_url_ss.str() << endl;
                 }
+                else {
+                    if (parser->debug()) cerr << "No attribute 'href' located. Trying xml:base..." << endl;
+					// This bit of magic sets the URL used to get the data and it's
+					// magic in part because it may be a file or an http URL
+					data_url = parser->dmr()->request_xml_base();
+					if (parser->debug()) cerr << "Processing xml:base into data_url. xml:base: '" << data_url << "'" << endl;
+                }
+				// First we see if it's an HTTP URL, and if not we
+                // make a local file url based on the Catalog Root
+                std::string http("http://");
+				std::string https("https://");
+				std::string file("file://");
+				if (    data_url.compare(0, http.size(), http) &&
+						data_url.compare(0, https.size(), https) &&
+						data_url.compare(0, file.size(), file)
+						){
+					if (parser->debug()) cerr << "xml:base does NOT start with '" << http << "' or with '"<<https <<"'. "
+							"Retrieving default catalog root directory" << endl;
+					// Now we try to find the default catalog. If we can't find it we punt and leave it be.
+					string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+					if (parser->debug()) cerr << "default_catalog name '" << defcatname << "'" << endl;
+					BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
+					if (!defcat) {
+						// Not catalog. So we print something in debug but otherwise do nothing.
+						string err = (string) "Not able to find the default catalog '"
+								+ defcatname +"'";
+						if (parser->debug()) cerr << err << "'" << endl;
+					}
+					else {
+						// Yay! We found the catalog so we get the root dir
+						// and make a file URL.
+						BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
+						if (parser->debug()) cerr << "Found default catalog name '" << defcatname << "' root_dir: '"<< utils->get_root_dir()<<"'" << endl;
+						data_url = BESUtil::assemblePath(utils->get_root_dir(),data_url,true);
+						data_url = "file://"+data_url;
+					}
+				}
                 if (parser->debug()) cerr << "Processed data_url: '" << data_url << "'" << endl;
 
                 unsigned long long offset = 0;

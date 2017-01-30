@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include <sstream>
 #include <string.h>
 
 #include <string>
@@ -67,8 +68,13 @@ static size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, v
     unsigned long long bytes_read = h4bs->get_bytes_read();
     size_t nbytes = size * nmemb;
 
-    BESDEBUG("dmrpp",
-            "h4bytestream_write_data() - bytes_read: " << bytes_read << ", nbytes: " << nbytes << ", rbuf_size: " << h4bs->get_rbuf_size() << endl);
+    BESDEBUG("dmrpp", __func__ << "() -"
+			<< " bytes_read: " << bytes_read
+			<< ", size: " << size
+			<< ", nmemb: " << nmemb
+			<< ", nbytes: " << nbytes
+			<< ", rbuf_size: " << h4bs->get_rbuf_size()
+			<< endl);
 
     // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= h4bs->get_rbuf_size());
@@ -76,6 +82,9 @@ static size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, v
     memcpy(h4bs->get_rbuf() + bytes_read, buffer, nbytes);
 
     h4bs->set_bytes_read(bytes_read + nbytes);
+
+    BESDEBUG("dmrpp", __func__ << "() -"
+			<< " bytes_read: " << h4bs->get_bytes_read() << endl);
 
     return nbytes;
 }
@@ -86,11 +95,15 @@ static size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, v
  * @see https://curl.haxx.se/libcurl/c/libcurl.html
  * @param url Get dat from this URL
  * @param range ...and this byte range
- * @param user_data A pinter to a DmrppCommon instance
+ * @param user_data A pointer to a H4ByteStream instance
  */
 void curl_read_byte_stream(const string &url, const string &range, void *user_data)
 {
     // See https://curl.haxx.se/libcurl/c/CURLOPT_RANGE.html, etc.
+    BESDEBUG("dmrpp", __func__ << "() - BEGIN "
+    		<< " url: " << url
+    		<< " range: " << range
+			<< endl);
 
     CURL* curl = curl_easy_init();
     if (curl) {
@@ -115,13 +128,76 @@ void curl_read_byte_stream(const string &url, const string &range, void *user_da
                 string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Perform the request
-        if (CURLE_OK != curl_easy_perform(curl)) {
+        long curl_code = curl_easy_perform(curl);
+        if (CURLE_OK != curl_code) {
             curl_easy_cleanup(curl);
             throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
+		BESDEBUG("dmrpp", __func__ << "() - curl_easy_perform() finished. exit_code: " << curl_code << endl);
 
+		string file_url("file://");
+		if( ! url.compare(0, file_url.size(), file_url) ){
+			// If it's a file URL then we don;t need to dink around with the HTTP noise..
+			BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
+		}
+		else {
+			// If it's not a file URL then we'll assume it's an http(s) URL and
+			// we handle the various HTTP mischief.
+			long http_code = 0;
+			long curl_info_code = curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &http_code);
+			if (http_code == 200 && curl_code != CURLE_ABORTED_BY_CALLBACK && curl_info_code==CURLE_OK)
+			{
+				BESDEBUG("dmrpp", __func__ << "() - SUCCEEDED!"<< endl);
+			}
+			else if(http_code==206){
+				BESDEBUG("dmrpp", __func__ << "() -  206 " << endl);
+
+				double dwnld_length;
+				ostringstream oss;
+				curl_info_code =  curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &dwnld_length);
+				if(curl_info_code != CURLE_OK){
+					oss << "Missing_Http_Content_Length_Header";
+				}
+				else {
+					oss << dwnld_length;
+				}
+				BESDEBUG("dmrpp", __func__ << "() - Host Returned \"Partial-Content\" (206) length: " << oss.str() << endl);
+			}
+			else
+			{
+				std::ostringstream oss;
+				oss <<  __func__ << "() - ERROR curl request failed! " << "http-status: " << http_code << endl;
+				char *ctype;
+				string content_type;
+				curl_info_code = curl_easy_getinfo (curl, CURLINFO_CONTENT_TYPE, &ctype);
+				if(curl_info_code != CURLE_OK || ctype==NULL) {
+					content_type = "No_Content_Type_Found";
+				}
+				else{
+					content_type =  string(ctype);
+				}
+				oss << " content-type: " << content_type;
+
+				H4ByteStream *h4bs = reinterpret_cast<H4ByteStream*>(user_data);
+				long bytes_read = h4bs->get_bytes_read();
+				oss << " bytes_read: " << bytes_read;
+
+				if(content_type.find("text")!=string::npos ||
+						content_type.find("xml")!=string::npos ||
+						content_type.find("json")!=string::npos) {
+					H4ByteStream *h4bs = reinterpret_cast<H4ByteStream*>(user_data);
+					h4bs->get_rbuf()[bytes_read] = 0;
+					string message(h4bs->get_rbuf());
+					oss << endl << message;
+				}
+				BESDEBUG("dmrpp", oss.str() << endl);
+				curl_easy_cleanup(curl);
+				throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+			}
+		}
         curl_easy_cleanup(curl);
     }
+    BESDEBUG("dmrpp", __func__ << "() - END " << endl);
 }
 
 /**

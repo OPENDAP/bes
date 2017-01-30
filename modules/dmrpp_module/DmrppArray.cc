@@ -312,7 +312,7 @@ bool DmrppArray::read_chunks()
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     // Allocate target memory.
-    // Fix me - I think this needs to be the constrained size!
+    // FIXME - I think this needs to be the constrained size!
     reserve_value_capacity(length());
     vector<unsigned int> array_shape = get_shape(false);
 
