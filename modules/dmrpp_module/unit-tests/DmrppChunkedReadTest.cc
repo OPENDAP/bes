@@ -559,7 +559,7 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
-#if 0
+#if 1
     CPPUNIT_TEST(test_read_oneD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_asymmetric_array);
@@ -591,8 +591,6 @@ public:
     CPPUNIT_TEST(test_a2_local_twoD_chunked_array);
     CPPUNIT_TEST(test_a3_local_twoD_chunked_array);
 #endif
-    CPPUNIT_TEST(test_a2_local_twoD_chunked_array);
-    CPPUNIT_TEST(test_a3_local_twoD_chunked_array);
 
 
 
