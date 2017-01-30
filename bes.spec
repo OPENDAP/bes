@@ -10,7 +10,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.17.3
+Version:        3.17.4
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -153,8 +153,8 @@ exit 0
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
 
 # Added 10/25/16 jhrg. See below for the installation of the logrotate file.
-%dir %{_sysconfdir}/logrotate.d
-%config(noreplace) %{_sysconfdir}/logrotate.d/besd.logrotate
+# %dir %{_sysconfdir}/logrotate.d
+# %config(noreplace) %{_sysconfdir}/logrotate.d/besd.logrotate
 
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
