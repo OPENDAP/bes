@@ -65,7 +65,7 @@ EXTRA_DIST = data dmrpp.conf.in
 CLEANFILES = *~ dmrpp.conf
 
 sample_datadir = $(datadir)/hyrax/data/dmrpp
-sample_data_DATA = data/*/*
+sample_data_DATA = data/*
 
 install-data-local: dmrpp.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
