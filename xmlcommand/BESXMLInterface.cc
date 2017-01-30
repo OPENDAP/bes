@@ -48,7 +48,6 @@ using std::stringstream;
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
 		BESInterface(strm)
-//    BESBasicInterface(strm)
 {
     _dhi = &_base_dhi;
     _dhi->data[DATA_REQUEST] = "xml document";
