@@ -40,7 +40,7 @@ using std::new_handler;
 using std::bad_alloc;
 using std::vector;
 
-#include "BESBasicInterface.h"
+#include "BESInterface.h"
 #include "BESXMLUtils.h"
 
 class BESXMLCommand;
@@ -49,7 +49,7 @@ class BESXMLCommand;
 
  @see BESInterface
  */
-class BESXMLInterface: public BESBasicInterface {
+class BESXMLInterface: public BESInterface {
 private:
     vector<BESXMLCommand *> _cmd_list;
     BESDataHandlerInterface _base_dhi;
