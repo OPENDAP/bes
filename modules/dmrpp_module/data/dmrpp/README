@@ -1,2 +1,3 @@
 
-These files are from http://task-28-false.opendap.org:8080/s3/catalog/cloudydap/samples/catalog.xml.
+These data files come fro a variety of sources. Some from THG and other were generated using
+the mkChunkedTestData.py python script located in the parent directory.
