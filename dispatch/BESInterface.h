@@ -163,6 +163,7 @@ protected:
 
     BESInterface(ostream *strm);
     virtual ~BESInterface();
+
 public:
     virtual int execute_request(const string &from);
     virtual int finish_with_error(int status);
