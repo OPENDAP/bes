@@ -16,4 +16,4 @@ EXTRA_DIST =
 CLEANFILES = *~ dmrpp.conf
 
 sample_datadir = $(datadir)/hyrax/data/dmrpp
-sample_data_DATA = *.dmrpp *.bin *.h5
+sample_data_DATA = dmrpp/*.dmrpp dmrpp/*.bin dmrpp/*.h5 dmrpp/*.bs
