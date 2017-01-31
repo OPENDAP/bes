@@ -61,3 +61,4 @@ asciival/unit-tests/test_config.h
 asciival/tests/ASCII_HandlerTest*
 asciival/tests/bes.conf
 asciival/tests/package.m4
+/usage.conf
