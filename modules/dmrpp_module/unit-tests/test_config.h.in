@@ -2,10 +2,10 @@
 #define E_test_config_h
 
 #define TEST_SRC_DIR "@abs_srcdir@"
-#define TEST_DATA_DIR "@abs_top_srcdir@/modules/dmrpp_module/data"
+#define TEST_DATA_DIR "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp"
 #define TEST_DMRPP_CATALOG "@abs_top_srcdir@/modules/dmrpp_module"
 
-const string test_data_dir = "@abs_top_srcdir@/modules/dmrpp_module/data";
+const string test_data_dir = "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp";
 
 #endif
 

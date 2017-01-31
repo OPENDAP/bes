@@ -5,7 +5,7 @@
     <bes:setContext name="dap_explicit_containers">no</bes:setContext>
     <bes:setContext name="errors">xml</bes:setContext>
     <bes:setContext name="max_response_size">0</bes:setContext>
-    <bes:setContainer name="myContainer" space="catalog">data/chunked_twoD.h5.dmrpp</bes:setContainer>
+    <bes:setContainer name="myContainer" space="catalog">data/dmrpp/chunked_twoD.h5.dmrpp</bes:setContainer>
     <bes:define name="d1" space="default">
         <bes:container name="myContainer" />
     </bes:define>

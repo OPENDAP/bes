@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0" 
+    dmrVersion="1.0" 
+    name="chunked_oneD_uneven.h5"
+    xml:base="data/dmrpp/chunked_oneD_uneven.h5">
+        
+  <Float32 name="d_5_odd_chunks">
+    <Dim size="40000"/>
+    <Attribute name="origname" type="String">
+      <Value>d_5_odd_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_5_odd_chunks</Value>
+    </Attribute>
+    <h4:chunks>
+      <h4:chunkDimensionSizes>9501</h4:chunkDimensionSizes>
+      <h4:byteStream md5="96b12e4a3988da5c93b255c0272551f2" uuid="0b6399cc-c0b3-4f6d-a867-3688b02bbf01" chunkPositionInArray="[0]" nBytes="38004" offset="3496"/>
+      <h4:byteStream md5="220e7a2fd6e658ba6d0e9e8db013c541" uuid="512cd247-0302-428e-9ad1-cfc547039061" chunkPositionInArray="[9501]" nBytes="38004" offset="41500"/>
+      <h4:byteStream md5="1da4839817d5dd988d892ab11672a37f" uuid="41dd84b2-bbf7-48ad-b3fe-831364709c33" chunkPositionInArray="[19002]" nBytes="38004" offset="79504"/>
+      <h4:byteStream md5="aed217eddc2a377b559c6610402fd642" uuid="5ddeb0eb-27f2-4f6d-b12c-fbc589fb7b38" chunkPositionInArray="[28503]" nBytes="38004" offset="117508"/>
+      <h4:byteStream md5="a4233f328af49b80bd4ac8ea7084a133" uuid="f31b1353-5399-4bea-9748-f19cf03aadd0" chunkPositionInArray="[38004]" nBytes="38004" offset="155512"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>
