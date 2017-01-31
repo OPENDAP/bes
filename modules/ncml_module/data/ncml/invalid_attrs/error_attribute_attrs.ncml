@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes of attribute element that aren't in schema -->
+<netcdf>
+  
+  <!-- Test for obvious typos for each expected atribute:  
+       1) name spelled wrong
+       2) type spelled wrong
+       3) separator with common misspelling
+       4) orgName is correct, not originalName
+       5) values rather than value, which I do all the time because of the values element
+       Parse error should catch them all in baseline.
+  -->
+ <attribute namee="Test" typee="string" seperator="*" originalName="PreTest" values="One*Two*Three"/>
+ 
+</netcdf>

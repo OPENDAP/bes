@@ -1,0 +1,19 @@
+# version testing tutorial on the sun
+date >&trash
+cat trash 
+$TSBIN_DIR/newform >&trash 
+cat trash
+rm trash
+echo "**************************************************************"
+echo "TESTING BYTE SWAPPING"
+echo "**************************************************************"
+rm testswap.dat
+echo "$TSBIN_DIR/newform byteswap.lsb -o testswap.dat"
+($TSBIN_DIR/newform byteswap.lsb -o testswap.dat) 
+diff byteswap.dat testswap.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed
+echo "***** BYTESWAP TEST WORKED LIKE A CHARM *****"
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed

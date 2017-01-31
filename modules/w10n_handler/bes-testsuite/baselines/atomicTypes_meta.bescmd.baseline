@@ -1,0 +1,86 @@
+{
+  "name": "atomicTypes.nc",
+  "attributes": [],
+  "leaves": [
+    {
+      "name": "fvcom_mesh",
+      "type": "Int32",
+      "attributes": [
+        {"name": "face_node_connectivity", "value": ["fnca"]},
+        {"name": "standard_name", "value": ["mesh_topology"]},
+        {"name": "topology_dimension", "value": [2]},
+        {"name": "node_coordinates", "value": ["X Y"]}
+      ]
+    },
+    {
+      "name": "letter",
+      "type": "String",
+      "attributes": [
+        {"name": "description", "value": ["A deficiency in character my friend."]},
+        {"name": "string_length", "value": [1]}
+      ]
+    },
+    {
+      "name": "varByte",
+      "type": "Byte",
+      "attributes": [
+        {"name": "description", "value": ["Byte me."]}
+      ]
+    },
+    {
+      "name": "varShort",
+      "type": "Int16",
+      "attributes": [
+        {"name": "description", "value": ["Short people got no reason to..."]}
+      ]
+    },
+    {
+      "name": "varInt",
+      "type": "Int32",
+      "attributes": [
+        {"name": "description", "value": ["More like 4 dollars."]}
+      ]
+    },
+    {
+      "name": "varLong",
+      "type": "Int32",
+      "attributes": [
+        {"name": "description", "value": ["Too long have I wandered this barren wasteland my friend."]}
+      ]
+    },
+    {
+      "name": "varFloat",
+      "type": "Float32",
+      "attributes": [
+        {"name": "description", "value": ["Floating in blissful silence through time and space."]}
+      ]
+    },
+    {
+      "name": "varDouble",
+      "type": "Float64",
+      "attributes": [
+        {"name": "description", "value": ["When in doubt, double down."]}
+      ]
+    },
+    {
+      "name": "X",
+      "type": "Float32",
+      "attributes": [
+        {"name": "grid", "value": ["element"]},
+        {"name": "grid_location", "value": ["node"]}
+      ],
+      "shape": [9]
+    },
+    {
+      "name": "Y",
+      "type": "Float32",
+      "attributes": [
+        {"name": "grid", "value": ["element"]},
+        {"name": "grid_location", "value": ["node"]}
+      ],
+      "shape": [9]
+    }
+  ],
+  "nodes": [],
+  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/atomicTypes.nc"},{"name":"identifier","value":"\/"}]
+}

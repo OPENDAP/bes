@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Test case for the <remove/> element.
+     Currently we can remove leaf and container attributes only -->
+<netcdf location="/data/ncml/fnoc1.nc">
+  
+<!-- 1) enter scope of container and remove a leaf -->
+  <attribute name="NC_GLOBAL" type="Structure">
+    <remove name="base_time" type="attribute"/>
+  </attribute>
+
+  <!-- 2) Remove entire container. -->
+  <remove name="DODS_EXTRA" type="attribute"/>
+
+  <!-- 3) Remove leaf attribute within a variable -->
+  <variable name="u">
+    <remove name="missing_value" type="attribute"/>
+  </variable>
+
+</netcdf>

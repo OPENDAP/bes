@@ -1,0 +1,14 @@
+<netcdf location="data/ncml/attribute_new_container.ncml">
+
+  <!-- This attribute exists in the wrapped set, so
+       the dot notation below should create a new top-level
+       attribute and not find it with recursion. -->
+  <!--
+      <attribute name="NewContainer" type="Structure">
+	<attribute name="NewAttr" type="string" value="I am a new attribute in a new container!"/>
+      </attribute>
+      -->
+
+  <!-- The new attribute should be named "NewContainer.NewAttr" at top level -->
+  <attribute name="NewContainer.NewAttr" type="int" value="100"/>
+</netcdf>

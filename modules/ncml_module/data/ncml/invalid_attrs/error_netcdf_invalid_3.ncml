@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes in netcdf that are CURRENTLY UNSUPPORTED.
+The tests will become invalid as these features are supported.
+This test: netcdf@fmrcDefinition
+-->
+<netcdf location="/data/ncml/fnoc1.nc" fmrcDefinition="Value_doesnt_matter_existence_is_error"/>

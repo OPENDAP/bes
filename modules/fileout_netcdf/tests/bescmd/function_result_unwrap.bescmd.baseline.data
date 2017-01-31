@@ -1,0 +1,12 @@
+netcdf test {
+dimensions:
+	promoted_message_len = 121 ;
+variables:
+	char promoted_message(promoted_message_len) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax ?wrapitup()" ;
+data:
+
+ promoted_message = "This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type." ;
+}

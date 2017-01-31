@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <attribute name="Int32_Max_Bounds" type="Int32" value="2147483648"/> 
+</netcdf>
+

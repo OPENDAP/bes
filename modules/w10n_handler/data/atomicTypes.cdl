@@ -1,0 +1,63 @@
+netcdf hex {
+dimensions:
+	nodes = 9 ;
+variables:
+	int fvcom_mesh ;
+		fvcom_mesh:face_node_connectivity = "fnca" ;
+		fvcom_mesh:standard_name = "mesh_topology" ;
+		fvcom_mesh:topology_dimension = 2 ;
+		fvcom_mesh:node_coordinates = "X Y" ;
+    
+    char letter;
+        letter:description = "A deficiency in character my friend.";
+    
+    byte varByte;
+        varByte:description = "Byte me.";
+    
+    short varShort;
+        varShort:description = "Short people got no reason to...";
+    
+    int varInt;
+        varInt:description = "More like 4 dollars.";
+    
+    long varLong;
+        varLong:description = "Too long have I wandered this barren wasteland my friend.";
+    
+    float varFloat;
+        varFloat:description = "Floating in blissful silence through time and space.";
+    
+    double varDouble;
+        varDouble:description = "When in doubt, double down.";
+    
+	float X(nodes) ;
+		X:grid = "element" ;
+		X:grid_location = "node" ;
+	float Y(nodes) ;
+		Y:grid = "element" ;
+		Y:grid_location = "node" ;
+
+data:
+
+ fvcom_mesh = 666;
+ 
+ letter = "Z";
+ 
+ 
+ varByte = 127;
+ 
+ varShort = 1568;
+ 
+ varInt = 16073;
+ 
+ varLong = 9861235;
+ 
+ varFloat = 3.14159265359;
+ 
+ varDouble = 2.71828182845904523536028747135266249775724709369995;
+ 
+ X = -1.0, 0.0, 1.0, 1.5,  1.0,  0.0, -1.0, -1.5, 0.0 ;
+
+ Y =  1.0, 1.5, 1.0, 0.0, -1.0, -1.5, -1.0,  0.0, 0.0 ;
+
+
+}

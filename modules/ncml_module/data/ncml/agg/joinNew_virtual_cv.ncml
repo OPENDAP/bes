@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Sample joinNew Aggregation on Pure NCML Datasets">
+  
+  <aggregation type="joinNew" dimName="day">
+    <variableAgg name="V"/>
+
+    <netcdf title="Sample Slice 1" coordValue="100">
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<values>1 3 5 7 9</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Sample Slice 2" coordValue="107">
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<values>2 4 6 8 10</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+</netcdf>

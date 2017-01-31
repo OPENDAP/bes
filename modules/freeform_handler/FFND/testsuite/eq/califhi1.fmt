@@ -1,0 +1,36 @@
+ASCII_input_data	"Made from hypoi.afm"
+year               1  2  uint8 0
+month              3  4  uint8 0
+day                5  6  uint8 0
+hour               7  8  uint8 0
+minute             9 10  uint8 0
+second            11 14 uint16 2
+latitude_deg_abs  15 16  uint8 0
+latitude_ns       17 17   text 0
+latitude_min      18 21 uint16 2
+longitude_deg_abs 22 24  uint8 0
+longitude_ew      25 25   text 0
+longitude_min     26 29 uint16 2
+depth             30 34  int16 2
+magnitude_local   35 36  uint8 1
+spaces            37 49   text 0
+
+ASCII_output_data	"Made from eqtape.afm"
+spaces           1  6     text 0
+year             7  8    int16 0
+month            9 10    int16 0
+day             11 12    int16 0
+hour            13 14    int16 0
+minute          15 16    int16 0
+second          17 19    int16 1
+latitude_abs    20 24    int32 3
+latitude_ns     25 25     text 0
+longitude_abs   26 31    int32 3
+longitude_ew    32 32     text 0
+depth           33 35    int16 0
+spaces          36 38     text 0
+MB              39 40 constant 0
+spaces          41 72     text 0
+magnitude_local 73 75    int16 2
+spaces          76 80     text 0
+

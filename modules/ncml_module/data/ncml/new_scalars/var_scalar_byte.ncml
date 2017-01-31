@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Create a new simple scalar variable at Dataset scope -->
+  <variable name="AnOldMagazine" type="byte">
+    <!-- make sure we can add metadata properly to new variable -->
+    <attribute name="Byte_Magazine" type="String" value="Doesn't exist any more."/>
+    <values>-64</values> <!-- byte can be signed in NcML, so make sure this works! -->
+  </variable>
+</netcdf>
+

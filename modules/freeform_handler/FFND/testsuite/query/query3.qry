@@ -1,0 +1,2 @@
+[cvar]<"MMM"
+This query excludes all records where cvar is greater than or equal to "MMM"

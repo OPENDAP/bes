@@ -1,0 +1,27 @@
+dnl Test suite containing tests that don't fit another file
+AT_BANNER([Misc Variable Tests])
+
+dnl Here we try to change the values of an existing variable, which is disallowed in this version
+AT_ASSERT_PARSE_ERROR([var_change_existing_error.ncml])
+
+dnl Test our installed sample virtual dataset works
+AT_CHECK_ALL_DAP_RESPONSES([sample_virtual_dataset.ncml])
+AT_CHECK_DATADDS_GETDAP([sample_virtual_dataset.ncml])
+
+dnl Test reentrance (wrapping NcML file within NcML file 
+AT_CHECK_ALL_DAP_RESPONSES([reentrancy_test.ncml])
+
+dnl Check that not specifying a values element for a new variable is a parse error
+AT_ASSERT_PARSE_ERROR([bugs/missing_str_values.ncml])
+
+dnl Also check that specifying values twice for a single new variable is a parse error
+AT_ASSERT_PARSE_ERROR([bugs/values_set_twice_error.ncml])
+
+dnl Make sure we can create a variable with a "." in its name.  This one
+dnl wraps a dataset that contains a variable whose fully qualified name
+dnl is the same as the new (with the dot).  We shouldn't find that one,
+dnl but instead create a new one as the baselines have.
+AT_CHECK_ALL_DAP_RESPONSES([var_with_dot.ncml])
+AT_CHECK_DATADDS_GETDAP([var_with_dot.ncml])
+
+

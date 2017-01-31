@@ -1,0 +1,774 @@
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DataDDS include and libdap namespace after repairing the BESDataDDSResponse header
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/csv_handler
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in fvor of the DDS class.
+
+2016-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/csv_handler
+2016-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Resolved conflicts
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated autotest tests, macros and Makefile.am files
+
+2015-12-23  Nathan Potter  <ndp@opendap.org>
+
+	Updated igonore to include the failed tests dir
+
+2015-12-15  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the test baselines for the DMR fix in libdap
+	Also moved the tests over to a handler_tests_macros.m4 that is based on
+	the 'template' version in bes/modules
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Removed $(srcdir)package.m4 from CLEANFILES in Makefile.am
+	We should keep this around since it's part of the distribution.
+	DISTCLEAN will remove it.
+
+2015-08-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/csv_handler
+
+	Makefile.am modifications for the package.m4
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed warning about init'd data in ctor
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/csv_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.1.0
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/csv_handler
+
+	Removed $(srcdir) prefix on package.m4 in the EXTRA_DIST variable.
+
+	Modified Makefile.am for distcheck combined with the modules build of the BES
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+	Merge remote-tracking branch 'origin/dap4'
+	Conflicts:
+		CSVRequestHandler.cc
+		configure.ac
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge remote-tracking branch 'origin/modules'
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the spec file to release 2.
+	Since this package version didn't change but the deps
+	did, I've bumped the release number.
+
+2014-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the module version number.
+	Module version numbers came from the configure scripts but the move to
+	one script builds - the modules build - broke that because those
+	configure scripts are not run anymore. I added two Makefile variables
+	to Makefile.am to hold the module name and version; a less than
+	optimal solution since now the information has to be maintained in two
+	or three places (configure.ac and .spec for the standard build and
+	Makefile.am for the modules build).
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am so that . appears first in SUBDIRS
+
+2014-11-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added the new bes.conf.modules.in to EXTRA_DIST in Makefile.am
+
+2014-11-19  James Gallagher  <jgallagher@opendap.org>
+
+	Added changes for the modules build.
+	Changed configure.ac and the Makefile.am files to support both the
+	standard build and the 'modules' build. Added a new template version
+	of bes.conf(.modules.in) that is used by the bes configure script
+	when the --with-dap-modules option is given.
+
+	Added .gitignore on the modules branch.
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac
+	files. Subclasses for/of Sequence were not defining the length()
+	virtual method correctly - adding 'const' quieted the warning.
+	Fileout GDAL had an unneeded param (ConstraintEvaluator).
+
+2014-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Changed Makefile.am so that it builds the main directory before the tests
+
+2014-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed this code to use the set_constraint() method BESResponse object.
+
+2014-08-19  James Gallagher  <jgallagher@opendap.org>
+
+	Modified so that the DMR built by the BES is used instead of a
+	making a completely new one. This will enable information read
+	from the context manager, etc., to be set by the BES framework and
+	then used by the handlers. Part of the changes include using the
+	DMR::build_using_dds() method.
+
+2014-08-18  James Gallagher  <jgallagher@opendap.org>
+
+	Corrected spelling in error messages
+
+	Error message text fixed.
+
+2014-08-15  James Gallagher  <jgallagher@opendap.org>
+
+	removed an unused header
+
+2014-08-14  James Gallagher  <jgallagher@opendap.org>
+
+	CSV handler support for DAP4 DMR and Data now supports DAP4 CEs
+	except for functions.
+
+2014-08-13  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for dap4 data responses to the csv handler.
+
+	Impements DAP4 DMR response.
+	M    CSVModule.cc
+	M    CSVModule.h
+	M    CSVRequestHandler.cc
+	M    CSVRequestHandler.h
+	D    CSVResponseNames.h
+	M    CSV_Header.cc
+	M    CSV_Header.h
+	M    CSV_Obj.cc
+	M    CSV_Reader.cc
+	M    CSV_Reader.h
+	A    bes-testsuite/csv/temperature.csv.dmr.bescmd
+	A    bes-testsuite/csv/temperature.csv.dmr.bescmd.baseline
+	M    bes-testsuite/csv_handlerTest.at
+
+	Make a branch for dap4 work - second try
+	A    https://scm.opendap.org/svn/branch/csv_handler/dap4
+
+	Load the dap4 branch with code from the trunk - then I'll 'svn switch' my hacked/modified working copy with dap4 changes to it. This is necessary because the respository needs to have code that my code has a common ancestry with.
+	A    https://scm.opendap.org/svn/branch/csv_handler/dap4/csv_handler
+
+	Added
+	A    https://scm.opendap.org/svn/branch/csv_handler/dap4
+
+2014-04-23  Nathan Potter  <ndp@opendap.org>
+
+	csv_handler: Checking software version update and associated release changes.
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the new OSX compiler prints warnings about it and it seems to not make a difference with newer g++ versions.
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	csv_handler: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	csv_handler: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	After merge with hyrax 1.8 release branch and full build w/o test failures.
+
+	_M   .
+	M    csv_handler.spec
+	_M   bes-testsuite
+	M    bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    README
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	After merge with hyrax 1.8 release branch and full build w/o test failures.
+
+	_M   .
+	M    csv_handler.spec
+	_M   bes-testsuite
+	M    bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    README
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Modified configure so that this code builds only the so version of the library by default.
+	Fixed a DDX test to work with the new libdap code.
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+	A    http://scm.opendap.org/svn/branch/csv_handler/1.0.2
+
+2011-07-04  Patrick West <pwest@ucar.edu>
+
+	added COPYRIGHT back to the spec and makefile and added a COPYRIGHT
+	file. This was missing in the Hyrax 1.7 release.
+	M    csv_handler.spec
+	A    COPYRIGHT
+	M    Makefile.am
+
+2011-06-30  Patrick West <pwest@ucar.edu>
+
+	Merge hyrax 1.7 branch to trunk
+
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+2011-04-04  James Gallagher <jgallagher@opendap.org>
+
+	Added dist-hook and cccc targets.
+
+2011-04-04  James Gallagher <jgallagher@opendap.org>
+
+	Added spec file.
+
+	A    csv_handler.spec
+	M    Makefile.am
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	csv_handler: Added automated version numbers to OSX Package builds
+
+2011-03-10  James Gallagher <jgallagher@opendap.org>
+
+	Fixed rpm targets in Makefile.am
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	New functions for general use
+	A    CSV_Utils.cc
+	A    CSV_Utils.h
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	Added Ancillary data access.
+	M    CSVRequestHandler.cc
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	Throwing correct errors, not strings. Cleaned up code. Improved
+	performance. Started adding debugging, need to add more. Removed main
+	code, will add unit-tests.
+	M    CSV_Header.cc
+	M    CSV_Header.h
+	M    CSV_Reader.cc
+	M    CSV_Reader.h
+	M    CSVDAS.cc
+	D    main.cc
+	M    CSVDAS.h
+	M    CSVDDS.cc
+	M    CSV_Field.h
+	M    CSVRequestHandler.cc
+	M    CSV_Obj.cc
+	M    Makefile.am
+	M    CSV_Obj.h
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	On linux, needed to include cstdlib
+	M    CSV_Data.cc
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	fixed distcheck
+	M    bes-testsuite/Makefile.am
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	Preparing for OSX pkg build
+	M    Makefile.am
+
+2011-02-16  Patrick West <pwest@ucar.edu>
+
+	 Able to build OSX package
+	A    OSX_Resources
+	A    OSX_Resources/License.txt
+	AM   OSX_Resources/InstallationCheck.proto
+	AM   OSX_Resources/update_mac_package_contents.pl
+	A    OSX_Resources/Info.plist.proto
+	A    OSX_Resources/InstallationCheck.strings
+	A    OSX_Resources/Description.plist
+	AM   OSX_Resources/background.jpg
+	A    OSX_Resources/Welcome.html
+
+2011-02-15  Patrick West <pwest@ucar.edu>
+
+	Adding ChangeLog from bes/ChangeLog where this handler used to reside.
+	A    ChangeLog
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2011-02-16  Patrick West <pwest@ucar.edu>
+
+	Updated README to look more like the other data handlers. Updated NEWS
+	file to use it's own version instead of the BES version. First version
+	is 1.0.1.
+	M    README
+	M    NEWS
+
+2011-02-12  Patrick West <pwest@ucar.edu>
+
+	Preparing for first supported release
+	D    conf/mkinstalldirs
+	M    configure.ac
+	M    INSTALL
+	M    COPYRIGHT
+	M    COPYING
+	M    Makefile.am
+	M    NEWS
+
+2011-02-12  Patrick West <pwest@ucar.edu>
+
+	Making this a real handler
+	A    http://scm.opendap.org/svn/trunk/csv_handler
+	D    http://scm.opendap.org/svn/trunk/bes/csv-handler
+
+2011-02-03  Patrick West <pwest@ucar.edu>
+
+	Removed, no longer used.
+	D    csv-handler/dap_csv_handler.cc
+
+2011-01-20  Patrick West <pwest@ucar.edu>
+
+	csv-handler configuration file now loads the dap module first.
+	M    csv-handler/csv.conf.in
+
+2010-12-16  mjohnson
+
+	Removed incorrect dist of missing nc dir in bes-testsuite so
+	that make dist works
+
+2010-12-16  mjohnson
+
+	Fixed undefined symbol error due to not linking against
+	libbes_dap in Makefile.
+
+2010-10-28  mjohnson
+
+	Merge from Hyrax 1.6.2 Release Shrew branch.  More odd property
+	changes that seem to be noops but refuse to just go away.
+
+2010-07-08  Patrick West <pwest@ucar.edu>
+
+	The CSV module handles the dap service
+	M    csv-handler/CSVModule.cc
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+
+2010-07-08  Patrick West <pwest@ucar.edu>
+
+	The CSV module handles the dap service
+	M    csv-handler/CSVModule.cc
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Merging branch for 3.8.3 release of BES, Hyrax 1.6 to trunk
+	_M   csv-handler
+	M    csv-handler/conf/libdap.m4
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/configure.ac
+
+2010-05-06  Patrick West <pwest@ucar.edu>
+
+	Using csv.conf instead of bes-csv-data.sh.
+	A    csv-handler/csv.conf.in
+	M    csv-handler/configure.ac
+	D    csv-handler/bes-csv-data.sh.in
+	D    csv-handler/config.h.in
+	M    csv-handler/Makefile.am
+
+2009-10-02  James Gallagher <jgallagher@opendap.org>
+
+	Merge from branch/ioos/src/bes to /trunk/bes.
+	_M   csv-handler
+	_M   csv-handler/bes-testsuite
+
+2009-09-21  James Gallagher <jgallagher@opendap.org>
+
+	cgi_util -- mime_util and some formatting hackery.
+
+	M    csv-handler/dap_csv_handler.cc
+	M    csv-handler/CSVDDS.cc
+
+2009-09-02  Patrick West <pwest@ucar.edu>
+
+	Converted all dejagnu tests to autotest. Updated besCreateModule script
+	and test handlers (csv_handler and hello_world).
+	M    csv-handler/conf/mkinstalldirs
+	D    csv-handler/conf/depcomp
+	D    csv-handler/conf/missing
+	D    csv-handler/conf/config.guess
+	D    csv-handler/conf/config.sub
+	D    csv-handler/conf/ltmain.sh
+	D    csv-handler/conf/install-sh
+	M    csv-handler/bes-testsuite/bes.conf.in
+	A    csv-handler/bes-testsuite/atlocal.in
+	D    csv-handler/bes-testsuite/config
+	D    csv-handler/bes-testsuite/common_tests.exp
+	M    csv-handler/bes-testsuite/Makefile.am
+	A    csv-handler/bes-testsuite/csv_handlerTest.at
+	D    csv-handler/bes-testsuite/besstandalone.csv
+	M    csv-handler/configure.ac
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/CSVRequestHandler.cc
+
+2009-06-08  Patrick West <pwest@ucar.edu>
+
+	Module up to date with current BES. Added missing pkg m4 file.
+	A    csv-handler/conf/pkg.m4
+	M    csv-handler/CSVModule.cc
+
+2009-04-23  James Gallagher <jgallagher@opendap.org>
+
+	Merged small changeset from tags/bes/3.7.2 added by Patrick
+	after that tag was made. These changes fix issues with the rpm
+	builds.
+
+	_M   csv-handler
+	D    csv-handler/csv_handler.spec
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/Makefile.am
+
+2009-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Merged bes 3.7.2
+
+	_M   csv-handler
+	M    csv-handler/CSV_Header.cc
+	M    csv-handler/CSVRequestHandler.h
+	M    csv-handler/CSV_Header.h
+	M    csv-handler/dap_csv_handler.cc
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/bes-testsuite/csv/temperature.csv.1.bescmd.baseline
+	M    csv-handler/bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	M    csv-handler/CSV_Reader.cc
+	M    csv-handler/CSV_Reader.h
+	M    csv-handler/CSVDAS.cc
+	M    csv-handler/CSV_Data.cc
+	M    csv-handler/main.cc
+	M    csv-handler/CSVDAS.h
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVResponseNames.h
+	M    csv-handler/CSV_Field.h
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    csv-handler/CSVModule.h
+	M    csv-handler/CSV_Obj.cc
+	M    csv-handler/CSV_Data.h
+	M    csv-handler/CSV_Obj.h
+	M    csv-handler/CSVDDS.h
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlresponse branch to the Hyrax 1.5.0 release branch.
+
+	_M   csv-handler
+	_M   csv-handler/bes-testsuite
+	_M   csv-handler/bes-testsuite/config
+	_M   csv-handler/bes-testsuite/csv
+	M    csv-handler/bes-testsuite/csv/temperature.csv.1.bescmd.baseline
+	M    csv-handler/bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	_M   csv-handler/bes-testsuite/besstandalone.csv
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVRequestHandler.cc
+
+2009-01-13  Patrick West <pwest@ucar.edu>
+
+	Added bes standalone test suite to the test csv module.
+	
+	A    csv-handler/bes-testsuite
+	A    csv-handler/bes-testsuite/bes.conf.in
+	A    csv-handler/bes-testsuite/common_tests.exp
+	A    csv-handler/bes-testsuite/config
+	A    csv-handler/bes-testsuite/config/unix.exp
+	A    csv-handler/bes-testsuite/Makefile.am
+	A    csv-handler/bes-testsuite/csv
+	A    csv-handler/bes-testsuite/csv/temperature.csv.0.bescmd
+	A    csv-handler/bes-testsuite/csv/temperature.csv.0.bescmd.baseline
+	A    csv-handler/bes-testsuite/csv/temperature.csv.1.bescmd
+	A    csv-handler/bes-testsuite/csv/temperature.csv.1.bescmd.baseline
+	A    csv-handler/bes-testsuite/csv/temperature.csv.2.bescmd
+	A    csv-handler/bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	A    csv-handler/bes-testsuite/csv/temperature.csv.3.bescmd
+	A    csv-handler/bes-testsuite/csv/temperature.csv.3.bescmd.baseline
+	A    csv-handler/bes-testsuite/besstandalone.csv
+	A    csv-handler/bes-testsuite/besstandalone.csv/temperature.csv.0.exp
+	A    csv-handler/bes-testsuite/besstandalone.csv/temperature.csv.1.exp
+	A    csv-handler/bes-testsuite/besstandalone.csv/temperature.csv.2.exp
+	A    csv-handler/bes-testsuite/besstandalone.csv/temperature.csv.3.exp
+	M    csv-handler/configure.ac
+	M    csv-handler/Makefile.am
+
+2008-07-16  Patrick West <pwest@ucar.edu>
+
+	switched to BESInternalError from InternalErr.
+	M    csv-handler/CSVRequestHandler.cc
+
+2008-07-16  Patrick West <pwest@ucar.edu>
+
+	Dynamic casts fixed to check for result and throw exception if
+	cast fails.
+	
+	M    csv-handler/CSVRequestHandler.cc
+
+2008-04-08  Patrick West <pwest@ucar.edu>
+
+	Memory clean up
+	M    csv-handler/CSVModule.cc
+
+2008-02-14  Patrick West <pwest@ucar.edu>
+
+	Updated libdap.m4 with official one from libdap. Updated csv-handler
+	to use latest and greatest libdap.m4 and bes.m4.
+	M    csv-handler/conf/bes.m4
+	M    csv-handler/conf/libdap.m4
+	M    csv-handler/configure.ac
+	M    csv-handler/CSVDAS.h
+	M    csv-handler/config.h.in
+	M    csv-handler/CSVDDS.h
+
+2007-10-10  Patrick West <pwest@ucar.edu>
+
+	Ending debug statement in initialize added Done.
+	M    csv-handler/CSVModule.cc
+
+2007-10-08  Patrick West <pwest@ucar.edu>
+
+	Casting for delete since deleting void* is undefined
+	M    csv-handler/CSV_Data.cc
+
+2007-10-08  Patrick West <pwest@ucar.edu>
+
+	Able to create tarball now. Added NEWS, COPYING, and COPYRIGHT files.
+	EXTRADIST includes data directory and those added files.
+	A    csv-handler/csv_handler.spec
+	M    csv-handler/configure.ac
+	A    csv-handler/COPYING
+	A    csv-handler/COPYRIGHT
+	A    csv-handler/NEWS
+	M    csv-handler/Makefile.am
+
+2007-10-08  Patrick West <pwest@ucar.edu>
+
+	Removed use of help file, only adding usual information in help.
+	Created data directory and moved temperature.csv there. Changed
+	Makefile.am to install the data file into the share/hyrax/data/csv
+	data directory. Added a bes.conf update script, as in the other
+	handlers.
+	M    csv-handler/CSVRequestHandler.cc
+	D    csv-handler/temperature.csv
+	A    csv-handler/bes-csv-data.sh.in
+	D    csv-handler/bes.conf.in
+	M    csv-handler/Makefile.am
+	A    csv-handler/data
+	A    csv-handler/data/temperature.csv
+
+2007-08-20  Patrick West <pwest@ucar.edu>
+
+	Updated build instructions and information in csv-handler
+	directory.
+	M    csv-handler/conf/bes.m4
+	D    csv-handler/bes.conf
+	M    csv-handler/README
+	A    csv-handler/bes.conf.in
+	M    csv-handler/configure.ac
+	M    csv-handler/Makefile.am
+
+2007-08-01  Patrick West <pwest@ucar.edu>
+
+	Upgraded BESDEBUG call using csv context. Registering csv debug
+	context in Module. Updated bes.conf with new Cache parameters
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    csv-handler/bes.conf
+
+2007-03-10  Patrick West <pwest@ucar.edu>
+
+	Adding the csv-handler and hello_world example modules to the
+	release distribution. Added README and INSTALL files to the two
+	module directories to instruct developers how to build and test the
+	modules.
+	A    bes/csv-handler/README
+	M    bes/csv-handler/bes.conf
+	A    bes/csv-handler/INSTALL
+	M    bes/Makefile.am
+	A    bes/hello_world/README
+	A    bes/hello_world/INSTALL
+
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	If bes can not be found then exit out of the configure script. The
+	--with-bes flag works now.
+	M    csv-handler/conf/libdap.m4
+	M    csv-handler/bes.conf
+	M    csv-handler/configure.ac
+
+2007-02-23  Patrick West <pwest@ucar.edu>
+
+	Added catalog information to configuration and module
+	M    csv-handler/CSVResponseNames.h
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/bes.conf
+
+2007-02-23  Patrick West <pwest@ucar.edu>
+
+	handler example reading in csv file with request handler, response
+	handler
+	A    csv-handler
+	A    csv-handler/CSVResponseNames.h
+	A    csv-handler/CSV_Field.h
+	A    csv-handler/CSVModule.cc
+	A    csv-handler/conf
+	AM   csv-handler/conf/mkinstalldirs
+	A    csv-handler/conf/acinclude.m4
+	AM   csv-handler/conf/depcomp
+	A    csv-handler/conf/bes.m4
+	AM   csv-handler/conf/missing
+	AM   csv-handler/conf/config.guess
+	A    csv-handler/conf/libdap.m4
+	AM   csv-handler/conf/config.sub
+	A    csv-handler/conf/ltmain.sh
+	AM   csv-handler/conf/install-sh
+	A    csv-handler/CSVRequestHandler.cc
+	A    csv-handler/temperature.csv
+	A    csv-handler/CSVModule.h
+	A    csv-handler/CSV_Header.cc
+	A    csv-handler/CSVRequestHandler.h
+	A    csv-handler/CSV_Header.h
+	A    csv-handler/bes.conf
+	A    csv-handler/dap_csv_handler.cc
+	A    csv-handler/config.h.in
+	A    csv-handler/CSV_Reader.cc
+	A    csv-handler/CSV_Reader.h
+	A    csv-handler/configure.ac
+	A    csv-handler/CSVDAS.cc
+	A    csv-handler/CSV_Data.cc
+	A    csv-handler/main.cc
+	A    csv-handler/CSVDAS.h
+	A    csv-handler/CSV_Obj.cc
+	A    csv-handler/Makefile.am
+	A    csv-handler/CSV_Data.h
+	A    csv-handler/CSVDDS.cc
+	A    csv-handler/CSV_Obj.h
+	A    csv-handler/CSVDDS.h
+

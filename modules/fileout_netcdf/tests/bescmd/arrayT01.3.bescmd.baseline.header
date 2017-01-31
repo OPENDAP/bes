@@ -1,0 +1,12 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 5 ;
+variables:
+	short byte_array(dim1, dim2) ;
+	short i16_array(dim1, dim2) ;
+	int i32_array(dim1, dim2) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax arrayT01.dods?" ;
+}

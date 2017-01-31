@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value">
+    <getXD>
+        <BESError>
+            <Type>3</Type>
+            <Message>libdap exception building response: error_code = 1005: Failed to parse the constraint expression: Error: The number of dimensions in the constraint for WVC_Lat must match the number in the array.</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+            <Location>
+                <File>BESXDTransmit.cc</File>
+                <Line>78</Line>
+            </Location>
+        </BESError>
+    </getXD>
+</response>

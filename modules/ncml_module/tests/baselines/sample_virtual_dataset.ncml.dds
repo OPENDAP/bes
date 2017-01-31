@@ -1,0 +1,7 @@
+Dataset {
+    Structure {
+        Int32 TheAnswerToLifeTheUniverseAndEverything;
+        Int16 Indices[10];
+        Float32 Foo[station = 2][samples = 5];
+    } MyNewStructure;
+} sample_virtual_dataset.ncml;

@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Usage: run_command <bes command file>
+# Assumption: You are in a shell and have run 'source spath.sh' in 
+# /usr/local/opuls/shrew before running this command.
+
+besstandalone -c bes.conf -i $1

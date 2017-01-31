@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Structure name="e">
+    <Int32 name="b">
+        <value>10</value>
+    </Int32>
+    <String name="d">
+        <value></value>
+    </String>
+</Structure>

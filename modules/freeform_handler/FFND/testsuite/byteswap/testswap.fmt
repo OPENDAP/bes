@@ -1,0 +1,16 @@
+input_eqv
+begin name_equiv
+end name_equiv
+begin constant
+	data_byte_order text big_endian
+end constant
+
+ASCII_input_data	"ascii"
+piu   1  2 uint8 1
+pius  4  8 uint16 4
+pis  10 14 int16 4
+pil  16 24 int32 8
+piul 26 35 uint32 9
+pif  37 44 float32 6
+pid  46 56 float64 9
+

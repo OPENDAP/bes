@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="stringtest.nc">
+    <Dimension name="d1" size="5"/>
+    <String name="v2">
+        <Attribute name="long_name" type="String">
+            <Value>string variable</Value>
+        </Attribute>
+        <Attribute name="string_length" type="Int32">
+            <Value>100</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>c1e264d3</Value>
+        </Attribute>
+    </String>
+    <String name="v1">
+        <Dim name="/d1"/>
+        <Attribute name="long_name" type="String">
+            <Value>string variable vector</Value>
+        </Attribute>
+        <Attribute name="string_length" type="Int32">
+            <Value>100</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>679bdb4a</Value>
+        </Attribute>
+    </String>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <Value>Long string test file</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+String v2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmlnopqrstuvwyz0123456789-=./[]{}'|~`<>!@#$%^&*()              ";
+String v1[d1 = 5] = {"testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmlnopqrstuvwyz0123456789-=./[]{}'|~`<>!@#$%^&*()              ", "                                                                                                    ", "                                                                                                    ", "                                                                                                    "};
+

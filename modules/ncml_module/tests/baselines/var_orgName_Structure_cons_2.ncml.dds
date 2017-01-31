@@ -1,0 +1,7 @@
+Dataset {
+    Structure {
+        Structure {
+            Float32 precipitate[scan = 1][longitude = 1][latitude = 80];
+        } PlanetaryGrid;
+    } DataGranule;
+} var_orgName_Structure.ncml;

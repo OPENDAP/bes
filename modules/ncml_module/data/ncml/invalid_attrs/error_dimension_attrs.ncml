@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes of dimension element that aren't in schema.
+We also fail if attributes are supplied that are not used, but this is to just check the validity of those given. -->
+<netcdf>
+  
+  <!-- Test for obvious typos for each expected atribute:  
+       1) name misspelled
+       2) length specified as size by mistake
+       3), 4), 5) "is" forgotten on booleans
+       6) orgName misspelled
+       Parse error should catch them all in baseline.
+  -->
+ <dimension nname="MyDim" size="10" shared="true" variableLength="true" unlimited="true" origName="OldDim"/>
+ 
+</netcdf>

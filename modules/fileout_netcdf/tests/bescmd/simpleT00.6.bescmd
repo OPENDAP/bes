@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/simpleT00.dods</setContainer>
+    <define name="d">
+	   <container name="c" />
+	   <constraint>byte</constraint>
+    </define>
+    <get type="dods" definition="d" returnAs="netcdf"/>
+</request>

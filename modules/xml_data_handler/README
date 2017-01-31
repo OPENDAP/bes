@@ -1,0 +1,14 @@
+
+Updated for version 1.0.5
+
+The XML data handler is based on the asciival handler included in the
+dap-server package. This handler builds a response that returns data
+values as ASCII in a XML document. Of course, for most data doing this
+for an entire dataset is sheer insanity but, properly constrained, the
+results are very useful for software that needs to find out about
+specific data values such as those at the extrema of arrays. This
+handler is primarily intented to be used in those situations, with
+constraint expressions that limit the size of the data response to
+only a few values, in conjunction with semantic-web software.
+
+jhrg 7/27/2010

@@ -1,0 +1,6 @@
+The files get_coads_dods.bescmd, get_coads_dap, ..., were used to build dap2
+and dap4 binary response documents that hold the complete coads_climatology
+and fnoc1 datasets. Those files are used with the BES's dapreader module to
+test transmitter modules without requiring the format modules also are loaded
+into the BES.
+

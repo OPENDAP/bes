@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Test named dimensions -->
+  <dimension name="time" length="10"/>
+
+  <!-- Create a new 1D array at Dataset global level with a named dimension as size -->
+  <variable name="MyDoubleArray" type="double" shape="time">
+    <attribute name="Description" type="string">Testing with a named dimension in shape.</attribute>
+    <values>0.0 1.1 2.22 3.333 4.4444 5.55555 6.666666 7.7777777 8.88888888 9.999999999</values>
+  </variable>
+
+</netcdf>

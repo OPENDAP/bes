@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Check that creating a new variable at Dataset global level with the same name as an attribute is an error -->
+  
+  <!-- This is ok, a new attribute container -->
+  <attribute name="MyStructure" type="Structure"/>
+
+  <!-- This should be a parse error! Name collision between var and attr! -->
+  <variable name="MyStructure" type="Structure"/>
+
+</netcdf>

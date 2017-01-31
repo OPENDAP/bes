@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID ="some_unique_value" >
+    <setContainer name="c" space="catalog">/data/stringtest.nc</setContainer>
+    <define name="d">
+        <container name="c">
+        </container>
+    </define>
+    <get type="dmr" definition="d" />
+</request>
+

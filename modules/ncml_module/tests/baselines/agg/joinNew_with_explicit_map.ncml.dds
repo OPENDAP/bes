@@ -1,0 +1,4 @@
+Dataset {
+    Int32 V[day = 2][sensors = 3];
+    Int32 day[day = 2];
+} joinNew_with_explicit_map.ncml;

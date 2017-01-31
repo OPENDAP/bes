@@ -1,0 +1,9 @@
+Dataset {
+    Sequence {
+        String t;
+        Float64 Bx;
+        String By;
+        String Bz;
+        String Bx2;
+    } ISEE3;
+} test9.dat;

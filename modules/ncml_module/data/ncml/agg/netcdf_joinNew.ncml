@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A joinNew aggregation test on netcdf data to test those subclasses. 
+     We just aggregate fnoc1.nc with itself a few times... -->
+
+<netcdf title="Sample joinNew Aggregation on Netcdf Datasets">
+  <!-- Form new outer dimension "dataset" to show which set it came from-->
+  <aggregation type="joinNew" dimName="source">
+    
+    <!-- Aggregate these two values.  The "map" variables will be unioned.-->
+    <variableAgg name="u"/>
+    <variableAgg name="v"/>
+
+    <!-- Same dataset a few times, should work -->
+    <netcdf title="Dataset 1" location="data/ncml/fnoc1.nc"/>
+    <netcdf title="Dataset 2" location="data/ncml/fnoc1.nc"/>
+    <netcdf title="Dataset 3" location="data/ncml/fnoc1.nc"/>
+
+  </aggregation>
+  
+</netcdf>

@@ -1,0 +1,97 @@
+
+{
+   realizeClass
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc_zone_malloc
+   ...
+   fun:_ZL12realizeClassP10objc_class
+   ...
+   fun:__CFInitialize
+   ...
+}
+
+{
+   realizeClass
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc_zone_malloc
+   fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
+   fun:_ZL12realizeClassP10objc_class
+   fun:_ZL12realizeClassP10objc_class
+   fun:_ZL12realizeClassP10objc_class
+   fun:look_up_class
+   fun:objc_getFutureClass
+   fun:__CFInitialize
+   fun:_ZN16ImageLoaderMachO11doImageInitERKN11ImageLoader11LinkContextE
+   fun:_ZN16ImageLoaderMachO16doInitializationERKN11ImageLoader11LinkContextE
+   fun:_ZN11ImageLoader23recursiveInitializationERKNS_11LinkContextEjRNS_21InitializerTimingListERNS_15UninitedUpwardsE
+   fun:_ZN11ImageLoader23recursiveInitializationERKNS_11LinkContextEjRNS_21InitializerTimingListERNS_15UninitedUpwardsE
+}
+
+{
+   BESUncompressManager
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_ZN21BESUncompressManager3C1Ev
+   fun:_ZN21BESUncompressManager310TheManagerEv
+   fun:_ZN16BESFileContainer6accessEv
+   ...
+}
+
+{
+   BESUtil::explode
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_ZN7BESUtil7explodeEcRKSsRSt4listISsSaISsEE
+   ...
+}
+
+{
+   ce_expr:store_str()
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_Z12ce_exprparsePv
+   ...
+}
+
+{
+   BESCatalogList
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_ZN14BESCatalogListC1Ev
+   fun:_ZN14BESCatalogList14TheCatalogListEv
+   ...
+}
+
+{
+   BESDefaultModule::initialize
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_ZN16BESDefaultModule10initializeEiPPc
+   fun:_ZN13StandAloneApp10initializeEiPPc
+   ...
+}
+
+{
+   BESCache3::m_initialize_cache_info
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_ZN9BESCache323m_initialize_cache_infoEv
+   ...
+}
+
+{
+   BESUtil::removeLeadingAndTrailingBlanks
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:_ZN7BESUtil30removeLeadingAndTrailingBlanksERSs
+   ...
+}

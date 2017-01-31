@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Unit test of a bug where a new atomic string which didn't have its value set causes read() to throw. -->
+<netcdf>
+  
+  <variable name="Foo" type="string">
+    <attribute name="Desc" type="string" value="I forgot the values element!"/>
+  </variable>
+
+</netcdf>

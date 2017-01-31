@@ -1,0 +1,4 @@
+Dataset {
+    Int32 V[sample = 10];
+    Int32 V_expected[sample = 10];
+} joinExisting_virtual.ncml;

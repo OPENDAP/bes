@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test case to see whether we can refer to another NcML file within this one.
+     Will test whether the handler can handle reentrancy -->
+<netcdf location="/data/ncml/reentrancy_test_wrappee.ncml">
+  <attribute name="WrapperDescription" type="string">The combined data set will include this one as well as the WrappeeDescription!</attribute>
+
+  <!-- Rename the one variable in the wrappee to make sure we can -->
+  <variable name="Wrapped_Wrappee_Variable" orgName="Wrappee_Variable">
+    <!-- Also change the value of its Description attribute -->
+    <attribute name="Description" type="string">This should be modified from the wrappee in a successful wrap!</attribute>
+  </variable>
+
+  <!-- And a new variable, for good measure -->
+  <variable name="Foo" type="int" shape="10">
+    <values start="0" increment="1"/>
+  </variable>
+
+</netcdf>

@@ -1,0 +1,3 @@
+The data:
+Url MyArray[3] = {"http://www.opendap.org/", "http://www.unidata.ucar.edu/", "http://www.google.com/"};
+

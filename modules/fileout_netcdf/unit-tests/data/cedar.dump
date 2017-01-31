@@ -1,0 +1,4341 @@
+netcdf cedar.dods {
+dimensions:
+	dim1 = 19 ;
+	dim2 = 19 ;
+	dim3 = 19 ;
+	dim4 = 19 ;
+	dim5 = 19 ;
+	dim6 = 19 ;
+	dim7 = 19 ;
+	dim8 = 19 ;
+	dim9 = 19 ;
+	dim10 = 19 ;
+	dim11 = 19 ;
+	dim12 = 19 ;
+	dim13 = 19 ;
+	dim14 = 19 ;
+	dim15 = 19 ;
+	dim16 = 19 ;
+	dim17 = 13 ;
+	dim18 = 13 ;
+	dim19 = 13 ;
+	dim20 = 13 ;
+	dim21 = 13 ;
+	dim22 = 13 ;
+	dim23 = 13 ;
+	dim24 = 13 ;
+	dim25 = 13 ;
+	dim26 = 13 ;
+	dim27 = 13 ;
+	dim28 = 13 ;
+	dim29 = 13 ;
+	dim30 = 13 ;
+	dim31 = 46 ;
+	dim32 = 46 ;
+	dim33 = 46 ;
+	dim34 = 46 ;
+	dim35 = 46 ;
+	dim36 = 46 ;
+	dim37 = 46 ;
+	dim38 = 46 ;
+	dim39 = 46 ;
+	dim40 = 46 ;
+	dim41 = 46 ;
+	dim42 = 46 ;
+	dim43 = 46 ;
+	dim44 = 46 ;
+	dim45 = 46 ;
+	dim46 = 46 ;
+	dim47 = 34 ;
+	dim48 = 34 ;
+	dim49 = 34 ;
+	dim50 = 34 ;
+	dim51 = 34 ;
+	dim52 = 34 ;
+	dim53 = 34 ;
+	dim54 = 34 ;
+	dim55 = 34 ;
+	dim56 = 34 ;
+	dim57 = 34 ;
+	dim58 = 34 ;
+	dim59 = 34 ;
+	dim60 = 34 ;
+	dim61 = 37 ;
+	dim62 = 37 ;
+	dim63 = 37 ;
+	dim64 = 37 ;
+	dim65 = 37 ;
+	dim66 = 37 ;
+	dim67 = 37 ;
+	dim68 = 37 ;
+	dim69 = 37 ;
+	dim70 = 37 ;
+	dim71 = 37 ;
+	dim72 = 37 ;
+	dim73 = 37 ;
+	dim74 = 37 ;
+	dim75 = 37 ;
+	dim76 = 37 ;
+	dim77 = 27 ;
+	dim78 = 27 ;
+	dim79 = 27 ;
+	dim80 = 27 ;
+	dim81 = 27 ;
+	dim82 = 27 ;
+	dim83 = 27 ;
+	dim84 = 27 ;
+	dim85 = 27 ;
+	dim86 = 27 ;
+	dim87 = 27 ;
+	dim88 = 27 ;
+	dim89 = 27 ;
+	dim90 = 27 ;
+	dim91 = 102 ;
+	dim92 = 102 ;
+	dim93 = 102 ;
+	dim94 = 102 ;
+	dim95 = 102 ;
+	dim96 = 102 ;
+	dim97 = 102 ;
+	dim98 = 102 ;
+	dim99 = 102 ;
+	dim100 = 102 ;
+	dim101 = 102 ;
+	dim102 = 102 ;
+	dim103 = 102 ;
+	dim104 = 102 ;
+	dim105 = 102 ;
+	dim106 = 102 ;
+	dim107 = 59 ;
+	dim108 = 59 ;
+	dim109 = 59 ;
+	dim110 = 59 ;
+	dim111 = 59 ;
+	dim112 = 59 ;
+	dim113 = 59 ;
+	dim114 = 59 ;
+	dim115 = 59 ;
+	dim116 = 59 ;
+	dim117 = 59 ;
+	dim118 = 59 ;
+	dim119 = 59 ;
+	dim120 = 59 ;
+	dim121 = 37 ;
+	dim122 = 37 ;
+	dim123 = 37 ;
+	dim124 = 37 ;
+	dim125 = 37 ;
+	dim126 = 37 ;
+	dim127 = 37 ;
+	dim128 = 37 ;
+	dim129 = 37 ;
+	dim130 = 37 ;
+	dim131 = 37 ;
+	dim132 = 37 ;
+	dim133 = 37 ;
+	dim134 = 37 ;
+	dim135 = 37 ;
+	dim136 = 37 ;
+	dim137 = 27 ;
+	dim138 = 27 ;
+	dim139 = 27 ;
+	dim140 = 27 ;
+	dim141 = 27 ;
+	dim142 = 27 ;
+	dim143 = 27 ;
+	dim144 = 27 ;
+	dim145 = 27 ;
+	dim146 = 27 ;
+	dim147 = 27 ;
+	dim148 = 27 ;
+	dim149 = 27 ;
+	dim150 = 27 ;
+	dim151 = 10 ;
+	dim152 = 10 ;
+	dim153 = 10 ;
+	dim154 = 10 ;
+	dim155 = 10 ;
+	dim156 = 10 ;
+	dim157 = 10 ;
+	dim158 = 10 ;
+	dim159 = 10 ;
+	dim160 = 10 ;
+	dim161 = 10 ;
+	dim162 = 10 ;
+	dim163 = 10 ;
+	dim164 = 10 ;
+	dim165 = 10 ;
+	dim166 = 10 ;
+	dim167 = 5 ;
+	dim168 = 5 ;
+	dim169 = 5 ;
+	dim170 = 5 ;
+	dim171 = 5 ;
+	dim172 = 5 ;
+	dim173 = 5 ;
+	dim174 = 5 ;
+	dim175 = 5 ;
+	dim176 = 5 ;
+	dim177 = 5 ;
+	dim178 = 5 ;
+	dim179 = 5 ;
+	dim180 = 5 ;
+	dim181 = 12 ;
+	dim182 = 12 ;
+	dim183 = 12 ;
+	dim184 = 12 ;
+	dim185 = 12 ;
+	dim186 = 12 ;
+	dim187 = 12 ;
+	dim188 = 12 ;
+	dim189 = 12 ;
+	dim190 = 12 ;
+	dim191 = 12 ;
+	dim192 = 12 ;
+	dim193 = 12 ;
+	dim194 = 12 ;
+	dim195 = 12 ;
+	dim196 = 12 ;
+	dim197 = 6 ;
+	dim198 = 6 ;
+	dim199 = 6 ;
+	dim200 = 6 ;
+	dim201 = 6 ;
+	dim202 = 6 ;
+	dim203 = 6 ;
+	dim204 = 6 ;
+	dim205 = 6 ;
+	dim206 = 6 ;
+	dim207 = 6 ;
+	dim208 = 6 ;
+	dim209 = 6 ;
+	dim210 = 6 ;
+	dim211 = 39 ;
+	dim212 = 39 ;
+	dim213 = 39 ;
+	dim214 = 39 ;
+	dim215 = 39 ;
+	dim216 = 39 ;
+	dim217 = 39 ;
+	dim218 = 39 ;
+	dim219 = 39 ;
+	dim220 = 39 ;
+	dim221 = 39 ;
+	dim222 = 39 ;
+	dim223 = 39 ;
+	dim224 = 39 ;
+	dim225 = 39 ;
+	dim226 = 39 ;
+	dim227 = 24 ;
+	dim228 = 24 ;
+	dim229 = 24 ;
+	dim230 = 24 ;
+	dim231 = 24 ;
+	dim232 = 24 ;
+	dim233 = 24 ;
+	dim234 = 24 ;
+	dim235 = 24 ;
+	dim236 = 24 ;
+	dim237 = 24 ;
+	dim238 = 24 ;
+	dim239 = 24 ;
+	dim240 = 24 ;
+	dim241 = 20 ;
+	dim242 = 20 ;
+	dim243 = 20 ;
+	dim244 = 20 ;
+	dim245 = 20 ;
+	dim246 = 20 ;
+	dim247 = 20 ;
+	dim248 = 20 ;
+	dim249 = 20 ;
+	dim250 = 20 ;
+	dim251 = 20 ;
+	dim252 = 20 ;
+	dim253 = 20 ;
+	dim254 = 20 ;
+	dim255 = 20 ;
+	dim256 = 20 ;
+	dim257 = 12 ;
+	dim258 = 12 ;
+	dim259 = 12 ;
+	dim260 = 12 ;
+	dim261 = 12 ;
+	dim262 = 12 ;
+	dim263 = 12 ;
+	dim264 = 12 ;
+	dim265 = 12 ;
+	dim266 = 12 ;
+	dim267 = 12 ;
+	dim268 = 12 ;
+	dim269 = 12 ;
+	dim270 = 12 ;
+	dim271 = 40 ;
+	dim272 = 40 ;
+	dim273 = 40 ;
+	dim274 = 40 ;
+	dim275 = 40 ;
+	dim276 = 40 ;
+	dim277 = 40 ;
+	dim278 = 40 ;
+	dim279 = 40 ;
+	dim280 = 40 ;
+	dim281 = 40 ;
+	dim282 = 40 ;
+	dim283 = 40 ;
+	dim284 = 40 ;
+	dim285 = 40 ;
+	dim286 = 40 ;
+	dim287 = 25 ;
+	dim288 = 25 ;
+	dim289 = 25 ;
+	dim290 = 25 ;
+	dim291 = 25 ;
+	dim292 = 25 ;
+	dim293 = 25 ;
+	dim294 = 25 ;
+	dim295 = 25 ;
+	dim296 = 25 ;
+	dim297 = 25 ;
+	dim298 = 25 ;
+	dim299 = 25 ;
+	dim300 = 25 ;
+	dim301 = 37 ;
+	dim302 = 37 ;
+	dim303 = 37 ;
+	dim304 = 37 ;
+	dim305 = 37 ;
+	dim306 = 37 ;
+	dim307 = 37 ;
+	dim308 = 37 ;
+	dim309 = 37 ;
+	dim310 = 37 ;
+	dim311 = 37 ;
+	dim312 = 37 ;
+	dim313 = 37 ;
+	dim314 = 37 ;
+	dim315 = 37 ;
+	dim316 = 37 ;
+	dim317 = 27 ;
+	dim318 = 27 ;
+	dim319 = 27 ;
+	dim320 = 27 ;
+	dim321 = 27 ;
+	dim322 = 27 ;
+	dim323 = 27 ;
+	dim324 = 27 ;
+	dim325 = 27 ;
+	dim326 = 27 ;
+	dim327 = 27 ;
+	dim328 = 27 ;
+	dim329 = 27 ;
+	dim330 = 27 ;
+	dim331 = 38 ;
+	dim332 = 38 ;
+	dim333 = 38 ;
+	dim334 = 38 ;
+	dim335 = 38 ;
+	dim336 = 38 ;
+	dim337 = 38 ;
+	dim338 = 38 ;
+	dim339 = 38 ;
+	dim340 = 38 ;
+	dim341 = 38 ;
+	dim342 = 38 ;
+	dim343 = 38 ;
+	dim344 = 38 ;
+	dim345 = 38 ;
+	dim346 = 38 ;
+	dim347 = 28 ;
+	dim348 = 28 ;
+	dim349 = 28 ;
+	dim350 = 28 ;
+	dim351 = 28 ;
+	dim352 = 28 ;
+	dim353 = 28 ;
+	dim354 = 28 ;
+	dim355 = 28 ;
+	dim356 = 28 ;
+	dim357 = 28 ;
+	dim358 = 28 ;
+	dim359 = 28 ;
+	dim360 = 28 ;
+	dim361 = 43 ;
+	dim362 = 43 ;
+	dim363 = 43 ;
+	dim364 = 43 ;
+	dim365 = 43 ;
+	dim366 = 43 ;
+	dim367 = 43 ;
+	dim368 = 43 ;
+	dim369 = 43 ;
+	dim370 = 43 ;
+	dim371 = 43 ;
+	dim372 = 43 ;
+	dim373 = 43 ;
+	dim374 = 43 ;
+	dim375 = 43 ;
+	dim376 = 43 ;
+	dim377 = 31 ;
+	dim378 = 31 ;
+	dim379 = 31 ;
+	dim380 = 31 ;
+	dim381 = 31 ;
+	dim382 = 31 ;
+	dim383 = 31 ;
+	dim384 = 31 ;
+	dim385 = 31 ;
+	dim386 = 31 ;
+	dim387 = 31 ;
+	dim388 = 31 ;
+	dim389 = 31 ;
+	dim390 = 31 ;
+	dim391 = 43 ;
+	dim392 = 43 ;
+	dim393 = 43 ;
+	dim394 = 43 ;
+	dim395 = 43 ;
+	dim396 = 43 ;
+	dim397 = 43 ;
+	dim398 = 43 ;
+	dim399 = 43 ;
+	dim400 = 43 ;
+	dim401 = 43 ;
+	dim402 = 43 ;
+	dim403 = 43 ;
+	dim404 = 43 ;
+	dim405 = 43 ;
+	dim406 = 43 ;
+	dim407 = 31 ;
+	dim408 = 31 ;
+	dim409 = 31 ;
+	dim410 = 31 ;
+	dim411 = 31 ;
+	dim412 = 31 ;
+	dim413 = 31 ;
+	dim414 = 31 ;
+	dim415 = 31 ;
+	dim416 = 31 ;
+	dim417 = 31 ;
+	dim418 = 31 ;
+	dim419 = 31 ;
+	dim420 = 31 ;
+	dim421 = 33 ;
+	dim422 = 33 ;
+	dim423 = 33 ;
+	dim424 = 33 ;
+	dim425 = 33 ;
+	dim426 = 33 ;
+	dim427 = 33 ;
+	dim428 = 33 ;
+	dim429 = 33 ;
+	dim430 = 33 ;
+	dim431 = 33 ;
+	dim432 = 33 ;
+	dim433 = 33 ;
+	dim434 = 33 ;
+	dim435 = 33 ;
+	dim436 = 33 ;
+	dim437 = 24 ;
+	dim438 = 24 ;
+	dim439 = 24 ;
+	dim440 = 24 ;
+	dim441 = 24 ;
+	dim442 = 24 ;
+	dim443 = 24 ;
+	dim444 = 24 ;
+	dim445 = 24 ;
+	dim446 = 24 ;
+	dim447 = 24 ;
+	dim448 = 24 ;
+	dim449 = 24 ;
+	dim450 = 24 ;
+	dim451 = 34 ;
+	dim452 = 34 ;
+	dim453 = 34 ;
+	dim454 = 34 ;
+	dim455 = 34 ;
+	dim456 = 34 ;
+	dim457 = 34 ;
+	dim458 = 34 ;
+	dim459 = 34 ;
+	dim460 = 34 ;
+	dim461 = 34 ;
+	dim462 = 34 ;
+	dim463 = 34 ;
+	dim464 = 34 ;
+	dim465 = 34 ;
+	dim466 = 34 ;
+	dim467 = 25 ;
+	dim468 = 25 ;
+	dim469 = 25 ;
+	dim470 = 25 ;
+	dim471 = 25 ;
+	dim472 = 25 ;
+	dim473 = 25 ;
+	dim474 = 25 ;
+	dim475 = 25 ;
+	dim476 = 25 ;
+	dim477 = 25 ;
+	dim478 = 25 ;
+	dim479 = 25 ;
+	dim480 = 25 ;
+variables:
+	short mfp920504a.data_record_1.prologue.KINST ;
+	short mfp920504a.data_record_1.prologue.KINDAT ;
+	short mfp920504a.data_record_1.prologue.IBYRT ;
+	short mfp920504a.data_record_1.prologue.IBDTT ;
+	short mfp920504a.data_record_1.prologue.IBHMT ;
+	short mfp920504a.data_record_1.prologue.IBCST ;
+	short mfp920504a.data_record_1.prologue.IEYRT ;
+	short mfp920504a.data_record_1.prologue.IEDTT ;
+	short mfp920504a.data_record_1.prologue.IEHMT ;
+	short mfp920504a.data_record_1.prologue.IECST ;
+	short mfp920504a.data_record_1.JPAR.gdlatr ;
+	short mfp920504a.data_record_1.JPAR.gdlonr ;
+	short mfp920504a.data_record_1.JPAR.wavlen ;
+	short mfp920504a.data_record_1.JPAR.gdra ;
+	short mfp920504a.data_record_1.MPAR.year(dim1) ;
+	short mfp920504a.data_record_1.MPAR.dayno(dim2) ;
+	short mfp920504a.data_record_1.MPAR.uth(dim3) ;
+	short mfp920504a.data_record_1.MPAR.azm(dim4) ;
+	short mfp920504a.data_record_1.MPAR.elm(dim5) ;
+	short mfp920504a.data_record_1.MPAR.vnlu(dim6) ;
+	short mfp920504a.data_record_1.MPAR.e_vnlu(dim7) ;
+	short mfp920504a.data_record_1.MPAR.tn(dim8) ;
+	short mfp920504a.data_record_1.MPAR.e_tn(dim9) ;
+	short mfp920504a.data_record_1.MPAR.nsmpti(dim10) ;
+	short mfp920504a.data_record_1.MPAR.rbrl(dim11) ;
+	short mfp920504a.data_record_1.MPAR.chip1(dim12) ;
+	short mfp920504a.data_record_1.MPAR.vnn(dim13) ;
+	short mfp920504a.data_record_1.MPAR.e_vnn(dim14) ;
+	short mfp920504a.data_record_1.MPAR.vne(dim15) ;
+	short mfp920504a.data_record_1.MPAR.e_vne(dim16) ;
+	short mfp920504a.data_record_2.prologue.KINST ;
+	short mfp920504a.data_record_2.prologue.KINDAT ;
+	short mfp920504a.data_record_2.prologue.IBYRT ;
+	short mfp920504a.data_record_2.prologue.IBDTT ;
+	short mfp920504a.data_record_2.prologue.IBHMT ;
+	short mfp920504a.data_record_2.prologue.IBCST ;
+	short mfp920504a.data_record_2.prologue.IEYRT ;
+	short mfp920504a.data_record_2.prologue.IEDTT ;
+	short mfp920504a.data_record_2.prologue.IEHMT ;
+	short mfp920504a.data_record_2.prologue.IECST ;
+	short mfp920504a.data_record_2.JPAR.gdlatr ;
+	short mfp920504a.data_record_2.JPAR.gdlonr ;
+	short mfp920504a.data_record_2.JPAR.wavlen ;
+	short mfp920504a.data_record_2.JPAR.gdra ;
+	short mfp920504a.data_record_2.JPAR.gmra ;
+	short mfp920504a.data_record_2.JPAR.bdec ;
+	short mfp920504a.data_record_2.MPAR.year(dim17) ;
+	short mfp920504a.data_record_2.MPAR.dayno(dim18) ;
+	short mfp920504a.data_record_2.MPAR.uth(dim19) ;
+	short mfp920504a.data_record_2.MPAR.az1(dim20) ;
+	short mfp920504a.data_record_2.MPAR.az2(dim21) ;
+	short mfp920504a.data_record_2.MPAR.elm(dim22) ;
+	short mfp920504a.data_record_2.MPAR.vnn(dim23) ;
+	short mfp920504a.data_record_2.MPAR.e_vnn(dim24) ;
+	short mfp920504a.data_record_2.MPAR.vne(dim25) ;
+	short mfp920504a.data_record_2.MPAR.e_vne(dim26) ;
+	short mfp920504a.data_record_2.MPAR.vnpnh(dim27) ;
+	short mfp920504a.data_record_2.MPAR.e_vnpnh(dim28) ;
+	short mfp920504a.data_record_2.MPAR.vnpe(dim29) ;
+	short mfp920504a.data_record_2.MPAR.e_vnpe(dim30) ;
+	short mfp920504a.data_record_3.prologue.KINST ;
+	short mfp920504a.data_record_3.prologue.KINDAT ;
+	short mfp920504a.data_record_3.prologue.IBYRT ;
+	short mfp920504a.data_record_3.prologue.IBDTT ;
+	short mfp920504a.data_record_3.prologue.IBHMT ;
+	short mfp920504a.data_record_3.prologue.IBCST ;
+	short mfp920504a.data_record_3.prologue.IEYRT ;
+	short mfp920504a.data_record_3.prologue.IEDTT ;
+	short mfp920504a.data_record_3.prologue.IEHMT ;
+	short mfp920504a.data_record_3.prologue.IECST ;
+	short mfp920504a.data_record_3.JPAR.gdlatr ;
+	short mfp920504a.data_record_3.JPAR.gdlonr ;
+	short mfp920504a.data_record_3.JPAR.wavlen ;
+	short mfp920504a.data_record_3.JPAR.gdra ;
+	short mfp920504a.data_record_3.MPAR.year(dim31) ;
+	short mfp920504a.data_record_3.MPAR.dayno(dim32) ;
+	short mfp920504a.data_record_3.MPAR.uth(dim33) ;
+	short mfp920504a.data_record_3.MPAR.azm(dim34) ;
+	short mfp920504a.data_record_3.MPAR.elm(dim35) ;
+	short mfp920504a.data_record_3.MPAR.vnlu(dim36) ;
+	short mfp920504a.data_record_3.MPAR.e_vnlu(dim37) ;
+	short mfp920504a.data_record_3.MPAR.tn(dim38) ;
+	short mfp920504a.data_record_3.MPAR.e_tn(dim39) ;
+	short mfp920504a.data_record_3.MPAR.nsmpti(dim40) ;
+	short mfp920504a.data_record_3.MPAR.rbrl(dim41) ;
+	short mfp920504a.data_record_3.MPAR.chip1(dim42) ;
+	short mfp920504a.data_record_3.MPAR.vnn(dim43) ;
+	short mfp920504a.data_record_3.MPAR.e_vnn(dim44) ;
+	short mfp920504a.data_record_3.MPAR.vne(dim45) ;
+	short mfp920504a.data_record_3.MPAR.e_vne(dim46) ;
+	short mfp920504a.data_record_4.prologue.KINST ;
+	short mfp920504a.data_record_4.prologue.KINDAT ;
+	short mfp920504a.data_record_4.prologue.IBYRT ;
+	short mfp920504a.data_record_4.prologue.IBDTT ;
+	short mfp920504a.data_record_4.prologue.IBHMT ;
+	short mfp920504a.data_record_4.prologue.IBCST ;
+	short mfp920504a.data_record_4.prologue.IEYRT ;
+	short mfp920504a.data_record_4.prologue.IEDTT ;
+	short mfp920504a.data_record_4.prologue.IEHMT ;
+	short mfp920504a.data_record_4.prologue.IECST ;
+	short mfp920504a.data_record_4.JPAR.gdlatr ;
+	short mfp920504a.data_record_4.JPAR.gdlonr ;
+	short mfp920504a.data_record_4.JPAR.wavlen ;
+	short mfp920504a.data_record_4.JPAR.gdra ;
+	short mfp920504a.data_record_4.JPAR.gmra ;
+	short mfp920504a.data_record_4.JPAR.bdec ;
+	short mfp920504a.data_record_4.MPAR.year(dim47) ;
+	short mfp920504a.data_record_4.MPAR.dayno(dim48) ;
+	short mfp920504a.data_record_4.MPAR.uth(dim49) ;
+	short mfp920504a.data_record_4.MPAR.az1(dim50) ;
+	short mfp920504a.data_record_4.MPAR.az2(dim51) ;
+	short mfp920504a.data_record_4.MPAR.elm(dim52) ;
+	short mfp920504a.data_record_4.MPAR.vnn(dim53) ;
+	short mfp920504a.data_record_4.MPAR.e_vnn(dim54) ;
+	short mfp920504a.data_record_4.MPAR.vne(dim55) ;
+	short mfp920504a.data_record_4.MPAR.e_vne(dim56) ;
+	short mfp920504a.data_record_4.MPAR.vnpnh(dim57) ;
+	short mfp920504a.data_record_4.MPAR.e_vnpnh(dim58) ;
+	short mfp920504a.data_record_4.MPAR.vnpe(dim59) ;
+	short mfp920504a.data_record_4.MPAR.e_vnpe(dim60) ;
+	short mfp920504a.data_record_5.prologue.KINST ;
+	short mfp920504a.data_record_5.prologue.KINDAT ;
+	short mfp920504a.data_record_5.prologue.IBYRT ;
+	short mfp920504a.data_record_5.prologue.IBDTT ;
+	short mfp920504a.data_record_5.prologue.IBHMT ;
+	short mfp920504a.data_record_5.prologue.IBCST ;
+	short mfp920504a.data_record_5.prologue.IEYRT ;
+	short mfp920504a.data_record_5.prologue.IEDTT ;
+	short mfp920504a.data_record_5.prologue.IEHMT ;
+	short mfp920504a.data_record_5.prologue.IECST ;
+	short mfp920504a.data_record_5.JPAR.gdlatr ;
+	short mfp920504a.data_record_5.JPAR.gdlonr ;
+	short mfp920504a.data_record_5.JPAR.wavlen ;
+	short mfp920504a.data_record_5.JPAR.gdra ;
+	short mfp920504a.data_record_5.MPAR.year(dim61) ;
+	short mfp920504a.data_record_5.MPAR.dayno(dim62) ;
+	short mfp920504a.data_record_5.MPAR.uth(dim63) ;
+	short mfp920504a.data_record_5.MPAR.azm(dim64) ;
+	short mfp920504a.data_record_5.MPAR.elm(dim65) ;
+	short mfp920504a.data_record_5.MPAR.vnlu(dim66) ;
+	short mfp920504a.data_record_5.MPAR.e_vnlu(dim67) ;
+	short mfp920504a.data_record_5.MPAR.tn(dim68) ;
+	short mfp920504a.data_record_5.MPAR.e_tn(dim69) ;
+	short mfp920504a.data_record_5.MPAR.nsmpti(dim70) ;
+	short mfp920504a.data_record_5.MPAR.rbrl(dim71) ;
+	short mfp920504a.data_record_5.MPAR.chip1(dim72) ;
+	short mfp920504a.data_record_5.MPAR.vnn(dim73) ;
+	short mfp920504a.data_record_5.MPAR.e_vnn(dim74) ;
+	short mfp920504a.data_record_5.MPAR.vne(dim75) ;
+	short mfp920504a.data_record_5.MPAR.e_vne(dim76) ;
+	short mfp920504a.data_record_6.prologue.KINST ;
+	short mfp920504a.data_record_6.prologue.KINDAT ;
+	short mfp920504a.data_record_6.prologue.IBYRT ;
+	short mfp920504a.data_record_6.prologue.IBDTT ;
+	short mfp920504a.data_record_6.prologue.IBHMT ;
+	short mfp920504a.data_record_6.prologue.IBCST ;
+	short mfp920504a.data_record_6.prologue.IEYRT ;
+	short mfp920504a.data_record_6.prologue.IEDTT ;
+	short mfp920504a.data_record_6.prologue.IEHMT ;
+	short mfp920504a.data_record_6.prologue.IECST ;
+	short mfp920504a.data_record_6.JPAR.gdlatr ;
+	short mfp920504a.data_record_6.JPAR.gdlonr ;
+	short mfp920504a.data_record_6.JPAR.wavlen ;
+	short mfp920504a.data_record_6.JPAR.gdra ;
+	short mfp920504a.data_record_6.JPAR.gmra ;
+	short mfp920504a.data_record_6.JPAR.bdec ;
+	short mfp920504a.data_record_6.MPAR.year(dim77) ;
+	short mfp920504a.data_record_6.MPAR.dayno(dim78) ;
+	short mfp920504a.data_record_6.MPAR.uth(dim79) ;
+	short mfp920504a.data_record_6.MPAR.az1(dim80) ;
+	short mfp920504a.data_record_6.MPAR.az2(dim81) ;
+	short mfp920504a.data_record_6.MPAR.elm(dim82) ;
+	short mfp920504a.data_record_6.MPAR.vnn(dim83) ;
+	short mfp920504a.data_record_6.MPAR.e_vnn(dim84) ;
+	short mfp920504a.data_record_6.MPAR.vne(dim85) ;
+	short mfp920504a.data_record_6.MPAR.e_vne(dim86) ;
+	short mfp920504a.data_record_6.MPAR.vnpnh(dim87) ;
+	short mfp920504a.data_record_6.MPAR.e_vnpnh(dim88) ;
+	short mfp920504a.data_record_6.MPAR.vnpe(dim89) ;
+	short mfp920504a.data_record_6.MPAR.e_vnpe(dim90) ;
+	short mfp920504a.data_record_7.prologue.KINST ;
+	short mfp920504a.data_record_7.prologue.KINDAT ;
+	short mfp920504a.data_record_7.prologue.IBYRT ;
+	short mfp920504a.data_record_7.prologue.IBDTT ;
+	short mfp920504a.data_record_7.prologue.IBHMT ;
+	short mfp920504a.data_record_7.prologue.IBCST ;
+	short mfp920504a.data_record_7.prologue.IEYRT ;
+	short mfp920504a.data_record_7.prologue.IEDTT ;
+	short mfp920504a.data_record_7.prologue.IEHMT ;
+	short mfp920504a.data_record_7.prologue.IECST ;
+	short mfp920504a.data_record_7.JPAR.gdlatr ;
+	short mfp920504a.data_record_7.JPAR.gdlonr ;
+	short mfp920504a.data_record_7.JPAR.wavlen ;
+	short mfp920504a.data_record_7.JPAR.gdra ;
+	short mfp920504a.data_record_7.MPAR.year(dim91) ;
+	short mfp920504a.data_record_7.MPAR.dayno(dim92) ;
+	short mfp920504a.data_record_7.MPAR.uth(dim93) ;
+	short mfp920504a.data_record_7.MPAR.azm(dim94) ;
+	short mfp920504a.data_record_7.MPAR.elm(dim95) ;
+	short mfp920504a.data_record_7.MPAR.vnlu(dim96) ;
+	short mfp920504a.data_record_7.MPAR.e_vnlu(dim97) ;
+	short mfp920504a.data_record_7.MPAR.tn(dim98) ;
+	short mfp920504a.data_record_7.MPAR.e_tn(dim99) ;
+	short mfp920504a.data_record_7.MPAR.nsmpti(dim100) ;
+	short mfp920504a.data_record_7.MPAR.rbrl(dim101) ;
+	short mfp920504a.data_record_7.MPAR.chip1(dim102) ;
+	short mfp920504a.data_record_7.MPAR.vnn(dim103) ;
+	short mfp920504a.data_record_7.MPAR.e_vnn(dim104) ;
+	short mfp920504a.data_record_7.MPAR.vne(dim105) ;
+	short mfp920504a.data_record_7.MPAR.e_vne(dim106) ;
+	short mfp920504a.data_record_8.prologue.KINST ;
+	short mfp920504a.data_record_8.prologue.KINDAT ;
+	short mfp920504a.data_record_8.prologue.IBYRT ;
+	short mfp920504a.data_record_8.prologue.IBDTT ;
+	short mfp920504a.data_record_8.prologue.IBHMT ;
+	short mfp920504a.data_record_8.prologue.IBCST ;
+	short mfp920504a.data_record_8.prologue.IEYRT ;
+	short mfp920504a.data_record_8.prologue.IEDTT ;
+	short mfp920504a.data_record_8.prologue.IEHMT ;
+	short mfp920504a.data_record_8.prologue.IECST ;
+	short mfp920504a.data_record_8.JPAR.gdlatr ;
+	short mfp920504a.data_record_8.JPAR.gdlonr ;
+	short mfp920504a.data_record_8.JPAR.wavlen ;
+	short mfp920504a.data_record_8.JPAR.gdra ;
+	short mfp920504a.data_record_8.JPAR.gmra ;
+	short mfp920504a.data_record_8.JPAR.bdec ;
+	short mfp920504a.data_record_8.MPAR.year(dim107) ;
+	short mfp920504a.data_record_8.MPAR.dayno(dim108) ;
+	short mfp920504a.data_record_8.MPAR.uth(dim109) ;
+	short mfp920504a.data_record_8.MPAR.az1(dim110) ;
+	short mfp920504a.data_record_8.MPAR.az2(dim111) ;
+	short mfp920504a.data_record_8.MPAR.elm(dim112) ;
+	short mfp920504a.data_record_8.MPAR.vnn(dim113) ;
+	short mfp920504a.data_record_8.MPAR.e_vnn(dim114) ;
+	short mfp920504a.data_record_8.MPAR.vne(dim115) ;
+	short mfp920504a.data_record_8.MPAR.e_vne(dim116) ;
+	short mfp920504a.data_record_8.MPAR.vnpnh(dim117) ;
+	short mfp920504a.data_record_8.MPAR.e_vnpnh(dim118) ;
+	short mfp920504a.data_record_8.MPAR.vnpe(dim119) ;
+	short mfp920504a.data_record_8.MPAR.e_vnpe(dim120) ;
+	short mfp920504a.data_record_9.prologue.KINST ;
+	short mfp920504a.data_record_9.prologue.KINDAT ;
+	short mfp920504a.data_record_9.prologue.IBYRT ;
+	short mfp920504a.data_record_9.prologue.IBDTT ;
+	short mfp920504a.data_record_9.prologue.IBHMT ;
+	short mfp920504a.data_record_9.prologue.IBCST ;
+	short mfp920504a.data_record_9.prologue.IEYRT ;
+	short mfp920504a.data_record_9.prologue.IEDTT ;
+	short mfp920504a.data_record_9.prologue.IEHMT ;
+	short mfp920504a.data_record_9.prologue.IECST ;
+	short mfp920504a.data_record_9.JPAR.gdlatr ;
+	short mfp920504a.data_record_9.JPAR.gdlonr ;
+	short mfp920504a.data_record_9.JPAR.wavlen ;
+	short mfp920504a.data_record_9.JPAR.gdra ;
+	short mfp920504a.data_record_9.MPAR.year(dim121) ;
+	short mfp920504a.data_record_9.MPAR.dayno(dim122) ;
+	short mfp920504a.data_record_9.MPAR.uth(dim123) ;
+	short mfp920504a.data_record_9.MPAR.azm(dim124) ;
+	short mfp920504a.data_record_9.MPAR.elm(dim125) ;
+	short mfp920504a.data_record_9.MPAR.vnlu(dim126) ;
+	short mfp920504a.data_record_9.MPAR.e_vnlu(dim127) ;
+	short mfp920504a.data_record_9.MPAR.tn(dim128) ;
+	short mfp920504a.data_record_9.MPAR.e_tn(dim129) ;
+	short mfp920504a.data_record_9.MPAR.nsmpti(dim130) ;
+	short mfp920504a.data_record_9.MPAR.rbrl(dim131) ;
+	short mfp920504a.data_record_9.MPAR.chip1(dim132) ;
+	short mfp920504a.data_record_9.MPAR.vnn(dim133) ;
+	short mfp920504a.data_record_9.MPAR.e_vnn(dim134) ;
+	short mfp920504a.data_record_9.MPAR.vne(dim135) ;
+	short mfp920504a.data_record_9.MPAR.e_vne(dim136) ;
+	short mfp920504a.data_record_10.prologue.KINST ;
+	short mfp920504a.data_record_10.prologue.KINDAT ;
+	short mfp920504a.data_record_10.prologue.IBYRT ;
+	short mfp920504a.data_record_10.prologue.IBDTT ;
+	short mfp920504a.data_record_10.prologue.IBHMT ;
+	short mfp920504a.data_record_10.prologue.IBCST ;
+	short mfp920504a.data_record_10.prologue.IEYRT ;
+	short mfp920504a.data_record_10.prologue.IEDTT ;
+	short mfp920504a.data_record_10.prologue.IEHMT ;
+	short mfp920504a.data_record_10.prologue.IECST ;
+	short mfp920504a.data_record_10.JPAR.gdlatr ;
+	short mfp920504a.data_record_10.JPAR.gdlonr ;
+	short mfp920504a.data_record_10.JPAR.wavlen ;
+	short mfp920504a.data_record_10.JPAR.gdra ;
+	short mfp920504a.data_record_10.JPAR.gmra ;
+	short mfp920504a.data_record_10.JPAR.bdec ;
+	short mfp920504a.data_record_10.MPAR.year(dim137) ;
+	short mfp920504a.data_record_10.MPAR.dayno(dim138) ;
+	short mfp920504a.data_record_10.MPAR.uth(dim139) ;
+	short mfp920504a.data_record_10.MPAR.az1(dim140) ;
+	short mfp920504a.data_record_10.MPAR.az2(dim141) ;
+	short mfp920504a.data_record_10.MPAR.elm(dim142) ;
+	short mfp920504a.data_record_10.MPAR.vnn(dim143) ;
+	short mfp920504a.data_record_10.MPAR.e_vnn(dim144) ;
+	short mfp920504a.data_record_10.MPAR.vne(dim145) ;
+	short mfp920504a.data_record_10.MPAR.e_vne(dim146) ;
+	short mfp920504a.data_record_10.MPAR.vnpnh(dim147) ;
+	short mfp920504a.data_record_10.MPAR.e_vnpnh(dim148) ;
+	short mfp920504a.data_record_10.MPAR.vnpe(dim149) ;
+	short mfp920504a.data_record_10.MPAR.e_vnpe(dim150) ;
+	short mfp920504a.data_record_11.prologue.KINST ;
+	short mfp920504a.data_record_11.prologue.KINDAT ;
+	short mfp920504a.data_record_11.prologue.IBYRT ;
+	short mfp920504a.data_record_11.prologue.IBDTT ;
+	short mfp920504a.data_record_11.prologue.IBHMT ;
+	short mfp920504a.data_record_11.prologue.IBCST ;
+	short mfp920504a.data_record_11.prologue.IEYRT ;
+	short mfp920504a.data_record_11.prologue.IEDTT ;
+	short mfp920504a.data_record_11.prologue.IEHMT ;
+	short mfp920504a.data_record_11.prologue.IECST ;
+	short mfp920504a.data_record_11.JPAR.gdlatr ;
+	short mfp920504a.data_record_11.JPAR.gdlonr ;
+	short mfp920504a.data_record_11.JPAR.wavlen ;
+	short mfp920504a.data_record_11.JPAR.gdra ;
+	short mfp920504a.data_record_11.MPAR.year(dim151) ;
+	short mfp920504a.data_record_11.MPAR.dayno(dim152) ;
+	short mfp920504a.data_record_11.MPAR.uth(dim153) ;
+	short mfp920504a.data_record_11.MPAR.azm(dim154) ;
+	short mfp920504a.data_record_11.MPAR.elm(dim155) ;
+	short mfp920504a.data_record_11.MPAR.vnlu(dim156) ;
+	short mfp920504a.data_record_11.MPAR.e_vnlu(dim157) ;
+	short mfp920504a.data_record_11.MPAR.tn(dim158) ;
+	short mfp920504a.data_record_11.MPAR.e_tn(dim159) ;
+	short mfp920504a.data_record_11.MPAR.nsmpti(dim160) ;
+	short mfp920504a.data_record_11.MPAR.rbrl(dim161) ;
+	short mfp920504a.data_record_11.MPAR.chip1(dim162) ;
+	short mfp920504a.data_record_11.MPAR.vnn(dim163) ;
+	short mfp920504a.data_record_11.MPAR.e_vnn(dim164) ;
+	short mfp920504a.data_record_11.MPAR.vne(dim165) ;
+	short mfp920504a.data_record_11.MPAR.e_vne(dim166) ;
+	short mfp920504a.data_record_12.prologue.KINST ;
+	short mfp920504a.data_record_12.prologue.KINDAT ;
+	short mfp920504a.data_record_12.prologue.IBYRT ;
+	short mfp920504a.data_record_12.prologue.IBDTT ;
+	short mfp920504a.data_record_12.prologue.IBHMT ;
+	short mfp920504a.data_record_12.prologue.IBCST ;
+	short mfp920504a.data_record_12.prologue.IEYRT ;
+	short mfp920504a.data_record_12.prologue.IEDTT ;
+	short mfp920504a.data_record_12.prologue.IEHMT ;
+	short mfp920504a.data_record_12.prologue.IECST ;
+	short mfp920504a.data_record_12.JPAR.gdlatr ;
+	short mfp920504a.data_record_12.JPAR.gdlonr ;
+	short mfp920504a.data_record_12.JPAR.wavlen ;
+	short mfp920504a.data_record_12.JPAR.gdra ;
+	short mfp920504a.data_record_12.JPAR.gmra ;
+	short mfp920504a.data_record_12.JPAR.bdec ;
+	short mfp920504a.data_record_12.MPAR.year(dim167) ;
+	short mfp920504a.data_record_12.MPAR.dayno(dim168) ;
+	short mfp920504a.data_record_12.MPAR.uth(dim169) ;
+	short mfp920504a.data_record_12.MPAR.az1(dim170) ;
+	short mfp920504a.data_record_12.MPAR.az2(dim171) ;
+	short mfp920504a.data_record_12.MPAR.elm(dim172) ;
+	short mfp920504a.data_record_12.MPAR.vnn(dim173) ;
+	short mfp920504a.data_record_12.MPAR.e_vnn(dim174) ;
+	short mfp920504a.data_record_12.MPAR.vne(dim175) ;
+	short mfp920504a.data_record_12.MPAR.e_vne(dim176) ;
+	short mfp920504a.data_record_12.MPAR.vnpnh(dim177) ;
+	short mfp920504a.data_record_12.MPAR.e_vnpnh(dim178) ;
+	short mfp920504a.data_record_12.MPAR.vnpe(dim179) ;
+	short mfp920504a.data_record_12.MPAR.e_vnpe(dim180) ;
+	short mfp920504a.data_record_13.prologue.KINST ;
+	short mfp920504a.data_record_13.prologue.KINDAT ;
+	short mfp920504a.data_record_13.prologue.IBYRT ;
+	short mfp920504a.data_record_13.prologue.IBDTT ;
+	short mfp920504a.data_record_13.prologue.IBHMT ;
+	short mfp920504a.data_record_13.prologue.IBCST ;
+	short mfp920504a.data_record_13.prologue.IEYRT ;
+	short mfp920504a.data_record_13.prologue.IEDTT ;
+	short mfp920504a.data_record_13.prologue.IEHMT ;
+	short mfp920504a.data_record_13.prologue.IECST ;
+	short mfp920504a.data_record_13.JPAR.gdlatr ;
+	short mfp920504a.data_record_13.JPAR.gdlonr ;
+	short mfp920504a.data_record_13.JPAR.wavlen ;
+	short mfp920504a.data_record_13.JPAR.gdra ;
+	short mfp920504a.data_record_13.MPAR.year(dim181) ;
+	short mfp920504a.data_record_13.MPAR.dayno(dim182) ;
+	short mfp920504a.data_record_13.MPAR.uth(dim183) ;
+	short mfp920504a.data_record_13.MPAR.azm(dim184) ;
+	short mfp920504a.data_record_13.MPAR.elm(dim185) ;
+	short mfp920504a.data_record_13.MPAR.vnlu(dim186) ;
+	short mfp920504a.data_record_13.MPAR.e_vnlu(dim187) ;
+	short mfp920504a.data_record_13.MPAR.tn(dim188) ;
+	short mfp920504a.data_record_13.MPAR.e_tn(dim189) ;
+	short mfp920504a.data_record_13.MPAR.nsmpti(dim190) ;
+	short mfp920504a.data_record_13.MPAR.rbrl(dim191) ;
+	short mfp920504a.data_record_13.MPAR.chip1(dim192) ;
+	short mfp920504a.data_record_13.MPAR.vnn(dim193) ;
+	short mfp920504a.data_record_13.MPAR.e_vnn(dim194) ;
+	short mfp920504a.data_record_13.MPAR.vne(dim195) ;
+	short mfp920504a.data_record_13.MPAR.e_vne(dim196) ;
+	short mfp920504a.data_record_14.prologue.KINST ;
+	short mfp920504a.data_record_14.prologue.KINDAT ;
+	short mfp920504a.data_record_14.prologue.IBYRT ;
+	short mfp920504a.data_record_14.prologue.IBDTT ;
+	short mfp920504a.data_record_14.prologue.IBHMT ;
+	short mfp920504a.data_record_14.prologue.IBCST ;
+	short mfp920504a.data_record_14.prologue.IEYRT ;
+	short mfp920504a.data_record_14.prologue.IEDTT ;
+	short mfp920504a.data_record_14.prologue.IEHMT ;
+	short mfp920504a.data_record_14.prologue.IECST ;
+	short mfp920504a.data_record_14.JPAR.gdlatr ;
+	short mfp920504a.data_record_14.JPAR.gdlonr ;
+	short mfp920504a.data_record_14.JPAR.wavlen ;
+	short mfp920504a.data_record_14.JPAR.gdra ;
+	short mfp920504a.data_record_14.JPAR.gmra ;
+	short mfp920504a.data_record_14.JPAR.bdec ;
+	short mfp920504a.data_record_14.MPAR.year(dim197) ;
+	short mfp920504a.data_record_14.MPAR.dayno(dim198) ;
+	short mfp920504a.data_record_14.MPAR.uth(dim199) ;
+	short mfp920504a.data_record_14.MPAR.az1(dim200) ;
+	short mfp920504a.data_record_14.MPAR.az2(dim201) ;
+	short mfp920504a.data_record_14.MPAR.elm(dim202) ;
+	short mfp920504a.data_record_14.MPAR.vnn(dim203) ;
+	short mfp920504a.data_record_14.MPAR.e_vnn(dim204) ;
+	short mfp920504a.data_record_14.MPAR.vne(dim205) ;
+	short mfp920504a.data_record_14.MPAR.e_vne(dim206) ;
+	short mfp920504a.data_record_14.MPAR.vnpnh(dim207) ;
+	short mfp920504a.data_record_14.MPAR.e_vnpnh(dim208) ;
+	short mfp920504a.data_record_14.MPAR.vnpe(dim209) ;
+	short mfp920504a.data_record_14.MPAR.e_vnpe(dim210) ;
+	short mfp920504a.data_record_15.prologue.KINST ;
+	short mfp920504a.data_record_15.prologue.KINDAT ;
+	short mfp920504a.data_record_15.prologue.IBYRT ;
+	short mfp920504a.data_record_15.prologue.IBDTT ;
+	short mfp920504a.data_record_15.prologue.IBHMT ;
+	short mfp920504a.data_record_15.prologue.IBCST ;
+	short mfp920504a.data_record_15.prologue.IEYRT ;
+	short mfp920504a.data_record_15.prologue.IEDTT ;
+	short mfp920504a.data_record_15.prologue.IEHMT ;
+	short mfp920504a.data_record_15.prologue.IECST ;
+	short mfp920504a.data_record_15.JPAR.gdlatr ;
+	short mfp920504a.data_record_15.JPAR.gdlonr ;
+	short mfp920504a.data_record_15.JPAR.wavlen ;
+	short mfp920504a.data_record_15.JPAR.gdra ;
+	short mfp920504a.data_record_15.MPAR.year(dim211) ;
+	short mfp920504a.data_record_15.MPAR.dayno(dim212) ;
+	short mfp920504a.data_record_15.MPAR.uth(dim213) ;
+	short mfp920504a.data_record_15.MPAR.azm(dim214) ;
+	short mfp920504a.data_record_15.MPAR.elm(dim215) ;
+	short mfp920504a.data_record_15.MPAR.vnlu(dim216) ;
+	short mfp920504a.data_record_15.MPAR.e_vnlu(dim217) ;
+	short mfp920504a.data_record_15.MPAR.tn(dim218) ;
+	short mfp920504a.data_record_15.MPAR.e_tn(dim219) ;
+	short mfp920504a.data_record_15.MPAR.nsmpti(dim220) ;
+	short mfp920504a.data_record_15.MPAR.rbrl(dim221) ;
+	short mfp920504a.data_record_15.MPAR.chip1(dim222) ;
+	short mfp920504a.data_record_15.MPAR.vnn(dim223) ;
+	short mfp920504a.data_record_15.MPAR.e_vnn(dim224) ;
+	short mfp920504a.data_record_15.MPAR.vne(dim225) ;
+	short mfp920504a.data_record_15.MPAR.e_vne(dim226) ;
+	short mfp920504a.data_record_16.prologue.KINST ;
+	short mfp920504a.data_record_16.prologue.KINDAT ;
+	short mfp920504a.data_record_16.prologue.IBYRT ;
+	short mfp920504a.data_record_16.prologue.IBDTT ;
+	short mfp920504a.data_record_16.prologue.IBHMT ;
+	short mfp920504a.data_record_16.prologue.IBCST ;
+	short mfp920504a.data_record_16.prologue.IEYRT ;
+	short mfp920504a.data_record_16.prologue.IEDTT ;
+	short mfp920504a.data_record_16.prologue.IEHMT ;
+	short mfp920504a.data_record_16.prologue.IECST ;
+	short mfp920504a.data_record_16.JPAR.gdlatr ;
+	short mfp920504a.data_record_16.JPAR.gdlonr ;
+	short mfp920504a.data_record_16.JPAR.wavlen ;
+	short mfp920504a.data_record_16.JPAR.gdra ;
+	short mfp920504a.data_record_16.JPAR.gmra ;
+	short mfp920504a.data_record_16.JPAR.bdec ;
+	short mfp920504a.data_record_16.MPAR.year(dim227) ;
+	short mfp920504a.data_record_16.MPAR.dayno(dim228) ;
+	short mfp920504a.data_record_16.MPAR.uth(dim229) ;
+	short mfp920504a.data_record_16.MPAR.az1(dim230) ;
+	short mfp920504a.data_record_16.MPAR.az2(dim231) ;
+	short mfp920504a.data_record_16.MPAR.elm(dim232) ;
+	short mfp920504a.data_record_16.MPAR.vnn(dim233) ;
+	short mfp920504a.data_record_16.MPAR.e_vnn(dim234) ;
+	short mfp920504a.data_record_16.MPAR.vne(dim235) ;
+	short mfp920504a.data_record_16.MPAR.e_vne(dim236) ;
+	short mfp920504a.data_record_16.MPAR.vnpnh(dim237) ;
+	short mfp920504a.data_record_16.MPAR.e_vnpnh(dim238) ;
+	short mfp920504a.data_record_16.MPAR.vnpe(dim239) ;
+	short mfp920504a.data_record_16.MPAR.e_vnpe(dim240) ;
+	short mfp920504a.data_record_17.prologue.KINST ;
+	short mfp920504a.data_record_17.prologue.KINDAT ;
+	short mfp920504a.data_record_17.prologue.IBYRT ;
+	short mfp920504a.data_record_17.prologue.IBDTT ;
+	short mfp920504a.data_record_17.prologue.IBHMT ;
+	short mfp920504a.data_record_17.prologue.IBCST ;
+	short mfp920504a.data_record_17.prologue.IEYRT ;
+	short mfp920504a.data_record_17.prologue.IEDTT ;
+	short mfp920504a.data_record_17.prologue.IEHMT ;
+	short mfp920504a.data_record_17.prologue.IECST ;
+	short mfp920504a.data_record_17.JPAR.gdlatr ;
+	short mfp920504a.data_record_17.JPAR.gdlonr ;
+	short mfp920504a.data_record_17.JPAR.wavlen ;
+	short mfp920504a.data_record_17.JPAR.gdra ;
+	short mfp920504a.data_record_17.MPAR.year(dim241) ;
+	short mfp920504a.data_record_17.MPAR.dayno(dim242) ;
+	short mfp920504a.data_record_17.MPAR.uth(dim243) ;
+	short mfp920504a.data_record_17.MPAR.azm(dim244) ;
+	short mfp920504a.data_record_17.MPAR.elm(dim245) ;
+	short mfp920504a.data_record_17.MPAR.vnlu(dim246) ;
+	short mfp920504a.data_record_17.MPAR.e_vnlu(dim247) ;
+	short mfp920504a.data_record_17.MPAR.tn(dim248) ;
+	short mfp920504a.data_record_17.MPAR.e_tn(dim249) ;
+	short mfp920504a.data_record_17.MPAR.nsmpti(dim250) ;
+	short mfp920504a.data_record_17.MPAR.rbrl(dim251) ;
+	short mfp920504a.data_record_17.MPAR.chip1(dim252) ;
+	short mfp920504a.data_record_17.MPAR.vnn(dim253) ;
+	short mfp920504a.data_record_17.MPAR.e_vnn(dim254) ;
+	short mfp920504a.data_record_17.MPAR.vne(dim255) ;
+	short mfp920504a.data_record_17.MPAR.e_vne(dim256) ;
+	short mfp920504a.data_record_18.prologue.KINST ;
+	short mfp920504a.data_record_18.prologue.KINDAT ;
+	short mfp920504a.data_record_18.prologue.IBYRT ;
+	short mfp920504a.data_record_18.prologue.IBDTT ;
+	short mfp920504a.data_record_18.prologue.IBHMT ;
+	short mfp920504a.data_record_18.prologue.IBCST ;
+	short mfp920504a.data_record_18.prologue.IEYRT ;
+	short mfp920504a.data_record_18.prologue.IEDTT ;
+	short mfp920504a.data_record_18.prologue.IEHMT ;
+	short mfp920504a.data_record_18.prologue.IECST ;
+	short mfp920504a.data_record_18.JPAR.gdlatr ;
+	short mfp920504a.data_record_18.JPAR.gdlonr ;
+	short mfp920504a.data_record_18.JPAR.wavlen ;
+	short mfp920504a.data_record_18.JPAR.gdra ;
+	short mfp920504a.data_record_18.JPAR.gmra ;
+	short mfp920504a.data_record_18.JPAR.bdec ;
+	short mfp920504a.data_record_18.MPAR.year(dim257) ;
+	short mfp920504a.data_record_18.MPAR.dayno(dim258) ;
+	short mfp920504a.data_record_18.MPAR.uth(dim259) ;
+	short mfp920504a.data_record_18.MPAR.az1(dim260) ;
+	short mfp920504a.data_record_18.MPAR.az2(dim261) ;
+	short mfp920504a.data_record_18.MPAR.elm(dim262) ;
+	short mfp920504a.data_record_18.MPAR.vnn(dim263) ;
+	short mfp920504a.data_record_18.MPAR.e_vnn(dim264) ;
+	short mfp920504a.data_record_18.MPAR.vne(dim265) ;
+	short mfp920504a.data_record_18.MPAR.e_vne(dim266) ;
+	short mfp920504a.data_record_18.MPAR.vnpnh(dim267) ;
+	short mfp920504a.data_record_18.MPAR.e_vnpnh(dim268) ;
+	short mfp920504a.data_record_18.MPAR.vnpe(dim269) ;
+	short mfp920504a.data_record_18.MPAR.e_vnpe(dim270) ;
+	short mfp920504a.data_record_19.prologue.KINST ;
+	short mfp920504a.data_record_19.prologue.KINDAT ;
+	short mfp920504a.data_record_19.prologue.IBYRT ;
+	short mfp920504a.data_record_19.prologue.IBDTT ;
+	short mfp920504a.data_record_19.prologue.IBHMT ;
+	short mfp920504a.data_record_19.prologue.IBCST ;
+	short mfp920504a.data_record_19.prologue.IEYRT ;
+	short mfp920504a.data_record_19.prologue.IEDTT ;
+	short mfp920504a.data_record_19.prologue.IEHMT ;
+	short mfp920504a.data_record_19.prologue.IECST ;
+	short mfp920504a.data_record_19.JPAR.gdlatr ;
+	short mfp920504a.data_record_19.JPAR.gdlonr ;
+	short mfp920504a.data_record_19.JPAR.wavlen ;
+	short mfp920504a.data_record_19.JPAR.gdra ;
+	short mfp920504a.data_record_19.MPAR.year(dim271) ;
+	short mfp920504a.data_record_19.MPAR.dayno(dim272) ;
+	short mfp920504a.data_record_19.MPAR.uth(dim273) ;
+	short mfp920504a.data_record_19.MPAR.azm(dim274) ;
+	short mfp920504a.data_record_19.MPAR.elm(dim275) ;
+	short mfp920504a.data_record_19.MPAR.vnlu(dim276) ;
+	short mfp920504a.data_record_19.MPAR.e_vnlu(dim277) ;
+	short mfp920504a.data_record_19.MPAR.tn(dim278) ;
+	short mfp920504a.data_record_19.MPAR.e_tn(dim279) ;
+	short mfp920504a.data_record_19.MPAR.nsmpti(dim280) ;
+	short mfp920504a.data_record_19.MPAR.rbrl(dim281) ;
+	short mfp920504a.data_record_19.MPAR.chip1(dim282) ;
+	short mfp920504a.data_record_19.MPAR.vnn(dim283) ;
+	short mfp920504a.data_record_19.MPAR.e_vnn(dim284) ;
+	short mfp920504a.data_record_19.MPAR.vne(dim285) ;
+	short mfp920504a.data_record_19.MPAR.e_vne(dim286) ;
+	short mfp920504a.data_record_20.prologue.KINST ;
+	short mfp920504a.data_record_20.prologue.KINDAT ;
+	short mfp920504a.data_record_20.prologue.IBYRT ;
+	short mfp920504a.data_record_20.prologue.IBDTT ;
+	short mfp920504a.data_record_20.prologue.IBHMT ;
+	short mfp920504a.data_record_20.prologue.IBCST ;
+	short mfp920504a.data_record_20.prologue.IEYRT ;
+	short mfp920504a.data_record_20.prologue.IEDTT ;
+	short mfp920504a.data_record_20.prologue.IEHMT ;
+	short mfp920504a.data_record_20.prologue.IECST ;
+	short mfp920504a.data_record_20.JPAR.gdlatr ;
+	short mfp920504a.data_record_20.JPAR.gdlonr ;
+	short mfp920504a.data_record_20.JPAR.wavlen ;
+	short mfp920504a.data_record_20.JPAR.gdra ;
+	short mfp920504a.data_record_20.JPAR.gmra ;
+	short mfp920504a.data_record_20.JPAR.bdec ;
+	short mfp920504a.data_record_20.MPAR.year(dim287) ;
+	short mfp920504a.data_record_20.MPAR.dayno(dim288) ;
+	short mfp920504a.data_record_20.MPAR.uth(dim289) ;
+	short mfp920504a.data_record_20.MPAR.az1(dim290) ;
+	short mfp920504a.data_record_20.MPAR.az2(dim291) ;
+	short mfp920504a.data_record_20.MPAR.elm(dim292) ;
+	short mfp920504a.data_record_20.MPAR.vnn(dim293) ;
+	short mfp920504a.data_record_20.MPAR.e_vnn(dim294) ;
+	short mfp920504a.data_record_20.MPAR.vne(dim295) ;
+	short mfp920504a.data_record_20.MPAR.e_vne(dim296) ;
+	short mfp920504a.data_record_20.MPAR.vnpnh(dim297) ;
+	short mfp920504a.data_record_20.MPAR.e_vnpnh(dim298) ;
+	short mfp920504a.data_record_20.MPAR.vnpe(dim299) ;
+	short mfp920504a.data_record_20.MPAR.e_vnpe(dim300) ;
+	short mfp920504a.data_record_21.prologue.KINST ;
+	short mfp920504a.data_record_21.prologue.KINDAT ;
+	short mfp920504a.data_record_21.prologue.IBYRT ;
+	short mfp920504a.data_record_21.prologue.IBDTT ;
+	short mfp920504a.data_record_21.prologue.IBHMT ;
+	short mfp920504a.data_record_21.prologue.IBCST ;
+	short mfp920504a.data_record_21.prologue.IEYRT ;
+	short mfp920504a.data_record_21.prologue.IEDTT ;
+	short mfp920504a.data_record_21.prologue.IEHMT ;
+	short mfp920504a.data_record_21.prologue.IECST ;
+	short mfp920504a.data_record_21.JPAR.gdlatr ;
+	short mfp920504a.data_record_21.JPAR.gdlonr ;
+	short mfp920504a.data_record_21.JPAR.wavlen ;
+	short mfp920504a.data_record_21.JPAR.gdra ;
+	short mfp920504a.data_record_21.MPAR.year(dim301) ;
+	short mfp920504a.data_record_21.MPAR.dayno(dim302) ;
+	short mfp920504a.data_record_21.MPAR.uth(dim303) ;
+	short mfp920504a.data_record_21.MPAR.azm(dim304) ;
+	short mfp920504a.data_record_21.MPAR.elm(dim305) ;
+	short mfp920504a.data_record_21.MPAR.vnlu(dim306) ;
+	short mfp920504a.data_record_21.MPAR.e_vnlu(dim307) ;
+	short mfp920504a.data_record_21.MPAR.tn(dim308) ;
+	short mfp920504a.data_record_21.MPAR.e_tn(dim309) ;
+	short mfp920504a.data_record_21.MPAR.nsmpti(dim310) ;
+	short mfp920504a.data_record_21.MPAR.rbrl(dim311) ;
+	short mfp920504a.data_record_21.MPAR.chip1(dim312) ;
+	short mfp920504a.data_record_21.MPAR.vnn(dim313) ;
+	short mfp920504a.data_record_21.MPAR.e_vnn(dim314) ;
+	short mfp920504a.data_record_21.MPAR.vne(dim315) ;
+	short mfp920504a.data_record_21.MPAR.e_vne(dim316) ;
+	short mfp920504a.data_record_22.prologue.KINST ;
+	short mfp920504a.data_record_22.prologue.KINDAT ;
+	short mfp920504a.data_record_22.prologue.IBYRT ;
+	short mfp920504a.data_record_22.prologue.IBDTT ;
+	short mfp920504a.data_record_22.prologue.IBHMT ;
+	short mfp920504a.data_record_22.prologue.IBCST ;
+	short mfp920504a.data_record_22.prologue.IEYRT ;
+	short mfp920504a.data_record_22.prologue.IEDTT ;
+	short mfp920504a.data_record_22.prologue.IEHMT ;
+	short mfp920504a.data_record_22.prologue.IECST ;
+	short mfp920504a.data_record_22.JPAR.gdlatr ;
+	short mfp920504a.data_record_22.JPAR.gdlonr ;
+	short mfp920504a.data_record_22.JPAR.wavlen ;
+	short mfp920504a.data_record_22.JPAR.gdra ;
+	short mfp920504a.data_record_22.JPAR.gmra ;
+	short mfp920504a.data_record_22.JPAR.bdec ;
+	short mfp920504a.data_record_22.MPAR.year(dim317) ;
+	short mfp920504a.data_record_22.MPAR.dayno(dim318) ;
+	short mfp920504a.data_record_22.MPAR.uth(dim319) ;
+	short mfp920504a.data_record_22.MPAR.az1(dim320) ;
+	short mfp920504a.data_record_22.MPAR.az2(dim321) ;
+	short mfp920504a.data_record_22.MPAR.elm(dim322) ;
+	short mfp920504a.data_record_22.MPAR.vnn(dim323) ;
+	short mfp920504a.data_record_22.MPAR.e_vnn(dim324) ;
+	short mfp920504a.data_record_22.MPAR.vne(dim325) ;
+	short mfp920504a.data_record_22.MPAR.e_vne(dim326) ;
+	short mfp920504a.data_record_22.MPAR.vnpnh(dim327) ;
+	short mfp920504a.data_record_22.MPAR.e_vnpnh(dim328) ;
+	short mfp920504a.data_record_22.MPAR.vnpe(dim329) ;
+	short mfp920504a.data_record_22.MPAR.e_vnpe(dim330) ;
+	short mfp920504a.data_record_23.prologue.KINST ;
+	short mfp920504a.data_record_23.prologue.KINDAT ;
+	short mfp920504a.data_record_23.prologue.IBYRT ;
+	short mfp920504a.data_record_23.prologue.IBDTT ;
+	short mfp920504a.data_record_23.prologue.IBHMT ;
+	short mfp920504a.data_record_23.prologue.IBCST ;
+	short mfp920504a.data_record_23.prologue.IEYRT ;
+	short mfp920504a.data_record_23.prologue.IEDTT ;
+	short mfp920504a.data_record_23.prologue.IEHMT ;
+	short mfp920504a.data_record_23.prologue.IECST ;
+	short mfp920504a.data_record_23.JPAR.gdlatr ;
+	short mfp920504a.data_record_23.JPAR.gdlonr ;
+	short mfp920504a.data_record_23.JPAR.wavlen ;
+	short mfp920504a.data_record_23.JPAR.gdra ;
+	short mfp920504a.data_record_23.MPAR.year(dim331) ;
+	short mfp920504a.data_record_23.MPAR.dayno(dim332) ;
+	short mfp920504a.data_record_23.MPAR.uth(dim333) ;
+	short mfp920504a.data_record_23.MPAR.azm(dim334) ;
+	short mfp920504a.data_record_23.MPAR.elm(dim335) ;
+	short mfp920504a.data_record_23.MPAR.vnlu(dim336) ;
+	short mfp920504a.data_record_23.MPAR.e_vnlu(dim337) ;
+	short mfp920504a.data_record_23.MPAR.tn(dim338) ;
+	short mfp920504a.data_record_23.MPAR.e_tn(dim339) ;
+	short mfp920504a.data_record_23.MPAR.nsmpti(dim340) ;
+	short mfp920504a.data_record_23.MPAR.rbrl(dim341) ;
+	short mfp920504a.data_record_23.MPAR.chip1(dim342) ;
+	short mfp920504a.data_record_23.MPAR.vnn(dim343) ;
+	short mfp920504a.data_record_23.MPAR.e_vnn(dim344) ;
+	short mfp920504a.data_record_23.MPAR.vne(dim345) ;
+	short mfp920504a.data_record_23.MPAR.e_vne(dim346) ;
+	short mfp920504a.data_record_24.prologue.KINST ;
+	short mfp920504a.data_record_24.prologue.KINDAT ;
+	short mfp920504a.data_record_24.prologue.IBYRT ;
+	short mfp920504a.data_record_24.prologue.IBDTT ;
+	short mfp920504a.data_record_24.prologue.IBHMT ;
+	short mfp920504a.data_record_24.prologue.IBCST ;
+	short mfp920504a.data_record_24.prologue.IEYRT ;
+	short mfp920504a.data_record_24.prologue.IEDTT ;
+	short mfp920504a.data_record_24.prologue.IEHMT ;
+	short mfp920504a.data_record_24.prologue.IECST ;
+	short mfp920504a.data_record_24.JPAR.gdlatr ;
+	short mfp920504a.data_record_24.JPAR.gdlonr ;
+	short mfp920504a.data_record_24.JPAR.wavlen ;
+	short mfp920504a.data_record_24.JPAR.gdra ;
+	short mfp920504a.data_record_24.JPAR.gmra ;
+	short mfp920504a.data_record_24.JPAR.bdec ;
+	short mfp920504a.data_record_24.MPAR.year(dim347) ;
+	short mfp920504a.data_record_24.MPAR.dayno(dim348) ;
+	short mfp920504a.data_record_24.MPAR.uth(dim349) ;
+	short mfp920504a.data_record_24.MPAR.az1(dim350) ;
+	short mfp920504a.data_record_24.MPAR.az2(dim351) ;
+	short mfp920504a.data_record_24.MPAR.elm(dim352) ;
+	short mfp920504a.data_record_24.MPAR.vnn(dim353) ;
+	short mfp920504a.data_record_24.MPAR.e_vnn(dim354) ;
+	short mfp920504a.data_record_24.MPAR.vne(dim355) ;
+	short mfp920504a.data_record_24.MPAR.e_vne(dim356) ;
+	short mfp920504a.data_record_24.MPAR.vnpnh(dim357) ;
+	short mfp920504a.data_record_24.MPAR.e_vnpnh(dim358) ;
+	short mfp920504a.data_record_24.MPAR.vnpe(dim359) ;
+	short mfp920504a.data_record_24.MPAR.e_vnpe(dim360) ;
+	short mfp920504a.data_record_25.prologue.KINST ;
+	short mfp920504a.data_record_25.prologue.KINDAT ;
+	short mfp920504a.data_record_25.prologue.IBYRT ;
+	short mfp920504a.data_record_25.prologue.IBDTT ;
+	short mfp920504a.data_record_25.prologue.IBHMT ;
+	short mfp920504a.data_record_25.prologue.IBCST ;
+	short mfp920504a.data_record_25.prologue.IEYRT ;
+	short mfp920504a.data_record_25.prologue.IEDTT ;
+	short mfp920504a.data_record_25.prologue.IEHMT ;
+	short mfp920504a.data_record_25.prologue.IECST ;
+	short mfp920504a.data_record_25.JPAR.gdlatr ;
+	short mfp920504a.data_record_25.JPAR.gdlonr ;
+	short mfp920504a.data_record_25.JPAR.wavlen ;
+	short mfp920504a.data_record_25.JPAR.gdra ;
+	short mfp920504a.data_record_25.MPAR.year(dim361) ;
+	short mfp920504a.data_record_25.MPAR.dayno(dim362) ;
+	short mfp920504a.data_record_25.MPAR.uth(dim363) ;
+	short mfp920504a.data_record_25.MPAR.azm(dim364) ;
+	short mfp920504a.data_record_25.MPAR.elm(dim365) ;
+	short mfp920504a.data_record_25.MPAR.vnlu(dim366) ;
+	short mfp920504a.data_record_25.MPAR.e_vnlu(dim367) ;
+	short mfp920504a.data_record_25.MPAR.tn(dim368) ;
+	short mfp920504a.data_record_25.MPAR.e_tn(dim369) ;
+	short mfp920504a.data_record_25.MPAR.nsmpti(dim370) ;
+	short mfp920504a.data_record_25.MPAR.rbrl(dim371) ;
+	short mfp920504a.data_record_25.MPAR.chip1(dim372) ;
+	short mfp920504a.data_record_25.MPAR.vnn(dim373) ;
+	short mfp920504a.data_record_25.MPAR.e_vnn(dim374) ;
+	short mfp920504a.data_record_25.MPAR.vne(dim375) ;
+	short mfp920504a.data_record_25.MPAR.e_vne(dim376) ;
+	short mfp920504a.data_record_26.prologue.KINST ;
+	short mfp920504a.data_record_26.prologue.KINDAT ;
+	short mfp920504a.data_record_26.prologue.IBYRT ;
+	short mfp920504a.data_record_26.prologue.IBDTT ;
+	short mfp920504a.data_record_26.prologue.IBHMT ;
+	short mfp920504a.data_record_26.prologue.IBCST ;
+	short mfp920504a.data_record_26.prologue.IEYRT ;
+	short mfp920504a.data_record_26.prologue.IEDTT ;
+	short mfp920504a.data_record_26.prologue.IEHMT ;
+	short mfp920504a.data_record_26.prologue.IECST ;
+	short mfp920504a.data_record_26.JPAR.gdlatr ;
+	short mfp920504a.data_record_26.JPAR.gdlonr ;
+	short mfp920504a.data_record_26.JPAR.wavlen ;
+	short mfp920504a.data_record_26.JPAR.gdra ;
+	short mfp920504a.data_record_26.JPAR.gmra ;
+	short mfp920504a.data_record_26.JPAR.bdec ;
+	short mfp920504a.data_record_26.MPAR.year(dim377) ;
+	short mfp920504a.data_record_26.MPAR.dayno(dim378) ;
+	short mfp920504a.data_record_26.MPAR.uth(dim379) ;
+	short mfp920504a.data_record_26.MPAR.az1(dim380) ;
+	short mfp920504a.data_record_26.MPAR.az2(dim381) ;
+	short mfp920504a.data_record_26.MPAR.elm(dim382) ;
+	short mfp920504a.data_record_26.MPAR.vnn(dim383) ;
+	short mfp920504a.data_record_26.MPAR.e_vnn(dim384) ;
+	short mfp920504a.data_record_26.MPAR.vne(dim385) ;
+	short mfp920504a.data_record_26.MPAR.e_vne(dim386) ;
+	short mfp920504a.data_record_26.MPAR.vnpnh(dim387) ;
+	short mfp920504a.data_record_26.MPAR.e_vnpnh(dim388) ;
+	short mfp920504a.data_record_26.MPAR.vnpe(dim389) ;
+	short mfp920504a.data_record_26.MPAR.e_vnpe(dim390) ;
+	short mfp920504a.data_record_27.prologue.KINST ;
+	short mfp920504a.data_record_27.prologue.KINDAT ;
+	short mfp920504a.data_record_27.prologue.IBYRT ;
+	short mfp920504a.data_record_27.prologue.IBDTT ;
+	short mfp920504a.data_record_27.prologue.IBHMT ;
+	short mfp920504a.data_record_27.prologue.IBCST ;
+	short mfp920504a.data_record_27.prologue.IEYRT ;
+	short mfp920504a.data_record_27.prologue.IEDTT ;
+	short mfp920504a.data_record_27.prologue.IEHMT ;
+	short mfp920504a.data_record_27.prologue.IECST ;
+	short mfp920504a.data_record_27.JPAR.gdlatr ;
+	short mfp920504a.data_record_27.JPAR.gdlonr ;
+	short mfp920504a.data_record_27.JPAR.wavlen ;
+	short mfp920504a.data_record_27.JPAR.gdra ;
+	short mfp920504a.data_record_27.MPAR.year(dim391) ;
+	short mfp920504a.data_record_27.MPAR.dayno(dim392) ;
+	short mfp920504a.data_record_27.MPAR.uth(dim393) ;
+	short mfp920504a.data_record_27.MPAR.azm(dim394) ;
+	short mfp920504a.data_record_27.MPAR.elm(dim395) ;
+	short mfp920504a.data_record_27.MPAR.vnlu(dim396) ;
+	short mfp920504a.data_record_27.MPAR.e_vnlu(dim397) ;
+	short mfp920504a.data_record_27.MPAR.tn(dim398) ;
+	short mfp920504a.data_record_27.MPAR.e_tn(dim399) ;
+	short mfp920504a.data_record_27.MPAR.nsmpti(dim400) ;
+	short mfp920504a.data_record_27.MPAR.rbrl(dim401) ;
+	short mfp920504a.data_record_27.MPAR.chip1(dim402) ;
+	short mfp920504a.data_record_27.MPAR.vnn(dim403) ;
+	short mfp920504a.data_record_27.MPAR.e_vnn(dim404) ;
+	short mfp920504a.data_record_27.MPAR.vne(dim405) ;
+	short mfp920504a.data_record_27.MPAR.e_vne(dim406) ;
+	short mfp920504a.data_record_28.prologue.KINST ;
+	short mfp920504a.data_record_28.prologue.KINDAT ;
+	short mfp920504a.data_record_28.prologue.IBYRT ;
+	short mfp920504a.data_record_28.prologue.IBDTT ;
+	short mfp920504a.data_record_28.prologue.IBHMT ;
+	short mfp920504a.data_record_28.prologue.IBCST ;
+	short mfp920504a.data_record_28.prologue.IEYRT ;
+	short mfp920504a.data_record_28.prologue.IEDTT ;
+	short mfp920504a.data_record_28.prologue.IEHMT ;
+	short mfp920504a.data_record_28.prologue.IECST ;
+	short mfp920504a.data_record_28.JPAR.gdlatr ;
+	short mfp920504a.data_record_28.JPAR.gdlonr ;
+	short mfp920504a.data_record_28.JPAR.wavlen ;
+	short mfp920504a.data_record_28.JPAR.gdra ;
+	short mfp920504a.data_record_28.JPAR.gmra ;
+	short mfp920504a.data_record_28.JPAR.bdec ;
+	short mfp920504a.data_record_28.MPAR.year(dim407) ;
+	short mfp920504a.data_record_28.MPAR.dayno(dim408) ;
+	short mfp920504a.data_record_28.MPAR.uth(dim409) ;
+	short mfp920504a.data_record_28.MPAR.az1(dim410) ;
+	short mfp920504a.data_record_28.MPAR.az2(dim411) ;
+	short mfp920504a.data_record_28.MPAR.elm(dim412) ;
+	short mfp920504a.data_record_28.MPAR.vnn(dim413) ;
+	short mfp920504a.data_record_28.MPAR.e_vnn(dim414) ;
+	short mfp920504a.data_record_28.MPAR.vne(dim415) ;
+	short mfp920504a.data_record_28.MPAR.e_vne(dim416) ;
+	short mfp920504a.data_record_28.MPAR.vnpnh(dim417) ;
+	short mfp920504a.data_record_28.MPAR.e_vnpnh(dim418) ;
+	short mfp920504a.data_record_28.MPAR.vnpe(dim419) ;
+	short mfp920504a.data_record_28.MPAR.e_vnpe(dim420) ;
+	short mfp920504a.data_record_29.prologue.KINST ;
+	short mfp920504a.data_record_29.prologue.KINDAT ;
+	short mfp920504a.data_record_29.prologue.IBYRT ;
+	short mfp920504a.data_record_29.prologue.IBDTT ;
+	short mfp920504a.data_record_29.prologue.IBHMT ;
+	short mfp920504a.data_record_29.prologue.IBCST ;
+	short mfp920504a.data_record_29.prologue.IEYRT ;
+	short mfp920504a.data_record_29.prologue.IEDTT ;
+	short mfp920504a.data_record_29.prologue.IEHMT ;
+	short mfp920504a.data_record_29.prologue.IECST ;
+	short mfp920504a.data_record_29.JPAR.gdlatr ;
+	short mfp920504a.data_record_29.JPAR.gdlonr ;
+	short mfp920504a.data_record_29.JPAR.wavlen ;
+	short mfp920504a.data_record_29.JPAR.gdra ;
+	short mfp920504a.data_record_29.MPAR.year(dim421) ;
+	short mfp920504a.data_record_29.MPAR.dayno(dim422) ;
+	short mfp920504a.data_record_29.MPAR.uth(dim423) ;
+	short mfp920504a.data_record_29.MPAR.azm(dim424) ;
+	short mfp920504a.data_record_29.MPAR.elm(dim425) ;
+	short mfp920504a.data_record_29.MPAR.vnlu(dim426) ;
+	short mfp920504a.data_record_29.MPAR.e_vnlu(dim427) ;
+	short mfp920504a.data_record_29.MPAR.tn(dim428) ;
+	short mfp920504a.data_record_29.MPAR.e_tn(dim429) ;
+	short mfp920504a.data_record_29.MPAR.nsmpti(dim430) ;
+	short mfp920504a.data_record_29.MPAR.rbrl(dim431) ;
+	short mfp920504a.data_record_29.MPAR.chip1(dim432) ;
+	short mfp920504a.data_record_29.MPAR.vnn(dim433) ;
+	short mfp920504a.data_record_29.MPAR.e_vnn(dim434) ;
+	short mfp920504a.data_record_29.MPAR.vne(dim435) ;
+	short mfp920504a.data_record_29.MPAR.e_vne(dim436) ;
+	short mfp920504a.data_record_30.prologue.KINST ;
+	short mfp920504a.data_record_30.prologue.KINDAT ;
+	short mfp920504a.data_record_30.prologue.IBYRT ;
+	short mfp920504a.data_record_30.prologue.IBDTT ;
+	short mfp920504a.data_record_30.prologue.IBHMT ;
+	short mfp920504a.data_record_30.prologue.IBCST ;
+	short mfp920504a.data_record_30.prologue.IEYRT ;
+	short mfp920504a.data_record_30.prologue.IEDTT ;
+	short mfp920504a.data_record_30.prologue.IEHMT ;
+	short mfp920504a.data_record_30.prologue.IECST ;
+	short mfp920504a.data_record_30.JPAR.gdlatr ;
+	short mfp920504a.data_record_30.JPAR.gdlonr ;
+	short mfp920504a.data_record_30.JPAR.wavlen ;
+	short mfp920504a.data_record_30.JPAR.gdra ;
+	short mfp920504a.data_record_30.JPAR.gmra ;
+	short mfp920504a.data_record_30.JPAR.bdec ;
+	short mfp920504a.data_record_30.MPAR.year(dim437) ;
+	short mfp920504a.data_record_30.MPAR.dayno(dim438) ;
+	short mfp920504a.data_record_30.MPAR.uth(dim439) ;
+	short mfp920504a.data_record_30.MPAR.az1(dim440) ;
+	short mfp920504a.data_record_30.MPAR.az2(dim441) ;
+	short mfp920504a.data_record_30.MPAR.elm(dim442) ;
+	short mfp920504a.data_record_30.MPAR.vnn(dim443) ;
+	short mfp920504a.data_record_30.MPAR.e_vnn(dim444) ;
+	short mfp920504a.data_record_30.MPAR.vne(dim445) ;
+	short mfp920504a.data_record_30.MPAR.e_vne(dim446) ;
+	short mfp920504a.data_record_30.MPAR.vnpnh(dim447) ;
+	short mfp920504a.data_record_30.MPAR.e_vnpnh(dim448) ;
+	short mfp920504a.data_record_30.MPAR.vnpe(dim449) ;
+	short mfp920504a.data_record_30.MPAR.e_vnpe(dim450) ;
+	short mfp920504a.data_record_31.prologue.KINST ;
+	short mfp920504a.data_record_31.prologue.KINDAT ;
+	short mfp920504a.data_record_31.prologue.IBYRT ;
+	short mfp920504a.data_record_31.prologue.IBDTT ;
+	short mfp920504a.data_record_31.prologue.IBHMT ;
+	short mfp920504a.data_record_31.prologue.IBCST ;
+	short mfp920504a.data_record_31.prologue.IEYRT ;
+	short mfp920504a.data_record_31.prologue.IEDTT ;
+	short mfp920504a.data_record_31.prologue.IEHMT ;
+	short mfp920504a.data_record_31.prologue.IECST ;
+	short mfp920504a.data_record_31.JPAR.gdlatr ;
+	short mfp920504a.data_record_31.JPAR.gdlonr ;
+	short mfp920504a.data_record_31.JPAR.wavlen ;
+	short mfp920504a.data_record_31.JPAR.gdra ;
+	short mfp920504a.data_record_31.MPAR.year(dim451) ;
+	short mfp920504a.data_record_31.MPAR.dayno(dim452) ;
+	short mfp920504a.data_record_31.MPAR.uth(dim453) ;
+	short mfp920504a.data_record_31.MPAR.azm(dim454) ;
+	short mfp920504a.data_record_31.MPAR.elm(dim455) ;
+	short mfp920504a.data_record_31.MPAR.vnlu(dim456) ;
+	short mfp920504a.data_record_31.MPAR.e_vnlu(dim457) ;
+	short mfp920504a.data_record_31.MPAR.tn(dim458) ;
+	short mfp920504a.data_record_31.MPAR.e_tn(dim459) ;
+	short mfp920504a.data_record_31.MPAR.nsmpti(dim460) ;
+	short mfp920504a.data_record_31.MPAR.rbrl(dim461) ;
+	short mfp920504a.data_record_31.MPAR.chip1(dim462) ;
+	short mfp920504a.data_record_31.MPAR.vnn(dim463) ;
+	short mfp920504a.data_record_31.MPAR.e_vnn(dim464) ;
+	short mfp920504a.data_record_31.MPAR.vne(dim465) ;
+	short mfp920504a.data_record_31.MPAR.e_vne(dim466) ;
+	short mfp920504a.data_record_32.prologue.KINST ;
+	short mfp920504a.data_record_32.prologue.KINDAT ;
+	short mfp920504a.data_record_32.prologue.IBYRT ;
+	short mfp920504a.data_record_32.prologue.IBDTT ;
+	short mfp920504a.data_record_32.prologue.IBHMT ;
+	short mfp920504a.data_record_32.prologue.IBCST ;
+	short mfp920504a.data_record_32.prologue.IEYRT ;
+	short mfp920504a.data_record_32.prologue.IEDTT ;
+	short mfp920504a.data_record_32.prologue.IEHMT ;
+	short mfp920504a.data_record_32.prologue.IECST ;
+	short mfp920504a.data_record_32.JPAR.gdlatr ;
+	short mfp920504a.data_record_32.JPAR.gdlonr ;
+	short mfp920504a.data_record_32.JPAR.wavlen ;
+	short mfp920504a.data_record_32.JPAR.gdra ;
+	short mfp920504a.data_record_32.JPAR.gmra ;
+	short mfp920504a.data_record_32.JPAR.bdec ;
+	short mfp920504a.data_record_32.MPAR.year(dim467) ;
+	short mfp920504a.data_record_32.MPAR.dayno(dim468) ;
+	short mfp920504a.data_record_32.MPAR.uth(dim469) ;
+	short mfp920504a.data_record_32.MPAR.az1(dim470) ;
+	short mfp920504a.data_record_32.MPAR.az2(dim471) ;
+	short mfp920504a.data_record_32.MPAR.elm(dim472) ;
+	short mfp920504a.data_record_32.MPAR.vnn(dim473) ;
+	short mfp920504a.data_record_32.MPAR.e_vnn(dim474) ;
+	short mfp920504a.data_record_32.MPAR.vne(dim475) ;
+	short mfp920504a.data_record_32.MPAR.e_vne(dim476) ;
+	short mfp920504a.data_record_32.MPAR.vnpnh(dim477) ;
+	short mfp920504a.data_record_32.MPAR.e_vnpnh(dim478) ;
+	short mfp920504a.data_record_32.MPAR.vnpe(dim479) ;
+	short mfp920504a.data_record_32.MPAR.e_vnpe(dim480) ;
+data:
+
+ mfp920504a.data_record_1.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_1.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_1.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_1.prologue.IBDTT = 504 ;
+
+ mfp920504a.data_record_1.prologue.IBHMT = 34 ;
+
+ mfp920504a.data_record_1.prologue.IBCST = 3700 ;
+
+ mfp920504a.data_record_1.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_1.prologue.IEDTT = 504 ;
+
+ mfp920504a.data_record_1.prologue.IEHMT = 336 ;
+
+ mfp920504a.data_record_1.prologue.IECST = 4200 ;
+
+ mfp920504a.data_record_1.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_1.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_1.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_1.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_1.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992 ;
+
+ mfp920504a.data_record_1.MPAR.dayno = 125, 125, 125, 125, 125, 125, 125, 
+    125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125 ;
+
+ mfp920504a.data_record_1.MPAR.uth = 577, 640, 692, 739, 833, 984, 1145, 
+    1358, 1582, 1733, 1923, 2105, 2334, 2484, 2636, 2854, 3083, 3419, 3612 ;
+
+ mfp920504a.data_record_1.MPAR.azm = -11060, -6550, -11090, 6910, -11100, 
+    -6560, -11080, 6920, -11080, -6540, -11070, 6930, -11080, -6540, -11080, 
+    6910, -11090, -11070, 6930 ;
+
+ mfp920504a.data_record_1.MPAR.elm = 4960, 3010, 3010, 8990, 4990, 3010, 
+    3000, 8990, 5000, 3000, 3000, 8990, 5000, 3000, 3010, 8990, 5000, 3000, 
+    8990 ;
+
+ mfp920504a.data_record_1.MPAR.vnlu = -26, -30, -22, -10, -31, -4, 1, 4, 16, 
+    23, 30, 6, 95, 42, 74, -33, 29, 63, 20 ;
+
+ mfp920504a.data_record_1.MPAR.e_vnlu = 17, 16, 8, 19, 7, 5, 10, 15, 14, 10, 
+    20, 16, 18, 19, 17, 33, 47, 46, 16 ;
+
+ mfp920504a.data_record_1.MPAR.tn = 1179, 1178, 1189, 1151, 1158, 1229, 1146, 
+    1327, 1307, 1265, _, 1400, _, 1362, _, _, _, _, _ ;
+
+ mfp920504a.data_record_1.MPAR.e_tn = 53, 51, 43, 71, 50, 39, 77, 125, 115, 
+    113, _, 291, _, 276, _, _, _, _, _ ;
+
+ mfp920504a.data_record_1.MPAR.nsmpti = 7, 5, 5, 4, 14, 15, 12, 29, 14, 15, 
+    6, 29, 15, 14, 13, 29, 15, 8, 29 ;
+
+ mfp920504a.data_record_1.MPAR.rbrl = 3805, 3984, 3864, 3491, 3599, 3757, 
+    3527, 3144, 3168, 3298, 3154, 2885, 2984, 3090, 3024, 2752, 2762, 2902, 
+    2774 ;
+
+ mfp920504a.data_record_1.MPAR.chip1 = 17, 14, 14, 12, 15, 13, 18, 15, 12, 
+    15, 12, 12, 14, 13, 11, 12, 14, 12, 16 ;
+
+ mfp920504a.data_record_1.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_1.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_1.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_1.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_2.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_2.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_2.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_2.prologue.IBDTT = 504 ;
+
+ mfp920504a.data_record_2.prologue.IBHMT = 34 ;
+
+ mfp920504a.data_record_2.prologue.IBCST = 3700 ;
+
+ mfp920504a.data_record_2.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_2.prologue.IEDTT = 504 ;
+
+ mfp920504a.data_record_2.prologue.IEHMT = 336 ;
+
+ mfp920504a.data_record_2.prologue.IECST = 4200 ;
+
+ mfp920504a.data_record_2.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_2.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_2.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_2.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_2.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_2.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_2.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_2.MPAR.dayno = 125, 125, 125, 125, 125, 125, 125, 
+    125, 125, 125, 125, 125, 125 ;
+
+ mfp920504a.data_record_2.MPAR.uth = 608, 666, 838, 908, 1065, 1439, 1657, 
+    1828, 2204, 2409, 2560, 2935, 3159 ;
+
+ mfp920504a.data_record_2.MPAR.az1 = -11060, -6550, -11090, -11100, -6560, 
+    -11080, -11080, -6540, -11070, -11080, -6540, -11080, -11090 ;
+
+ mfp920504a.data_record_2.MPAR.az2 = -6550, -11090, -6560, -6560, -11080, 
+    -6540, -6540, -11070, -6540, -6540, -11080, -6550, -6550 ;
+
+ mfp920504a.data_record_2.MPAR.elm = 3985, 3010, 3010, 4000, 3005, 3000, 
+    4000, 3000, 3000, 4000, 3005, 3005, 4000 ;
+
+ mfp920504a.data_record_2.MPAR.vnn = -8, -13, 26, 44, -8, 33, 13, -10, 20, 
+    -86, -45, -17, 55 ;
+
+ mfp920504a.data_record_2.MPAR.e_vnn = 25, 23, 15, 16, 14, 22, 17, 27, 26, 
+    34, 27, 23, 36 ;
+
+ mfp920504a.data_record_2.MPAR.vne = 39, 32, 17, 26, 2, -14, -27, -33, -44, 
+    -100, -74, -85, -62 ;
+
+ mfp920504a.data_record_2.MPAR.e_vne = 24, 20, 13, 13, 9, 16, 15, 24, 23, 35, 
+    26, 21, 36 ;
+
+ mfp920504a.data_record_2.MPAR.vnpnh = -18, -21, 20, 36, -8, 36, 19, -1, 31, 
+    -57, -24, 6, 69 ;
+
+ mfp920504a.data_record_2.MPAR.e_vnpnh = 28, 24, 14, 15, 14, 21, 17, 24, 27, 
+    32, 24, 21, 35 ;
+
+ mfp920504a.data_record_2.MPAR.vnpe = 35, 27, 23, 36, 0, -5, -23, -35, -38, 
+    -119, -83, -86, -46 ;
+
+ mfp920504a.data_record_2.MPAR.e_vnpe = 28, 23, 14, 15, 6, 11, 17, 19, 26, 
+    33, 23, 19, 35 ;
+
+ mfp920504a.data_record_3.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_3.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_3.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_3.prologue.IBDTT = 506 ;
+
+ mfp920504a.data_record_3.prologue.IBHMT = 36 ;
+
+ mfp920504a.data_record_3.prologue.IBCST = 2200 ;
+
+ mfp920504a.data_record_3.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_3.prologue.IEDTT = 506 ;
+
+ mfp920504a.data_record_3.prologue.IEHMT = 847 ;
+
+ mfp920504a.data_record_3.prologue.IECST = 400 ;
+
+ mfp920504a.data_record_3.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_3.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_3.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_3.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_3.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_3.MPAR.dayno = 127, 127, 127, 127, 127, 127, 127, 
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127 ;
+
+ mfp920504a.data_record_3.MPAR.uth = 606, 666, 726, 842, 987, 1147, 1361, 
+    1586, 1736, 1919, 2109, 2334, 2484, 2644, 2859, 3084, 3234, 3422, 3607, 
+    3832, 3982, 4142, 4357, 4581, 4731, 4913, 5107, 5336, 5485, 5644, 5857, 
+    6081, 6230, 6412, 6606, 6836, 6985, 7145, 7359, 7583, 7732, 7914, 8103, 
+    8332, 8645, 8785 ;
+
+ mfp920504a.data_record_3.MPAR.azm = -11080, -6540, -11100, -11090, -6550, 
+    -11080, 6910, -11100, -6540, -11090, 6910, -11100, -6540, -11070, -11100, 
+    -11090, -6540, -11080, 6920, -11080, -6540, -11060, 6930, -11070, -6540, 
+    -11070, 6930, -11080, -6540, -11060, 6930, -11080, -6540, -11080, 6920, 
+    -11080, -6540, -11080, 6920, -11080, -6540, -11070, 6930, -11080, -11100, 
+    6900 ;
+
+ mfp920504a.data_record_3.MPAR.elm = 4970, 3050, 3050, 5000, 3220, 2940, 
+    8990, 4990, 3000, 2990, 8990, 4990, 2990, 3000, 8990, 4990, 2990, 2990, 
+    8990, 4990, 3000, 2990, 8990, 5000, 2990, 2990, 8990, 4990, 3010, 3010, 
+    8970, 4990, 3000, 3010, 8980, 4990, 3000, 3000, 8990, 4990, 3010, 3000, 
+    8980, 4990, 2980, 8990 ;
+
+ mfp920504a.data_record_3.MPAR.vnlu = -22, -34, -17, -2, -24, 5, -4, 3, -18, 
+    -8, 8, 24, 18, 24, 3, 27, 14, 24, -5, 31, 17, 45, -15, 21, 12, 41, 11, 
+    51, 5, 43, -8, 52, -22, 77, -10, 52, -68, 41, -18, 29, -33, 72, -3, 20, 
+    42, 21 ;
+
+ mfp920504a.data_record_3.MPAR.e_vnlu = 16, 18, 10, 10, 7, 7, 7, 19, 12, 16, 
+    9, 13, 18, 19, 17, 15, 16, 21, 29, 19, 12, 19, 20, 18, 26, 25, 16, 22, 
+    18, 24, 13, 19, 21, 23, 20, 26, 18, 31, 17, 22, 15, 36, 14, 16, 23, 16 ;
+
+ mfp920504a.data_record_3.MPAR.tn = 991, 1060, 1044, 1064, 1088, 1076, 1069, 
+    1084, 1068, 1082, 1026, 1119, 1106, 1014, 1016, 1015, 1006, 1015, 1082, 
+    1168, 1058, 1161, 1052, 1098, 1060, 1003, 1085, 1040, 1162, 997, 1103, 
+    1047, 1181, 1250, 1139, 1119, 1198, 1121, 1112, 1197, 1146, 1072, 1027, 
+    1157, 1172, 1052 ;
+
+ mfp920504a.data_record_3.MPAR.e_tn = 71, 50, 59, 32, 34, 28, 35, 40, 72, 50, 
+    42, 40, 34, 58, 45, 32, 34, 50, 50, 53, 39, 159, 52, 74, 101, 79, 40, 
+    104, 106, 60, 45, 112, 119, 166, 64, 108, 91, 98, 81, 89, 53, 173, 48, 
+    45, 66, 28 ;
+
+ mfp920504a.data_record_3.MPAR.nsmpti = 7, 5, 7, 14, 15, 13, 30, 15, 15, 8, 
+    30, 15, 15, 13, 30, 15, 15, 7, 30, 15, 15, 13, 30, 15, 15, 8, 31, 15, 15, 
+    13, 30, 15, 15, 8, 31, 15, 15, 13, 30, 15, 15, 8, 30, 16, 13, 15 ;
+
+ mfp920504a.data_record_3.MPAR.rbrl = 3702, 3896, 3768, 3549, 3661, 3513, 
+    3150, 3203, 3331, 3271, 3111, 3086, 3258, 3173, 3024, 3198, 3226, 3129, 
+    2918, 3002, 3080, 3038, 2806, 2892, 3018, 3051, 2830, 2826, 2963, 2908, 
+    2788, 2851, 2923, 2902, 2720, 2803, 2871, 2916, 2745, 2841, 2947, 2947, 
+    2891, 2952, 3150, 3453 ;
+
+ mfp920504a.data_record_3.MPAR.chip1 = 15, 21, 16, 15, 17, 16, 19, 16, 18, 
+    13, 22, 17, 17, 16, 14, 12, 18, 12, 15, 14, 15, 16, 14, 14, 15, 15, 15, 
+    17, 16, 17, 17, 12, 12, 16, 21, 18, 15, 18, 15, 15, 14, 14, 15, 14, 15, 15 ;
+
+ mfp920504a.data_record_3.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_3.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_3.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_3.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_4.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_4.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_4.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_4.prologue.IBDTT = 506 ;
+
+ mfp920504a.data_record_4.prologue.IBHMT = 36 ;
+
+ mfp920504a.data_record_4.prologue.IBCST = 2200 ;
+
+ mfp920504a.data_record_4.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_4.prologue.IEDTT = 506 ;
+
+ mfp920504a.data_record_4.prologue.IEHMT = 847 ;
+
+ mfp920504a.data_record_4.prologue.IECST = 400 ;
+
+ mfp920504a.data_record_4.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_4.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_4.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_4.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_4.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_4.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_4.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_4.MPAR.dayno = 127, 127, 127, 127, 127, 127, 127, 
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127 ;
+
+ mfp920504a.data_record_4.MPAR.uth = 636, 696, 857, 914, 1067, 1441, 1661, 
+    1827, 2201, 2409, 2564, 2939, 3159, 3328, 3702, 3907, 4062, 4437, 4656, 
+    4822, 5199, 5411, 5565, 5937, 6156, 6321, 6699, 6910, 7065, 7438, 7658, 
+    7823, 8200, 8409 ;
+
+ mfp920504a.data_record_4.MPAR.az1 = -11080, -6540, -11100, -11090, -6550, 
+    -11080, -11100, -6540, -11090, -11100, -6540, -11070, -11090, -6540, 
+    -11080, -11080, -6540, -11060, -11070, -6540, -11070, -11080, -6540, 
+    -11060, -11080, -6540, -11080, -11080, -6540, -11080, -11080, -6540, 
+    -11070, -11080 ;
+
+ mfp920504a.data_record_4.MPAR.az2 = -6540, -11100, -6550, -6550, -11080, 
+    -6540, -6540, -11090, -6540, -6540, -11070, -6540, -6540, -11080, -6540, 
+    -6540, -11060, -6540, -6540, -11070, -6540, -6540, -11060, -6540, -6540, 
+    -11080, -6540, -6540, -11080, -6540, -6540, -11070, -6540, -6540 ;
+
+ mfp920504a.data_record_4.MPAR.elm = 4010, 3050, 3135, 4110, 3080, 2970, 
+    3995, 2995, 2990, 3990, 2995, 2995, 3990, 2990, 2995, 3995, 2995, 2990, 
+    3995, 2990, 3000, 4000, 3010, 3005, 3995, 3005, 3005, 3995, 3000, 3005, 
+    4000, 3005, 3000, 3995 ;
+
+ mfp920504a.data_record_4.MPAR.vnn = -22, -26, -10, -38, -44, -35, -37, -17, 
+    38, -9, -8, -13, -21, -14, -10, -24, -41, -48, -14, -42, -53, -77, -57, 
+    -98, -125, -147, -216, -203, -162, -110, -105, -156, -101, -26 ;
+
+ mfp920504a.data_record_4.MPAR.e_vnn = 30, 29, 11, 18, 18, 30, 33, 22, 46, 
+    21, 27, 29, 28, 32, 29, 33, 33, 35, 32, 46, 51, 50, 48, 64, 55, 57, 72, 
+    59, 49, 92, 53, 93, 74, 35 ;
+
+ mfp920504a.data_record_4.MPAR.vne = 39, 32, 26, 17, 10, 7, 10, 16, -5, -30, 
+    -26, -24, -30, -24, -26, -35, -40, -37, -24, -34, -30, -42, -32, -17, 
+    -25, -39, -13, 4, 11, -9, -1, -30, -51, -17 ;
+
+ mfp920504a.data_record_4.MPAR.e_vne = 28, 29, 9, 13, 9, 14, 19, 22, 17, 18, 
+    23, 28, 28, 30, 25, 33, 33, 33, 31, 44, 42, 40, 40, 24, 24, 29, 15, 11, 
+    13, 22, 9, 38, 57, 31 ;
+
+ mfp920504a.data_record_4.MPAR.vnpnh = -31, -33, -17, -41, -45, -36, -38, 
+    -20, 38, -1, -1, -7, -12, -7, -3, -14, -30, -37, -8, -32, -43, -63, -47, 
+    -90, -114, -132, -205, -197, -160, -104, -101, -143, -84, -21 ;
+
+ mfp920504a.data_record_4.MPAR.e_vnpnh = 30, 29, 11, 17, 17, 30, 31, 21, 46, 
+    19, 24, 27, 26, 29, 26, 30, 31, 33, 30, 43, 48, 47, 46, 63, 54, 56, 71, 
+    60, 50, 91, 53, 91, 70, 33 ;
+
+ mfp920504a.data_record_4.MPAR.vnpe = 32, 24, 22, 6, -1, -2, 0, 11, 5, -31, 
+    -27, -27, -34, -27, -27, -40, -49, -49, -27, -44, -43, -60, -46, -41, 
+    -57, -76, -68, -49, -31, -37, -28, -69, -75, -24 ;
+
+ mfp920504a.data_record_4.MPAR.e_vnpe = 30, 29, 11, 10, 6, 10, 11, 21, 17, 
+    14, 18, 24, 25, 26, 20, 30, 33, 35, 27, 46, 48, 46, 45, 39, 36, 41, 33, 
+    24, 19, 45, 22, 59, 68, 34 ;
+
+ mfp920504a.data_record_5.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_5.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_5.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_5.prologue.IBDTT = 507 ;
+
+ mfp920504a.data_record_5.prologue.IBHMT = 39 ;
+
+ mfp920504a.data_record_5.prologue.IBCST = 4200 ;
+
+ mfp920504a.data_record_5.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_5.prologue.IEDTT = 507 ;
+
+ mfp920504a.data_record_5.prologue.IEHMT = 846 ;
+
+ mfp920504a.data_record_5.prologue.IECST = 5500 ;
+
+ mfp920504a.data_record_5.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_5.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_5.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_5.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_5.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_5.MPAR.dayno = 128, 128, 128, 128, 128, 128, 128, 
+    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 
+    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 
+    128, 128 ;
+
+ mfp920504a.data_record_5.MPAR.uth = 662, 747, 821, 1006, 1212, 1440, 1635, 
+    1903, 2125, 2357, 2568, 2799, 3009, 3303, 3513, 3745, 3956, 4188, 4410, 
+    4703, 4914, 5146, 5356, 5598, 5809, 6102, 6312, 6543, 6764, 6994, 7204, 
+    7495, 7704, 7945, 8139, 8354, 8782 ;
+
+ mfp920504a.data_record_5.MPAR.azm = 13510, -4510, -13520, 13560, 4500, 
+    -4500, -4510, -13500, 13570, 4490, -4510, -4480, -13520, 13560, 4500, 
+    -4490, -4500, -13510, 13570, 4460, -4500, -4500, -13520, 13560, 4490, 
+    -4490, -4520, -13520, 13580, 4490, -4490, -4490, -13530, 13570, 4490, 
+    -4490, -13510 ;
+
+ mfp920504a.data_record_5.MPAR.elm = 8990, 3000, 2990, 2980, 2990, 8970, 
+    2990, 3000, 2980, 2990, 8950, 2990, 2990, 3000, 3010, 8960, 2980, 2980, 
+    2980, 2980, 8960, 2980, 2980, 2990, 2980, 8950, 3000, 3000, 2990, 3010, 
+    8960, 2990, 2990, 2980, 2990, 8960, 3010 ;
+
+ mfp920504a.data_record_5.MPAR.vnlu = -1, -62, -12, 29, -34, 7, -39, -4, 45, 
+    -43, -18, -68, -39, 62, -71, -7, -94, 12, 49, -97, -2, -118, 2, 64, -57, 
+    15, -55, 41, 23, -101, -2, -43, 18, -1, -97, -3, -19 ;
+
+ mfp920504a.data_record_5.MPAR.e_vnlu = 12, 11, 8, 10, 8, 11, 18, 11, 18, 13, 
+    14, 14, 31, 13, 17, 21, 18, 23, 27, 16, 24, 14, 37, 30, 15, 26, 19, 22, 
+    17, 13, 23, 17, 18, 15, 19, 30, 34 ;
+
+ mfp920504a.data_record_5.MPAR.tn = 1058, 1075, 1132, 1100, 1094, 1023, 1069, 
+    1078, 1050, 1026, 964, 1038, 1083, 963, 888, 963, 1103, 1042, 1093, 1015, 
+    959, 1140, _, 896, 967, 880, 1115, 1107, 955, 1059, 1089, 1087, 1168, 
+    1061, 1036, 1038, 1126 ;
+
+ mfp920504a.data_record_5.MPAR.e_tn = 32, 47, 35, 60, 79, 31, 29, 34, 110, 
+    35, 66, 46, 48, 53, 180, 42, 63, 52, 68, 53, 66, 85, _, 68, 44, 101, 55, 
+    62, 54, 71, 105, 55, 101, 54, 36, 69, 90 ;
+
+ mfp920504a.data_record_5.MPAR.nsmpti = 11, 5, 9, 20, 19, 20, 17, 20, 20, 20, 
+    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 
+    20, 20, 20, 20, 20, 20, 17, 20, 8 ;
+
+ mfp920504a.data_record_5.MPAR.rbrl = 3575, 3929, 3711, 3310, 3361, 3098, 
+    3389, 3135, 2904, 3168, 2926, 3182, 3006, 3165, 2965, 2887, 3056, 3044, 
+    2943, 2903, 2690, 2940, 2813, 2872, 3028, 2775, 3044, 2925, 2994, 3008, 
+    2761, 2893, 2866, 2948, 3377, 2950, 3250 ;
+
+ mfp920504a.data_record_5.MPAR.chip1 = 12, 20, 12, 20, 16, 13, 15, 12, 15, 
+    15, 13, 13, 13, 14, 40, 15, 17, 14, 19, 17, 15, 16, 42, 17, 15, 15, 16, 
+    13, 18, 17, 15, 16, 21, 16, 14, 15, 15 ;
+
+ mfp920504a.data_record_5.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_5.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_5.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_5.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_6.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_6.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_6.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_6.prologue.IBDTT = 507 ;
+
+ mfp920504a.data_record_6.prologue.IBHMT = 39 ;
+
+ mfp920504a.data_record_6.prologue.IBCST = 4200 ;
+
+ mfp920504a.data_record_6.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_6.prologue.IEDTT = 507 ;
+
+ mfp920504a.data_record_6.prologue.IEHMT = 846 ;
+
+ mfp920504a.data_record_6.prologue.IECST = 5500 ;
+
+ mfp920504a.data_record_6.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_6.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_6.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_6.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_6.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_6.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_6.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_6.MPAR.dayno = 128, 128, 128, 128, 128, 128, 128, 
+    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 
+    128, 128, 128, 128, 128, 128 ;
+
+ mfp920504a.data_record_6.MPAR.uth = 979, 913, 1455, 1424, 1996, 2014, 2567, 
+    2578, 3156, 3156, 3745, 3735, 4330, 4299, 4883, 4924, 5477, 5477, 6071, 
+    6060, 6653, 6653, 7234, 7245, 7817, 7825, 8364 ;
+
+ mfp920504a.data_record_6.MPAR.az1 = -4510, -13520, 13560, 4500, -4510, 
+    -13500, 13570, 4490, -4480, -13520, 13560, 4500, -4500, -13510, 13570, 
+    4460, -4500, -13520, 13560, 4490, -4520, -13520, 13580, 4490, -4490, 
+    -13530, 13570 ;
+
+ mfp920504a.data_record_6.MPAR.az2 = 4500, 13560, -13500, -4510, 4490, 13570, 
+    -13520, -4480, 4500, 13560, -13510, -4500, 4460, 13570, -13520, -4500, 
+    4490, 13560, -13520, -4520, 4490, 13580, -13530, -4490, 4490, 13570, 
+    -13510 ;
+
+ mfp920504a.data_record_6.MPAR.elm = 2995, 2985, 2990, 2990, 2990, 2990, 
+    2985, 2990, 3000, 2995, 2990, 2995, 2980, 2980, 2980, 2980, 2980, 2985, 
+    2995, 2990, 3005, 2995, 2990, 3000, 2990, 2985, 2995 ;
+
+ mfp920504a.data_record_6.MPAR.vnn = -78, -14, -21, -59, -67, -34, -6, -90, 
+    -113, -18, -61, -134, -156, -50, -42, -175, -142, -53, -85, -92, -128, 
+    -52, -33, -118, -115, -14, 16 ;
+
+ mfp920504a.data_record_6.MPAR.e_vnn = 13, 12, 13, 17, 19, 18, 31, 18, 18, 
+    31, 23, 23, 20, 35, 38, 19, 20, 40, 35, 20, 21, 27, 22, 21, 26, 20, 31 ;
+
+ mfp920504a.data_record_6.MPAR.vne = 23, 34, 27, 4, -3, 40, 69, 20, -3, 83, 
+    40, 19, -3, 30, 38, 18, 49, 51, 18, -1, -37, -15, 3, -47, -44, -16, 15 ;
+
+ mfp920504a.data_record_6.MPAR.e_vne = 13, 12, 13, 16, 19, 18, 30, 18, 18, 
+    28, 25, 22, 20, 34, 39, 19, 20, 40, 34, 20, 23, 26, 22, 22, 25, 21, 30 ;
+
+ mfp920504a.data_record_6.MPAR.vnpnh = -82, -22, -28, -59, -64, -43, -23, 
+    -92, -108, -39, -69, -134, -150, -56, -50, -174, -150, -65, -87, -88, 
+    -114, -46, -33, -102, -99, -9, 12 ;
+
+ mfp920504a.data_record_6.MPAR.e_vnpnh = 11, 13, 13, 18, 23, 18, 36, 16, 22, 
+    35, 20, 22, 24, 32, 35, 19, 16, 37, 32, 24, 24, 30, 23, 23, 28, 19, 27 ;
+
+ mfp920504a.data_record_6.MPAR.vnpe = 2, 29, 20, -11, -21, 30, 65, -4, -32, 
+    75, 23, -17, -43, 16, 26, -28, 11, 35, -5, -25, -69, -27, -5, -76, -72, 
+    -19, 18 ;
+
+ mfp920504a.data_record_6.MPAR.e_vnpe = 10, 13, 13, 17, 23, 17, 36, 16, 22, 
+    33, 24, 22, 24, 30, 38, 20, 17, 39, 30, 24, 25, 29, 23, 23, 28, 20, 32 ;
+
+ mfp920504a.data_record_7.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_7.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_7.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_7.prologue.IBDTT = 510 ;
+
+ mfp920504a.data_record_7.prologue.IBHMT = 41 ;
+
+ mfp920504a.data_record_7.prologue.IBCST = 5100 ;
+
+ mfp920504a.data_record_7.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_7.prologue.IEDTT = 510 ;
+
+ mfp920504a.data_record_7.prologue.IEHMT = 845 ;
+
+ mfp920504a.data_record_7.prologue.IECST = 1800 ;
+
+ mfp920504a.data_record_7.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_7.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_7.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_7.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_7.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_7.MPAR.dayno = 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131 ;
+
+ mfp920504a.data_record_7.MPAR.uth = 698, 759, 810, 931, 1053, 1155, 1247, 
+    1328, 1511, 1622, 1724, 1894, 1945, 2057, 2240, 2351, 2402, 2472, 2564, 
+    2686, 2797, 2868, 2969, 3030, 3170, 3251, 3333, 3464, 3535, 3606, 3758, 
+    3839, 3900, 3991, 4051, 4122, 4173, 4244, 4434, 4505, 4565, 4636, 4727, 
+    4818, 4879, 4950, 5112, 5233, 5354, 5544, 5655, 5797, 5908, 6009, 6191, 
+    6342, 6453, 6554, 6693, 6774, 6829, 6905, 7056, 7198, 7318, 7354, 7379, 
+    7404, 7424, 7449, 7479, 7505, 7525, 7560, 7668, 7719, 7799, 7880, 7980, 
+    8046, 8076, 8096, 8116, 8136, 8161, 8201, 8257, 8277, 8307, 8327, 8362, 
+    8423, 8483, 8544, 8589, 8639, 8659, 8679, 8699, 8720, 8740, 8755 ;
+
+ mfp920504a.data_record_7.MPAR.azm = -4540, -4560, -13520, 13530, 4560, 
+    -4520, -4530, -13530, 13520, 4490, -4560, -4550, -4560, -13540, 13480, 
+    4560, 1070, 1060, -9040, -4550, -4550, -13510, 13530, 4470, 20, 10, 
+    -9060, -4530, -4540, -13530, 13490, 4490, 10, 10, -9060, -4530, -4540, 
+    -13530, 13540, 4470, 18000, 0, -9040, -4500, -4540, -13530, 13510, 4490, 
+    20, 20, -9060, -4550, -4550, -13510, 13550, 4470, 40, 20, -9040, -4470, 
+    -4530, -15040, 12030, 16530, 2980, -1550, -6020, -1570, -1530, -310, 
+    -6020, 2980, 2990, -5940, -5930, 12090, -15030, 12020, 16490, 2990, 
+    -1560, -6020, -1560, -1560, -1560, -5970, 2990, 2970, -5940, -5940, 
+    -5950, -15040, 12030, 16470, 2990, -6020, -1570, -1490, -1420, -5950, 
+    2990, 2980 ;
+
+ mfp920504a.data_record_7.MPAR.elm = 8970, 3000, 2980, 3010, 2990, 8970, 
+    2990, 2530, 3030, 3030, 8960, 3000, 3000, 6190, 3020, 3010, 2760, 4770, 
+    5960, 8970, 3000, 2560, 2980, 2980, 9000, 6020, 5960, 8960, 2990, 2990, 
+    3030, 3030, 9000, 6020, 5970, 8960, 3000, 2990, 3030, 3040, 8990, 6010, 
+    5960, 8960, 3000, 2990, 2980, 3030, 8990, 6010, 5970, 8950, 2990, 3000, 
+    3020, 3030, 8990, 6030, 5960, 8960, 2990, 2990, 3030, 4000, 3010, 3930, 
+    2930, 2440, 2940, 7010, 9000, 3000, 2030, 2990, 2480, 8970, 2950, 3010, 
+    4000, 3000, 3910, 2940, 2440, 2990, 5940, 8990, 2990, 1990, 2990, 2490, 
+    8980, 2950, 3000, 3990, 3020, 2950, 2450, 2990, 5990, 9000, 3000, 2000 ;
+
+ mfp920504a.data_record_7.MPAR.vnlu = -8, 43, 78, 9, -211, 8, 93, 36, 9, 
+    -125, 0, 86, 99, 61, -34, -64, -80, -53, 62, 26, -22, 52, -27, -112, -37, 
+    -97, 7, -21, -37, 66, 6, -46, 1, -42, 9, -5, -4, 43, -44, -105, -23, -71, 
+    -3, -27, -60, -13, -45, -41, 13, -6, 15, 8, 16, 17, -4, -31, 9, -43, 1, 
+    -18, -78, 46, -12, 15, -61, -103, -77, -145, -141, -34, 30, -53, -44, 
+    -66, -56, -10, 63, -12, 29, -72, -91, -36, -94, -63, -69, -7, 7, 104, 
+    -45, -58, -3, 27, -2, 15, 2, -140, -209, -203, -123, -12, -59, 41 ;
+
+ mfp920504a.data_record_7.MPAR.e_vnlu = 23, 16, 13, 13, 7, 11, 10, 14, 10, 8, 
+    11, 8, 7, 10, 9, 8, 14, 7, 13, 9, 7, 17, 13, 8, 12, 11, 10, 10, 9, 11, 8, 
+    8, 8, 6, 7, 8, 16, 15, 21, 11, 9, 15, 7, 9, 10, 12, 14, 15, 17, 7, 7, 7, 
+    10, 16, 9, 7, 9, 16, 7, 12, 10, 8, 11, 9, 5, 12, 6, 5, 7, 7, 11, 6, 5, 7, 
+    10, 10, 10, 7, 7, 6, 9, 11, 5, 25, 10, 9, 5, 3, 6, 8, 6, 8, 7, 6, 13, 5, 
+    17, 7, 17, 17, 12, 2 ;
+
+ mfp920504a.data_record_7.MPAR.tn = 1358, 1303, 1379, 1426, 1283, 1331, 1341, 
+    1357, 1379, 1192, 1208, 1264, 1246, 1169, 1251, 1281, 1286, 1290, 1225, 
+    1184, 1387, 1339, 1160, 1325, 1292, 1326, 1350, 1322, 1369, 1438, 1358, 
+    1276, 1307, 1285, 1265, 1280, 1304, 1353, 1333, 1381, 1366, 1413, 1449, 
+    1432, 1411, 1454, 1409, 1411, 1414, 1345, 1277, 1259, 1347, 1314, 1373, 
+    1348, 1357, 1304, 1342, 1314, 1360, 1411, 1397, 1393, 1418, 1362, 1363, 
+    1344, 1427, 1355, 1444, 1397, 1366, 1425, 1372, 1371, 1368, 1390, 1420, 
+    1422, 1437, 1440, 1455, 1438, 1452, 1406, 1502, 1525, 1438, 1474, 1394, 
+    1490, 1383, 1308, 1544, 1507, 1614, 1621, 1477, 1438, 1622, 1697 ;
+
+ mfp920504a.data_record_7.MPAR.e_tn = 89, 57, 120, 123, 52, 88, 60, 218, 142, 
+    57, 72, 55, 51, 114, 113, 79, 49, 53, 65, 76, 67, 113, 91, 74, 107, 57, 
+    117, 71, 53, 252, 171, 67, 64, 74, 101, 90, 45, 161, 114, 57, 66, 41, 72, 
+    81, 113, 145, 223, 95, 68, 55, 45, 108, 37, 75, 71, 57, 41, 35, 48, 48, 
+    39, 78, 41, 91, 41, 38, 31, 32, 29, 30, 66, 61, 31, 35, 40, 32, 43, 59, 
+    42, 43, 29, 30, 36, 27, 31, 37, 27, 29, 34, 28, 29, 43, 31, 46, 37, 32, 
+    30, 27, 56, 44, 29, 31 ;
+
+ mfp920504a.data_record_7.MPAR.nsmpti = 9, 3, 7, 15, 5, 15, 3, 13, 17, 5, 15, 
+    5, 5, 17, 15, 7, 3, 7, 11, 13, 5, 9, 9, 3, 11, 5, 11, 11, 3, 11, 13, 3, 
+    9, 5, 7, 7, 3, 11, 11, 3, 9, 5, 9, 9, 3, 11, 15, 9, 15, 9, 13, 15, 3, 17, 
+    19, 7, 15, 5, 7, 9, 2, 13, 13, 15, 3, 2, 3, 2, 2, 3, 3, 2, 2, 3, 3, 7, 9, 
+    7, 9, 2, 2, 2, 2, 2, 3, 5, 2, 2, 2, 2, 5, 7, 3, 5, 2, 2, 2, 2, 2, 2, 2, 1 ;
+
+ mfp920504a.data_record_7.MPAR.rbrl = 3705, 4218, 3824, 3440, 3947, 3439, 
+    4151, 3557, 3394, 3860, 3391, 3941, 3916, 3383, 3429, 3801, 4190, 3784, 
+    3566, 3470, 3933, 3686, 3628, 4094, 3595, 3900, 3574, 3629, 4227, 3620, 
+    3524, 4129, 3704, 3957, 3755, 3731, 4225, 3608, 3614, 4095, 3689, 3939, 
+    3736, 3676, 4111, 3588, 3474, 3668, 3475, 3703, 3524, 3457, 4058, 3374, 
+    3367, 3807, 3478, 3950, 3820, 3682, 4489, 3541, 3501, 3456, 4311, 4493, 
+    4213, 4428, 4419, 4250, 4127, 4419, 4518, 4207, 4212, 3777, 3646, 3770, 
+    3695, 4520, 4508, 4432, 4924, 4889, 4266, 4014, 4969, 5077, 4429, 4514, 
+    3995, 3850, 4133, 3977, 4942, 4509, 4895, 4895, 4447, 4340, 5033, 5313 ;
+
+ mfp920504a.data_record_7.MPAR.chip1 = 14, 16, 21, 16, 11, 19, 12, 17, 14, 
+    12, 13, 13, 14, 15, 12, 12, 12, 15, 12, 12, 12, 12, 14, 15, 14, 11, 15, 
+    12, 13, 16, 14, 12, 14, 16, 13, 17, 16, 15, 13, 15, 10, 14, 11, 11, 15, 
+    18, 16, 13, 13, 18, 13, 14, 13, 16, 14, 13, 12, 13, 12, 12, 16, 17, 12, 
+    11, 13, 11, 16, 15, 12, 15, 13, 15, 11, 13, 15, 14, 13, 14, 14, 17, 14, 
+    16, 25, 22, 15, 11, 20, 19, 11, 13, 11, 16, 12, 14, 25, 16, 23, 27, 14, 
+    12, 35, 56 ;
+
+ mfp920504a.data_record_7.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, -195, _, _, _, _, _, _, _, -84, _, _, 
+    _, _, _, _, _, -141, _, _, _, _, _, _, _, -12, _, _, _, _, _, _, _, -87, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_7.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, 23, _, _, _, _, _, _, _, 12, _, _, _, 
+    _, _, _, _, 31, _, _, _, _, _, _, _, 14, _, _, _, _, _, _, _, 33, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_7.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, -123, _, _, _, _, _, _, _, -13, _, _, _, _, _, _, _, -17, 
+    _, _, _, _, _, _, _, 6, _, _, _, _, _, _, _, -30, _, _, _, _, _, _, _, 
+    -3, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_7.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, 25, _, _, _, _, _, _, _, 19, _, _, _, _, _, _, _, 15, _, 
+    _, _, _, _, _, _, 13, _, _, _, _, _, _, _, 14, _, _, _, _, _, _, _, 14, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_8.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_8.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_8.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_8.prologue.IBDTT = 510 ;
+
+ mfp920504a.data_record_8.prologue.IBHMT = 41 ;
+
+ mfp920504a.data_record_8.prologue.IBCST = 5100 ;
+
+ mfp920504a.data_record_8.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_8.prologue.IEDTT = 510 ;
+
+ mfp920504a.data_record_8.prologue.IEHMT = 845 ;
+
+ mfp920504a.data_record_8.prologue.IECST = 1800 ;
+
+ mfp920504a.data_record_8.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_8.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_8.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_8.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_8.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_8.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_8.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_8.MPAR.dayno = 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 
+    131, 131, 131, 131, 131, 131, 131, 131, 131, 131 ;
+
+ mfp920504a.data_record_8.MPAR.uth = 906, 871, 1130, 1150, 1435, 1419, 1784, 
+    1758, 2123, 2148, 2148, 2554, 2564, 2574, 2914, 2919, 3251, 3288, 3283, 
+    3333, 3687, 3682, 3991, 4001, 4006, 4051, 4339, 4339, 4636, 4692, 4692, 
+    4727, 5056, 5031, 5544, 5560, 5570, 5655, 6125, 6100, 6554, 6586, 6693, 
+    6981, 7349, 7442, 7532, 7542, 7803, 7857, 7839, 8071, 8176, 8282, 8292, 
+    8448, 8458, 8453, 8614 ;
+
+ mfp920504a.data_record_8.MPAR.az1 = -4560, -13520, 13530, 4560, -4530, 
+    -13530, 13520, 4490, -4550, -4560, -13540, 13480, -9040, 4560, -4550, 
+    -13510, 10, 13530, 4470, -9060, -4540, -13530, 10, 13490, 4490, -9060, 
+    -4540, -13530, 0, 13540, 4470, -9040, -4540, -13530, 20, 13510, 4490, 
+    -9060, -4550, -13510, 20, 4470, -9040, -15040, 2980, -6020, 2980, 2990, 
+    -5940, -5930, -15030, 2990, -6020, 2990, 2970, -5940, -5940, -15040, 2990 ;
+
+ mfp920504a.data_record_8.MPAR.az2 = 4560, 13530, -13530, -4530, 4490, 13520, 
+    -13540, -4550, 4560, 4560, 13480, -13510, -9040, -4550, 4470, 13530, 10, 
+    -13530, -4540, -9060, 4490, 13490, 10, -13530, -4540, -9060, 4470, 13540, 
+    0, -13530, -4540, -9040, 4490, 13510, 20, -13510, -4550, -9060, 4470, 
+    13550, 20, -4530, -9040, 12030, -6020, 2980, -5940, -5940, 2990, 2990, 
+    12020, -6020, 2990, -5940, -5940, 2990, 2990, 12030, -6020 ;
+
+ mfp920504a.data_record_8.MPAR.elm = 2995, 2995, 2770, 2990, 3010, 2780, 
+    4610, 3015, 3005, 3005, 4605, 2790, 5960, 3005, 2990, 2770, 6020, 2985, 
+    2985, 5960, 3010, 3010, 6020, 3010, 3015, 5970, 3020, 3010, 6010, 3010, 
+    3020, 5960, 3015, 2985, 6010, 2990, 3010, 5970, 3010, 3010, 6030, 3010, 
+    5960, 3010, 2970, 2965, 2995, 2510, 2995, 2740, 2980, 2970, 2965, 2990, 
+    2490, 3005, 2755, 2975, 2985 ;
+
+ mfp920504a.data_record_8.MPAR.vnn = -140, -71, -36, -94, -28, -36, -72, -33, 
+    17, 27, -28, -14, _, -70, -110, -20, -195, -31, -122, _, -68, -58, -84, 
+    -40, -41, _, -89, 0, -141, 47, -135, _, -83, 48, -12, 23, -21, _, -13, 
+    -10, -87, -89, _, -39, -106, -97, -91, -79, -110, -102, -56, -92, -13, 
+    -19, 75, -25, -32, -26, -79 ;
+
+ mfp920504a.data_record_8.MPAR.e_vnn = 17, 17, 18, 12, 12, 16, 16, 11, 10, 
+    10, 16, 17, _, 10, 10, 20, 23, 17, 11, _, 11, 12, 12, 15, 14, _, 16, 21, 
+    31, 24, 15, _, 16, 19, 14, 21, 17, _, 12, 16, 33, 12, _, 13, 8, 9, 10, 9, 
+    9, 10, 12, 9, 9, 6, 6, 12, 12, 9, 11 ;
+
+ mfp920504a.data_record_8.MPAR.vne = -206, -55, -21, -249, -178, -21, -53, 
+    -173, -123, -133, -97, -69, -123, -35, -73, -63, _, -76, -61, -13, -7, 
+    -49, _, -31, -34, -17, -82, -71, _, -25, -36, 6, 16, -26, _, -51, -47, 
+    -30, -38, -17, _, 39, -3, -39, 42, 47, 36, 39, 23, 13, -48, -6, 40, 49, 
+    100, 46, 57, -17, 141 ;
+
+ mfp920504a.data_record_8.MPAR.e_vne = 15, 17, 18, 11, 11, 15, 16, 11, 10, 
+    10, 16, 18, 25, 10, 9, 21, _, 17, 11, 19, 11, 12, _, 14, 15, 15, 16, 21, 
+    _, 22, 15, 13, 17, 18, _, 21, 18, 14, 11, 17, _, 11, 14, 13, 8, 9, 10, 8, 
+    9, 10, 11, 11, 11, 7, 6, 9, 11, 8, 9 ;
+
+ mfp920504a.data_record_8.MPAR.vnpnh = -81, -55, -29, -26, 20, -30, -56, 13, 
+    48, 60, -2, 4, _, -59, -88, -3, -174, -10, -102, _, -64, -44, -71, -30, 
+    -30, _, -65, 19, -128, 52, -121, _, -84, 53, -5, 35, -8, _, -3, -6, -83, 
+    -96, _, -28, -113, -106, -97, -86, -112, -102, -42, -88, -23, -31, 47, 
+    -36, -45, -21, -113 ;
+
+ mfp920504a.data_record_8.MPAR.e_vnpnh = 16, 16, 19, 10, 11, 17, 16, 10, 12, 
+    11, 13, 15, _, 11, 10, 16, 23, 15, 12, _, 12, 12, 12, 14, 15, _, 16, 25, 
+    31, 22, 17, _, 15, 17, 14, 22, 14, _, 10, 14, 33, 11, _, 13, 7, 8, 8, 8, 
+    8, 10, 11, 11, 10, 7, 6, 11, 12, 9, 10 ;
+
+ mfp920504a.data_record_8.MPAR.vnpe = -235, -72, -30, -265, -179, -30, -70, 
+    -175, -114, -122, -101, -71, -131, -52, -99, -66, _, -81, -90, -32, -24, 
+    -62, _, -40, -44, -34, -102, -69, _, -12, -70, -6, -6, -13, _, -43, -51, 
+    -35, -40, -20, _, 14, -19, -47, 13, 20, 11, 17, -6, -14, -61, -29, 35, 
+    43, 116, 38, 47, -23, 116 ;
+
+ mfp920504a.data_record_8.MPAR.e_vnpe = 13, 17, 19, 9, 11, 17, 16, 10, 12, 
+    11, 13, 16, 25, 11, 10, 17, _, 14, 12, 19, 12, 12, _, 15, 14, 15, 15, 25, 
+    _, 18, 16, 13, 16, 16, _, 22, 16, 14, 9, 16, _, 9, 14, 13, 7, 8, 8, 7, 8, 
+    10, 12, 13, 11, 7, 5, 11, 12, 9, 10 ;
+
+ mfp920504a.data_record_9.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_9.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_9.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_9.prologue.IBDTT = 512 ;
+
+ mfp920504a.data_record_9.prologue.IBHMT = 45 ;
+
+ mfp920504a.data_record_9.prologue.IBCST = 2900 ;
+
+ mfp920504a.data_record_9.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_9.prologue.IEDTT = 512 ;
+
+ mfp920504a.data_record_9.prologue.IEHMT = 836 ;
+
+ mfp920504a.data_record_9.prologue.IECST = 4500 ;
+
+ mfp920504a.data_record_9.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_9.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_9.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_9.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_9.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_9.MPAR.dayno = 133, 133, 133, 133, 133, 133, 133, 
+    133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 
+    133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 
+    133, 133 ;
+
+ mfp920504a.data_record_9.MPAR.uth = 758, 823, 877, 1017, 1211, 1394, 1577, 
+    1696, 1836, 2099, 2314, 2551, 2777, 3014, 3229, 3529, 3744, 3980, 4195, 
+    4432, 4647, 4936, 5162, 5409, 5624, 5859, 6074, 6362, 6586, 6822, 7037, 
+    7272, 7486, 7784, 7971, 8180, 8613 ;
+
+ mfp920504a.data_record_9.MPAR.azm = -4490, -4510, -13530, 13550, 4480, 
+    -4500, -4510, -13530, 13570, 4480, -4500, -4490, -13520, 13540, 4480, 
+    -4480, -4490, -13530, 13550, 4480, -4500, -4500, -13450, 13560, 4480, 
+    -4490, -4490, -13540, 13570, 4470, -4490, -4500, -13530, 13580, 4480, 
+    -4480, -13510 ;
+
+ mfp920504a.data_record_9.MPAR.elm = 8970, 2980, 2970, 2990, 2990, 8960, 
+    2980, 2980, 2990, 2970, 8960, 2990, 6290, 2990, 2990, 8960, 2990, 5390, 
+    2990, 2990, 8960, 3000, 3370, 2990, 2970, 8960, 2990, 2980, 2990, 3000, 
+    8960, 2990, 2990, 2990, 2990, 8960, 3000 ;
+
+ mfp920504a.data_record_9.MPAR.vnlu = -7, 97, 16, -14, -137, -4, 80, -1, -2, 
+    -144, 3, 43, 24, 2, -163, -6, 56, 58, 31, -207, -19, 19, 128, 1, -74, 11, 
+    4, 170, 15, -133, 1, -36, 158, 89, -62, -6, 92 ;
+
+ mfp920504a.data_record_9.MPAR.e_vnlu = 11, 14, 8, 9, 19, 8, 12, 9, 10, 17, 
+    12, 29, 16, 11, 14, 16, 27, 26, 12, 17, 25, 16, 18, 22, 19, 17, 23, 14, 
+    10, 29, 41, 21, 19, 14, 9, 15, 29 ;
+
+ mfp920504a.data_record_9.MPAR.tn = 949, 1035, 1104, 1162, 1108, 1064, 1116, 
+    1077, 1113, 1241, 1075, 1260, 1147, 1075, 1268, 1229, 1238, 1161, 1127, 
+    1308, 973, 1177, 1071, 1026, 1166, 1088, 1120, 1016, 1006, 1124, 1055, 
+    1158, 1036, 1115, 1061, 1000, 1207 ;
+
+ mfp920504a.data_record_9.MPAR.e_tn = 77, 69, 76, 162, 57, 76, 51, 99, 92, 
+    96, 74, 87, 125, 51, 105, 98, 163, 173, 70, 92, 118, 122, 150, 72, 56, 
+    152, 96, 38, 59, 176, 101, 144, 72, 107, 28, 83, 160 ;
+
+ mfp920504a.data_record_9.MPAR.nsmpti = 9, 3, 7, 17, 15, 19, 11, 11, 15, 20, 
+    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 
+    20, 20, 20, 20, 20, 20, 15, 20, 17 ;
+
+ mfp920504a.data_record_9.MPAR.rbrl = 3605, 4025, 3817, 3435, 3476, 3365, 
+    3569, 3611, 3445, 3282, 3122, 3241, 3171, 3292, 3075, 2980, 3005, 3023, 
+    3152, 3009, 2904, 2953, 3039, 3195, 2997, 2822, 2959, 3225, 3160, 2779, 
+    2533, 2796, 2965, 3000, 3440, 2864, 3203 ;
+
+ mfp920504a.data_record_9.MPAR.chip1 = 15, 15, 15, 13, 14, 15, 11, 17, 18, 
+    17, 14, 16, 15, 17, 12, 14, 14, 15, 15, 15, 13, 15, 16, 16, 13, 11, 13, 
+    16, 16, 17, 10, 15, 12, 14, 16, 15, 16 ;
+
+ mfp920504a.data_record_9.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_9.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_9.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_9.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_10.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_10.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_10.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_10.prologue.IBDTT = 512 ;
+
+ mfp920504a.data_record_10.prologue.IBHMT = 45 ;
+
+ mfp920504a.data_record_10.prologue.IBCST = 2900 ;
+
+ mfp920504a.data_record_10.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_10.prologue.IEDTT = 512 ;
+
+ mfp920504a.data_record_10.prologue.IEHMT = 836 ;
+
+ mfp920504a.data_record_10.prologue.IECST = 4500 ;
+
+ mfp920504a.data_record_10.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_10.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_10.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_10.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_10.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_10.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_10.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_10.MPAR.dayno = 133, 133, 133, 133, 133, 133, 133, 
+    133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 133, 
+    133, 133, 133, 133, 133, 133 ;
+
+ mfp920504a.data_record_10.MPAR.uth = 1017, 947, 1357, 1394, 1838, 1766, 
+    2307, 2325, 2890, 2895, 3497, 3486, 4088, 4088, 4679, 4684, 5280, 5286, 
+    5885, 5849, 6448, 6474, 7036, 7047, 7622, 7635, 8198 ;
+
+ mfp920504a.data_record_10.MPAR.az1 = -4510, -13530, 13550, 4480, -4510, 
+    -13530, 13570, 4480, -4490, -13520, 13540, 4480, -4490, -13530, 13550, 
+    4480, -4500, -13450, 13560, 4480, -4490, -13540, 13570, 4470, -4500, 
+    -13530, 13580 ;
+
+ mfp920504a.data_record_10.MPAR.az2 = 4480, 13550, -13530, -4510, 4480, 
+    13570, -13520, -4490, 4480, 13540, -13530, -4490, 4480, 13550, -13450, 
+    -4500, 4480, 13560, -13540, -4490, 4470, 13570, -13530, -4500, 4480, 
+    13580, -13510 ;
+
+ mfp920504a.data_record_10.MPAR.elm = 2985, 2980, 2985, 2985, 2975, 2985, 
+    4640, 2980, 2990, 4640, 4190, 2990, 2990, 4190, 3180, 2995, 2985, 3180, 
+    2985, 2980, 2995, 2985, 2990, 2995, 2990, 2990, 2995 ;
+
+ mfp920504a.data_record_10.MPAR.vnn = -32, -2, 12, -47, -53, 2, -22, -83, 
+    -97, -27, -57, -88, -123, -84, -132, -154, -45, -106, -138, -58, -105, 
+    -152, -140, -138, -80, -202, -147 ;
+
+ mfp920504a.data_record_10.MPAR.e_vnn = 21, 11, 11, 20, 19, 12, 20, 33, 31, 
+    22, 27, 30, 31, 32, 21, 21, 23, 23, 20, 25, 31, 15, 19, 35, 20, 23, 26 ;
+
+ mfp920504a.data_record_10.MPAR.vne = -191, -24, -10, -176, -182, 0, -26, 
+    -152, -168, -22, -53, -178, -215, -25, -82, -184, -76, -107, -140, -63, 
+    -112, -125, -118, -79, -21, -56, -5 ;
+
+ mfp920504a.data_record_10.MPAR.e_vne = 22, 11, 11, 21, 20, 12, 21, 30, 28, 
+    22, 26, 27, 29, 29, 20, 21, 24, 23, 20, 25, 31, 15, 18, 34, 22, 22, 26 ;
+
+ mfp920504a.data_record_10.MPAR.vnpnh = 18, 4, 15, 0, -4, 3, -15, -41, -51, 
+    -20, -41, -39, -63, -75, -106, -101, -24, -75, -97, -39, -73, -115, -105, 
+    -113, -71, -181, -141 ;
+
+ mfp920504a.data_record_10.MPAR.e_vnpnh = 20, 12, 11, 16, 15, 12, 17, 31, 29, 
+    21, 24, 27, 29, 35, 21, 20, 21, 23, 21, 25, 29, 14, 17, 36, 23, 26, 31 ;
+
+ mfp920504a.data_record_10.MPAR.vnpe = -193, -24, -6, -182, -190, 0, -31, 
+    -168, -187, -28, -66, -195, -239, -46, -113, -218, -85, -131, -171, -76, 
+    -135, -160, -151, -112, -41, -106, -43 ;
+
+ mfp920504a.data_record_10.MPAR.e_vnpe = 21, 12, 11, 18, 17, 12, 21, 26, 23, 
+    22, 28, 22, 25, 33, 21, 20, 22, 22, 19, 23, 31, 15, 19, 36, 24, 25, 31 ;
+
+ mfp920504a.data_record_11.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_11.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_11.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_11.prologue.IBDTT = 514 ;
+
+ mfp920504a.data_record_11.prologue.IBHMT = 47 ;
+
+ mfp920504a.data_record_11.prologue.IBCST = 3200 ;
+
+ mfp920504a.data_record_11.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_11.prologue.IEDTT = 514 ;
+
+ mfp920504a.data_record_11.prologue.IEHMT = 207 ;
+
+ mfp920504a.data_record_11.prologue.IECST = 100 ;
+
+ mfp920504a.data_record_11.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_11.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_11.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_11.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_11.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_11.MPAR.dayno = 135, 135, 135, 135, 135, 135, 135, 
+    135, 135, 135 ;
+
+ mfp920504a.data_record_11.MPAR.uth = 792, 856, 919, 1014, 1119, 1213, 1372, 
+    1540, 1943, 2117 ;
+
+ mfp920504a.data_record_11.MPAR.azm = 13510, -4510, 4490, -4490, -4490, 4500, 
+    -4490, -4490, -4490, -4500 ;
+
+ mfp920504a.data_record_11.MPAR.elm = 8990, 2990, 3000, 8960, 3010, 2990, 
+    8960, 3000, 8960, 2990 ;
+
+ mfp920504a.data_record_11.MPAR.vnlu = 1, 32, -65, -2, 12, -70, -10, 10, 4, 42 ;
+
+ mfp920504a.data_record_11.MPAR.e_vnlu = 14, 9, 8, 8, 11, 10, 11, 10, 12, 16 ;
+
+ mfp920504a.data_record_11.MPAR.tn = 1202, 1149, 1193, 1242, 1176, 1258, 
+    1259, 1220, 1224, 1193 ;
+
+ mfp920504a.data_record_11.MPAR.e_tn = 36, 67, 44, 50, 69, 57, 57, 40, 52, 40 ;
+
+ mfp920504a.data_record_11.MPAR.nsmpti = 9, 3, 7, 11, 5, 11, 19, 9, 20, 13 ;
+
+ mfp920504a.data_record_11.MPAR.rbrl = 3703, 4069, 3742, 3541, 3918, 3613, 
+    3361, 3664, 3170, 3507 ;
+
+ mfp920504a.data_record_11.MPAR.chip1 = 19, 13, 13, 14, 13, 14, 11, 17, 11, 15 ;
+
+ mfp920504a.data_record_11.MPAR.vnn = _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_11.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_11.MPAR.vne = _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_11.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_12.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_12.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_12.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_12.prologue.IBDTT = 514 ;
+
+ mfp920504a.data_record_12.prologue.IBHMT = 47 ;
+
+ mfp920504a.data_record_12.prologue.IBCST = 3200 ;
+
+ mfp920504a.data_record_12.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_12.prologue.IEDTT = 514 ;
+
+ mfp920504a.data_record_12.prologue.IEHMT = 207 ;
+
+ mfp920504a.data_record_12.prologue.IECST = 100 ;
+
+ mfp920504a.data_record_12.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_12.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_12.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_12.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_12.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_12.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_12.MPAR.year = 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_12.MPAR.dayno = 135, 135, 135, 135, 135 ;
+
+ mfp920504a.data_record_12.MPAR.uth = 887, 1019, 1166, 1377, 1608 ;
+
+ mfp920504a.data_record_12.MPAR.az1 = -4510, 4490, -4490, 4500, -4490 ;
+
+ mfp920504a.data_record_12.MPAR.az2 = 4490, -4490, 4500, -4490, 4490 ;
+
+ mfp920504a.data_record_12.MPAR.elm = 2995, 3005, 3000, 2995, 3000 ;
+
+ mfp920504a.data_record_12.MPAR.vnn = -27, -43, -47, -49, -57 ;
+
+ mfp920504a.data_record_12.MPAR.e_vnn = 12, 13, 14, 13, 12 ;
+
+ mfp920504a.data_record_12.MPAR.vne = -79, -63, -67, -65, -73 ;
+
+ mfp920504a.data_record_12.MPAR.e_vne = 12, 12, 14, 13, 12 ;
+
+ mfp920504a.data_record_12.MPAR.vnpnh = -6, -26, -28, -30, -36 ;
+
+ mfp920504a.data_record_12.MPAR.e_vnpnh = 10, 12, 13, 12, 11 ;
+
+ mfp920504a.data_record_12.MPAR.vnpe = -83, -72, -77, -75, -85 ;
+
+ mfp920504a.data_record_12.MPAR.e_vnpe = 10, 11, 13, 12, 11 ;
+
+ mfp920504a.data_record_13.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_13.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_13.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_13.prologue.IBDTT = 516 ;
+
+ mfp920504a.data_record_13.prologue.IBHMT = 51 ;
+
+ mfp920504a.data_record_13.prologue.IBCST = 200 ;
+
+ mfp920504a.data_record_13.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_13.prologue.IEDTT = 516 ;
+
+ mfp920504a.data_record_13.prologue.IEHMT = 255 ;
+
+ mfp920504a.data_record_13.prologue.IECST = 800 ;
+
+ mfp920504a.data_record_13.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_13.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_13.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_13.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_13.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_13.MPAR.dayno = 137, 137, 137, 137, 137, 137, 137, 
+    137, 137, 137, 137, 137 ;
+
+ mfp920504a.data_record_13.MPAR.uth = 851, 933, 1015, 1158, 1281, 1414, 1613, 
+    1792, 2051, 2255, 2694, 2919 ;
+
+ mfp920504a.data_record_13.MPAR.azm = -4480, -4500, 4490, -4490, -4500, 4500, 
+    -4480, -4490, 4500, -4500, 4490, -4480 ;
+
+ mfp920504a.data_record_13.MPAR.elm = 8960, 2990, 2990, 8960, 2990, 2990, 
+    8960, 2980, 3000, 8960, 2990, 8960 ;
+
+ mfp920504a.data_record_13.MPAR.vnlu = -1, -7, 20, 4, -2, -11, -5, -56, 8, 7, 
+    -25, -3 ;
+
+ mfp920504a.data_record_13.MPAR.e_vnlu = 8, 10, 9, 8, 12, 11, 26, 12, 25, 19, 
+    22, 36 ;
+
+ mfp920504a.data_record_13.MPAR.tn = 1122, 1136, 1156, 1153, 1135, _, 1087, 
+    1083, _, _, _, _ ;
+
+ mfp920504a.data_record_13.MPAR.e_tn = 78, 70, 65, 100, 90, _, 122, 150, _, 
+    _, _, _ ;
+
+ mfp920504a.data_record_13.MPAR.nsmpti = 11, 5, 9, 15, 9, 15, 20, 15, 20, 20, 
+    20, 20 ;
+
+ mfp920504a.data_record_13.MPAR.rbrl = 3591, 3913, 3626, 3431, 3659, 3430, 
+    3260, 3427, 3237, 3113, 3111, 2985 ;
+
+ mfp920504a.data_record_13.MPAR.chip1 = 14, 13, 14, 12, 15, 17, 13, 17, 22, 
+    17, 14, 12 ;
+
+ mfp920504a.data_record_13.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_13.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_13.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_13.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_14.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_14.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_14.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_14.prologue.IBDTT = 516 ;
+
+ mfp920504a.data_record_14.prologue.IBHMT = 51 ;
+
+ mfp920504a.data_record_14.prologue.IBCST = 200 ;
+
+ mfp920504a.data_record_14.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_14.prologue.IEDTT = 516 ;
+
+ mfp920504a.data_record_14.prologue.IEHMT = 255 ;
+
+ mfp920504a.data_record_14.prologue.IECST = 800 ;
+
+ mfp920504a.data_record_14.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_14.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_14.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_14.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_14.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_14.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_14.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_14.MPAR.dayno = 137, 137, 137, 137, 137, 137 ;
+
+ mfp920504a.data_record_14.MPAR.uth = 974, 1148, 1348, 1603, 1921, 2265 ;
+
+ mfp920504a.data_record_14.MPAR.az1 = -4500, 4490, -4500, 4500, -4490, 4500 ;
+
+ mfp920504a.data_record_14.MPAR.az2 = 4490, -4500, 4500, -4490, 4500, -4490 ;
+
+ mfp920504a.data_record_14.MPAR.elm = 2990, 2990, 2990, 2985, 2990, 2995 ;
+
+ mfp920504a.data_record_14.MPAR.vnn = 11, 15, -11, -55, -40, -17 ;
+
+ mfp920504a.data_record_14.MPAR.e_vnn = 13, 13, 15, 16, 25, 28 ;
+
+ mfp920504a.data_record_14.MPAR.vne = 22, 18, -8, 37, 52, 29 ;
+
+ mfp920504a.data_record_14.MPAR.e_vne = 13, 13, 15, 15, 23, 25 ;
+
+ mfp920504a.data_record_14.MPAR.vnpnh = 5, 10, -8, -63, -52, -24 ;
+
+ mfp920504a.data_record_14.MPAR.e_vnpnh = 11, 13, 15, 14, 23, 28 ;
+
+ mfp920504a.data_record_14.MPAR.vnpe = 24, 21, -10, 21, 40, 24 ;
+
+ mfp920504a.data_record_14.MPAR.e_vnpe = 11, 12, 15, 14, 25, 28 ;
+
+ mfp920504a.data_record_15.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_15.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_15.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_15.prologue.IBDTT = 517 ;
+
+ mfp920504a.data_record_15.prologue.IBHMT = 51 ;
+
+ mfp920504a.data_record_15.prologue.IBCST = 2800 ;
+
+ mfp920504a.data_record_15.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_15.prologue.IEDTT = 517 ;
+
+ mfp920504a.data_record_15.prologue.IEHMT = 832 ;
+
+ mfp920504a.data_record_15.prologue.IECST = 4900 ;
+
+ mfp920504a.data_record_15.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_15.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_15.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_15.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_15.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_15.MPAR.dayno = 138, 138, 138, 138, 138, 138, 138, 
+    138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 
+    138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 
+    138, 138, 138, 138 ;
+
+ mfp920504a.data_record_15.MPAR.uth = 858, 939, 1019, 1161, 1272, 1372, 1554, 
+    1720, 1961, 2147, 2354, 2551, 2773, 2969, 3239, 3441, 3662, 3874, 4096, 
+    4298, 4577, 4778, 5000, 5211, 5431, 5632, 5910, 6110, 6331, 6542, 6762, 
+    6963, 7242, 7442, 7663, 7859, 8264, 8462, 8547 ;
+
+ mfp920504a.data_record_15.MPAR.azm = 13500, -4500, 4500, -4500, -4500, 4500, 
+    -4490, -4500, 4500, -4500, -4500, 4490, -4500, -4520, 4510, -4500, -4500, 
+    4500, -4500, -4500, 4490, -4490, -4490, 4500, -4500, -4500, 4500, -4500, 
+    -4470, 4510, -4490, -4500, 4500, -4500, -4490, 4500, -4500, 4500, -4490 ;
+
+ mfp920504a.data_record_15.MPAR.elm = 9000, 2990, 2990, 8960, 2990, 2990, 
+    8980, 3000, 2980, 8970, 3000, 2990, 8970, 2980, 2990, 8960, 2990, 2980, 
+    8960, 2980, 2980, 8960, 2990, 2990, 8970, 2980, 2990, 8960, 2990, 2980, 
+    8960, 2990, 3000, 8960, 3000, 2980, 2980, 3020, 8970 ;
+
+ mfp920504a.data_record_15.MPAR.vnlu = -8, -19, -7, 7, -41, -21, 10, -45, 
+    -50, 0, -62, -54, -23, -67, -61, 19, -45, -47, -4, -59, -61, 8, -82, -72, 
+    4, -104, -77, -14, -85, -99, -22, -106, -77, 16, -46, -69, -20, -54, 10 ;
+
+ mfp920504a.data_record_15.MPAR.e_vnlu = 10, 16, 10, 8, 7, 10, 18, 18, 10, 
+    12, 10, 27, 18, 10, 17, 19, 17, 23, 19, 17, 17, 23, 14, 17, 22, 17, 17, 
+    25, 36, 22, 51, 34, 13, 19, 32, 22, 10, 22, 47 ;
+
+ mfp920504a.data_record_15.MPAR.tn = 1122, 1146, 1177, 1156, 1119, 1184, 
+    1126, 1255, 1183, 1268, 1157, 1284, 1118, 1255, _, 1081, 1125, _, _, _, 
+    _, _, _, 1060, _, 1130, _, _, 1114, 1215, _, 1123, 1078, 1039, 1155, 
+    1003, 1081, 941, 1002 ;
+
+ mfp920504a.data_record_15.MPAR.e_tn = 53, 89, 65, 59, 73, 69, 112, 96, 141, 
+    200, 144, 241, 171, 164, _, 282, 237, _, _, _, _, _, _, 239, _, 191, _, 
+    _, 171, 149, _, 131, 73, 94, 80, 31, 33, 96, 106 ;
+
+ mfp920504a.data_record_15.MPAR.nsmpti = 11, 5, 9, 15, 7, 13, 20, 13, 17, 20, 
+    17, 20, 20, 19, 20, 20, 20, 20, 10, 20, 20, 20, 10, 20, 20, 20, 20, 20, 
+    20, 20, 20, 20, 20, 20, 20, 17, 20, 5, 12 ;
+
+ mfp920504a.data_record_15.MPAR.rbrl = 3577, 3940, 3637, 3412, 3735, 3493, 
+    3268, 3525, 3366, 3157, 3342, 3261, 3086, 3304, 3166, 3003, 3172, 3103, 
+    2916, 3089, 3067, 2858, 3038, 3008, 2817, 2981, 2986, 2792, 2935, 3024, 
+    2795, 2965, 3109, 2895, 3056, 3350, 3221, 3795, 3280 ;
+
+ mfp920504a.data_record_15.MPAR.chip1 = 13, 16, 13, 13, 14, 12, 18, 17, 13, 
+    12, 17, 18, 13, 13, 16, 15, 13, 16, 12, 13, 16, 13, 13, 17, 14, 16, 15, 
+    12, 15, 15, 16, 17, 14, 13, 14, 15, 11, 14, 12 ;
+
+ mfp920504a.data_record_15.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _ ;
+
+ mfp920504a.data_record_15.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _ ;
+
+ mfp920504a.data_record_15.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _ ;
+
+ mfp920504a.data_record_15.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _ ;
+
+ mfp920504a.data_record_16.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_16.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_16.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_16.prologue.IBDTT = 517 ;
+
+ mfp920504a.data_record_16.prologue.IBHMT = 51 ;
+
+ mfp920504a.data_record_16.prologue.IBCST = 2800 ;
+
+ mfp920504a.data_record_16.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_16.prologue.IEDTT = 517 ;
+
+ mfp920504a.data_record_16.prologue.IEHMT = 832 ;
+
+ mfp920504a.data_record_16.prologue.IECST = 4900 ;
+
+ mfp920504a.data_record_16.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_16.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_16.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_16.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_16.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_16.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_16.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_16.MPAR.dayno = 138, 138, 138, 138, 138, 138, 138, 
+    138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 138, 
+    138, 138, 138 ;
+
+ mfp920504a.data_record_16.MPAR.uth = 979, 1145, 1322, 1546, 1840, 2158, 
+    2453, 2760, 3104, 3451, 3768, 4086, 4437, 4788, 5105, 5421, 5771, 6120, 
+    6436, 6752, 7102, 7452, 7761, 8062 ;
+
+ mfp920504a.data_record_16.MPAR.az1 = -4500, 4500, -4500, 4500, -4500, 4500, 
+    -4500, 4490, -4520, 4510, -4500, 4500, -4500, 4490, -4490, 4500, -4500, 
+    4500, -4470, 4510, -4500, 4500, -4490, 4500 ;
+
+ mfp920504a.data_record_16.MPAR.az2 = 4500, -4500, 4500, -4500, 4500, -4500, 
+    4490, -4520, 4510, -4500, 4500, -4500, 4490, -4490, 4500, -4500, 4500, 
+    -4470, 4510, -4500, 4500, -4490, 4500, -4500 ;
+
+ mfp920504a.data_record_16.MPAR.elm = 2990, 2990, 2990, 2995, 2990, 2990, 
+    2995, 2985, 2985, 2990, 2985, 2980, 2980, 2985, 2990, 2985, 2985, 2990, 
+    2985, 2985, 2995, 3000, 2990, 2980 ;
+
+ mfp920504a.data_record_16.MPAR.vnn = -21, -39, -50, -54, -78, -91, -95, -98, 
+    -104, -86, -75, -87, -98, -116, -125, -143, -147, -132, -150, -167, -150, 
+    -101, -94, -72 ;
+
+ mfp920504a.data_record_16.MPAR.e_vnn = 19, 11, 12, 20, 16, 13, 22, 22, 16, 
+    22, 23, 25, 19, 20, 19, 22, 22, 32, 35, 34, 33, 29, 35, 23 ;
+
+ mfp920504a.data_record_16.MPAR.vne = 10, 28, 16, 20, -4, 10, 6, 10, 5, -13, 
+    -2, 10, -2, 17, 8, 26, 21, 6, -12, 6, 24, -25, -19, -40 ;
+
+ mfp920504a.data_record_16.MPAR.e_vne = 17, 12, 12, 18, 17, 13, 23, 24, 16, 
+    22, 23, 25, 19, 20, 19, 22, 22, 31, 36, 33, 29, 33, 37, 21 ;
+
+ mfp920504a.data_record_16.MPAR.vnpnh = -22, -45, -53, -57, -74, -91, -93, 
+    -98, -102, -80, -72, -86, -95, -117, -123, -145, -148, -129, -141, -163, 
+    -151, -91, -86, -59 ;
+
+ mfp920504a.data_record_16.MPAR.e_vnpnh = 17, 10, 9, 18, 20, 13, 25, 23, 18, 
+    25, 28, 25, 24, 19, 21, 21, 22, 37, 42, 39, 32, 33, 40, 23 ;
+
+ mfp920504a.data_record_16.MPAR.vnpe = 4, 17, 3, 5, -24, -14, -18, -15, -22, 
+    -35, -21, -13, -27, -14, -25, -12, -17, -28, -51, -38, -16, -51, -42, -58 ;
+
+ mfp920504a.data_record_16.MPAR.e_vnpe = 15, 11, 10, 15, 20, 13, 26, 25, 18, 
+    25, 28, 26, 24, 20, 21, 21, 22, 36, 43, 39, 28, 36, 41, 23 ;
+
+ mfp920504a.data_record_17.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_17.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_17.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_17.prologue.IBDTT = 518 ;
+
+ mfp920504a.data_record_17.prologue.IBHMT = 52 ;
+
+ mfp920504a.data_record_17.prologue.IBCST = 5800 ;
+
+ mfp920504a.data_record_17.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_17.prologue.IEDTT = 518 ;
+
+ mfp920504a.data_record_17.prologue.IEHMT = 444 ;
+
+ mfp920504a.data_record_17.prologue.IECST = 2000 ;
+
+ mfp920504a.data_record_17.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_17.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_17.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_17.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_17.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992 ;
+
+ mfp920504a.data_record_17.MPAR.dayno = 139, 139, 139, 139, 139, 139, 139, 
+    139, 139, 139, 139, 139, 139, 139, 139, 139, 139, 139, 139, 139 ;
+
+ mfp920504a.data_record_17.MPAR.uth = 883, 963, 1053, 1203, 1323, 1462, 1666, 
+    1851, 2112, 2311, 2521, 2720, 2939, 3139, 3416, 3616, 3835, 4044, 4463, 
+    4739 ;
+
+ mfp920504a.data_record_17.MPAR.azm = -4480, -4490, 4500, -4490, -4500, 4490, 
+    -4480, -4500, 4500, -4480, -4490, 4490, -4490, -4490, 4490, -4490, -4490, 
+    4500, -4500, 4490 ;
+
+ mfp920504a.data_record_17.MPAR.elm = 8980, 2980, 2990, 8960, 2980, 2990, 
+    8970, 2990, 2980, 8960, 3010, 2990, 8960, 2990, 2990, 8960, 2980, 2990, 
+    2980, 3000 ;
+
+ mfp920504a.data_record_17.MPAR.vnlu = 9, 4, -86, 2, -15, -120, -4, 3, -113, 
+    2, 27, -91, -21, 4, -93, 13, -28, -51, -66, -41 ;
+
+ mfp920504a.data_record_17.MPAR.e_vnlu = 8, 12, 10, 9, 9, 18, 19, 13, 12, 17, 
+    13, 12, 23, 12, 23, 18, 18, 20, 20, 17 ;
+
+ mfp920504a.data_record_17.MPAR.tn = 1075, 1111, 1152, 1098, 1159, 1201, 
+    1142, 1188, 1152, 1135, 1205, 1249, 1135, 1218, 1139, 1160, 1224, _, 
+    1305, _ ;
+
+ mfp920504a.data_record_17.MPAR.e_tn = 37, 47, 42, 40, 32, 77, 43, 49, 55, 
+    68, 69, 86, 106, 104, 146, 209, 102, _, 181, _ ;
+
+ mfp920504a.data_record_17.MPAR.nsmpti = 11, 5, 11, 15, 9, 17, 20, 17, 20, 
+    20, 18, 20, 20, 20, 20, 20, 20, 20, 20, 20 ;
+
+ mfp920504a.data_record_17.MPAR.rbrl = 3546, 3857, 3555, 3384, 3660, 3358, 
+    3175, 3404, 3235, 3109, 3336, 3232, 3057, 3269, 3177, 3047, 3254, 3159, 
+    3275, 3211 ;
+
+ mfp920504a.data_record_17.MPAR.chip1 = 13, 17, 16, 18, 11, 22, 16, 20, 12, 
+    16, 15, 18, 13, 15, 15, 13, 13, 15, 15, 13 ;
+
+ mfp920504a.data_record_17.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_17.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_17.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_17.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_18.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_18.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_18.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_18.prologue.IBDTT = 518 ;
+
+ mfp920504a.data_record_18.prologue.IBHMT = 52 ;
+
+ mfp920504a.data_record_18.prologue.IBCST = 5800 ;
+
+ mfp920504a.data_record_18.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_18.prologue.IEDTT = 518 ;
+
+ mfp920504a.data_record_18.prologue.IEHMT = 444 ;
+
+ mfp920504a.data_record_18.prologue.IECST = 2000 ;
+
+ mfp920504a.data_record_18.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_18.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_18.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_18.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_18.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_18.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_18.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_18.MPAR.dayno = 139, 139, 139, 139, 139, 139, 139, 
+    139, 139, 139, 139, 139 ;
+
+ mfp920504a.data_record_18.MPAR.uth = 1008, 1188, 1392, 1656, 1981, 2316, 
+    2620, 2930, 3278, 3626, 3940, 4253 ;
+
+ mfp920504a.data_record_18.MPAR.az1 = -4490, 4500, -4500, 4490, -4500, 4500, 
+    -4490, 4490, -4490, 4490, -4490, 4500 ;
+
+ mfp920504a.data_record_18.MPAR.az2 = 4500, -4500, 4490, -4500, 4500, -4490, 
+    4490, -4490, 4490, -4490, 4500, -4500 ;
+
+ mfp920504a.data_record_18.MPAR.elm = 2985, 2985, 2985, 2990, 2985, 2995, 
+    3000, 2990, 2990, 2985, 2985, 2985 ;
+
+ mfp920504a.data_record_18.MPAR.vnn = -66, -82, -110, -96, -90, -70, -53, 
+    -71, -72, -99, -65, -95 ;
+
+ mfp920504a.data_record_18.MPAR.e_vnn = 13, 12, 18, 19, 15, 17, 17, 14, 21, 
+    28, 26, 25 ;
+
+ mfp920504a.data_record_18.MPAR.vne = -74, -58, -85, -100, -94, -114, -97, 
+    -78, -79, -53, -19, 12 ;
+
+ mfp920504a.data_record_18.MPAR.e_vne = 13, 12, 17, 19, 15, 17, 17, 14, 21, 
+    27, 26, 25 ;
+
+ mfp920504a.data_record_18.MPAR.vnpnh = -45, -65, -84, -67, -62, -39, -26, 
+    -49, -49, -82, -58, -95 ;
+
+ mfp920504a.data_record_18.MPAR.e_vnpnh = 13, 12, 16, 17, 14, 16, 16, 14, 18, 
+    29, 29, 25 ;
+
+ mfp920504a.data_record_18.MPAR.vnpe = -89, -77, -111, -121, -115, -128, 
+    -107, -94, -95, -77, -35, -13 ;
+
+ mfp920504a.data_record_18.MPAR.e_vnpe = 12, 12, 18, 19, 14, 15, 15, 14, 22, 
+    29, 28, 25 ;
+
+ mfp920504a.data_record_19.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_19.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_19.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_19.prologue.IBDTT = 519 ;
+
+ mfp920504a.data_record_19.prologue.IBHMT = 53 ;
+
+ mfp920504a.data_record_19.prologue.IBCST = 3200 ;
+
+ mfp920504a.data_record_19.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_19.prologue.IEDTT = 519 ;
+
+ mfp920504a.data_record_19.prologue.IEHMT = 826 ;
+
+ mfp920504a.data_record_19.prologue.IECST = 5200 ;
+
+ mfp920504a.data_record_19.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_19.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_19.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_19.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_19.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_19.MPAR.dayno = 140, 140, 140, 140, 140, 140, 140, 
+    140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 
+    140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 
+    140, 140, 140, 140, 140 ;
+
+ mfp920504a.data_record_19.MPAR.uth = 892, 957, 1022, 1118, 1226, 1312, 1451, 
+    1612, 1741, 1913, 2158, 2308, 2517, 2694, 2887, 3086, 3352, 3545, 3770, 
+    3984, 4231, 4445, 4727, 4941, 5171, 5379, 5619, 5833, 6131, 6355, 6590, 
+    6804, 7049, 7262, 7543, 7719, 7911, 8097, 8331, 8448 ;
+
+ mfp920504a.data_record_19.MPAR.azm = -4500, -4510, 4500, -4490, -4490, 4500, 
+    -4500, -4490, 4500, -4500, -4500, 4500, -4520, -4540, 4500, -4500, -4500, 
+    4500, -4500, -4500, 4460, -4500, -4500, 4500, -4490, -4500, 4490, -4500, 
+    -4500, 4500, -4500, -4500, 4490, -4500, -4500, 4510, -4480, -4500, -4500, 
+    -4500 ;
+
+ mfp920504a.data_record_19.MPAR.elm = 8980, 2990, 2990, 8960, 2980, 2990, 
+    8960, 3000, 3000, 8960, 3000, 2990, 8960, 3000, 2980, 8960, 2990, 2980, 
+    8980, 2990, 2980, 8960, 3000, 3000, 8970, 2990, 3000, 8960, 3010, 2990, 
+    8940, 2990, 3000, 8960, 3000, 2990, 8960, 2990, 8960, 2990 ;
+
+ mfp920504a.data_record_19.MPAR.vnlu = 6, 83, -114, 2, 75, -92, 11, 61, -103, 
+    -26, 19, -157, -3, -33, -186, -4, -103, -219, -50, -126, -194, 7, -162, 
+    -165, -14, -100, -158, -18, -90, -106, 15, -66, -75, 12, -48, -78, 1, 
+    -36, -14, -48 ;
+
+ mfp920504a.data_record_19.MPAR.e_vnlu = 7, 14, 9, 10, 15, 9, 8, 7, 10, 9, 
+    23, 9, 16, 12, 15, 19, 11, 14, 34, 10, 26, 15, 8, 12, 28, 14, 12, 19, 11, 
+    13, 14, 13, 11, 14, 9, 7, 8, 7, 12, 18 ;
+
+ mfp920504a.data_record_19.MPAR.tn = 1171, 1219, 1322, 1191, 1206, 1260, 
+    1218, 1245, 1263, 1254, 1347, 1345, 1334, 1365, 1429, 1308, 1361, 1408, 
+    _, 1481, 1549, _, 1291, 1483, _, 1427, 1398, _, 1422, 1411, _, 1313, 
+    1284, 1190, 1238, 1216, 1233, 1232, 1140, 1140 ;
+
+ mfp920504a.data_record_19.MPAR.e_tn = 49, 53, 49, 37, 33, 37, 45, 60, 73, 
+    42, 66, 132, 140, 59, 199, 172, 104, 193, _, 206, 244, _, 108, 130, _, 
+    134, 237, _, 164, 125, _, 97, 85, 83, 41, 30, 55, 61, 35, 35 ;
+
+ mfp920504a.data_record_19.MPAR.nsmpti = 9, 3, 7, 11, 5, 9, 17, 9, 13, 19, 
+    11, 15, 20, 13, 17, 20, 16, 18, 20, 20, 20, 20, 19, 19, 20, 19, 20, 20, 
+    20, 20, 20, 20, 20, 20, 19, 6, 20, 15, 13, 9 ;
+
+ mfp920504a.data_record_19.MPAR.rbrl = 3696, 4081, 3837, 3578, 3915, 3722, 
+    3403, 3703, 3532, 3373, 3594, 3501, 3228, 3516, 3440, 3134, 3462, 3419, 
+    3027, 3358, 3285, 3001, 3365, 3395, 3019, 3409, 3262, 2957, 3229, 3193, 
+    3053, 3211, 3291, 3181, 3367, 3589, 3323, 3499, 3509, 3723 ;
+
+ mfp920504a.data_record_19.MPAR.chip1 = 12, 15, 14, 14, 12, 13, 16, 12, 11, 
+    11, 13, 14, 16, 13, 18, 11, 15, 15, 13, 18, 13, 14, 11, 15, 12, 16, 21, 
+    13, 17, 13, 12, 13, 14, 13, 12, 9, 15, 15, 13, 13 ;
+
+ mfp920504a.data_record_19.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _ ;
+
+ mfp920504a.data_record_19.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _ ;
+
+ mfp920504a.data_record_19.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _ ;
+
+ mfp920504a.data_record_19.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _ ;
+
+ mfp920504a.data_record_20.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_20.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_20.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_20.prologue.IBDTT = 519 ;
+
+ mfp920504a.data_record_20.prologue.IBHMT = 53 ;
+
+ mfp920504a.data_record_20.prologue.IBCST = 3200 ;
+
+ mfp920504a.data_record_20.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_20.prologue.IEDTT = 519 ;
+
+ mfp920504a.data_record_20.prologue.IEHMT = 826 ;
+
+ mfp920504a.data_record_20.prologue.IECST = 5200 ;
+
+ mfp920504a.data_record_20.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_20.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_20.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_20.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_20.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_20.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_20.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_20.MPAR.dayno = 140, 140, 140, 140, 140, 140, 140, 
+    140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 
+    140, 140, 140, 140 ;
+
+ mfp920504a.data_record_20.MPAR.uth = 989, 1124, 1269, 1462, 1677, 1950, 
+    2233, 2501, 2791, 3120, 3449, 3765, 4108, 4479, 4834, 5160, 5499, 5875, 
+    6243, 6579, 6926, 7296, 7631, 7908, 8166 ;
+
+ mfp920504a.data_record_20.MPAR.az1 = -4510, 4500, -4490, 4500, -4490, 4500, 
+    -4500, 4500, -4540, 4500, -4500, 4500, -4500, 4460, -4500, 4500, -4500, 
+    4490, -4500, 4500, -4500, 4490, -4500, 4510, -4500 ;
+
+ mfp920504a.data_record_20.MPAR.az2 = 4500, -4490, 4500, -4490, 4500, -4500, 
+    4500, -4540, 4500, -4500, 4500, -4500, 4460, -4500, 4500, -4500, 4490, 
+    -4500, 4500, -4500, 4490, -4500, 4510, -4500, 4490 ;
+
+ mfp920504a.data_record_20.MPAR.elm = 2990, 2985, 2985, 2995, 3000, 3000, 
+    2995, 2995, 2990, 2985, 2985, 2985, 2985, 2990, 3000, 2995, 2995, 3005, 
+    3000, 2990, 2995, 3000, 2995, 2990, 2990 ;
+
+ mfp920504a.data_record_20.MPAR.vnn = -26, -32, -13, -25, -34, -69, -113, 
+    -155, -179, -235, -262, -281, -261, -291, -268, -217, -210, -203, -160, 
+    -140, -115, -101, -103, -93, -94 ;
+
+ mfp920504a.data_record_20.MPAR.e_vnn = 15, 17, 16, 10, 11, 23, 21, 13, 18, 
+    18, 18, 17, 26, 22, 12, 17, 17, 16, 15, 17, 14, 14, 11, 10, 10 ;
+
+ mfp920504a.data_record_20.MPAR.vne = -160, -154, -136, -125, -135, -100, 
+    -143, -102, -123, -67, -95, -75, -55, -24, -2, -53, -47, -55, -13, -32, 
+    -7, -21, -24, -34, -35 ;
+
+ mfp920504a.data_record_20.MPAR.e_vne = 14, 15, 15, 11, 11, 21, 19, 14, 17, 
+    18, 17, 16, 23, 21, 12, 18, 18, 15, 14, 17, 15, 13, 11, 10, 10 ;
+
+ mfp920504a.data_record_20.MPAR.vnpnh = 16, 9, 22, 8, 2, -41, -72, -123, 
+    -141, -210, -229, -252, -238, -275, -258, -196, -191, -181, -151, -127, 
+    -109, -92, -93, -81, -82 ;
+
+ mfp920504a.data_record_20.MPAR.e_vnpnh = 14, 15, 16, 9, 9, 23, 22, 14, 17, 
+    20, 19, 19, 28, 26, 14, 20, 20, 17, 17, 19, 17, 15, 12, 11, 11 ;
+
+ mfp920504a.data_record_20.MPAR.vnpe = -161, -157, -135, -127, -139, -114, 
+    -168, -138, -166, -126, -159, -146, -121, -98, -72, -108, -100, -105, 
+    -54, -68, -37, -47, -50, -57, -58 ;
+
+ mfp920504a.data_record_20.MPAR.e_vnpe = 14, 14, 16, 10, 10, 17, 16, 14, 18, 
+    20, 19, 18, 27, 25, 14, 20, 20, 17, 17, 19, 17, 15, 12, 11, 11 ;
+
+ mfp920504a.data_record_21.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_21.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_21.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_21.prologue.IBDTT = 520 ;
+
+ mfp920504a.data_record_21.prologue.IBHMT = 55 ;
+
+ mfp920504a.data_record_21.prologue.IBCST = 1800 ;
+
+ mfp920504a.data_record_21.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_21.prologue.IEDTT = 520 ;
+
+ mfp920504a.data_record_21.prologue.IEHMT = 827 ;
+
+ mfp920504a.data_record_21.prologue.IECST = 3800 ;
+
+ mfp920504a.data_record_21.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_21.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_21.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_21.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_21.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_21.MPAR.dayno = 141, 141, 141, 141, 141, 141, 141, 
+    141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 
+    141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 
+    141, 141 ;
+
+ mfp920504a.data_record_21.MPAR.uth = 922, 986, 1039, 1145, 1294, 1453, 1623, 
+    1762, 2052, 2264, 2498, 2710, 2944, 3167, 3461, 3673, 3905, 4117, 4361, 
+    4572, 4867, 5073, 5296, 5502, 5734, 5946, 6229, 6441, 6684, 6890, 7116, 
+    7327, 7610, 7826, 7983, 8125, 8461 ;
+
+ mfp920504a.data_record_21.MPAR.azm = -4500, -4500, -13520, 13570, 4490, 
+    -4500, -4500, -13520, 13570, 4490, -4490, -4500, -13520, 13570, 4480, 
+    -4500, -4500, -13520, 13560, 4480, -4490, -4490, -13490, 13570, 4480, 
+    -4500, -4490, -13510, 13560, 4490, -4500, -4500, -13520, 13570, 4500, 
+    -4490, -13510 ;
+
+ mfp920504a.data_record_21.MPAR.elm = 8990, 2990, 2990, 2990, 3010, 8960, 
+    2990, 2990, 2980, 2980, 8960, 2980, 2980, 2990, 2990, 8950, 2980, 2980, 
+    3590, 2980, 8980, 2980, 2980, 4220, 2970, 8950, 2970, 2970, 3510, 2990, 
+    8950, 2980, 2980, 2980, 2980, 8960, 2990 ;
+
+ mfp920504a.data_record_21.MPAR.vnlu = 14, 28, 0, 50, -25, 11, 24, 1, 55, 
+    -115, -16, 13, 65, 9, -148, -28, -29, 93, 5, -124, 20, 0, 95, -27, -146, 
+    8, -58, 88, -13, -68, -5, -44, 29, -4, -53, 4, 26 ;
+
+ mfp920504a.data_record_21.MPAR.e_vnlu = 20, 10, 7, 7, 7, 9, 14, 22, 16, 13, 
+    18, 10, 33, 21, 11, 27, 10, 21, 33, 10, 20, 10, 10, 13, 9, 12, 28, 12, 
+    11, 10, 17, 33, 25, 10, 22, 13, 21 ;
+
+ mfp920504a.data_record_21.MPAR.tn = 1201, 1269, 1215, 1244, 1251, 1171, 
+    1232, 1298, _, 1522, _, _, _, _, 1289, _, 1293, _, _, 1357, _, 1260, 
+    1217, _, 1383, 1280, 1316, 1166, _, 1284, 1272, 1268, 1199, 1113, 1212, 
+    1234, 1194 ;
+
+ mfp920504a.data_record_21.MPAR.e_tn = 43, 49, 39, 67, 71, 36, 43, 53, _, 
+    167, _, _, _, _, 209, _, 158, _, _, 201, _, 123, 76, _, 155, 265, 125, 
+    90, _, 88, 147, 119, 108, 81, 37, 50, 157 ;
+
+ mfp920504a.data_record_21.MPAR.nsmpti = 9, 3, 7, 7, 11, 19, 9, 17, 20, 20, 
+    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 19, 19, 20, 20, 20, 20, 20, 
+    20, 19, 20, 20, 20, 19, 7, 20, 18 ;
+
+ mfp920504a.data_record_21.MPAR.rbrl = 3693, 4066, 3865, 3543, 3628, 3369, 
+    3687, 3417, 3221, 3225, 2896, 3208, 3041, 2908, 3176, 2830, 3247, 2974, 
+    2945, 3278, 3056, 3362, 3344, 3336, 3291, 3112, 3265, 3281, 3318, 3353, 
+    3125, 3240, 3280, 3334, 3753, 3289, 3400 ;
+
+ mfp920504a.data_record_21.MPAR.chip1 = 13, 16, 12, 15, 16, 14, 14, 17, 17, 
+    19, 15, 18, 17, 15, 14, 14, 13, 12, 12, 17, 16, 18, 12, 20, 15, 14, 13, 
+    13, 17, 15, 11, 17, 16, 18, 14, 12, 20 ;
+
+ mfp920504a.data_record_21.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_21.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_21.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_21.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_22.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_22.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_22.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_22.prologue.IBDTT = 520 ;
+
+ mfp920504a.data_record_22.prologue.IBHMT = 55 ;
+
+ mfp920504a.data_record_22.prologue.IBCST = 1800 ;
+
+ mfp920504a.data_record_22.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_22.prologue.IEDTT = 520 ;
+
+ mfp920504a.data_record_22.prologue.IEHMT = 827 ;
+
+ mfp920504a.data_record_22.prologue.IECST = 3800 ;
+
+ mfp920504a.data_record_22.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_22.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_22.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_22.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_22.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_22.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_22.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_22.MPAR.dayno = 141, 141, 141, 141, 141, 141, 141, 
+    141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 141, 
+    141, 141, 141, 141, 141, 141 ;
+
+ mfp920504a.data_record_22.MPAR.uth = 1140, 1092, 1453, 1459, 1944, 1907, 
+    2498, 2487, 3086, 3055, 3642, 3683, 4239, 4239, 4828, 4823, 5404, 5399, 
+    5971, 5982, 6560, 6562, 7147, 7109, 7655, 7718, 8143 ;
+
+ mfp920504a.data_record_22.MPAR.az1 = -4500, -13520, 13570, 4490, -4500, 
+    -13520, 13570, 4490, -4500, -13520, 13570, 4480, -4500, -13520, 13560, 
+    4480, -4490, -13490, 13570, 4480, -4490, -13510, 13560, 4490, -4500, 
+    -13520, 13570 ;
+
+ mfp920504a.data_record_22.MPAR.az2 = 4490, 13570, -13520, -4500, 4490, 
+    13570, -13520, -4500, 4480, 13570, -13520, -4500, 4480, 13560, -13490, 
+    -4490, 4480, 13570, -13510, -4490, 4490, 13560, -13520, -4500, 4500, 
+    13570, -13510 ;
+
+ mfp920504a.data_record_22.MPAR.elm = 3000, 2990, 2990, 3000, 2985, 2985, 
+    2980, 2980, 2985, 2985, 2985, 2985, 2980, 3285, 3285, 2980, 2975, 3600, 
+    3595, 2970, 2980, 3240, 3245, 2985, 2980, 2980, 2985 ;
+
+ mfp920504a.data_record_22.MPAR.vnn = 3, -40, -42, -1, -74, -46, -98, -84, 
+    -110, -61, -83, -144, -124, -83, -83, -101, -119, -59, -51, -166, -103, 
+    -62, -13, -92, -79, -21, -18 ;
+
+ mfp920504a.data_record_22.MPAR.e_vnn = 10, 8, 17, 13, 18, 22, 31, 14, 13, 
+    36, 27, 14, 13, 34, 27, 11, 11, 18, 19, 24, 23, 15, 24, 27, 34, 21, 19 ;
+
+ mfp920504a.data_record_22.MPAR.vne = -43, 41, 39, -40, -114, 44, -10, -104, 
+    -131, -46, -70, -96, -77, -74, -77, -100, -118, -107, -101, -71, -9, -84, 
+    -36, -19, -7, -27, -24 ;
+
+ mfp920504a.data_record_22.MPAR.e_vne = 10, 8, 17, 13, 18, 22, 30, 14, 13, 
+    34, 27, 14, 13, 34, 28, 11, 11, 17, 18, 28, 24, 15, 28, 31, 35, 23, 21 ;
+
+ mfp920504a.data_record_22.MPAR.vnpnh = 14, -49, -51, 10, -42, -55, -92, -54, 
+    -72, -47, -62, -114, -100, -61, -61, -72, -84, -29, -24, -142, -97, -38, 
+    -3, -84, -75, -13, -11 ;
+
+ mfp920504a.data_record_22.MPAR.e_vnpnh = 12, 8, 14, 15, 17, 20, 36, 13, 12, 
+    34, 26, 14, 13, 35, 29, 11, 11, 16, 17, 27, 27, 14, 19, 31, 40, 18, 16 ;
+
+ mfp920504a.data_record_22.MPAR.vnpe = -41, 29, 27, -39, -129, 30, -35, -123, 
+    -155, -60, -89, -130, -107, -93, -96, -123, -145, -119, -111, -111, -35, 
+    -98, -38, -43, -27, -31, -28 ;
+
+ mfp920504a.data_record_22.MPAR.e_vnpe = 12, 8, 19, 15, 16, 22, 35, 14, 12, 
+    36, 26, 14, 13, 32, 24, 11, 11, 15, 16, 29, 28, 14, 25, 34, 41, 24, 21 ;
+
+ mfp920504a.data_record_23.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_23.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_23.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_23.prologue.IBDTT = 521 ;
+
+ mfp920504a.data_record_23.prologue.IBHMT = 56 ;
+
+ mfp920504a.data_record_23.prologue.IBCST = 2900 ;
+
+ mfp920504a.data_record_23.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_23.prologue.IEDTT = 521 ;
+
+ mfp920504a.data_record_23.prologue.IEHMT = 826 ;
+
+ mfp920504a.data_record_23.prologue.IECST = 4100 ;
+
+ mfp920504a.data_record_23.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_23.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_23.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_23.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_23.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_23.MPAR.dayno = 142, 142, 142, 142, 142, 142, 142, 
+    142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 
+    142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 
+    142, 142, 142 ;
+
+ mfp920504a.data_record_23.MPAR.uth = 942, 1015, 1084, 1184, 1310, 1447, 
+    1604, 1715, 1857, 2086, 2270, 2464, 2632, 2858, 3042, 3297, 3507, 3737, 
+    3957, 4187, 4396, 4687, 4895, 5136, 5345, 5575, 5784, 6076, 6285, 6515, 
+    6724, 6953, 7162, 7462, 7644, 7847, 8284, 8445 ;
+
+ mfp920504a.data_record_23.MPAR.azm = -4510, -4520, -13520, 13570, 4500, 
+    -4500, -4500, -13520, 13580, 4490, -4500, -4490, -13520, 13560, 4490, 
+    -4510, -4510, -13510, 13570, 4490, -4500, -4520, -13530, 13550, 4490, 
+    -4490, -4500, -13520, 13560, 4500, -4500, -4500, -13520, 13560, 4490, 
+    -4510, -13520, 13560 ;
+
+ mfp920504a.data_record_23.MPAR.elm = 8990, 2990, 2990, 2980, 2970, 8960, 
+    2990, 2990, 2980, 3010, 8960, 2980, 2990, 2990, 2990, 8970, 2980, 2980, 
+    2980, 2990, 8960, 2990, 2990, 3670, 2980, 8960, 2980, 2980, 4370, 2990, 
+    8970, 2990, 2980, 3920, 2980, 8970, 2980, 2990 ;
+
+ mfp920504a.data_record_23.MPAR.vnlu = -4, -19, -28, 12, -41, -5, -4, 1, 26, 
+    -32, 7, 21, 5, 3, -47, 7, 4, 23, 47, -122, -9, -29, 62, 10, -123, -8, 
+    -69, 64, 31, -86, -4, -59, 63, -23, -62, 4, 70, -35 ;
+
+ mfp920504a.data_record_23.MPAR.e_vnlu = 22, 9, 9, 7, 7, 8, 7, 8, 8, 8, 11, 
+    14, 10, 18, 10, 13, 14, 16, 44, 20, 28, 31, 17, 24, 19, 14, 13, 12, 19, 
+    19, 18, 34, 12, 15, 8, 13, 11, 14 ;
+
+ mfp920504a.data_record_23.MPAR.tn = 1071, 1073, 1152, 1128, 1110, 1079, 
+    1118, 1119, 1103, 1130, 1112, 1116, 1120, 1085, 1100, 1061, 1123, 1088, 
+    1093, 1179, 977, 1163, 1126, 1046, 1179, 1116, 1093, 1119, 1178, 1295, 
+    1101, 1226, 1096, 1165, 1184, 1174, 1200, 1044 ;
+
+ mfp920504a.data_record_23.MPAR.e_tn = 40, 117, 36, 34, 32, 29, 28, 39, 47, 
+    48, 35, 31, 31, 32, 37, 42, 39, 47, 55, 81, 91, 48, 75, 87, 62, 49, 77, 
+    57, 152, 60, 157, 98, 133, 155, 63, 113, 198, 61 ;
+
+ mfp920504a.data_record_23.MPAR.nsmpti = 9, 5, 8, 11, 9, 17, 9, 12, 15, 15, 
+    20, 13, 19, 20, 15, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 
+    20, 20, 20, 20, 20, 10, 15, 20, 10, 9 ;
+
+ mfp920504a.data_record_23.MPAR.rbrl = 3627, 3926, 3731, 3586, 3691, 3409, 
+    3697, 3542, 3459, 3452, 3200, 3488, 3358, 3254, 3428, 3179, 3313, 3200, 
+    3043, 3059, 2783, 3120, 2999, 3053, 3162, 3037, 3103, 3162, 3178, 3228, 
+    2959, 3113, 3151, 3134, 3444, 3036, 3239, 3674 ;
+
+ mfp920504a.data_record_23.MPAR.chip1 = 15, 13, 13, 25, 14, 14, 15, 19, 14, 
+    18, 13, 14, 17, 15, 19, 14, 16, 22, 15, 21, 13, 16, 18, 20, 16, 14, 15, 
+    14, 20, 17, 13, 12, 16, 15, 18, 14, 23, 15 ;
+
+ mfp920504a.data_record_23.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_23.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _ ;
+
+ mfp920504a.data_record_23.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_23.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _ ;
+
+ mfp920504a.data_record_24.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_24.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_24.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_24.prologue.IBDTT = 521 ;
+
+ mfp920504a.data_record_24.prologue.IBHMT = 56 ;
+
+ mfp920504a.data_record_24.prologue.IBCST = 2900 ;
+
+ mfp920504a.data_record_24.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_24.prologue.IEDTT = 521 ;
+
+ mfp920504a.data_record_24.prologue.IEHMT = 826 ;
+
+ mfp920504a.data_record_24.prologue.IECST = 4100 ;
+
+ mfp920504a.data_record_24.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_24.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_24.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_24.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_24.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_24.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_24.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_24.MPAR.dayno = 142, 142, 142, 142, 142, 142, 142, 
+    142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 
+    142, 142, 142, 142, 142, 142, 142 ;
+
+ mfp920504a.data_record_24.MPAR.uth = 1163, 1134, 1449, 1457, 1845, 1786, 
+    2244, 2275, 2753, 2745, 3298, 3274, 3847, 3847, 4426, 4437, 5016, 5016, 
+    5606, 5565, 6150, 6180, 6723, 6734, 7299, 7312, 7873, 7850 ;
+
+ mfp920504a.data_record_24.MPAR.az1 = -4520, -13520, 13570, 4500, -4500, 
+    -13520, 13580, 4490, -4490, -13520, 13560, 4490, -4510, -13510, 13570, 
+    4490, -4520, -13530, 13550, 4490, -4500, -13520, 13560, 4500, -4500, 
+    -13520, 13560, 4490 ;
+
+ mfp920504a.data_record_24.MPAR.az2 = 4500, 13570, -13520, -4500, 4490, 
+    13580, -13520, -4490, 4490, 13560, -13510, -4510, 4490, 13570, -13530, 
+    -4520, 4490, 13550, -13520, -4500, 4500, 13560, -13520, -4500, 4490, 
+    13560, -13520, -4520 ;
+
+ mfp920504a.data_record_24.MPAR.elm = 2980, 2985, 2985, 2980, 3000, 2985, 
+    2985, 2995, 2985, 2990, 2985, 2985, 2985, 2980, 2985, 2990, 2985, 3330, 
+    3325, 2980, 2985, 3675, 3675, 2990, 2985, 3450, 3450, 2980 ;
+
+ mfp920504a.data_record_24.MPAR.vnn = -49, 14, -10, -36, -29, -22, -25, -9, 
+    -21, -6, -21, -35, -96, -57, -89, -123, -124, -61, -62, -157, -127, -84, 
+    -82, -118, -98, -34, -39, -112 ;
+
+ mfp920504a.data_record_24.MPAR.e_vnn = 11, 11, 9, 9, 10, 9, 12, 15, 17, 18, 
+    22, 16, 20, 45, 38, 33, 32, 28, 24, 22, 21, 22, 22, 34, 24, 20, 20, 14 ;
+
+ mfp920504a.data_record_24.MPAR.vne = -18, 33, 9, -31, -23, 21, 17, -43, -56, 
+    -2, -17, -42, -103, 20, -13, -76, -76, -43, -46, -43, -13, -29, -29, -22, 
+    -3, -74, -80, 11 ;
+
+ mfp920504a.data_record_24.MPAR.e_vne = 11, 11, 9, 9, 9, 9, 12, 14, 16, 20, 
+    22, 15, 20, 38, 41, 35, 35, 29, 26, 21, 20, 24, 24, 37, 25, 20, 19, 13 ;
+
+ mfp920504a.data_record_24.MPAR.vnpnh = -43, 5, -12, -27, -22, -26, -29, 3, 
+    -6, -6, -16, -23, -66, -61, -82, -99, -100, -47, -48, -140, -119, -74, 
+    -72, -108, -94, -14, -17, -111 ;
+
+ mfp920504a.data_record_24.MPAR.e_vnpnh = 12, 9, 9, 9, 9, 9, 11, 14, 15, 21, 
+    22, 15, 19, 40, 45, 35, 35, 29, 26, 25, 24, 25, 25, 40, 30, 18, 18, 14 ;
+
+ mfp920504a.data_record_24.MPAR.vnpe = -30, 35, 6, -39, -30, 14, 10, -44, 
+    -59, -3, -22, -50, -124, 4, -35, -105, -106, -58, -61, -82, -46, -50, 
+    -49, -52, -28, -80, -88, -18 ;
+
+ mfp920504a.data_record_24.MPAR.e_vnpe = 12, 10, 9, 9, 10, 9, 11, 13, 14, 22, 
+    21, 14, 20, 30, 47, 35, 34, 28, 24, 24, 24, 26, 26, 41, 30, 17, 16, 14 ;
+
+ mfp920504a.data_record_25.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_25.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_25.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_25.prologue.IBDTT = 522 ;
+
+ mfp920504a.data_record_25.prologue.IBHMT = 56 ;
+
+ mfp920504a.data_record_25.prologue.IBCST = 4100 ;
+
+ mfp920504a.data_record_25.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_25.prologue.IEDTT = 522 ;
+
+ mfp920504a.data_record_25.prologue.IEHMT = 828 ;
+
+ mfp920504a.data_record_25.prologue.IECST = 0 ;
+
+ mfp920504a.data_record_25.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_25.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_25.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_25.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_25.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992 ;
+
+ mfp920504a.data_record_25.MPAR.dayno = 143, 143, 143, 143, 143, 143, 143, 
+    143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 
+    143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 
+    143, 143, 143, 143, 143, 143, 143, 143 ;
+
+ mfp920504a.data_record_25.MPAR.uth = 945, 1007, 1069, 1183, 1380, 1494, 
+    1582, 1732, 1921, 2112, 2334, 2484, 2644, 2856, 3084, 3234, 3418, 3609, 
+    3831, 3981, 4142, 4354, 4581, 4731, 4916, 5107, 5334, 5483, 5643, 5859, 
+    6080, 6229, 6423, 6608, 6835, 6984, 7143, 7359, 7580, 7729, 7917, 8107, 
+    8467 ;
+
+ mfp920504a.data_record_25.MPAR.azm = -11070, -6540, -11070, -11060, -11060, 
+    -11080, -11070, -6550, -11070, -11070, -11090, -6540, -11080, 6920, 
+    -11080, -6530, -11060, 6930, -11080, -6540, -11080, 6920, -11080, -6540, 
+    -11070, 6920, -11090, -6540, -11080, 6930, -11090, -6540, -11060, 6920, 
+    -11090, -6550, -11090, 6900, -11100, -6540, -11080, 6920, -6540 ;
+
+ mfp920504a.data_record_25.MPAR.elm = 5000, 3010, 3010, 8990, 8990, 4980, 
+    4980, 3000, 3000, 8990, 4980, 3010, 3010, 8990, 5000, 3000, 3000, 9000, 
+    4980, 3000, 3000, 9000, 4990, 3000, 3000, 9000, 4980, 2990, 3010, 8990, 
+    4980, 3000, 3000, 9000, 4990, 2990, 3000, 9000, 4980, 3000, 3000, 9000, 
+    3000 ;
+
+ mfp920504a.data_record_25.MPAR.vnlu = 13, -6, 18, 11, -4, -8, -3, 18, 55, 9, 
+    27, 58, 55, -30, 11, 91, 102, -14, 49, 26, 32, 10, 40, 53, 61, -5, 44, 
+    -38, 31, -12, 23, -49, -17, -25, -5, -113, 0, 11, 4, -92, -34, 15, -79 ;
+
+ mfp920504a.data_record_25.MPAR.e_vnlu = 20, 11, 12, 12, 11, 30, 11, 8, 15, 
+    10, 12, 9, 26, 18, 27, 15, 20, 10, 31, 13, 23, 17, 17, 17, 22, 21, 12, 
+    12, 10, 7, 20, 14, 14, 7, 8, 8, 17, 8, 10, 8, 25, 6, 11 ;
+
+ mfp920504a.data_record_25.MPAR.tn = 1255, 1138, 1210, 1273, 1255, 1295, 
+    1233, 1245, 1366, 1261, 1291, 1223, 1334, 1263, 1315, 1256, 1387, 1280, 
+    1290, 1384, _, 1407, 1398, 1281, 1466, 1392, 1335, 1299, 1329, 1322, 
+    1407, 1231, 1284, 1278, 1298, 1196, 1328, 1228, 1279, 1180, 1234, 1275, 
+    1238 ;
+
+ mfp920504a.data_record_25.MPAR.e_tn = 106, 112, 67, 58, 59, 230, 117, 67, 
+    120, 116, 220, 85, 139, 222, 224, 96, 248, 115, 237, 204, _, 142, 216, 
+    70, 260, 147, 115, 63, 94, 72, 144, 95, 235, 109, 96, 37, 78, 52, 99, 48, 
+    208, 78, 33 ;
+
+ mfp920504a.data_record_25.MPAR.nsmpti = 7, 5, 7, 15, 19, 3, 14, 15, 8, 29, 
+    14, 15, 12, 29, 15, 14, 8, 29, 14, 15, 12, 29, 15, 14, 8, 29, 15, 14, 13, 
+    29, 14, 15, 7, 29, 15, 14, 13, 29, 14, 15, 8, 29, 11 ;
+
+ mfp920504a.data_record_25.MPAR.rbrl = 3775, 3956, 3822, 3451, 3366, 3496, 
+    3453, 3593, 3459, 3187, 3233, 3333, 3281, 3061, 3137, 3306, 3193, 3103, 
+    3137, 3284, 3117, 3152, 3137, 3304, 3237, 3145, 3248, 3573, 3452, 3287, 
+    3267, 3624, 3330, 3345, 3408, 3854, 3480, 3463, 3374, 3673, 3387, 3486, 
+    4008 ;
+
+ mfp920504a.data_record_25.MPAR.chip1 = 19, 20, 17, 11, 13, 13, 16, 13, 15, 
+    18, 14, 14, 13, 16, 13, 13, 11, 12, 14, 15, 12, 14, 11, 10, 11, 14, 14, 
+    12, 14, 12, 13, 18, 13, 17, 13, 17, 13, 18, 12, 14, 11, 19, 15 ;
+
+ mfp920504a.data_record_25.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_25.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_25.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_25.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_26.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_26.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_26.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_26.prologue.IBDTT = 522 ;
+
+ mfp920504a.data_record_26.prologue.IBHMT = 56 ;
+
+ mfp920504a.data_record_26.prologue.IBCST = 4100 ;
+
+ mfp920504a.data_record_26.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_26.prologue.IEDTT = 522 ;
+
+ mfp920504a.data_record_26.prologue.IEHMT = 828 ;
+
+ mfp920504a.data_record_26.prologue.IECST = 0 ;
+
+ mfp920504a.data_record_26.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_26.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_26.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_26.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_26.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_26.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_26.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992 ;
+
+ mfp920504a.data_record_26.MPAR.dayno = 143, 143, 143, 143, 143, 143, 143, 
+    143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 143, 
+    143, 143, 143, 143, 143, 143, 143, 143, 143, 143 ;
+
+ mfp920504a.data_record_26.MPAR.uth = 976, 1038, 1400, 1613, 1657, 1826, 
+    2202, 2409, 2564, 2939, 3159, 3326, 3700, 3906, 4062, 4437, 4656, 4824, 
+    5200, 5409, 5563, 5936, 6155, 6326, 6703, 6909, 7064, 7436, 7655, 7823, 
+    8192 ;
+
+ mfp920504a.data_record_26.MPAR.az1 = -11070, -6540, -11070, -11080, -11070, 
+    -6550, -11070, -11090, -6540, -11080, -11080, -6530, -11060, -11080, 
+    -6540, -11080, -11080, -6540, -11070, -11090, -6540, -11080, -11090, 
+    -6540, -11060, -11090, -6550, -11090, -11100, -6540, -11080 ;
+
+ mfp920504a.data_record_26.MPAR.az2 = -6540, -11070, -6550, -6550, -6550, 
+    -11070, -6540, -6540, -11080, -6530, -6530, -11060, -6540, -6540, -11080, 
+    -6540, -6540, -11070, -6540, -6540, -11080, -6540, -6540, -11060, -6550, 
+    -6550, -11090, -6540, -6540, -11080, -6540 ;
+
+ mfp920504a.data_record_26.MPAR.elm = 4005, 3010, 3005, 3990, 3990, 3000, 
+    3005, 3995, 3010, 3005, 4000, 3000, 3000, 3990, 3000, 3000, 3995, 3000, 
+    2995, 3985, 3000, 3005, 3990, 3000, 2995, 3990, 2995, 3000, 3990, 3000, 
+    3000 ;
+
+ mfp920504a.data_record_26.MPAR.vnn = -32, -37, -1, 44, 36, -55, 7, 53, 7, 
+    57, 137, -13, -112, -37, -8, 33, 25, -8, -147, -137, -104, -120, -122, 
+    -50, -148, -185, -171, -140, -163, -90, -70 ;
+
+ mfp920504a.data_record_26.MPAR.e_vnn = 59, 30, 14, 26, 22, 26, 11, 17, 12, 
+    22, 33, 25, 38, 54, 31, 25, 26, 27, 61, 40, 35, 39, 42, 25, 16, 18, 17, 
+    17, 19, 14, 18 ;
+
+ mfp920504a.data_record_26.MPAR.vne = -6, -9, -23, -5, -9, -47, -71, -59, 
+    -70, -89, -67, -121, -84, -54, -37, -53, -65, -72, -19, -8, 1, 7, 14, 39, 
+    76, 78, 65, 53, 57, 76, 69 ;
+
+ mfp920504a.data_record_26.MPAR.e_vne = 24, 15, 15, 10, 12, 25, 12, 17, 12, 
+    21, 26, 25, 35, 54, 28, 24, 23, 27, 20, 9, 6, 10, 14, 24, 13, 13, 12, 11, 
+    12, 13, 18 ;
+
+ mfp920504a.data_record_26.MPAR.vnpnh = -29, -33, 5, 44, 37, -41, 25, 67, 25, 
+    78, 150, 19, -86, -21, 2, 46, 41, 11, -137, -130, -100, -118, -121, -58, 
+    -162, -198, -182, -149, -172, -106, -85 ;
+
+ mfp920504a.data_record_26.MPAR.e_vnpnh = 58, 29, 16, 26, 21, 25, 14, 17, 14, 
+    22, 32, 26, 36, 50, 27, 25, 28, 28, 60, 40, 35, 40, 42, 25, 15, 18, 16, 
+    16, 18, 13, 18 ;
+
+ mfp920504a.data_record_26.MPAR.vnpe = -14, -18, -22, 6, 1, -60, -66, -43, 
+    -66, -71, -29, -121, -110, -62, -38, -42, -57, -71, -57, -44, -26, -25, 
+    -18, 25, 35, 27, 19, 15, 13, 50, 48 ;
+
+ mfp920504a.data_record_26.MPAR.e_vnpe = 37, 21, 17, 10, 7, 26, 14, 16, 14, 
+    22, 20, 26, 38, 49, 24, 25, 26, 28, 34, 19, 15, 15, 16, 22, 10, 10, 8, 8, 
+    8, 12, 17 ;
+
+ mfp920504a.data_record_27.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_27.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_27.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_27.prologue.IBDTT = 526 ;
+
+ mfp920504a.data_record_27.prologue.IBHMT = 100 ;
+
+ mfp920504a.data_record_27.prologue.IBCST = 4300 ;
+
+ mfp920504a.data_record_27.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_27.prologue.IEDTT = 526 ;
+
+ mfp920504a.data_record_27.prologue.IEHMT = 825 ;
+
+ mfp920504a.data_record_27.prologue.IECST = 4800 ;
+
+ mfp920504a.data_record_27.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_27.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_27.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_27.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_27.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992 ;
+
+ mfp920504a.data_record_27.MPAR.dayno = 147, 147, 147, 147, 147, 147, 147, 
+    147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 
+    147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 
+    147, 147, 147, 147, 147, 147, 147, 147 ;
+
+ mfp920504a.data_record_27.MPAR.uth = 1012, 1073, 1125, 1217, 1389, 1492, 
+    1584, 1732, 1890, 2105, 2329, 2482, 2669, 2858, 3083, 3231, 3389, 3608, 
+    3833, 3981, 4168, 4357, 4581, 4734, 4891, 5105, 5334, 5482, 5663, 5856, 
+    6086, 6233, 6391, 6609, 6833, 6980, 7171, 7359, 7583, 7730, 7892, 8106, 
+    8430 ;
+
+ mfp920504a.data_record_27.MPAR.azm = -11070, -6550, -11090, 7000, 7000, 
+    -11020, -11020, -6550, -11110, 6900, -11110, -6550, -11090, 6900, -11100, 
+    -6550, -11090, 6910, -11090, -6550, -11080, 6920, -11080, -6550, -11080, 
+    6910, -11090, -6540, -11090, 6900, -11100, -6540, -11110, 6900, -11100, 
+    -6560, -11080, 6910, -11090, -6550, -11080, 6920, -6550 ;
+
+ mfp920504a.data_record_27.MPAR.elm = 4920, 3000, 3000, 8990, 8990, 4990, 
+    5000, 3010, 3000, 8990, 4990, 3000, 3000, 8990, 4990, 3000, 3010, 9000, 
+    4990, 3000, 2990, 8990, 4980, 3000, 3000, 8990, 4970, 3000, 3000, 8990, 
+    4970, 3000, 2990, 8990, 4960, 3000, 3000, 8990, 4970, 3000, 3020, 8990, 
+    3000 ;
+
+ mfp920504a.data_record_27.MPAR.vnlu = -15, -26, -4, 12, 24, -2, -20, -22, 2, 
+    -9, 14, -26, -17, -22, 24, -34, -11, -6, -15, -76, -27, 7, 8, -70, -39, 
+    12, -41, -97, -60, 13, -27, -31, 51, -13, 35, -26, 99, -9, 34, -10, 43, 
+    12, 11 ;
+
+ mfp920504a.data_record_27.MPAR.e_vnlu = 9, 15, 11, 15, 7, 15, 7, 6, 13, 9, 
+    17, 8, 19, 35, 23, 11, 17, 12, 21, 21, 37, 17, 16, 27, 34, 14, 20, 21, 
+    29, 21, 23, 24, 22, 19, 36, 20, 37, 18, 32, 15, 17, 20, 29 ;
+
+ mfp920504a.data_record_27.MPAR.tn = 1070, 1045, 1075, 1043, 1067, 996, 1087, 
+    1091, 1050, 1017, 1071, 1007, 990, 1029, 980, 1013, 1044, 1026, 946, 
+    1029, 990, 1065, 1073, 1043, 1178, 1036, 1064, 1082, 1138, 1067, 1149, 
+    936, 1176, 1102, 1041, 1058, 1081, 1062, 1009, 990, 1088, 976, 1045 ;
+
+ mfp920504a.data_record_27.MPAR.e_tn = 38, 84, 58, 42, 25, 94, 55, 35, 29, 
+    70, 31, 31, 38, 60, 69, 49, 86, 41, 94, 60, 78, 48, 55, 52, 94, 51, 80, 
+    113, 242, 40, 113, 84, 131, 47, 69, 81, 103, 49, 77, 42, 75, 48, 71 ;
+
+ mfp920504a.data_record_27.MPAR.nsmpti = 7, 5, 5, 13, 8, 3, 15, 14, 13, 29, 
+    15, 15, 8, 29, 15, 14, 13, 30, 14, 15, 8, 29, 15, 15, 12, 30, 15, 14, 8, 
+    30, 15, 14, 13, 30, 14, 15, 7, 30, 14, 15, 13, 29, 5 ;
+
+ mfp920504a.data_record_27.MPAR.rbrl = 3760, 3964, 3847, 3463, 3373, 3452, 
+    3426, 3599, 3440, 3089, 3188, 3312, 3247, 2962, 2957, 3159, 3069, 2847, 
+    2871, 2997, 2949, 2813, 2895, 2899, 2812, 2785, 2752, 2848, 2765, 2802, 
+    2719, 2811, 2804, 2745, 2852, 2880, 2885, 2782, 2830, 2942, 2977, 3045, 
+    3442 ;
+
+ mfp920504a.data_record_27.MPAR.chip1 = 12, 11, 12, 13, 15, 11, 16, 16, 16, 
+    25, 12, 20, 13, 17, 16, 15, 20, 17, 13, 16, 14, 18, 15, 15, 14, 21, 15, 
+    11, 14, 18, 15, 16, 16, 14, 15, 13, 11, 17, 15, 14, 14, 13, 13 ;
+
+ mfp920504a.data_record_27.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_27.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_27.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_27.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_28.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_28.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_28.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_28.prologue.IBDTT = 526 ;
+
+ mfp920504a.data_record_28.prologue.IBHMT = 100 ;
+
+ mfp920504a.data_record_28.prologue.IBCST = 4300 ;
+
+ mfp920504a.data_record_28.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_28.prologue.IEDTT = 526 ;
+
+ mfp920504a.data_record_28.prologue.IEHMT = 825 ;
+
+ mfp920504a.data_record_28.prologue.IECST = 4800 ;
+
+ mfp920504a.data_record_28.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_28.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_28.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_28.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_28.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_28.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_28.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992 ;
+
+ mfp920504a.data_record_28.MPAR.dayno = 147, 147, 147, 147, 147, 147, 147, 
+    147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 
+    147, 147, 147, 147, 147, 147, 147, 147, 147, 147 ;
+
+ mfp920504a.data_record_28.MPAR.uth = 1043, 1099, 1428, 1612, 1658, 1811, 
+    2186, 2406, 2576, 2950, 3157, 3310, 3685, 3907, 4075, 4451, 4657, 4813, 
+    5187, 5408, 5572, 5948, 6159, 6312, 6685, 6906, 7076, 7450, 7656, 7811, 
+    8161 ;
+
+ mfp920504a.data_record_28.MPAR.az1 = -11070, -6550, -11090, -11020, -11020, 
+    -6550, -11110, -11110, -6550, -11090, -11100, -6550, -11090, -11090, 
+    -6550, -11080, -11080, -6550, -11080, -11090, -6540, -11090, -11100, 
+    -6540, -11110, -11100, -6560, -11080, -11090, -6550, -11080 ;
+
+ mfp920504a.data_record_28.MPAR.az2 = -6550, -11090, -6550, -6550, -6550, 
+    -11110, -6550, -6550, -11090, -6550, -6550, -11090, -6550, -6550, -11080, 
+    -6550, -6550, -11080, -6540, -6540, -11090, -6540, -6540, -11110, -6560, 
+    -6560, -11080, -6550, -6550, -11080, -6550 ;
+
+ mfp920504a.data_record_28.MPAR.elm = 3960, 3000, 3005, 4000, 4005, 3005, 
+    3000, 3995, 3000, 3000, 3995, 3005, 3005, 3995, 2995, 2995, 3990, 3000, 
+    3000, 3985, 3000, 3000, 3985, 2995, 2995, 3980, 3000, 3000, 3985, 3010, 
+    3010 ;
+
+ mfp920504a.data_record_28.MPAR.vnn = -20, -34, -29, -35, -5, -36, -41, -67, 
+    -14, -27, -97, -36, -99, -105, -75, -66, -134, -50, -90, -97, -58, 42, 
+    -8, -121, -114, -101, -186, -162, -74, -79, -46 ;
+
+ mfp920504a.data_record_28.MPAR.e_vnn = 26, 30, 13, 15, 10, 14, 19, 27, 13, 
+    18, 36, 20, 41, 45, 36, 48, 70, 43, 35, 39, 30, 46, 35, 62, 59, 118, 89, 
+    83, 90, 41, 32 ;
+
+ mfp920504a.data_record_28.MPAR.vne = 28, 17, 15, 16, 30, 12, 14, 6, 26, 31, 
+    4, 27, 51, 61, 62, 59, 39, 66, 82, 94, 96, 58, 40, -16, -19, -9, -52, 
+    -61, -19, -23, -35 ;
+
+ mfp920504a.data_record_28.MPAR.e_vne = 26, 24, 11, 12, 9, 9, 12, 8, 12, 18, 
+    8, 19, 33, 38, 35, 47, 41, 43, 35, 39, 29, 47, 35, 21, 23, 32, 48, 54, 
+    45, 23, 30 ;
+
+ mfp920504a.data_record_28.MPAR.vnpnh = -26, -37, -32, -38, -13, -38, -43, 
+    -67, -20, -34, -95, -41, -109, -117, -88, -79, -140, -65, -108, -118, 
+    -81, 26, -18, -112, -105, -96, -166, -141, -66, -70, -35 ;
+
+ mfp920504a.data_record_28.MPAR.e_vnpnh = 26, 29, 12, 15, 11, 14, 18, 27, 13, 
+    18, 36, 20, 39, 43, 36, 47, 66, 43, 35, 38, 31, 43, 40, 61, 58, 117, 87, 
+    80, 87, 40, 31 ;
+
+ mfp920504a.data_record_28.MPAR.vnpe = 22, 8, 7, 7, 27, 2, 3, -12, 22, 23, 
+    -21, 17, 24, 32, 40, 40, 3, 51, 56, 66, 78, 67, 37, -47, -48, -35, -98, 
+    -101, -37, -42, -46 ;
+
+ mfp920504a.data_record_28.MPAR.e_vnpe = 26, 19, 9, 9, 11, 6, 8, 10, 13, 18, 
+    14, 17, 26, 31, 32, 43, 25, 43, 32, 36, 31, 43, 40, 35, 36, 60, 65, 68, 
+    64, 31, 32 ;
+
+ mfp920504a.data_record_29.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_29.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_29.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_29.prologue.IBDTT = 529 ;
+
+ mfp920504a.data_record_29.prologue.IBHMT = 104 ;
+
+ mfp920504a.data_record_29.prologue.IBCST = 4400 ;
+
+ mfp920504a.data_record_29.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_29.prologue.IEDTT = 529 ;
+
+ mfp920504a.data_record_29.prologue.IEHMT = 824 ;
+
+ mfp920504a.data_record_29.prologue.IECST = 3000 ;
+
+ mfp920504a.data_record_29.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_29.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_29.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_29.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_29.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992 ;
+
+ mfp920504a.data_record_29.MPAR.dayno = 150, 150, 150, 150, 150, 150, 150, 
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150 ;
+
+ mfp920504a.data_record_29.MPAR.uth = 1079, 1228, 1420, 1617, 1852, 2064, 
+    2351, 2564, 2809, 3022, 3256, 3469, 3764, 3988, 4222, 4435, 4669, 4882, 
+    5178, 5391, 5624, 5836, 6070, 6293, 6588, 6800, 7033, 7245, 7488, 7652, 
+    8075, 8281, 8408 ;
+
+ mfp920504a.data_record_29.MPAR.azm = 13500, -4500, -13500, 13580, 4480, 
+    -4490, -4490, -13520, 13570, 4490, -4490, -4500, -13540, 13570, 4460, 
+    -4500, -4500, -13530, 13550, 4480, -4490, -4500, -13500, 13570, 4490, 
+    -4500, -4530, -13520, 13560, 4500, -4510, -13480, 13570 ;
+
+ mfp920504a.data_record_29.MPAR.elm = 9000, 2990, 3000, 2990, 2980, 8960, 
+    3040, 3050, 2990, 2990, 8970, 2980, 2980, 2980, 2990, 8970, 2980, 2970, 
+    2990, 2990, 8980, 3000, 3000, 2980, 3000, 8970, 3000, 2990, 2970, 2980, 
+    2990, 2990, 2980 ;
+
+ mfp920504a.data_record_29.MPAR.vnlu = 7, -18, -8, 18, -63, -8, -7, 11, -14, 
+    -91, -1, -3, 37, 9, -141, 11, -35, 75, 63, -134, 7, -112, 118, 18, -224, 
+    -36, -71, 127, 33, -143, 10, 101, 52 ;
+
+ mfp920504a.data_record_29.MPAR.e_vnlu = 16, 18, 9, 12, 10, 10, 10, 26, 14, 
+    20, 16, 11, 24, 19, 15, 16, 16, 21, 22, 27, 17, 24, 30, 23, 26, 25, 15, 
+    15, 16, 10, 10, 9, 25 ;
+
+ mfp920504a.data_record_29.MPAR.tn = 1068, 1111, 1140, 1110, 1130, 1137, 
+    1165, 1165, 1140, 1145, 1136, 1101, 1159, 1109, 1123, 926, 1164, 1202, 
+    1179, 1152, 1225, 1238, 1282, 1308, 1265, 1169, 1185, 1310, 1165, 1153, 
+    1169, 1210, 1146 ;
+
+ mfp920504a.data_record_29.MPAR.e_tn = 61, 77, 72, 107, 58, 66, 95, 155, 94, 
+    84, 119, 54, 110, 146, 46, 114, 42, 104, 56, 36, 62, 50, 161, 141, 38, 
+    102, 44, 103, 90, 36, 28, 35, 54 ;
+
+ mfp920504a.data_record_29.MPAR.nsmpti = 11, 17, 15, 20, 20, 20, 20, 20, 10, 
+    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 
+    20, 20, 11, 15, 20, 2 ;
+
+ mfp920504a.data_record_29.MPAR.rbrl = 3607, 3373, 3457, 3314, 3312, 3127, 
+    3342, 3039, 3044, 3199, 2876, 3136, 3005, 2903, 3211, 2933, 3160, 2998, 
+    3104, 3124, 2908, 3176, 2905, 2897, 3175, 2766, 3126, 2967, 2977, 3589, 
+    3482, 3294, 3782 ;
+
+ mfp920504a.data_record_29.MPAR.chip1 = 15, 13, 16, 23, 13, 19, 22, 15, 17, 
+    20, 12, 16, 19, 14, 14, 18, 18, 11, 13, 14, 14, 17, 17, 16, 15, 14, 19, 
+    17, 16, 15, 12, 15, 11 ;
+
+ mfp920504a.data_record_29.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_29.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_29.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_29.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_30.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_30.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_30.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_30.prologue.IBDTT = 529 ;
+
+ mfp920504a.data_record_30.prologue.IBHMT = 104 ;
+
+ mfp920504a.data_record_30.prologue.IBCST = 4400 ;
+
+ mfp920504a.data_record_30.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_30.prologue.IEDTT = 529 ;
+
+ mfp920504a.data_record_30.prologue.IEHMT = 824 ;
+
+ mfp920504a.data_record_30.prologue.IECST = 3000 ;
+
+ mfp920504a.data_record_30.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_30.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_30.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_30.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_30.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_30.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_30.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_30.MPAR.dayno = 150, 150, 150, 150, 150, 150, 150, 
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 
+    150, 150, 150 ;
+
+ mfp920504a.data_record_30.MPAR.uth = 1540, 1519, 2090, 2101, 2686, 2686, 
+    3287, 3245, 3845, 3876, 4435, 4446, 5030, 5030, 5624, 5613, 6212, 6181, 
+    6769, 6810, 7343, 7367, 7885, 7864 ;
+
+ mfp920504a.data_record_30.MPAR.az1 = -4500, -13500, 13580, 4480, -4490, 
+    -13520, 13570, 4490, -4500, -13540, 13570, 4460, -4500, -13530, 13550, 
+    4480, -4500, -13500, 13570, 4490, -4530, -13520, 13560, 4500 ;
+
+ mfp920504a.data_record_30.MPAR.az2 = 4480, 13580, -13520, -4490, 4490, 
+    13570, -13540, -4500, 4460, 13570, -13530, -4500, 4480, 13550, -13500, 
+    -4500, 4490, 13570, -13520, -4530, 4500, 13560, -13480, -4510 ;
+
+ mfp920504a.data_record_30.MPAR.elm = 2985, 2995, 3020, 3010, 3015, 3020, 
+    2985, 2985, 2985, 2980, 2975, 2985, 2985, 2980, 2995, 2995, 3000, 2990, 
+    2985, 3000, 2990, 2980, 2980, 2985 ;
+
+ mfp920504a.data_record_30.MPAR.vnn = -66, -8, -24, -57, -80, 2, -19, -77, 
+    -117, -38, -68, -144, -138, -113, -147, -201, -274, -111, -117, -241, 
+    -175, -131, -109, -108 ;
+
+ mfp920504a.data_record_30.MPAR.e_vnn = 18, 15, 24, 12, 19, 26, 26, 19, 15, 
+    30, 26, 20, 31, 27, 37, 32, 35, 35, 24, 29, 16, 21, 16, 12 ;
+
+ mfp920504a.data_record_30.MPAR.vne = -37, 21, 5, -45, -69, -20, -42, -72, 
+    -112, -23, -55, -85, -81, -9, -46, -18, -91, -81, -90, -124, -58, -76, 
+    -57, -125 ;
+
+ mfp920504a.data_record_30.MPAR.e_vne = 20, 16, 27, 12, 18, 25, 28, 18, 15, 
+    29, 26, 21, 28, 27, 35, 32, 34, 34, 25, 27, 17, 21, 18, 12 ;
+
+ mfp920504a.data_record_30.MPAR.vnpnh = -54, -13, -24, -44, -60, 7, -7, -55, 
+    -84, -31, -52, -117, -113, -106, -130, -190, -241, -86, -90, -200, -154, 
+    -106, -90, -72 ;
+
+ mfp920504a.data_record_30.MPAR.e_vnpnh = 20, 16, 21, 12, 17, 30, 21, 17, 14, 
+    30, 25, 21, 30, 32, 40, 38, 38, 35, 25, 30, 18, 21, 18, 11 ;
+
+ mfp920504a.data_record_30.MPAR.vnpe = -52, 18, -1, -58, -87, -19, -45, -89, 
+    -139, -32, -70, -119, -114, -38, -82, -69, -159, -107, -117, -182, -101, 
+    -107, -83, -149 ;
+
+ mfp920504a.data_record_30.MPAR.e_vnpe = 20, 17, 24, 12, 19, 29, 25, 19, 15, 
+    31, 26, 21, 30, 32, 40, 37, 37, 35, 24, 29, 19, 21, 18, 11 ;
+
+ mfp920504a.data_record_31.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_31.prologue.KINDAT = 7001 ;
+
+ mfp920504a.data_record_31.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_31.prologue.IBDTT = 530 ;
+
+ mfp920504a.data_record_31.prologue.IBHMT = 106 ;
+
+ mfp920504a.data_record_31.prologue.IBCST = 300 ;
+
+ mfp920504a.data_record_31.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_31.prologue.IEDTT = 530 ;
+
+ mfp920504a.data_record_31.prologue.IEHMT = 822 ;
+
+ mfp920504a.data_record_31.prologue.IECST = 5200 ;
+
+ mfp920504a.data_record_31.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_31.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_31.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_31.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_31.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_31.MPAR.dayno = 151, 151, 151, 151, 151, 151, 151, 
+    151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 
+    151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151 ;
+
+ mfp920504a.data_record_31.MPAR.uth = 1101, 1196, 1291, 1476, 1683, 1910, 
+    2121, 2415, 2626, 2857, 3068, 3300, 3511, 3793, 4004, 4236, 4446, 4678, 
+    4889, 5171, 5381, 5612, 5822, 6053, 6263, 6538, 6744, 6975, 7185, 7417, 
+    7627, 7919, 8129, 8381 ;
+
+ mfp920504a.data_record_31.MPAR.azm = 13510, -4480, -13520, 13560, 4490, 
+    -4480, -4490, -13510, 13560, 4480, -4500, -4500, -13530, 13560, 4480, 
+    -4490, -4500, -13520, 13560, 4480, -4490, -4490, -13530, 13560, 4490, 
+    -4480, -4490, -13520, 13560, 4480, -4490, -4480, -13530, 4480 ;
+
+ mfp920504a.data_record_31.MPAR.elm = 8990, 4490, 4490, 4490, 4490, 8960, 
+    4500, 4500, 4490, 4500, 8970, 4490, 4490, 4490, 4490, 8980, 4500, 4500, 
+    4490, 4510, 8970, 4490, 4490, 4480, 4490, 8980, 4490, 4490, 4480, 4480, 
+    8970, 4490, 4480, 4480 ;
+
+ mfp920504a.data_record_31.MPAR.vnlu = 4, -3, 8, 20, -35, -6, -1, -10, 23, 
+    -65, 1, -41, 28, -28, -83, 2, -44, 67, 1, -149, -3, 44, 138, -62, -149, 
+    -2, -11, 123, 61, -140, 2, -9, 106, -128 ;
+
+ mfp920504a.data_record_31.MPAR.e_vnlu = 12, 9, 11, 16, 8, 10, 14, 14, 21, 
+    13, 22, 24, 65, 23, 17, 30, 17, 53, 21, 16, 16, 13, 21, 17, 12, 12, 14, 
+    17, 16, 10, 17, 17, 13, 11 ;
+
+ mfp920504a.data_record_31.MPAR.tn = 1085, 1127, 1132, 1133, 1152, 1122, 
+    1094, 1091, 1048, 1153, 1156, 1186, 1205, _, 1090, 1067, _, 1318, 924, 
+    1192, 1082, 1082, 1124, 1181, 1148, 1044, 1245, 1187, 1132, 1242, 1151, 
+    1146, 1200, 1017 ;
+
+ mfp920504a.data_record_31.MPAR.e_tn = 99, 73, 45, 71, 63, 71, 48, 122, 160, 
+    142, 275, 136, 223, _, 75, 212, _, 180, 122, 157, 96, 104, 54, 110, 36, 
+    63, 64, 60, 60, 39, 40, 33, 47, 105 ;
+
+ mfp920504a.data_record_31.MPAR.nsmpti = 11, 7, 11, 20, 19, 20, 20, 20, 20, 
+    20, 20, 20, 20, 20, 20, 20, 20, 20, 10, 20, 20, 20, 20, 20, 20, 9, 20, 
+    20, 20, 20, 20, 20, 20, 4 ;
+
+ mfp920504a.data_record_31.MPAR.rbrl = 3578, 3769, 3569, 3270, 3339, 3179, 
+    3321, 3166, 3016, 3067, 2811, 2972, 2798, 2755, 2964, 2709, 2922, 2804, 
+    2781, 2925, 2846, 3025, 3043, 3087, 3209, 3015, 3034, 3054, 3055, 3153, 
+    2939, 3283, 3231, 3886 ;
+
+ mfp920504a.data_record_31.MPAR.chip1 = 17, 15, 12, 12, 14, 12, 13, 14, 15, 
+    14, 12, 13, 12, 18, 11, 13, 14, 14, 14, 11, 14, 19, 14, 18, 15, 15, 17, 
+    16, 16, 14, 12, 12, 14, 15 ;
+
+ mfp920504a.data_record_31.MPAR.vnn = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_31.MPAR.e_vnn = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_31.MPAR.vne = _, _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_31.MPAR.e_vne = _, _, _, _, _, _, _, _, _, _, _, _, 
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+ mfp920504a.data_record_32.prologue.KINST = 5340 ;
+
+ mfp920504a.data_record_32.prologue.KINDAT = 17001 ;
+
+ mfp920504a.data_record_32.prologue.IBYRT = 1992 ;
+
+ mfp920504a.data_record_32.prologue.IBDTT = 530 ;
+
+ mfp920504a.data_record_32.prologue.IBHMT = 106 ;
+
+ mfp920504a.data_record_32.prologue.IBCST = 300 ;
+
+ mfp920504a.data_record_32.prologue.IEYRT = 1992 ;
+
+ mfp920504a.data_record_32.prologue.IEDTT = 530 ;
+
+ mfp920504a.data_record_32.prologue.IEHMT = 822 ;
+
+ mfp920504a.data_record_32.prologue.IECST = 5200 ;
+
+ mfp920504a.data_record_32.JPAR.gdlatr = 4261 ;
+
+ mfp920504a.data_record_32.JPAR.gdlonr = -7145 ;
+
+ mfp920504a.data_record_32.JPAR.wavlen = 6300 ;
+
+ mfp920504a.data_record_32.JPAR.gdra = 0 ;
+
+ mfp920504a.data_record_32.JPAR.gmra = 0 ;
+
+ mfp920504a.data_record_32.JPAR.bdec = -1500 ;
+
+ mfp920504a.data_record_32.MPAR.year = 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 1992, 
+    1992, 1992, 1992, 1992, 1992, 1992, 1992 ;
+
+ mfp920504a.data_record_32.MPAR.dayno = 151, 151, 151, 151, 151, 151, 151, 
+    151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 151, 
+    151, 151, 151, 151 ;
+
+ mfp920504a.data_record_32.MPAR.uth = 1439, 1384, 1945, 1902, 2489, 2520, 
+    3068, 3079, 3652, 3652, 4236, 4225, 4809, 4783, 5355, 5391, 5938, 5938, 
+    6514, 6503, 7080, 7080, 7657, 7668, 8150 ;
+
+ mfp920504a.data_record_32.MPAR.az1 = -4480, -13520, 13560, 4490, -4490, 
+    -13510, 13560, 4480, -4500, -13530, 13560, 4480, -4500, -13520, 13560, 
+    4480, -4490, -13530, 13560, 4490, -4490, -13520, 13560, 4480, -4480 ;
+
+ mfp920504a.data_record_32.MPAR.az2 = 4490, 13560, -13510, -4490, 4480, 
+    13560, -13530, -4500, 4480, 13560, -13520, -4500, 4480, 13560, -13530, 
+    -4490, 4490, 13560, -13520, -4490, 4480, 13560, -13530, -4480, 4480 ;
+
+ mfp920504a.data_record_32.MPAR.elm = 4490, 4490, 4495, 4495, 4500, 4495, 
+    4490, 4495, 4490, 4490, 4495, 4495, 4505, 4495, 4490, 4500, 4490, 4485, 
+    4485, 4490, 4485, 4485, 4480, 4485, 4485 ;
+
+ mfp920504a.data_record_32.MPAR.vnn = -38, -28, -10, -36, -66, -13, -51, 
+    -106, -124, 0, -38, -127, -193, -69, -138, -106, -105, -77, -59, -159, 
+    -150, -184, -165, -149, -136 ;
+
+ mfp920504a.data_record_32.MPAR.e_vnn = 13, 24, 25, 16, 19, 28, 69, 29, 34, 
+    62, 60, 29, 27, 54, 30, 24, 21, 31, 28, 19, 18, 28, 24, 20, 21 ;
+
+ mfp920504a.data_record_32.MPAR.vne = -32, 12, 30, -34, -65, 33, -6, -24, 
+    -42, -56, -96, -39, -105, -65, -138, -193, -192, -199, -186, -138, -129, 
+    -62, -47, -129, -118 ;
+
+ mfp920504a.data_record_32.MPAR.e_vne = 13, 23, 25, 16, 19, 31, 64, 32, 36, 
+    62, 69, 28, 27, 53, 30, 25, 20, 32, 28, 19, 18, 28, 25, 21, 22 ;
+
+ mfp920504a.data_record_32.MPAR.vnpnh = -29, -30, -17, -26, -47, -21, -48, 
+    -96, -109, 14, -12, -113, -160, -49, -98, -53, -51, -23, -9, -118, -111, 
+    -161, -148, -110, -101 ;
+
+ mfp920504a.data_record_32.MPAR.e_vnpnh = 13, 21, 27, 17, 19, 32, 80, 34, 38, 
+    76, 48, 32, 29, 47, 29, 21, 19, 26, 23, 19, 18, 31, 27, 21, 22 ;
+
+ mfp920504a.data_record_32.MPAR.vnpe = -41, 4, 27, -42, -79, 29, -19, -50, 
+    -72, -54, -102, -70, -152, -81, -169, -214, -213, -213, -195, -174, -163, 
+    -107, -88, -164, -150 ;
+
+ mfp920504a.data_record_32.MPAR.e_vnpe = 13, 19, 28, 14, 19, 32, 76, 35, 39, 
+    76, 62, 31, 29, 58, 29, 22, 18, 28, 24, 19, 17, 31, 28, 19, 21 ;
+}

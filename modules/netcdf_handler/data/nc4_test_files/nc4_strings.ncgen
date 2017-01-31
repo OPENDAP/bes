@@ -1,0 +1,47 @@
+// nc4_unsigned_types.ncgen
+
+// Created on: Aug 3, 2011
+//     Author: jimg
+//
+// Make the netcdf 4 file using: 
+// ncgen -k3 nc4_strings.ncgen
+// This builds a netcdf file that contains the new string
+// types. The same file can be used with ncgen to make source code that can
+// write the variables using chunking and compression. Or use nccopy:
+// nccopy -d 9 -k 3 nc4_strings.nc nc4_strings_comp.nc
+
+netcdf nc4_unsigned_types_no_comp {
+     
+     dimensions:
+     lat = 6, lon = 5;
+     
+     variables:
+       int     lat(lat), lon(lon);
+       
+       string   station(lat,lon);
+       string   scan_line(lon);
+       string   codec_name;
+         
+       station:who = "james";
+       station:names = "site_1", "site_2", "site_3";
+                     
+       :title = "Hyrax/netcdf handler test file 2";
+       :version = 1.;
+       :description = "This file has all of the new netcdf 4 unsigned data types.";
+            
+     data:
+       lat   = 0, 10, 20, 30, 40, 50;
+       lon   = -140, -118, -96, -84, -52;
+       
+       codec_name = "mp3";
+       
+       scan_line = "r", "r1", "r2", "r3", "r4";
+           
+       station = "one", "two", "three", "four", "five",
+           "one_b", "two_b", "three_b", "four_b", "five_b",
+           "one_c", "two_c", "three_c", "four_c", "five_c",
+           "one", "two", "three", "four", "five",
+           "one", "two", "three", "four", "five",
+           "one_f", "two_f", "three_f", "four_f", "five_f";
+}
+

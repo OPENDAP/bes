@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="data/csv/temperature.csv">
+    <attribute type="string" name="GLOBAL" value="A global test attribute." />
+    <variable name="temperature_K">
+      <attribute name="type" type="String" value="Float32"/>
+      <attribute name="units" type="String" value="Kelvin"/>
+    </variable>
+</netcdf>
+

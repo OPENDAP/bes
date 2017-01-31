@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Create a new simple scalar variable at Dataset scope -->
+  <variable name="Home" type="URL">
+    <!-- make sure we can add metadata properly to new variable -->
+    <attribute name="KnockKnock" type="String" value="Who's there?"/>
+    <values>http://www.opendap.org/</values>
+  </variable>
+</netcdf>
+

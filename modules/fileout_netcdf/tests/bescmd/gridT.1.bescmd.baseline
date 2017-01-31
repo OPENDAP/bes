@@ -1,0 +1,28 @@
+The data:
+Int32 i[i = 2] = {2, 4};
+Grid {
+  Array:
+    Int16 order[i = 2][j = 3];
+  Maps:
+    Int32 i[i = 2];
+    Float32 j[j = 3];
+} order = {  Array: {{4, 8, 12},{5, 10, 15}}  Maps: {2, 4}, {3.3, 6.6, 9.9} };
+Structure {
+    Grid {
+      Array:
+        Int32 shot[i = 2][j = 3];
+      Maps:
+        Int32 i[i = 2];
+        Float32 j[j = 3];
+    } shot;
+} gstruct = { {  Array: {{6, 12, 18},{7, 14, 21}}  Maps: {2, 4}, {3.3, 6.6, 9.9} } };
+Structure {
+    Grid {
+      Array:
+        Int32 bears[i = 2][k = 4];
+      Maps:
+        Int32 i[i = 2];
+        String k[k = 4];
+    } bears;
+} bstruct = { {  Array: {{8, 16, 24, 32},{9, 18, 27, 36}}  Maps: {2, 4}, {"str1", "str2", "str3", "str4"} } };
+

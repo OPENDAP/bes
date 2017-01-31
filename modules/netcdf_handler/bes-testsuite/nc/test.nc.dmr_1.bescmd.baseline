@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test.nc">
+    <String name="c4">
+        <Attribute name="string_length" type="Int32">
+            <Value>4</Value>
+        </Attribute>
+    </String>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Gc" type="String">
+            <Value>\200</Value>
+        </Attribute>
+        <Attribute name="Gb" type="Byte">
+            <Value>128</Value>
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="Gs" type="Int16">
+            <Value>-32768</Value>
+            <Value>32767</Value>
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="Gi" type="Int32">
+            <Value>-2147483648</Value>
+            <Value>2147483647</Value>
+            <Value>-2147483648</Value>
+            <Value>2147483647</Value>
+        </Attribute>
+        <Attribute name="Gf" type="Float32">
+            <Value>-3.40282347e+38</Value>
+            <Value>3.40282347e+38</Value>
+            <Value>-3.40282347e+38</Value>
+            <Value>3.40282347e+38</Value>
+            <Value>531.000000</Value>
+        </Attribute>
+        <Attribute name="Gd" type="Float64">
+            <Value>-1.797693134862316e+308</Value>
+            <Value>1.797693134862316e+308</Value>
+            <Value>-1.000000000000000</Value>
+            <Value>1.000000000000000</Value>
+            <Value>660.0000000000000</Value>
+            <Value>650.0000000000000</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>Dr</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

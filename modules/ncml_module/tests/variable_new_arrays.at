@@ -1,0 +1,100 @@
+dnl Test suite for creating new variables of Array 1D type
+AT_BANNER([Adding new arrays])
+
+dnl Straight up acceptance tests
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_int_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_int_1.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_float_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_float_1.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_double_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_double_1.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_byte_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_byte_1.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_short_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_short_1.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_long_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_long_1.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_uint32_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_uint32_1.ncml])
+
+dnl We will use values@separator to define multiple strings with whitespace in them
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_string_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_string_1.ncml])
+
+dnl Simialr for URL
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_url_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_url_1.ncml])
+
+dnl Make sure char array is a string
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_char_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_char_1.ncml])
+
+dnl Test the autogeneration with start and increment for values
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_auto_int_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_auto_int_1.ncml])
+
+dnl Check float increment
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_auto_float_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_auto_float_1.ncml])
+
+dnl Checks a negative increment
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_auto_double_1.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_auto_double_1.ncml])
+
+dnl Test that values != literal constant dimension is an error.
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_1.ncml])
+
+dnl Test that unknown dimension name in shape is an error.
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_2.ncml])
+
+dnl Test that a named dimension size != values is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_3.ncml])
+
+dnl Test that a malformed float entry is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_4.ncml])
+
+dnl Test that adding the same dimension is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_5.ncml])
+
+dnl Test that adding a dimension not at toplevel of netcdf is error.
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_6.ncml])
+
+dnl Test that non whitespace content within dimension is an error.
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_7.ncml])
+
+dnl Test that specifying dimension@orgName is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_8.ncml])
+
+dnl Test that specifying dimension@isShared is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_9.ncml])
+
+dnl Test that specifying dimension@isVariableLength is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_10.ncml])
+
+dnl Test that specifying dimension@isUnlimited is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_11.ncml])
+
+dnl Test that specifying autogeneration for a char is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_12.ncml])
+
+dnl Test that specifying autogeneration for a string is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_13.ncml])
+
+dnl Test that specifying autogeneration for a url is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_14.ncml])
+
+dnl Test that specifying too large of a size for an array is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_15.ncml])
+
+
+dnl Check constraints work
+dnl FIXME DAP4 FAILURES 
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([new_arrays/var_array_int_1.ncml],[[ MyArray[5:1:9] ]],[new_arrays/var_array_int_1_cons_1.ncml])
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([new_arrays/var_array_int_1.ncml],[[ MyArray[0:2:9] ]],[new_arrays/var_array_int_1_cons_2.ncml])
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([new_arrays/var_array_int_1.ncml],[[ MyArray[5] ]],[new_arrays/var_array_int_1_cons_3.ncml])

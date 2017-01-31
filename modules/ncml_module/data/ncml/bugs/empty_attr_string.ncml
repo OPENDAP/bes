@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test for a segfault when an empty string attribute is specified -->
+<netcdf>
+  
+  <!-- This was causing a crash on DAS response -->
+  <attribute name="Empty" type="string" separator="*"></attribute>
+  
+  <!-- this is parse erroring, but technically empty string should be ok -->
+  <variable name="EmptyVar" type="string"><values></values></variable>
+
+</netcdf>

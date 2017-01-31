@@ -1,0 +1,3 @@
+Dataset {
+    String c4;
+} test.nc;

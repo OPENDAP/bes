@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Rejection test for scan@olderThan attribute.  Checking parse error. -->
+<netcdf title="Test example of joinNew Grid aggregation using the scan element with an olderThan attribute">
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <!-- We don't recognize the "hr" unit... -->
+    <scan location="data/ncml/agg/grids" suffix=".hdf" subdirs="false" olderThan="1 hr"/>
+ </aggregation> 
+  
+</netcdf>

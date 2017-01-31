@@ -1,0 +1,7 @@
+The data:
+Structure {
+    String ContainedScalar1;
+    Int32 DougAdamsSays;
+} MyStructure = { "I live in a new structure!", 42 };
+Int32 MyStructure.ContainedScalar1 = 7;
+

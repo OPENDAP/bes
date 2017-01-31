@@ -1,0 +1,18 @@
+
+Welcome to newformX alpha 3.2 Jul 11 1996 -- an NGDC FreeForm application
+
+Memtrack logging file "memtrack.log" enabled
+Input file: byteswap.lsb
+Output file: testswap.dat
+
+The input file size is 25 bytes.
+The output file size will be 57 bytes.
+The data processing cache size is 25 bytes.
+
+(byteswap.fmt) Binary Input Data:  "binary"
+Each record contains 7 fields and is 25 bytes long.
+
+(byteswap.fmt) ASCII Output Data:  "ascii"
+Each record contains 7 fields and is 57 characters long.
+
+100% processed     Elapsed time - 00:00:3000:00:35

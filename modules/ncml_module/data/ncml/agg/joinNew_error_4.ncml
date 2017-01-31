@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Parse error test for joinNew aggregation.  -->
+
+<netcdf title="Parse error test for mismatched data type in aggregation variables">
+  
+  <!-- joinNew and form new outer dimension "day" -->
+  <aggregation type="joinNew" dimName="day">
+    
+    <variableAgg name="V"/>
+
+    <netcdf title="Sample Slice 1">
+      <dimension name="station" length="5"/>
+     <variable name="V" type="int" shape="station">
+	<values>1 3 5 7 9</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Sample Slice 2">
+      <!-- Dim length differes so this is a parse error -->
+      <dimension name="station" length="6"/>
+      <variable name="V" type="int" shape="station">
+	<values>
+	  2 4 6 8 10 12
+	</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+
+</netcdf>

@@ -1,0 +1,4 @@
+Dataset {
+    Int32 x[r = 10][c = 10];
+    Float64 xf[r = 10][c = 20];
+} dbl_data3.bin;

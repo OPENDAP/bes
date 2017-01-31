@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value">
+    <BES>
+        <BESError>
+            <Type>3</Type>
+            <Message>Command get.ascii does not have a registered response handler</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+            <Location>
+                <File>BESXMLCommand.cc</File>
+                <Line>65</Line>
+            </Location>
+        </BESError>
+    </BES>
+</response>

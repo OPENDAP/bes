@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Create a new Structure at Dataset global level -->
+  <variable name="MyStructure" type="Structure">
+    <!-- And an atomic var within the new structure to be certain we can do that too -->
+    <variable name="ContainedScalar1" type="String">
+      <values>I live in a new structure!</values>
+    </variable>
+    <variable name="MyChildStructure" type="Structure">
+      <variable name="ChildSays" type="string">
+	<values>Are we there yet?  Are we there yet?  Are we there yet?</values>
+      </variable>
+    </variable>
+  </variable>
+</netcdf>

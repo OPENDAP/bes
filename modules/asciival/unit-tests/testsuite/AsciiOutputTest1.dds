@@ -1,0 +1,33 @@
+# Used for the AsciiOutput unit tests.
+
+Dataset {
+    Int32 a;
+
+    Structure {
+        Int32 b;
+        Float64 c;
+        String d;
+    } e;
+ 
+    Structure {
+        Int32 b;
+        Float64 c;
+        String d;
+    } f;
+
+    Grid {
+      Array:
+        Byte xy[x=12][y=12];
+      maps:
+        Float64 x[12];
+	    Float64 y[12];
+    } g;
+
+    Sequence {
+        Int16 j;
+	Sequence {
+	    Int16 i;
+        } h;
+    } k;
+
+} ascii_output_test;
