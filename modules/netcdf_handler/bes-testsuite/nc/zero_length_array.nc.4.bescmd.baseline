@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="zero_length_array.nc">
+    <Dimension name="lat" size="6"/>
+    <Dimension name="lon" size="5"/>
+    <Dimension name="time" size="0"/>
+    <Int32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="z">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>0.000000000000000</Value>
+            <Value>5000.000000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>1.00000000</Value>
+        </Attribute>
+        <Map name="lat"/>
+        <Map name="lon"/>
+    </Float32>
+    <Float32 name="t">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Map name="lat"/>
+        <Map name="lon"/>
+    </Float32>
+    <Byte name="pixel">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Map name="lat"/>
+        <Map name="lon"/>
+    </Byte>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+    </Int32>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <Value>Hyrax/netcdf handler test file for zero-length arrays</Value>
+        </Attribute>
+        <Attribute name="version" type="Float64">
+            <Value>1.000000000000000</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Test zero-length arrays in a data handler.</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

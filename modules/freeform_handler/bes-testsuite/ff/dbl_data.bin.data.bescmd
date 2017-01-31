@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/dbl_data.bin</setContainer>
+    <define name="d">
+	<container name="c">
+	    <constraint>xf[8:9][18:19]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

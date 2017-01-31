@@ -1,0 +1,74 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([_AT_BESCMD_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([_AT_BESCMD_PATTERN_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([grep "`cat $2`" stdout], [], [ignore], [], [])
+
+AT_CLEANUP])
+
+m4_define([AT_BESCMD_RESPONSE_TEST],
+[_AT_BESCMD_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline])
+])
+
+m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
+[_AT_BESCMD_PATTERN_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline])
+])
+
+AT_BESCMD_RESPONSE_TEST([ShowPathInfo_01.bescmd])
+AT_BESCMD_RESPONSE_TEST([ShowPathInfo_02.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([atomicTypes_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varByte_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varByte_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varDouble_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varDouble_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varFloat_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varFloat_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varInt_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varInt_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varShort_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([atomicTypes_varShort_data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([coads_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([coads_SST_meta.bescmd])
+
+# Testing an error return. The error text is dependent on
+# the build options (--enable-develoepr) source code line 
+# numbers and when --enable-developers is used. Match a pattern
+# to make these kinds of tests more reliable. jhrg 3/2/15
+AT_BESCMD_RESPONSE_PATTERN_TEST([coads_SST_data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([coads_SST.SST_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([coads_SST.SST_CE_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([coads_SST.COADSX_CE_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([coads_SST.COADSX_CE_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([coads_SST.COADSX_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([coads_SST.COADSX_data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([fnoc1_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([fnoc1_u_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([fnoc1_u_data.bescmd])
+AT_BESCMD_RESPONSE_TEST([fnoc1_u_CE_meta.bescmd])
+AT_BESCMD_RESPONSE_TEST([fnoc1_u_CE_data.bescmd])
+

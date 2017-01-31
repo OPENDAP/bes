@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="ref_tst_compounds.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Attribute name="obs" type="Container">
+        <Attribute name="day" type="Byte">
+            <value>157</value>
+        </Attribute>
+        <Attribute name="elev" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="count" type="Int32">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="relhum" type="Float32">
+            <value>-99.0000000</value>
+        </Attribute>
+        <Attribute name="time" type="Float64">
+            <value>-99.00000000000000</value>
+        </Attribute>
+    </Attribute>
+    <Structure name="obs">
+        <Byte name="day"/>
+        <Int16 name="elev"/>
+        <Int32 name="count"/>
+        <Float32 name="relhum"/>
+        <Float64 name="time"/>
+    </Structure>
+    <blob href="cid:"/>
+</Dataset>

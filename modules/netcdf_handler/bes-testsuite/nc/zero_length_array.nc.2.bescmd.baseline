@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="zero_length_array.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <value>Hyrax/netcdf handler test file for zero-length arrays</value>
+        </Attribute>
+        <Attribute name="version" type="Float64">
+            <value>1.000000000000000</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Test zero-length arrays in a data handler.</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>time</value>
+        </Attribute>
+    </Attribute>
+    <Grid name="z">
+        <Array name="z">
+            <Attribute name="units" type="String">
+                <value>meters</value>
+            </Attribute>
+            <Attribute name="valid_range" type="Float64">
+                <value>0.000000000000000</value>
+                <value>5000.000000000000</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <value>1.00000000</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lat" size="6"/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lat" size="6"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <Grid name="t">
+        <Array name="t">
+            <Float32/>
+            <dimension name="lat" size="6"/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lat" size="6"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <Grid name="pixel">
+        <Array name="pixel">
+            <Byte/>
+            <dimension name="lat" size="6"/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lat" size="6"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <Array name="time">
+        <Attribute name="units" type="String">
+            <value>seconds</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="time" size="0"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

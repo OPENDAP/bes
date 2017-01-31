@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showPathInfo>
+        <PathInfo path="data/bogus_file.nc/u">
+            <validPath isData="false" isDir="true" isFile="false">/data</validPath>
+            <remainder>bogus_file.nc/u</remainder>
+        </PathInfo>
+    </showPathInfo>
+</response>

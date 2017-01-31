@@ -1,0 +1,3 @@
+Dataset {
+    Byte raw_obs[time = 5][11];
+} ref_tst_opaque_data.nc;

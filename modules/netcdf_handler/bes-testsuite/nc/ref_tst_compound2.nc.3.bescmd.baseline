@@ -1,0 +1,9 @@
+The data:
+Structure {
+    Byte day;
+    Int16 elev;
+    Int32 count;
+    Float32 relhum;
+    Float64 time;
+} obs[n = 3] = {{ 15, 2, 1, 0.5, 3600.01 }, { 157, -99, -99, -99, -99 }, { 20, 6, 3, 0.75, 5000.01 }};
+

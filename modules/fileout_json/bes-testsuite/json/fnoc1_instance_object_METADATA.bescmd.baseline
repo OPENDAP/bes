@@ -1,0 +1,31 @@
+{
+ "name": "fnoc1.nc",
+ "NC_GLOBAL": {
+   "base_time": ["88- 10-00:00:00"],
+   "title": [" FNOC UV wind components from 1988- 10 to 1988- 13."]
+ },
+ "DODS_EXTRA": {
+   "Unlimited_Dimension": ["time_a"]
+ },
+ "u":  {
+   "units": ["meter per second"],
+   "long_name": ["Vector wind eastward component"],
+   "missing_value": ["-32767"],
+   "scale_factor": ["0.005"]
+ },
+ "v":  {
+   "units": ["meter per second"],
+   "long_name": ["Vector wind northward component"],
+   "missing_value": ["-32767"],
+   "scale_factor": ["0.005"]
+ },
+ "lat":  {
+   "units": ["degree North"]
+ },
+ "lon":  {
+   "units": ["degree East"]
+ },
+ "time":  {
+   "units": ["hours from base_time"]
+ }
+}

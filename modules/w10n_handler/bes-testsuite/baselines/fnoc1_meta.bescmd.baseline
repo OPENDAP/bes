@@ -1,0 +1,68 @@
+{
+  "name": "fnoc1.nc",
+  "attributes": [
+    {
+      "name": "NC_GLOBAL",
+      "attributes": [
+        {"name": "base_time", "value": ["88- 10-00:00:00"]},
+        {"name": "title", "value": [" FNOC UV wind components from 1988- 10 to 1988- 13."]}
+      ]
+    },
+    {
+      "name": "DODS_EXTRA",
+      "attributes": [
+        {"name": "Unlimited_Dimension", "value": ["time_a"]}
+      ]
+    }
+  ],
+  "leaves": [
+    {
+      "name": "u",
+      "type": "Int16",
+      "attributes": [
+        {"name": "units", "value": ["meter per second"]},
+        {"name": "long_name", "value": ["Vector wind eastward component"]},
+        {"name": "missing_value", "value": ["-32767"]},
+        {"name": "scale_factor", "value": ["0.005"]}
+      ],
+      "shape": [16,17,21]
+    },
+    {
+      "name": "v",
+      "type": "Int16",
+      "attributes": [
+        {"name": "units", "value": ["meter per second"]},
+        {"name": "long_name", "value": ["Vector wind northward component"]},
+        {"name": "missing_value", "value": ["-32767"]},
+        {"name": "scale_factor", "value": ["0.005"]}
+      ],
+      "shape": [16,17,21]
+    },
+    {
+      "name": "lat",
+      "type": "Float32",
+      "attributes": [
+        {"name": "units", "value": ["degree North"]}
+      ],
+      "shape": [17]
+    },
+    {
+      "name": "lon",
+      "type": "Float32",
+      "attributes": [
+        {"name": "units", "value": ["degree East"]}
+      ],
+      "shape": [21]
+    },
+    {
+      "name": "time",
+      "type": "Float32",
+      "attributes": [
+        {"name": "units", "value": ["hours from base_time"]}
+      ],
+      "shape": [16]
+    }
+  ],
+  "nodes": [],
+  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/nc\/fnoc1.nc"},{"name":"identifier","value":"\/"}]
+}

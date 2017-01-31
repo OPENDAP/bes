@@ -1,0 +1,13 @@
+The data:
+Sequence {
+    Int32 year;
+    Int32 day;
+    String time;
+    String DODS_URL;
+} pathfinder = { 
+0: { 1985, 4, "a", "http://podadg_long" }, 
+1: { 1985, 4, "d", "http: //podfgf" }, 
+2: { 1985, 5, "a", "http://pofdgfst" }, 
+3: { 1995, 5, "d", "poddwr" }, 
+4: { 1988, 6, "a", "http://podzw4" } };
+
