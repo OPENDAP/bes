@@ -136,7 +136,7 @@ public:
         }
         for(unsigned int i=0; i<(*chunks).size() ;i++){
             string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG,(*chunks)[i].get_data_url(),true);
-            data_url =  "file://" + data_url;
+            data_url =  "file://" + data_url;  // Can't use assemblePath() because we need 3 "/" chars in a row.
             (*chunks)[i].set_data_url(data_url);
 
         }
