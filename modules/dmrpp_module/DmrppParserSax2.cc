@@ -57,53 +57,41 @@
 #include "DmrppCommon.h"
 
 static const string module = "dmrpp";
-static const string hdf4_namespace  = "http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1";
+static const string hdf4_namespace = "http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1";
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
+static const char *states[] = { "parser_start",
 
-static const char *states[] = {
-        "parser_start",
+"inside_dataset",
 
-        "inside_dataset",
+// inside_group is the state just after parsing the start of a Group
+// element.
+    "inside_group",
 
-        // inside_group is the state just after parsing the start of a Group
-        // element.
-        "inside_group",
+    "inside_attribute_container", "inside_attribute", "inside_attribute_value", "inside_other_xml_attribute",
 
-        "inside_attribute_container",
-        "inside_attribute",
-        "inside_attribute_value",
-        "inside_other_xml_attribute",
+    "inside_enum_def", "inside_enum_const",
 
-        "inside_enum_def",
-        "inside_enum_const",
+    "inside_dim_def",
 
-        "inside_dim_def",
+    // This covers Byte, ..., Url, Opaque
+    "inside_simple_type",
 
-        // This covers Byte, ..., Url, Opaque
-        "inside_simple_type",
+    // "inside_array",
+    "inside_dim", "inside_map",
 
-        // "inside_array",
-        "inside_dim",
-        "inside_map",
+    "inside_constructor",
 
-        "inside_constructor",
+    // FIXME "inside_h4_byte_stream",
+    "not_dap4_element", "inside_h4_object", "inside_h4_chunkDimensionSizes_element",
 
-        // FIXME "inside_h4_byte_stream",
-        "not_dap4_element",
-        "inside_h4_object",
-		"inside_h4_chunkDimensionSizes_element",
+    "parser_unknown", "parser_error", "parser_fatal_error",
 
-        "parser_unknown",
-        "parser_error",
-        "parser_fatal_error",
-
-        "parser_end"
-};
+    "parser_end" };
 
 static bool is_not(const char *name, const char *tag)
 {
@@ -133,7 +121,8 @@ DmrppParserSax2::enum_def()
  * @return
  */
 D4Dimension *
-DmrppParserSax2::dim_def()    {
+DmrppParserSax2::dim_def()
+{
     if (!d_dim_def) d_dim_def = new D4Dimension;
 
     return d_dim_def;
@@ -146,18 +135,18 @@ DmrppParserSax2::dim_def()    {
  */
 void DmrppParserSax2::transfer_xml_attrs(const xmlChar **attributes, int nb_attributes)
 {
-    if (!xml_attrs.empty())
-        xml_attrs.clear(); // erase old attributes
+    if (!xml_attrs.empty()) xml_attrs.clear(); // erase old attributes
 
     // Make a value using the attribute name and the prefix, namespace URI
     // and the value. The prefix might be null.
     unsigned int index = 0;
     for (int i = 0; i < nb_attributes; ++i, index += 5) {
-        xml_attrs.insert(map<string, XMLAttribute>::value_type(string((const char *)attributes[index]),
-                                                               XMLAttribute(attributes + index + 1)));
+        xml_attrs.insert(
+            map<string, XMLAttribute>::value_type(string((const char *) attributes[index]),
+                XMLAttribute(attributes + index + 1)));
 
-        BESDEBUG(module, "XML Attribute '" << (const char *)attributes[index] << "': "
-                << xml_attrs[(const char *)attributes[index]].value << endl);
+        BESDEBUG(module,
+            "XML Attribute '" << (const char *)attributes[index] << "': " << xml_attrs[(const char *)attributes[index]].value << endl);
     }
 }
 
@@ -171,8 +160,9 @@ void DmrppParserSax2::transfer_xml_ns(const xmlChar **namespaces, int nb_namespa
 {
     // make a value with the prefix and namespace URI. The prefix might be null.
     for (int i = 0; i < nb_namespaces; ++i) {
-        namespace_table.insert(map<string, string>::value_type(namespaces[i * 2] != 0 ? (const char *)namespaces[i * 2] : "",
-                                                               (const char *)namespaces[i * 2 + 1]));
+        namespace_table.insert(
+            map<string, string>::value_type(namespaces[i * 2] != 0 ? (const char *) namespaces[i * 2] : "",
+                (const char *) namespaces[i * 2 + 1]));
     }
 }
 
@@ -205,8 +195,7 @@ bool DmrppParserSax2::check_attribute(const string & attr)
 
 bool DmrppParserSax2::process_dimension_def(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "Dimension"))
-        return false;
+    if (is_not(name, "Dimension")) return false;
 
     transfer_xml_attrs(attrs, nb_attributes);
 
@@ -247,57 +236,57 @@ bool DmrppParserSax2::process_dimension_def(const char *name, const xmlChar **at
  */
 bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "Dim"))
-        return false;
+    if (is_not(name, "Dim")) return false;
 
     transfer_xml_attrs(attrs, nb_attributes);
 
-	if (check_attribute("size") && check_attribute("name")) {
-		dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
-		return false;
-	}
-	if (!(check_attribute("size") || check_attribute("name"))) {
-		dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
-		return false;
-	}
+    if (check_attribute("size") && check_attribute("name")) {
+        dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
+        return false;
+    }
+    if (!(check_attribute("size") || check_attribute("name"))) {
+        dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
+        return false;
+    }
 
-	if (!top_basetype()->is_vector_type()) {
-		// Make the top BaseType* an array
-		BaseType *b = top_basetype();
-		pop_basetype();
+    if (!top_basetype()->is_vector_type()) {
+        // Make the top BaseType* an array
+        BaseType *b = top_basetype();
+        pop_basetype();
 
-		Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
-		a->set_is_dap4(true);
-		a->add_var_nocopy(b);
-		a->set_attributes_nocopy(b->attributes());
-		// trick: instead of popping b's attributes, copying them and then pushing
-		// a's copy, just move the pointer (but make sure there's only one object that
-		// references that pointer).
-		b->set_attributes_nocopy(0);
+        Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
+        a->set_is_dap4(true);
+        a->add_var_nocopy(b);
+        a->set_attributes_nocopy(b->attributes());
+        // trick: instead of popping b's attributes, copying them and then pushing
+        // a's copy, just move the pointer (but make sure there's only one object that
+        // references that pointer).
+        b->set_attributes_nocopy(0);
 
-		push_basetype(a);
-	}
+        push_basetype(a);
+    }
 
-	assert(top_basetype()->is_vector_type());
+    assert(top_basetype()->is_vector_type());
 
-	Array *a = static_cast<Array*>(top_basetype());
+    Array *a = static_cast<Array*>(top_basetype());
     if (check_attribute("size")) {
-    	a->append_dim(atoi(xml_attrs["size"].value.c_str())); // low budget code for now. jhrg 8/20/13
+        a->append_dim(atoi(xml_attrs["size"].value.c_str())); // low budget code for now. jhrg 8/20/13
         return true;
     }
     else if (check_attribute("name")) {
-    	string name = xml_attrs["name"].value;
+        string name = xml_attrs["name"].value;
 
-    	D4Dimension *dim = 0;
-    	if (name[0] == '/')		// lookup the Dimension in the root group
-    		dim = dmr()->root()->find_dim(name);
-    	else					// get enclosing Group and lookup Dimension there
-    		dim = top_group()->find_dim(name);
+        D4Dimension *dim = 0;
+        if (name[0] == '/')		// lookup the Dimension in the root group
+            dim = dmr()->root()->find_dim(name);
+        else
+            // get enclosing Group and lookup Dimension there
+            dim = top_group()->find_dim(name);
 
-    	if (!dim)
-    		throw Error("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.");
-    	a->append_dim(dim);
-    	return true;
+        if (!dim)
+            throw Error("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.");
+        a->append_dim(dim);
+        return true;
     }
 
     return false;
@@ -305,66 +294,64 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 
 bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "Map"))
-        return false;
+    if (is_not(name, "Map")) return false;
 
     transfer_xml_attrs(attrs, nb_attributes);
 
-	if (!check_attribute("name")) {
-		dmr_error(this, "The 'name' attribute must be used in a Map element.");
-		return false;
-	}
+    if (!check_attribute("name")) {
+        dmr_error(this, "The 'name' attribute must be used in a Map element.");
+        return false;
+    }
 
-	if (!top_basetype()->is_vector_type()) {
-		// Make the top BaseType* an array
-		BaseType *b = top_basetype();
-		pop_basetype();
+    if (!top_basetype()->is_vector_type()) {
+        // Make the top BaseType* an array
+        BaseType *b = top_basetype();
+        pop_basetype();
 
-		Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
-		a->set_is_dap4(true);
-		a->add_var_nocopy(b);
-		a->set_attributes_nocopy(b->attributes());
-		// trick: instead of popping b's attributes, copying them and then pushing
-		// a's copy, just move the pointer (but make sure there's only one object that
-		// references that pointer).
-		b->set_attributes_nocopy(0);
+        Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
+        a->set_is_dap4(true);
+        a->add_var_nocopy(b);
+        a->set_attributes_nocopy(b->attributes());
+        // trick: instead of popping b's attributes, copying them and then pushing
+        // a's copy, just move the pointer (but make sure there's only one object that
+        // references that pointer).
+        b->set_attributes_nocopy(0);
 
-		push_basetype(a);
-	}
+        push_basetype(a);
+    }
 
-	assert(top_basetype()->is_vector_type());
+    assert(top_basetype()->is_vector_type());
 
-	Array *a = static_cast<Array*>(top_basetype());
+    Array *a = static_cast<Array*>(top_basetype());
 
-	string map_name = xml_attrs["name"].value;
-	if (xml_attrs["name"].value[0] != '/')
-		map_name = top_group()->FQN() + map_name;
+    string map_name = xml_attrs["name"].value;
+    if (xml_attrs["name"].value[0] != '/') map_name = top_group()->FQN() + map_name;
 
     Array *map_source = 0;	// The array variable that holds the data for the Map
 
-	if (map_name[0] == '/')		// lookup the Map in the root group
-		map_source = dmr()->root()->find_map_source(map_name);
-	else					// get enclosing Group and lookup Map there
-		map_source = top_group()->find_map_source(map_name);
+    if (map_name[0] == '/')		// lookup the Map in the root group
+        map_source = dmr()->root()->find_map_source(map_name);
+    else
+        // get enclosing Group and lookup Map there
+        map_source = top_group()->find_map_source(map_name);
 
-	// Change: If the parser is in 'strict' mode (the default) and the Array named by
-	// the Map cannot be fond, it is an error. If 'strict' mode is false (permissive
-	// mode), then this is not an error. However, the Array referenced by the Map will
-	// be null. This is a change in the parser's behavior to accommodate requests for
-	// Arrays that include Maps that do not also include the Map(s) in the request.
-	// See https://opendap.atlassian.net/browse/HYRAX-98. jhrg 4/13/16
-	if (!map_source && d_strict)
-		throw Error("The Map '" + map_name + "' was not found while parsing the variable '" + a->name() + "'.");
+    // Change: If the parser is in 'strict' mode (the default) and the Array named by
+    // the Map cannot be fond, it is an error. If 'strict' mode is false (permissive
+    // mode), then this is not an error. However, the Array referenced by the Map will
+    // be null. This is a change in the parser's behavior to accommodate requests for
+    // Arrays that include Maps that do not also include the Map(s) in the request.
+    // See https://opendap.atlassian.net/browse/HYRAX-98. jhrg 4/13/16
+    if (!map_source && d_strict)
+        throw Error("The Map '" + map_name + "' was not found while parsing the variable '" + a->name() + "'.");
 
-	a->maps()->add_map(new D4Map(map_name, map_source));
+    a->maps()->add_map(new D4Map(map_name, map_source));
 
-	return true;
+    return true;
 }
 
 bool DmrppParserSax2::process_group(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "Group"))
-        return false;
+    if (is_not(name, "Group")) return false;
 
     transfer_xml_attrs(attrs, nb_attributes);
 
@@ -387,13 +374,13 @@ bool DmrppParserSax2::process_group(const char *name, const xmlChar **attrs, int
 
     // link it up and change the current group
     D4Group *parent = top_group();
-	if (!parent) {
-		dmr_fatal_error(this, "No Group on the Group stack.");
-		return false;
-	}
+    if (!parent) {
+        dmr_fatal_error(this, "No Group on the Group stack.");
+        return false;
+    }
 
-	grp->set_parent(parent);
-	parent->add_group_nocopy(grp);
+    grp->set_parent(parent);
+    parent->add_group_nocopy(grp);
 
     push_group(grp);
     push_attributes(grp->attributes());
@@ -408,8 +395,7 @@ bool DmrppParserSax2::process_group(const char *name, const xmlChar **attrs, int
  @return True if the tag was an \c Attribute or \c Alias tag */
 inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "Attribute"))
-        return false;
+    if (is_not(name, "Attribute")) return false;
 
     // These methods set the state to parser_error if a problem is found.
     transfer_xml_attrs(attrs, nb_attributes);
@@ -460,8 +446,7 @@ inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar *
  @return True if the tag was an \c Enumeration */
 inline bool DmrppParserSax2::process_enum_def(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "Enumeration"))
-        return false;
+    if (is_not(name, "Enumeration")) return false;
 
     transfer_xml_attrs(attrs, nb_attributes);
 
@@ -473,16 +458,16 @@ inline bool DmrppParserSax2::process_enum_def(const char *name, const xmlChar **
     Type t = get_type(xml_attrs["basetype"].value.c_str());
     if (!is_integer_type(t)) {
         dmr_error(this, "The Enumeration '%s' must have an integer type, instead the type '%s' was used.",
-                xml_attrs["name"].value.c_str(), xml_attrs["basetype"].value.c_str());
+            xml_attrs["name"].value.c_str(), xml_attrs["basetype"].value.c_str());
         return false;
     }
 
     // This getter allocates a new object if needed.
     string enum_def_path = xml_attrs["name"].value;
 #if 0
-	// Use FQNs when things are referenced, not when they are defined
+    // Use FQNs when things are referenced, not when they are defined
     if (xml_attrs["name"].value[0] != '/')
-    	enum_def_path = top_group()->FQN() + enum_def_path;
+    enum_def_path = top_group()->FQN() + enum_def_path;
 #endif
     enum_def()->set_name(enum_def_path);
     enum_def()->set_type(t);
@@ -492,8 +477,7 @@ inline bool DmrppParserSax2::process_enum_def(const char *name, const xmlChar **
 
 inline bool DmrppParserSax2::process_enum_const(const char *name, const xmlChar **attrs, int nb_attributes)
 {
-    if (is_not(name, "EnumConst"))
-        return false;
+    if (is_not(name, "EnumConst")) return false;
 
     // These methods set the state to parser_error if a problem is found.
     transfer_xml_attrs(attrs, nb_attributes);
@@ -508,11 +492,11 @@ inline bool DmrppParserSax2::process_enum_const(const char *name, const xmlChar 
     iss >> skipws >> value;
     if (iss.fail() || iss.bad()) {
         dmr_error(this, "Expected an integer value for an Enumeration constant, got '%s' instead.",
-                xml_attrs["value"].value.c_str());
+            xml_attrs["value"].value.c_str());
     }
     else if (!enum_def()->is_valid_enum_value(value)) {
         dmr_error(this, "In an Enumeration constant, the value '%s' cannot fit in a variable of type '%s'.",
-                xml_attrs["value"].value.c_str(), D4type_name(d_enum_def->type()).c_str());
+            xml_attrs["value"].value.c_str(), D4type_name(d_enum_def->type()).c_str());
     }
     else {
         // unfortunate choice of names... args are 'label' and 'value'
@@ -535,18 +519,18 @@ inline bool DmrppParserSax2::process_variable(const char *name, const xmlChar **
         return true;
     }
     else {
-    	switch(t) {
-    	case dods_structure_c:
+        switch (t) {
+        case dods_structure_c:
             process_variable_helper(t, inside_constructor, attrs, nb_attributes);
             return true;
 
-    	case dods_sequence_c:
+        case dods_sequence_c:
             process_variable_helper(t, inside_constructor, attrs, nb_attributes);
             return true;
 
-    	default:
-    		return false;
-    	}
+        default:
+            return false;
+        }
     }
 }
 
@@ -571,13 +555,12 @@ void DmrppParserSax2::process_variable_helper(Type t, ParseState s, const xmlCha
         if ((t == dods_enum_c) && check_required_attribute("enum")) {
             D4EnumDef *enum_def = 0;
             string enum_path = xml_attrs["enum"].value;
-			if (enum_path[0] == '/')
+            if (enum_path[0] == '/')
                 enum_def = dmr()->root()->find_enum_def(enum_path);
             else
                 enum_def = top_group()->find_enum_def(enum_path);
 
-            if (!enum_def)
-                dmr_fatal_error(this, "Could not find the Enumeration definition '%s'.", enum_path.c_str());
+            if (!enum_def) dmr_fatal_error(this, "Could not find the Enumeration definition '%s'.", enum_path.c_str());
 
             static_cast<D4Enum*>(btp)->set_enumeration(enum_def);
         }
@@ -597,7 +580,6 @@ void DmrppParserSax2::process_variable_helper(Type t, ParseState s, const xmlCha
  linkage which allows them to be used as callbacks by the SAX parser
  engine. */
 //@{
-
 /** Initialize the SAX parser state object. This object is passed to each
  callback as a void pointer. The initial state is parser_start.
 
@@ -631,12 +613,11 @@ void DmrppParserSax2::dmr_end_document(void * p)
 
     // If we've found any sort of error, don't make the DMR; intern() will
     // take care of the error.
-    if (parser->get_state() == parser_error || parser->get_state() == parser_fatal_error)
-        return;
+    if (parser->get_state() == parser_error || parser->get_state() == parser_fatal_error) return;
 
     if (!parser->empty_basetype() || parser->empty_group())
-    	DmrppParserSax2::dmr_error(parser, "The document did not contain a valid root Group or contained unbalanced tags.");
-
+        DmrppParserSax2::dmr_error(parser,
+            "The document did not contain a valid root Group or contained unbalanced tags.");
 
     if (parser->debug()) parser->top_group()->dump(cerr);
 
@@ -645,13 +626,12 @@ void DmrppParserSax2::dmr_end_document(void * p)
 }
 
 void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar *prefix, const xmlChar *URI,
-        int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int /*nb_defaulted*/,
-        const xmlChar **attributes)
+    int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int /*nb_defaulted*/, const xmlChar **attributes)
 {
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
     const char *localname = reinterpret_cast<const char *>(l);
 
-    string this_element_ns_name(URI ? (char *)URI: "null");
+    string this_element_ns_name(URI ? (char *) URI : "null");
 
     if (parser->get_state() != parser_error) {
         string dap4_ns_name = DapXmlNamspaces::getDapNamespaceString(DAP_4_0);
@@ -663,361 +643,368 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 parser->push_state(inside_h4_chunkDimensionSizes_element);
             }
             else {
-				if (parser->debug()) cerr << "Start of element in hdf4 namespace: " << localname << " detected." << endl;
-				parser->push_state(inside_h4_object);
-				// Ingest the h4:chunkDimensionSizes element text content
+                if (parser->debug())
+                    cerr << "Start of element in hdf4 namespace: " << localname << " detected." << endl;
+                parser->push_state(inside_h4_object);
+                // Ingest the h4:chunkDimensionSizes element text content
             }
-
 
         }
         else if (this_element_ns_name != dap4_ns_name) {
             if (parser->debug()) cerr << "Start of non DAP4 element: " << localname << " detected." << endl;
-        	parser->push_state(not_dap4_element);
+            parser->push_state(not_dap4_element);
         }
     }
 
-    if (parser->debug()) cerr << "Start element " << localname << "  prefix:  "<< (prefix?(char *)prefix:"null")
-        << "  ns: " << this_element_ns_name  << " (state: " << states[parser->get_state()] << ")" << endl;
+    if (parser->debug())
+        cerr << "Start element " << localname << "  prefix:  " << (prefix ? (char *) prefix : "null") << "  ns: "
+            << this_element_ns_name << " (state: " << states[parser->get_state()] << ")" << endl;
 
     switch (parser->get_state()) {
-        case parser_start:
-            if (is_not(localname, "Dataset"))
-                DmrppParserSax2::dmr_error(parser, "Expected DMR to start with a Dataset element; found '%s' instead.", localname);
+    case parser_start:
+        if (is_not(localname, "Dataset"))
+            DmrppParserSax2::dmr_error(parser, "Expected DMR to start with a Dataset element; found '%s' instead.",
+                localname);
 
-            parser->root_ns = URI ? (const char *) URI : "";
-            parser->transfer_xml_attrs(attributes, nb_attributes);
+        parser->root_ns = URI ? (const char *) URI : "";
+        parser->transfer_xml_attrs(attributes, nb_attributes);
 
-            if (parser->check_required_attribute(string("name")))
-                parser->dmr()->set_name(parser->xml_attrs["name"].value);
+        if (parser->check_required_attribute(string("name"))) parser->dmr()->set_name(parser->xml_attrs["name"].value);
 
-            if (parser->check_attribute("dapVersion"))
-                parser->dmr()->set_dap_version(parser->xml_attrs["dapVersion"].value);
+        if (parser->check_attribute("dapVersion"))
+            parser->dmr()->set_dap_version(parser->xml_attrs["dapVersion"].value);
 
-            if (parser->check_attribute("dmrVersion"))
-                parser->dmr()->set_dmr_version(parser->xml_attrs["dmrVersion"].value);
+        if (parser->check_attribute("dmrVersion"))
+            parser->dmr()->set_dmr_version(parser->xml_attrs["dmrVersion"].value);
 
-            if (parser->check_attribute("base")){
-                parser->dmr()->set_request_xml_base(parser->xml_attrs["base"].value);
-            }
-            if (parser->debug()) cerr << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl;
+        if (parser->check_attribute("base")) {
+            parser->dmr()->set_request_xml_base(parser->xml_attrs["base"].value);
+        }
+        if (parser->debug()) cerr << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl;
 
-            if (!parser->root_ns.empty())
-                parser->dmr()->set_namespace(parser->root_ns);
+        if (!parser->root_ns.empty()) parser->dmr()->set_namespace(parser->root_ns);
 
-            // Push the root Group on the stack
-            parser->push_group(parser->dmr()->root());
+        // Push the root Group on the stack
+        parser->push_group(parser->dmr()->root());
 
-            parser->push_state(inside_dataset);
+        parser->push_state(inside_dataset);
 
+        break;
+
+        // Both inside dataset and inside group can have the same stuff.
+        // The difference is that the Dataset holds the root group, which
+        // must be present; other groups are optional
+    case inside_dataset:
+    case inside_group:
+        if (parser->process_enum_def(localname, attributes, nb_attributes))
+            parser->push_state(inside_enum_def);
+        else if (parser->process_dimension_def(localname, attributes, nb_attributes))
+            parser->push_state(inside_dim_def);
+        else if (parser->process_group(localname, attributes, nb_attributes))
+            parser->push_state(inside_group);
+        else if (parser->process_variable(localname, attributes, nb_attributes))
+            // This will push either inside_simple_type or inside_structure
+            // onto the parser state stack.
             break;
-
-            // Both inside dataset and inside group can have the same stuff.
-            // The difference is that the Dataset holds the root group, which
-            // must be present; other groups are optional
-        case inside_dataset:
-        case inside_group:
-            if (parser->process_enum_def(localname, attributes, nb_attributes))
-                parser->push_state(inside_enum_def);
-            else if (parser->process_dimension_def(localname, attributes, nb_attributes))
-                parser->push_state(inside_dim_def);
-            else if (parser->process_group(localname, attributes, nb_attributes))
-                parser->push_state(inside_group);
-            else if (parser->process_variable(localname, attributes, nb_attributes))
-                // This will push either inside_simple_type or inside_structure
-                // onto the parser state stack.
-               break;
-            else if (parser->process_attribute(localname, attributes, nb_attributes))
-                // This will push either inside_attribute, inside_attribute_container
-                // or inside_otherxml_attribute onto the parser state stack
-                break;
-            else
-                DmrppParserSax2::dmr_error(parser, "Expected an Attribute, Enumeration, Dimension, Group or variable element; found '%s' instead.", localname);
+        else if (parser->process_attribute(localname, attributes, nb_attributes))
+            // This will push either inside_attribute, inside_attribute_container
+            // or inside_otherxml_attribute onto the parser state stack
             break;
+        else
+            DmrppParserSax2::dmr_error(parser,
+                "Expected an Attribute, Enumeration, Dimension, Group or variable element; found '%s' instead.",
+                localname);
+        break;
 
-        case inside_attribute_container:
-            if (parser->process_attribute(localname, attributes, nb_attributes))
-                break;
-            else
-                DmrppParserSax2::dmr_error(parser, "Expected an Attribute element; found '%s' instead.", localname);
+    case inside_attribute_container:
+        if (parser->process_attribute(localname, attributes, nb_attributes))
             break;
+        else
+            DmrppParserSax2::dmr_error(parser, "Expected an Attribute element; found '%s' instead.", localname);
+        break;
 
-        case inside_attribute:
-            if (parser->process_attribute(localname, attributes, nb_attributes))
-                break;
-            else if (strcmp(localname, "Value") == 0)
-                parser->push_state(inside_attribute_value);
-            else
-                dmr_error(parser, "Expected an 'Attribute' or 'Value' element; found '%s' instead.", localname);
+    case inside_attribute:
+        if (parser->process_attribute(localname, attributes, nb_attributes))
             break;
+        else if (strcmp(localname, "Value") == 0)
+            parser->push_state(inside_attribute_value);
+        else
+            dmr_error(parser, "Expected an 'Attribute' or 'Value' element; found '%s' instead.", localname);
+        break;
 
-        case inside_attribute_value:
-            // Attribute values are processed by the end element code.
-            break;
+    case inside_attribute_value:
+        // Attribute values are processed by the end element code.
+        break;
 
-        case inside_other_xml_attribute:
-            parser->other_xml_depth++;
+    case inside_other_xml_attribute:
+        parser->other_xml_depth++;
 
-            // Accumulate the elements here
-            parser->other_xml.append("<");
-            if (prefix) {
-                parser->other_xml.append((const char *) prefix);
-                parser->other_xml.append(":");
-            }
-            parser->other_xml.append(localname);
+        // Accumulate the elements here
+        parser->other_xml.append("<");
+        if (prefix) {
+            parser->other_xml.append((const char *) prefix);
+            parser->other_xml.append(":");
+        }
+        parser->other_xml.append(localname);
 
-            if (nb_namespaces != 0) {
-                parser->transfer_xml_ns(namespaces, nb_namespaces);
+        if (nb_namespaces != 0) {
+            parser->transfer_xml_ns(namespaces, nb_namespaces);
 
-                for (map<string, string>::iterator i = parser->namespace_table.begin();
-                        i != parser->namespace_table.end(); ++i) {
-                    parser->other_xml.append(" xmlns");
-                    if (!i->first.empty()) {
-                        parser->other_xml.append(":");
-                        parser->other_xml.append(i->first);
-                    }
-                    parser->other_xml.append("=\"");
-                    parser->other_xml.append(i->second);
-                    parser->other_xml.append("\"");
-                }
-            }
-
-            if (nb_attributes != 0) {
-                parser->transfer_xml_attrs(attributes, nb_attributes);
-                for (XMLAttrMap::iterator i = parser->xml_attr_begin(); i != parser->xml_attr_end(); ++i) {
-                    parser->other_xml.append(" ");
-                    if (!i->second.prefix.empty()) {
-                        parser->other_xml.append(i->second.prefix);
-                        parser->other_xml.append(":");
-                    }
+            for (map<string, string>::iterator i = parser->namespace_table.begin(); i != parser->namespace_table.end();
+                ++i) {
+                parser->other_xml.append(" xmlns");
+                if (!i->first.empty()) {
+                    parser->other_xml.append(":");
                     parser->other_xml.append(i->first);
-                    parser->other_xml.append("=\"");
-                    parser->other_xml.append(i->second.value);
-                    parser->other_xml.append("\"");
                 }
-            }
-
-            parser->other_xml.append(">");
-            break;
-
-        case inside_enum_def:
-            // process an EnumConst element
-            if (parser->process_enum_const(localname, attributes, nb_attributes))
-                parser->push_state(inside_enum_const);
-            else
-                dmr_error(parser, "Expected an 'EnumConst' element; found '%s' instead.", localname);
-            break;
-
-        case inside_enum_const:
-            // No content; nothing to do
-            break;
-
-        case inside_dim_def:
-            // No content; nothing to do
-            break;
-
-        case inside_dim:
-            // No content.
-            break;
-
-        case inside_map:
-            // No content.
-            break;
-
-        case inside_simple_type:
-            if (parser->process_attribute(localname, attributes, nb_attributes))
-                break;
-            else if (parser->process_dimension(localname, attributes, nb_attributes))
-            	parser->push_state(inside_dim);
-            else if (parser->process_map(localname, attributes, nb_attributes))
-            	parser->push_state(inside_map);
-            else
-                dmr_error(parser, "Expected an 'Attribute', 'Dim' or 'Map' element; found '%s' instead.", localname);
-            break;
-
-        case inside_constructor:
-            if (parser->process_variable(localname, attributes, nb_attributes))
-                // This will push either inside_simple_type or inside_structure
-                // onto the parser state stack.
-                break;
-            else if (parser->process_attribute(localname, attributes, nb_attributes))
-                break;
-            else if (parser->process_dimension(localname, attributes, nb_attributes))
-                parser->push_state(inside_dim);
-            else if (parser->process_map(localname, attributes, nb_attributes))
-            	parser->push_state(inside_map);
-            else
-                DmrppParserSax2::dmr_error(parser, "Expected an Attribute, Dim, Map or variable element; found '%s' instead.", localname);
-            break;
-
-        case not_dap4_element:
-            if (parser->debug())
-            	cerr << "SKIPPING unexpected element. localname: " << localname << "namespace: " << this_element_ns_name << endl;
-        	break;
-
-        case inside_h4_object:
-        {
-            if (parser->debug()) cerr << "Inside hdf4 namespaced element. localname: " << localname << endl;
-            assert( this_element_ns_name == hdf4_namespace);
-
-            parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
-
-            BaseType *bt = parser->top_basetype();
-            if (!bt)
-                throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
-
-            DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
-            if (!dc)
-                throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
-
-            // Ingest the h4:chunks element and it attributes
-            if (strcmp(localname, "chunks") == 0) {
-                if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
-
-                // This bit of magic sets the URL used to get the data and it's
-                // magic in part because it may be a file or an http URL
-                unsigned int deflate_level = 0;
-
-                if (parser->check_attribute("deflate_level")) {
-                    istringstream deflate_level_ss(parser->xml_attrs["deflate_level"].value);
-                    deflate_level_ss >> deflate_level;
-                    dc->set_deflate_level(deflate_level);
-                    if (parser->debug()) cerr << "Processed attribute 'deflate_level=\""<< deflate_level << "\"'" << endl;
-                }
-                else {
-                    if (parser->debug()) cerr << "There was no 'deflate_level' attribute associated with the variable '"
-                    		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
-                }
-
-                if (parser->check_attribute("compressionType")) {
-                    string compression_type_string(parser->xml_attrs["compressionType"].value);
-                    dc->ingest_compression_type(compression_type_string);
-
-                    if (parser->debug()) cerr << "Processed attribute 'compressionType=\""<< compression_type_string << "\"'" << endl;
-                }
-                else {
-                    if (parser->debug()) cerr << "There was no 'compressionType' attribute associated with the variable '"
-                    		<< bt->type_name() << " " << bt->name() << "'" <<  endl;
-                }
-            }
-            // Ingest an h4:byteStream element and its attributes
-            else if (strcmp(localname, "byteStream") == 0) {
-                // Check for a h4:byteStream and process if found
-                // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
-
-            	string data_url="unknown_data_location";
-                if (parser->check_attribute("href")) {
-                    istringstream data_url_ss(parser->xml_attrs["href"].value);
-                    data_url = data_url_ss.str();
-                    if (parser->debug()) cerr << "Processing 'href' value into data_url. href: "<< data_url_ss.str() << endl;
-                }
-                else {
-                    if (parser->debug()) cerr << "No attribute 'href' located. Trying xml:base..." << endl;
-					// This bit of magic sets the URL used to get the data and it's
-					// magic in part because it may be a file or an http URL
-					data_url = parser->dmr()->request_xml_base();
-					if (parser->debug()) cerr << "Processing xml:base into data_url. xml:base: '" << data_url << "'" << endl;
-                }
-				// First we see if it's an HTTP URL, and if not we
-                // make a local file url based on the Catalog Root
-                std::string http("http://");
-				std::string https("https://");
-				std::string file("file://");
-				if (    data_url.compare(0, http.size(), http) &&
-						data_url.compare(0, https.size(), https) &&
-						data_url.compare(0, file.size(), file)
-						){
-					if (parser->debug()) cerr << "xml:base does NOT start with '" << http << "' or with '"<<https <<"'. "
-							"Retrieving default catalog root directory" << endl;
-					// Now we try to find the default catalog. If we can't find it we punt and leave it be.
-					string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
-					if (parser->debug()) cerr << "default_catalog name '" << defcatname << "'" << endl;
-					BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
-					if (!defcat) {
-						// Not catalog. So we print something in debug but otherwise do nothing.
-						string err = (string) "Not able to find the default catalog '"
-								+ defcatname +"'";
-						if (parser->debug()) cerr << err << "'" << endl;
-					}
-					else {
-						// Yay! We found the catalog so we get the root dir
-						// and make a file URL.
-						BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
-						if (parser->debug()) cerr << "Found default catalog name '" << defcatname << "' root_dir: '"<< utils->get_root_dir()<<"'" << endl;
-						data_url = BESUtil::assemblePath(utils->get_root_dir(),data_url,true);
-						data_url = "file://"+data_url;
-					}
-				}
-                if (parser->debug()) cerr << "Processed data_url: '" << data_url << "'" << endl;
-
-                unsigned long long offset = 0;
-                unsigned long long size = 0;
-                string md5="";
-                string uuid="";
-                string chunk_position_in_array="";
-
-                if (parser->check_required_attribute("offset")) {
-                    istringstream offset_ss(parser->xml_attrs["offset"].value);
-                    offset_ss >> offset;
-                    if (parser->debug()) cerr << "Processed attribute 'offset=\""<< offset << "\"'" << endl;
-                }
-                else {
-                    dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'offset'.");
-                }
-
-                if (parser->check_required_attribute("nBytes")) {
-                    istringstream size_ss(parser->xml_attrs["nBytes"].value);
-                    size_ss >> size;
-                    if (parser->debug()) cerr << "Processed attribute 'nBytes=\""<< size << "\"'" << endl;
-                }
-                else {
-                    dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
-                }
-
-                if (parser->check_required_attribute("md5")) {
-                    istringstream md5_ss(parser->xml_attrs["md5"].value);
-                    md5 = md5_ss.str();
-                    if (parser->debug()) cerr << "Found attribute 'md5' value: "<< md5_ss.str() << endl;
-
-                }
-                else {
-                    if (parser->debug()) cerr << "No attribute 'md5' located" << endl;
-                }
-
-                if (parser->check_required_attribute("uuid")) {
-                    istringstream uuid_ss(parser->xml_attrs["uuid"].value);
-                    uuid = uuid_ss.str();
-                    if (parser->debug()) cerr << "Found attribute 'uuid' value: "<< uuid_ss.str() << endl;
-                }
-                else {
-                    if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;
-                }
-
-                if (parser->check_attribute("chunkPositionInArray")) {
-                    istringstream chunk_position_ss(parser->xml_attrs["chunkPositionInArray"].value);
-                    chunk_position_in_array = chunk_position_ss.str();
-                    if (parser->debug()) cerr << "Found attribute 'chunkPositionInArray' value: "<< chunk_position_ss.str() << endl;
-                }
-                else {
-                    if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
-                }
-
-                dc->add_chunk(data_url,size,offset,md5,uuid,chunk_position_in_array);
+                parser->other_xml.append("=\"");
+                parser->other_xml.append(i->second);
+                parser->other_xml.append("\"");
             }
         }
-        	break;
 
-        case inside_h4_chunkDimensionSizes_element:
-            // The h4:chunkDimensionSizes value is processed by the end element code.
-            break;
+        if (nb_attributes != 0) {
+            parser->transfer_xml_attrs(attributes, nb_attributes);
+            for (XMLAttrMap::iterator i = parser->xml_attr_begin(); i != parser->xml_attr_end(); ++i) {
+                parser->other_xml.append(" ");
+                if (!i->second.prefix.empty()) {
+                    parser->other_xml.append(i->second.prefix);
+                    parser->other_xml.append(":");
+                }
+                parser->other_xml.append(i->first);
+                parser->other_xml.append("=\"");
+                parser->other_xml.append(i->second.value);
+                parser->other_xml.append("\"");
+            }
+        }
 
-        case parser_unknown:
-        case parser_error:
-        case parser_fatal_error:
-            break;
+        parser->other_xml.append(">");
+        break;
 
-        case parser_end:
-            // FIXME Error?
+    case inside_enum_def:
+        // process an EnumConst element
+        if (parser->process_enum_const(localname, attributes, nb_attributes))
+            parser->push_state(inside_enum_const);
+        else
+            dmr_error(parser, "Expected an 'EnumConst' element; found '%s' instead.", localname);
+        break;
+
+    case inside_enum_const:
+        // No content; nothing to do
+        break;
+
+    case inside_dim_def:
+        // No content; nothing to do
+        break;
+
+    case inside_dim:
+        // No content.
+        break;
+
+    case inside_map:
+        // No content.
+        break;
+
+    case inside_simple_type:
+        if (parser->process_attribute(localname, attributes, nb_attributes))
             break;
+        else if (parser->process_dimension(localname, attributes, nb_attributes))
+            parser->push_state(inside_dim);
+        else if (parser->process_map(localname, attributes, nb_attributes))
+            parser->push_state(inside_map);
+        else
+            dmr_error(parser, "Expected an 'Attribute', 'Dim' or 'Map' element; found '%s' instead.", localname);
+        break;
+
+    case inside_constructor:
+        if (parser->process_variable(localname, attributes, nb_attributes))
+            // This will push either inside_simple_type or inside_structure
+            // onto the parser state stack.
+            break;
+        else if (parser->process_attribute(localname, attributes, nb_attributes))
+            break;
+        else if (parser->process_dimension(localname, attributes, nb_attributes))
+            parser->push_state(inside_dim);
+        else if (parser->process_map(localname, attributes, nb_attributes))
+            parser->push_state(inside_map);
+        else
+            DmrppParserSax2::dmr_error(parser,
+                "Expected an Attribute, Dim, Map or variable element; found '%s' instead.", localname);
+        break;
+
+    case not_dap4_element:
+        if (parser->debug())
+            cerr << "SKIPPING unexpected element. localname: " << localname << "namespace: " << this_element_ns_name
+                << endl;
+        break;
+
+    case inside_h4_object: {
+        if (parser->debug()) cerr << "Inside hdf4 namespaced element. localname: " << localname << endl;
+        assert(this_element_ns_name == hdf4_namespace);
+
+        parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+
+        BaseType *bt = parser->top_basetype();
+        if (!bt) throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
+
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
+        if (!dc)
+            throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+
+        // Ingest the h4:chunks element and it attributes
+        if (strcmp(localname, "chunks") == 0) {
+            if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
+
+            // This bit of magic sets the URL used to get the data and it's
+            // magic in part because it may be a file or an http URL
+            unsigned int deflate_level = 0;
+
+            if (parser->check_attribute("deflate_level")) {
+                istringstream deflate_level_ss(parser->xml_attrs["deflate_level"].value);
+                deflate_level_ss >> deflate_level;
+                dc->set_deflate_level(deflate_level);
+                if (parser->debug()) cerr << "Processed attribute 'deflate_level=\"" << deflate_level << "\"'" << endl;
+            }
+            else {
+                if (parser->debug())
+                    cerr << "There was no 'deflate_level' attribute associated with the variable '" << bt->type_name()
+                        << " " << bt->name() << "'" << endl;
+            }
+
+            if (parser->check_attribute("compressionType")) {
+                string compression_type_string(parser->xml_attrs["compressionType"].value);
+                dc->ingest_compression_type(compression_type_string);
+
+                if (parser->debug())
+                    cerr << "Processed attribute 'compressionType=\"" << compression_type_string << "\"'" << endl;
+            }
+            else {
+                if (parser->debug())
+                    cerr << "There was no 'compressionType' attribute associated with the variable '" << bt->type_name()
+                        << " " << bt->name() << "'" << endl;
+            }
+        }
+        // Ingest an h4:byteStream element and its attributes
+        else if (strcmp(localname, "byteStream") == 0) {
+            // Check for a h4:byteStream and process if found
+            // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
+
+            string data_url = "unknown_data_location";
+            if (parser->check_attribute("href")) {
+                istringstream data_url_ss(parser->xml_attrs["href"].value);
+                data_url = data_url_ss.str();
+                if (parser->debug())
+                    cerr << "Processing 'href' value into data_url. href: " << data_url_ss.str() << endl;
+            }
+            else {
+                if (parser->debug()) cerr << "No attribute 'href' located. Trying xml:base..." << endl;
+                // This bit of magic sets the URL used to get the data and it's
+                // magic in part because it may be a file or an http URL
+                data_url = parser->dmr()->request_xml_base();
+                if (parser->debug())
+                    cerr << "Processing xml:base into data_url. xml:base: '" << data_url << "'" << endl;
+            }
+            // First we see if it's an HTTP URL, and if not we
+            // make a local file url based on the Catalog Root
+            std::string http("http://");
+            std::string https("https://");
+            std::string file("file://");
+            if (data_url.compare(0, http.size(), http) && data_url.compare(0, https.size(), https)
+                && data_url.compare(0, file.size(), file)) {
+                if (parser->debug()) cerr << "xml:base does NOT start with '" << http << "' or with '" << https << "'. "
+                    "Retrieving default catalog root directory" << endl;
+                // Now we try to find the default catalog. If we can't find it we punt and leave it be.
+                string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+                if (parser->debug()) cerr << "default_catalog name '" << defcatname << "'" << endl;
+                BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
+                if (!defcat) {
+                    // Not catalog. So we print something in debug but otherwise do nothing.
+                    string err = (string) "Not able to find the default catalog '" + defcatname + "'";
+                    if (parser->debug()) cerr << err << "'" << endl;
+                }
+                else {
+                    // Yay! We found the catalog so we get the root dir
+                    // and make a file URL.
+                    BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
+                    if (parser->debug())
+                        cerr << "Found default catalog name '" << defcatname << "' root_dir: '" << utils->get_root_dir()
+                            << "'" << endl;
+                    data_url = BESUtil::assemblePath(utils->get_root_dir(), data_url, true);
+                    data_url = "file://" + data_url;
+                }
+            }
+            if (parser->debug()) cerr << "Processed data_url: '" << data_url << "'" << endl;
+
+            unsigned long long offset = 0;
+            unsigned long long size = 0;
+            string md5 = "";
+            string uuid = "";
+            string chunk_position_in_array = "";
+
+            if (parser->check_required_attribute("offset")) {
+                istringstream offset_ss(parser->xml_attrs["offset"].value);
+                offset_ss >> offset;
+                if (parser->debug()) cerr << "Processed attribute 'offset=\"" << offset << "\"'" << endl;
+            }
+            else {
+                dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'offset'.");
+            }
+
+            if (parser->check_required_attribute("nBytes")) {
+                istringstream size_ss(parser->xml_attrs["nBytes"].value);
+                size_ss >> size;
+                if (parser->debug()) cerr << "Processed attribute 'nBytes=\"" << size << "\"'" << endl;
+            }
+            else {
+                dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
+            }
+
+            if (parser->check_required_attribute("md5")) {
+                istringstream md5_ss(parser->xml_attrs["md5"].value);
+                md5 = md5_ss.str();
+                if (parser->debug()) cerr << "Found attribute 'md5' value: " << md5_ss.str() << endl;
+
+            }
+            else {
+                if (parser->debug()) cerr << "No attribute 'md5' located" << endl;
+            }
+
+            if (parser->check_required_attribute("uuid")) {
+                istringstream uuid_ss(parser->xml_attrs["uuid"].value);
+                uuid = uuid_ss.str();
+                if (parser->debug()) cerr << "Found attribute 'uuid' value: " << uuid_ss.str() << endl;
+            }
+            else {
+                if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;
+            }
+
+            if (parser->check_attribute("chunkPositionInArray")) {
+                istringstream chunk_position_ss(parser->xml_attrs["chunkPositionInArray"].value);
+                chunk_position_in_array = chunk_position_ss.str();
+                if (parser->debug())
+                    cerr << "Found attribute 'chunkPositionInArray' value: " << chunk_position_ss.str() << endl;
+            }
+            else {
+                if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
+            }
+
+            dc->add_chunk(data_url, size, offset, md5, uuid, chunk_position_in_array);
+        }
+    }
+        break;
+
+    case inside_h4_chunkDimensionSizes_element:
+        // The h4:chunkDimensionSizes value is processed by the end element code.
+        break;
+
+    case parser_unknown:
+    case parser_error:
+    case parser_fatal_error:
+        break;
+
+    case parser_end:
+        // FIXME Error?
+        break;
     }
 
     if (parser->debug()) cerr << "Start element exit state: " << states[parser->get_state()] << endl;
@@ -1055,7 +1042,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
 
         if (!parser->empty_basetype() || parser->empty_group())
             DmrppParserSax2::dmr_error(parser,
-                    "The document did not contain a valid root Group or contained unbalanced tags.");
+                "The document did not contain a valid root Group or contained unbalanced tags.");
 
         parser->pop_group();
         parser->pop_state();
@@ -1118,7 +1105,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         else {
             if (parser->other_xml_depth == 0) {
                 DmrppParserSax2::dmr_error(parser, "Expected an OtherXML attribute to end! Instead I found '%s'",
-                        localname);
+                    localname);
                 break;
             }
             parser->other_xml_depth--;
@@ -1139,7 +1126,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             DmrppParserSax2::dmr_error(parser, "Expected an end Enumeration tag; found '%s' instead.", localname);
         if (!parser->top_group())
             DmrppParserSax2::dmr_fatal_error(parser,
-                    "Expected a Group to be the current item, while finishing up an Enumeration.");
+                "Expected a Group to be the current item, while finishing up an Enumeration.");
         else {
             // copy the pointer; not a deep copy
             parser->top_group()->enum_defs()->add_enum_nocopy(parser->enum_def());
@@ -1163,10 +1150,10 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
 
         if (!parser->top_group())
             DmrppParserSax2::dmr_error(parser,
-                    "Expected a Group to be the current item, while finishing up an Dimension.");
+                "Expected a Group to be the current item, while finishing up an Dimension.");
 
         parser->top_group()->dims()->add_dim_nocopy(parser->dim_def());
-         // Set the dim_def to null; next call to dim_def() will
+        // Set the dim_def to null; next call to dim_def() will
         // allocate a new object. Calling 'clear' is important because
         // the cleanup method will free dim_def if it's not null and
         // we just copied the pointer in the add_dim_nocopy() call
@@ -1189,7 +1176,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
                 parent = parser->top_group();
             else {
                 dmr_fatal_error(parser, "Both the Variable and Groups stacks are empty while closing a %s element.",
-                        localname);
+                    localname);
                 delete btp;
                 parser->pop_state();
                 break;
@@ -1237,7 +1224,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             parent = parser->top_group();
         else {
             dmr_fatal_error(parser, "Both the Variable and Groups stacks are empty while closing a %s element.",
-                    localname);
+                localname);
             delete btp;
             parser->pop_state();
             break;
@@ -1253,15 +1240,14 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     case not_dap4_element:
         if (parser->debug()) cerr << "End of non DAP4 element: " << localname << endl;
         parser->pop_state();
-    	break;
+        break;
 
     case inside_h4_object:
         if (parser->debug()) cerr << "End of h4 namespace element: " << localname << endl;
         parser->pop_state();
-    	break;
+        break;
 
-    case inside_h4_chunkDimensionSizes_element:
-    {
+    case inside_h4_chunkDimensionSizes_element: {
         if (parser->debug()) cerr << "End of chunkDimensionSizes element. localname: " << localname << endl;
 
         if (is_not(localname, "chunkDimensionSizes"))
@@ -1274,7 +1260,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         dc->ingest_chunk_dimension_sizes(element_text);
         parser->char_data = ""; // Null this after use.
         parser->pop_state();
-    	break;
+        break;
     }
 
     case parser_unknown:
@@ -1301,19 +1287,19 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
 
     switch (parser->get_state()) {
-    	case inside_attribute_value:
-    	case inside_h4_chunkDimensionSizes_element:
-            parser->char_data.append((const char *) (ch), len);
-            BESDEBUG(module, "Characters: '" << parser->char_data << "'" << endl);
-            break;
+    case inside_attribute_value:
+    case inside_h4_chunkDimensionSizes_element:
+        parser->char_data.append((const char *) (ch), len);
+        BESDEBUG(module, "Characters: '" << parser->char_data << "'" << endl);
+        break;
 
-        case inside_other_xml_attribute:
-            parser->other_xml.append((const char *) (ch), len);
-            BESDEBUG(module, "Other XML Characters: '" << parser->other_xml << "'" << endl);
-            break;
+    case inside_other_xml_attribute:
+        parser->other_xml.append((const char *) (ch), len);
+        BESDEBUG(module, "Other XML Characters: '" << parser->other_xml << "'" << endl);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1326,12 +1312,12 @@ void DmrppParserSax2::dmr_ignoreable_whitespace(void *p, const xmlChar *ch, int 
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
 
     switch (parser->get_state()) {
-        case inside_other_xml_attribute:
-            parser->other_xml.append((const char *) (ch), len);
-            break;
+    case inside_other_xml_attribute:
+        parser->other_xml.append((const char *) (ch), len);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1345,17 +1331,17 @@ void DmrppParserSax2::dmr_get_cdata(void *p, const xmlChar *value, int len)
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
 
     switch (parser->get_state()) {
-        case inside_other_xml_attribute:
-            parser->other_xml.append((const char *) (value), len);
-            break;
+    case inside_other_xml_attribute:
+        parser->other_xml.append((const char *) (value), len);
+        break;
 
-        case parser_unknown:
-            break;
+    case parser_unknown:
+        break;
 
-        default:
-            DmrppParserSax2::dmr_error(parser, "Found a CData block but none are allowed by DAP4.");
+    default:
+        DmrppParserSax2::dmr_error(parser, "Found a CData block but none are allowed by DAP4.");
 
-            break;
+        break;
     }
 }
 
@@ -1445,8 +1431,7 @@ void DmrppParserSax2::cleanup_parse()
         throw Error("The DMR was not valid." + error_msg);
     else if (get_state() == parser_error)
         throw Error(error_msg);
-    else if (get_state() == parser_fatal_error)
-        throw InternalErr(error_msg);
+    else if (get_state() == parser_fatal_error) throw InternalErr(error_msg);
 }
 
 /**
@@ -1469,10 +1454,8 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     // Code example from libxml2 docs re: read from a stream.
 
-    if (!f.good())
-        throw Error("Input stream not open or read error");
-    if (!dest_dmr)
-        throw InternalErr(__FILE__, __LINE__, "DMR object is null");
+    if (!f.good()) throw Error("Input stream not open or read error");
+    if (!dest_dmr) throw InternalErr(__FILE__, __LINE__, "DMR object is null");
 
     d_dmr = dest_dmr; // dump values here
 
