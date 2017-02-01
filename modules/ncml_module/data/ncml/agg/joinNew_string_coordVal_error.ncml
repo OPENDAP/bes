@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A joinNew aggregation REJECTION test on Array data
+     for the case of explicitly listed string-valued
+     netcdf@coordValue attributes.
+
+     It is a parse error to list a string value for the first coordValue
+     but then have one subsequently empty.  
+
+     [Is this necessary?  I think it will avoid obvious errors, so makes
+     sense to enforce it...]
+-->
+
+<netcdf title="joinNew Aggregation with missing string coordVal's">
+  
+  <aggregation type="joinNew" dimName="source">
+    
+    <variableAgg name="u"/>
+    <variableAgg name="v"/>
+
+    <!-- Same dataset a few times, but with different coordVal -->
+    <netcdf title="Dataset 1" location="data/ncml/fnoc1.nc" coordValue="Station_1"/>
+    <!-- Oops I forgot one here, parse error -->
+    <netcdf title="Dataset 2" location="data/ncml/fnoc1.nc"/>
+    <netcdf title="Dataset 3" location="data/ncml/fnoc1.nc" coordValue="Station_3"/>
+
+  </aggregation>
+  
+</netcdf>

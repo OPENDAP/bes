@@ -1,0 +1,55 @@
+## directories
+.deps
+.libs
+autom4te.cache
+
+## files
+*~
+*.o
+*.lo
+*.output
+*.tab.cc
+*.tab.hh
+lex.*.cc
+*.la
+# Assuming there's a ...pc.in it's built from
+*.pc
+*.log
+*.trs
+
+.dirstamp
+
+Makefile
+Makefile.in
+conf/compile
+conf/config.guess
+conf/config.sub
+conf/depcomp
+conf/install-sh
+conf/libtool.m4
+conf/ltmain.sh
+conf/ltoptions.m4
+conf/ltsugar.m4
+conf/ltversion.m4
+conf/lt~obsolete.m4
+conf/missing
+conf/test-driver
+config.h
+config.h.in
+config.status
+configure
+stamp-h?
+aclocal.m4
+libtool
+atconfig
+atlocal
+
+## fits specific files
+
+fits.conf
+
+bes-testsuite/bes.conf
+bes-testsuite/fits_handlerTest
+bes-testsuite/generate_data_baseline.sh
+bes-testsuite/generate_metadata_baseline.sh
+bes-testsuite/package.m4

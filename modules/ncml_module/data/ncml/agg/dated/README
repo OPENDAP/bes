@@ -1,0 +1,4 @@
+Test data for scan with dateFormatMark.  CG* is the original set.
+THe ones with {W,X,Y,Z} prepended are copies of the CG* artifically
+made to make the filename lexicographic order differ from chronological to
+test sorting on the ISO 8601 coordValues.

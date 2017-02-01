@@ -1,0 +1,9 @@
+Attributes {
+    primary_cloud {
+        Byte _FillValue 255;
+        Byte DAP2_EnumValues 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 255;
+        String DAP2_EnumNames "Clear", "Cumulonimbus", "Stratus", "Stratocumulus", "Cumulus", "Altostratus", "Nimbostratus", "Altocumulus", "Cirrostratus", "Cirrocumulus", "Cirrus", "Missing";
+        String DAP2_OriginalNetCDFBaseType "NC_ENUM";
+        String DAP2_OriginalNetCDFTypeName "cloud_class_t";
+    }
+}

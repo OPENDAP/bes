@@ -1,0 +1,30 @@
+#create sameprec.sav
+newform prec_l1.afm prec_l1.bfm testprec.in > temp 
+readfile temp < readfile.in >&sameprec.sav
+cat sameprec.sav
+#create asc1bin3.sav
+newform prec_l1.afm prec_l3.bfm testprec.in > temp
+readfile temp < readfile.in >&asc1bin3.sav
+cat asc1bin3.sav
+#create asc1bin5.sav
+newform prec_l1.afm prec_l5.bfm testprec.in > temp
+readfile temp < readfile.in >&asc1bin5.sav
+cat asc1bin5.sav
+#create asc3bin1.sav
+newform prec_l3.afm prec_l1.bfm testprec.in > temp
+readfile temp < readfile.in >&asc3bin1.sav
+cat asc3bin1.sav
+#crate asc3bin5.sav
+newform prec_l3.afm prec_l5.bfm testprec.in > temp
+readfile < readfile.in >&asc3bin5.sav
+cat asc3bin5.sav
+#create asc5bin1.sav
+newform prec_l5.afm prec_l1.bfm testprec.in > temp
+readfile < readfile.in >&asc5bin1.sav
+cat asc5bin1.sav
+#create asc5bin3.sav
+newform prec_l5.afm prec_l3.bfm testprec.in > temp
+readfile < readfile.in >&asc5bin3.sav
+cat asc5bin3.sav
+echo "Done making .sav files"
+cat space

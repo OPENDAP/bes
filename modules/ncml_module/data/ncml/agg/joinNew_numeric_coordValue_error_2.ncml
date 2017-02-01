@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A joinNew aggregation REJECTION test on Array data
+     for the case of explicitly listed numeric-valued
+     netcdf@coordValue attributes
+
+     Expected: Parse Error
+     Test: First dataset has valid numeric, but a latter one is malformed.
+     -->
+
+<netcdf title="joinNew Aggregation with numeric coordVal's">
+  
+  <aggregation type="joinNew" dimName="source">
+    
+    <variableAgg name="u"/>
+    <variableAgg name="v"/>
+
+    <!-- Same dataset a few times, but with different coordVal -->
+    <netcdf title="Dataset 1" location="data/ncml/fnoc1.nc" coordValue="1.2"/>
+    <netcdf title="Dataset 2" location="data/ncml/fnoc1.nc" coordValue="3.4"/>
+    <!-- oops typo, malformed float! Parse error! -->
+    <netcdf title="Dataset 3" location="data/ncml/fnoc1.nc" coordValue="1.0ee4"/>
+
+  </aggregation>
+  
+</netcdf>

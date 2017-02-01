@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test on netcdf Grid granules using scan@ncoords extension-->
+<netcdf title="joinExisting test on netcdf Grid granules using scan@ncoords"
+	>
+  
+  <attribute name="Description" type="string"
+	     value=" joinExisting test on netcdf Grid granules WITHOUT using scan@ncoords"/>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <!-- Test scan without an ncoords -->
+    <!-- Should match the same set below -->
+    <scan location="data/nc/simple_test/"
+	  subdirs="false"
+	  suffix=".nc"
+	  regExp="test_grid_[0-9]*"
+	  />
+  </aggregation>
+  
+</netcdf>

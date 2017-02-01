@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-nio-8080-exec-9:49">
+  <bes:setContext name="bes_timeout">300</bes:setContext>
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContainer name="catalogContainer" space="catalog">/data/arrayT.dods</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <bes:constraint>wrapitup()</bes:constraint>
+    </bes:container>
+  </bes:define>
+  <bes:get type="dods" definition="d1" returnAs="netcdf" />
+</bes:request>
+

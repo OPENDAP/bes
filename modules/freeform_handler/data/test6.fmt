@@ -1,0 +1,12 @@
+
+// This is a FreeForm format description file for isee3 data.
+
+dbase_input_data "ISEE3_data"
+t 1 15 double 6
+Bx 16 30 double 6
+By 31 45 double 6
+Bz 46 60 double 6
+Bx2 61 75 double 6
+
+ASCII_output_data "ISEE3_data"
+Bx 1 8 double 6

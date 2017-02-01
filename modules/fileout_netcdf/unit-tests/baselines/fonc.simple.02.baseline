@@ -1,0 +1,7 @@
+netcdf simpleT02 {
+variables:
+	byte byte ;
+data:
+
+ byte = 28 ;
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="joinNew Grid aggregation with explicit map">
+  
+  <aggregation type="joinNew" dimName="sample_time">
+    <variableAgg name="dsp_band_1"/> 
+    <netcdf location="data/ncml/agg/grids/f97182070958.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97182183448.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97183065853.hdf"/>  
+    <netcdf location="data/ncml/agg/grids/f97183182355.hdf"/> 
+  </aggregation> 
+  
+  <variable name="sample_time" shape="sample_time" type="int">
+    <attribute name="units" type="string" value="Days since 01/01/2010"/>
+    <!-- Uniform weekly sampling  -->
+    <values start="1" increment="7"/>
+  </variable>
+
+</netcdf>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="ref_tst_compounds4.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Attribute name="phony_compound_var" type="Container"/>
+    <Structure name="phony_compound_var">
+        <Structure name="cmp1">
+            <Int16 name="i"/>
+            <Int32 name="j"/>
+        </Structure>
+        <Structure name="cmp2">
+            <Float32 name="x"/>
+            <Array name="y">
+                <Float64/>
+                <dimension size="3"/>
+                <dimension size="2"/>
+            </Array>
+        </Structure>
+    </Structure>
+    <blob href="cid:"/>
+</Dataset>

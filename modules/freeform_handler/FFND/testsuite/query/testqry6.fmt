@@ -1,0 +1,10 @@
+ASCII_input_data	"ascii for query test"
+ucvar   1  2 uint8 0
+fvar    3 12 float32 4
+usvar  13 18 uint16 0
+ulvar1 19 26 uint32 0
+ulvar2 27 34 uint32 2
+lvar1  35 43 int32 0
+lvar2  44 52 int32 2
+cvar   53 55 text 0
+

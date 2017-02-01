@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test that we can change the attributes in a Grid.  In this case we
+  change the attributes on a Grid map vector... -->
+<netcdf location="data/ncml/agg/cldc.mean.nc" title="This file results in a Grid">
+  <!-- Traverse into the Grid as a Structure -->
+  <variable name="cldc" type="Structure">
+    <!-- Traverse into the "lat" map vector (Array) -->
+    <variable name="lat"> 
+      <attribute name="Description" type="string">I am a new attribute in the Grid map vector named lat!</attribute>
+    </variable>
+    <variable name="lon"> 
+      <attribute name="Description" type="string">I am a new attribute in the Grid map vector named lon!</attribute>
+    </variable>
+  </variable>
+</netcdf>

@@ -1,0 +1,49 @@
+#!@PERL@
+#
+# This little bit of excitment reads the javascript code from
+# javascript.h.tmpl and dumps it to a file that so that the entire file of js
+# is one huge C++ string object. In the process it rips off the file's header
+# and CVS log and escapes all the double quotes. This makes the javascript
+# code simpler to edit.
+# 
+# Usage: js2h.pl <template> > javascript.h
+#
+# 10/7/99 jhrg
+
+use strict;
+
+my $id_found = 0;
+
+print <<EOD;
+
+// Automatically generated file. DO NOT EDIT!
+// Edit $ARGV[0] instead.
+
+const string java_code = \"\\n\\
+EOD
+
+# Some compilers, including some gcc compiler's are picky
+# about unescaped new lines in string literals.  Last two
+# editor commands terminate newlines with a backslash. 
+
+# I changed the first pattern because it was cutting off the last character
+# of comment lines. I eliminated the fourth pattern because it was not needed
+# given the changes to the third pattern.
+
+# The $id_found stuff is there just to eliminate copying the copyright header
+# from the www.js source file. That notice is redundant given that www.js
+# code becomes a string in www_int.cc. 07/10/03 jhrg
+
+while (<>) {
+    if (/\$Id/) {
+	$id_found = 1;
+    }
+    if ($id_found) {
+	s@\\\"@\\\\\"@g;
+	s@\"@\\\"@g;
+	s@^(.*)$@$1\\n\\@;
+	print;
+    }
+}
+
+print "\";\n";

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<!-- Heterogeneous Aggregations
+Test: Whether an aggregation may use member datasets of differing file
+formats (handlers) but which fit the aggregation criteria.
+-->
+<netcdf title="Simple test of joinNew Grid aggregation">
+  
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <netcdf location="data/ncml/agg/grids_h5/f97182070958.h5"/> 
+    <netcdf location="data/ncml/agg/grids/f97182183448.hdf"/> 
+    <netcdf location="data/ncml/agg/grids_h5/f97183065853.h5"/>  
+    <netcdf location="data/ncml/agg/grids/f97183182355.hdf"/> 
+  </aggregation> 
+  
+</netcdf>

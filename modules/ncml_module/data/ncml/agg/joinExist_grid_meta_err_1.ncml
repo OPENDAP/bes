@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test for parse error in incorrect type spec in placeholder c.v. for aggregated map.  -->
+<netcdf title="joinExisting metadata parse error test on netcdf Grid granules">
+  
+  <attribute name="Test Description" type="string"
+	     value="Metadata type error test on the auto-generated aggregated map vector."/>
+
+  <!-- Specify only metadata for the variable.
+       Since this is a "forward declaration" of the variable, 
+       the type must match too! This will test that we
+       error if there's a type mismatch -->
+  <variable name="time" type="float">
+    <attribute name="Description"
+	       type="String"
+	       value="This won't work since the type doesn't match on the placeholder!"
+	       />
+  </variable>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <netcdf location="data/nc/simple_test/test_grid_0.nc" 
+	    ncoords="1"> 
+    </netcdf>
+    
+    <netcdf location="data/nc/simple_test/test_grid_1.nc"
+	    ncoords="1"> 
+    </netcdf>
+        
+    <netcdf location="data/nc/simple_test/test_grid_2.nc" 
+	    ncoords="1"> 
+    </netcdf>
+
+  </aggregation>
+
+   
+</netcdf>

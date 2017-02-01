@@ -1,0 +1,17 @@
+ASCII_input_data	"Made from hypoi.afm"
+year               1  2 uint8 0
+month              3  4 uint8 0
+day                5  6 uint8 0
+hour               7  8 uint8 0
+minute             9 10 uint8 0
+second            11 14 uint16 2
+latitude_deg_abs  15 16 uint8 0
+latitude_ns       17 17 text 0
+latitude_min      18 21 uint16 2
+longitude_deg_abs 22 24 uint8 0
+longitude_ew      25 25 text 0
+longitude_min     26 29 uint16 2
+depth             30 34 int16 2
+magnitude_local   35 36 uint8 1
+spaces            37 49 text 0
+

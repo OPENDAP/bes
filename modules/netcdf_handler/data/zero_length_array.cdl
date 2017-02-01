@@ -1,0 +1,57 @@
+// zero_length_array.cdl
+
+// Created on: Jan 29, 2016
+//     Author: jimg
+//
+// Made using: ncgen -k3 zero_length_array.cdl
+
+netcdf zero_length_array {
+     
+     dimensions:
+     lat = 6, lon = 5, time = unlimited;
+     
+     variables:
+       int     lat(lat), lon(lon), time(time);
+       
+       float   z(lat,lon), t(lat,lon);
+     
+       byte    pixel(lat,lon);
+
+       lat:units = "degrees_north";
+       lon:units = "degrees_east";
+       time:units = "seconds";
+       z:units = "meters";
+       z:valid_range = 0., 5000.;
+       z:_FillValue = 1.f;
+              
+       :title = "Hyrax/netcdf handler test file for zero-length arrays";
+       :version = 1.;
+       :description = "Test zero-length arrays in a data handler.";
+            
+     data:
+       lat   = 0, 10, 20, 30, 40, 50;
+       lon   = -140, -118, -96, -84, -52;
+       
+       z = 10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10;
+                      
+       t = 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1;
+           
+           
+       pixel = 7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7;
+}
+

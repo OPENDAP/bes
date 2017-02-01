@@ -1,0 +1,85 @@
+# testing file for eq formats on the sun
+date >&trash
+cat trash
+$TSBIN_DIR/newform >&trash
+cat trash
+echo "*******************************************************************"
+echo "             TESTING EARTHQUAKE FORMATS ASCII TO ASCII" 
+echo "*******************************************************************"
+echo "*******************************************************************"
+echo "                   TESTING HYPO71 TO HYPOINVERSE"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califh71.sav -f califh1.fmt -o test.out" 
+($TSBIN_DIR/newform califh71.sav -f califh1.fmt -o test.out) >&errfile
+diff test.out califhi.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING HYPO71 TO HYPOELLIPSE"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califh71.sav -f califh2.fmt -o test.out" 
+($TSBIN_DIR/newform califh71.sav -f califh2.fmt -o test.out) >&errfile
+diff test.out califhe.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING HYPO71 TO EQTAPE"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califh71.sav -f califh3.fmt -o test.out" 
+($TSBIN_DIR/newform califh71.sav -f califh3.fmt -o test.out) >&errfile
+diff test.out califtap.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING HYPOINVERSE TO EQTAPE"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califhi.sav -f califhi1.fmt -o test.out" 
+($TSBIN_DIR/newform califhi.sav -f califhi1.fmt -o test.out) >&errfile
+diff test.out califtap.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING HYPOELLIPSE TO EQTAPE"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califhe.sav -f califhe1.fmt -o test.out" 
+($TSBIN_DIR/newform califhe.sav -f califhe1.fmt -o test.out) >&errfile
+diff test.out califtap.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING EQTAPE TO HYPO71"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califtap.sav -f calift1.fmt -o test.out" 
+($TSBIN_DIR/newform califtap.sav -f calift1.fmt -o test.out) >&errfile
+diff test.out califh71.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING EQTAPE TO HYPOI"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califtap.sav -f calift2.fmt -o test.out" 
+($TSBIN_DIR/newform califtap.sav -f calift2.fmt -o test.out) >&errfile
+diff test.out califhi.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+echo "*******************************************************************"
+echo "                   TESTING EQTAPE TO HYPOE"
+echo "*******************************************************************"
+rm test.out
+echo "$TSBIN_DIR/newform califtap.sav -f calift3.fmt -o test.out" 
+($TSBIN_DIR/newform califtap.sav -f calift3.fmt -o test.out) >&errfile
+diff test.out califhe.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+#
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed
+echo "***** ASCII EARTHQUAKE FORMAT TEST WORKED LIKE A CHARM *****"
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed

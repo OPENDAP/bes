@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes in netcdf not in schema :
+All these are just mispellings.  Technically we just need one failure, but...
+We test acceptance elsewhere.
+-->
+<netcdf filename="data/ncml/fnoc1.nc" 
+	ID="foo" 
+	toitle="A parse error test" 
+	enhanced="true" 
+	addRectords="false" 
+	FMRCDefinition="blah"
+	coordsVal="10"
+	nuMCoords="1"
+	/>

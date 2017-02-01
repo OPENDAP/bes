@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Rejection test of joinNew with a scan aggregation">
+
+  <!-- ERROR scan must be a direct child of aggregation only -->
+  <scan location="data/ncml/agg/" suffix=".hdf" subdirs="true"/>
+
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+   </aggregation> 
+  
+</netcdf>

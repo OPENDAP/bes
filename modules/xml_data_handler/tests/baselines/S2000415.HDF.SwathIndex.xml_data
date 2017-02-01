@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/dap/3.3#">
+    <Structure name="NSCAT Rev 20">
+        <Sequence name="SwathIndex">
+            <row number="0">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="1">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="2">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="3">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="4">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="5">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="6">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="7">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="8">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="9">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="10">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="11">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="12">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="13">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="14">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="15">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="16">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="17">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="18">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="19">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="20">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="21">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="22">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="23">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="24">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="25">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="26">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="27">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="28">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="29">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="30">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="31">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="32">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="33">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="34">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="35">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="36">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="37">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="38">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="39">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="40">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="41">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="42">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="43">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="44">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="45">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="46">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="47">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="48">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="49">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="50">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="51">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="52">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="53">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="54">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="55">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="56">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="57">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="58">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="59">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>-1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="60">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>1</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="61">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>2</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="62">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>3</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="63">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>4</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="64">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>5</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="65">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>6</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="66">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>7</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="67">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>8</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="68">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>9</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="69">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>10</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="70">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>11</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="71">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>12</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="72">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>13</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="73">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>14</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="74">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>15</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="75">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>16</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="76">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>17</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="77">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>18</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="78">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>19</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="79">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>20</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="80">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>21</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="81">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>22</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="82">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>23</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="83">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>24</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="84">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>25</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="85">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>26</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="86">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>27</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="87">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>28</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="88">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>29</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="89">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>30</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="90">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>31</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="91">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>32</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="92">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>33</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="93">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>34</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="94">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>35</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="95">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>36</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="96">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>37</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="97">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>38</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="98">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>39</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="99">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>40</value>
+                    </Int16>
+                </Structure>
+            </row>
+            <row number="100">
+                <Structure name="begin">
+                    <Int16 name="begin__0">
+                        <value>41</value>
+                    </Int16>
+                </Structure>
+            </row>
+        </Sequence>
+    </Structure>
+</Dataset>

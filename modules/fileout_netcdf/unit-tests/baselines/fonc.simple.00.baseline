@@ -1,0 +1,30 @@
+netcdf simpleT00 {
+dimensions:
+	str_len = 23 ;
+variables:
+	byte byte ;
+	short i16 ;
+	int i32 ;
+	short ui16 ;
+	int ui32 ;
+	float f32 ;
+	double f64 ;
+	char str(str_len) ;
+data:
+
+ byte = 28 ;
+
+ i16 = -2048 ;
+
+ i32 = -105467 ;
+
+ ui16 = 2048 ;
+
+ ui32 = 105467 ;
+
+ f32 = 5.7866 ;
+
+ f64 = 10245.1234 ;
+
+ str = "This is a String Value" ;
+}

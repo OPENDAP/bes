@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Called from the autotest driver when that program is called using 
+# --generate=arg where 'arg' is the name of the test as it appears in 
+# the test output.
+# 
+# Note: This function is coupled to the naming scheme used in
+# hdf4_handlerTest.at
+
+src=$2
+if test -z "$src"
+then
+        src=nc
+fi
+
+besstandalone -c @abs_builddir@/bes.conf \
+-i @abs_srcdir@/$src/$1 | getdap -M - > @abs_srcdir@/$src/$1.baseline

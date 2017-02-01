@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes of variableAgg element.  -->
+
+<netcdf>
+  <aggregation type="joinNew">
+    <!-- Empty name is an error -->
+    <variableAgg nname="I_am_an_error"/>
+    <netcdf/>
+    <netcdf/>
+  </aggregation>
+</netcdf>

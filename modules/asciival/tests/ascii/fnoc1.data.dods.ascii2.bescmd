@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+    
+  <setContext name="dap_format">dap2</setContext>
+  <bes:setContainer name="c" space="catalog">tests/data/fnoc1.data</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+        <constraint>u</constraint>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dods" definition="d1" returnAs="ascii"/> 
+  
+</bes:request>

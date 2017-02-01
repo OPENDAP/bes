@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinNew_scan_dfm.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="projection_type" type="String">
+            <value>mapped</value>
+        </Attribute>
+        <Attribute name="projection" type="String">
+            <value>geographic</value>
+        </Attribute>
+        <Attribute name="gctp_sys" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="gctp_zone" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="gctp_parm" type="Float64">
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+            <value>0.000000000000000</value>
+        </Attribute>
+        <Attribute name="gctp_datum" type="Int32">
+            <value>12</value>
+        </Attribute>
+        <Attribute name="Southernmost_Northing" type="Float32">
+            <value>37.2686996</value>
+        </Attribute>
+        <Attribute name="Northernmost_Northing" type="Float32">
+            <value>38.0247002</value>
+        </Attribute>
+        <Attribute name="Westernmost_Easting" type="Float32">
+            <value>236.580002</value>
+        </Attribute>
+        <Attribute name="Easternmost_Easting" type="Float32">
+            <value>237.479996</value>
+        </Attribute>
+        <Attribute name="et_affine" type="Float64">
+            <value>0.000000000000000</value>
+            <value>0.02700000000000001</value>
+            <value>0.03600000000000023</value>
+            <value>0.000000000000000</value>
+            <value>236.5800000000000</value>
+            <value>37.26870000000000</value>
+        </Attribute>
+        <Attribute name="rows" type="Int32">
+            <value>29</value>
+        </Attribute>
+        <Attribute name="cols" type="Int32">
+            <value>26</value>
+        </Attribute>
+        <Attribute name="polygon_latitude" type="Float64">
+            <value>37.26870000000000</value>
+            <value>38.02470000000000</value>
+            <value>38.02470000000000</value>
+            <value>37.26870000000000</value>
+            <value>37.26870000000000</value>
+        </Attribute>
+        <Attribute name="polygon_longitude" type="Float64">
+            <value>236.5800000000000</value>
+            <value>236.5800000000000</value>
+            <value>237.4800000000000</value>
+            <value>237.4800000000000</value>
+            <value>236.5800000000000</value>
+        </Attribute>
+        <Attribute name="time_coverage_end" type="String">
+            <value>2006-06-07T12:00:00Z</value>
+        </Attribute>
+    </Attribute>
+    <Array name="fileTime">
+        <Attribute name="_CoordinateAxisType" type="String">
+            <value>Time</value>
+        </Attribute>
+        <String/>
+        <dimension name="fileTime" size="4"/>
+    </Array>
+    <Array name="time">
+        <Attribute name="long_name" type="String">
+            <value>End Time</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>seconds since 1970-01-01T00:00:00Z</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float64">
+            <value>1149681600.000000</value>
+            <value>1149681600.000000</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="time" size="1"/>
+    </Array>
+    <Array name="altitude">
+        <Attribute name="long_name" type="String">
+            <value>Altitude</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>altitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float32">
+            <value>0.00000000</value>
+            <value>0.00000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="altitude" size="1"/>
+    </Array>
+    <Array name="lat">
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="point_spacing" type="String">
+            <value>even</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float32">
+            <value>37.2686996</value>
+            <value>38.0247002</value>
+        </Attribute>
+        <Attribute name="coordsys" type="String">
+            <value>geographic</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="29"/>
+    </Array>
+    <Array name="lon">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="point_spacing" type="String">
+            <value>even</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float32">
+            <value>236.580002</value>
+            <value>237.479996</value>
+        </Attribute>
+        <Attribute name="coordsys" type="String">
+            <value>geographic</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lon" size="26"/>
+    </Array>
+    <Grid name="CGusfc">
+        <Array name="CGusfc">
+            <Attribute name="_FillValue" type="Float32">
+                <value>-1.00000003e+32</value>
+            </Attribute>
+            <Attribute name="missing_value" type="Float32">
+                <value>-1.00000003e+32</value>
+            </Attribute>
+            <Attribute name="numberOfObservations" type="Int32">
+                <value>303</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>-0.287640005</value>
+                <value>0.276320010</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="fileTime" size="4"/>
+            <dimension name="time" size="1"/>
+            <dimension name="altitude" size="1"/>
+            <dimension name="lat" size="29"/>
+            <dimension name="lon" size="26"/>
+        </Array>
+        <Map name="fileTime">
+            <Attribute name="_CoordinateAxisType" type="String">
+                <value>Time</value>
+            </Attribute>
+            <String/>
+            <dimension name="fileTime" size="4"/>
+        </Map>
+        <Map name="time">
+            <Attribute name="long_name" type="String">
+                <value>End Time</value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <value>time</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>seconds since 1970-01-01T00:00:00Z</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float64">
+                <value>1149681600.000000</value>
+                <value>1149681600.000000</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="time" size="1"/>
+        </Map>
+        <Map name="altitude">
+            <Attribute name="long_name" type="String">
+                <value>Altitude</value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <value>altitude</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>m</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>0.00000000</value>
+                <value>0.00000000</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="altitude" size="1"/>
+        </Map>
+        <Map name="lat">
+            <Attribute name="long_name" type="String">
+                <value>Latitude</value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <value>latitude</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>37.2686996</value>
+                <value>38.0247002</value>
+            </Attribute>
+            <Attribute name="coordsys" type="String">
+                <value>geographic</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lat" size="29"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="long_name" type="String">
+                <value>Longitude</value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <value>longitude</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>236.580002</value>
+                <value>237.479996</value>
+            </Attribute>
+            <Attribute name="coordsys" type="String">
+                <value>geographic</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lon" size="26"/>
+        </Map>
+    </Grid>
+    <dataBLOB href=""/>
+</Dataset>

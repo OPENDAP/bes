@@ -1,0 +1,32 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP File Out NetCDF (FONc) BES Module Configuration file          #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=fonc
+BES.module.fonc=@bes_modules_dir@/libfonc_module.so
+
+# File Out Netcdf (FONc) module specific parameters"
+# FONc.Tempdir: Directory to store temporary netcdf files during transformation"
+# FONc.Reference: URL to the FONc Reference Page at docs.opendap.org"
+# FONc.UseCompression: Use compression when making netCDF4 files
+# FONc.ChunkSize: The default chunk size when making netCDF4 files, in KBytes
+# FONc.ClassicModel: When making a netCDF4 file, use only the 'classic' netCDF 
+# data model.
+
+FONc.Tempdir=/tmp
+
+FONc.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf
+
+# The default values for these keys
+FONc.UseCompression=true
+FONc.ChunkSize=4096
+FONc.ClassicModel=true

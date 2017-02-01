@@ -1,0 +1,27 @@
+
+The new_new_build branch in corporates the modules in to the BES
+project directly (and looses the individual repo's history in the
+process). The build and various top-level autoconf/make files are the
+same.
+
+Here's what's left to be done:
+
+Decide on the way to handle the HDF modules
+Add options to configure to simplify THG's work
+
+DONE Remove the two hack configure scripts
+DONE Move asciival and www-interface up to modules
+
+DONE Rename dap-server to 'usage'
+
+Separate the BES configure from the part specific to the modules
+    Use separate M4 calls in a different file and include them?
+    Modify the configure script so that uses environment vars (?)
+    see https://autotools.io/index.html.
+    
+Remove unused M4 macros from configure (these are function and header
+searches where teh compile-time symbols are never tested.
+
+Rename/remove the bes.conf.modules.in files
+
+

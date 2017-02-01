@@ -1,0 +1,14 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+m4_include([handler_tests_macros.m4])
+
+AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.2.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature.csv.3.bescmd])
+
+# DAP4 tests
+AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([csv/temperature.csv.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([csv/temperature.csv.dap_ce_1.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([csv/temperature.csv.dap_ce_2.bescmd])

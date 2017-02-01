@@ -1,0 +1,94 @@
+
+netcdf ugrid_test_04 {
+dimensions:
+	condition = 4 ;
+	time = 3 ;
+	faces = 8 ;
+	nodes = 9 ;
+	three = 3 ;
+variables:
+	int fvcom_mesh ;
+		fvcom_mesh:face_node_connectivity = "fnca" ;
+		fvcom_mesh:standard_name = "mesh_topology" ;
+		fvcom_mesh:topology_dimension = 2 ;
+		fvcom_mesh:node_coordinates = "X Y" ;
+	float X(nodes) ;
+		X:grid = "element" ;
+		X:grid_location = "node" ;
+	float Y(nodes) ;
+		Y:grid = "element" ;
+		Y:grid_location = "node" ;
+	int fnca(faces, three) ;
+		fnca:start_index = 1 ;
+		fnca:standard_name = "face_node_connectivity" ;
+	float oneDnodedata(nodes) ;
+		oneDnodedata:coordinates = "Y X" ;
+		oneDnodedata:mesh = "fvcom_mesh" ;
+		oneDnodedata:location = "node" ;
+	float twoDnodedata(time, nodes) ;
+		twoDnodedata:coordinates = "Y X" ;
+		twoDnodedata:mesh = "fvcom_mesh" ;
+		twoDnodedata:location = "node" ;
+	float threeDnodedata(condition, time, nodes) ;
+		threeDnodedata:coordinates = "Y X" ;
+		threeDnodedata:mesh = "fvcom_mesh" ;
+		threeDnodedata:location = "node" ;
+	float celldata(faces) ;
+		celldata:mesh = "fvcom_mesh" ;
+		celldata:location = "face" ;
+	float bogusMeshRef(nodes) ;
+		bogusMeshRef:coordinates = "Y X" ;
+		bogusMeshRef:mesh = "bogus" ;
+		bogusMeshRef:location = "node" ;
+data:
+
+ fvcom_mesh = 17;
+ 
+ X = -1.0, 0.0, 1.0, 1.5,  1.0,  0.0, -1.0, -1.5, 0.0 ;
+
+ Y =  1.0, 1.5, 1.0, 0.0, -1.0, -1.5, -1.0,  0.0, 0.0 ;
+
+ fnca =
+  1, 2, 9,
+  2, 3, 9,
+  3, 4, 9,
+  4, 5, 9,
+  5, 6, 9,
+  6, 7, 9,
+  7, 8, 9,
+  8, 1, 9;
+ 
+  // Was... in the 3xN version
+  // 1, 2, 3, 4, 5, 6, 7, 8,
+  // 2, 3, 4, 5, 6, 7, 8, 1,
+  // 9, 9, 9, 9, 9, 9, 9, 9;
+
+ oneDnodedata = 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;
+ 
+ twoDnodedata = 
+  0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+  1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
+  2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9;
+
+ threeDnodedata = 
+  0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+  1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
+  2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9,
+
+  10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9,
+  11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9,
+  12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7, 12.8, 12.9,
+
+  20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9,
+  21.1, 21.2, 21.3, 21.4, 21.5, 21.6, 21.7, 21.8, 21.9,
+  22.1, 22.2, 22.3, 22.4, 22.5, 22.6, 22.7, 22.8, 22.9,
+
+  30.1, 30.2, 30.3, 30.4, 30.5, 30.6, 30.7, 30.8, 30.9,
+  31.1, 31.2, 31.3, 31.4, 31.5, 31.6, 31.7, 31.8, 31.9,
+  32.1, 32.2, 32.3, 32.4, 32.5, 32.6, 32.7, 32.8, 32.9;
+
+ celldata = 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ;
+ 
+ bogusMeshRef = 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;
+
+}

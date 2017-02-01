@@ -1,0 +1,473 @@
+grep a2a.fmt ../testhdrs
+************************************************
+grep a2aNN.fmt ../testhdrs
+echo "newform a2aNN.fmt hdyes.dat > hdyes.tst"
+(newform a2aNN.fmt hdyes.dat > hdyes.tst) >&errfile
+************************************************
+grep a2aNY.fmt ../testhdrs
+************************************************
+grep a2aYN.fmt ../testhdrs
+echo "newform a2aYN.fmt hdyes.dat > hdno.tst"
+(newform a2aYN.fmt hdyes.dat > hdno.tst) >&errfile
+************************************************
+grep a2aYY.fmt ../testhdrs
+echo "newform a2aYY.fmt hdyes.dat > hdyes.tst"
+(newform a2aYY.fmt hdyes.dat > hdyes.tst) >&errfile
+************************************************
+grep a2bNN.fmt ../testhdrs
+echo "newform a2bNN.fmt hdyes.dat > hdyes.tst"
+(newform a2bNN.fmt hdyes.dat > hdyes.tst) >&errfile
+************************************************
+grep a2bNY.fmt ../testhdrs
+************************************************
+grep a2bYN.fmt ../testhdrs
+echo "newform a2bYN.fmt hdyes.dat > hdno.tst"
+(newform a2bYN.fmt hdyes.dat > hdno.tst) >&errfile
+************************************************
+grep a2bYY.fmt ../testhdrs
+echo "newform a2bYY.fmt hdyes.dat > hdyes.tst"
+(newform a2bYY.fmt hdyes.dat > hdyes.tst) >&errfile
+************************************************
+grep a2d.fmt ../testhdrs
+************************************************
+grep ar.bin ../testhdrs
+************************************************
+grep ar.fmt ../testhdrs
+************************************************
+grep ar_all.fmt ../testhdrs
+************************************************
+grep arhead.afm ../testhdrs
+************************************************
+grep asc2db.fmt ../testhdrs
+************************************************
+grep b2a.fmt ../testhdrs
+************************************************
+grep b2aNN.fmt ../testhdrs
+echo "newform b2aNN.fmt hdyes.bin > hdyes.tst"
+(newform b2aNN.fmt hdyes.bin > hdyes.tst) >&errfile
+************************************************
+grep b2aYN.fmt ../testhdrs
+echo "newform b2aYN.fmt hdyes.bin > hdno.tst"
+(newform b2aYN.fmt hdyes.bin > hdno.tst) >&errfile
+************************************************
+grep b2aYY.fmt ../testhdrs
+echo "newform b2aYY.fmt hdyes.bin > hdyes.tst"
+(newform b2aYY.fmt hdyes.bin > hdyes.tst) >&errfile
+************************************************
+grep bin.tst ../testhdrs
+************************************************
+grep db2asc.fmt ../testhdrs
+************************************************
+grep dbase.out ../testhdrs
+************************************************
+grep dosaa.fmt ../testhdrs
+************************************************
+grep errfile ../testhdrs
+(newform hdno.afm hdyes.afm hdno.dat > hdblank.tst) >&errfile 
+(newform hdyes.afm hdno.afm hdyes.dat > hdno.tst) >&errfile 
+(newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst) >&errfile 
+(newform a2aNN.fmt hdyes.dat > hdyes.tst) >&errfile
+(newform a2aYN.fmt hdyes.dat > hdno.tst) >&errfile
+(newform a2aYY.fmt hdyes.dat > hdyes.tst) >&errfile
+(newform a2bNN.fmt hdyes.dat > hdyes.tst) >&errfile
+(newform a2bYN.fmt hdyes.dat > hdno.tst) >&errfile
+(newform a2bYY.fmt hdyes.dat > hdyes.tst) >&errfile
+(newform b2aNN.fmt hdyes.bin > hdyes.tst) >&errfile
+(newform b2aYN.fmt hdyes.bin > hdno.tst) >&errfile
+(newform b2aYY.fmt hdyes.bin > hdyes.tst) >&errfile
+(newform nodc.dab > ibt.tst) >&errfile
+************************************************
+grep gethead.old ../testhdrs
+************************************************
+grep gethead.out ../testhdrs
+************************************************
+grep gmon.out ../testhdrs
+************************************************
+grep go ../testhdrs
+************************************************
+grep hdblank.bin ../testhdrs
+************************************************
+grep hdblank.dat ../testhdrs
+diff -c0 hdblank.tst hdblank.dat > trash
+bin2asc hdno.bfm hdyes.afm hdno.bin hdblank.dat  
+************************************************
+grep hdblank.tst ../testhdrs
+echo "newform hdno.afm hdyes.afm hdno.dat > hdblank.tst"
+(newform hdno.afm hdyes.afm hdno.dat > hdblank.tst) >&errfile 
+diff -c0 hdblank.tst hdblank.dat > trash
+************************************************
+grep hdblankbin.sav ../testhdrs
+************************************************
+grep hdno.afm ../testhdrs
+echo "newform hdno.afm hdyes.afm hdno.dat > hdblank.tst"
+(newform hdno.afm hdyes.afm hdno.dat > hdblank.tst) >&errfile 
+echo "newform hdyes.afm hdno.afm hdyes.dat > hdno.tst"
+(newform hdyes.afm hdno.afm hdyes.dat > hdno.tst) >&errfile 
+asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+bin2asc hdyes.bfm hdno.afm hdyes.bin hdno.dat
+************************************************
+grep hdno.bfm ../testhdrs
+asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+bin2asc hdno.bfm hdyes.afm hdno.bin hdblank.dat  
+************************************************
+grep hdno.bin ../testhdrs
+bin2asc hdno.bfm hdyes.afm hdno.bin hdblank.dat  
+diff -c0 hdno.tst hdno.bin > trash
+************************************************
+grep hdno.dat ../testhdrs
+echo "newform hdno.afm hdyes.afm hdno.dat > hdblank.tst"
+(newform hdno.afm hdyes.afm hdno.dat > hdblank.tst) >&errfile 
+diff -c0 hdno.tst hdno.dat > trash
+asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+bin2asc hdyes.bfm hdno.afm hdyes.bin hdno.dat
+bin2asc hdyes.bfm hdyes.afm hdyes.bin hdno.dat 
+diff -c0 hdno.tst hdno.dat > trash
+diff -c0 hdno.tst hdno.dat > trash
+************************************************
+grep hdno.tst ../testhdrs
+echo "newform hdyes.afm hdno.afm hdyes.dat > hdno.tst"
+(newform hdyes.afm hdno.afm hdyes.dat > hdno.tst) >&errfile 
+diff -c0 hdno.tst hdno.dat > trash
+echo "newform a2aYN.fmt hdyes.dat > hdno.tst"
+(newform a2aYN.fmt hdyes.dat > hdno.tst) >&errfile
+diff -c0 hdno.tst hdno.dat > trash
+echo "newform a2bYN.fmt hdyes.dat > hdno.tst"
+(newform a2bYN.fmt hdyes.dat > hdno.tst) >&errfile
+diff -c0 hdno.tst hdno.bin > trash
+echo "newform b2aYN.fmt hdyes.bin > hdno.tst"
+(newform b2aYN.fmt hdyes.bin > hdno.tst) >&errfile
+diff -c0 hdno.tst hdno.dat > trash
+************************************************
+grep hdrs_dir ../testhdrs
+************************************************
+grep hdyes.afm ../testhdrs
+echo "newform hdno.afm hdyes.afm hdno.dat > hdblank.tst"
+(newform hdno.afm hdyes.afm hdno.dat > hdblank.tst) >&errfile 
+echo "newform hdyes.afm hdno.afm hdyes.dat > hdno.tst"
+(newform hdyes.afm hdno.afm hdyes.dat > hdno.tst) >&errfile 
+echo "newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst"
+(newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst) >&errfile 
+asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+bin2asc hdno.bfm hdyes.afm hdno.bin hdblank.dat  
+bin2asc hdyes.bfm hdyes.afm hdyes.bin hdno.dat 
+************************************************
+grep hdyes.bfm ../testhdrs
+asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+bin2asc hdyes.bfm hdno.afm hdyes.bin hdno.dat
+bin2asc hdyes.bfm hdyes.afm hdyes.bin hdno.dat 
+************************************************
+grep hdyes.bin ../testhdrs
+bin2asc hdyes.bfm hdno.afm hdyes.bin hdno.dat
+bin2asc hdyes.bfm hdyes.afm hdyes.bin hdno.dat 
+diff -c0 hdyes.tst hdyes.bin > trash
+diff -c0 hdyes.tst hdyes.bin > trash
+echo "newform b2aNN.fmt hdyes.bin > hdyes.tst"
+(newform b2aNN.fmt hdyes.bin > hdyes.tst) >&errfile
+echo "newform b2aYN.fmt hdyes.bin > hdno.tst"
+(newform b2aYN.fmt hdyes.bin > hdno.tst) >&errfile
+echo "newform b2aYY.fmt hdyes.bin > hdyes.tst"
+(newform b2aYY.fmt hdyes.bin > hdyes.tst) >&errfile
+************************************************
+grep hdyes.dat ../testhdrs
+echo "newform hdyes.afm hdno.afm hdyes.dat > hdno.tst"
+(newform hdyes.afm hdno.afm hdyes.dat > hdno.tst) >&errfile 
+echo "newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst"
+(newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst) >&errfile 
+diff -c0 hdyes.tst hdyes.dat > trash
+asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+echo "newform a2aNN.fmt hdyes.dat > hdyes.tst"
+(newform a2aNN.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+echo "newform a2aYN.fmt hdyes.dat > hdno.tst"
+(newform a2aYN.fmt hdyes.dat > hdno.tst) >&errfile
+echo "newform a2aYY.fmt hdyes.dat > hdyes.tst"
+(newform a2aYY.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+echo "newform a2bNN.fmt hdyes.dat > hdyes.tst"
+(newform a2bNN.fmt hdyes.dat > hdyes.tst) >&errfile
+echo "newform a2bYN.fmt hdyes.dat > hdno.tst"
+(newform a2bYN.fmt hdyes.dat > hdno.tst) >&errfile
+echo "newform a2bYY.fmt hdyes.dat > hdyes.tst"
+(newform a2bYY.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+diff -c0 hdyes.tst hdyes.dat > trash
+************************************************
+grep hdyes.fmt ../testhdrs
+************************************************
+grep hdyes.sav ../testhdrs
+************************************************
+grep hdyes.tst ../testhdrs
+echo "newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst"
+(newform hdyes.afm hdyes.afm hdyes.dat > hdyes.tst) >&errfile 
+diff -c0 hdyes.tst hdyes.dat > trash
+echo "newform a2aNN.fmt hdyes.dat > hdyes.tst"
+(newform a2aNN.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+echo "newform a2aYY.fmt hdyes.dat > hdyes.tst"
+(newform a2aYY.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+echo "newform a2bNN.fmt hdyes.dat > hdyes.tst"
+(newform a2bNN.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.bin > trash
+echo "newform a2bYY.fmt hdyes.dat > hdyes.tst"
+(newform a2bYY.fmt hdyes.dat > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.bin > trash
+echo "newform b2aNN.fmt hdyes.bin > hdyes.tst"
+(newform b2aNN.fmt hdyes.bin > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+echo "newform b2aYY.fmt hdyes.bin > hdyes.tst"
+(newform b2aYY.fmt hdyes.bin > hdyes.tst) >&errfile
+diff -c0 hdyes.tst hdyes.dat > trash
+************************************************
+grep header.afm ../testhdrs
+************************************************
+grep header.bfm ../testhdrs
+************************************************
+grep header.h ../testhdrs
+************************************************
+grep ibt.afm ../testhdrs
+************************************************
+grep ibt.dab ../testhdrs
+************************************************
+grep ibt.dat ../testhdrs
+************************************************
+grep ibt.dfm ../testhdrs
+************************************************
+grep ibt.rom ../testhdrs
+************************************************
+grep ibt.sav ../testhdrs
+diff -c0 ibt.tst ibt.sav > trash
+************************************************
+grep ibt.tst ../testhdrs
+echo "  newform nodc.dab > ibt.tst"
+(newform nodc.dab > ibt.tst) >&errfile
+diff -c0 ibt.tst ibt.sav > trash
+************************************************
+grep mkfmt ../testhdrs
+************************************************
+grep new_nodc.afm ../testhdrs
+************************************************
+grep newfmt.awk ../testhdrs
+************************************************
+grep newformat ../testhdrs
+************************************************
+grep newhd.dat ../testhdrs
+************************************************
+grep newhead.afm ../testhdrs
+************************************************
+grep newnodc.dab ../testhdrs
+************************************************
+grep nodc.afm ../testhdrs
+************************************************
+grep nodc.dab ../testhdrs
+echo "  newform nodc.dab > ibt.tst"
+(newform nodc.dab > ibt.tst) >&errfile
+************************************************
+grep nodc.dat ../testhdrs
+************************************************
+grep nodc.fmt ../testhdrs
+#		dbase to ascii (ibt.fmt changed to nodc.fmt)	
+************************************************
+grep nodc.out ../testhdrs
+************************************************
+grep nodc.rom ../testhdrs
+************************************************
+grep nodc.tst ../testhdrs
+************************************************
+grep nodc2.fmt ../testhdrs
+************************************************
+grep out ../testhdrs
+#	1-input format, 2-output format, 3-data file
+#	4-input for readfile, 5-readfile output to compare against
+#readblanks.out - blanks are written in place of header
+#readnohead.out - no header is written
+#readhd.out     - the header is written
+asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+# bin2asc echos process to stdout and takes 4 arguments,
+#	1-input format, 2-output format, 3-data file
+************************************************
+grep readblanks.out ../testhdrs
+#readblanks.out - blanks are written in place of header
+asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+************************************************
+grep readhd.in ../testhdrs
+asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+************************************************
+grep readhd.out ../testhdrs
+#readhd.out     - the header is written
+asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+************************************************
+grep readnohd.in ../testhdrs
+asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+************************************************
+grep readnohd.out ../testhdrs
+asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+************************************************
+grep readnohead.out ../testhdrs
+#readnohead.out - no header is written
+************************************************
+grep romhead.dfm ../testhdrs
+************************************************
+grep seeit ../testhdrs
+************************************************
+grep space ../testhdrs
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+cat space
+************************************************
+grep t.a ../testhdrs
+#		O means it has passed initial tests
+#	header formats assume that an input file is described,
+#	therefore a NY combination is incorrect and a NN is the
+diff -c0 hdblank.tst hdblank.dat > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+# bin2asc echos process to stdout and takes 4 arguments,
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.bin > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.bin > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.bin > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 ibt.tst ibt.sav > trash
+chktrash || exit 3
+************************************************
+grep temp ../testhdrs
+************************************************
+grep test ../testhdrs
+#		O means it has passed initial tests
+#		  means the test has not been added to this file 
+************************************************
+grep test.out ../testhdrs
+************************************************
+grep test.tst ../testhdrs
+************************************************
+grep testasc.dat ../testhdrs
+************************************************
+grep testbin.tst ../testhdrs
+************************************************
+grep tester ../testhdrs
+************************************************
+grep tmp ../testhdrs
+************************************************
+grep trash ../testhdrs
+diff -c0 hdblank.tst hdblank.dat > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.bin > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.bin > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.bin > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 hdno.tst hdno.dat > trash
+chktrash || exit 3
+diff -c0 hdyes.tst hdyes.dat > trash
+chktrash || exit 3
+diff -c0 ibt.tst ibt.sav > trash
+chktrash || exit 3
+************************************************
+grep trash.out ../testhdrs
+************************************************
+grep trash2 ../testhdrs
+************************************************
+grep  ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs
+************************************************
+grep ../testhdrs

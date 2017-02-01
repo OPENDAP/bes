@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinExisting_multi.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="Decoy">
+        <String/>
+        <dimension size="3"/>
+    </Array>
+    <Array name="A">
+        <Int32/>
+        <dimension name="sample" size="4"/>
+    </Array>
+    <Array name="B">
+        <Int32/>
+        <dimension name="sample" size="4"/>
+    </Array>
+    <Array name="A_expected">
+        <Int32/>
+        <dimension name="sample" size="4"/>
+    </Array>
+    <Array name="B_expected">
+        <Int32/>
+        <dimension name="sample" size="4"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

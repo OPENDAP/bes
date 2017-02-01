@@ -1,0 +1,21 @@
+/ This is the format description file for the data files latlon2.bin and
+/ ll_d_m_s.dat. Each record of the input binary file latlon2.bin contains 
+/ two fields, latitude and longitude. These values are stored as integers.
+/ Each record of the output ASCII file ll_d_m_s.dat contains latitude and 
+/ longitude given in units of degrees, minutes, and seconds.
+
+binary_data "binary input format"
+latitude 1 4 long 6
+longitude 5 8 long 6
+
+ASCII_data "ASCII output format"
+latitude_deg 1 7 short 0
+latitude_min 13 15 short 0
+latitude_sec 21 23 short 0
+longitude_deg 27 31 short 0
+longitude_min 37 39 short 0
+longitude_sec 45 47 short 0
+
+ASCII_data "add"
+latitude 1 11 long 6
+longitude 13 23 long 6

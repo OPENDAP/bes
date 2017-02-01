@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Acceptance test for a joinNew aggregation with more than one aggregation variable  -->
+
+<netcdf title="Sample joinNew Aggregation on Pure NCML Datasets">
+  
+  <dimension name="station" length="5"/>
+  <dimension name="sensor" length="3"/>
+
+  <!-- joinNew and form new outer dimension "day" -->
+  <aggregation type="joinNew" dimName="day">
+    
+    <!--  Test that more than one aggregation variable works-->
+    <variableAgg name="V"/>
+    <variableAgg name="W"/>
+
+    <netcdf title="Sample Slice 1">
+      <variable name="W" type="int" shape="sensor">
+	<values>-1 -2 -3</values>
+      </variable>
+
+      <variable name="V" type="int" shape="station">
+	<values>1 3 5 7 9</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Sample Slice 2">
+      <variable name="V" type="int" shape="station">
+	<values>2 4 6 8 10</values>
+      </variable>
+      
+      <variable name="W" type="int" shape="sensor">
+	<values>-2 -4 -6</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+  <!-- The expected outputs, prepared by hand-->
+  <variable name="V_expected" type="int" shape="day station">
+    <values>
+      1 3 5 7 9 
+      2 4 6 8 10
+    </values>
+  </variable>
+  
+  <variable name="W_expected" type="int" shape="day sensor">
+    <values>
+      -1 -2 -3
+      -2 -4 -6
+    </values>
+  </variable>
+  
+</netcdf>

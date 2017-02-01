@@ -1,0 +1,3 @@
+Dataset {
+    Int32 MyArray3D[t = 3][x = 2][y = 2];
+} var_array_int_3.ncml;

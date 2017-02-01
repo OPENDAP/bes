@@ -1,0 +1,5 @@
+Dataset {
+    Byte byte_array[dim1 = 2][dim2 = 5];
+    Int16 i16_array[dim1 = 2][dim2 = 5];
+    Int32 i32_array[dim1 = 2][dim2 = 5];
+} virtual;

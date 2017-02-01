@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_compounds.nc">
+    <Structure name="obs">
+        <Byte name="day"/>
+        <Int16 name="elev"/>
+        <Int32 name="count"/>
+        <Float32 name="relhum"/>
+        <Float64 name="time"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>c0cac4c1</Value>
+        </Attribute>
+    </Structure>
+    <Attribute name="obs" type="Container">
+        <Attribute name="day" type="Byte">
+            <Value>157</Value>
+        </Attribute>
+        <Attribute name="elev" type="Int16">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="count" type="Int32">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="relhum" type="Float32">
+            <Value>-99.0000000</Value>
+        </Attribute>
+        <Attribute name="time" type="Float64">
+            <Value>-99.00000000000000</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Structure {
+    Byte day;
+    Int16 elev;
+    Int32 count;
+    Float32 relhum;
+    Float64 time;
+} obs = { 15, 2, 1, 0.5, 3600.01 };
+

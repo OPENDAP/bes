@@ -1,0 +1,38 @@
+The data:
+Grid {
+  Array:
+    String bears[i = 2][j = 3];
+  Maps:
+    Int32 i[i = 2];
+    Float32 j[j = 3];
+} bears = {  Array: {{"ind", "ist", "ing"},{"uis", "hab", "le"}}  Maps: {10, 20}, {2, 4, 6} };
+Grid {
+  Array:
+    Int16 order[i = 2][j = 3];
+  Maps:
+    Int32 i[i = 2];
+    Float32 j[j = 3];
+} order = {  Array: {{1, 2, 3},{4, 5, 6}}  Maps: {10, 20}, {2, 4, 6} };
+Grid {
+  Array:
+    Int32 shot[i = 2][j = 3];
+  Maps:
+    Int32 i[i = 2];
+    Float32 j[j = 3];
+} shot = {  Array: {{2, 3, 4},{5, 6, 7}}  Maps: {10, 20}, {2, 4, 6} };
+Grid {
+  Array:
+    Float32 aloan[i = 2][j = 3];
+  Maps:
+    Int32 i[i = 2];
+    Float32 j[j = 3];
+} aloan = {  Array: {{3, 4, 5},{6, 7, 1e+12}}  Maps: {10, 20}, {2, 4, 6} };
+Grid {
+  Array:
+    Float64 cross[i = 2][j = 3];
+  Maps:
+    Int32 i[i = 2];
+    Float32 j[j = 3];
+} cross = {  Array: {{4, 5, 0.000244140625},{7, 8, 10000000000}}  Maps: {10, 20}, {2, 4, 6} };
+Int16 l[l = 3] = {10, 9, 8};
+

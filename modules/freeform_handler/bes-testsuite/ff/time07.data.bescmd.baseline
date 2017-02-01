@@ -1,0 +1,8 @@
+Dataset {
+    Sequence {
+        String DODS_URL;
+    } GSO_AVHRR;
+} 1998-6-avhrr.dat;
+Data:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value"><getDODS><BESError><Type>3</Type><Message>libdap exception building response: error_code = 1005: libdap error transmitting DataDDS: Wrong number of arguments to a constraint expression function.</Message><Administrator>admin.email.address@your.domain.name</Administrator>*</BESError></getDODS></response>

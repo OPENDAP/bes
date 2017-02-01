@@ -1,0 +1,58 @@
+ASCII_input_file_header "AIFH"
+file_title 1 19 text 0
+
+ASCII_output_file_header "AOFH"
+file_title 1 19 text 0
+
+ASCII_output_record_header "AORHF"
+flight_line_number 1 5 long 0
+count 6 13 long 0
+fiducial_number_corresponding_to_first_logical_record 14 22 long 0
+date_MMDDYY_or_julian_day 23 30 long 0
+flight_number 31 38 long 0
+utm_easting_of_first_record 39 48 float 0
+utm_northing_of_first_record 49 58 float 0
+utm_easting_of_last_record 59 68 float 0
+utm_northing_of_last_record 69 78 float 0
+blank_padding 79 104 char 0
+
+dBASE_input_record_header "DIRHF"
+flight_line_number 1 5 long 0
+count 6 13 long 0
+fiducial_number_corresponding_to_first_logical_record 14 22 long 0
+date_MMDDYY_or_julian_day 23 30 long 0
+flight_number 31 38 long 0
+utm_easting_of_first_record 39 48 float 0
+utm_northing_of_first_record 49 58 float 0
+utm_easting_of_last_record 59 68 float 0
+utm_northing_of_last_record 69 78 float 0
+blank_padding 79 104 char 0
+
+ASCII_output_data "AODF"
+flight_line_number 1 5 long 0
+fiducial_number 6 15 long 0
+utm_easting_meters 16 25 float 0
+utm_northing_meters 26 35 float 0
+mag_total_field_intensity_nT 36 45 long 0
+mag_residual_field_nT 46 55 long 0
+alt_radar_meters 56 65 long 0
+alt_barometric_meters 66 75 long 0
+blank 76 80 char 0
+latitude 81 92 float 6
+longitude 93 104 float 6
+
+
+binary_input_data "BIDF"
+flight_line_number 1 4 long 0
+fiducial_number 5 8 long 0
+utm_easting_meters 9 12 long 0
+utm_northing_meters 13 16 long 0
+mag_total_field_intensity_nT 17 20 long 0
+mag_residual_field_nT 21 24 long 0
+alt_radar_meters 25 28 long 0
+alt_barometric_meters 29 32 long 0
+blank 33 37 char 0
+latitude 38 41 long 6
+longitude 42 45 long 6
+
+

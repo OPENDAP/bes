@@ -1,0 +1,5 @@
+ascii_input_data "long prec 1"
+number 1 7 long 1
+
+ascii_output_data "float prec 1"
+number 1 7 float 1

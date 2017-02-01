@@ -1,0 +1,15 @@
+Attributes {
+    FF_GLOBAL {
+        String Server "DODS FreeFrom based on FFND release 4.2.3";
+    }
+    fvar1 {
+    }
+    svar1 {
+    }
+    usvar1 {
+    }
+    lvar1 {
+    }
+    ulvar1 {
+    }
+}

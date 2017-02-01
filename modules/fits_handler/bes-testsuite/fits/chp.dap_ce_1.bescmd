@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContainer name="cpb" space="catalog">data/20060328.185927.chp.bsh.fts</setContainer>
+    <define name="d">
+	<container name="cpb">
+	   <dap4constraint>HDU_1.key_1</dap4constraint>
+	</container>
+    </define>
+    <get type="dap" definition="d" />
+</request>

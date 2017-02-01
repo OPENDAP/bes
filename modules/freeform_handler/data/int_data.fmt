@@ -1,0 +1,10 @@
+// -*- C++ -*-
+// More array tests.
+// The datafile test3.dab must be bad - it is 404 bytes long but should have
+// 480 bytes. 8/14/98 jhrg
+
+binary_input_data "int_data"
+x 1 4 ARRAY["stuff" 1 to 10] of int32 0
+
+ASCII_output_data "array_out"
+x 1 4 ARRAY["stuff" 1 to 10] of int32 0

@@ -1,0 +1,65 @@
+netcdf attrT {
+dimensions:
+	mystruct.str_len = 23 ;
+variables:
+	byte byte ;
+		byte:byteattr = 65b, 66b, 67b, 68b, 69b, 70b, 71b, 72b, 73b, 74b ;
+		byte:int16attr = -50s, -40s, -30s, -20s, -10s, 0s, 10s, 20s, 30s, 40s, 50s ;
+		byte:ui16attr = 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ;
+		byte:int32attr = -100000, -80000, -60000, -40000, -20000, 0, 20000, 40000, 60000, 80000, 100000 ;
+		byte:uint32attr = 0, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000 ;
+		byte:floatattr = 0.15f, 5.81f, 11.47f, 17.13f, 22.79f, 28.45f, 34.11f, 39.77f, 45.43f ;
+		byte:doubleattr = 100.155, 976.423, 1852.69, 2728.96, 3605.23, 4481.49, 5357.76, 6234.03, 7110.3, 7986.57, 8862.83, 9739.1 ;
+		byte:singlebyteattr = 77b ;
+		byte:singlestringattr = "String Value" ;
+		byte:container.containerattr = "Container Attribute Value" ;
+		byte:container.subcontainer.subcontainerattr = "Sub Container Attribute Value" ;
+	float mystruct.f32 ;
+		mystruct.f32:mystruct.mystructattr1 = "mystructattr1val" ;
+		mystruct.f32:mystruct.mystructattr2 = "mystructattr2val" ;
+		mystruct.f32:mystruct.mystructattr3 = "mystructattr3val" ;
+	double mystruct.f64 ;
+		mystruct.f64:mystruct.mystructattr1 = "mystructattr1val" ;
+		mystruct.f64:mystruct.mystructattr2 = "mystructattr2val" ;
+		mystruct.f64:mystruct.mystructattr3 = "mystructattr3val" ;
+		mystruct.f64:f64attr1 = "f64attr1val" ;
+	char mystruct.str(mystruct.str_len) ;
+		mystruct.str:mystruct.mystructattr1 = "mystructattr1val" ;
+		mystruct.str:mystruct.mystructattr2 = "mystructattr2val" ;
+		mystruct.str:mystruct.mystructattr3 = "mystructattr3val" ;
+		mystruct.str:strattr1 = "strattr1val" ;
+		mystruct.str:strattr2 = "strattr2val" ;
+	short mystruct.mysubstructure.i16 ;
+		mystruct.mysubstructure.i16:mystruct.mystructattr1 = "mystructattr1val" ;
+		mystruct.mysubstructure.i16:mystruct.mystructattr2 = "mystructattr2val" ;
+		mystruct.mysubstructure.i16:mystruct.mystructattr3 = "mystructattr3val" ;
+		mystruct.mysubstructure.i16:mystruct.mysubstructure.ssattr1 = "ssattr1val" ;
+		mystruct.mysubstructure.i16:i16attr1 = "i16attr1val" ;
+		mystruct.mysubstructure.i16:i16attr2 = "i16attr2val" ;
+		mystruct.mysubstructure.i16:i16attr3 = "i16attr3val" ;
+		mystruct.mysubstructure.i16:i16attr4 = "i16attr4val" ;
+		mystruct.mysubstructure.i16:i16attr5 = "i16attr5val" ;
+	int mystruct.mysubstructure.i32 ;
+		mystruct.mysubstructure.i32:mystruct.mystructattr1 = "mystructattr1val" ;
+		mystruct.mysubstructure.i32:mystruct.mystructattr2 = "mystructattr2val" ;
+		mystruct.mysubstructure.i32:mystruct.mystructattr3 = "mystructattr3val" ;
+		mystruct.mysubstructure.i32:mystruct.mysubstructure.ssattr1 = "ssattr1val" ;
+
+// global attributes:
+		:title = "Attribute Test DDS" ;
+		:contact = "Patrick West" ;
+		:contact_email = "opendap-tech@opendap.org" ;
+data:
+
+ byte = 28 ;
+
+ mystruct.f32 = 5.7866 ;
+
+ mystruct.f64 = 10245.1234 ;
+
+ mystruct.str = "This is a String Value" ;
+
+ mystruct.mysubstructure.i16 = -2048 ;
+
+ mystruct.mysubstructure.i32 = -105467 ;
+}

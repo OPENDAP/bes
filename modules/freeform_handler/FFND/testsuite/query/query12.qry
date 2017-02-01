@@ -1,0 +1,4 @@
+[ulvar1]%10 == ([ulvar2]*100)%10
+This query is testing order of operations (operators like '%' come before
+logical operators like '=') and will pull out all records where the last
+digit of ulvar1 is the same as the last digit of ulvar2.

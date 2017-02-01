@@ -1,0 +1,21 @@
+/ This format is for poisson.ar from exrate
+/ and contains a binary header
+
+binary_file_header "binary header"
+array1 1 80 char 0
+array2 81 160 char 0
+filename 161 172 char 0
+mnday 173 176 long 0
+mxday 177 180 long 0
+num_dsets 181 184 long 0
+num_samps 185 188 long 0
+samp_int 189 192 long 0
+targ_mag 193 196 float 0
+hflag 197 200 long 0
+
+binary_data "Binary data for poisson.ar"
+value 1 4 float 2
+
+ascii_data "ASCII data"
+value 1 10 float 2
+

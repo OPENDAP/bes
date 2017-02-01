@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/ncml/fnoc1_improved.ncml</setContainer>
+    <define name="d">
+	<container name="c">
+	    <dap4constraint>lat</dap4constraint>
+	</container>
+    </define>
+    <get type="dap" definition="d" />
+</request>

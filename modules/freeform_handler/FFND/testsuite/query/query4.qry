@@ -1,0 +1,4 @@
+sign[lvar1] = sign[lvar2]
+This query excludes all records where lvar1 and lvar2 are of different signs.
+Note that this is the same as query2.qry, but with a different query.
+(query2.qry is designed to test the & and | operators)

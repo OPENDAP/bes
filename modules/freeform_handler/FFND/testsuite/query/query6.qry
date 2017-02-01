@@ -1,0 +1,3 @@
+(abs([lvar1]%5)!=0)&(abs([lvar1]%5)!=2)
+This query excludes values of lvar1 which end in 0, 2, 5, and 7
+

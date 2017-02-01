@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_compounds5.nc">
+    <Dimension name="phony_dim" size="2"/>
+    <Structure name="phony_compound_var">
+        <Structure name="cmp1">
+            <Int16 name="i"/>
+            <Int32 name="j"/>
+        </Structure>
+        <Structure name="cmp2">
+            <Float32 name="x"/>
+            <Float64 name="y">
+                <Dim size="3"/>
+                <Dim size="2"/>
+            </Float64>
+        </Structure>
+        <Dim name="/phony_dim"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>055b2246</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Structure {
+        Int16 i;
+        Int32 j;
+    } cmp1;
+    Structure {
+        Float32 x;
+        Float64 y[3][2];
+    } cmp2;
+} phony_compound_var[phony_dim = 2] = {{ { 20000, 300000 }, { 100000, {{-100000.028899567, -200000},{-300000, -400000},{-500000, 3.1415926}} } }, { { 20000, 300000 }, { 100000, {{-100000.028899567, -100000},{-100000, -100000},{-100000, -100000}} } }};
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Create a new simple scalar variable at Dataset scope -->
+  <variable name="BadValues" type="int">
+    <values>1 2 3</values> <!-- More than one token is an error since scalar variable (no shape)! -->
+  </variable>
+</netcdf>
+
+

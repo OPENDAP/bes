@@ -1,0 +1,9 @@
+The data:
+Structure {
+    Byte day;
+    Int16 elev;
+    Int32 count;
+    Float32 relhum;
+    Float64 time;
+} obs = { 15, 2, 1, 0.5, 3600.01 };
+

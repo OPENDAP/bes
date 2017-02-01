@@ -1,0 +1,65 @@
+F 7e890 make_standard_dbin
+A 80898 make_dbin: dbin
+A 80928 make_dbin: dbin->title
+A 80940 db_set DBIN_FILE_NAME: dbin->file_name
+F 80958 db_set MAKE_NAME_TABLE
+A 80a60 err_push: Routine Stack
+A 80a80 err_push: String Stack
+A 80a98 err_push: Routine Stack
+A 80ab0 err_push: String Stack
+F 80ac8 nt_askvalue: temp
+F 80cd0 nt_askvalue: gvalue
+F 80958 db_set FORMAT_LIST
+F 80ac8 db_find_format_file buffer
+A 80ac8 dll_init: List Node
+A 80ae0 dll_add: List Node
+A 80af8 Creating Format
+A 80b58 dll_init: List Node
+A 80b70 dll_add: List Node
+A 80b88 Creating Variable
+A 80be0 dll_add: List Node
+A 80bf8 Creating Variable
+A 80c50 dll_add: List Node
+A 80c68 Creating Variable
+A 80cc0 dll_add: List Node
+A 80cd8 Creating Variable
+A 80d30 dll_add: List Node
+A 80d48 Creating Variable
+A 80da0 dll_add: List Node
+A 80db8 Creating Variable
+A 80e10 dll_add: List Node
+A 80e28 Creating Variable
+A 80e80 dll_add: List Node
+A 80e98 Creating Variable
+A 80ef0 dll_add: List Node
+A 80f08 Creating Format
+A 80f68 dll_init: List Node
+A 80f80 dll_add: List Node
+A 80f98 Creating Variable
+A 80ff0 dll_add: List Node
+A 81008 Creating Variable
+A 81060 dll_add: List Node
+A 81078 Creating Variable
+A 810d0 dll_add: List Node
+A 810e8 Creating Variable
+A 81140 dll_add: List Node
+A 81158 Creating Variable
+A 811b0 dll_add: List Node
+A 811c8 Creating Variable
+A 81220 dll_add: List Node
+A 81238 Creating Variable
+A 81290 dll_add: List Node
+A 812a8 Creating Variable
+A 81300 db_set DBIN_CACHE_SIZE: dbin->cache
+F 14812f0 nt_askvalue: temp
+F 14814f8 nt_askvalue: gvalue
+A 14812f0 newform main: std_args.local_buffer
+A 80958 err_push: Routine Stack
+A 80978 err_push: String Stack
+A 80998 Newform main: query_to_use
+A 809c0 dv_make: view
+A 80a48 dv_make: view->title
+A 7e890 ee_make_std_equation: scratch
+A 7e978 ee_clean_up_equation: allocated_list
+A 7e9d8 ee_clean_up_equation: var_list
+A 7e9e8 ee_clean_up_equation: var_list[num_vars]

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Error making too big an array -->
+  <dimension name="time" length="2147483648"/>
+  <variable name="MyAutoArray" type="int" shape="time">
+    <attribute name="Description" type="string">Testing too large of an array is error</attribute>
+    <values start="0" increment="1"/>
+  </variable>
+</netcdf>
