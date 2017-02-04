@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation dimName="time" type="joinNew">
+    <variableAgg name="monthRain" />
+    <variableAgg name="noOfSamples" />
+    <variableAgg name="chiSqFit" />
+    <variableAgg name="freezLevel" />
+    <variableAgg name="T0" />
+    <variableAgg name="r0" />
+    <variableAgg name="sigmaR" />
+    <variableAgg name="probRain" />
+    <variableAgg name="qInd1" />
+    <variableAgg name="qInd2" />
+    <variableAgg name="qInd3" />
+    <variableAgg name="spare" />
+    <netcdf location="data/3A11.19971201.7.HDF" coordValue="68702464.5" />
+    <netcdf location="data/3A11.19980101.7.HDF" coordValue="68702495.5" />
+  </aggregation>
+  <attribute name="Conventions" type="String" value="CF-1.0" />
+  <variable name="monthRain">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="noOfSamples">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="chiSqFit">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="freezLevel">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="T0">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="r0">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="sigmaR">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="probRain">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="qInd1">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="qInd2">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="qInd3">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="spare">
+    <attribute name="coordinates" type="String" value="time nlon nlat" />
+  </variable>
+  <variable name="nlat" shape="nlat">
+    <attribute name="units" type="String" value="degrees_north" />
+    <attribute name="standard_name" type="String" value="latitude" />
+    <values start="-37.5" increment="5.0" />
+  </variable>
+  <variable name="nlon" shape="nlon">
+    <attribute name="units" type="String" value="degrees_east" />
+    <attribute name="standard_name" type="String" value="longitude" />
+    <values start="-177.5" increment="5.0" />
+  </variable>
+  <variable name="time" shape="time" type="double">
+    <attribute name="standard_name" type="String" value="time" />
+    <attribute name="units" type="String" value="days since 1997-01-01 00:00:00" />
+    <attribute name="_CoordinateAxisType" type="String" value="time" />
+    <values>68702464.5 68702495.5</values>
+  </variable>
+</netcdf>

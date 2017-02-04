@@ -1,0 +1,169 @@
+#This file tests newform with the -q or query option
+
+date >&trash
+cat trash
+$TSBIN_DIR/newform >&trash
+cat trash
+
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query1.qry"
+echo "*********************************************************************"
+rm testqry1.dat
+($TSBIN_DIR/newform testqry.bin -q query1.qry -o testqry1.dat) 
+diff testqry1.dat query1.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query2.qry"
+echo "*********************************************************************"
+rm testqry2.dat
+($TSBIN_DIR/newform testqry.bin -q query2.qry -o testqry2.dat) 
+diff testqry2.dat query2.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query3.qry"
+echo "*********************************************************************"
+rm testqry3.dat
+($TSBIN_DIR/newform testqry.bin -q query3.qry -o testqry3.dat) 
+diff testqry3.dat query3.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query4.qry"
+echo "*********************************************************************"
+rm testqry4.dat
+($TSBIN_DIR/newform testqry.bin -q query4.qry -o testqry4.dat) 
+diff testqry4.dat query4.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query5.qry"
+echo "*********************************************************************"
+rm testqry5.dat
+($TSBIN_DIR/newform testqry.bin -q query5.qry -o testqry5.dat) 
+diff testqry5.dat query5.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query6.qry"
+echo "*********************************************************************"
+rm testqry6.dat
+($TSBIN_DIR/newform testqry.bin -q query6.qry -o testqry6.dat) 
+diff testqry6.dat query6.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query7.qry"
+echo "*********************************************************************"
+rm testqry7.dat
+($TSBIN_DIR/newform testqry.bin -q query7.qry -o testqry7.dat) 
+diff testqry7.dat query2.sav >trash || exit
+#This query should behave identically to query2.qry; so diff its save file
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query8.qry"
+echo "*********************************************************************"
+rm testqry8.dat
+($TSBIN_DIR/newform testqry.bin -q query8.qry -o testqry8.dat) 
+diff testqry8.dat query8.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query9.qry"
+echo "*********************************************************************"
+rm testqry9.dat
+($TSBIN_DIR/newform testqry.bin -q query9.qry -o testqry9.dat) 
+diff testqry9.dat query8.sav >trash || exit
+#This query should behave identically to query8.qry; so diff its save file
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query10.qry"
+echo "*********************************************************************"
+rm testqry10.dat
+($TSBIN_DIR/newform testqry.bin -q query10.qry -o testqry10.dat) 
+diff testqry10.dat query10.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query11.qry"
+echo "*********************************************************************"
+rm testqry11.dat
+($TSBIN_DIR/newform testqry.bin -q query11.qry -o testqry11.dat) 
+diff testqry11.dat query11.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query12.qry"
+echo "*********************************************************************"
+rm testqry12.dat
+($TSBIN_DIR/newform testqry.bin -q query12.qry -o testqry12.dat) 
+diff testqry12.dat query12.sav >trash || exit
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query13.qry"
+echo "*********************************************************************"
+rm testqry13.dat
+($TSBIN_DIR/newform testqry.bin -q query13.qry -o testqry13.dat) 
+diff testqry13.dat query2.sav >trash || exit
+# This query should yield results identical to query2.qry
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query14.qry"
+echo "*********************************************************************"
+rm testqry14.dat
+($TSBIN_DIR/newform testqry.bin -q query14.qry -o testqry14.dat) 
+diff testqry14.dat query8.sav >trash || exit
+# This query should yield results identical to query8.qry
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "TESTING NEWFORM QUERY OPTION: newform testqry.bin -q query15.qry"
+echo "*********************************************************************"
+rm testqry15.dat
+($TSBIN_DIR/newform testqry.bin -q query15.qry -o testqry15.dat) 
+diff testqry15.dat query15.sav >trash || exit
+# This query should yield results identical to query8.qry
+echo " "
+echo "No differences found."
+echo " "
+echo " "
+echo "*********************************************************************"
+echo "*********************************************************************"
+echo "NEWFORM QUERY TEST COMPLETE.  All appears normal..."
+echo "*********************************************************************"
+echo "*********************************************************************"

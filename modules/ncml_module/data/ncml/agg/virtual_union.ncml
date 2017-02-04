@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- An example of a union aggregation fully specified in this file -->
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  
+  <!-- Can specify attributes outside of aggregation -->
+  <attribute name="Dataset_Description" type="string" value="Virtual union aggregation example"/>
+  
+  <!-- Can specify variables at this level still, outside aggregation -->
+  <variable name="SelfReferentialVariable" type="string">
+    <values>My name is "SelfReferentialVariable"</values>
+  </variable>
+  
+  <aggregation type="union">
+    
+    <!-- Dataset One -->
+    <netcdf>
+      <!-- This one should "win" since it comes first... -->
+      <attribute name="Description" type="string" value="Dataset One"/>
+      <variable name="Foo" type="string">
+	<attribute name="Description" type="string" value="This var names Foo comes first and should be in output."/>
+	<values>Foo</values>
+      </variable>
+    </netcdf>
+
+    <!-- Dataset Two -->
+    <netcdf>
+      <!-- This one should "lose" since it comes later... -->
+      <attribute name="Description" type="string" value="Dataset Two"/>
+
+      <!-- This one should win and merge the entire structure -->
+      <attribute name="AttrContainer" type="Structure">
+	<attribute name="Attr_1" type="int">0 1 2 3 4 5 6 7 8 9</attribute>
+	<attribute name="Description" type="string">Test for whether a container gets merged correctly.</attribute>
+      </attribute>
+      
+      <!-- This one should "lose" since it comes later... -->
+      <variable name="Foo" type="string">
+	<attribute name="Description" type="string" value="This var names Foo comes later and should NOT be in output."/>
+	<values>Foo_in_dataset_2</values>
+      </variable>
+    
+      <!-- But this one will be added -->
+      <variable name="Bar" type="string">
+	<attribute name="Description" type="string" value="This var names Bar comes first and should be in output."/>
+	<values>Bar</values>
+      </variable>
+   </netcdf>
+    
+    <!-- Dataset Three -->
+    <netcdf>
+      <!-- This one should "lose" since it comes later... -->
+      <attribute name="Description" type="string" value="Dataset Three"/>
+
+      <!-- This one should lose at this level.  Containers are not merged. -->
+      <attribute name="AttrContainer" type="Structure">
+	<attribute name="Attr_in_dataset_3" type="int">0 1 2 3 4 5 6 7 8 9</attribute>
+	<attribute name="Desc" type="string">I SHOULD LOSE!  Test for whether a container gets merged correctly.</attribute>
+      </attribute>
+   
+      <!-- Will be skipped -->
+      <variable name="Bar" type="string">
+	<attribute name="Description" type="string" value="This var names Bar comes later and should NOT be in output."/>
+	<values>Bar_in_dataset_3</values>
+      </variable>
+    
+     <!-- But this one will be added -->
+      <variable name="Baz" type="string">
+	<attribute name="Description" type="string" value="This var names Baz comes first and should be in output."/>
+	<values>Baz</values>
+      </variable>
+    </netcdf>
+    
+  </aggregation>
+
+  <!-- TODO At this point theoretically we should be able to apply NcML transformations to elements in the aggregation above, according to the tutorial.  
+       I'd like to see an example of this... Since we disallow changing variable values but only attributes, presumably an author
+       could change an attribute known to be in the aggregation?  -->
+
+</netcdf>

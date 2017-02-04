@@ -1,0 +1,10 @@
+Dataset {
+    Sequence {
+        Int32 year;
+        Int32 day;
+        Int32 hours;
+        Int32 minutes;
+        Int32 seconds;
+        String DODS_URL;
+    } JPL_Pathfinder;
+} jplpath.dat;

@@ -1,0 +1,4 @@
+Dataset {
+    Int32 B[sample = 4];
+    Int32 B_expected[sample = 4];
+} joinExisting_varAgg.ncml;

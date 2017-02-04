@@ -1,0 +1,5 @@
+/ This is a format description file for the IBT data on NODC-01
+
+latitude 1 8 float 2 0
+longitude 10 18 float 2 0
+EOL 19 19 constant 0

@@ -1,0 +1,63 @@
+
+## OSX issues
+{
+   CFInitialize_1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:__CFInitialize
+   ...
+}
+
+{
+   CFInitialize_2
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:__CFInitialize
+   ...
+}
+
+{
+   dispatch_once
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:dispatch_once_f
+   ...
+}
+
+{
+   dispatch_once
+   Memcheck:Leak
+   match-leak-kinds:  definite
+   ...
+   fun:dispatch_once_f
+   ...
+}
+
+{
+   load_images_1
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:load_images
+   ...
+}
+
+{
+   load_images_2
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:load_images
+   ...
+}
+
+{
+   InitializePlatform
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:_NSInitializePlatform
+}

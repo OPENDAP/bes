@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test of multiple vars with matching join dimension  -->
+<netcdf title="Multiple Variable Test">
+  
+  <aggregation type="joinExisting" 
+	       dimName="sample" >
+    
+    <netcdf title="Granule 0" ncoords="2">
+      <dimension name="sample" length="2"/>
+      
+      <variable name="A" type="int" shape="sample">
+	<values>0 1</values>
+      </variable>
+      
+      <variable name="B" type="int" shape="sample">
+	<values>0 10</values>
+      </variable>
+
+      <variable name="Decoy" type="string" shape="3">
+	<values>Decoy Variable 1</values>
+      </variable>
+      
+    </netcdf>
+
+    <netcdf title="Granule 1" ncoords="2">
+      <dimension name="sample" length="2"/>
+
+      <variable name="A" type="int" shape="sample">
+	<values>2 3</values>
+      </variable>
+
+      <variable name="B" type="int" shape="sample">
+	<values>20 30</values>
+      </variable>
+
+      <variable name="Decoy" type="string" shape="3">
+	<values>Decoy Variable 2</values>
+      </variable>
+
+    </netcdf>
+
+  </aggregation>
+
+  <!-- Here's the expected output of the aggregation.  
+       
+       NOTE: We will not create the dimension since the aggregation is
+       expected to do that!  Note that it will be of correct size == 4
+       at this scope post-aggregation! -->
+  <variable name = "A_expected" type="int" shape="sample">
+    <values>0 1 2 3</values>
+  </variable>
+
+  <variable name = "B_expected" type="int" shape="sample">
+    <values>0 10 20 30</values>
+  </variable>
+
+</netcdf>

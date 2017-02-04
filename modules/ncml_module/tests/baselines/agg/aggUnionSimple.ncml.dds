@@ -1,0 +1,21 @@
+Dataset {
+    Float32 lat[lat = 21];
+    Float32 lon[lon = 360];
+    Float64 time[time = 456];
+    Grid {
+      Array:
+        Int16 cldc[time = 456][lat = 21][lon = 360];
+      Maps:
+        Float64 time[time = 456];
+        Float32 lat[lat = 21];
+        Float32 lon[lon = 360];
+    } cldc;
+    Grid {
+      Array:
+        Int16 lflx[time = 456][lat = 21][lon = 360];
+      Maps:
+        Float64 time[time = 456];
+        Float32 lat[lat = 21];
+        Float32 lon[lon = 360];
+    } lflx;
+} aggUnionSimple.ncml;

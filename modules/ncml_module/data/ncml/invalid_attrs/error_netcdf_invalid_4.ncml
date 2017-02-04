@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for ncoords specified on a dataset
+that is is not enclosed within an <aggregation> element scope.
+-->
+<netcdf location="/data/ncml/fnoc1.nc" ncoords="10"/>

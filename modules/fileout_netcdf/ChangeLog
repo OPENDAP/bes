@@ -1,0 +1,1735 @@
+2016-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #4 from OPENDAP/hyrax-282
+	Hyrax 282
+
+2016-11-03  James Gallagher  <jgallagher@opendap.org>
+
+	Added tests for the fix for Hyrax-282
+
+	Fix for Hyrax-282
+	This fix handles the case where a Grid has been projected so that
+	only some of its Maps or its Array is projected. Then entire Grid
+	was being sent, including the variables that were not projected,
+	and thus not read. Boom.
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+
+2016-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Updated handler tests macros in fileout netcdf tests
+
+2016-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused headers
+
+2016-09-07  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 242 issue fixed here - this code will run CEs with functions correctly.
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+2016-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Edits for the new history feature colliding with the 'uncompress' cache
+	This is really an edge case where our tests break because of
+	different hosts mangling names differently.
+
+	Updated the baselines so that they filter out date-time information
+	Nathan added support for the CF history attribute (!) but that
+	includes a date-time string (according to the spec) and that breaks
+	tests (since time is passing...). We now filter out that date-time
+	string from the baselines and replace it with the phrase
+	'removed date-time'. This updates the test code and the baselies.
+
+	Added #include <string.h>
+
+2016-06-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #3 from OPENDAP/history_attribute
+	History attribute
+
+	Finalized.
+
+	Updated fallback history entry to eliminate the fully qualified path.
+
+2016-06-02  Nathan Potter  <ndp@opendap.org>
+
+	The CF history attribute is updated when NETCDF3 and NetCDF4 output is created.
+
+	Another draft of the history attribute in which the OLFS sends the value of the entry
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-06-01  Nathan Potter  <ndp@opendap.org>
+
+	Added first draft of history attribute machinery.
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into function_result_unwrapper
+
+	Added namespaces names to a libdap enum type to quell compiler complaints.
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Tests for function result promotion in transmitters. Test function wrapitup() added.
+
+2016-03-11  Nathan Potter  <ndp@opendap.org>
+
+	Refactored function result promoter code to be a function and not a method.
+
+	New baselines for fonc to correct for change in output resulting from the new 
+	code that unpacks _GLOBAL attributes to the top level of the nectdf output. 
+	This is an expected result.
+
+	Documentation update
+
+2016-03-10  Nathan Potter  <ndp@opendap.org>
+
+	Fixed attribute naming in fonc - it was breaking things by adding paths to attribute names
+
+	Documentation
+
+2016-03-09  Nathan Potter  <ndp@opendap.org>
+
+	Updated function result promoter, instrumentation, etc.
+
+2016-03-08  Nathan Potter  <ndp@opendap.org>
+
+	ibid.
+
+	Repaired fileout_netcdf so that when it encounters top level attribute tables 
+	whose names end in "_GLOBAL" it will not add the name of the global container 
+	to the name of the NetCDF attribute (like add in a namespace prefix manner)
+
+2016-03-04  Nathan Potter  <ndp@opendap.org>
+
+	More debugging work in fileout_nectdf
+
+	Improved debug output for FONCArray:write()
+
+2016-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Patch for gcc-6 from Orion Poplawski
+
+2016-01-27  James Gallagher  <jgallagher@opendap.org>
+
+	Updated NEWS and README for Hyrax 1.13
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+	Updated autotest tests, macros and Makefile.am files
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated autotest tests, macros and Makefile.am files
+
+2016-01-20  James Gallagher  <jgallagher@opendap.org>
+
+	Removed 'fonc' from tests/Makefile.am
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 1) Ensured that libdap::Error objects are converted to BESDapError objects when caught. and 2) Catch and rethrow BESError objects whenever they could be thrown so they don't get swept up as unidentified errors in a catch(...) clause.
+
+2015-12-08  James Gallagher  <jgallagher@opendap.org>
+
+	Added new switches to the fonc.conf file.
+	The default values are supplied, but the presence of the keys
+	will clue people in. Docs also updated.
+
+2015-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added a note about building data files
+
+	Fixed the das file for the t_string.h5.dods/das test
+
+2015-12-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed include order for data/build_test_data/Makefile.am
+
+	fixed (?) call to fstream() with string and not c-string
+
+	Merge pull request #2 from OPENDAP/string_bug
+	String bug - Write DAP String variables correctly in both NetCDF3 and 4 classic model files
+
+2015-11-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the static link for the build_test_data bins
+
+	t_string.h5 now uses dapreader and not the hdf5 handler
+	...dropping one more dependency. The remaining dependency on HDF4
+	is needed to test a Sequence.
+
+	Tweaked the compression flag; ByteToShort is not used
+	The ByteToShort key might not be very useful. I don't see it being
+	used at all with DAP2 - the byte type in netcdf is signed and in
+	DAP2 is unsigned. The code added by Abdul actually transforms the
+	type of an associated attribute so that netCDF client software won't
+	fail when it detects a type mismatch between the variable and its
+	_FillValue attribute. For DAP4 this key might be used, so I left it
+	in the code.
+
+	New tests using in place of the older ones.
+	The new tests in fileout_netcdf use the handler while the older
+	tests used code that that simulated the handler's operations. It
+	was OK before the handler was modified several times... The new
+	tests use the dapreader handler except for two tests that use
+	hdf4 and hdf5 - the latter can be factored out with a bit more work.
+
+2015-11-29  James Gallagher  <jgallagher@opendap.org>
+
+	More testing changes...
+
+	Added new keys for ByteToShort and BlockSize
+	...And some more changes for the new tests (which are still
+	not done) in the tests and data/build_test_data dirs.
+
+	Checkpoint: More work on tests
+	Copied the simpleT00, ..., programs to data/build_test_data
+	so that they could be used to build .dods files that can be
+	used to test the handler w/o needing netcdf, hdf4, ...
+
+2015-11-25  James Gallagher  <jgallagher@opendap.org>
+
+	added package.m4
+
+	Added UseCompression key
+
+	Removed commented-out code
+	Cleaned up some of the headers, removed some of the calls to 'new.'
+
+	Fix for the 'string bug'
+	Also included are some tweaks for the code that make it a tiny bit
+	'better.' I started looking at how the headers might be streamlined,
+	but I don't really have time to do that - bugs, features and tests
+	should come first.
+
+	Added tests to the handler
+	These tests use the handler in a fashion more like the other handler
+	tests. They should replace the 'unit-tests' once I get the dapreader
+	handler working better.
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+2015-10-26  James Gallagher  <jgallagher@opendap.org>
+
+	Added *.Tpo
+
+2015-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	Coverity fixes
+
+	coverity fixes
+
+2015-10-14  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting
+
+2015-10-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_netcdf
+
+	Added fix for _FillValue from abdul.g.khan@nasa.gov
+	This is a fix for issue ODIP-133 where an unsigned byte
+	array is promoted to a short and the type of the _FillValue
+	attribtue is not. This results in a type-mismatch for the
+	attribute and that makes netcdf clients gag. Thanks to Abdul
+	for the fix. We should check other types for this same issue,
+	although unsigned byte maybe a special case...
+
+	Added fix for _FillValue from abdul.g.khan@nasa.gov
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-05-14  James Gallagher  <jgallagher@opendap.org>
+
+	Removed warning about GNU-specific rule in unit-tests/Makefile.am
+
+2015-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Removed GNU-specific Makefile.am hack
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_netcdf
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.3.0
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Set version to 1.3 because of change from NSIDC
+
+	Fixed text in some instrumentation.
+
+2015-04-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for the tests.
+	Now the unit-tests/Makefile.am reads a bit better and the test
+	driver programs only build when the tests are run. However, the
+	directory should be renamed from unit-tests to tests since these
+	are not unit tests.
+
+2015-04-01  James Gallagher  <jgallagher@opendap.org>
+
+	I fixed a memory leak.
+	I the FONcArray.cc:write memory was allocated using new
+	but not deleted until after an exception could be thrown.
+	This was a bit hard to see because the exception was thrown
+	by an error formating/reporting function.
+
+	Merge branch 'nsidc-fix_uint'
+
+	Merge branch 'fix_uint' of https://github.com/nsidc/fileout_netcdf into nsidc-fix_uint
+
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to git ignore
+
+2015-03-24  Michael Brandt  <mbrandt@colorado.edu>
+
+	Convert OPeNDAP Byte array data to NetCDF NC_SHORT The handler's
+	output currently interprets unsigned Bytes from OPeNDAP as signed
+	bytes (NC_BYTE). To avoid misrepresenting data and retain
+	compatiblity with NetCDF3/classic we need to convert/output this
+	data as a NC_SHORT.
+	
+	The existing test data for fits utilizes signed integers which
+	shouldn't ever be a valid output from DAP2. The test data should
+	be validated/regenerated and the test re-enabled.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+	Changed the chunk size to a constant from a hard coded value.
+	NetCDF4 chunking is set to MAX_CHUNK_SIZE (1024) or the dimension
+	size, whichever is smaller. This was set down in the code and I've
+	moved it up to a constant defiend at the top of FONcArray.cc
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge remote-tracking branch 'origin/modules'
+
+	Merge branch 'modules' of https://github.com/opendap/fileout_netcdf into modules
+
+	Fixes for make check and make dist.
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.10 changes
+	Added a .gitignore file in the 'data' dir so that make dist
+	works and modified the spec file to use up to date version
+	numbers for the dependencies.
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Changes to support the BES modules build.
+2014-08-08  James Gallagher <jgallagher@opendap.org>
+
+	distcheck fixes for linux
+
+	M    configure.ac
+	M    unit-tests/Makefile.am
+
+2014-08-08  James Gallagher <jgallagher@opendap.org>
+
+	test fix for make check - works on OSX
+
+	M    unit-tests/Makefile.am
+
+2014-08-08  James Gallagher <jgallagher@opendap.org>
+
+	Version 1.2.4
+
+	M    ChangeLog
+	M    INSTALL
+	M    Makefile.am
+	M    NEWS
+	M    README
+	M    configure.ac
+	M    fileout_netcdf.spec
+	M    unit-tests/Makefile.am
+
+2014-08-08  James Gallagher <jgallagher@opendap.org>
+
+	Removed old code and fixed a typo that introduced a double-free bug. This came from patches sent in by Aron (ADB)
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2014-08-08  James Gallagher <jgallagher@opendap.org>
+
+	Removed old code and fixed a typo that introduced a double-free
+	bug. This came from patches sent in by Aron (ADB)
+
+2014-08-01  James Gallagher <jgallagher@opendap.org>
+
+	Release 1.2.3 checklist
+
+	M    ChangeLog
+	M    INSTALL
+	M    NEWS
+	M    README
+	M    configure.ac
+	M    fileout_netcdf.spec
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a memory leak in the FONcTransmitter.cc code that was
+	discovered in the BESAsciiTransmit.cc file (see ticket 2240).
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a memory leak in the FONcTransmitter.cc code that was
+	discovered in the BESAsciiTransmit.cc file (see ticket 2240).
+
+2014-05-02  James Gallagher <jgallagher@opendap.org>
+
+	Changes after merging the trunk code (H 1.9.3) to
+	the dap4 branch.
+
+	M    unit-tests/readT.cc
+	M    unit-tests/seqT.cc
+
+2014-04-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_netcdf: Lowered netcdf dependency to 4.1.0
+
+2014-04-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_netcdf: Checking software version update and associated release changes.
+
+2014-03-27  James Gallagher <jgallagher@opendap.org>
+
+	Fix for OSX 10.9
+
+	M    unit-tests/test_send_data.cc
+
+2014-03-27  James Gallagher <jgallagher@opendap.org>
+
+	Fix for OSX 10.9
+
+	M    unit-tests/test_send_data.cc
+
+2013-10-18  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.9.1
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    fileout_netcdf.spec
+	M    ChangeLog
+	M    README
+
+2013-10-11  James Gallagher <jgallagher@opendap.org>
+
+	Edits to match the new, sane, semantics for BaseType::read(). True now means done/eof and flase means more data to read (more instances for a sequence). All the tests pass.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2013-10-11  James Gallagher <jgallagher@opendap.org>
+
+	Edits to match the new, sane, semantics for BaseType::read(). True
+	now means done/eof and flase means more data to read (more
+	instances for a sequence). All the tests pass.
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-27  James Gallagher <jgallagher@opendap.org>
+
+	Removed some debugging code that got left in by mistake.
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the
+	new OSX compiler prints warnings about it and it seems to not make
+	a difference with newer g++ versions.
+
+2013-09-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_netcdf: Removed the 'mark' from ChangeLog
+
+2013-09-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_netcdf: Updating ChangeLog and NEWS for Hyrax 1.9
+
+2013-09-09  Dan Holloway <dholloway@opendap.org>
+
+	Added del_transmitter(NETCDF4) to terminate method.
+
+2013-09-09  Dan Holloway <dholloway@opendap.org>
+
+	Added del_transmitter(NETCDF4) to terminate method.
+
+2013-08-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_nectdf: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Memory leak fixes.
+
+	M    FONcArray.cc
+	M    FONcGrid.cc
+	M    FONcArray.h
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Working on memoery issues... One remains.
+
+	M    FONcUtils.cc
+	M    FONcArray.cc
+	M    FONcGrid.cc
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Memory leak fixes.
+
+	M    FONcArray.cc
+	M    FONcGrid.cc
+	M    FONcArray.h
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Working on memoery issues... One remains.
+
+	M    FONcUtils.cc
+	M    FONcArray.cc
+	M    FONcGrid.cc
+
+2013-05-10  James Gallagher <jgallagher@opendap.org>
+
+	ignored the generated conf file
+
+2013-05-06  James Gallagher <jgallagher@opendap.org>
+
+	Modified the FONcTransform ctor so that the old three-arg version is supported. This means old code, like the unit tests, works without modification.
+
+2013-05-05  Dan Holloway <dholloway@opendap.org>
+
+	Updated to create netcdf4 files when transmitter selected is netcdf-4
+
+2013-04-30  James Gallagher <jgallagher@opendap.org>
+
+	Added test_send_data.h to SRCs. This should fix the distcheck target.
+
+2013-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the tests; they used the dap_module library that BES used to produce but which is now a module. Added stuff to svn:ignore
+
+2013-01-20  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the hyrax 1.8 branch
+
+	_M   .
+	M    configure.ac
+	MM   FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    NEWS
+	M    fileout_netcdf.spec
+	M    OSX_Resources/ReadMe.txt
+
+2012-10-29  muqun
+
+	Updating the info. for UINT16 mapping.
+
+2012-10-29  muqun
+
+	Updating the two tests that are affected by the latest correction of uint16 to int mapping. Some values in hdf4.dump are corrected
+
+2012-10-29  muqun
+
+	 Mainly makes the mapping of variable type UINT16 to netCDF NC_INT. Previously UINT16 is mapped to NC_SHORT for variables, to NC_INT for attributes. The mapping of UINT16 to NC_INT causes the overflow and the inconsistent mapping of datatype for variable and attribute. I also add an error checking for nc_enddef to detect any defined mode failure earlier. Tested with hyrax 1.8.4
+
+2012-10-29  Muqun Yang <myang6@hdfgroup.org>
+        Changing mapping of UINT16 from NC_SHORT to NC_INT for variables since that will 
+        cause overflow. This also makes it consistent for the mapping of attributes.
+
+2011-12-28  James Gallagher <jgallagher@opendap.org>
+
+	Cleaned up a warning where a bool was (not) used because the code
+	to process functional CEs was never used.
+
+2011-12-27  James Gallagher <jgallagher@opendap.org>
+
+	Fixed some spelling in comments and removed various warnings (compiler).
+
+2011-12-02  James Gallagher <jgallagher@opendap.org>
+
+	Changed the compiled path TEST_SRC_DIR to TEST_BUILD_DIR so that the
+	distcheck will work.
+
+	M    unit-tests/attrT.cc
+	M    unit-tests/readT.cc
+	M    unit-tests/arrayT.cc
+	M    unit-tests/arrayT01.cc
+	M    unit-tests/structT00.cc
+	M    unit-tests/structT01.cc
+	M    unit-tests/gridT.cc
+	M    unit-tests/structT02.cc
+	M    unit-tests/test_config.h.in
+	M    unit-tests/seqT.cc
+	M    unit-tests/simpleT00.cc
+	M    unit-tests/simpleT01.cc
+	M    unit-tests/simpleT02.cc
+	M    unit-tests/namesT.cc
+	M    OSX_Resources/ReadMe.txt
+
+2011-12-02  James Gallagher <jgallagher@opendap.org>
+
+	Hacked the tests so that one test - #18 with readT - is not run. This
+	test is failing on Linux hosts with the netcdf 3.6.2 RPM version of
+	netcdf but only due to a formatting difference between ncdump in that
+	version and more recent versions of ncdump used to build the
+	baselines.
+
+	M    unit-tests/fonc_handlerTest.at
+
+2011-11-25  Patrick West <pwest@ucar.edu>
+
+	bes.conf.in was removed from unit-tests, which makes it difficult to run the
+	tests.
+	M    configure.ac
+	D    unit-tests/bes.conf
+	A    unit-tests/bes.conf.in
+	M    unit-tests/Makefile.am
+
+2011-11-04  Patrick West <pwest@ucar.edu>
+
+	The agg.dods and agg.dump test uses an ncml original request and the
+	dods object generated from that request is put into .dods file. The
+	.dump file is the expected baseline of doing an ncdump on the result.
+	M    FONcDim.h
+	M    FONcTransmitter.cc
+	M    FONcArray.cc
+	M    FONcGrid.cc
+	M    unit-tests/fonc_handlerTest.at
+	A    unit-tests/data/agg.dump
+	AM   unit-tests/data/agg.dods
+	M    FONcGrid.h
+	M    FONcArray.h
+
+2011-11-03  Patrick West <pwest@ucar.edu>
+
+	Fixed the make check and distcheck targets. Now setting path to include
+	nc_bin_path set in configure.ac.
+	M    unit-tests/Makefile.am
+
+2011-11-02  Patrick West <pwest@ucar.edu>
+
+	.at uses readT to run 5 tests. We either need to remove it from the .at
+	file, or add it back to Makefile.am. But then TESTS was added for some
+	readon, running the *T files individually instead of as part of the test
+	scripts. readT takes a file to use to test.
+	M    unit-tests/Makefile.am
+
+2011-10-26  James Gallagher <jgallagher@opendap.org>
+
+	Updates for the new DDX tests... nearly done
+
+2011-10-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the tests so they work when the netcdf bin directory is not
+	on PATH. This is quite tricky since the usual AUTOTEST_PATH hacks don't
+	work - AUTOTEST_PATH is relative to '.'
+
+	M    configure.ac
+	M    unit-tests/Makefile.am
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Modified configure so that this code builds only the so version of the library by default.
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+2011-09-20  James Gallagher <jgallagher@opendap.org>
+
+	Spelling in comments.
+
+	M    FONcTransform.cc
+	M    FONcAttributes.cc
+
+2011-06-30  Patrick West <pwest@ucar.edu>
+
+	Merge hyrax 1.7 branch to trunk
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 releaseHyrax 1.7 release
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_netcdf: Added automated version numbers to OSX Package builds
+
+2011-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Merge for hyrax	1.7 from the hyrax_1.6.2_release branch	of shrew to the	trunk
+
+	_M   .
+	M    conf/netcdf.m4
+	_M   FONcTransform.cc
+	_M   FONcTransform.h
+	D    OSX_Resources/InstallationCheck
+	A  + OSX_Resources/InstallationCheck.proto
+	D    OSX_Resources/Info.plist
+	A  + OSX_Resources/Info.plist.proto
+	M    Makefile.am
+
+2011-02-14  Patrick West <pwest@ucar.edu>
+
+	Variables can start with an underscore
+	M    FONcUtils.cc
+	M    unit-tests/baselines/fonc.names.00.baseline
+
+2011-02-02  Patrick West <pwest@ucar.edu>
+
+	Removed references to ESG module. Changed to FONc.
+	M    FONcModule.cc
+	M    FONcModule.h
+
+2010-10-29  mjohnson
+
+	MERGE of Hyrax 1.6.2 Shrew Release Branch.
+
+2010-09-14  James Gallagher <jgallagher@opendap.org>
+
+	Bumped BES to 3.9.0 to handle issues with the conf files
+
+	M    configure.ac
+	M    INSTALL
+	M    fileout_netcdf.spec
+
+2010-09-14  James Gallagher <jgallagher@opendap.org>
+
+	Updated for 1.1.0 (hyrax 1.6.2)
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    fileout_netcdf.spec
+	M    ChangeLog
+	M    README
+
+2010-09-14  James Gallagher <jgallagher@opendap.org>
+
+	This code now uses the new method in ConstraintEvaluator that enables multiple functions to be called.
+
+2010-09-14  James Gallagher <jgallagher@opendap.org>
+
+	This code now uses the new method in ConstraintEvaluator that enables multiple functions to be called.
+
+2010-08-13  Patrick West <pwest@ucar.edu>
+
+	Test type and type factor. Had to implement sequence because intern_data
+	was not working.
+	A    unit-tests/ReadSequence.cc
+	A    unit-tests/ReadTypeFactory.cc
+	A    unit-tests/ReadSequence.h
+	A    unit-tests/ReadTypeFactory.h
+
+2010-08-09  Patrick West <pwest@ucar.edu>
+
+	Fixed problem with Sequence test in readT. Added hdf4 test with
+	sequences.
+	M    unit-tests/readT.cc
+	M    unit-tests/fonc_handlerTest.at
+	M    unit-tests/Makefile.am
+	A    unit-tests/data/hdf4.dump
+	A    unit-tests/data/hdf4.dods
+
+2010-08-09  Patrick West <pwest@ucar.edu>
+
+	Added simple constraint test for readT. hdf4 and airs tests are still
+	having problems, will add those later.
+	M    unit-tests/readT.cc
+	M    unit-tests/fonc_handlerTest.at
+	A    unit-tests/data/constraint.dump
+	AM   unit-tests/data/constraint.dods
+
+2010-08-06  Patrick West <pwest@ucar.edu>
+
+	Fixed problem where dimensions with same name in different structures
+	with different sizes. Added unit test to be able to specify a .dods
+	DataDDS file and return it as netcdf and compare it to the ncdump.
+	M    FONcArray.cc
+	A    unit-tests/readT.cc
+	M    unit-tests/fonc_handlerTest.at
+	M    unit-tests/Makefile.am
+	A    unit-tests/data
+	A    unit-tests/data/cedar.dump
+	A    unit-tests/data/nc.dump
+	A    unit-tests/data/cedar.dods
+	AM   unit-tests/data/nc.dods
+	A    unit-tests/data/fits.dump
+	A    unit-tests/data/fits.dods
+	M    FONcArray.h
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added include of dependent dap.conf
+
+2010-05-24  Patrick West <pwest@ucar.edu>
+
+	For netcdf 4, NC_CFLAGS is set, not NC_CPPFLAGS.
+	M    configure.ac
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Merge of release branch 1.0 to the trunk
+	_M   .
+	A  + FONcAttributes.h
+	M    FONcRequestHandler.h
+	A  + conf/ax_path_generic.m4
+	A  + conf/ax_compare_version.m4
+	M    conf/libdap.m4
+	A  + FONcInt.h
+	A  + docs
+	M    FONcUtils.cc
+	A  + FONcStructure.h
+	A  + FONcDim.cc
+	M    configure.ac
+	A  + FONcStr.h
+	A  + FONcSequence.h
+	MM   FONcTransform.cc
+	A  + FONcDim.h
+	A  + FONcDouble.h
+	M    INSTALL
+	A  + FONcMap.cc
+	MM   FONcTransform.h
+	A  + FONcArray.cc
+	A  + FONcBaseType.h
+	A  + FONcMap.h
+	M    NEWS
+	A  + FONcGrid.cc
+	M    unit-tests/fonc_handlerTest.at
+	A  + unit-tests/arrayT01.cc
+	A  + unit-tests/baselines/fonc.array.01.baseline
+	M    unit-tests/baselines/fonc.names.00.baseline
+	M    unit-tests/baselines/fonc.grid.00.baseline
+	M    unit-tests/Makefile.am
+	M    FONcModule.cc
+	A  + FONcAttributes.cc
+	M    FONcRequestHandler.cc
+	M    FONcModule.h
+	A  + FONcGrid.h
+	M    fileout_netcdf.spec
+	A  + FONcInt.cc
+	M    ChangeLog
+	A  + FONcShort.cc
+	A  + FONcStructure.cc
+	A  + FONcShort.h
+	M    FONcUtils.h
+	A  + main_page.doxygen
+	M    README
+	D    fileout_handler.spec
+	A  + FONcByte.cc
+	A  + FONcByte.h
+	A  + FONcFloat.cc
+	A  + FONcFloat.h
+	A  + FONcStr.cc
+	A  + FONcSequence.cc
+	A  + FONcDouble.cc
+	A  + FONcBaseType.cc
+	A  + doxy.conf
+	M    FONcTransmitter.h
+	M    Makefile.am
+	A  + FONcArray.h
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-05-03  Patrick West <pwest@ucar.edu>
+
+	Updated the version number in the INSTALL file
+	M    INSTALL
+
+2010-05-03  Patrick West <pwest@ucar.edu>
+
+	Updated news file for 1.0.1 release
+	M    NEWS
+
+2010-05-01  Patrick West <pwest@ucar.edu>
+
+	Corrected doxygen comments.
+	M    FONcUtils.cc
+	M    FONcDim.cc
+	M    FONcTransform.cc
+	M    FONcArray.cc
+	M    FONcGrid.cc
+	M    FONcAttributes.cc
+	M    FONcInt.cc
+	M    FONcShort.cc
+	M    FONcByte.cc
+	M    FONcFloat.cc
+	M    FONcStr.cc
+	M    FONcSequence.cc
+	M    FONcDouble.cc
+
+2010-05-01  Patrick West <pwest@ucar.edu>
+
+	Doxygen comments added to code, docs target added to Makefile.
+	M    FONcAttributes.h
+	M    FONcRequestHandler.h
+	M    FONcInt.h
+	A    docs
+	M    FONcUtils.cc
+	M    FONcStructure.h
+	M    configure.ac
+	M    FONcDim.cc
+	M    FONcDim.h
+	M    FONcTransform.cc
+	M    FONcDouble.h
+	M    FONcMap.cc
+	M    FONcArray.cc
+	M    FONcMap.h
+	M    FONcModule.cc
+	M    FONcGrid.cc
+	M    FONcRequestHandler.cc
+	M    FONcAttributes.cc
+	M    FONcGrid.h
+	M    FONcModule.h
+	M    fileout_netcdf.spec
+	M    FONcInt.cc
+	M    FONcShort.cc
+	M    FONcStructure.cc
+	M    FONcShort.h
+	M    FONcUtils.h
+	A    main_page.doxygen
+	M    FONcByte.cc
+	M    FONcFloat.cc
+	M    FONcFloat.h
+	M    FONcSequence.cc
+	M    FONcStr.cc
+	M    FONcDouble.cc
+	M    FONcBaseType.cc
+	A    doxy.conf
+	M    FONcTransmitter.h
+	M    Makefile.am
+
+2010-04-30  Patrick West <pwest@ucar.edu>
+
+	Source header comments added
+	M    FONcDim.cc
+	M    FONcMap.cc
+	M    FONcArray.cc
+	M    FONcGrid.cc
+	M    FONcAttributes.cc
+	M    FONcInt.cc
+	M    FONcShort.cc
+	M    FONcStructure.cc
+	M    FONcByte.cc
+	M    FONcFloat.cc
+	M    FONcSequence.cc
+	M    FONcStr.cc
+	M    FONcDouble.cc
+	M    FONcBaseType.cc
+
+2010-04-30  Patrick West <pwest@ucar.edu>
+
+	Adding baseline for new test
+	A    baselines/fonc.array.01.baseline
+
+2010-04-30  Patrick West <pwest@ucar.edu>
+
+	First pass at re-write of fileout_netcdf. Fixes problem with shared
+	dimensions.
+	A    FONcAttributes.h
+	A    FONcInt.h
+	M    FONcUtils.cc
+	A    FONcStructure.h
+	A    FONcDim.cc
+	A    FONcSequence.h
+	A    FONcStr.h
+	A    FONcDim.h
+	M    FONcTransform.cc
+	A    FONcDouble.h
+	A    FONcMap.cc
+	M    FONcTransform.h
+	A    FONcBaseType.h
+	A    FONcArray.cc
+	A    FONcMap.h
+	A    FONcGrid.cc
+	M    unit-tests/fonc_handlerTest.at
+	A    unit-tests/arrayT01.cc
+	M    unit-tests/baselines/fonc.names.00.baseline
+	M    unit-tests/baselines/fonc.grid.00.baseline
+	M    unit-tests/Makefile.am
+	A    FONcAttributes.cc
+	A    FONcGrid.h
+	A    FONcInt.cc
+	A    FONcShort.cc
+	A    FONcStructure.cc
+	A    FONcShort.h
+	M    FONcUtils.h
+	A    FONcByte.cc
+	A    FONcByte.h
+	A    FONcFloat.cc
+	A    FONcFloat.h
+	A    FONcSequence.cc
+	A    FONcStr.cc
+	A    FONcDouble.cc
+	A    FONcBaseType.cc
+	M    Makefile.am
+	A    FONcArray.h
+
+2010-04-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed error in configure.ac when netcdf4 is not found.
+
+2010-04-29  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+	A    conf/ax_path_generic.m4
+	A    conf/ax_compare_version.m4
+
+2010-04-29  James Gallagher <jgallagher@opendap.org>
+
+	Added support fr netcdf 4.x builds using the new snazzy
+	AX_PATH_GENERIC autoconf macro.
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Fixed issue with dap-config --version with b at end (for beta)
+	M    conf/libdap.m4
+
+2010-04-19  James Gallagher <jgallagher@opendap.org>
+
+	Updated the INSTALL files so that they no longer talk about
+	dap-server or the 'three server programs'. Added a note about
+	sometimes needing to recompile netcdf, hdf4/5 using -fPIC.
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added a dist-hook target that removes .svn dirs from the dist tar.
+
+	M    dap-server/Makefile.am
+	M    fileout_netcdf/Makefile.am
+	M    freeform_handler/Makefile.am
+	M    hdf4_handler/Makefile.am
+	M    hdf5_handler/Makefile.am
+	M    ncml_module/Makefile.am
+	M    netcdf_handler/Makefile.am
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added Requires: lines to the .spec files for all the modules we
+	build rpms for.
+
+2010-04-02  Patrick West <pwest@ucar.edu>
+
+	Removed commented out code. It's already in subversion, so no need to
+	keep the commented out code. Added comments for the current version of
+	creating the dimensions, which is not a valid way of doing it. Wanting
+	to keep track. Currently, a dimension is a shared dimension if it has
+	the same name and size, and is part of arrays of the same dimensionality
+	all of the same size.
+	M    FONcTransform.cc
+
+2010-03-29  Patrick West <pwest@ucar.edu>
+
+	+= used for BES.modules.
+	M    fonc.conf.in
+
+2010-02-06  Patrick West <pwest@ucar.edu>
+
+	spec file is a duplicate. distcheck works and rpm builds.
+	M    fileout_netcdf.spec
+	D    fileout_handler.spec
+	M    configure.ac
+
+2010-02-03  Patrick West <pwest@ucar.edu>
+
+	Type in module name
+	M    Makefile.am
+
+2010-02-03  rduncan
+
+	fixed make target .spec/1.0
+
+2010-02-03  Patrick West <pwest@ucar.edu>
+
+	1.0.0 release changes
+	M    fileout_netcdf.spec
+	M    README
+	M    INSTALL
+	M    NEWS
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-02-01  rduncan
+
+	Release 1/01/2010
+
+2010-01-29  Patrick West <pwest@ucar.edu>
+
+	Using strm instead of cout to output the http headers. Checking the
+	context variable instead of the parameter to see if protocol is http.
+	Passing the name prefix to the different methods to fix variable names,
+	attribute names, dimension names, etc...
+	M    unit-tests/baselines/fonc.names.00.baseline
+	M    FONcUtils.cc
+	M    FONcUtils.h
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+
+2010-01-22  Patrick West <pwest@ucar.edu>
+
+	RPM to use fonc.conf instead of bes-fonc-data.sh
+	M    fileout_netcdf.spec
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	Replacing script that modifies bes.conf with standalone configuration
+	file
+	D    bes-fonc-data.sh.in
+	M    Makefile.am
+	A    fonc.conf.in
+
+2010-01-10  Patrick West <pwest@ucar.edu>
+
+	API change to BESKeys
+	M    FONcRequestHandler.cc
+	M    FONcTransmitter.cc
+
+2010-01-08  Patrick West <pwest@ucar.edu>
+
+	--clean to clean build and src files for rpmbuild
+	M    Makefile.am
+
+2009-12-29  James Gallagher <jgallagher@opendap.org>
+
+	Shrew build changes that will hopefully lead to a version that we can build using NMI's B&T system. Also, I added 'cccc' targets so that we can take a 'metrics snapshot' without undue pain.
+
+2009-11-08  James Gallagher <jgallagher@opendap.org>
+
+	Hardwire tests to look in /usr/local/netcdf in addition to PATH for ncdump (in fileout_netcdf).
+
+2009-09-25  James Gallagher <jgallagher@opendap.org>
+
+	It just seem right to save things at this point. Most of the configure.ac files have been updated. The libdap software has had a number of the FILE* methods/functions commented out using #if FILE_METHODS and then #undef FILE_METHODS. We'll see how much of the redundant code can be removed before the next Hyrax 1.6 release.
+
+2009-09-01  Patrick West <pwest@ucar.edu>
+
+	Converted dejagnu tests to autotest.
+	A    unit-tests/atlocal.in
+	A    unit-tests/fonc_handlerTest.at
+	D    unit-tests/fonc.tests
+	D    unit-tests/config
+	D    unit-tests/common_tests.exp
+	M    unit-tests/Makefile.am
+	M    configure.ac
+
+2009-08-23  Patrick West <pwest@ucar.edu>
+
+	Added ; after each BESDEBUG statement
+
+2009-08-19  James Gallagher <jgallagher@opendap.org>
+
+	Deleted generated files
+
+2009-08-18  Patrick West <pwest@ucar.edu>
+
+	DAP Macro changes
+
+2009-07-10  Patrick West <pwest@ucar.edu>
+
+	Merged Hyrax 1.5.2 tag to trunk
+	_M   .
+	M    unit-tests/attrT.cc
+	M    unit-tests/arrayT.cc
+	M    unit-tests/structT00.cc
+	M    unit-tests/gridT.cc
+	M    unit-tests/structT01.cc
+	M    unit-tests/structT02.cc
+	M    unit-tests/simpleT00.cc
+	M    unit-tests/simpleT01.cc
+	M    unit-tests/simpleT02.cc
+	M    unit-tests/Makefile.am
+	M    unit-tests/namesT.cc
+	A  + fileout_netcdf.spec
+	M    ChangeLog
+	M    README
+	M    configure.ac
+	MM   FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    INSTALL
+	_M   FONcTransform.h
+	A  + COPYRIGHT
+	M    Makefile.am
+	M    NEWS
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2009-06-05  James Gallagher <jgallagher@opendap.org>
+
+	Added include files so these will compile with gcc 4.3.2 on FC 10.
+
+	M    unit-tests/attrT.cc
+	M    unit-tests/arrayT.cc
+	M    unit-tests/structT00.cc
+	M    unit-tests/structT01.cc
+	M    unit-tests/gridT.cc
+	M    unit-tests/structT02.cc
+	M    unit-tests/simpleT00.cc
+	M    unit-tests/simpleT01.cc
+	M    unit-tests/simpleT02.cc
+	M    unit-tests/namesT.cc
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+
+2009-06-04  Patrick West <pwest@ucar.edu>
+
+	Ref #1300
+	M    unit-tests/baselines/fonc.grid.00.baseline
+	M    unit-tests/baselines/fonc.struct.01.baseline
+	M    unit-tests/Makefile.am
+	A    FONcUtils.cc
+	A    FONcUtils.h
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+	M    Makefile.am
+
+2009-05-21  James Gallagher <jgallagher@opendap.org>
+
+	Added tests' config directory to Makefile.am
+
+2009-04-22  Patrick West <pwest@ucar.edu>
+
+	the module is fileout_netcdf, not fileout_handler. We'll have more than
+	one fileout module. Missing COPYRIGHT file, so added. Corrected some
+	rpm build issues.
+	M    unit-tests/Makefile.am
+	A  + fileout_netcdf.spec
+	D    fileout_handler.spec
+	A    COPYRIGHT
+	M    Makefile.am
+
+2009-04-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_netcdf: Tagging version 0.9.2
+
+2009-04-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2009-04-08  Patrick West <pwest@ucar.edu>
+
+	Problem with 'make check' target if the ncdump version the person is
+	using is hdf4's version and not netcdf's version.
+	M    INSTALL
+
+2009-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+	M    FONcModule.cc
+	M    FONcRequestHandler.cc
+	M    FONcModule.h
+	M    FONcRequestHandler.h
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+	M    FONcTransmitter.h
+
+2009-03-13  Patrick West <pwest@ucar.edu>
+
+	Checking that names of variables, dimensions and attributes ok with
+	netcdf naming conventions 3.6.2 and earlier.
+	
+	A    fileout_netcdf-0.9.0/unit-tests/fonc.tests/fonc.names.00.exp
+	A    fileout_netcdf-0.9.0/unit-tests/baselines/fonc.names.00.baseline
+	M    fileout_netcdf-0.9.0/unit-tests/Makefile.am
+	A    fileout_netcdf-0.9.0/unit-tests/namesT.cc
+	M    fileout_netcdf-0.9.0/FONcTransform.cc
+	M    fileout_netcdf-0.9.0/FONcTransmitter.cc
+	M    fileout_netcdf-0.9.0/FONcTransform.h
+
+2009-03-13  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a bug where the unit test drivers to build the netcdf files
+	were not run correctly. Since '.' is not on my path, the names
+	need to be prefixed with './'.
+
+	M    unit-tests/config/unix.exp
+
+2009-03-11  James Gallagher <jgallagher@opendap.org>
+
+	Audit fixes.
+
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+
+2009-03-10  Patrick West <pwest@ucar.edu>
+
+	Instead of calling read now calling intern_data. Changed seqT
+	because of this to use new Sequence class that implements the read
+	method.
+	
+	M    fileout_netcdf-0.9.0/unit-tests/seqT.cc
+	M    fileout_netcdf-0.9.0/FONcTransmitter.cc
+
+2009-02-27  Patrick West <pwest@ucar.edu>
+
+	Adding netcdf as format to dods command in dap service.
+	
+	M    FONcModule.cc
+	M    FONcTransmitter.cc
+
+2009-02-24  James Gallagher <jgallagher@opendap.org>
+
+	Added call to www2id() in the BES Transmitter method. This ensures
+	that WWW escape codes are removed before the CE is parsed (except that
+	spaces and '&' are left encoded to match behavior of the current
+	DDS implementation. This changes means that names can be quoted,
+	allowing all kinds of unwise characters to appear in a variable name.
+	See ticket 1248
+
+2009-02-24  Patrick West <pwest@ucar.edu>
+
+	Added version and help responses to FONc with reference to module page
+	on docs.opendap.org.
+	
+	M    FONcModule.cc
+	A    FONcRequestHandler.cc
+	M    bes-fonc-data.sh.in
+	A    FONcRequestHandler.h
+	M    Makefile.am
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Added paths to the netcdf.m4 file for macports and fink
+
+2009-02-18  Patrick West <pwest@ucar.edu>
+
+	Making sure I get the constrained size of a dimension and calculate the
+	number of elements as constrained. Added more debug for the
+	transformation of grids and arrays.
+	
+	M    FONcTransform.cc
+
+2009-02-07  Patrick West <pwest@ucar.edu>
+
+	Added doxygen comments to each of the classes. Added more to the
+	FONcTransform dump method. Added more error checking to the
+	transformation.
+	
+	M    FONcModule.h
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+	M    FONcTransmitter.h
+
+2009-02-06  Patrick West <pwest@ucar.edu>
+
+	Added write of sequence to write_structure, an embedded sequence.
+	Also added cast to write_sequence (consistent with other methods)
+	to make sure received a sequence.
+	
+	M    FONcTransform.cc
+
+2009-02-06  Patrick West <pwest@ucar.edu>
+
+	Changed the name of the sequence global attribute to the embedded
+	name, just in case it is embedded.
+	
+	M    FONcTransform.cc
+
+2009-02-06  Patrick West <pwest@ucar.edu>
+
+	Not throwing an exception for sequences now. Writing out a global
+	variable with the name of the sequence saying that it has been
+	elided. Added a quick test to make sure it actually works.
+	
+	A    unit-tests/fonc.tests/fonc.seq.00.exp
+	A    unit-tests/seqT.cc
+	A    unit-tests/baselines/fonc.seq.00.baseline
+	M    unit-tests/Makefile.am
+	M    FONcTransform.cc
+	M    FONcTransform.h
+
+2009-02-06  Patrick West <pwest@ucar.edu>
+
+	Took care of instance where the map arrays are also outside of the
+	grids and have already been written. Also fixed where grid
+	attributes were not being written. Added an array variable that is
+	one of the grid maps to the DataDDS in the grid test.
+	
+	M    unit-tests/gridT.cc
+	M    FONcTransform.cc
+	M    FONcTransform.h
+
+2009-02-05  Patrick West <pwest@ucar.edu>
+
+	Adding FONc.Tempdir to the bes.conf file with bes-conf target
+	
+	M    bes-fonc-data.sh.in
+
+2009-02-05  Patrick West <pwest@ucar.edu>
+
+	Grids work now. Modified tests to not use cppunit and don't have
+	to open the netcdf file to make sure the test worked. Using
+	dejagnu instead.
+	
+	M    unit-tests/attrT.cc
+	M    unit-tests/arrayT.cc
+	A    unit-tests/fonc.tests
+	A    unit-tests/fonc.tests/fonc.struct.00.exp
+	A    unit-tests/fonc.tests/fonc.grid.00.exp
+	A    unit-tests/fonc.tests/fonc.struct.01.exp
+	A    unit-tests/fonc.tests/fonc.struct.02.exp
+	A    unit-tests/fonc.tests/fonc.simple.00.exp
+	A    unit-tests/fonc.tests/fonc.attr.00.exp
+	A    unit-tests/fonc.tests/fonc.simple.01.exp
+	A    unit-tests/fonc.tests/fonc.simple.02.exp
+	A    unit-tests/fonc.tests/fonc.array.00.exp
+	A    unit-tests/structT00.cc
+	M    unit-tests/structT.cc
+	A    unit-tests/structT01.cc
+	M    unit-tests/gridT.cc
+	A    unit-tests/structT02.cc
+	M    unit-tests/test_config.h.in
+	A    unit-tests/simpleT00.cc
+	M    unit-tests/simpleT.cc
+	A    unit-tests/simpleT01.cc
+	A    unit-tests/simpleT02.cc
+	A    unit-tests/baselines
+	A    unit-tests/baselines/fonc.array.00.baseline
+	A    unit-tests/baselines/fonc.struct.00.baseline
+	A    unit-tests/baselines/fonc.grid.00.baseline
+	A    unit-tests/baselines/fonc.struct.01.baseline
+	A    unit-tests/baselines/fonc.struct.02.baseline
+	A    unit-tests/baselines/fonc.simple.00.baseline
+	A    unit-tests/baselines/fonc.attr.00.baseline
+	A    unit-tests/baselines/fonc.simple.01.baseline
+	A    unit-tests/baselines/fonc.simple.02.baseline
+	A    unit-tests/common_tests.exp
+	A    unit-tests/config
+	A    unit-tests/config/unix.exp
+	M    unit-tests/Makefile.am
+	M    configure.ac
+	M    Makefile.am
+
+2009-02-05  Patrick West <pwest@ucar.edu>
+
+	Frist pass at grids is complete. Still need to run more tests.
+	Added the framework for a grid test. Need to change all of the
+	unit tests to build the frameworks for the tests, do the
+	transform, run ncdump against the resulting netcdf file, and
+	compare the results against a baseline.
+	
+	M    unit-tests/Makefile.am
+	M    unit-tests/structT.cc
+	A    unit-tests/gridT.cc
+	M    FONcTransform.cc
+	M    FONcTransform.h
+	D    fnoc1.dump
+
+2009-01-30  James Gallagher <jgallagher@opendap.org>
+
+	Moved here to coalesce the branches
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Fairly significant changes/additions to get the dist target to work.
+
+	M    unit-tests/Makefile.am
+	A    COPYING
+	M    Makefile.am
+	A    data
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.5
+
+	A    http://scm.opendap.org/svn/branch/fileout_netcdf/0.9.0
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Release 0.9.0
+
+	A    ChangeLog
+	M    README
+	M    configure.ac
+	A    INSTALL
+	A    NEWS
+
+2009-01-28  Patrick West <pwest@ucar.edu>
+
+	Attributes complete.
+	A    unit-tests/attrT.cc
+	M    unit-tests/Makefile.am
+	M    FONcTransform.cc
+	D    infile
+	D    outfile
+	M    FONcTransform.h
+	D    outfile.dump
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2009-01-28  Patrick West <pwest@ucar.edu>
+
+	Attributes complete.
+	
+	A    unit-tests/attrT.cc
+	M    unit-tests/Makefile.am
+	M    FONcTransform.cc
+	D    infile
+	D    outfile
+	M    FONcTransform.h
+	D    outfile.dump
+
+2009-01-08  Patrick West <pwest@ucar.edu>
+
+	Structures now work. Now on to grids and attributes.
+	
+	M    unit-tests/simpleT.cc
+	M    unit-tests/Makefile.am
+	A    unit-tests/structT.cc
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+
+2009-01-07  Patrick West <pwest@ucar.edu>
+
+	Fixed memory bug in FONcTransform creating temporary file. Fixed
+	array of strings. Added array unit test.
+	
+	M    unit-tests/simpleT.cc
+	A    unit-tests/arrayT.cc
+	M    unit-tests/Makefile.am
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+
+2009-01-06  Patrick West <pwest@ucar.edu>
+
+	Fixed string transformation to netcdf. Added more debug
+	statements, corrected some error conditions. Added unit test for
+	the simple types.
+
+	Now on to arrays and then structures. With the changes made to the
+	simple types I do not guarantee that anything else works at this
+	point.
+
+	Also need to determine if I should be using nc_put_var_type
+	instead of nc_put_var1_type for the simple types.
+	
+	M    unit-tests/simpleT.cc
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+
+2009-01-04  Patrick West <pwest@ucar.edu>
+
+	Actually set ignore property.
+	
+	_M   unit-tests
+
+2009-01-04  Patrick West <pwest@ucar.edu>
+
+	Set property svn:ignore
+	
+	_M   unit-tests
+
+2009-01-04  Patrick West <pwest@ucar.edu>
+
+	Fixed includes in headers and source. BES includes now in angle
+	brackets rather than quotes. Added unit-tests directory with shell
+	of test. Set svn:ignore on some files.
+	
+	_M   .
+	M    FONcModule.cc
+	A    unit-tests
+	A    unit-tests/test_config.h.in
+	A    unit-tests/simpleT.cc
+	A    unit-tests/Makefile.am
+	A    unit-tests/bes.conf
+	A    conf/cppunit.m4
+	M    configure.ac
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+	M    FONcTransmitter.h
+	M    Makefile.am
+
+2009-01-04  Patrick West <pwest@ucar.edu>
+
+	Added check after dynamic cast. Added more debug statements into
+	FONcTransmitter code.
+	
+	M    FONcTransmitter.cc
+
+2009-01-04  Patrick West <pwest@ucar.edu>
+
+	Added check for large files. removed config.h.in as it is
+	automatically generated. Made FONcTransform a class with methods
+	instead of statuc functions in the scope of the class. Constructor
+	now makes sure the dds is complete, opens the temporary file using
+	nc_create, and does other checks. Switched to making netcdf 3
+	calls instead of 2 calls. Added more exception handling and
+	cleanup code. Added more debug statements.
+	
+	D    config.h.in
+	M    configure.ac
+	M    FONcTransform.cc
+	M    FONcTransmitter.cc
+	M    FONcTransform.h
+	M    FONcTransmitter.h
+
+2008-12-17  Patrick West <pwest@ucar.edu>
+
+	Moved GridTransform class to Transform. It's not just transforming
+	a grid but transforming DAP to NetCDF.
+
+	Replaced cerr and exit calls to exception throws and cout calls
+	for debug to BESDebug calls.
+
+	AM + FONcTransform.cc
+	M    FONcTransmitter.cc
+	AM + FONcTransform.h
+	M    Makefile.am
+	D    FONcGridTransform.cc
+	D    FONcGridTransform.h
+
+2008-11-14  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2008-11-13  Patrick West <pwest@ucar.edu>
+
+	Added todo of writing grids
+
+	M    README
+
+2008-11-13  Patrick West <pwest@ucar.edu>
+
+	If Structure, then add container__ to the front of the variable
+	names in the structure. Added some debugging and some exception
+	messages.
+
+	M    FONcGridTransform.cc
+
+2008-11-13  Patrick West <pwest@ucar.edu>
+
+	Added requirement for testsuite directory, should be bes-testsuite
+	for BES standalone tests and tests or unit-tests as well.
+
+	M    README
+
+2008-11-13  Patrick West <pwest@ucar.edu>
+
+	Explains the module, how to run the test using infile and outfile,
+	and things remaining to do.
+
+	A    README
+
+2008-11-11  Patrick West <pwest@ucar.edu>
+
+	First pass at fileout netcdf. Refer to infile for example use.
+	This generated outfile. Using ncdump on outfile and original file
+	shows good results. Only thing missing are attributes, which is to
+	be expected in this version.
+	
+	A    FONcModule.cc
+	A    FONcModule.h
+	A    bes-fonc-data.sh.in
+	A    conf
+	AM   conf/mkinstalldirs
+	A    conf/pkg.m4
+	A    conf/netcdf.m4
+	A    conf/acinclude.m4
+	AM   conf/depcomp
+	A    conf/bes.m4
+	AM   conf/missing
+	AM   conf/config.guess
+	A    conf/libdap.m4
+	A    conf/netcdf_header.m4
+	AM   conf/config.sub
+	AM   conf/ltmain.sh
+	AM   conf/install-sh
+	A    config.h.in
+	A    configure.ac
+	A    FONcTransmitter.cc
+	A    infile
+	AM   outfile
+	A    FONcTransmitter.h
+	A    Makefile.am
+	A    fnoc1.dump
+	A    FONcGridTransform.cc
+	A    outfile.dump
+	A    FONcGridTransform.h
+
+2008-11-11  Patrick West <pwest@ucar.edu>
+
+	netcdf file out
+	
+	A    http://scm.opendap.org/svn/trunk/fileout_netcdf

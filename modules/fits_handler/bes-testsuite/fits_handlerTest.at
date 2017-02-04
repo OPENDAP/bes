@@ -1,0 +1,110 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+AT_ARG_OPTION_ARG([generate g],
+    [  -g arg, --generate=arg   Build the baseline file for test 'arg'],
+    [if ./generate_metadata_baseline.sh $at_arg_generate; then
+         echo "Built baseline for $at_arg_generate"
+     else
+         echo "Could not generate baseline for $at_arg_generate"
+     fi     
+     exit],[])
+
+AT_ARG_OPTION_ARG([generate_data a],
+    [  -a arg, --generate_data=arg   Build the baseline file for test 'arg'],
+    [if ./generate_data_baseline.sh $at_arg_generate_data; then
+         echo "Built baseline for $at_arg_generate_data"
+     else
+         echo "Could not generate baseline for $at_arg_generate_data"
+     fi     
+     exit],[])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([_AT_BESCMD_TEST],   
+[AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])])
+
+m4_define([AT_BESCMD_DAS_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([das])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline)
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_DDS_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dds])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline)
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_DDX_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([ddx])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline)
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([data])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_DMR_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dmr])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline)
+AT_CLEANUP])
+
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dap])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+AT_BESCMD_DAS_RESPONSE_TEST([fits/cpb.das.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([fits/cpb.dds.bescmd])
+AT_BESCMD_DDX_RESPONSE_TEST([fits/cpb.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([fits/cpb.data.bescmd])
+AT_BESCMD_DMR_RESPONSE_TEST([fits/cpb.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/cpb.dap.bescmd])
+
+AT_BESCMD_DAS_RESPONSE_TEST([fits/rpb.das.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([fits/rpb.dds.bescmd])
+AT_BESCMD_DDX_RESPONSE_TEST([fits/rpb.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([fits/rpb.data.bescmd])
+AT_BESCMD_DMR_RESPONSE_TEST([fits/rpb.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/rpb.dap.bescmd])
+
+AT_BESCMD_DAS_RESPONSE_TEST([fits/chp.das.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([fits/chp.dds.bescmd])
+AT_BESCMD_DDX_RESPONSE_TEST([fits/chp.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([fits/chp.data.bescmd])
+AT_BESCMD_DMR_RESPONSE_TEST([fits/chp.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/chp.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/chp.dap_ce_1.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/chp.dap_ce_2.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/chp.dap_ce_3.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/chp.dap_ce_4.bescmd])
+
+AT_BESCMD_DAS_RESPONSE_TEST([fits/dpm.das.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([fits/dpm.dds.bescmd])
+AT_BESCMD_DDX_RESPONSE_TEST([fits/dpm.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([fits/dpm.data.bescmd])
+AT_BESCMD_DMR_RESPONSE_TEST([fits/dpm.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/dpm.dap.bescmd])
+
+

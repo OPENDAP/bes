@@ -1,0 +1,7 @@
+On CentOS 6 three of the w10n tests fail because the netcdf handler
+cannot read the integer variables in the data file 'atomicTypes.nc
+_when it is a netCDF 3 file_. However, when it is a netCDF4 file it
+has no problem reading the variables. For now I'm moving the original
+file to *.nc.3 and adding a netcdf 4 version as *.nc
+
+jhrg 3/19/15

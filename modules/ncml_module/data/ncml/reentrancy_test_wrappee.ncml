@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test case to see whether we can refer to NcML file within another.
+     This file is the wrapped dataset, referred to in reentrancy_test.cml -->
+<netcdf>
+  <attribute name="Wrappee_Description" type="string">This is the wrapped NcML file for the reentrancy test.</attribute>
+  <variable name="Wrappee_Variable" type="string">
+    <attribute name="Description" type="string">A variable so we have data to test with!</attribute>
+    <values>I am a wrapped variable!</values>
+  </variable>
+</netcdf>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_opaque_data.nc">
+    <Dimension name="time" size="5"/>
+    <Byte name="raw_obs">
+        <Dim name="/time"/>
+        <Dim size="11"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>202</Value>
+            <Value>254</Value>
+            <Value>186</Value>
+            <Value>190</Value>
+            <Value>202</Value>
+            <Value>254</Value>
+            <Value>186</Value>
+            <Value>190</Value>
+            <Value>202</Value>
+            <Value>254</Value>
+            <Value>186</Value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFBaseType" type="String">
+            <Value>NC_OPAQUE</Value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFTypeName" type="String">
+            <Value>raw_obs_t</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>12fae0bc</Value>
+        </Attribute>
+    </Byte>
+</Dataset>
+
+The data:
+Byte raw_obs[time = 5][11] = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},{170, 187, 204, 221, 238, 255, 238, 221, 204, 187, 170},{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},{202, 254, 186, 190, 202, 254, 186, 190, 202, 254, 186},{207, 13, 239, 172, 237, 12, 175, 224, 250, 202, 222}};
+

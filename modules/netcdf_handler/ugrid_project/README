@@ -1,0 +1,160 @@
+What is here:
+
+This directory contains the software to test the gridfields
+server-function, ugrid_restrict(). Because the function requires
+changes to the normal netcdf_handler build (although minor), that
+build is also described here.
+
+* Building the handler and the ugrid_restrict() function
+
+Assumption: You are working on Linux and have the netcdf 4 library
+installed. On red hat systems, you can do this with yum; on debian
+systems apt-get will work.
+
+** Build the development version of Hyrax
+
+1. Checkout the Hyrax source code from OPeNDAP's subversion repository
+
+   svn co https://scm.opendap.org/svn/trunk/shrew
+
+In the directory created, set up some basic build paths for the shell
+(Assumption: You are using bash)
+
+    source spath.sh
+
+That will set $PATH and a second environment variable named $prefix;
+the latter references the root directory that holds all the software
+that was just checked out using subversion. In the rest of this file,
+'$prefix' will be used to refer to that directory.
+
+2. Modify the build the development version of Hyrax. A full build of
+Hyrax can involve a fair amount of software that's completely
+extraneous to the ugrid_restrict() function, but with some minor edits
+to the build files, the build can be tailored so just the parts useful
+in testing the ugrid_restrict() function are built. First, edit
+$prefix/src/modules/Makefile.am so that the variable 'SUBDIRS'
+contains only the three modules shown below:
+
+    SUBDIRS = dap-server netcdf_handler fileout_netcdf
+
+Also edit the file $prefix/src/modules/configure.ac so that the
+AC_CONFIG_SUBDIRS() macro contains the same three modules:
+
+    AC_CONFIG_SUBDIRS([dap-server netcdf_handler fileout_netcdf])
+
+3. Build the limited version of Hyrax:
+
+cd $prefix
+autoreconf --force --install --verbose
+./configure --prefix=$prefix --enable-debug
+make world
+
+This will build the entire code base (but note that the Makefile.am
+and configure.ac files in src/modules have been edited for this
+particular installation to build only a subset of the handlers). 
+
+4. Get and build the gridfields library code
+
+    svn co https://gridfields.googlecode.com/svn/trunk/clib gridfields_clib
+
+To build the code and install it in /usr/local/
+
+autoreconf --force --install --verbose
+./configure
+make
+make check
+make install
+
+If you want to put it some place else, use 
+   ./configure --prefix=<some place else>
+but then remember to tweak the build of the netcdf_handler (coming up)
+so that it knows where to find gridfields using --with-gridfields=...
+
+5. Rebuild the netcdf_handler of Hyrax so that the ugrid_restrict()
+function is defined. Go to $prefix/src/modules/netcdf_handler and run
+./configure again by hand like this:
+
+    ./configure --prefix=$prefix --with-gridfields=/usr/local
+    
+assuming that gridfields has been built and installed in /usr/local.
+
+Then
+
+    make
+    make check
+    make install
+
+* Testing the ugrid function
+
+There are two ways to do test the ugrid_restrict() function, both of
+which use the *.bes command files in this directory. The first way
+starts the BES and uses a command line client tool to run the
+commands. The second way uses the 'besstandalone' tool, which is a
+test harness for the BES daemon. Using this, it will be easy to build
+regression tests for the ugrid function and, most importantly, does
+not require (re)building or (re)running the server over and over again
+while developing tests.
+
+Here's how to use besstandalone:
+
+    besstandalone -c bes.conf -i <<some *.bes command file>>
+
+** Examples
+
+The first example will send the server (really the besstandalone test
+framework) a request for data using the function and instruct the
+server to return a DAP binary response object. To see that object's
+contents, it is piped in the 'getdap' utility
+
+    besstandalone -c bes.conf -i test4_as_dap_response.bes | getdap -M -
+
+(NB: getdap was built as part of the overall server build and is on PATH
+because you ran 'source spath.sh in $prefix.)
+
+The output looks like:
+
+The data:
+Structure {
+    Float64 X[nodes = 3474];
+    Float64 Y[nodes = 3474];
+    Float64 nodedata[nodes = 3474];
+    Int32 element[three = 3][tris = 6342];
+} construct = { {-63.1688499450684, -63.4092788696289,
+-63.3081588745117, ...
+
+The second example will make the same data subsetting request, but add
+that the data should be returned in a netCDF 3 data file:
+
+    besstandalone -c bes.conf -i test4_as_nc3_response.bes > output.nc
+    ncdump -h output.nc
+
+Other *.bes commands in the ugrid_project directory do other things,
+like perform regular reads from the two ample data files included
+here.
+
+The two command files are pretty easy to understand. A running instance of
+Hyrax has a front end module that forms these commands based on the URLs its
+sent.
+ 
+Notes:
+
+The bes.conf file in this directory is specially hacked for testing
+the ugrid function. It has the data root set to this directory, so all
+paths to the data can just start with '/' and the special data files 
+used for testing can be right here - no need to install the data files.
+If you use the server, you will need to install the data and edit the
+*.bes files to match its data root directory.
+
+Here's how to use the BES server to run these tests:
+
+Copy the data to $prefix/share/hyrax/data/nc, then:
+
+besctl start
+bescmdln -p 10022 -h localhost -i <<some *.bes command file>>
+besctl stop
+
+Note that this is not Hyrax per se, but just the BES part of Hyrax.
+
+jhrg 4/19/12
+
+Updated 8/20/12

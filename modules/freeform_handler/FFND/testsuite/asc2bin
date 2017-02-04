@@ -1,0 +1,9 @@
+#1 is input format, 2 is output format, 3 is data file, 
+#4 is input for $TSBIN_DIR/readfile, 5 is correct results from readfile
+#6 is for the number of records to process
+rm testbin.tst
+echo "$TSBIN_DIR/newform" $3 -if $1 -of $2 -c $6 " -o testbin.tst"
+($TSBIN_DIR/newform $3 -if $1 -of $2 -c $6 -o testbin.tst) 
+echo "$TSBIN_DIR/readfile testbin.tst "
+($TSBIN_DIR/readfile testbin.tst < $4 > test.out) 
+diff test.out $5 > trash

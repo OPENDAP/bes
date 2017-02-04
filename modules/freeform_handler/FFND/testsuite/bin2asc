@@ -1,0 +1,6 @@
+# This is a comment
+rm testasc.dat
+echo "$TSBIN_DIR/newform" $3 -if $1 -of $2 -c $5 " -o testasc.dat"
+($TSBIN_DIR/newform $3 -if $1 -of $2 -c $5 -o testasc.dat)
+echo "diff testasc.dat " $4
+diff testasc.dat $4 > trash

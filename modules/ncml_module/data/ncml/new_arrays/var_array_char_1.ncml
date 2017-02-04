@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Create a new 1D array at Dataset global level with an explicit size -->
+  <variable name="MyCharArray" type="char" shape="12">
+    <attribute name="Description" type="string">Testing char array</attribute>
+    <values>Foo Bar Baz!</values> 
+  </variable>
+</netcdf>

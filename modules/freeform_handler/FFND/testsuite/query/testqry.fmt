@@ -1,0 +1,19 @@
+binary_data "binary for query test"         
+ucvar 1 1 uint8 0
+fvar 2 5 float32 4
+usvar 6 7 uint16 0
+ulvar1 8 11 uint32 0
+ulvar2 12 15 uint32 2
+lvar1 16 19 int32 0
+lvar2 20 23 int32 2
+cvar 24 26 text 0
+
+ascii_data "ascii for query test"
+ucvar 1 2 uint8 0
+fvar 3 12 float32 4
+usvar 13 18 uint16 0
+ulvar1 19 26 uint32 0
+ulvar2 27 34 uint32 2
+lvar1 35 43 int32 0
+lvar2 44 52 int32 2
+cvar 53 55 text 0

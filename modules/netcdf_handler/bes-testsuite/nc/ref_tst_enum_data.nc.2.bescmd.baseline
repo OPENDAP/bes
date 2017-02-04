@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="ref_tst_enum_data.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Array name="primary_cloud">
+        <Attribute name="_FillValue" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="DAP2_EnumValues" type="Byte">
+            <value>0</value>
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+            <value>6</value>
+            <value>7</value>
+            <value>8</value>
+            <value>9</value>
+            <value>10</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="DAP2_EnumNames" type="String">
+            <value>Clear</value>
+            <value>Cumulonimbus</value>
+            <value>Stratus</value>
+            <value>Stratocumulus</value>
+            <value>Cumulus</value>
+            <value>Altostratus</value>
+            <value>Nimbostratus</value>
+            <value>Altocumulus</value>
+            <value>Cirrostratus</value>
+            <value>Cirrocumulus</value>
+            <value>Cirrus</value>
+            <value>Missing</value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFBaseType" type="String">
+            <value>NC_ENUM</value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFTypeName" type="String">
+            <value>cloud_class_t</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="station" size="5"/>
+    </Array>
+    <blob href="cid:"/>
+</Dataset>

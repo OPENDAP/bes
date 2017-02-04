@@ -1,0 +1,25 @@
+Attributes {
+    FF_GLOBAL {
+        String Server "DODS FreeFrom based on FFND release 4.2.3";
+        Int16 iyr 79;
+        Int16 iday 1;
+        String isc "3";
+        Float64 traj1 1356310000.000000;
+        Float64 traj2 637963000.000000;
+        Float64 traj3 1716290.000000;
+        Float64 traj4 0.000000;
+        Float64 traj5 0.000000;
+        Float64 traj6 0.000000;
+        String text "I,S COORDINATES 800102  2.5                                                     TRAJCOR     AVEDT 800207";
+    }
+    t {
+    }
+    Bx {
+    }
+    By {
+    }
+    Bz {
+    }
+    Bx2 {
+    }
+}

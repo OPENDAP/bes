@@ -149,7 +149,7 @@ protected:
 
      @see BESDataHandlerInterface
      */
-    virtual void build_data_request_plan() = 0;
+    virtual void build_data_request_plan();
 
     virtual void execute_data_request_plan();
     virtual void invoke_aggregation();
@@ -163,6 +163,7 @@ protected:
 
     BESInterface(ostream *strm);
     virtual ~BESInterface();
+
 public:
     virtual int execute_request(const string &from);
     virtual int finish_with_error(int status);

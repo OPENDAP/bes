@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes of readMetadata element. There should not be any! -->
+
+<netcdf>
+  <readMetadata name="I_am_an_error"/>
+</netcdf>

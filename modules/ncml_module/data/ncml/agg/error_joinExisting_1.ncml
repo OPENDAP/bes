@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This will be a TEMPORARY parse error case for joinExisting.
+We currently require all netcdf members of a joinExisting agg 
+to specify explicitly the ncoords for the agg dimension 
+for each set. 
+
+Later, we can remove this test!
+--> 
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+
+  <aggregation dimName="time" type="joinExisting">
+    
+    <!-- Error is here... ncoords is required! -->
+    <netcdf location="data/nc/jan.nc" /> 
+    <netcdf location="data/nc/feb.nc" />
+  </aggregation>
+	
+</netcdf>

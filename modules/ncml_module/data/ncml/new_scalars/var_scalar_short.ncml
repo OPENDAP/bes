@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Create a new simple scalar variable at Dataset scope -->
+  <variable name="NotTall" type="short">
+    <!-- make sure we can add metadata properly to new variable -->
+    <attribute name="PoliticallyCorrectTerm" type="String" value="Vertically Challenged."/>
+    <values>1024</values>
+  </variable>
+</netcdf>
+

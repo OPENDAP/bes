@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <showPathInfo node="data/bogus_file.nc/u"/>
+</request>

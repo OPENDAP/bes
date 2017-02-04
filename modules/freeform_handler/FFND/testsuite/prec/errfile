@@ -1,0 +1,18 @@
+
+Welcome to newformX alpha 3.2 Jul 11 1996 -- an NGDC FreeForm application
+
+Memtrack logging file "memtrack.log" enabled
+Input file: testprec.bin
+Output file: testasc.dat
+
+The input file size is 28 bytes.
+The output file size will be 56 bytes.
+The data processing cache size is 28 bytes.
+
+(prec_l3b.fmt) Binary Input Data:  "Made from prec_l3.bfm"
+Each record contains 1 field and is 4 bytes long.
+
+(prec_l5a.fmt) ASCII Output Data:  "Made from prec_l5.afm"
+Each record contains 1 field and is 8 characters long.
+
+100% processed     Elapsed time - 00:00:1000:00:12

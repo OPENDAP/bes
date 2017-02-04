@@ -1,0 +1,60 @@
+netcdf test {
+dimensions:
+	dim1 = 4 ;
+	_array_1d_len = 8 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+	_array_2d_len = 8 ;
+	dim4 = 1 ;
+	dim5 = 1 ;
+	_array_special_case_len = 2 ;
+	_scalar_len = 30 ;
+variables:
+	char _array_1d(dim1, _array_1d_len) ;
+		_array_1d:HDF5_OBJ_FULLPATH = "/array_1d" ;
+		_array_1d:value = "Parting\n",
+			"is so  \n",
+			"swe    \n",
+			"       " ;
+		_array_1d:fonc_original_name = "/array_1d" ;
+	char _array_2d(dim2, dim3, _array_2d_len) ;
+		_array_2d:HDF5_OBJ_FULLPATH = "/array_2d" ;
+		_array_2d:value = "Parting\n",
+			"is so  \n",
+			"swe    \n",
+			"       " ;
+		_array_2d:fonc_original_name = "/array_2d" ;
+	char _array_special_case(dim4, dim5, _array_special_case_len) ;
+		_array_special_case:HDF5_OBJ_FULLPATH = "/array_special_case" ;
+		_array_special_case:value = "A" ;
+		_array_special_case:fonc_original_name = "/array_special_case" ;
+	char _scalar(_scalar_len) ;
+		_scalar:HDF5_OBJ_FULLPATH = "/scalar" ;
+		_scalar:value = "Parting is such sweet sorrow." ;
+		_scalar:fonc_original_name = "/scalar" ;
+
+// global attributes:
+		:HDF5_ROOT_GROUP.Dataset = "array_1d\n",
+			"array_2d\n",
+			"array_special_case\n",
+			"scalar" ;
+		:history = "removed date-time Hyrax t_string.h5.dods?" ;
+data:
+
+ _array_1d =
+  "Parting",
+  "is so  ",
+  "swe    ",
+  "       " ;
+
+ _array_2d =
+  "Parting",
+  "is so  ",
+  "swe    ",
+  "       " ;
+
+ _array_special_case =
+  "A" ;
+
+ _scalar = "Parting is such sweet sorrow." ;
+}

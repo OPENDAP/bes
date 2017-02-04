@@ -1,0 +1,6 @@
+Dataset {
+    String day[day = 2];
+    String station[station = 5];
+    Int32 V[day = 2][station = 5];
+    Int32 V_expected[day = 2][station = 5];
+} joinNew_simple.ncml;

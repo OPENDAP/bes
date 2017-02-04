@@ -1,0 +1,274 @@
+{ test ! -d "fits_handler-1.0.6" || { find "fits_handler-1.0.6" -type d ! -perm -200 -exec chmod u+w {} ';' && rm -fr "fits_handler-1.0.6"; }; }
+test -d "fits_handler-1.0.6" || mkdir "fits_handler-1.0.6"
+ (cd bes-testsuite && make  top_distdir=../fits_handler-1.0.6 distdir=../fits_handler-1.0.6/bes-testsuite \
+     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)
+make[1]: Entering directory `/users/npotter/hyrax_1.8_release/src/modules/fits_handler/bes-testsuite'
+make[1]: Leaving directory `/users/npotter/hyrax_1.8_release/src/modules/fits_handler/bes-testsuite'
+test -n "" \
+	|| find "fits_handler-1.0.6" -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -444 -exec /bin/sh /users/npotter/hyrax_1.8_release/src/modules/fits_handler/conf/install-sh -c -m a+r {} {} \; \
+	|| chmod -R a+r "fits_handler-1.0.6"
+tardir=fits_handler-1.0.6 && /bin/sh /users/npotter/hyrax_1.8_release/src/modules/fits_handler/conf/missing --run tar chof - "$tardir" | GZIP=--best gzip -c >fits_handler-1.0.6.tar.gz
+{ test ! -d "fits_handler-1.0.6" || { find "fits_handler-1.0.6" -type d ! -perm -200 -exec chmod u+w {} ';' && rm -fr "fits_handler-1.0.6"; }; }
+rpmbuild -tb --clean --nodeps --define "_topdir /users/npotter/hyrax_1.8_release/src/modules/../../rpm" fits_handler-1.0.6.tar.gz
+Executing(%prep): /bin/sh -e /var/tmp/rpm-tmp.32314
++ umask 022
++ cd /users/npotter/hyrax_1.8_release/src/modules/../../rpm/BUILD
++ cd /users/npotter/hyrax_1.8_release/rpm/BUILD
++ rm -rf fits_handler-1.0.6
++ tar -xf -
++ /bin/gzip -dc /users/npotter/hyrax_1.8_release/src/modules/fits_handler/fits_handler-1.0.6.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd fits_handler-1.0.6
+++ /usr/bin/id -u
++ '[' 55557 = 0 ']'
+++ /usr/bin/id -u
++ '[' 55557 = 0 ']'
++ /bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ exit 0
+Executing(%build): /bin/sh -e /var/tmp/rpm-tmp.32314
++ umask 022
++ cd /users/npotter/hyrax_1.8_release/src/modules/../../rpm/BUILD
++ cd fits_handler-1.0.6
++ CFLAGS='-O2 -g -m64 -mtune=generic'
++ export CFLAGS
++ CXXFLAGS='-O2 -g -m64 -mtune=generic'
++ export CXXFLAGS
++ FFLAGS='-O2 -g -m64 -mtune=generic'
++ export FFLAGS
++ ./configure --host=x86_64-redhat-linux-gnu --build=x86_64-redhat-linux-gnu --target=x86_64-redhat-linux --program-prefix= --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/usr/com --mandir=/usr/share/man --infodir=/usr/share/info --disable-static --disable-dependency-tracking
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking build system type... x86_64-redhat-linux-gnu
+checking host system type... x86_64-redhat-linux-gnu
+checking for x86_64-redhat-linux-gnu-g++... no
+checking for x86_64-redhat-linux-gnu-c++... no
+checking for x86_64-redhat-linux-gnu-gpp... no
+checking for x86_64-redhat-linux-gnu-aCC... no
+checking for x86_64-redhat-linux-gnu-CC... no
+checking for x86_64-redhat-linux-gnu-cxx... no
+checking for x86_64-redhat-linux-gnu-cc++... no
+checking for x86_64-redhat-linux-gnu-cl.exe... no
+checking for x86_64-redhat-linux-gnu-FCC... no
+checking for x86_64-redhat-linux-gnu-KCC... no
+checking for x86_64-redhat-linux-gnu-RCC... no
+checking for x86_64-redhat-linux-gnu-xlC_r... no
+checking for x86_64-redhat-linux-gnu-xlC... no
+checking for g++... g++
+checking whether the C++ compiler works... yes
+checking for C++ compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking for style of include used by make... GNU
+checking dependency style of g++... none
+checking for x86_64-redhat-linux-gnu-gcc... no
+checking for gcc... gcc
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking dependency style of gcc... none
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+checking for an ANSI C-conforming const... yes
+checking for size_t... yes
+checking for ptrdiff_t... yes
+checking for strchr... yes
+checking how to print strings... printf
+checking for a sed that does not truncate output... /bin/sed
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 98304
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert x86_64-redhat-linux-gnu file names to x86_64-redhat-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-redhat-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /usr/bin/ld option to reload object files... -r
+checking for x86_64-redhat-linux-gnu-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for x86_64-redhat-linux-gnu-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for x86_64-redhat-linux-gnu-ar... no
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for x86_64-redhat-linux-gnu-strip... no
+checking for strip... strip
+checking for x86_64-redhat-linux-gnu-ranlib... no
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from gcc object... ok
+checking for sysroot... no
+checking for x86_64-redhat-linux-gnu-mt... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc supports -fno-rtti -fno-exceptions... no
+checking for gcc option to produce PIC... -fPIC -DPIC
+checking if gcc PIC flag -fPIC -DPIC works... yes
+checking if gcc static flag -static works... yes
+checking if gcc supports -c -o file.o... yes
+checking if gcc supports -c -o file.o... (cached) yes
+checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking how to run the C++ preprocessor... g++ -E
+checking for ld used by g++... /usr/bin/ld -m elf_x86_64
+checking if the linker (/usr/bin/ld -m elf_x86_64) is GNU ld... yes
+checking whether the g++ linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking for g++ option to produce PIC... -fPIC -DPIC
+checking if g++ PIC flag -fPIC -DPIC works... yes
+checking if g++ static flag -static works... yes
+checking if g++ supports -c -o file.o... yes
+checking if g++ supports -c -o file.o... (cached) yes
+checking whether the g++ linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... (cached) GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking for x86_64-redhat-linux-gnu-pkg-config... no
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking for DAP... no
+checking for DAP_CLIENT... no
+checking for DAP_SERVER... no
+checking for dap-config... /users/npotter/hyrax_1.8_release/bin/dap-config
+checking for libdap version >= 3.11.1... yes
+checking for BES_DISPATCH... no
+checking for BES_PPT... no
+checking for BES_COMMAND... no
+checking for BES_DAP... no
+checking for bes-config... /users/npotter/hyrax_1.8_release/bin/bes-config
+checking for bes version >= 3.9.1... yes
+checking for fits_is_url_absolute in -lcfitsio... yes
+checking fitsio.h usability... yes
+checking fitsio.h presence... yes
+checking for fitsio.h... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating bes-testsuite/atlocal
+config.status: creating bes-testsuite/Makefile
+config.status: creating config_fits.h
+config.status: config_fits.h is unchanged
+config.status: executing bes-testsuite/atconfig commands
+config.status: executing depfiles commands
+config.status: executing libtool commands
++ make -j2
+make[1]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make  all-recursive
+make[2]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+Making all in bes-testsuite
+make[3]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6/bes-testsuite'
+make[3]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6/bes-testsuite'
+make[3]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+/bin/sh ./libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I.  -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2   -I/usr/include/cfitsio  -O2 -g -m64 -mtune=generic -c -o libfits_module_la-fits_read_attributes.lo `test -f 'fits_read_attributes.cc' || echo './'`fits_read_attributes.cc
+/bin/sh ./libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I.  -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2   -I/usr/include/cfitsio  -O2 -g -m64 -mtune=generic -c -o libfits_module_la-fits_read_descriptors.lo `test -f 'fits_read_descriptors.cc' || echo './'`fits_read_descriptors.cc
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2 -I/usr/include/cfitsio -O2 -g -m64 -mtune=generic -c fits_read_attributes.cc  -fPIC -DPIC -o .libs/libfits_module_la-fits_read_attributes.o
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2 -I/usr/include/cfitsio -O2 -g -m64 -mtune=generic -c fits_read_descriptors.cc  -fPIC -DPIC -o .libs/libfits_module_la-fits_read_descriptors.o
+/bin/sh ./libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I.  -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2   -I/usr/include/cfitsio  -O2 -g -m64 -mtune=generic -c -o libfits_module_la-BESAutoPtr.lo `test -f 'BESAutoPtr.cc' || echo './'`BESAutoPtr.cc
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2 -I/usr/include/cfitsio -O2 -g -m64 -mtune=generic -c BESAutoPtr.cc  -fPIC -DPIC -o .libs/libfits_module_la-BESAutoPtr.o
+/bin/sh ./libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I.  -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2   -I/usr/include/cfitsio  -O2 -g -m64 -mtune=generic -c -o libfits_module_la-FitsRequestHandler.lo `test -f 'FitsRequestHandler.cc' || echo './'`FitsRequestHandler.cc
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2 -I/usr/include/cfitsio -O2 -g -m64 -mtune=generic -c FitsRequestHandler.cc  -fPIC -DPIC -o .libs/libfits_module_la-FitsRequestHandler.o
+/bin/sh ./libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I.  -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2   -I/usr/include/cfitsio  -O2 -g -m64 -mtune=generic -c -o libfits_module_la-FitsModule.lo `test -f 'FitsModule.cc' || echo './'`FitsModule.cc
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I/users/npotter/hyrax_1.8_release/include/bes -I/usr/include/libxml2 -I/users/npotter/hyrax_1.8_release/include/libdap -I/usr/include/libxml2 -I/usr/include/cfitsio -O2 -g -m64 -mtune=generic -c FitsModule.cc  -fPIC -DPIC -o .libs/libfits_module_la-FitsModule.o
+/bin/sh ./libtool --tag=CXX   --mode=link g++  -O2 -g -m64 -mtune=generic -avoid-version -module  -L/usr/lib -o libfits_module.la -rpath /usr/lib/bes libfits_module_la-fits_read_attributes.lo libfits_module_la-fits_read_descriptors.lo libfits_module_la-BESAutoPtr.lo  libfits_module_la-FitsRequestHandler.lo libfits_module_la-FitsModule.lo -L/users/npotter/hyrax_1.8_release/lib -lbes_dispatch -lbes_xml_command -lbes_ppt -lbes_dap -lz  -ldl -lxml2 -lz -lm -L/usr/kerberos/lib64 -lssl -lcrypto -ldl -lz   -L/users/npotter/hyrax_1.8_release/lib -ldap -ldapserver -lxml2 -lz -lm   -lpthread -luuid  -lcfitsio
+libtool: link: g++  -fPIC -DPIC -shared -nostdlib /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.1.2/crtbeginS.o  .libs/libfits_module_la-fits_read_attributes.o .libs/libfits_module_la-fits_read_descriptors.o .libs/libfits_module_la-BESAutoPtr.o .libs/libfits_module_la-FitsRequestHandler.o .libs/libfits_module_la-FitsModule.o   -Wl,-rpath -Wl,/users/npotter/hyrax_1.8_release/lib -Wl,-rpath -Wl,/users/npotter/hyrax_1.8_release/lib -L/usr/lib -L/users/npotter/hyrax_1.8_release/lib /users/npotter/hyrax_1.8_release/lib/libbes_xml_command.so /users/npotter/hyrax_1.8_release/lib/libbes_ppt.so /users/npotter/hyrax_1.8_release/lib/libbes_dap.so /users/npotter/hyrax_1.8_release/lib/libbes_dispatch.so -L/usr/kerberos/lib64 -lssl -lcrypto -ldl /users/npotter/hyrax_1.8_release/lib/libdapserver.so /users/npotter/hyrax_1.8_release/lib/libdap.so -lxml2 -lz -lpthread -luuid -lcfitsio -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2 -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -lstdc++ -lm -lc -lgcc_s /usr/lib/gcc/x86_64-redhat-linux/4.1.2/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crtn.o  -O2 -m64 -mtune=generic   -Wl,-soname -Wl,libfits_module.so -o .libs/libfits_module.so
+/usr/bin/ld: skipping incompatible /usr/lib/libxml2.so when searching for -lxml2
+/usr/bin/ld: skipping incompatible /usr/lib/libxml2.a when searching for -lxml2
+/usr/bin/ld: skipping incompatible /usr/lib/libcfitsio.so when searching for -lcfitsio
+/usr/bin/ld: skipping incompatible /usr/lib/libcfitsio.a when searching for -lcfitsio
+libtool: link: ( cd ".libs" && rm -f "libfits_module.la" && ln -s "../libfits_module.la" "libfits_module.la" )
+make[3]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make[2]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make[1]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
++ exit 0
+Executing(%install): /bin/sh -e /var/tmp/rpm-tmp.1876
++ umask 022
++ cd /users/npotter/hyrax_1.8_release/src/modules/../../rpm/BUILD
++ cd fits_handler-1.0.6
++ rm -rf /var/tmp/fits_handler-1.0.6-1-root-npotter
++ make DESTDIR=/var/tmp/fits_handler-1.0.6-1-root-npotter install
+make[1]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+Making install in bes-testsuite
+make[2]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6/bes-testsuite'
+make[3]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6/bes-testsuite'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6/bes-testsuite'
+make[2]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6/bes-testsuite'
+make[2]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make[3]: Entering directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make[3]: Nothing to be done for `install-exec-am'.
+sed -e "s%[@]bes_modules_dir[@]%/usr/lib/bes%" fits.conf.in > fits.conf
+test -z "/usr/lib/bes" || /bin/mkdir -p "/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib/bes"
+ /bin/sh ./libtool   --mode=install /usr/bin/install -c   libfits_module.la '/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib/bes'
+libtool: install: /usr/bin/install -c .libs/libfits_module.so /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib/bes/libfits_module.so
+libtool: install: /usr/bin/install -c .libs/libfits_module.lai /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib/bes/libfits_module.la
+libtool: install: warning: remember to run `libtool --finish /usr/lib/bes'
+test -z "/usr/share/hyrax/data/fits" || /bin/mkdir -p "/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/share/hyrax/data/fits"
+ /usr/bin/install -c -m 644 data/20060308.172859.mk4.cpb.fts data/20060308.172859.mk4.rpb.fts data/20060328.185927.chp.bsh.fts data/20060328.190602.dpm.alr.fts '/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/share/hyrax/data/fits'
+make[3]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make[2]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
+make[1]: Leaving directory `/users/npotter/hyrax_1.8_release/rpm/BUILD/fits_handler-1.0.6'
++ rm -f '/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib64/*.la'
++ rm -f '/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib64/*.so'
++ rm -f '/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib64/bes/*.la'
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip
++ /usr/lib/rpm/brp-strip-static-archive
++ /usr/lib/rpm/brp-strip-comment-note
+Processing files: fits_handler-1.0.6-1
+error: File not found: /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib64/bes/libfits_module.so
+Executing(%doc): /bin/sh -e /var/tmp/rpm-tmp.46272
++ umask 022
++ cd /users/npotter/hyrax_1.8_release/src/modules/../../rpm/BUILD
++ cd fits_handler-1.0.6
++ DOCDIR=/var/tmp/fits_handler-1.0.6-1-root-npotter/usr/share/doc/fits_handler-1.0.6
++ export DOCDIR
++ rm -rf /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/share/doc/fits_handler-1.0.6
++ /bin/mkdir -p /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/share/doc/fits_handler-1.0.6
++ cp -pr COPYING COPYRIGHT NEWS README /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/share/doc/fits_handler-1.0.6
++ exit 0
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /var/tmp/fits_handler-1.0.6-1-root-npotter
+error: Installed (but unpackaged) file(s) found:
+   /usr/lib/bes/libfits_module.la
+   /usr/lib/bes/libfits_module.so
+
+
+RPM build errors:
+    File not found: /var/tmp/fits_handler-1.0.6-1-root-npotter/usr/lib64/bes/libfits_module.so
+    Installed (but unpackaged) file(s) found:
+   /usr/lib/bes/libfits_module.la
+   /usr/lib/bes/libfits_module.so
+make: *** [rpm] Error 1

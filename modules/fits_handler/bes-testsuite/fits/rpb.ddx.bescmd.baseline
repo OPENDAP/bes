@@ -1,0 +1,1531 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="20060308.172859.mk4.rpb.fts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Structure name="HDU_1">
+        <Attribute name="SIMPLE" type="String">
+            <value>&quot;T / FITS file: MLSO Mark-4 K-coronameter&quot;</value>
+        </Attribute>
+        <Attribute name="BITPIX" type="String">
+            <value>&quot;16 / 2-byte signed integers&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS" type="String">
+            <value>&quot;2 / number of dimensions&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS1" type="String">
+            <value>&quot;960 / size of solar_X dimension&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS2" type="String">
+            <value>&quot;960 / size of solar_Y dimension&quot;</value>
+        </Attribute>
+        <Attribute name="EXTEND" type="String">
+            <value>&quot;T / extension(s) possible&quot;</value>
+        </Attribute>
+        <Attribute name="ORIGIN" type="String">
+            <value>&quot;'HAO' / High Altitude Observatory (HAO)&quot;</value>
+        </Attribute>
+        <Attribute name="TELESCOP" type="String">
+            <value>&quot;'Mk4' / Mark-4 K-Coronameter (Mk4)&quot;</value>
+        </Attribute>
+        <Attribute name="INSTRUME" type="String">
+            <value>&quot;'Dalsa' / rotating 2048-element Dalsa linear array&quot;</value>
+        </Attribute>
+        <Attribute name="DATE-OBS" type="String">
+            <value>&quot;'2006-03-08' / observation date: CCYY-MM-DD [2006 DOY 067]&quot;</value>
+        </Attribute>
+        <Attribute name="TIME-OBS" type="String">
+            <value>&quot;'17:28:59' / observation time: HH:MM:SS&quot;</value>
+        </Attribute>
+        <Attribute name="OBJECT" type="String">
+            <value>&quot;'corona' / white light [700-1080 nanometers]&quot;</value>
+        </Attribute>
+        <Attribute name="TYPE-OBS" type="String">
+            <value>&quot;'pB' / polarization Brightness&quot;</value>
+        </Attribute>
+        <Attribute name="VIGNET" type="String">
+            <value>&quot;'N' / image vignetted: [Y or N]&quot;</value>
+        </Attribute>
+        <Attribute name="NIMAVG" type="String">
+            <value>&quot;1 / number of images averaged&quot;</value>
+        </Attribute>
+        <Attribute name="DATAFORM" type="String">
+            <value>&quot;'Cartesian' / Mk4 data form&quot;</value>
+        </Attribute>
+        <Attribute name="COORDNAM" type="String">
+            <value>&quot;'Heliocentric' / coordinate system&quot;</value>
+        </Attribute>
+        <Attribute name="CTYPE1" type="String">
+            <value>&quot;'solar_X' / axis 1 type: solar_X&quot;</value>
+        </Attribute>
+        <Attribute name="CRPIX1" type="String">
+            <value>&quot;479.50 / solar_X sun center [pixel]&quot;</value>
+        </Attribute>
+        <Attribute name="CRVAL1" type="String">
+            <value>&quot;0.00 / solar_X sun center [arcsec]&quot;</value>
+        </Attribute>
+        <Attribute name="CDELT1" type="String">
+            <value>&quot;6.04261 / solar_X coord increment [arcsec/pixel]&quot;</value>
+        </Attribute>
+        <Attribute name="CROTA1" type="String">
+            <value>&quot;0.00 / solar_X rotation [deg.] from reference&quot;</value>
+        </Attribute>
+        <Attribute name="CTYPE2" type="String">
+            <value>&quot;'solar_Y' / axis 2 type  solar_Y&quot;</value>
+        </Attribute>
+        <Attribute name="CRPIX2" type="String">
+            <value>&quot;479.50 / solar_Y sun center [PIXEL]&quot;</value>
+        </Attribute>
+        <Attribute name="CRVAL2" type="String">
+            <value>&quot;0.00 / solar_Y sun center [arcsec]&quot;</value>
+        </Attribute>
+        <Attribute name="CDELT2" type="String">
+            <value>&quot;6.04261 / solar_Y coord increment [arcsec/pixel]&quot;</value>
+        </Attribute>
+        <Attribute name="CROTA2" type="String">
+            <value>&quot;0.00 / solar_Y rotation [deg.] from reference&quot;</value>
+        </Attribute>
+        <Attribute name="ROLLADJ" type="String">
+            <value>&quot;0.00 / image rotated  0.00 deg CCW&quot;</value>
+        </Attribute>
+        <Attribute name="CRRADIUS" type="String">
+            <value>&quot;160.00 / solar radius [pixels]&quot;</value>
+        </Attribute>
+        <Attribute name="RSUN" type="String">
+            <value>&quot;966.82 / solar radius [arcsec]&quot;</value>
+        </Attribute>
+        <Attribute name="SOLAR_P0" type="String">
+            <value>&quot;-23.25 / solar P-angle [degrees]&quot;</value>
+        </Attribute>
+        <Attribute name="SOLAR_B0" type="String">
+            <value>&quot;-7.24 / solar B-angle [degrees]&quot;</value>
+        </Attribute>
+        <Attribute name="SOLAR_L0" type="String">
+            <value>&quot;77.83 / Solar L-angle [degrees]: Carr. Longitude&quot;</value>
+        </Attribute>
+        <Attribute name="CARR_ROT" type="String">
+            <value>&quot;2040 / Carrington Rotation number&quot;</value>
+        </Attribute>
+        <Attribute name="BUNIT" type="String">
+            <value>&quot;'Bsun' / magnitude units&quot;</value>
+        </Attribute>
+        <Attribute name="BSCALE" type="String">
+            <value>&quot;1.000000e-10 / physical = data * BSCALE + BZERO&quot;</value>
+        </Attribute>
+        <Attribute name="BZERO" type="String">
+            <value>&quot;-1.000000e-07 / &quot;</value>
+        </Attribute>
+        <Attribute name="DATAMIN" type="String">
+            <value>&quot;-3.376e-06 / minimum data value (-3.276e+04)&quot;</value>
+        </Attribute>
+        <Attribute name="DATAMAX" type="String">
+            <value>&quot;3.177e-06 / maximum data value ( 3.277e+04)&quot;</value>
+        </Attribute>
+        <Attribute name="DISPMIN" type="String">
+            <value>&quot;-5.000e-08 / min. display value (       500)&quot;</value>
+        </Attribute>
+        <Attribute name="DISPMAX" type="String">
+            <value>&quot;5.000e-07 / max. display value (      6000)&quot;</value>
+        </Attribute>
+        <Attribute name="DIRAXIS1" type="String">
+            <value>&quot;'RIGHT' / display direction for axis 1 [X]&quot;</value>
+        </Attribute>
+        <Attribute name="DIRAXIS2" type="String">
+            <value>&quot;'UP' / display direction for axis 2 [Y]&quot;</value>
+        </Attribute>
+        <Attribute name="RMIN" type="String">
+            <value>&quot;1.10 / inner field-of-view limit [Rsun]&quot;</value>
+        </Attribute>
+        <Attribute name="RMAX" type="String">
+            <value>&quot;2.85 / outer field-of-view limit [Rsun]&quot;</value>
+        </Attribute>
+        <Attribute name="TSCPFILE" type="String">
+            <value>&quot;'06d067.18_22.mk4.tscpinv' / TSCP file&quot;</value>
+        </Attribute>
+        <Attribute name="REFFILE" type="String">
+            <value>&quot;'06d067.18_16.mk4.q' / reference file&quot;</value>
+        </Attribute>
+        <Attribute name="CVERSION" type="String">
+            <value>&quot;'Version 2.1' / calibration version&quot;</value>
+        </Attribute>
+        <Attribute name="DATE-CAL" type="String">
+            <value>&quot;'2006-03-09' / Mk4 calibration date :       CCYY-MM-DD&quot;</value>
+        </Attribute>
+        <Attribute name="DATE" type="String">
+            <value>&quot;'2006-03-09' / date of FITS file creation : CCYY-MM-DD&quot;</value>
+        </Attribute>
+        <Attribute name="VERSION" type="String">
+            <value>&quot;'Mk4 v2.12' / mk4fits software version&quot;</value>
+        </Attribute>
+        <Attribute name="key_52" type="String">
+            <value>&quot; /   ----------------------------------------------------------------------&quot;</value>
+        </Attribute>
+        <Attribute name="COMMENT" type="String">
+            <value>&quot; /   For images, pixels are displayed with the origin at the lower left&quot;</value>
+            <value>&quot; /   corner ; i.e., horizontal scans (left to right), with the first scan&quot;</value>
+            <value>&quot; /   at the bottom of the image, &amp; the last scan at the top.&quot;</value>
+            <value>&quot; /   Axis 1 is East-West and axis 2 is North-South.&quot;</value>
+            <value>&quot; /   Calibrated brightness measurements in the Mark-4 data are specified&quot;</value>
+            <value>&quot; /   in units of Bsun, which is a ratio of brightness of the corona to the&quot;</value>
+            <value>&quot; /   mean brightness of the solar disk.  To convert integer pixel values&quot;</value>
+            <value>&quot; /   to Bsun units, multiply each pixel value by BSCALE &amp; add BZERO.&quot;</value>
+            <value>&quot; /   Intensity data is *QUANTITATIVELY* useful only when BUNIT='Bsun'.&quot;</value>
+            <value>&quot; /   The Mark-4 K-coronameter (Mk4) observes the lower corona [700-950 nm]&quot;</value>
+            <value>&quot; /   from ~1.10 to ~2.85 solar radii [Rsun], using a 2048-element linear&quot;</value>
+            <value>&quot; /   Dalsa array (sampled to 384 pixels) aligned along a radial direction&quot;</value>
+            <value>&quot; /   outward from the center of the sun.  The detector is rotated over a&quot;</value>
+            <value>&quot; /   3-minute period to accumulate a set of radial rays, which may be&quot;</value>
+            <value>&quot; /   converted from polar to Cartesian (i.e., rectangular) coordinates.&quot;</value>
+            <value>&quot; /   The Mauna Loa Solar Observatory (MLSO) is located on the island of&quot;</value>
+            <value>&quot; /   Hawaii, and is operated by the High Altitude Observatory (HAO),&quot;</value>
+            <value>&quot; /   a division of the National Center for Atmospheric Research (NCAR),&quot;</value>
+            <value>&quot; /   under sponsorship of the National Science Foundataion(NSF).&quot;</value>
+        </Attribute>
+        <Attribute name="key_57" type="String">
+            <value>&quot; /   ----------------------------------------------------------------------&quot;</value>
+        </Attribute>
+        <Attribute name="key_63" type="String">
+            <value>&quot; /   ----------------------------------------------------------------------&quot;</value>
+        </Attribute>
+        <Structure name="key_1">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_2">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_3">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_4">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_5">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_6">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_7">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_8">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_9">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_10">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_11">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_12">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_13">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_14">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_15">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_16">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_17">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_18">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_19">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_20">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_21">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_22">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_23">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_24">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_25">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_26">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_27">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_28">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_29">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_30">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_31">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_32">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_33">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_34">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_35">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_36">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_37">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_38">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_39">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_40">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_41">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_42">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_43">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_44">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_45">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_46">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_47">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_48">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_49">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_50">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_51">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_52">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_53">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_54">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_55">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_56">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_57">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_58">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_59">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_60">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_61">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_62">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_63">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_64">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_65">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_66">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_67">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_68">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_69">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_70">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_71">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_72">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_73">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Array name="HDU_1_IMAGE">
+            <Int16/>
+            <dimension name="NAXIS0" size="960"/>
+            <dimension name="NAXIS1" size="960"/>
+        </Array>
+    </Structure>
+    <Structure name="HDU_2">
+        <Attribute name="XTENSION" type="String">
+            <value>&quot;'IMAGE   ' / FITS EXTENSION&quot;</value>
+        </Attribute>
+        <Attribute name="BITPIX" type="String">
+            <value>&quot;8 / MIXTURE OF CHAR[C], INT[I], FLOAT[F] VARIABLES&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS" type="String">
+            <value>&quot;1 / NUMBER OF DIMENSIONS&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS1" type="String">
+            <value>&quot;1024 / SIZE OF DIMENSION # 1&quot;</value>
+        </Attribute>
+        <Attribute name="PCOUNT" type="String">
+            <value>&quot;0 / EXTENSION PCOUNT&quot;</value>
+        </Attribute>
+        <Attribute name="GCOUNT" type="String">
+            <value>&quot;1 / EXTENSION GCOUNT&quot;</value>
+        </Attribute>
+        <Attribute name="EXTNAME" type="String">
+            <value>&quot;'MK4_HSKP' / MLSO/MK4 BINARY HEADER EXTENSION&quot;</value>
+        </Attribute>
+        <Attribute name="COMMENT" type="String">
+            <value>&quot; /  KEYWORDS &amp; PARAMETERS BELOW DESCRIBE THE MK4 BINARY HEADER CONTENTS:&quot;</value>
+            <value>&quot; /                        / BYTES 884-1023 [C]: FILL BYTES&quot;</value>
+        </Attribute>
+        <Attribute name="I_YEAR" type="String">
+            <value>&quot;2006 / BYTES   0-  3 [I]: IMAGE YEAR: CCYY&quot;</value>
+        </Attribute>
+        <Attribute name="I_MONTH" type="String">
+            <value>&quot;3 / BYTES   4-  7 [I]: IMAGE MONTH: 1-12&quot;</value>
+        </Attribute>
+        <Attribute name="I_DAY" type="String">
+            <value>&quot;8 / BYTES   8- 11 [I]: IMAGE DAY: 1-31&quot;</value>
+        </Attribute>
+        <Attribute name="I_HOUR" type="String">
+            <value>&quot;17 / BYTES  12- 15 [I]: IMAGE HOUR: 0-23&quot;</value>
+        </Attribute>
+        <Attribute name="I_MINUTE" type="String">
+            <value>&quot;28 / BYTES  16- 19 [I]: IMAGE MINUTE: 0-59&quot;</value>
+        </Attribute>
+        <Attribute name="I_CENSEC" type="String">
+            <value>&quot;5900 / BYTES  20- 23 [I]: IMAGE CENTISEC: seconds*100&quot;</value>
+        </Attribute>
+        <Attribute name="I_JULD" type="String">
+            <value>&quot;38782 / BYTES  24- 27 [I]: IMAGE JULIAN DATE&quot;</value>
+        </Attribute>
+        <Attribute name="I_DOY" type="String">
+            <value>&quot;67 / BYTES  28- 31 [I]: IMAGE DAY-OF-YEAR: 1-366&quot;</value>
+        </Attribute>
+        <Attribute name="I_TIME" type="String">
+            <value>&quot;3776340 / BYTES  32- 35 [I]: IMAGE TIME: HERTZ UNITS&quot;</value>
+        </Attribute>
+        <Attribute name="XDIM" type="String">
+            <value>&quot;960 / BYTES  36- 39 [I]: X-AXIS DIMENSION&quot;</value>
+        </Attribute>
+        <Attribute name="YDIM" type="String">
+            <value>&quot;960 / BYTES  40- 43 [I]: Y-AXIS DIMENSION&quot;</value>
+        </Attribute>
+        <Attribute name="DURATION" type="String">
+            <value>&quot;9805 / BYTES  44- 47 [I]: SCAN DURATION [HZ]&quot;</value>
+        </Attribute>
+        <Attribute name="JULDREF" type="String">
+            <value>&quot;2415021 / BYTES  48- 51 [I]: Julian Ref: 1 Jan 1900&quot;</value>
+        </Attribute>
+        <Attribute name="IMGDTYPE" type="String">
+            <value>&quot;16 / BYTES  48- 51 [I]: bits/pixel&quot;</value>
+        </Attribute>
+        <Attribute name="FILL1_0" type="String">
+            <value>&quot;0 / BYTES  52- 55 [I]: FILL BYTES&quot;</value>
+        </Attribute>
+        <Attribute name="FILL1_1" type="String">
+            <value>&quot;0 / BYTES  56- 59 [I]: FILL BYTES&quot;</value>
+        </Attribute>
+        <Attribute name="PANGLE" type="String">
+            <value>&quot;-23.25 / BYTES  64- 67 [F]: SOLAR P-ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="BANGLE" type="String">
+            <value>&quot;-7.24 / BYTES  68- 71 [F]: SOLAR B-ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="LANGLE" type="String">
+            <value>&quot;77.59 / BYTES  72- 75 [F]: SOLAR L-ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="RA" type="String">
+            <value>&quot;348.97 / BYTES  76- 79 [F]: RIGHT ASCENSION&quot;</value>
+        </Attribute>
+        <Attribute name="DEC" type="String">
+            <value>&quot;-4.74 / BYTES  80- 83 [F]: DECLINATION&quot;</value>
+        </Attribute>
+        <Attribute name="HA" type="String">
+            <value>&quot;-76.02 / BYTES  84- 87 [F]: SOLAR HOUR-ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="ELEV" type="String">
+            <value>&quot;11.49 / BYTES  88- 91 [F]: SOLAR ELEVATION&quot;</value>
+        </Attribute>
+        <Attribute name="AZIMUTH" type="String">
+            <value>&quot;99.30 / BYTES  92- 95 [F]: SOLAR AZIMUTH&quot;</value>
+        </Attribute>
+        <Attribute name="AMASS" type="String">
+            <value>&quot;5.02 / BYTES  96- 99 [F]: AIR MASS&quot;</value>
+        </Attribute>
+        <Attribute name="RADIUS" type="String">
+            <value>&quot;966.82 / BYTES 100-103 [F]: SOLAR RADIUS [ARCSEC]&quot;</value>
+        </Attribute>
+        <Attribute name="SKYTX" type="String">
+            <value>&quot;4090.00 / BYTES 104-107 [F]: SKY TRANSMISSION MAX VALUE.&quot;</value>
+        </Attribute>
+        <Attribute name="MK4PHASE" type="String">
+            <value>&quot;-6.31 / BYTES 108-111 [F]: MK4 COORD FRAME PHASE [DEG]&quot;</value>
+        </Attribute>
+        <Attribute name="SKYTXUSE" type="String">
+            <value>&quot;320.79 / BYTES 116-119 [F]: SKY TRANSMISSION USED.&quot;</value>
+        </Attribute>
+        <Attribute name="DATASCL" type="String">
+            <value>&quot;1.000000e+10 / BYTES 120-123 [F]: DATA SCALE&quot;</value>
+        </Attribute>
+        <Attribute name="DATAOFF" type="String">
+            <value>&quot;1.000000e+03 / BYTES 124-127 [F]: DATA OFFSET&quot;</value>
+        </Attribute>
+        <Attribute name="SPARE2" type="String">
+            <value>&quot;0.00 / BYTES 128-131 [F]: SPARE 2&quot;</value>
+        </Attribute>
+        <Attribute name="ORGHAIR0" type="String">
+            <value>&quot;110.40 / BYTES 132-135 [F]: ORIGINAL HAIRLINE LOC [0]&quot;</value>
+        </Attribute>
+        <Attribute name="ORGHAIR1" type="String">
+            <value>&quot;275.97 / BYTES 136-139 [F]: ORIGINAL HAIRLINE LOC [1]&quot;</value>
+        </Attribute>
+        <Attribute name="HAIR0" type="String">
+            <value>&quot;103.63 / BYTES 140-143 [F]: HAIRLINE LOCATION [0]&quot;</value>
+        </Attribute>
+        <Attribute name="HAIR1" type="String">
+            <value>&quot;275.68 / BYTES 144-147 [F]: HAIRLINE LOCATION [1]&quot;</value>
+        </Attribute>
+        <Attribute name="XCEN" type="String">
+            <value>&quot;479.50 / BYTES 112-115 [F]: X-AXIS SUN CENTER [PIXELS]&quot;</value>
+        </Attribute>
+        <Attribute name="YCEN" type="String">
+            <value>&quot;479.50 / BYTES 148-151 [F]: Y-AXIS SUN CENTER [PIXELS]&quot;</value>
+        </Attribute>
+        <Attribute name="PIXSCL" type="String">
+            <value>&quot;160.00 / BYTES 152-155 [F]: SCALE [CARTESIAN:PIX/RSUN]&quot;</value>
+        </Attribute>
+        <Attribute name="R0" type="String">
+            <value>&quot;0.931973 / BYTES 156-159 [F]: RADIUS LOWEST PIXEL [RSUN]&quot;</value>
+        </Attribute>
+        <Attribute name="DR" type="String">
+            <value>&quot;0.00522762 / BYTES 160-163 [F]: RADIAL PIXEL INC. [RSUN]&quot;</value>
+        </Attribute>
+        <Attribute name="RMAXD" type="String">
+            <value>&quot;2.93415 / BYTES 164-167 [F]: RADIUS OF HIGHEST PIXEL&quot;</value>
+        </Attribute>
+        <Attribute name="TH_MIN" type="String">
+            <value>&quot;0.00 / BYTES 168-171 [F]: MINIMUM SCAN ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="TH_MAX" type="String">
+            <value>&quot;359.50 / BYTES 172-175 [F]: MAXIMUM SCAN ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="RAW_TMIN" type="String">
+            <value>&quot;-183.00 / BYTES 176-179 [F]: RAW MIN.SCAN ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="RAW_TMAX" type="String">
+            <value>&quot;183.00 / BYTES 180-183 [F]: RAW MAX.SCAN ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="BACKLASH" type="String">
+            <value>&quot;0.50 / BYTES 184-187 [F]: BACKLASH ADJ APPLIED [DEG]&quot;</value>
+        </Attribute>
+        <Attribute name="PHASE" type="String">
+            <value>&quot;30.00 / BYTES 188-191 [F]: PHASE OFFSET [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="OBSTYPE" type="String">
+            <value>&quot;1000 / BYTES 192-195 [I]: OBS: CAL0,CAL15,DARK,CORONA&quot;</value>
+        </Attribute>
+        <Attribute name="DATA_TYP" type="String">
+            <value>&quot;1 / BYTES 196-199 [I]: DATA TYPE: I, Q, U&quot;</value>
+        </Attribute>
+        <Attribute name="PROCSTEP" type="String">
+            <value>&quot;15 / BYTES 200-203 [I]: DP: RAW,CAL,AVG,RECT,SLIT&quot;</value>
+        </Attribute>
+        <Attribute name="BAR_DIR" type="String">
+            <value>&quot;1 / BYTES 204-207 [I]: SCAN DIRECTION:-1=REV +1=FWD&quot;</value>
+        </Attribute>
+        <Attribute name="NRAY" type="String">
+            <value>&quot;981 / BYTES 208-211 [I]: NUMBER OF RADIAL RAYS&quot;</value>
+        </Attribute>
+        <Attribute name="PIXELS" type="String">
+            <value>&quot;384 / BYTES 212-215 [I]: NUMBER OF PIXELS&quot;</value>
+        </Attribute>
+        <Attribute name="FILL2" type="String">
+            <value>&quot;0 / BYTES 216-219 [I]: FILL BYTES&quot;</value>
+        </Attribute>
+        <Attribute name="C_YEAR" type="String">
+            <value>&quot;2006 / BYTES 220-223 [I]: CAL YEAR: CCYY&quot;</value>
+        </Attribute>
+        <Attribute name="C_MONTH" type="String">
+            <value>&quot;3 / BYTES 224-227 [I]: CAL MONTH: 1-12&quot;</value>
+        </Attribute>
+        <Attribute name="C_DAY" type="String">
+            <value>&quot;9 / BYTES 228-231 [I]: CAL DAY: 1-31&quot;</value>
+        </Attribute>
+        <Attribute name="C_HOUR" type="String">
+            <value>&quot;10 / BYTES 232-235 [I]: CAL HOUR: 0-23&quot;</value>
+        </Attribute>
+        <Attribute name="C_MINUTE" type="String">
+            <value>&quot;31 / BYTES 236-239 [I]: CAL MINUTE: 0-59&quot;</value>
+        </Attribute>
+        <Attribute name="C_CENSEC" type="String">
+            <value>&quot;2300 / BYTES 240-243 [I]: CAL CENTISEC: seconds * 10&quot;</value>
+        </Attribute>
+        <Attribute name="C_JULD" type="String">
+            <value>&quot;38783 / BYTES 244-247 [I]: CAL JULIAN DATE&quot;</value>
+        </Attribute>
+        <Attribute name="C_DOY" type="String">
+            <value>&quot;67 / BYTES 248-251 [I]: CAL DAY-OF-YEAR: 1-366&quot;</value>
+        </Attribute>
+        <Attribute name="C_TIME" type="String">
+            <value>&quot;2272980 / BYTES 252-255 [I]: CAL TIME: HERTZ UNITS&quot;</value>
+        </Attribute>
+        <Attribute name="TSCPFILE" type="String">
+            <value>&quot;'06d067.18_22.mk4.tscpinv' / BYTES 256-319 [C]: TSCP FILE&quot;</value>
+        </Attribute>
+        <Attribute name="REFFILE" type="String">
+            <value>&quot;'06d067.18_16.mk4.q' / BYTES 320-383 [C]: REFERENCE FILE&quot;</value>
+        </Attribute>
+        <Attribute name="CVERSION" type="String">
+            <value>&quot;'Version 2.1' / BYTES 384-447 [C]: VERSION&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME1" type="String">
+            <value>&quot;'                    ' / BYTES 448-467 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME2" type="String">
+            <value>&quot;'                    ' / BYTES 468-487 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME3" type="String">
+            <value>&quot;'                    ' / BYTES 488-507 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME4" type="String">
+            <value>&quot;'                    ' / BYTES 508-527 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME5" type="String">
+            <value>&quot;'                    ' / BYTES 528-547 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME6" type="String">
+            <value>&quot;'                    ' / BYTES 548-567 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME7" type="String">
+            <value>&quot;'                    ' / BYTES 568-587 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="AVGTIME8" type="String">
+            <value>&quot;'                    ' / BYTES 588-607 [C]: IMAGE TIMES FOR AVERAGE&quot;</value>
+        </Attribute>
+        <Attribute name="JULDATE0" type="String">
+            <value>&quot;37864.885400 / BYTES 608-615 [D]: START DATE FOR INST. PARAM.&quot;</value>
+        </Attribute>
+        <Attribute name="JULDATE1" type="String">
+            <value>&quot;40000.000000 / BYTES 616-623 [D]: END   DATE FOR INST. PARAM.&quot;</value>
+        </Attribute>
+        <Attribute name="BOPAL" type="String">
+            <value>&quot;1.38e-05 / BYTES 624-627 [F]: OPAL TRANSMISSION&quot;</value>
+        </Attribute>
+        <Attribute name="TRT" type="String">
+            <value>&quot;0.847389 / BYTES 628-631 [F]: TILTPLATE TRANSMISSION&quot;</value>
+        </Attribute>
+        <Attribute name="FPT" type="String">
+            <value>&quot;0.01641 / BYTES 632-635 [F]: TILTPLATE POLARIZATION&quot;</value>
+        </Attribute>
+        <Attribute name="IDSPARE" type="String">
+            <value>&quot;-9999 / BYTES 636-639 [F]: SPARE&quot;</value>
+        </Attribute>
+        <Attribute name="KAPPA" type="String">
+            <value>&quot;1.000000 / BYTES 640-643 [F]: B=KAPPA*(I^(KAPPA-1)&quot;</value>
+        </Attribute>
+        <Attribute name="BAROFF" type="String">
+            <value>&quot;2.85 / BYTES 644-647 [F]: BARREL OFFSET [DEG].&quot;</value>
+        </Attribute>
+        <Attribute name="HAIRSPT0" type="String">
+            <value>&quot;103.66 / BYTES 648-651 [F]: HAIR SPOT 0.&quot;</value>
+        </Attribute>
+        <Attribute name="HAIRSPT1" type="String">
+            <value>&quot;275.67 / BYTES 652-655 [F]: HAIR SPOT 1.&quot;</value>
+        </Attribute>
+        <Attribute name="R0_ID" type="String">
+            <value>&quot;0.938592 / BYTES 656-659 [F]: R0 [RSUN] 960 ARCSEC/RSUN.&quot;</value>
+        </Attribute>
+        <Attribute name="DR_ID" type="String">
+            <value>&quot;0.00526475 / BYTES 660-663 [F]: PIXEL INCREMENT [RSUN].&quot;</value>
+        </Attribute>
+        <Attribute name="GOODRMIN" type="String">
+            <value>&quot;1.10 / BYTES 664-667 [F]: MINIMUM HEIGHT [RSUN].&quot;</value>
+        </Attribute>
+        <Attribute name="GOODRMAX" type="String">
+            <value>&quot;2.85 / BYTES 668-671 [F]: MAXIMUM HEIGHT [RSUN].&quot;</value>
+        </Attribute>
+        <Attribute name="BIASSPT0" type="String">
+            <value>&quot;0.00 / BYTES 672-675 [F]: LOWEST  PIXEL FOR BIAS [RSUN&quot;</value>
+        </Attribute>
+        <Attribute name="BIASSPT1" type="String">
+            <value>&quot;9.00 / BYTES 676-679 [F]: HIGHEST PIXEL FOR BIAS [RSUN&quot;</value>
+        </Attribute>
+        <Attribute name="ZEROSKY" type="String">
+            <value>&quot;376.00 / BYTES 680-683 [F]: SKY TRANSMISSION MAXIUMUM.&quot;</value>
+        </Attribute>
+        <Attribute name="VENUSFAC" type="String">
+            <value>&quot;1.00 / BYTES 684-687 [F]: VENUS CALIBRATION FACTOR.&quot;</value>
+        </Attribute>
+        <Attribute name="EXTRAFAC" type="String">
+            <value>&quot;1.00 / BYTES 688-691 [F]: VENUS CALIBRATION FACTOR.&quot;</value>
+        </Attribute>
+        <Attribute name="DIFF_FAC" type="String">
+            <value>&quot;2.50 / BYTES 692-695 [F]: DIFFRACTION CAL. FACTOR.&quot;</value>
+        </Attribute>
+        <Attribute name="DIFF_PIX" type="String">
+            <value>&quot;40 / BYTES 696-699 [I]: HIGHEST PIXEL FOR DIFFRACTIO&quot;</value>
+        </Attribute>
+        <Attribute name="PHIPIX" type="String">
+            <value>&quot;192 / BYTES 700-703 [I]: HIGHEST PIXEL FOR DIFFRACTIO&quot;</value>
+        </Attribute>
+        <Attribute name="POLCKPIX" type="String">
+            <value>&quot;40 / BYTES 704-707 [I]: REV. POLARITY PIXEL OFFSET.&quot;</value>
+        </Attribute>
+        <Attribute name="NEGPIX0" type="String">
+            <value>&quot;35 / BYTES 708-711 [I]: LOWEST  PIXEL FOR NEG. FIX.&quot;</value>
+        </Attribute>
+        <Attribute name="NEGPIX1" type="String">
+            <value>&quot;365 / BYTES 712-715 [I]: HIGHEST PIXEL FOR NEG. FIX.&quot;</value>
+        </Attribute>
+        <Attribute name="WRAPPIX0" type="String">
+            <value>&quot;20 / BYTES 716-719 [I]: LOWEST  PIXEL FOR NEG. WRAP.&quot;</value>
+        </Attribute>
+        <Attribute name="WRAPPIX1" type="String">
+            <value>&quot;34 / BYTES 720-723 [I]: HIGHEST PIXEL FOR NEG. WRAP.&quot;</value>
+        </Attribute>
+        <Attribute name="RINGPIX0" type="String">
+            <value>&quot;340 / BYTES 724-727 [I]: LOWEST  PIXEL FOR RING SEARC&quot;</value>
+        </Attribute>
+        <Attribute name="RINGPIX1" type="String">
+            <value>&quot;370 / BYTES 728-731 [I]: HIGHEST PIXEL FOR RING SEARC&quot;</value>
+        </Attribute>
+        <Attribute name="RINGPIXR" type="String">
+            <value>&quot;300 / BYTES 732-735 [I]: RING REFERENCE HEIGHT.&quot;</value>
+        </Attribute>
+        <Attribute name="CORRECT0" type="String">
+            <value>&quot;'gain_0.200309022115' / BYTES 736-799 [C]: CORRECT #0 FILE.&quot;</value>
+        </Attribute>
+        <Attribute name="CORRECT1" type="String">
+            <value>&quot;'gain_1.200309022115' / BYTES 800-863 [C]: CORRECT #1 FILE.&quot;</value>
+        </Attribute>
+        <Attribute name="QUXFORM" type="String">
+            <value>&quot;7.27 / BYTES 864-867 [F]: quXform ANGLE [DEGREES].&quot;</value>
+        </Attribute>
+        <Attribute name="DEPOLAMP" type="String">
+            <value>&quot;0.00 / BYTES 868-871 [F]: depol AMPLITUDE.&quot;</value>
+        </Attribute>
+        <Attribute name="DEPOLPHI" type="String">
+            <value>&quot;-40.17 / BYTES 872-875 [F]: depol ANGLE [DEGREES].&quot;</value>
+        </Attribute>
+        <Attribute name="DSCANAMP" type="String">
+            <value>&quot;0.00 / BYTES 876-879 [F]: depolscan AMPLITUDE.&quot;</value>
+        </Attribute>
+        <Attribute name="DSCANPHI" type="String">
+            <value>&quot;28.71 / BYTES 880-883 [F]: depolscan ANGLE [DEGREES].&quot;</value>
+        </Attribute>
+        <Structure name="key_1">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_2">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_3">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_4">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_5">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_6">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_7">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_8">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_9">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_10">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_11">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_12">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_13">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_14">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_15">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_16">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_17">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_18">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_19">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_20">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_21">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_22">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_23">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_24">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_25">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_26">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_27">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_28">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_29">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_30">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_31">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_32">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_33">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_34">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_35">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_36">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_37">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_38">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_39">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_40">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_41">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_42">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_43">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_44">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_45">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_46">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_47">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_48">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_49">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_50">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_51">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_52">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_53">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_54">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_55">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_56">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_57">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_58">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_59">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_60">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_61">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_62">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_63">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_64">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_65">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_66">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_67">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_68">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_69">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_70">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_71">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_72">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_73">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_74">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_75">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_76">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_77">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_78">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_79">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_80">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_81">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_82">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_83">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_84">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_85">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_86">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_87">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_88">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_89">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_90">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_91">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_92">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_93">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_94">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_95">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_96">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_97">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_98">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_99">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_100">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_101">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_102">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_103">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_104">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_105">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_106">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_107">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_108">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_109">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_110">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_111">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_112">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_113">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_114">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_115">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_116">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_117">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_118">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_119">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_120">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Structure name="key_121">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Array name="HDU_2_IMAGE">
+            <Byte/>
+            <dimension name="NAXIS0" size="1024"/>
+        </Array>
+    </Structure>
+    <dataBLOB href=""/>
+</Dataset>

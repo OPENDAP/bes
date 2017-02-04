@@ -1,0 +1,2 @@
+su billhowe -c "$prefix/bin/besctl stop"
+

@@ -1,0 +1,30 @@
+netcdf structT00 {
+dimensions:
+	mystruct.str_len = 23 ;
+variables:
+	byte mystruct.byte ;
+	short mystruct.i16 ;
+	int mystruct.i32 ;
+	short mystruct.ui16 ;
+	int mystruct.ui32 ;
+	float mystruct.f32 ;
+	double mystruct.f64 ;
+	char mystruct.str(mystruct.str_len) ;
+data:
+
+ mystruct.byte = 28 ;
+
+ mystruct.i16 = -2048 ;
+
+ mystruct.i32 = -105467 ;
+
+ mystruct.ui16 = 2048 ;
+
+ mystruct.ui32 = 105467 ;
+
+ mystruct.f32 = 5.7866 ;
+
+ mystruct.f64 = 10245.1234 ;
+
+ mystruct.str = "This is a String Value" ;
+}

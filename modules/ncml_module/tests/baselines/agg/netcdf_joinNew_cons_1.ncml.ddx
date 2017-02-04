@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="netcdf_joinNew.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="base_time" type="String">
+            <value>88- 10-00:00:00</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value> FNOC UV wind components from 1988- 10 to 1988- 13.</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>time_a</value>
+        </Attribute>
+    </Attribute>
+    <Array name="u">
+        <Attribute name="units" type="String">
+            <value>meter per second</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Vector wind eastward component</value>
+        </Attribute>
+        <Attribute name="missing_value" type="String">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="String">
+            <value>0.005</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="source" size="1"/>
+        <dimension name="time_a" size="1"/>
+        <dimension name="lat" size="2"/>
+        <dimension name="lon" size="2"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

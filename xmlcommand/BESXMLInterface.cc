@@ -47,7 +47,7 @@ using std::stringstream;
 #include "BESReturnManager.h"
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
-    BESBasicInterface(strm)
+		BESInterface(strm)
 {
     _dhi = &_base_dhi;
     _dhi->data[DATA_REQUEST] = "xml document";
@@ -65,21 +65,21 @@ BESXMLInterface::~BESXMLInterface()
 
 int BESXMLInterface::execute_request(const string &from)
 {
-    return BESBasicInterface::execute_request(from);
+    return BESInterface::execute_request(from);
 }
 
 /** @brief Initialize the BES
  */
 void BESXMLInterface::initialize()
 {
-    BESBasicInterface::initialize();
+    BESInterface::initialize();
 }
 
 /** @brief Validate the incoming request information
  */
 void BESXMLInterface::validate_data_request()
 {
-    BESBasicInterface::validate_data_request();
+    BESInterface::validate_data_request();
 }
 
 /** @brief Build the data request plan using the BESCmdParser.
@@ -238,7 +238,7 @@ void BESXMLInterface::build_data_request_plan()
 
     BESDEBUG("besxml", "Done building request plan" << endl);
 
-    BESBasicInterface::build_data_request_plan();
+    BESInterface::build_data_request_plan();
 }
 
 /** @brief Execute the data request plan
@@ -250,7 +250,7 @@ void BESXMLInterface::execute_data_request_plan()
     for (; i != e; i++) {
         (*i)->prep_request();
         _dhi = &(*i)->get_dhi();
-        BESBasicInterface::execute_data_request_plan();
+        BESInterface::execute_data_request_plan();
     }
 }
 
@@ -258,7 +258,7 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::invoke_aggregation()
 {
-    BESBasicInterface::invoke_aggregation();
+    BESInterface::invoke_aggregation();
 }
 
 /** @brief Transmit the response object
@@ -276,7 +276,7 @@ void BESXMLInterface::transmit_data()
         BESDEBUG("xml", "OK" << endl);
     }
 
-    BESBasicInterface::transmit_data();
+    BESInterface::transmit_data();
 }
 
 /** @brief Log the status of the request to the BESLog file
@@ -289,7 +289,7 @@ void BESXMLInterface::log_status()
     vector<BESXMLCommand *>::iterator e = _cmd_list.end();
     for (; i != e; i++) {
         _dhi = &(*i)->get_dhi();
-        BESBasicInterface::log_status();
+        BESInterface::log_status();
     }
 }
 
@@ -314,7 +314,7 @@ void BESXMLInterface::report_request()
     vector<BESXMLCommand *>::iterator e = _cmd_list.end();
     for (; i != e; i++) {
         _dhi = &(*i)->get_dhi();
-        BESBasicInterface::report_request();
+        BESInterface::report_request();
     }
 }
 
@@ -327,7 +327,7 @@ void BESXMLInterface::clean()
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
         _dhi = &cmd->get_dhi();
-        BESBasicInterface::clean();
+        BESInterface::clean();
         delete cmd;
     }
     _cmd_list.clear();
@@ -343,7 +343,7 @@ void BESXMLInterface::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESXMLInterface::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    BESBasicInterface::dump(strm);
+    BESInterface::dump(strm);
     vector<BESXMLCommand *>::const_iterator i = _cmd_list.begin();
     vector<BESXMLCommand *>::const_iterator e = _cmd_list.end();
     for (; i != e; i++) {

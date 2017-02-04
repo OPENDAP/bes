@@ -1,0 +1,9 @@
+{
+  "name": "varDouble",
+  "type": "Float64",
+  "attributes": [
+    {"name": "description", "value": ["When in doubt, double down."]}
+  ],
+  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/atomicTypes.nc\/varDouble"},{"name":"identifier","value":"\/"}]
+
+}

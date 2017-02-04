@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="modify_post_union.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Dataset_Description" type="String">
+            <value>This is a union.</value>
+        </Attribute>
+    </Attribute>
+    <String name="SelfReferentialVariable"/>
+    <String name="Foo">
+        <Attribute name="Description" type="String">
+            <value>I am Foo.Description and have modified the winning Foo and deserve to be in the output!</value>
+        </Attribute>
+    </String>
+    <String name="Bar">
+        <Attribute name="Description" type="String">
+            <value>I am the only Bar and will be in the output!</value>
+        </Attribute>
+    </String>
+    <dataBLOB href=""/>
+</Dataset>
+

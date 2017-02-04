@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test5.dab">
+    <Sequence name="ISEE3_data">
+        <Float64 name="t"/>
+        <Float64 name="Bx"/>
+        <Float64 name="By"/>
+        <Float64 name="Bz"/>
+        <Float64 name="Bx2"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>cccccccd</Value>
+        </Attribute>
+    </Sequence>
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
+        </Attribute>
+        <Attribute name="iyr" type="Int16">
+            <Value>79</Value>
+        </Attribute>
+        <Attribute name="iday" type="Int16">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="isc" type="String">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="traj1" type="Float32">
+            <Value>1356310000.000000</Value>
+        </Attribute>
+        <Attribute name="traj2" type="Float32">
+            <Value>637963000.000000</Value>
+        </Attribute>
+        <Attribute name="traj3" type="Float32">
+            <Value>1716290.000000</Value>
+        </Attribute>
+        <Attribute name="traj4" type="Float32">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="traj5" type="Float32">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="traj6" type="Float32">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="text" type="String">
+            <Value>I,S COORDINATES 800102  2.5                                                     TRAJCOR     AVEDT 800207</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Sequence {
+    Float64 t;
+    Float64 Bx;
+    Float64 By;
+    Float64 Bz;
+    Float64 Bx2;
+} ISEE3_data = { 
+0: { 54641.5, 5.03656, 1.64021, 0.820332, 25.4642 }, 
+1: { 59972.4, 4.80165, 1.99871, 0.990023, 23.0709 }, 
+2: { 59972.4, 4.80667, 1.87996, 1.04224, 23.125 }, 
+3: { 60139, 4.99169, 1.58798, 0.725026, 24.9287 }, 
+4: { 59972.4, 5.05956, 1.34136, 0.710376, 25.6087 }, 
+5: { 59972.4, 4.9409, 1.67445, 0.68879, 24.4257 }, 
+6: { 59972.4, 4.78747, 1.89783, 0.398454, 22.9408 }, 
+7: { 59972.4, 4.71795, 2.16658, 0.0369648, 22.2759 }, 
+8: { 59972.4, 4.88112, 1.48798, 0.955953, 23.8391 }, 
+9: { 59972.4, 4.89669, 1.36724, 1.1201, 23.9981 }, 
+10: { 60139, 4.81964, 1.03593, 1.94874, 23.2385 }, 
+11: { 59972.4, 4.75371, 1.6655, 1.51554, 22.611 }, 
+12: { 59972.4, 4.74836, 1.53398, 1.49457, 22.5748 }, 
+13: { 59972.4, 4.93081, 0.978233, 1.66341, 24.3241 }, 
+14: { 59972.4, 4.89359, 1.40301, 1.56701, 23.964 }, 
+15: { 59972.4, 4.92424, 1.24016, 1.72423, 24.2563 }, 
+16: { 60139, 4.91499, 1.13582, 1.61638, 24.1653 }, 
+17: { 59972.4, 4.83039, 0.402431, 1.82957, 23.3454 }, 
+18: { 59972.4, 4.92885, 0.19408, 1.50658, 24.3171 } };
+

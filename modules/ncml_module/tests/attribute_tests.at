@@ -1,0 +1,108 @@
+dnl Test suite for attributes
+
+AT_BANNER([Testing attributes...])
+
+dnl Basic attribute addition test
+AT_CHECK_ALL_DAP_RESPONSES([fnoc1_improved.ncml])
+
+dnl Test explicit element
+AT_CHECK_ALL_DAP_RESPONSES([fnoc1_explicit.ncml])
+
+dnl Test remove element
+AT_CHECK_ALL_DAP_RESPONSES([fnoc1_remove.ncml])
+
+dnl Test renaming
+AT_CHECK_ALL_DAP_RESPONSES([fnoc1_rename_test.ncml])
+
+dnl Test simple passthrough on a nest
+AT_CHECK_ALL_DAP_RESPONSES([nested_passthrough.ncml])
+
+dnl Test nested attribute containers (type="Structure")
+AT_CHECK_ALL_DAP_RESPONSES([nest_test.ncml])
+
+dnl Test that we can add to Grid map vectors.
+dnl AT_CHECK_ALL_DAP_RESPONSES([grid_attributes.ncml])
+AT_BANNER([Testing DAP responses for: grid_attributes.ncml])
+AT_CHECK_DAS([grid_attributes.ncml])
+AT_CHECK_DDS([grid_attributes.ncml])
+AT_CHECK_DDX([grid_attributes.ncml])
+AT_CHECK_DATADDS([grid_attributes.ncml])
+
+dnl Test that attribute@separator works as advertised
+AT_CHECK_ALL_DAP_RESPONSES([separator_test.ncml])
+AT_CHECK_DATADDS_GETDAP([separator_test.ncml])
+
+dnl Make sure we can enter an empty string as a value for string
+AT_CHECK_ALL_DAP_RESPONSES([bugs/empty_attr_string.ncml])
+AT_CHECK_DATADDS_GETDAP([bugs/empty_attr_string.ncml])
+
+dnl Check for an attribute of type OtherXML
+AT_CHECK_ALL_DAP_RESPONSES([attribute_OtherXML.ncml])
+
+dnl Make sure we can rename an existing OtherXML attribute... Different code branch...
+AT_CHECK_DDX_ALT_CONF([attribute_OtherXML_rename.ncml])
+
+dnl Make sure if the OtherXML contains <attribute> element that we don't end parse early
+dnl but wait for the depth to be finished...
+AT_CHECK_DDX([attribute_OtherXML_Attribute.ncml])
+
+dnl Check for malformed OtherXML content (the parser still insures 
+dnl well-formedness of the XML as we accumulate it).
+AT_RUN_BES_AND_MATCH([attribute_OtherXML_malformed.ncml],["ddx"],["ParseError:.*libxml SAX2 parser error"])
+
+dnl Check that having a non-empty value is an error for OtherXML type.  Don't
+dnl put your XML in there!!
+AT_RUN_BES_AND_MATCH([attribute_OtherXML_val_error.ncml],["ddx"],["ParseError"])
+
+dnl Test the new namespace flattern that pulls all ancestral namespaces into 
+dnl each root OtherXML element so it is namespace-closed when serialized.
+dnl From WCS example
+AT_CHECK_DDX([OtherXML_with_ancestral_namespace.ncml])
+
+dnl Another test to make sure multiple levels can contain a namespace and OtherXML
+dnl still serializes them all
+AT_CHECK_DDX([OtherXML_nested_namespaces.ncml])
+
+dnl Make sure that if a namespace is shadowed in a lower NCML element that it gets
+dnl properly shadowed in the namespace closure of the OtherXML roots.
+AT_CHECK_DDX([OtherXML_shadowed_namespace.ncml])
+
+dnl Select out just one field
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([nested_passthrough.ncml], [[ DATA_GRANULE.PlanetaryGrid.percipitate ]], [nested_passthrough_cons_1.ncml])
+
+dnl Make sure that we can have attributes with a dot in the name and that it doesn't recursively find them in attribute containers of same name
+AT_CHECK_ALL_DAP_RESPONSES([attribute_with_dot.ncml])
+
+dnl From a bug where the same named attribute with dots in it (a URL as the NAME) was asserting.
+AT_CHECK_ALL_DAP_RESPONSES([bugs/attr_name_is_url_bug.ncml])
+
+dnl Test that name collision with a variable is a parse error
+AT_ASSERT_PARSE_ERROR([attr_new_attr_conflicts_var.ncml])
+
+dnl Check that making invalid values for a given type produces an error!
+AT_RUN_BES_AND_MATCH([types/byte_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/byte_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/float32_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/float32_min_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/float32_max_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/float64_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/float64_min_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/float64_max_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/int16_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/int16_min_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/int16_max_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/int32_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/int32_min_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/int32_max_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/uint16_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/uint16_min_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/uint16_max_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/uint32_invalid.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/uint32_min_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/uint32_max_bounds.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/string_non_ascii.ncml],["ddx"],["ParseError:.*Invalid Value"])
+AT_RUN_BES_AND_MATCH([types/string_overflow.ncml],["ddx"],["ParseError:.*Invalid Value"])
+
+
+
+

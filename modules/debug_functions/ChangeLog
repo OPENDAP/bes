@@ -1,0 +1,135 @@
+2017-01-05  ndp-opendap  <ndp@opendap.org>
+
+	Updated unit-tests/.gitignore
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Added new include DebugFunctions.h to support OS-X compiler complaints.
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Added test0suite.log to .gitignore
+
+2016-02-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/debug_functions
+
+2016-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Changes to NEWS
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+	Updated autotest tests, macros and Makefile.am files
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated autotest tests, macros and Makefile.am files
+
+2016-01-25  James Gallagher  <jgallagher@opendap.org>
+
+	Abort() function test now works on Linux.
+
+2016-01-14  James Gallagher  <jgallagher@opendap.org>
+
+	Changed std::abort() to abort() - OSX gave that a pass, but not linux.
+
+2016-01-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added a test for the BES.TimeOutInSeconds key
+	Also added a pattern-based test so that the baselines for the
+	timeout tests are not dependent on theline numbers printed
+	with the errors.
+
+2015-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Yet Another Test Fix
+	Should replace the diff call to one using grep so I can get out
+	from under this...
+
+2015-12-29  Nathan Potter  <ndp@opendap.org>
+
+	Worked on BESTimeoutError
+
+2015-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed test; line number changed after an edit.
+
+	Added a test for the new timeout code.
+	This requires the new version of timeout that uses longjmp.
+
+	Merge branch 'master' into bes-38
+
+	Fixed warnings
+	Removed unused params, changed some exception catches to use
+	'by reference.'
+
+2015-12-23  James Gallagher  <jgallagher@opendap.org>
+
+	Hackery - tests to help with the timeout code on BESInterface
+	I also have attempted to unify the handler_tests_macros.m4
+	file ere in tests with the common file in bes/modules, without
+	much luck.
+
+2015-12-23  Nathan Potter  <ndp@opendap.org>
+
+	Minor changes to sleep()
+
+2015-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	Updated tests & baselines for new CSV data
+	Using CSV data eliminates a dependency on the netCDF
+	third-party library.
+
+2015-12-21  Nathan Potter  <ndp@opendap.org>
+
+	Merged a pull
+
+	Fixing tests
+
+2015-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	Changes to support a build in the bes/modules dir
+
+2015-12-21  Nathan Potter  <ndp@opendap.org>
+
+	Problems linking...
+
+	Small changes to sum_until() function
+
+2015-12-14  Nathan Potter  <ndp@opendap.org>
+
+	Added sum_until() function
+
+2015-12-11  Nathan Potter  <ndp@opendap.org>
+
+	Honed abort() test so that it does 'something' sensible.
+
+	updated conf file
+
+	 Baselines updated. Still having issues with build vars.
+
+2015-12-10  Nathan Potter  <ndp@opendap.org>
+
+	First pass of besstandalone tests working.
+
+	First pass of besstandalone tests working.
+
+	Speparated unit tests.
+
+	The errror function now works as intended.
+
+	Unit tests frame work mostly in place
+
+	First draft of debug functions project.
+
+2015-12-09  Nathan Potter  <ndp@opendap.org>
+
+	Added README

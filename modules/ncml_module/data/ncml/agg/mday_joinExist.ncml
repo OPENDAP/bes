@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test on netcdf granules using scan@ncoords extension-->
+<netcdf title="joinExisting test on netcdf Grid granules using scan@ncoords"
+	>
+  
+  <attribute name="Description" type="string"
+	     value=" joinExisting test on netcdf Grid granules using scan@ncoords"/>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <!-- Filenames have lexicographic and chronological ordering match -->
+    <scan location="/coverage/mday"
+	  subdirs="false"
+	  suffix=".nc"
+	  ncoords="1"
+	  />
+
+  </aggregation>
+  
+</netcdf>

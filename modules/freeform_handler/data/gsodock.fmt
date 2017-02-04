@@ -1,0 +1,32 @@
+ASCII_file_header "URI_GSO-Dock"
+text 1 93 char 0
+
+ASCII_input_data "URI_GSO-Dock"
+Time 1 10 double 4
+Depth  13 16 float 2
+Sea_Temp 19 23 float 2
+Salinity 26 30 float 2
+DO_percent 33 37 float 1
+pH 40 44 float 3
+Turbidity 47 50 float 1
+Air_Temp 53 56 float 1
+Wind_Speed 59 60 float 0
+Wind_Direction 63 67 float 1
+Barometric_Pres 70 75 float 2
+Solar_Radiation 78 81 float 0
+
+ASCII_output_data "ASCII_Data"
+Time 1 10 double 4
+Depth  13 16 float 2
+Sea_Temp 19 23 float 2
+Salinity 26 30 float 2
+DO_percent 33 37 float 1
+pH 40 44 float 3
+Turbidity 47 50 float 1
+Air_Temp 53 56 float 1
+Wind_Speed 59 60 float 0
+Wind_Direction 63 67 float 1
+Barometric_Pres 70 75 float 2
+Solar_Radiation 78 81 float 0
+
+

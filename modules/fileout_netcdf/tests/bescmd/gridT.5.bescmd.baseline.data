@@ -1,0 +1,15 @@
+netcdf test {
+dimensions:
+	i = 2 ;
+	j = 3 ;
+variables:
+	short order(i, j) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax gridT.dods?order.order" ;
+data:
+
+ order =
+  4, 8, 12,
+  5, 10, 15 ;
+}

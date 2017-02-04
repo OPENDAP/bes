@@ -1,0 +1,7 @@
+Dataset {
+    String Decoy[3];
+    Int32 A[sample = 4];
+    Int32 B[sample = 4];
+    Int32 A_expected[sample = 4];
+    Int32 B_expected[sample = 4];
+} joinExisting_multi.ncml;

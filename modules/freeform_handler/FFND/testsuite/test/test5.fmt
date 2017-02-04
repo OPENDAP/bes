@@ -1,0 +1,14 @@
+binary_input_data	"Made from testvar1.bfm"
+svar1   1  2   int16 0
+fvar1   3  6 float32 2
+ulvar1  7 14 float64 4
+lvar1  15 18   int32 0
+usvar1 19 20  uint16 1
+
+ASCII_output_data	"Made from testvar1.afm"
+fvar1   1 10  int32 2
+svar1  13 18  int16 0
+usvar1 21 26 uint16 1
+lvar1  29 39  int32 0
+ulvar1 42 52 uint32 4
+

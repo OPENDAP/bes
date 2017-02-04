@@ -1,0 +1,15 @@
+netcdf test {
+dimensions:
+	i = 2 ;
+	j = 3 ;
+variables:
+	int gstruct.shot(i, j) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax gridT.dods?gstruct.shot.shot" ;
+data:
+
+ gstruct.shot =
+  6, 12, 18,
+  7, 14, 21 ;
+}

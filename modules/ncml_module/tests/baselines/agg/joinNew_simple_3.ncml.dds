@@ -1,0 +1,7 @@
+Dataset {
+    String day[day = 2];
+    Int32 V[day = 2][station = 5];
+    Int32 W[day = 2][sensor = 3];
+    Int32 V_expected[day = 2][station = 5];
+    Int32 W_expected[day = 2][sensor = 3];
+} joinNew_simple_3.ncml;

@@ -1,0 +1,17 @@
+dnl Testsuite for testing the creation of a new Structure variable
+AT_BANNER([Adding new Structure variable])
+
+dnl Straight up acceptance tests
+AT_CHECK_ALL_DAP_RESPONSES([var_new_Structure.ncml])
+AT_CHECK_DATADDS_GETDAP([var_new_Structure.ncml])
+
+dnl Straight up acceptance tests
+AT_CHECK_ALL_DAP_RESPONSES([var_new_Structure_nest.ncml])
+AT_CHECK_DATADDS_GETDAP([var_new_Structure_nest.ncml])
+
+dnl It's an error to specify <values> for a Structure
+AT_ASSERT_PARSE_ERROR([var_new_structure_parse_error_1.ncml])
+
+dnl Test that creating a new var structure with same name as attr is an error
+AT_ASSERT_PARSE_ERROR([var_new_var_conflicts_attr.ncml])
+

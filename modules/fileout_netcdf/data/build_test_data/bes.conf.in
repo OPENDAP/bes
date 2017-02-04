@@ -1,0 +1,287 @@
+#-----------------------OPeNDAP BES Initialization file-----------------#
+#                                                                       #
+#       National Center for Atmospheric Research (NCAR)                 #
+#       High Altitude Observatory (HAO)	                                #
+#       Key entries for OPeNDAP BES run time behavior                   #
+#                                                                       #
+#-----------------------------------------------------------------------#
+  
+#-----------------------------------------------------------------------#
+# Who is the administrator for this OPeNDAP back-end server             #
+# Please replace this with the email address to use that gets displayed #
+# to users of your server when errors occur.                            #
+#-----------------------------------------------------------------------#
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+#-----------------------------------------------------------------------#
+# User and Group to run the BES as					#
+#-----------------------------------------------------------------------#
+# Notes:
+# 1. The user_name and group_name can be user and group ids. To use
+# a user or group id specify the id with the '#' character in front.
+# For example:
+# BES.User=#172
+# BES.Group=#14
+BES.User=user_name
+BES.Group=group_name
+
+#-----------------------------------------------------------------------#
+# Where we log the stuff...and how much we log                          #
+#-----------------------------------------------------------------------#
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+# Notes: 
+# 1. When the handlers are built, the handler's 'make' builds the
+# handler executable for Server3 and the shared object module for
+# Hyrax. The Hyrax shared object modules are installed (using 'make
+# install') in<prefix>/lib/bes. Make sure you point to the Hyrax
+# modules and not the Server3 'handlers'. The Hyrax modules all have
+# '_module' in their names.
+# 2. The commands that the BES responds to are also provided by modules,
+# so make sure that those are loaded in as well. Two modules are
+# required for use with Hyrax, the dap and cmd modules.
+# 3. If you want ascii, info, and html responses provided by the bes, just
+# as in the Server3 handlers, then include the ascii, usage, and www
+# modules.
+# 4. Order matters. Include the dap, cmd, ascii, usage, www first before
+# including handler modules like nc, hdf4, ff.
+# 
+# Here's an example of the configuration for three handlers (Netcdf,
+# hdf4 and FreeForm) and the DAP basic and command modules:
+#
+# BES.modules=dap,cmd,ascii,usage,www,nc,h4,ff
+# BES.module.dap=@modulesdir@/libdap_module.so
+# BES.module.cmd=@modulesdir@/libdap_cmd_module.so
+# BES.module.ascii=@modulesdir@/libascii_module.so
+# BES.module.usage=@modulesdir@/libusage_module.so
+# BES.module.www=@modulesdir@/libwww_module.so
+# BES.module.nc=@modulesdir@/libnc_module.so
+# BES.module.h4=@modulesdir@/libhdf4_module.so
+# BES.module.ff=@modulesdir@/libff_module.so
+
+BES.modules=dap,cmd,csv
+BES.module.dap=@modulesdir@/libdap_module.so
+BES.module.cmd=@modulesdir@/libdap_xml_module.so
+BES.module.csv=@abs_top_builddir@/.libs/libcsv_module.so
+
+#-----------------------------------------------------------------------#
+# Setting the data location
+#-----------------------------------------------------------------------#
+ 
+# There are two ways the BES can be used. It can serve as a standalone
+# data server or it can work with the OLFS (i.e., as one component of
+# the OPeNDAP 4 Data Server). How you point to data differs for each of
+# the two cases. If you are using the BES as part of the OPeNDAP 4 Data
+# Server, then set 'BES.Catalog.catalog.RootDirectory' to point to the 
+# root directory that contains the data you want to serve. In this case
+# the value of the 'BES.Data.RootDirectory' parameter doesn't matter, so
+# long as it has some value.
+#
+# If you intend to use the BES as a standalone server, set the value of
+# 'BES.Data.RootDirectory' to point to your data and disregard the 
+# 'BES.Catalog.catalog.RootDirectory' parameter.
+#
+# The default value of RootDirectory works with the sample data we include
+# with various format handlers distributed for use with the BES. You'll need
+# to change this to point to your data! At this time the BES does not support
+# multiple RootDirectory values. 3/5/07 jhrg
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Data.RootDirectory=/dev/null
+
+# The TypeMatch parameter is a list of handler/module names and a regular
+# expression separated by a colon. If the regular expression matches an item,
+# then the BES uses the associated handler/module. Each <handler>:<regular
+# expression> pair is followed by a semicolon. This is used when creating
+# containers in the BES (the 'set container' command). The example regular
+# expression says to use the 'h4' handler for any file with an extension of
+# 'hdf', 'HDF' or 'eos' which may also end in '.gz' or '.bz2'. In the latter
+# case the file will be treated as a compressed file.
+
+# BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
+
+BES.Catalog.catalog.TypeMatch=csv:.*.csv(.bz2|.gz|.Z)?$;
+
+# Normally, when a client asks for a data catalog, all files and directories
+# are shown. Use the following two parameters to customize this behavior.
+# Each parameter is a list of regular expressions, each followed by a
+# semicolon (last one must also end with a semicolon as in the example
+# below.) First, the Include parameter is applied to the node, and
+# then the Exclude parameter is applied. All collections of nodes are shown.
+# In the default values below, all nodes with the file extension .nc
+# are included (the Include parameter) except those that begin with a dot
+# (the Exclud parameter).
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+# Is the BES allowed to follow symbolic links when requesting catalog
+# information. The default is to not allow the BES to follow symbolic links.
+# The values can be either No or Yes. If set to No, and the user requests
+# catalog information on a symbolic link then an error is reported and if a
+# symbolic link is contained within a collection, it is not included in the
+# response. If set to Yes then the requested node in the catalog is treated
+# like any other node.
+#
+# BES.FollowSymLinks parameter is for non-catalog containers and is used in
+# conjunction with the BES.RootDirectory above. It is NOT a general setting.
+# BES.Catalog.catalog.FollowSymLinks is for catalog requests and data
+# containers in the catalog and is used in conjunction with the
+# BES.Catalog.catalog.RootDirectory parameter above.
+BES.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=No
+
+#-----------------------------------------------------------------------#
+# connection information, unix socket, port number, and whether server  #
+# is secure or not. If you are using this option, make sure the BES is  #
+# behind a firewall which blocks the BES.ServerPort unless you intend   #
+# to provide direct access to the BES for the world. In general, if     #
+# that is the case, you should configure the BES to use SSL.            #
+#-----------------------------------------------------------------------#
+BES.ServerPort=10002
+# BES.ServerUnixSocket=/tmp/bes.socket
+
+#-----------------------------------------------------------------------#
+# Security information for this server. ServerSecure specifies whether  #
+# the server is secure or not and requires authentication of the client #
+# using SSL certificates and keys. The default secure connection port   #
+# is 10003. Then specify the full path to the certificate and key files.#
+# An initialization file can be created for both the client and server  #
+# side.                                                                 #
+#-----------------------------------------------------------------------#
+BES.ServerSecure=no
+BES.ServerSecurePort=10003
+BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
+
+#-----------------------------------------------------------------------#
+# help file locations, for text, html, and xml versions                 #
+#-----------------------------------------------------------------------#
+BES.Help.TXT=@pkgdatadir@/bes_help.txt
+BES.Help.HTML=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.txt
+
+DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+DAP.Help.HTML=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.txt
+
+#-----------------------------------------------------------------------#
+# Should informational response objects be buffered, or streamed        #
+# Should informational objects be formatted as text, html, or xml       #
+#-----------------------------------------------------------------------#
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+#-----------------------------------------------------------------------#
+# Cache and compression configuration                                   #
+#                                                                       #
+# If a data file is compressed the BES will attempt to uncompress it.   #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+# Currently the bz2 and gz file compression methods are understood by the
+# BES. We will add support for Z (Unix compress) if there's demand for it.
+
+# All of the following five parameters must be set in this file.
+
+# BES.UncompressCache.dir: Where should the result of decompressing a 
+# file be stored?  We've set the value to '/tmp' but you might want to 
+# change that to /tmp/bes, /var/cache/bes, et c., depending on the 
+# server-host's organization.
+
+# BES.UncompressCache.prefix: Prefix for the name of the file used to 
+# store the result of decompression.
+
+# BES.UncompressCache.size: Size of the cache in megabytes. When the size 
+# of the cached files exceeds this value, the cache will be purged using a
+# last-accessed-first-removed approach. Because it's usually impossible to
+# determine the sizes of data files before decompressing them, there may be
+# times when the cache holds more data than this value. Ideally this value
+# should be several times the size of the largest file you plan to serve. 
+
+# BES.Uncompress.Retry: When waiting for the cache lock, how long should the
+# BES wait before trying to get the lock again if previous attempts have
+# failed? 
+
+# BES.Uncompress.NumTries: How many times should the BES try to acquire the
+# lock before it signals an error?
+
+# The BES cache directory is locked to prevent the different beslistener
+# processes from simultaneously removing files and leaving the cache in an
+# inconsistent state. Use the Retry and NumTries parameters to tune this
+# behavior. Generally, NumTries should be set to about 10. The units of Retry
+# are microseconds. To tune the NumTries and Retry, use the formula Retry =
+# (0.2s/Average_file_sizeMB)/NumTries. So if your average file size is 10MB
+# and you've settled on a NumTries of 10, (0.2s/10MB)/10 = 0.002s or 2000
+# microseconds. If you have really large files (e.g., decompressed they are
+# 500MB), try setting NumTries to 100.
+
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
+BES.Uncompress.Retry=2000
+BES.Uncompress.NumTries=10
+
+#-----------------------------------------------------------------------#
+# If the symbolic name cannot be found in persistence, nice means simply#
+# log an error, strict means throw an exception                         #
+#-----------------------------------------------------------------------#
+BES.Container.Persistence=strict
+
+#-----------------------------------------------------------------------#
+# Defines size of system global memory pool                             #
+#-----------------------------------------------------------------------#
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+#-----------------------------------------------------------------------#
+# This key is set to either single or multiple mode.            	#
+#                                                                       #
+# In single mode the listener handles the client request itself, and    #
+# only one client can connect at a time                                 #
+#                                                                       #
+# In multiple mode the listener listens for client connections. When a  #
+# connection is made it forks another bes process to handle that client #
+# connection and goes back to listening for more connections. More than #
+# one client can connect at a time                                      #
+#-----------------------------------------------------------------------#
+BES.ProcessManagerMethod=multiple
+
+#-----------------------------------------------------------------------#
+# Is the client using the GET or POST method of making requests to a    #
+# back-end server that is a built-in web server module. If the back-end #
+# server is not a web server module, this key/value pair is not used    #
+#-----------------------------------------------------------------------#
+BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
+
+# The default values for these keys
+FONc.ByteToShort = true
+FONc.UseCompression=true
+FONc.ChunkSize=4096
+FONc.ClassicModel=true
+
+# For HDF4
+
+# Note that changing H4.EnableCF will change the output of the HDF4 tests.
+# If CF is enabled, the HDF4 handler will turn Sequecnes into arrays.
+
+# H4.EnableCF=true
+# H4.DisableStructMetaAttr=true
+# H4.EnableVdata_to_Attr=true

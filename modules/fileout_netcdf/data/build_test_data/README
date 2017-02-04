@@ -1,0 +1,43 @@
+
+This directory holds programs that build .dods files that are 
+used along with the dapreader handler to test the fileout_netcdf 
+handler's operation. The programs were copied from the original
+'unit-tests' directory (which may have been removed by now...)
+and modified to just make .dods files that the dapreader handler
+can process.
+
+Over time the tests in 'unit-tests' got stale because they never
+tested the netcdf4 output and used a cloned version of the fileout_netcdf
+handler's main 'transform()' function - they were not actually testing
+the handler. As teh handler was modified more and more, the cloned
+transform() and the hadnler's code diverged. The tests in 'tests'
+use the handler itself.
+
+To build .dods & .das files for use with dapreader when the original
+files are readable by hyrax, use besstandalone like this:
+
+    besstandalone -c bes.conf i <bescmd input>
+    
+Note that you will probably have to hack the bes.conf.in or 
+bes.conf.modules.in by hand, write your own bescmd file. It's not hard.
+
+Be on the lookout for odd errors with the .das responses. If the .das
+is generated with MIME headers there will be a very strange error message
+coming from inside dapreader about illegal chars in the XML. The error
+looks like it is coming from besstandalone, making things very odd seeming. 
+
+Some of the programs are here but are not used:
+
+attrT is redundant (fnoc1 and other tests have attributes) and has
+broken output for an unknown reason - something in the BESDapResponseBuilder
+code that write teh DAS.
+
+seqT seems pointless since this handler just ignores sequences
+
+readT does what dapreader does, but as an executable
+
+The programs are built automatically, but they have to be run 
+by hand - the data files are stored in the data directory.
+
+
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="temperature.csv">
+    <Dimension name="record" size="5"/>
+    <String name="Station">
+        <Dim name="/record"/>
+        <Attribute name="type" type="String">
+            <Value>String</Value>
+        </Attribute>
+    </String>
+    <Float32 name="latitude">
+        <Dim name="/record"/>
+        <Attribute name="type" type="Float32">
+            <Value>Float32</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="longitude">
+        <Dim name="/record"/>
+        <Attribute name="type" type="Float32">
+            <Value>Float32</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="temperature_K">
+        <Dim name="/record"/>
+        <Attribute name="type" type="Float32">
+            <Value>Float32</Value>
+        </Attribute>
+    </Float32>
+    <String name="Notes">
+        <Dim name="/record"/>
+        <Attribute name="type" type="String">
+            <Value>String</Value>
+        </Attribute>
+    </String>
+</Dataset>

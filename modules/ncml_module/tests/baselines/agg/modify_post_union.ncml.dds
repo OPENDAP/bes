@@ -1,0 +1,5 @@
+Dataset {
+    String SelfReferentialVariable;
+    String Foo;
+    String Bar;
+} modify_post_union.ncml;

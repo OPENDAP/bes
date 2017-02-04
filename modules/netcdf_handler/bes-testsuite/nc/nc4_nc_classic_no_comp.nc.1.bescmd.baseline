@@ -1,0 +1,47 @@
+Dataset {
+    Grid {
+      Array:
+        Float32 z[time = 2][lat = 6][lon = 5];
+      Maps:
+        Int32 time[time = 2];
+        Int32 lat[lat = 6];
+        Int32 lon[lon = 5];
+    } z;
+    Grid {
+      Array:
+        Float32 t[time = 2][lat = 6][lon = 5];
+      Maps:
+        Int32 time[time = 2];
+        Int32 lat[lat = 6];
+        Int32 lon[lon = 5];
+    } t;
+    Grid {
+      Array:
+        Float64 p[time = 2][lat = 6][lon = 5];
+      Maps:
+        Int32 time[time = 2];
+        Int32 lat[lat = 6];
+        Int32 lon[lon = 5];
+    } p;
+    Grid {
+      Array:
+        Int16 rh[time = 2][lat = 6][lon = 5];
+      Maps:
+        Int32 time[time = 2];
+        Int32 lat[lat = 6];
+        Int32 lon[lon = 5];
+    } rh;
+    Grid {
+      Array:
+        Byte pixel[lat = 6][lon = 5];
+      Maps:
+        Int32 lat[lat = 6];
+        Int32 lon[lon = 5];
+    } pixel;
+    Grid {
+      Array:
+        String source[lat = 6];
+      Maps:
+        Int32 lat[lat = 6];
+    } source;
+} nc4_nc_classic_no_comp.nc;

@@ -1,0 +1,37 @@
+Attributes {
+    lat {
+        String units "degrees_north";
+    }
+    lon {
+        String units "degrees_east";
+    }
+    time {
+        String units "seconds";
+    }
+    z {
+        String units "meters";
+        Float64 valid_range 0.000000000000000, 5000.000000000000;
+        Float32 _FillValue 1.00000000;
+    }
+    t {
+    }
+    p {
+        Float64 _FillValue -9999.000000000000;
+    }
+    rh {
+        Int16 _FillValue -1;
+    }
+    pixel {
+    }
+    source {
+        Int32 string_length 5;
+    }
+    NC_GLOBAL {
+        String title "Hyrax/netcdf handler test file 1";
+        Float64 version 1.000000000000000;
+        String description "This file has all of the NC_CLASSIC_MODEL data types.";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "time";
+    }
+}

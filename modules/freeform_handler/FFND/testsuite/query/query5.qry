@@ -1,0 +1,3 @@
+rnd[lvar2] = rup[lvar2]
+This query excludes all records where the last 2 digits of lvar2 (precision 2)
+are (if positive) less than 50, (if negative) greater then 50.

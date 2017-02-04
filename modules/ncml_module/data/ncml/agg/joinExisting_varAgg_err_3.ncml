@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Error test of variablegg element:
+Existing variable but wrong outer dim name.
+-->
+<netcdf title="Error with variableAgg Test 2">
+  
+  <aggregation type="joinExisting" 
+	       dimName="sample" >
+
+    <!-- This should be an error since not defined -->
+    <variableAgg name="A"/>
+    
+    <netcdf title="Granule 0" ncoords="2">
+      <dimension name="sample" length="2"/>
+      <dimension name="temp_histogram" length="3"/>
+      
+      <variable name="A" type="int" shape="temp_histogram">
+	<values>5 0 2</values>
+      </variable>
+    
+      <variable name="B" type="int" shape="sample">
+	<values>1 2</values>
+      </variable>
+      
+      <variable name="Decoy" type="string" shape="3">
+	<values>Decoy Variable 1</values>
+      </variable>
+      
+    </netcdf>
+
+    <netcdf title="Granule 1" ncoords="2">
+      <dimension name="sample" length="2"/>
+      <dimension name="temp_histogram" length="3"/>
+
+      <variable name="A" type="int" shape="temp_histogram">
+	<values>1 4 5</values>
+      </variable>
+    
+      <variable name="B" type="int" shape="sample">
+	<values>3 4</values>
+      </variable>
+
+      <variable name="Decoy" type="string" shape="3">
+	<values>Decoy Variable 2</values>
+      </variable>
+
+    </netcdf>
+
+  </aggregation>
+
+</netcdf>

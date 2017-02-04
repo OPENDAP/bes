@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A joinNew aggregation test on Array data
+     for the case of explicitly listed numeric-valued
+     netcdf@coordValue attributes. -->
+
+<netcdf title="joinNew Aggregation with numeric coordVal's should create a new map with thos values as float64.">
+  
+  <aggregation type="joinNew" dimName="source">
+    
+    <variableAgg name="u"/>
+    <variableAgg name="v"/>
+
+    <!-- Same dataset a few times, but with different coordVal -->
+    <netcdf title="Dataset 1" location="data/ncml/fnoc1.nc" coordValue="1.2"/>
+    <netcdf title="Dataset 2" location="data/ncml/fnoc1.nc" coordValue="3.4"/>
+    <netcdf title="Dataset 3" location="data/ncml/fnoc1.nc" coordValue="5.6"/>
+
+  </aggregation>
+  
+</netcdf>

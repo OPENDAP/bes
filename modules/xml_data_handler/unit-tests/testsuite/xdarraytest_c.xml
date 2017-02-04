@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Array name="c">
+    <Int32 name="c"/>
+    <dimension size="5"/>
+    <dimension size="5"/>
+    <dimension size="5"/>
+    <dim number="0" index="0">
+        <dim number="1" index="0">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="0">
+        <dim number="1" index="1">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="0">
+        <dim number="1" index="2">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="0">
+        <dim number="1" index="3">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="0">
+        <dim number="1" index="4">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="1">
+        <dim number="1" index="0">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="1">
+        <dim number="1" index="1">
+            <value>0</value>
+            <value>2</value>
+            <value>4</value>
+            <value>6</value>
+            <value>8</value>
+        </dim>
+    </dim>
+    <dim number="0" index="1">
+        <dim number="1" index="2">
+            <value>0</value>
+            <value>4</value>
+            <value>8</value>
+            <value>12</value>
+            <value>16</value>
+        </dim>
+    </dim>
+    <dim number="0" index="1">
+        <dim number="1" index="3">
+            <value>0</value>
+            <value>6</value>
+            <value>12</value>
+            <value>18</value>
+            <value>24</value>
+        </dim>
+    </dim>
+    <dim number="0" index="1">
+        <dim number="1" index="4">
+            <value>0</value>
+            <value>8</value>
+            <value>16</value>
+            <value>24</value>
+            <value>32</value>
+        </dim>
+    </dim>
+    <dim number="0" index="2">
+        <dim number="1" index="0">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="2">
+        <dim number="1" index="1">
+            <value>0</value>
+            <value>4</value>
+            <value>8</value>
+            <value>12</value>
+            <value>16</value>
+        </dim>
+    </dim>
+    <dim number="0" index="2">
+        <dim number="1" index="2">
+            <value>0</value>
+            <value>8</value>
+            <value>16</value>
+            <value>24</value>
+            <value>32</value>
+        </dim>
+    </dim>
+    <dim number="0" index="2">
+        <dim number="1" index="3">
+            <value>0</value>
+            <value>12</value>
+            <value>24</value>
+            <value>36</value>
+            <value>48</value>
+        </dim>
+    </dim>
+    <dim number="0" index="2">
+        <dim number="1" index="4">
+            <value>0</value>
+            <value>16</value>
+            <value>32</value>
+            <value>48</value>
+            <value>64</value>
+        </dim>
+    </dim>
+    <dim number="0" index="3">
+        <dim number="1" index="0">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="3">
+        <dim number="1" index="1">
+            <value>0</value>
+            <value>6</value>
+            <value>12</value>
+            <value>18</value>
+            <value>24</value>
+        </dim>
+    </dim>
+    <dim number="0" index="3">
+        <dim number="1" index="2">
+            <value>0</value>
+            <value>12</value>
+            <value>24</value>
+            <value>36</value>
+            <value>48</value>
+        </dim>
+    </dim>
+    <dim number="0" index="3">
+        <dim number="1" index="3">
+            <value>0</value>
+            <value>18</value>
+            <value>36</value>
+            <value>54</value>
+            <value>72</value>
+        </dim>
+    </dim>
+    <dim number="0" index="3">
+        <dim number="1" index="4">
+            <value>0</value>
+            <value>24</value>
+            <value>48</value>
+            <value>72</value>
+            <value>96</value>
+        </dim>
+    </dim>
+    <dim number="0" index="4">
+        <dim number="1" index="0">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </dim>
+    </dim>
+    <dim number="0" index="4">
+        <dim number="1" index="1">
+            <value>0</value>
+            <value>8</value>
+            <value>16</value>
+            <value>24</value>
+            <value>32</value>
+        </dim>
+    </dim>
+    <dim number="0" index="4">
+        <dim number="1" index="2">
+            <value>0</value>
+            <value>16</value>
+            <value>32</value>
+            <value>48</value>
+            <value>64</value>
+        </dim>
+    </dim>
+    <dim number="0" index="4">
+        <dim number="1" index="3">
+            <value>0</value>
+            <value>24</value>
+            <value>48</value>
+            <value>72</value>
+            <value>96</value>
+        </dim>
+    </dim>
+    <dim number="0" index="4">
+        <dim number="1" index="4">
+            <value>0</value>
+            <value>32</value>
+            <value>64</value>
+            <value>96</value>
+            <value>128</value>
+        </dim>
+    </dim>
+</Array>

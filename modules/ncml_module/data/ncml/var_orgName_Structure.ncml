@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="data/ncml/3B42.001003.5.HDF">
+  
+  <!-- Rename the top level Structure to test Structure name changes -->
+  <variable name="DataGranule" orgName="DATA_GRANULE" type="Structure">
+    <!-- Test adding attribute to a renamed variable -->
+    <attribute name="NewAttrib" type="String">
+      Make sure we can add to renamed variable!
+    </attribute>
+    <!-- Then traverse the existing Structure -->
+    <variable name="PlanetaryGrid" type="Structure">
+      <!-- Finally, rename the variable to spell it correctly -->
+      <variable name="precipitate" orgName="percipitate">
+      </variable>
+    </variable>
+  </variable>
+
+</netcdf>

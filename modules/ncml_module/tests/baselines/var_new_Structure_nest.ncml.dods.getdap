@@ -1,0 +1,8 @@
+The data:
+Structure {
+    String ContainedScalar1;
+    Structure {
+        String ChildSays;
+    } MyChildStructure;
+} MyStructure = { "I live in a new structure!", { "Are we there yet?  Are we there yet?  Are we there yet?" } };
+

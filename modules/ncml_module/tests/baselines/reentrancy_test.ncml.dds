@@ -1,0 +1,4 @@
+Dataset {
+    String Wrapped_Wrappee_Variable;
+    Int32 Foo[10];
+} reentrancy_test.ncml;

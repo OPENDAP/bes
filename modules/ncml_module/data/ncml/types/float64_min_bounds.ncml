@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <attribute name="Float64_Min_Bounds" type="Float64"
+	     value="2.2250738585072014E-309"/>
+</netcdf>
+

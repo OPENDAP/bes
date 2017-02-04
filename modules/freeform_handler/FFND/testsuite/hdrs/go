@@ -1,0 +1,5 @@
+gethead a2a.fmt newhead.afm hdyes.dat
+gethead b2a.fmt header.afm hdyes.bin
+gethead ar.fmt arhead.afm ar.bin
+gethead hdyes.fmt hdyes.dat
+

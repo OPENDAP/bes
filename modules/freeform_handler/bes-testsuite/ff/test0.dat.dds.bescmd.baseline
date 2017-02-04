@@ -1,0 +1,5 @@
+Dataset {
+    Sequence {
+        Int16 value;
+    } data;
+} test0.dat;

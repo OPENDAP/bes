@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="OtherXML_nested_namespaces.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="OtherXMLContainer" type="Container">
+        <Attribute name="TestOtherXML" type="OtherXML">
+      
+      <RandomXMLElement xmlns="" xmlns:c="http://www.c.com/c" xmlns:b="http://www.b.org/b" xmlns:a="http://www.a.edu/a">
+	<RandomXMLChild>Some characters</RandomXMLChild>
+      </RandomXMLElement>
+    </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

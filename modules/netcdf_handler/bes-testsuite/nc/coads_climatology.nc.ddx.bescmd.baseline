@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="coads_climatology.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="history" type="String">
+            <value>FERRET V4.30 (debug/no GUI) 15-Aug-96</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>TIME</value>
+        </Attribute>
+    </Attribute>
+    <Grid name="SST">
+        <Array name="SST">
+            <Attribute name="missing_value" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>SEA SURFACE TEMPERATURE</value>
+            </Attribute>
+            <Attribute name="history" type="String">
+                <value>From coads_climatology</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>Deg C</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="TIME" size="12"/>
+            <dimension name="COADSY" size="90"/>
+            <dimension name="COADSX" size="180"/>
+        </Array>
+        <Map name="TIME">
+            <Attribute name="units" type="String">
+                <value>hour since 0000-01-01 00:00:00</value>
+            </Attribute>
+            <Attribute name="time_origin" type="String">
+                <value>1-JAN-0000 00:00:00</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Float64/>
+            <dimension name="TIME" size="12"/>
+        </Map>
+        <Map name="COADSY">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSY" size="90"/>
+        </Map>
+        <Map name="COADSX">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSX" size="180"/>
+        </Map>
+    </Grid>
+    <Grid name="AIRT">
+        <Array name="AIRT">
+            <Attribute name="missing_value" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>AIR TEMPERATURE</value>
+            </Attribute>
+            <Attribute name="history" type="String">
+                <value>From coads_climatology</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>DEG C</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="TIME" size="12"/>
+            <dimension name="COADSY" size="90"/>
+            <dimension name="COADSX" size="180"/>
+        </Array>
+        <Map name="TIME">
+            <Attribute name="units" type="String">
+                <value>hour since 0000-01-01 00:00:00</value>
+            </Attribute>
+            <Attribute name="time_origin" type="String">
+                <value>1-JAN-0000 00:00:00</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Float64/>
+            <dimension name="TIME" size="12"/>
+        </Map>
+        <Map name="COADSY">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSY" size="90"/>
+        </Map>
+        <Map name="COADSX">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSX" size="180"/>
+        </Map>
+    </Grid>
+    <Grid name="UWND">
+        <Array name="UWND">
+            <Attribute name="missing_value" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>ZONAL WIND</value>
+            </Attribute>
+            <Attribute name="history" type="String">
+                <value>From coads_climatology</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>M/S</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="TIME" size="12"/>
+            <dimension name="COADSY" size="90"/>
+            <dimension name="COADSX" size="180"/>
+        </Array>
+        <Map name="TIME">
+            <Attribute name="units" type="String">
+                <value>hour since 0000-01-01 00:00:00</value>
+            </Attribute>
+            <Attribute name="time_origin" type="String">
+                <value>1-JAN-0000 00:00:00</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Float64/>
+            <dimension name="TIME" size="12"/>
+        </Map>
+        <Map name="COADSY">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSY" size="90"/>
+        </Map>
+        <Map name="COADSX">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSX" size="180"/>
+        </Map>
+    </Grid>
+    <Grid name="VWND">
+        <Array name="VWND">
+            <Attribute name="missing_value" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <value>-9.99999979e+33</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>MERIDIONAL WIND</value>
+            </Attribute>
+            <Attribute name="history" type="String">
+                <value>From coads_climatology</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>M/S</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="TIME" size="12"/>
+            <dimension name="COADSY" size="90"/>
+            <dimension name="COADSX" size="180"/>
+        </Array>
+        <Map name="TIME">
+            <Attribute name="units" type="String">
+                <value>hour since 0000-01-01 00:00:00</value>
+            </Attribute>
+            <Attribute name="time_origin" type="String">
+                <value>1-JAN-0000 00:00:00</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Float64/>
+            <dimension name="TIME" size="12"/>
+        </Map>
+        <Map name="COADSY">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSY" size="90"/>
+        </Map>
+        <Map name="COADSX">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Attribute name="modulo" type="String">
+                <value> </value>
+            </Attribute>
+            <Attribute name="point_spacing" type="String">
+                <value>even</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="COADSX" size="180"/>
+        </Map>
+    </Grid>
+    <dataBLOB href=""/>
+</Dataset>

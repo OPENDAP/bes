@@ -1,0 +1,8 @@
+Dataset {
+    Sequence {
+        Int32 year;
+        Int32 day;
+        String time;
+        String DODS_URL;
+    } pathfinder;
+} test7.dat;

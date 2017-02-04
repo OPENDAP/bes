@@ -1,0 +1,126 @@
+{
+   CFInitialize_1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:__CFInitialize
+   ...
+}
+
+{
+   CFInitialize_2
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:__CFInitialize
+   ...
+}
+
+{
+   dispatch_once
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:dispatch_once_f
+   ...
+}
+
+{
+   dispatch_once
+   Memcheck:Leak
+   match-leak-kinds:  definite
+   ...
+   fun:dispatch_once_f
+   ...
+}
+
+{
+   load_images_1
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:load_images
+   ...
+}
+
+{
+   load_images_2
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:load_images
+   ...
+}
+
+{
+   InitializePlatform
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:_NSInitializePlatform
+}
+
+{
+   SAX_1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:xmlInitCharEncodingHandlers
+   fun:xmlGetCharEncodingHandler
+   fun:xmlAllocParserInputBuffer
+   fun:xmlParserInputBufferCreateMem
+   fun:xmlCreateMemoryParserCtxt
+   ...
+}
+
+{
+   BESLog_the_log
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_Znwm
+   fun:_ZN6BESLog6TheLogEv
+   fun:_ZN12BESInterface15execute_requestERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+   fun:_ZN17BESBasicInterface15execute_requestERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+   fun:_ZN15BESXMLInterface15execute_requestERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+   fun:_ZN16StandAloneClient14executeCommandERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEi
+   fun:_ZN16StandAloneClient15executeCommandsERNSt3__114basic_ifstreamIcNS0_11char_traitsIcEEEEi
+   fun:_ZN13StandAloneApp3runEv
+   fun:_ZN10BESBaseApp4mainEiPPc
+   fun:main
+}
+
+{
+   BESLog_dump_time
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:__smakebuf
+   fun:__swsetup
+   fun:__sfvwrite
+   fun:fwrite
+   fun:_ZNSt3__113basic_filebufIcNS_11char_traitsIcEEE8overflowEi
+   fun:_ZNSt3__115basic_streambufIcNS_11char_traitsIcEEE6xsputnEPKcl
+   fun:_ZNSt3__116__pad_and_outputIcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_
+   fun:_ZNSt3__124__put_character_sequenceIcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m
+   fun:_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc
+   fun:_ZN6BESLog9dump_timeEv
+   fun:_ZN6BESLoglsERNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+}
+
+{
+   BESPlugin::BESAbstractModule::instantiate
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ... 
+   fun:_ZN9BESPluginI17BESAbstractModuleE11instantiateEv
+}
+
+{
+   BESBaseApp::main
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:_ZN10BESBaseApp4mainEiPPc
+   ...
+}
