@@ -94,15 +94,15 @@ void AggMemberDatasetUsingLocationRef::loadDDS()
 
     // Make a new response and store the raw ptr, noting that we need to delete it in dtor.
     std::auto_ptr<BESDapResponse> newResponse = _loader.makeResponseForType(DDSLoader::eRT_RequestDataDDS);
-#if 0
-    VALID_PTR(newResponse.get());
-#endif
+
     // static_cast should work here, but I want to be sure since DataDDX is in the works...
     _pDataResponse = dynamic_cast<BESDataDDSResponse*>(newResponse.get());
     NCML_ASSERT_MSG(_pDataResponse,
         "AggMemberDatasetUsingLocationRef::loadDDS(): failed to get a BESDataDDSResponse back while loading location="
             + getLocation());
-    // release after potential for exception to avoid leak
+
+    // release after potential for exception to avoid double delete. Coverity reports
+    // this as a leak, but the _loader.loadInto() method takes ownership. jhrg 2/7/17
     newResponse.release();
 
     BESDEBUG("ncml", "Loading loadDDS for aggregation member location = " << getLocation() << endl);

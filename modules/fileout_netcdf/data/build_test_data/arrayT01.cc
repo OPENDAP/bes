@@ -21,6 +21,7 @@ using std::ostringstream;
 #include <Float32.h>
 #include <Float64.h>
 #include <Str.h>
+#include <Error.h>
 
 using namespace libdap;
 
@@ -127,6 +128,14 @@ int main(int argc, char **argv)
     }
     catch (BESError &e) {
         cerr << e.get_message() << endl;
+        return 1;
+    }
+    catch (Error &e) {
+        cerr << e.get_error_message() << endl;
+        return 1;
+    }
+    catch (std::exception &e) {
+        cerr << e.what() << endl;
         return 1;
     }
 

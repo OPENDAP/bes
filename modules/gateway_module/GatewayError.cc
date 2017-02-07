@@ -66,8 +66,11 @@ void GatewayError::read_error(const string &filename, string &err, const string 
             done = true;
         }
         else {
-            if (/*bytes_read == 0 &&*/ bytes_read < bufsize)
+            if (bytes_read < bufsize)
                 buff[bytes_read] = '\0';
+            else
+                buff[bufsize-1] = '\0';
+
             err = err + buff;
         }
     }

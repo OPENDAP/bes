@@ -790,10 +790,17 @@ void BESInterface::end_request()
  */
 void BESInterface::clean()
 {
-    if (_dhi) _dhi->clean();
-    if (BESLog::TheLog()->is_verbose()) {
-        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+    if (_dhi) {
+        _dhi->clean();
+
+        VERBOSE(_dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl);
+#if 0
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+        }
+#endif
     }
 }
 

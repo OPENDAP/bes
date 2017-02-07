@@ -132,15 +132,28 @@ inline int BESFileLockingCache::m_get_descriptor(const string &file)
     return fd;
 }
 
+/**
+ * @brief Used in BESDEBUG() statements
+ * @param fd An open file descriptor
+ * @return A string with information about its status WRT advisory locking.
+ */
 string lockStatus(const int fd)
 {
-    struct flock isLocked, lock_query;
-
+    struct flock /*isLocked,*/ lock_query;
+#if 0
     isLocked.l_type = F_WRLCK; /* Test for any lock on any part of a file. */
     isLocked.l_start = 0;
     isLocked.l_whence = SEEK_SET;
     isLocked.l_len = 0;
     lock_query = isLocked;
+#endif
+
+    lock_query.l_type = F_WRLCK; /* Test for any lock on any part of a file. */
+    lock_query.l_start = 0;
+    lock_query.l_whence = SEEK_SET;
+    lock_query.l_len = 0;
+    lock_query.l_pid = 0;
+
 
     int ret = fcntl(fd, F_GETLK, &lock_query);
 
