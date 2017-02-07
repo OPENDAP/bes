@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <dimension name="x" length="2"/>
+  <dimension name="y" length="2"/>
+  <!-- Create a new 2D array -->
+  <variable name="MyArray2D" type="int" shape="x y">
+    <values>
+      0 1 
+      2 3
+    </values> <!-- these must be in row slowest varying first order (left to right in shape) -->
+  </variable>
+</netcdf>

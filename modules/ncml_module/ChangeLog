@@ -1,0 +1,2251 @@
+2017-01-09  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits to ChangeLog
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	Added tests for memory issues related to hyrax 254
+	Might remove these later
+
+	Added tests for memory issues related to hyrax 254
+	Might remove these later
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DataDDS include and libdap namespace after repairing the BESDataDDSResponse header
+
+2016-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed up a comment in DDSLoader.cc
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in favor of the DDS class.
+2016-03-09  Nathan Potter  <ndp@opendap.org>
+
+	Instrumentation for ncml_handler
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Removed calls to dds.timeout - timeout is now completely a BES operation.
+	See bes/dispatch/BESInterface and bes/dap/BESDapResponseBuilder
+
+2015-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Removed calls to dds.timeout - timeout is now completely a BES operation.
+	See bes/dispatch/BESInterface and bes/dap/BESDapResponseBuilder
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 
+	1) Ensured that libdap::Error objects are converted to BESDapError objects 
+	when caught. and 2) Catch and rethrow BESError objects whenever they could 
+	be thrown so they don't get swept up as unidentified errors in a catch(...) 
+	clause.
+
+2015-12-02  Nathan Potter  <ndp@opendap.org>
+
+	Removing unused BES keys from conf file.
+	
+2015-10-27  Nathan Potter  <ndp@opendap.org>
+
+	Improved bounds checking for ncml dimension cache ingest
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	Improved bounds checking for ncml dimension cache ingest
+
+2015-10-26  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a coverity issue (mistaken throw())
+
+	Fixed a break in tests/Makefile.am
+	Needed to add the cache directory to EXTRA_DIST
+
+2015-10-26  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	Improved inout handling in loadDimensionCacheInternal()
+
+2015-10-26  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused stuff
+
+2015-10-25  Nathan Potter  <ndp@opendap.org>
+
+	bug fixes
+
+2015-10-20  Nathan Potter  <ndp@opendap.org>
+
+	Amended error message for type match conflicts so that it's more informative.
+
+2015-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	I modified NCMLDebug.h so that the NCML_ASSERT() macros use NDEBUG
+	That is, so that when NDEBUG is defined, the assertions are not used,
+	as would be the case if assert() was used. The bes configure script
+	--enable-developer controls whether NDEBUG is defined.
+
+	Fix for HR-64. The DDSLoader class was not closing the cached uompressed file.
+	HR-64 has more details, but the short version is that DDSLoader::
+	restoreDHI() was not calling BESContainer::release(). Now it is
+	and all of the four cases in the ticket can run without any left over
+	open files. (but see HR-65 - bes.conf and bes.log are open multiple
+	times, which seems odd).
+
+2015-10-16  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'cachename_bug'
+
+	Modifyied the NCMLParser so that if an Attribute declaration does
+	not specify a type then the type defaults to string.
+
+	Added 'schemaLocation' to the list of valid attributes for NcML.
+
+2015-10-15  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cachename_bug
+
+	Added new tests to tests/aggregations.at
+
+	Added new tests to ensure that we are checking the combination of
+	a joinExisting aggregation with a scan element over a set of files
+	in which the aggregation variable's size (dimension) changes in
+	each file.
+
+2015-10-14  Nathan Potter  <ndp@opendap.org>
+
+	This patch moves the static method
+	BESFileLockingCache::assemblePath() to BESUtil::assemblePath().
+	This was done to make better use of this code, for the rest of the
+	patch, a modification to
+	BESContainerStorageVolatile::add_container() to ensure the real
+	name of the resource was a proper path with no double '/' slash
+	characters.
+
+2015-10-07  Nathan Potter  <ndp@opendap.org>
+
+	Merged joinExisiting_improvements to master branch in ncml_module.
+
+	Adding cache directory to test harness
+
+	Patched bes configuration prototypes, added some instrumentation.
+
+	Patched bes configuration prototypes, added some instrumentation.
+
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Pruned unsed blocks of code.
+
+	Pruned unsed blocks of code.
+
+	Comments, comments, comments
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and BES.CacheSize to specifically reference the decompression cache (which is waht it actually is) so as to avoid cache configuration collisions with various handlers that also were utilizing teh same cache with different expectations. Now, by calling these BES keys BES.UncompressCache.dir, BES.UncompressCache.prefix, and BES.UncompressCache.size we specifically isolate the decompression cache configuration from the other caches.
+
+	Rewinding changes for BESFileLocking API in favor of less invasive use of the cache prefix as base for control file name.
+
+2015-09-29  Nathan Potter  <ndp@opendap.org>
+
+	Refactored code to eliminate changes to the API
+
+	Refactored dimension caching to use a child of BESFileLockingCache for multiprocess safety. Works. woot.
+
+2015-09-26  Nathan Potter  <ndp@opendap.org>
+
+	Small changes to dimension caching
+
+2015-09-24  Nathan Potter  <ndp@opendap.org>
+
+	Merged master to joinExisiting_improvements branch
+
+	Reworked caching to use a separate disk file for each granule's (data file's) dimension cache. This way if the file is used in multiple aggregations it only needs a single cache, if the file get's dropped from the aggregation (ala FMRC) no harm is done, and if the source data for a single granule/file changes then only that one dimension cache file needs to be updated.
+
+2015-09-23  Nathan Potter  <ndp@opendap.org>
+
+	First crack at caching granule dimensions is working
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-23  Nathan Potter  <ndp@opendap.org>
+
+	Starting to hookup dimension caching prototype
+
+2015-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.3.0
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'pipelining' to master
+
+	Fixed Makefile.am in tests so distcheck works
+
+2015-08-27  James Gallagher  <jgallagher@opendap.org>
+
+	Changes to match the Parallel I/O code refactor in libdap.
+
+2015-08-24  James Gallagher  <jgallagher@opendap.org>
+
+	Use parallel I/O interface of Marshaller in the PIPELINING code
+
+2015-08-21  Nathan Potter  <ndp@opendap.org>
+
+	Disabled prototype code for correctly renaming structures and
+	grids without 'prereading' their data. The protoype implmentation
+	is incomplete and not used.
+
+2015-08-19  Nathan Potter  <ndp@opendap.org>
+
+	Merged github for James' changes.
+
+	 merged from github
+
+2015-08-19  James Gallagher  <jgallagher@opendap.org>
+
+	Another fix for set_read_p() in the Array aggregation classes.
+
+	Fixed a minor error in the Array aggregation classes
+	The read_p predicate was not set correctly in the !PIPELINING
+	case and clear_local_data() was called when libdap::Array::serialize()
+	would have done it.
+
+2015-08-19  Nathan Potter  <ndp@opendap.org>
+
+	Added triggers (delete calls) for the global timing variables so
+	that time to first read and time to first transmit are computed.
+
+2015-08-18  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused code in AggregationUtil; added instrumentation
+	...to my new 'pipelining' code so I can see it getting called.
+	I can, it is. Remove this once we merge.
+
+	Put calls to clear_local_data() back in the code - were lost in
+	the shuffle During the merge of the master branch to this branch,
+	I lost the calls to clear_local_data() that were put inthe
+	overloaded serialize() methods in the ArrayAggregation... classes.
+	I've added them back, in the correct places I hope.
+
+	Added a commet and the new pipelining serialize()
+
+	Pipelining for Grids now works.
+
+	Code formatting in GridAgg...
+
+	JoinExisting aggregations now support pipelining
+
+	Comment updates plus one minor fix to use code in AggregationUtil
+	The later ensures a small memory footprint when code calls the
+	read() method (which will read the entire data for an aggregated
+	variable into memory).
+
+	Merge branch 'master' into double_buffer
+	 Conflicts:
+		NCMLArray.h
+		RenamedArrayWrapper.cc
+		RenamedArrayWrapper.h
+	There were many conflicts in the latter two files, so I used
+	'git checkout master -- RenamedArrayWrapper.cc' (also for the .h)
+	to simply pull the versions from the current master branch. The
+	code passes all its tests.
+
+	Modified ArrayAggregateOnOuterDimension::serialize() so it works!
+	The new code handles the case when code in
+	GridAggregateOnOuterDimension calls ArrayAgg...::read(). We can
+	fix teh GridAgg... code later but this gets all the tests working
+	and the improvement of interleaved reads and writes in place for
+	at least the tests for 'pure' arrays. (join new aggregations
+	only).
+
+2015-08-17  Nathan Potter  <ndp@opendap.org>
+
+	Empty commit to end a failed merge
+
+	Merge branch 'serialize_n_release'
+
+2015-08-17  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint: more work on interleaving data reads and writes
+
+2015-08-17  Nathan Potter  <ndp@opendap.org>
+
+	Somehow git wants me to commit a file that I don't understand why - nthgin ahs changed. meh.
+
+	Removed expected failures of the BES-7 (Werpy's) bug. Now all tests pass correctly.
+
+2015-08-14  Nathan Potter  <ndp@opendap.org>
+
+	Fixed ncml_module::RenamedArrayWrapper to correctly override the libdap:Vector::value() and  libdap:Vector::set_value() methods. This was accomplished by making the use of templates in libdap::Vector private and adding virtual functions for all of the various overloaded versions of libdap::Vector::value() and libdap::Vector::set_value (one version for each DAP atomic type). This fixes the JSON output for renamed array's, but unfortunately not the ascii output.
+
+2015-08-13  James Gallagher  <jgallagher@opendap.org>
+
+	Interleaved reads and accumulation for Join New
+	The code in ArrayAggregateOnOuterDimension::serialize() is close to
+	providing interleaved (file) read / (socket) write behavior. Some
+	aspects of libdap are not cooperating, but that's all. In particular,
+	Marshaller::put_vector() is limited by its baskic design of writing
+	the array size and data atomically. For this modification to the NCML
+	handler, we need to write the size of the data blob to be sent and
+	then make several calls to write the actual data.
+
+	Reformatting and simple modifications in preparation for double buffering
+	I reformated more of the source files, using hte OPeNDAP_Eclipse...xml
+	settings and changed how NCMLRequestHandler.cc builds the DDS response
+	to match the simpler way it builds the DataDDS response.
+
+2015-08-12  Nathan Potter  <ndp@opendap.org>
+
+	Added instrumentation
+
+	Added instrumentation
+
+	Added a crucial call to clear_local_data()
+
+2015-08-12  James Gallagher  <jgallagher@opendap.org>
+
+	Swapped back into the code the modified/refactored RenamedArrayWrapper class
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	I moved unused classes to the 'not_used' directory
+
+	I reformated about 80% of the .cc and .h files fr readability
+	...using the OPeNDAP_Eclipse_C_Formatting.xml setting that I added
+	to the bes repo. If only I could eclpse to reformat all the files.
+
+	I reverted the RenameArrayWrapper class changes, saving them in files named *.modified
+
+2015-08-10  Nathan Potter  <ndp@opendap.org>
+
+	Disabled cruft code, comments
+
+2015-08-06  Nathan Potter  <ndp@opendap.org>
+
+	Removed NCMLBaseArray::createFromArray() method from code base.
+
+2015-08-05  Nathan Potter  <ndp@opendap.org>
+
+	Second pass at cleaning up RenamedArrayWrapper class
+
+	Second pass at cleaning up RenamedArrayWrapper class
+
+	First cut at cleaning up RenamedArrayWrapper class
+
+	Documentation...
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-07-30  Nathan Potter  <ndp@opendap.org>
+
+	Started on code to handle the renaming of complex types.
+
+	Added debugging keyword control to the preloading of renamed arrays. Keyword is no_preload_for_renamed_arrays
+
+2015-07-24  Nathan Potter  <ndp@opendap.org>
+
+	Added OS-X .DS_Store to the ignore list
+
+	Added OS-X .DS_Store to the ignore list
+
+	Post serialization call to clear_local_data() now runtime switchable
+
+2015-07-22  Nathan Potter  <ndp@opendap.org>
+
+	Added call to clear_local_data() post serialization. This can be controled by adding the debug flag clear_local_data
+
+2015-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed forward class decl
+	Use namespace libdap { class ...; } and not libdap::...
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	Added files related to agg performance improvements
+
+	Fixed the URL in joinNew_scan_dfm.ncml
+
+2015-07-09  Nathan Potter  <ndp@opendap.org>
+
+	More instrumentation. I think with this all major activities are now inside timing blocks.
+
+2015-07-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'timing_instrumentation'
+
+	Added a call to xmlCleanupParser in the module's terminate() function.
+	This fixes a memory leak that is not really that big a deal,
+	bug why not fix it? The leak is for a constant amount of
+	memory per-process (I think) and the only real issue is if
+	that's not true or if we might initialize the library more
+	than once. Anyway, it's called now by NCMLModule's terminate
+	and also in the server abnd besstandalone App code.
+
+	Arrgh... bungled the name change of (now) valgrind_osx_libxml_bes.txt
+
+	Fiddled with the valgrind suppression files for OSX
+
+2015-07-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'timing_instrumentation'
+	Had to fix an errant change to DDSLoader made back in the
+	timing_leaks_fixes (local) branch that was then merged to
+	timing_instrumentation before being merged to master. Gads.
+
+	Mistake fixed: Broken version of DDSLoader fixed
+	On the timing_leak_fixes local branch I commited (and then merged that
+	branch to timing_instr...) a version of DDSLoader that used
+	Request_handler-->TheList()->execute_each() instead of
+	...->execute_current(). Fixed. So, now this code passes it's tests
+	again, and the leak I found in DDSLoader is patched.
+
+	Revert "Fixed a memory leak in DDSLoader"
+	This reverts commit 5f8f1addc64abcdd03fc89aa5c9cabfd0b11cf94.
+	I merged my timing_memory_leak branch back into the
+	timing_instrumentation branch and then merged that back into
+	the master. Not so good. I'm hoping this 'git revert' will get
+	us back to having the master branch pass its tests. I can then
+	sort out the problems on the timing_instr... branch.
+
+2015-07-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a memory leak in DDSLoader
+
+2015-06-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a leak in DDSLoader
+	The BESContainerVolatileStorage::look_for() method returns a
+	pointer to a copy of the BESContainer but this code was not
+	recording that so it could delete it later on. I also added a
+	small aggregation to test for leaks and a valgrind suppressions
+	file to cut down on the noise from valgrind on OSX 10.10 and
+	from the BES (which still does not completely cleanup after
+	itself).
+
+2015-06-12  Nathan Potter  <ndp@opendap.org>
+
+	More instrumentation tweaks for AWS system.
+
+	More instrumentation tweaks for AWS system.
+
+	More instrumentation tweaks for AWS system.
+
+	More instrumentation for AWS.
+
+	Toned the ncml debug ouput by changing the key for dumping the Data Handler Interface to the log
+
+2015-06-03  Nathan Potter  <ndp@opendap.org>
+
+	Timing Instrumentation.
+
+2015-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	Added new BESStopWatch support.
+
+2015-05-14  James Gallagher  <jgallagher@opendap.org>
+
+	Replaced the call to mktemp with one that calls mkstemps()
+	From a bug report by O. Poplawski. The new code to make a
+	temp file using mkstemps() is in libdap::util.cc
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/ncml_module
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	version 1.2.5
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-03-25  James Gallagher  <jgallagher@opendap.org>
+
+	Accommodate autoconf 2.63
+	Removed -j7 from TESTSUITEFLAGS. Can still pass them in from the
+	command line (make check TESTSUITEFLAGS=-j7).
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-02-19  James Gallagher  <jgallagher@opendap.org>
+
+	Tests that fail for DAP4 marked xfail
+	In the *.at files, search for FIXME DAP4 FAILURES
+	to find the specific tests. I think all of the
+	failures have to do with the errors in caching Vectors
+	when the ncml code reads all of the array data and
+	then reuses that later when the aggregation is formed.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+	Merge remote-tracking branch 'origin/dap4'
+	Conflicts:
+		configure.ac
+	Fixed errors with some DAS tests where the order of attributes
+	was different for one variable after the merge with DAP4. This
+	different ordering was due to a switch in attribute internal
+	representation.
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac and bes.conf.in after merging with the modules branch
+
+	Merge remote-tracking branch 'origin/modules'
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Updated	the spec file to release 2.
+
+	Updated the spec file for hyrax 1.10
+
+2014-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for the bes modules build.
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Added some dap4 test stuff using dapreader - just a start.
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac files. Fixed some param initializations; method overloads (virtual methods that lacked 'const'). Other warnings.
+
+2014-05-02  James Gallagher  <jgallagher@opendap.org>
+
+	Changes	after merging the trunk	code (H	1.9.3) to the dap4 branch. Note that the dap4 branch is using a 'branched' version of the ncml handler - all the other handlers are trunk versions.
+	_M   .
+	M    AggMemberDataset.cc
+	M    AggMemberDataset.h
+	M    AggMemberDatasetDDSWrapper.cc
+	M    AggMemberDatasetDDSWrapper.h
+	M    AggMemberDatasetSharedDDSWrapper.cc
+	M    AggMemberDatasetSharedDDSWrapper.h
+	M    AggMemberDatasetUsingLocationRef.cc
+	M    AggMemberDatasetUsingLocationRef.h
+	M    AggMemberDatasetWithDimensionCacheBase.cc
+	M    AggMemberDatasetWithDimensionCacheBase.h
+	M    AggregationElement.cc
+	M    AggregationElement.h
+	M    AggregationException.cc
+	M    AggregationException.h
+	M    AggregationUtil.cc
+	M    AggregationUtil.h
+	M    ArrayAggregateOnOuterDimension.cc
+	M    ArrayAggregateOnOuterDimension.h
+	M    ArrayAggregationBase.cc
+	M    ArrayAggregationBase.h
+	M    ArrayJoinExistingAggregation.cc
+	M    ArrayJoinExistingAggregation.h
+	M    AttributeElement.cc
+	M    AttributeElement.h
+	M    ChangeLog
+	M    DDSAccessInterface.cc
+	M    DDSAccessInterface.h
+	M    DDSLoader.cc
+	M    DDSLoader.h
+	M    Dimension.cc
+	M    Dimension.h
+	M    DimensionElement.cc
+	M    DimensionElement.h
+	M    DirectoryUtil.cc
+	M    DirectoryUtil.h
+	M    ExplicitElement.cc
+	M    ExplicitElement.h
+	M    GridAggregateOnOuterDimension.cc
+	M    GridAggregateOnOuterDimension.h
+	M    GridAggregationBase.cc
+	M    GridAggregationBase.h
+	M    GridJoinExistingAggregation.cc
+	M    GridJoinExistingAggregation.h
+	M    INSTALL
+	M    JoinExistingDimensionCacheManager.cc
+	M    JoinExistingDimensionCacheManager.h
+	M    MyBaseTypeFactory.cc
+	M    MyBaseTypeFactory.h
+	M    NCMLArray.h
+	M    NCMLBaseArray.cc
+	M    NCMLBaseArray.h
+	M    NCMLCacheAggXMLCommand.cc
+	M    NCMLCacheAggXMLCommand.h
+	M    NCMLCommonTypes.cc
+	M    NCMLCommonTypes.h
+	M    NCMLContainer.cc
+	M    NCMLContainer.h
+	M    NCMLContainerStorage.cc
+	M    NCMLContainerStorage.h
+	M    NCMLDebug.h
+	M    NCMLElement.cc
+	M    NCMLElement.h
+	M    NCMLModule.cc
+	M    NCMLModule.h
+	M    NCMLParser.cc
+	M    NCMLParser.h
+	M    NCMLRequestHandler.cc
+	M    NCMLRequestHandler.h
+	M    NCMLResponseNames.cc
+	M    NCMLResponseNames.h
+	M    NCMLUtil.cc
+	M    NCMLUtil.h
+	M    NEWS
+	M    NetcdfElement.cc
+	M    NetcdfElement.h
+	M    OtherXMLParser.cc
+	M    OtherXMLParser.h
+	M    RCObject.cc
+	M    RCObject.h
+	M    RCObjectInterface.cc
+	M    RCObjectInterface.h
+	M    README
+	M    ReadMetadataElement.cc
+	M    ReadMetadataElement.h
+	M    RemoveElement.cc
+	M    RemoveElement.h
+	M    RenamedArrayWrapper.cc
+	M    RenamedArrayWrapper.h
+	M    SaxParser.cc
+	M    SaxParser.h
+	M    SaxParserWrapper.cc
+	M    SaxParserWrapper.h
+	M    ScanElement.cc
+	M    ScanElement.h
+	M    ScopeStack.cc
+	M    ScopeStack.h
+	M    Shape.cc
+	M    Shape.h
+	M    SimpleLocationParser.cc
+	M    SimpleLocationParser.h
+	M    SimpleTimeParser.cc
+	M    SimpleTimeParser.h
+	M    ValuesElement.cc
+	M    ValuesElement.h
+	M    VariableAggElement.cc
+	M    VariableAggElement.h
+	M    VariableElement.cc
+	M    VariableElement.h
+	M    XMLHelpers.cc
+	M    XMLHelpers.h
+	_M   conf
+	M    configure.ac
+	_M   data
+	_M   data/nc/simple_test
+	_M   data/ncml/agg
+	M    ncml_module.spec
+	_M   tests
+	M    tests/baselines/agg/aggUnionSimple.ncml.das
+	M    tests/baselines/agg/aggUnionSimple.ncml.ddx
+	M    tests/baselines/agg/joinExist_scan.ncml.das
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_hslab_0.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_1.das
+	M    tests/baselines/agg/joinNew_grid_hslab_1.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_2.das
+	M    tests/baselines/agg/joinNew_grid_hslab_2.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_3.das
+	M    tests/baselines/agg/joinNew_grid_hslab_3.ddx
+	M    tests/baselines/agg/joinNew_grid_meta_2.ncml.das
+	M    tests/baselines/agg/joinNew_grid_meta_2.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_meta_everywhere.ncml.das
+	M    tests/baselines/agg/joinNew_grid_meta_everywhere.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_metadata.ncml.das
+	M    tests/baselines/agg/joinNew_grid_metadata.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_pre_metadata.ncml.das
+	M    tests/baselines/agg/joinNew_grid_pre_metadata.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_proj_lat.das
+	M    tests/baselines/agg/joinNew_grid_proj_lat.ddx
+	M    tests/baselines/agg/joinNew_grid_stride_evens.das
+	M    tests/baselines/agg/joinNew_grid_stride_evens.ddx
+	M    tests/baselines/agg/joinNew_grid_stride_odds.das
+	M    tests/baselines/agg/joinNew_grid_stride_odds.ddx
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.das
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.das
+	M    tests/baselines/agg/joinNew_scan_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_hslab_0.ddx
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.ddx
+	M    tests/baselines/grid_attributes.ncml.das
+	M    tests/baselines/grid_attributes.ncml.ddx
+
+2014-04-23  Nathan Potter  <ndp@opendap.org>
+
+	ncml_module: Checking software version update and associated release changes.
+2014-04-18  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-04-18  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-04-18  James Gallagher <jgallagher@opendap.org>
+
+	fix for bug #2176
+
+2014-04-16  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-04-16  James Gallagher <jgallagher@opendap.org>
+
+	I added calls to the DDSLoader to 'clone' the BESDataHandlerInterface object to see if that was the source of the OSX 10.9 bug. Nope. I removed that code using the preprocessor.
+
+2014-04-16  James Gallagher <jgallagher@opendap.org>
+
+	Removed unused code; fixed warnings; still chasing the bug on OSX 10.9...
+
+2014-02-14  James Gallagher <jgallagher@opendap.org>
+
+	Added unistd.h for osx 10.9
+
+	M    NCMLContainer.cc
+
+2013-10-23  James Gallagher <jgallagher@opendap.org>
+
+	updated svn:ignore
+
+2013-10-23  James Gallagher <jgallagher@opendap.org>
+
+	updated baselines for the new escaping behavior of libdap
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-10  Nathan Potter <ndp@opendap.org>
+
+	ncml_handler: Updated ChangeLog, NEWS, INSTALL, etc. for Hyrax 1.9
+
+2013-06-06  James Gallagher <jgallagher@opendap.org>
+
+	Removed the changes I added to the trunk that corrected the tests for
+	the dap4 branch. I've moved the tests to a branch version of the ncml
+	module for the dap4 work. This way the tests work there and here too.
+
+	_M   tests
+	M    tests/baselines/agg/joinNew_grid_meta_everywhere.ncml.das
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.das
+	M    tests/baselines/agg/joinNew_grid_proj_lat.das
+	M    tests/baselines/agg/joinNew_grid_pre_metadata.ncml.das
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.das
+	M    tests/baselines/agg/joinExist_scan.ncml.das
+	M    tests/baselines/agg/joinNew_grid_metadata.ncml.das
+	M    tests/baselines/agg/joinNew_grid_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/agg/joinNew_grid_meta_2.ncml.das
+	M    tests/baselines/agg/joinNew_scan_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_stride_evens.das
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2013-06-06  James Gallagher <jgallagher@opendap.org>
+
+	Removed the changes I added to the trunk that corrected the tests for
+	the dap4 branch. I've moved the tests to a branch version of the ncml
+	module for the dap4 work. This way the tests work there and here too.
+
+	_M   tests
+	M    tests/baselines/agg/joinNew_grid_meta_everywhere.ncml.das
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.das
+	M    tests/baselines/agg/joinNew_grid_proj_lat.das
+	M    tests/baselines/agg/joinNew_grid_pre_metadata.ncml.das
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.das
+	M    tests/baselines/agg/joinExist_scan.ncml.das
+	M    tests/baselines/agg/joinNew_grid_metadata.ncml.das
+	M    tests/baselines/agg/joinNew_grid_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/agg/joinNew_grid_meta_2.ncml.das
+	M    tests/baselines/agg/joinNew_scan_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_stride_evens.das
+
+2013-05-31  James Gallagher <jgallagher@opendap.org>
+
+	Modified the baselines - there's some reason why the added attr containers
+	are showing up in a diffent place, but the difference should matter to
+	clients.
+
+	_M   tests
+	M    tests/baselines/agg/joinNew_grid_meta_everywhere.ncml.das
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.das
+	M    tests/baselines/agg/joinNew_grid_proj_lat.das
+	M    tests/baselines/agg/joinNew_grid_pre_metadata.ncml.das
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.das
+	M    tests/baselines/agg/joinExist_scan.ncml.das
+	M    tests/baselines/agg/joinNew_grid_metadata.ncml.das
+	M    tests/baselines/agg/joinNew_grid_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/agg/joinNew_grid_meta_2.ncml.das
+	M    tests/baselines/agg/joinNew_scan_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.das
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.das
+	M    tests/baselines/agg/joinNew_grid_stride_evens.das
+
+2013-05-20  James Gallagher <jgallagher@opendap.org>
+
+	Removed the load of the fonc handler since it is not needed and breaks the tests when it does not get built.
+
+2013-05-01  James Gallagher <jgallagher@opendap.org>
+
+2013-01-22  James Gallagher <jgallagher@opendap.org>
+
+	Added conf back in along with the needed m4 files. Still fails 85 tests.
+
+	A    conf
+	A    conf/ax_path_generic.m4
+	A    conf/icu.m4
+	A    conf/pkg.m4
+	A    conf/ax_compare_version.m4
+	A    conf/bes.m4
+	A    conf/libdap.m4
+
+2013-01-21  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the hyrax 1.8 branch
+
+	_M   .
+	D    conf
+	M    tests/aggregations.at
+
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	After merge with hyrax 1.8 release branch and full build w/o test failures.
+
+	_M   .
+	M    AggregationElement.cc
+	M    DDSLoader.cc
+	M    ncml_module.spec
+	M    ValuesElement.cc
+	M    SaxParserWrapper.cc
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    AttributeElement.h
+	_M   OSX_Resources/InstallationCheck.proto
+	_M   OSX_Resources/Info.plist.proto
+	M    NCMLContainerStorage.cc
+	M    AggregationUtil.cc
+	M    NCMLUtil.cc
+	M    NCMLUtil.h
+	M    NCMLRequestHandler.h
+	M    ValuesElement.h
+	M    tests/generate_baselines.sh
+	M    tests/attribute_tests.at
+	M    tests/testsuite.at
+	A  + tests/bes_no_nc_global.conf.in
+	M    tests/bes.conf.in
+	M    tests/baselines/var_orgName_Structure.ncml.ddx
+	M    tests/baselines/grid_attributes.ncml.das
+	M    tests/baselines/var_with_dot.ncml.ddx
+	M    tests/baselines/bugs/attr_name_is_url_bug.ncml.das
+	M    tests/baselines/bugs/empty_attr_string.ncml.ddx
+	M    tests/baselines/bugs/attr_name_is_url_bug.ncml.ddx
+	M    tests/baselines/OtherXML_shadowed_namespace.ncml.ddx
+	M    tests/baselines/fnoc1_rename_test.ncml.ddx
+	M    tests/baselines/separator_test.ncml.ddx
+	M    tests/baselines/var_orgName.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_auto_float_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_1_cons_2.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_auto_double_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_string_2d.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_char_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_string_3d.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_1_cons_3.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_long_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_url_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_byte_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_auto_int_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_uint32_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_2.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_string_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_string_3d_cons_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_1_cons_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_3.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_int_2_cons_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_short_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_float_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_array_double_1.ncml.ddx
+	M    tests/baselines/new_arrays/var_string_3d_cons_2.ncml.ddx
+	M    tests/baselines/var_orgName_cons_3.ncml.ddx
+	M    tests/baselines/var_remove_nested.ncml.ddx
+	M    tests/baselines/fnoc1_explicit.ncml.ddx
+	M    tests/baselines/nested_passthrough.ncml.ddx
+	M    tests/baselines/reentrancy_test.ncml.ddx
+	M    tests/baselines/var_orgName_Structure_constraint_1.ncml.ddx
+	M    tests/baselines/OtherXML_with_ancestral_namespace.ncml.ddx
+	M    tests/baselines/var_orgName_cons_4.ncml.ddx
+	M    tests/baselines/var_new_Structure_nest.ncml.ddx
+	M    tests/baselines/nested_passthrough_cons_1.ncml.ddx
+	M    tests/baselines/fnoc1_remove.ncml.ddx
+	M    tests/baselines/attribute_OtherXML.ncml.ddx
+	M    tests/baselines/agg/joinNew_simple_cons_2.ncml.das
+	M    tests/baselines/agg/joinNew_grid_metadata.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_0.ddx
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.dds
+	M    tests/baselines/agg/joinNew_grid_hslab_2.ddx
+	M    tests/baselines/agg/joinExisting_nc.ncml.das
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.ddx
+	M    tests/baselines/agg/multi_nested_unions.ncml.ddx
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.das
+	M    tests/baselines/agg/joinNew_simple.ncml.dods
+	M    tests/baselines/agg/joinNew_simple_2_cons_1.ncml.das
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.dods
+	M    tests/baselines/agg/joinExisting_load_ncoords.ncml.ddx
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.dods.getdap
+	M    tests/baselines/agg/joinNew_hdf5.ncml.das
+	M    tests/baselines/agg/joinNew_grid_proj_lat.das
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.dods
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.dds
+	M    tests/baselines/agg/netcdf_joinNew_cons_1.ncml.das
+	M    tests/baselines/agg/virtual_union.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.ddx
+	M    tests/baselines/agg/joinNew_simple_2.ncml.das
+	M    tests/baselines/agg/joinExist_grid_mod_meta.ddx
+	M    tests/baselines/agg/joinNew_simple_2_cons_2.ncml.das
+	M    tests/baselines/agg/joinExisting_varAgg.ncml.ddx
+	M    tests/baselines/agg/modify_post_union.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_meta_2.ncml.ddx
+	M    tests/baselines/agg/aggUnionSimple.ncml.das
+	M    tests/baselines/agg/joinNew_simple.ncml.dds
+	M    tests/baselines/agg/joinNew_scan_hslab_0.ddx
+	M    tests/baselines/agg/joinNew_simple.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.ddx
+	M    tests/baselines/agg/joinNew_simple_cons_1.ncml.ddx
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.ddx
+	M    tests/baselines/agg/aggUnionSimple.ncml.dods
+	M    tests/baselines/agg/joinNew_simple_3.ncml.das
+	M    tests/baselines/agg/joinNew_simple_2_cons_3.ncml.das
+	M    tests/baselines/agg/joinNew_simple.ncml.dods.getdap
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.das
+	M    tests/baselines/agg/joinNew_grid_stride_evens.ddx
+	M    tests/baselines/agg/joinNew_numeric_coordValue.ncml.dds
+	M    tests/baselines/agg/union_with_dimensions.ncml.ddx
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.dods
+	M    tests/baselines/agg/joinNew_numeric_coordValue.ncml.ddx
+	M    tests/baselines/agg/joinNew_hdf4.ncml.ddx
+	M    tests/baselines/agg/joinExisting_virtual_fine.ncml.ddx
+	M    tests/baselines/agg/netcdf_joinNew.ncml.das
+	M    tests/baselines/agg/joinNew_simple_cons_2.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_meta_everywhere.ncml.ddx
+	M    tests/baselines/agg/joinExist_scan.ncml.dods
+	M    tests/baselines/agg/joinExisting_nc.ncml.ddx
+	M    tests/baselines/agg/joinNew_numeric_coordValue.ncml.dods.getdap
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.dds
+	M    tests/baselines/agg/joinNew_with_explicit_map.ncml.ddx
+	M    tests/baselines/agg/joinNew_string_coordVal.ncml.dods
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.ddx
+	M    tests/baselines/agg/joinNew_simple_2_cons_1.ncml.ddx
+	M    tests/baselines/agg/joinExist_scan.ncml.das
+	M    tests/baselines/agg/joinNew_hdf5.ncml.dds
+	M    tests/baselines/agg/joinExisting_multi.ncml.das
+	M    tests/baselines/agg/joinNew_simple_2.ncml.dods
+	M    tests/baselines/agg/joinNew_hdf5.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_1.ddx
+	M    tests/baselines/agg/joinNew_grid_proj_lat.ddx
+	M    tests/baselines/agg/joinNew_scan_dfm.ncml.dods.getdap
+	M    tests/baselines/agg/joinNew_string_coordVal.ncml.das
+	M    tests/baselines/agg/joinNew_grid_hslab_3.ddx
+	M    tests/baselines/agg/joinNew_grid_pre_metadata.ncml.ddx
+	M    tests/baselines/agg/joinNew_simple_2.ncml.dds
+	M    tests/baselines/agg/netcdf_joinNew_cons_1.ncml.ddx
+	M    tests/baselines/agg/virtual_union.ncml.ddx
+	M    tests/baselines/agg/joinNew_simple_2.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_hslab_0.das
+	M    tests/baselines/agg/joinNew_simple_2_cons_2.ncml.ddx
+	M    tests/baselines/agg/aggUnionSimple.ncml.dds
+	M    tests/baselines/agg/joinNew_scan_dfm_2.ncml.das
+	M    tests/baselines/agg/multi_nested_unions.ncml.das
+	M    tests/baselines/agg/joinNew_simple_2.ncml.dods.getdap
+	M    tests/baselines/agg/aggUnionSimple.ncml.ddx
+	M    tests/baselines/agg/joinExisting_load_ncoords.ncml.das
+	M    tests/baselines/agg/joinNew_numeric_coordValue.ncml.dods
+	M    tests/baselines/agg/joinExist_grid_add_cont_meta.ddx
+	M    tests/baselines/agg/joinNew_simple_3.ncml.dds
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.dds
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.dods
+	M    tests/baselines/agg/joinNew_simple_3.ncml.ddx
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.ddx
+	M    tests/baselines/agg/joinNew_simple_2_cons_3.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_stride_odds.ddx
+	M    tests/baselines/agg/joinNew_simple_3.ncml.dods
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/agg/joinNew_simple_3.ncml.dods.getdap
+	M    tests/baselines/agg/netcdf_joinNew.ncml.dds
+	M    tests/baselines/agg/joinNew_explicit_autogen.ncml.ddx
+	M    tests/baselines/agg/netcdf_joinNew.ncml.ddx
+	M    tests/baselines/agg/joinNew_scan_hslab_0.das
+	M    tests/baselines/agg/netcdf_joinNew.ncml.dods
+	M    tests/baselines/agg/joinExist_grid_add_meta.ddx
+	M    tests/baselines/agg/joinNew_grid_arr_hslab_0.das
+	M    tests/baselines/agg/joinNew_simple.ncml.das
+	M    tests/baselines/agg/joinExist_scan.ncml.dds
+	M    tests/baselines/agg/joinNew_simple_cons_1.ncml.das
+	M    tests/baselines/agg/joinExisting_multi.ncml.dds
+	M    tests/baselines/agg/joinNew_scan_regexp_hslab_0.das
+	M    tests/baselines/agg/joinExist_scan.ncml.ddx
+	M    tests/baselines/agg/joinExisting_virtual.ncml.ddx
+	M    tests/baselines/agg/joinNew_string_coordVal.ncml.dds
+	M    tests/baselines/agg/joinExisting_multi.ncml.ddx
+	M    tests/baselines/agg/joinNew_grid_stride_evens.das
+	M    tests/baselines/agg/joinNew_string_coordVal.ncml.ddx
+	M    tests/baselines/agg/joinNew_hdf5.ncml.dods
+	M    tests/baselines/agg/joinExisting_multi.ncml.dods
+	M    tests/baselines/agg/joinNew_string_coordVal.ncml.dods.getdap
+	M    tests/baselines/agg/joinNew_numeric_coordValue.ncml.das
+	M    tests/baselines/sample_virtual_dataset.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_attribute_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_netcdf_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_variableAgg_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_dimension_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_variable_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_readMetadata_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_remove_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_values_attrs.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_agg_bad_attr.ncml.ddx
+	M    tests/baselines/invalid_attrs/error_explicit_attrs.ncml.ddx
+	M    tests/baselines/var_orgName_cons_1.ncml.ddx
+	M    tests/baselines/grid_attributes.ncml.dods
+	M    tests/baselines/nest_test.ncml.ddx
+	M    tests/baselines/attribute_OtherXML_Attribute.ncml.ddx
+	M    tests/baselines/fnoc1_improved.ncml.ddx
+	M    tests/baselines/attribute_OtherXML_rename.ncml.ddx
+	M    tests/baselines/attribute_OtherXML.ncml.das
+	M    tests/baselines/var_new_Structure.ncml.ddx
+	M    tests/baselines/var_orgName_Structure_cons_2.ncml.ddx
+	M    tests/baselines/sample_virtual_dataset.ncml.das
+	M    tests/baselines/grid_attributes.ncml.dds
+	M    tests/baselines/new_scalars/var_scalar_char.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_long.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_byte.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_double.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_uint32.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_int.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_short.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_url.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_float.ncml.ddx
+	M    tests/baselines/new_scalars/var_scalar_string.ncml.ddx
+	M    tests/baselines/grid_attributes.ncml.ddx
+	M    tests/baselines/OtherXML_nested_namespaces.ncml.ddx
+	M    tests/baselines/var_orgName_cons_2.ncml.ddx
+	M    tests/baselines/attribute_with_dot.ncml.ddx
+	M    tests/baselines/var_remove.ncml.ddx
+	M    tests/Makefile.am
+	M    tests/aggregations.at
+	M    INSTALL
+	A  + data/ncml/agg/virtual_union_tds_compatible.ncml
+	M    data/ncml/agg/virtual_union.ncml
+	M    data/ncml/attribute_OtherXML_rename.ncml
+	M    NCMLRequestHandler.cc
+	M    NCMLParser.h
+	M    README
+	M    AttributeElement.cc
+	M    Makefile.am
+	M    AggregationUtil.h
+
+2012-04-09  Patrick West <pwest@ucar.edu>
+
+	Missing c includes
+	M    NCMLContainer.cc
+
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	 Build fixes for CentOS 6; no longer links with libdapclient
+
+2012-01-11  James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.8
+
+	M    ncml_module.spec
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL
+	M    README
+
+2012-01-03  James Gallagher <jgallagher@opendap.org>
+
+	Hacked the tests - forgot to update SVN - fixed now, I hope.
+
+	A    tests/bes_no_nc_global.conf.in
+	M    tests/bes.conf.in
+	M    tests/Makefile.am
+
+2011-12-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for the broken test - ticket 1868 - where top-level
+	attributes were not renamed correctly. The problem was that the
+	tests were being run using the new option to dump all the those
+	attributes in a container named NC_GLOBAL.  I modified the tests
+	so that we can use different configuration files - useful I
+	think. I also verified that the test could be rewritten to rename
+	the attribute if it was added NC_GLOBAL using the nested notation
+	our ncml handler supports. I also fixed an issue with the way the
+	option to trigger the new behavior was working - if the attribute
+	was not set the default was to make the NC_GLOBAL container, which
+	was not correct.
+
+	M    NCMLUtil.cc
+	M    tests/attribute_tests.at
+	M    tests/testsuite.at
+	M    data/ncml/attribute_OtherXML_rename.ncml
+	M    NCMLRequestHandler.cc
+
+2011-12-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	ncml_handler: Updated test baselines
+
+2011-12-16  James Gallagher <jgallagher@opendap.org>
+
+	More baselines fixed.
+
+2011-12-16  James Gallagher <jgallagher@opendap.org>
+
+	More baseline updates for ticket 1849.
+
+	M    tests/baselines/agg/joinExisting_load_ncoords.ncml.ddx
+	M    tests/baselines/agg/joinExist_scan.ncml.das
+	M    tests/baselines/agg/joinExisting_load_ncoords.ncml.das
+
+2011-12-16  James Gallagher <jgallagher@opendap.org>
+
+	Baseline fixes to match the lastest set of bug fixes in the code. These
+	adress ticket 1849 mostly.
+
+	M    tests/baselines/agg/joinExisting_nc.ncml.das
+	M    tests/baselines/agg/multi_nested_unions.ncml.ddx
+	M    tests/baselines/agg/virtual_union.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.ddx
+	M    tests/baselines/agg/aggUnionSimple.ncml.das
+	M    tests/baselines/agg/union_with_dimensions.ncml.ddx
+	M    tests/baselines/agg/joinExisting_nc.ncml.ddx
+	M    tests/baselines/agg/virtual_union.ncml.ddx
+	M    tests/baselines/agg/multi_nested_unions.ncml.das
+	M    tests/baselines/agg/aggUnionSimple.ncml.ddx
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/sample_virtual_dataset.ncml.ddx
+	M    tests/baselines/sample_virtual_dataset.ncml.das
+
+2011-12-15  James Gallagher <jgallagher@opendap.org>
+
+	Working on tickets 1849, 51 and 52. Partial check in. The
+	following tests fail for the listed/suspected reasons: These all
+	have to do with the OtherXML attribute type: 39 41 43 44 47 58 60
+
+	Only difference is the order of the NC_GLOBAL and other containers: 318 320 354
+
+	Fixed, bad baseline 356 359 361 369 371 375 560 562 565 567
+
+	I think these are still broken 581 585 586 587
+
+	Fixed, bad baseline, but double check 589 591 593 failed
+
+2011-12-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	ncml_handler: Fixing tests etc.
+
+2011-12-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	ncml_handler: Fixing tests etc.
+
+2011-12-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	ncml_handler: Fixing tests etc.
+
+2011-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Added a method to AggregationUtil so that the ordering of the
+	Coordinate Variables can be controlled. I was using a static int
+	and while this worked for the first call, subsequent calls were
+	trying to insert the CVs in places that did not exist. See the
+	method: void AggregationUtil::resetCVInsertionPosition() for more
+	information.
+
+2011-12-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	ncml_handler: Fixing tests etc.
+
+2011-11-25  Patrick West <pwest@ucar.edu>
+
+	cstdlib is needed for mktemp on Ubuntu. cstring is needed for strerror on
+	Ubuntu
+	M    NCMLContainer.cc
+
+2011-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Updated for the change in libdap where Attribute names are no longer escaped
+	using the id2www() function.
+
+	M    tests/baselines/bugs/attr_name_is_url_bug.ncml.das
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Fixed ticket 1803 - now when a Grid is built the handler adds
+	top-level arrays for the 'coordinate variables' in the correct
+	order and at the 'top' of the DDS. This is quite complex and
+	really a hack; it will need to be revisited so that DAP 3.3+
+	clients _don't_ get this stuff, but that will be easy enough since
+	it involves just not doing the hacky bits. Later... Fixed some DDX
+	tests to work with the new libdap code.
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+2011-06-30  Patrick West <pwest@ucar.edu>
+
+	Merge hyrax 1.7 branch to trunk
+
+2011-05-12  Patrick West <pwest@ucar.edu>
+
+	Forgot to add this new class.
+	A    NCMLContainer.cc
+	A    NCMLContainer.h
+
+2011-05-12  Patrick West <pwest@ucar.edu>
+
+	XML document passed in, saved temporarily, then deleted.
+	M    NCMLContainerStorage.cc
+	M    tests/bes.conf.in
+	M    ncml.conf.in
+	M    NCMLModule.cc
+	M    NCMLContainerStorage.h
+	M    Makefile.am
+
+2011-05-11  Patrick West <pwest@ucar.edu>
+
+	First pass at passing NCML using setContainer. This version saves the
+	NCML document permanently. Not going to use this, but want to save the
+	code.
+	A    NCMLContainerStorage.cc
+	M    tests/bes.conf.in
+	M    ncml.conf.in
+	M    NCMLModule.cc
+	A    NCMLContainerStorage.h
+	M    Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	ncml_module: Added automated version numbers to OSX Package builds
+
+2011-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Merge for hyrax 1.7 from the hyrax_1.6.2_release branch of shrew
+	to the trunk
+
+	_M   .
+	M    ScopeStack.cc
+	M    ScopeStack.h
+	M    DDSLoader.cc
+	M    NEWS
+	D    OSX_Resources/InstallationCheck
+	A  + OSX_Resources/InstallationCheck.proto
+	D    OSX_Resources/Info.plist
+	A  + OSX_Resources/Info.plist.proto
+	M    AttributeElement.h
+	M    NCMLUtil.cc
+	M    conf/icu.m4
+	M    NCMLElement.h
+	M    NCMLParser.cc
+	M    tests/baselines/bugs/empty_attr_string.ncml.ddx
+	M    tests/baselines/bugs/empty_attr_string.ncml.das
+	M    tests/baselines/attribute_with_dot.ncml.das
+	M    tests/baselines/separator_test.ncml.ddx
+	M    tests/baselines/reentrancy_test.ncml.ddx
+	M    tests/baselines/separator_test.ncml.das
+	M    tests/baselines/reentrancy_test.ncml.das
+	M    tests/baselines/agg/joinExisting_virtual_fine.ncml.das
+	M    tests/baselines/agg/joinExisting_nc.ncml.das
+	M    tests/baselines/agg/virtual_union.ncml.das
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.ddx
+	M    tests/baselines/agg/joinExist_grid_mod_meta.ddx
+	M    tests/baselines/agg/modify_post_union.ncml.ddx
+	M    tests/baselines/agg/aggUnionSimple.ncml.das
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.das
+	M    tests/baselines/agg/union_with_dimensions.ncml.ddx
+	M    tests/baselines/agg/joinExisting_virtual_fine.ncml.ddx
+	M    tests/baselines/agg/joinExisting_nc.ncml.ddx
+	M    tests/baselines/agg/joinExisting_virtual.ncml.das
+	M    tests/baselines/agg/virtual_union.ncml.ddx
+	M    tests/baselines/agg/multi_nested_unions.ncml.das
+	M    tests/baselines/agg/aggUnionSimple.ncml.ddx
+	M    tests/baselines/agg/joinExist_grid_add_cont_meta.ddx
+	M    tests/baselines/agg/joinExist_scan_ncoords.ncml.ddx
+	M    tests/baselines/agg/joinExisting_simple_grid.ncml.das
+	M    tests/baselines/agg/modify_post_union.ncml.das
+	M    tests/baselines/agg/joinExist_grid_add_meta.ddx
+	M    tests/baselines/agg/joinExisting_virtual.ncml.ddx
+	M    tests/baselines/agg/union_with_dimensions.ncml.das
+	M    tests/baselines/sample_virtual_dataset.ncml.ddx
+	M    tests/baselines/sample_virtual_dataset.ncml.das
+	M    tests/baselines/attribute_with_dot.ncml.ddx
+	M    data/ncml/sample_virtual_dataset.ncml
+	M    NCMLParser.h
+	M    README
+	M    AttributeElement.cc
+	A  + doxy_private.conf
+	A  + doxy.conf
+	M    Makefile.am
+
+2011-03-07  James Gallagher <jgallagher@opendap.org>
+
+	Comments
+
+	M    AggregationElement.cc
+
+2011-03-01  Patrick West <pwest@ucar.edu>
+
+	include of algorithm needed for sort method
+	M    AggMemberDatasetWithDimensionCacheBase.cc
+
+2011-02-08  James Gallagher <jgallagher@opendap.org>
+
+	removed unneeded mime_util.h and util.h includes; added comments about sending mime headers in our handlers (which may not be needed).
+
+2011-01-31  Patrick West <pwest@ucar.edu>
+
+	Fixed macro bug in code
+	M    NCMLResponseNames.h
+
+2011-01-07  mjohnson
+
+	Placeholder for join existing cache file system for saving the dimension cache in the AggMemberDataset to a binary file and reloading it later.  Commented out, in progress.
+
+2011-01-05  mjohnson
+
+	o Refactor to allow joinExisting to load dimension sizes from DDX. (ticket #1674).
+
+	o Tests for this
+
+	o Initial skeleton code for save/load of this dimension cache to allow for #1632 the caching of this slow load.
+
+	o Initial stub for a cacheAgg XML command on the module which will be hooked up to force a cache to be created from this slow load if the file contains a joinExisting agg in it.
+
+2011-01-03  mjohnson
+
+	o Fixed seg fault bug due to invalid iterator state caused by unsafe object mutation during iteration.
+
+2010-12-20  mjohnson
+
+	o Self-contained changes to add a WeakRCPtr<T> class as a peer or RCPtr<T> to handle circular references for ref-counted objects.  Similar to boost::weak_ptr.
+
+2010-11-17  mjohnson
+
+	o Removed function name in error response for parse error due to distracting verbosity.  Left for internal errors since this will be useful in a bug report.
+
+2010-11-11  mjohnson
+
+	* More error checking for Ticket #1666.
+
+2010-11-11  mjohnson
+
+	* Support for Ticket #1666 to make repro case in the testsuite.  Now the bes.conf for the testsuite also loads the fileout_netcdf  module.  We did not add an autotest for it yet however.
+
+2010-11-11  mjohnson
+
+	* Fix for Ticket #1666, a null pointer deref when a wrapped dataset is passed through the FONC return transmitter.
+
+2010-10-29  mjohnson
+
+	MERGE from the RELEASE branch for Hyrax 1.6.2 (shrew)
+
+2010-10-29  mjohnson
+
+	o Typo fix for logging
+
+2010-09-14  mjohnson
+
+	Updated to require libdap 3.11.0 and bes 3.9.0.
+
+2010-09-13  mjohnson
+
+	o Changes to prepare for release.  Note: libdap and bes requires (versions) not updated in configure.ac nor ncml_module.spec in this changeset.
+
+2010-09-03  mjohnson
+
+	o Modified exception macros to add function names automatically to help debugging and cleaned out resulting dead code.
+
+2010-09-03  Michael Johnson <m.johnson@opendap.org>
+
+	o Modified exception macros to add function names automatically to help debugging and cleaned out resulting dead code.
+
+2010-09-01  Michael Johnson <m.johnson@opendap.org>
+
+	o Changes for ticket #1626 to allow metadata to be specified on a placeholder coordinate variable for the aggregated joinExisting dimension and then applied all all Grid map vectors.
+
+	o NCMLDebug.h: changes to debug exception macros to print the function name for errors so we don't have to do so in every function.
+
+2010-08-26  Michael Johnson <m.johnson@opendap.org>
+
+	o Implementation and test for scan@ncoords syntactic sugar extension.  Ticket #1613.
+
+2010-08-25  Michael Johnson <m.johnson@opendap.org>
+
+	o Fixes and data constraint tests for Grid joinExisting on netcdf Grid granules.   Tests for various constraints.   Does not include code for user specification of the joined coordinate variable, only implementation for automatically creating the aggregation from the granules themselves.
+
+	o tests/make_test_grids.rb: ruby script using netcdf bindings in order to create simple test Grids.  Requires bindings installed, checked in since it's useful and I don't want it lost.
+
+2010-08-19  Michael Johnson <m.johnson@opendap.org>
+
+	For ticket #1631.  Nightly build error on test 533, where netcdf@ncoords is negative.  This is supposed to be a parse error, but some compilers seems to implictly convert it to an unsigned int rather than making an error.  Did not duplicate in CentOS.  Added a check for the explicit '-' sign in the coords to force the error.
+
+2010-08-18  Michael Johnson <m.johnson@opendap.org>
+
+	o Incremental checkin with initial codepaths for Grid joinExisting passing previous tests.
+
+	o Grid joinExisting DDS response works.  DAS/DDX unknown, need testing.
+
+	o DODS response is currently NOT implemented and throws as such.
+
+	o Tests not fully integrated yet.
+
+2010-08-18  Michael Johnson <m.johnson@opendap.org>
+
+	Potential fix for Linux build fails, for ticket #1631.
+
+2010-08-13  Michael Johnson <m.johnson@opendap.org>
+
+	o Initial changes for #1620.  We now only output specified vars in variableAgg if joinExisting declares it.  Still outputs vars not in aggregqation.  Still needs changes and tests to handle coordinate variables!
+
+2010-08-12  Michael Johnson <m.johnson@opendap.org>
+
+	o New tests to make sure the AggMemberDataset pathway loading files from disk (Netcdf in this case) works for joinExisting.  Small sets, testing with full data and simple constraint.  Ticket #1623
+
+	o Also getting the (non working and non connected in aggregations.at) tests for variableAgg.  Those will come later.
+
+2010-08-11  Michael Johnson <m.johnson@opendap.org>
+
+	o Test added that successfully tests for multiple variables with given outer dimension getting aggregated.  #1628.  Variables without matching dimension get added from the first dataset ONLY.  <variableAgg> not support yet.
+
+2010-08-11  Michael Johnson <m.johnson@opendap.org>
+
+	o Basic implementation of joinExisting for Array datatypes for ticket #1624
+
+	o Test cases for joinExisting on virtual data Array's.
+
+	o Added dimension size cache to AggMemberDataset to help with joinExisting
+
+	o Added ncoords to netcdf element.
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added include of dependent dap.conf
+
+2010-07-14  Michael Johnson <m.johnson@opendap.org>
+
+	o AggregationUtil.cc: fixed some incorrect exception text and converted exceptions over to AggregationException.
+
+	o {Array,Grid}AggregateOnOuterDimension.{cc,h}: Removed dead functions from previous refactor that were  accidentally left in.
+
+2010-07-14  Michael Johnson <m.johnson@opendap.org>
+
+	tests/aggregations.at:  For ticket #1575: removed hack from read parse error tests for joinNew now that #1574 is fixed.  NOTE: these tests will now FAIL for BES 3.8.4 release and earlier.  Only pass in the trunk!
+
+2010-07-09  Michael Johnson <m.johnson@opendap.org>
+
+	Changes for release of v1.0.3.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-07-09  Michael Johnson <m.johnson@opendap.org>
+
+	Removed extraneous characters caught by linux gcc but not mac.
+
+2010-07-08  Michael Johnson <m.johnson@opendap.org>
+
+	Several new tests for joinNew and for ticket #1581.
+
+2010-07-02  Michael Johnson <m.johnson@opendap.org>
+
+	Final changes for #1448.
+
+2010-06-11  Michael Johnson <m.johnson@opendap.org>
+
+	Initial changes for #1448 and #1533.
+
+	o ArrayAggregateOnOuterDimension: added to support efficient joinNew on Array datasets similarly to GridAggregateOnOuterDimension.  Now only the constrained subset of data is loaded on read() and serialize() and not the entire dataset prior to constraint application as old code.
+
+	o Added initial support for nested aggregations.  Was required to pass old Array joinNew tests since they used virtual data (effectively nesting) and the old joinNew code asssumed member datasets were external files and not libdap::BaseType subclasses.
+
+	o Added several interface classes to avoid backdependencies from agg_util into ncml_module.
+
+	o NCMLParser: Removed the RCObjectPool memory pool since the objects are now required AFTER NCMLParser dtor would delete the pool -- serialize() and read() calls occur after this.  Consider a static pool in the future, though this is dangerous in a threaded situation without using boost threadsafe containers.
+
+	o tests/aggregations.at:  Changed several tests for joinNew on Array where member dataset types and shapes were mismatched since they were failing with the optimization.  Since the BES handles errors differently in the read() and serialize() section of code, BESSyntaxUserError which we use for Parse Error response gets eaten.  Made ticket to fix this, but tests are modified for now to make sure we at least get a fatal error rather than streaming incorrect data.
+
+2010-05-12  Michael Johnson <m.johnson@opendap.org>
+
+	o reintegrate merge changes
+
+2010-05-12  Michael Johnson <m.johnson@opendap.org>
+
+	o moved function to AggregationUtil for refactor.
+
+2010-05-05  Michael Johnson <m.johnson@opendap.org>
+
+	Reintegration from the latest 1.6 branch changes.  NOTE: DOES NOT COMPILE AGAINST REST OF TRUNK until libdap and bes are reintegrated.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-05-04  Michael Johnson <m.johnson@opendap.org>
+
+	Checked and updated baselines for failing tests.  Ticket #1542.
+
+2010-04-30  Michael Johnson <m.johnson@opendap.org>
+
+	Some fixes for #1542... updated baseline for new HDF4 outputs.  Still some failing tests die to potential bugs in hdf4 handler attribute on grids.
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Fixed issue with dap-config --version with b at end (for beta)
+	M    conf/libdap.m4
+
+2010-04-21  Michael Johnson <m.johnson@opendap.org>
+
+	A couple new data files used in making documentation.  No tests for them, but they may be useful.
+
+2010-04-16  Michael Johnson <m.johnson@opendap.org>
+
+	Tests for a case that caused #1530.  Used as a test case for adding metadata to a joinNew aggregated Grid as well.
+
+2010-04-16  James Gallagher <jgallagher@opendap.org>
+
+	Added RPM_OPTIONS to the rpm targets.
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added a dist-hook target that removes .svn dirs from the dist tar.
+
+	M    dap-server/Makefile.am
+	M    fileout_netcdf/Makefile.am
+	M    freeform_handler/Makefile.am
+	M    hdf4_handler/Makefile.am
+	M    hdf5_handler/Makefile.am
+	M    ncml_module/Makefile.am
+	M    netcdf_handler/Makefile.am
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added Requires: lines to the .spec files for all the modules we build rpms for.
+
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	Upped the version to 1.0.1 to reflect ICU made external and several bug fixes.
+
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	Changed the order of the -I and -L commands for BES, libdap, and ICU to make ICU last to avoid getting /usr/local includes prior to the --prefix locations in compile and link.
+
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	Changed order of BES_DAPLIBS and ICU_LIBS to try and avoid finding old BES and DAP libs in /usr/local/lib (since ICU add -L/usr/local/lib if it's installed tehre).
+
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	AggregationElement.cc: typo
+	configure.ac: changed bug email to support@opendap.org not opendap-tech
+	testsuite.at: put back the bes.conf macro
+	joinNew_scan_olderThan.ncml: dropped the "older than" time to minutes rather than hour for fresh installs to pass.
+
+2010-04-07  Michael Johnson <m.johnson@opendap.org>
+
+	Removed bes_conf_path macro repalcement for invocation of besstandalone to test potential issue with newer autoconf.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	Changed the order of the -I and -L commands for BES, libdap, and ICU to make ICU last to avoid getting /usr/local includes prior to the --prefix locations in compile and link.
+
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	Changed order of BES_DAPLIBS and ICU_LIBS to try and avoid finding old BES and DAP libs in /usr/local/lib (since ICU add -L/usr/local/lib if it's installed tehre).
+
+2010-04-08  Michael Johnson <m.johnson@opendap.org>
+
+	AggregationElement.cc: typo
+	configure.ac: changed bug email to support@opendap.org not opendap-tech
+	testsuite.at: put back the bes.conf macro
+	joinNew_scan_olderThan.ncml: dropped the "older than" time to minutes rather than hour for fresh installs to pass.
+
+2010-04-07  Michael Johnson <m.johnson@opendap.org>
+
+	Removed bes_conf_path macro repalcement for invocation of besstandalone to test potential issue with newer autoconf.
+
+2010-04-07  Michael Johnson <m.johnson@opendap.org>
+
+	Bug fixes for #1514.  Name collisions were being checked only for new attributes or variables, not both.  The namespaces are actually the same, so we need to make sure the FQN is entirely free when making new attributes and variables.
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	Dropped autoconf min version to 2.62 (which the top-level shrew configure.ac requires) instead of 2.63 now that icu is not a subproject that requires it.
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	Changes to reflect ICU as an external dependency not internal.
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	ncml_module.spec: %files section needed update for the new way bes handles conf files...  now installs ncml.conf as required.
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	Wrong min version of icu lib
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed distcheck data install problem (doesn't like * character for distcheck oddly)
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	Cleaned out commented portions of old icu subproject
+
+2010-04-02  Michael Johnson <m.johnson@opendap.org>
+
+	Initial changes to remove icu as a subproject and find it as an external dependency.  NOT FULLY TESTED and docs not updated.  Checkin required for testing.
+
+2010-04-01  Michael Johnson <m.johnson@opendap.org>
+
+	Changed baselines to match changes to libdap for ticket #1512.  Strings used to contain XML entities as escapes, now they use \\octal escaped chars.
+
+2010-03-29  Patrick West <pwest@ucar.edu>
+
+	+= used for BES.modules
+	M    ncml.conf.in
+
+2010-03-23  James Gallagher <jgallagher@opendap.org>
+
+	Added comment character between #endif and __AGG_UTIL__GRID_AGGREGATE_ON_OUTER_DIMENSION_H__.
+
+2010-02-18  Michael Johnson <m.johnson@opendap.org>
+
+	Branch for release.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-02-05  Michael Johnson <m.johnson@opendap.org>
+
+	Added a couple of examples for joinNew on grids to the installed data.
+
+2010-02-05  Michael Johnson <m.johnson@opendap.org>
+
+	Newer gcc doesn't allow inner classes to be private.  VariableValueValidator defn made public.
+
+2010-02-04  Michael Johnson <m.johnson@opendap.org>
+
+	Test added for autogenerated explicit coordinate variable for joinNew map.  Uses values@start and values@increment to make an explicit map of the correct dimensionality.
+
+2010-02-04  Michael Johnson <m.johnson@opendap.org>
+
+	Fixes for Ticket #1445.  We now allow placeholder (no values set) new variables to exist until the closing of their enclosing dataset (netcdf element).  This allows the author to specify the new coordinate variable (map vector) metadata but allow the joinNew aggregation to set the values in the closing phase of the netcdf element.  If the values are not set after the aggregation postprocessing step, a parse error is thrown to avoid later libdap internal errors (and it's also illegal ncml to make a new variable with no values).
+
+2010-02-04  Michael Johnson <m.johnson@opendap.org>
+
+	Removing many autogenerated files that were accidentally added at initial recursive add.
+
+2010-01-30  Michael Johnson <m.johnson@opendap.org>
+
+	Changes to attempt to fix nightly build error ticket #1473.
+
+	icu/source/icudefs.mk.in: changed to add "hyrax_icu" to prefix var.  This file is used by the entire icu build so it all gets installed into ${prefix}/hyrax_icu regardless of whether prefix is set with --prefix or is defaults.
+
+	icu/source/configure.gnu: changed to ignore certain top-level configure options and add hyrax-specific options to the call to the actual configure.  Removed prefix changes since they failed with default prefix.  Solved in icudefs.mk.in.
+
+2010-01-29  Michael Johnson <m.johnson@opendap.org>
+
+	o Ticket #1472.  Support for sorting on the coordValue ISO 8601 date if a scan@dateFormatMark is used.
+
+	o Removed the test for matching the prefix of the dateFormatMark exactly.  Instead, we just skip that many characters, as the NcML aggregation page says.  Was necessary to make our new test work.
+
+	o Changed the regexp for the dateFormatMark tests since both datasets live in the same dir and the only expressions were overmatching.
+
+2010-01-29  Michael Johnson <m.johnson@opendap.org>
+
+	o Removing accidental cache dir inclusion.
+
+2010-01-29  Michael Johnson <m.johnson@opendap.org>
+
+	o Removing accidental binary inclusion.
+
+2010-01-29  Michael Johnson <m.johnson@opendap.org>
+
+	o Doc change for #1473 to list changes we make to configure.in original.
+
+2010-01-29  Michael Johnson <m.johnson@opendap.org>
+
+	o Attempt to fix configure failure portion of #1473 .  This is a known ICU 4.2.1 bug with newer automakes and will be in the next stable release.  For now I use there suggestion to workaround the problem in the stable release by changing configure.in
+
+2010-01-28  Michael Johnson <m.johnson@opendap.org>
+
+	o Added scan@dateFormatMark support and tests for #1444.
+
+	o This required adding a modified redistribution of the ICU project for handling SimpleDateFormat and formatting ISO 8601 dates.   It is built as part of the modules build process and designed to not interfere with other installations of ICU that may already exist.  We link the static libraries directly into the module shared lib to avoid dependency issues.
+
+2010-01-28  Michael Johnson <m.johnson@opendap.org>
+
+	o New baseline for test 426 failing.  XML entity change resulted in changing baseline.
+
+2010-01-25  hyoklee
+
+	Corrected typo in URL.
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	No longer using the script to modify bes.conf. Instead, now using
+	standalone configuration file.
+	D    bes-ncml-data.sh.in
+	A    ncml.conf.in
+	M    Makefile.am
+
+2010-01-10  Patrick West <pwest@ucar.edu>
+
+	API change to BESKeys. Changed modules included in bes.conf to use
+	xml_command module instead of string command module.
+	M    DirectoryUtil.cc
+	M    tests/bes.conf.in
+
+2010-01-08  Patrick West <pwest@ucar.edu>
+
+	--clean to clean build and src files for rpmbuild
+	M    Makefile.am
+
+2009-12-29  James Gallagher <jgallagher@opendap.org>
+
+	Shrew build changes that will hopefully lead to a version that we can build using NMI's B&T system. Also, I added 'cccc' targets so that we can take a 'metrics snapshot' without undue pain.
+
+2009-12-28  Michael Johnson <m.johnson@opendap.org>
+
+	Added scan@olderThan functionality for filtering based on file modification times.
+
+2009-12-18  Michael Johnson <m.johnson@opendap.org>
+
+	o Added scan@regExp attribute support for specifying aggregation scans with a regular expression.  Part of #1444
+
+2009-12-17  Michael Johnson <m.johnson@opendap.org>
+
+	o Initial implementation of scanning dirs for aggregations (#1444).  Handles suffix, subdirs recursion only at the moment.
+
+2009-12-02  Michael Johnson <m.johnson@opendap.org>
+
+	For ticket #1450.  Added AttrTableLazyPtr to NCMLParser so that we only load the DDX for the root dataset (since it's required to actually load the metadata).  Any child dataset, i.e. aggregation member, will not have its DDX loaded by default any more, only those that show up in the hyperslab.
+
+2009-12-01  Michael Johnson <m.johnson@opendap.org>
+
+	Need include of <typinfo> for use of typeid in ISO C++.
+
+2009-12-01  Michael Johnson <m.johnson@opendap.org>
+
+	Attempt to fix broken ISO C++ issue with circular objects.
+
+2009-11-30  Michael Johnson <m.johnson@opendap.org>
+
+	o Initial checkpoint of Grid joinNew aggregation for #1419 and #1446.  Still several outstanding issues in other tickets.
+
+2009-11-24  Michael Johnson <m.johnson@opendap.org>
+
+	o Fixes to allow compilation with FILE_METHODS macro and other changes to libdap interfaces
+
+2009-11-09  Michael Johnson <m.johnson@opendap.org>
+
+	o Adding new files
+
+2009-11-09  Michael Johnson <m.johnson@opendap.org>
+
+	o Adding new files
+
+2009-10-21  Michael Johnson <m.johnson@opendap.org>
+
+	o Changed to SAX2 interface with namespace support, many required interface changes.  Allows OtherXML attribute to get a snapshot of any ancestral namespaces in its lexical scope before it's serialized so it remains namespace-valid and complete.
+
+2009-10-09  Michael Johnson <m.johnson@opendap.org>
+
+	Added tests for joinNew on HDF5 data.  Added HDF5 to make check install reqs and the besstandalone bes.conf.
+
+2009-10-09  Michael Johnson <m.johnson@opendap.org>
+
+	Changes to support NCML file line numbers in Parse Error exceptions. (Ticket #1432).
+
+	Changed autotest match from fgrep to grep to allow regexp matching rather than exact strings.
+
+2009-10-07  Michael Johnson <m.johnson@opendap.org>
+
+	Test case for #1433.  Won't repro, expected fixed by fixes for #1416 in previous changeset.
+
+2009-10-07  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed bugs with having a dot ('.') in an attribute name or a variable name causing a recursive search.  Dot is now a valid character for a variable or attribute name and it is no longer used as a DAP FQN field separator in an NCML context.  For Ticket #1416
+
+2009-10-06  Michael Johnson <m.johnson@opendap.org>
+
+	Added support for attributes of the new libdap attribute type "OtherXML" for ticket #1424 since WCS needs this.  The contained XML is checked for well-formedness, but otherwise is just copied verbatim, along with all whitespace.
+
+2009-10-05  Michael Johnson <m.johnson@opendap.org>
+
+	AggregationUtil.cc, AggregationElement.cc: Initial implementation of joinNew on Array for data response (dods) along with virtual dataset and Netcdf data tests.
+
+	Shape.cc, NCMLBaseArray.h, NCMLArray.h:  Bug fixes in data caching code.
+
+	Updated module version and libdap required version.
+
+2009-10-01  Michael Johnson <m.johnson@opendap.org>
+
+	Problem with tests in production versus debug build.  Removed.
+
+2009-09-25  James Gallagher <jgallagher@opendap.org>
+
+	It just seem right to save things at this point. Most of the configure.ac files have been updated. The libdap software has had a number of the FILE* methods/functions commented out using #if FILE_METHODS and then #undef FILE_METHODS. We'll see how much of the redundant code can be removed before the next Hyrax 1.6 release.
+
+2009-09-22  Michael Johnson <m.johnson@opendap.org>
+
+	Test case (DAS,DDX,DDS only) for multiple aggregation vars in joinNew.
+
+2009-09-22  Michael Johnson <m.johnson@opendap.org>
+
+	DDX, DAS, DDS responses for joinNew.
+
+2009-09-16  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed segfault and other bugs with using empty string for attribute and variable values.  (ticket #1413)
+
+2009-09-14  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed using attribute@separator on string arrays for ticket #1411.  Now if unspecified separator, whitespace is the default for all types EXCEPT string.  An attribute of type string will NOT be tokenized into an array if separator isn't specified, but only if it IS specified.  All other data types are tokenized with a whitespace separator.  (the annotated ncml2.2 schema specifies this).
+
+2009-09-11  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed attribute of type string not properly tokenizing arrays of strings with a separator specified (ticket #1411)
+
+	Added whitespace trimming from attribute values of numeric or URL type, but string maintains lead and trailing spaces. (ticket #1411)
+
+2009-09-11  Michael Johnson <m.johnson@opendap.org>
+
+	Changes describing problem with NetCDF Grid and DAS response.
+
+2009-09-11  Michael Johnson <m.johnson@opendap.org>
+
+	Disallowed assignment operator= in RCObject, NCMLElement, and all subclasses to avoid bugs.  We don't need it for now.
+
+	RCObject.{h,cc}: Added copy ctor implementation that adds the copy to the prototype's pool if it exists.
+
+	New tests for Grid bug in ticket #1405.
+
+2009-09-09  Michael Johnson <m.johnson@opendap.org>
+
+	o Added VariableAggElement needed for joinNew and support in AggregationElement for it.
+
+	o Refactored NCMLElement to contain a back ptr to NCMLParser since many subclasses needed it.
+
+2009-09-09  Michael Johnson <m.johnson@opendap.org>
+
+	Added attribute validation checks to parse error on unknown attributes specified in all NCMLElement concrete subclasses rather than silently or mysteriously fail later.  See Ticket #1385.
+
+2009-09-08  Michael Johnson <m.johnson@opendap.org>
+
+	point check in to move it to new dir
+
+2009-09-04  Michael Johnson <m.johnson@opendap.org>
+
+	Made NCMLElement::Factory an instance member of NCMLParser rather than a singleton and added a basic memory pool that cleans up any dangling memory leaks from unref'd memory.
+
+2009-09-04  Michael Johnson <m.johnson@opendap.org>
+
+	ValuesElement.{h,cc}, VariableElement.{h,cc}: Bug fixes for not specifying values in new variable or specifying values more than once for new variable.  Ticket #1394
+
+2009-09-03  Michael Johnson <m.johnson@opendap.org>
+
+	AggregationUtil.{cc,h}: Change of namespace to agg_util to help clarify encapsulation of aggregation functions
+
+	RCObject.{h,cc}: Made red() and unref() const and the count mutable to allow ref on const objects.
+
+	AggregationElement.{h,cc}, NetcdfElement.{h,cc}, DimensionElement.{h,cc}: Added support for union on dimension for pure virtual datasets.
+
+	More tests for union.
+
+2009-09-03  Michael Johnson <m.johnson@opendap.org>
+
+	bes.conf.in: changed the name of the cmd module to the new name
+
+2009-09-03  Michael Johnson <m.johnson@opendap.org>
+
+	Changed the bes.conf target to use the previously set BES_MODULE_DIR rather than run bes-config.
+
+2009-09-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Fixed build errors in includes
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Added forgotten baselines.
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Added forgotten baselines.
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Checkpointing impl of aggregation.
+
+	o Added AggregationElement for parsing aggregations.
+
+	o Refactored NetcdfElement to contain an aggregation element.
+
+	o Refactored parser to handle more than one netcdf element.
+
+	o Added RCObject and RCPtr<T> for reference coutned smart pointers for NCMLElement's to be kept around after the SAX parser pops them off the stack.
+
+	o Added initial code for union aggregation in AggregationUtil.
+
+	o Refactored DimensionElement to use new Dimension
+
+	o Introduced agg_util namespace to encapsulate the aggregation code into its own lib eventually.
+
+	o Initial tests for union aggregation.  We union attributes and variables, but dimensions are not yet implemented.
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Fixed build errors from changes to BESDEBUG.
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Changed #include to non-deprecated one.
+
+2009-09-02  Michael Johnson <m.johnson@opendap.org>
+
+	o Removed function call that was removed from libdap trunk causing build error.
+
+2009-08-21  Michael Johnson <m.johnson@opendap.org>
+
+	Test that reentrancy into NcML handler works.
+
+2009-08-21  Michael Johnson <m.johnson@opendap.org>
+
+	Dependency on removed bes-testsuite fixed.
+
+2009-08-21  Michael Johnson <m.johnson@opendap.org>
+
+	Build fixes to sync with header changes in BES.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Updated notes on tests known to fail for libdap 3.9.3 and earlier.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Updated docs preparing for tag.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removed obsolete bes-testsuite directory.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Added more output to error matching tests
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removed another bes-testsuite reference.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removed bes-testsuite from build and DejaGNU from Prereqs.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Converted bes-testsuite DejaGNU tests over to autotest to remove dependency and simplify make distcheck.  Ticket #1377
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	More changes to get autotest working in a vbuild.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	More changes to get autotest working in a vbuild.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Attempts at replacing 'readlink -f' if it fails to work (like on Darwin)
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removing autogenerated files from conf/
+	tests/bes.conf.in: moved to tests to remove dep on bes-testsuite
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removing autogenerated files from conf/
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Doc update.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Changes to allow make distcheck to work with autotest.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	RenamedArrayWrapper.cc, RenamedArrayWrapper.h, VariableElement.cc: Array decorator pattern to allow renaming of Array subclasses with lazy read() (such as NCArray and HDFArray) while maintaining lazy read (and not loading it all into memory).
+
+	NCMUtil.h: Added SAFE_DELETE macro for common delete foo; foo=0;  code.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removed obsolete bes-testsuite directory.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Added more output to error matching tests
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removed another bes-testsuite reference.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removed bes-testsuite from build and DejaGNU from Prereqs.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Converted bes-testsuite DejaGNU tests over to autotest to remove dependency and simplify make distcheck.  Ticket #1377
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	More changes to get autotest working in a vbuild.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	More changes to get autotest working in a vbuild.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Attempts at replacing 'readlink -f' if it fails to work (like on Darwin)
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removing autogenerated files from conf/
+	tests/bes.conf.in: moved to tests to remove dep on bes-testsuite
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Removing autogenerated files from conf/
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Doc update.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	Changes to allow make distcheck to work with autotest.
+
+2009-08-20  Michael Johnson <m.johnson@opendap.org>
+
+	RenamedArrayWrapper.cc, RenamedArrayWrapper.h, VariableElement.cc: Array decorator pattern to allow renaming of Array subclasses with lazy read() (such as NCArray and HDFArray) while maintaining lazy read (and not loading it all into memory).
+
+	NCMUtil.h: Added SAFE_DELETE macro for common delete foo; foo=0;  code.
+
+2009-08-18  Michael Johnson <m.johnson@opendap.org>
+
+	Minor doc changes.
+
+2009-08-18  Michael Johnson <m.johnson@opendap.org>
+
+	Preparing for external build and tag of 0.9.1.
+
+
+2009-08-18  Michael Johnson <m.johnson@opendap.org>
+
+	Added exception for trying to specify <values> for a pre-existing variable.  Ticket #1373.
+
+2009-08-17  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed bug with rename Array's not handling hyperslab constraints.  (Ticket #1372)
+	Refactored non-parameterized code for NCMLArray<T> into a superclass NCMLBaseArray.
+
+2009-08-14  Michael Johnson <m.johnson@opendap.org>
+
+	For  Ticket #1367:
+	* Added NCMLArray<T>, subclass of libdap::Array, to compute hyperslab constraints for NcML dynamically created data since Array does not do it itself.
+	* Added Shape class to handle enumeration of constrained spaces for calculating hyperslabs.
+
+2009-08-12  Michael Johnson <m.johnson@opendap.org>
+
+	Fixed sed bug for constraints with : symbol.
+
+2009-08-12  Michael Johnson <m.johnson@opendap.org>
+
+	Added ability to specify multi-dimensional arrays in NcML for Ticket #1364.  Constraints are broken.
+
+2009-08-11  Michael Johnson <m.johnson@opendap.org>
+
+	Added ability to create new 1D arrays of all types, including use of dimension element and autogeneration of values.  See also ticket #1353.
+
+	Removed baselines for error tests since they are no longer used.
+
+2009-08-10  Michael Johnson <m.johnson@opendap.org>
+
+	Added ability to call remove on a variable at global DDS level or within a Structure.  Ticket #1352.
+
+2009-08-07  Michael Johnson <m.johnson@opendap.org>
+
+	Ticket #1354: Added ability to add a new Structure variable and tests for simple case, nested case and for parse error of setting values in a structure.
+
+	Changes to allow purely synthesized datasets for the case of no specified netcdf@location attribute.
+
+2009-08-07  Michael Johnson <m.johnson@opendap.org>
+
+	Ticket #1351: new rejection tests.
+
+2009-08-07  Michael Johnson <m.johnson@opendap.org>
+
+	Ticket #1351: new rejection tests.
+
+2009-08-07  Michael Johnson <m.johnson@opendap.org>
+
+	Ticket #1351:  Added ability to create new scalar variables of simple atomic types.
+
+	testsuite.at: Added support for testing against a getdap ascii version of a dods response for easier human verification of baseline data for new variables.
+
+2009-08-05  Michael Johnson <m.johnson@opendap.org>
+
+	testsuite.at: added ability to specify constraint expressions in autotest check macros
+
+	variable_rename.at: repository for variable@orgName tests, included in testsuite.at
+
+	Added new tests on variable rename for Structure and with constraints applied to renamed variable.
+
+2009-08-04  Michael Johnson <m.johnson@opendap.org>
+
+	VariableElement.cc, NCMLParser.cc, NCMLUtil.cc:  added support for renaming variables with variable@orgName (#1349).
+
+	Added new Autotest testsuite in tests/ directory (#1348).
+
+2009-07-31  Michael Johnson <m.johnson@opendap.org>
+
+	* Added ability for NCMLParser to handle handle DataDDS request as well as DDX to support addition of new variables.
+
+2009-07-30  Michael Johnson <m.johnson@opendap.org>
+
+	Refactored NCMLParser to have separate classes for each NcML element type and to use polymorphic dispatch.  Ticket #1325
+
+2009-07-29  Michael Johnson <m.johnson@opendap.org>
+
+	NCMLRequestHandler.cc:  added reference to Wiki for help request.
+
+	README, INSTALL: minor changes for odd error.
+
+2009-07-28  Michael Johnson <m.johnson@opendap.org>
+
+	InstallationCheck minor change.
+
+2009-07-28  Michael Johnson <m.johnson@opendap.org>
+
+	InstallationCheck: fixed bug with new {dap,bes}-config --version output.
+
+2009-07-28  Michael Johnson <m.johnson@opendap.org>
+
+	Added OSX_Resources for 'make pkg' support.
+
+2009-07-28  Michael Johnson <m.johnson@opendap.org>
+
+	Made test filenames smaller so 'make dist' doesn't leave them out.
+
+	ncml_module.spec: Fixed 'make rpm' failure.
+
+2009-07-27  Michael Johnson <m.johnson@opendap.org>
+
+	o release updates
+
+2009-07-27  Michael Johnson <m.johnson@opendap.org>
+
+	o Installation fixes.
+
+2009-07-27  Michael Johnson <m.johnson@opendap.org>
+
+	o Installation fixes.
+
+2009-07-27  Michael Johnson  <m.johnson@opendap.org>
+
+	* Initial internal release.  
+

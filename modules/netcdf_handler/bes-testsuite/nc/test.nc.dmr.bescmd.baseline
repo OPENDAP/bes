@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test.nc">
+    <Dimension name="Dr" size="2"/>
+    <Dimension name="D1" size="1"/>
+    <Dimension name="D2" size="2"/>
+    <Dimension name="D3" size="3"/>
+    <Dimension name="D4" size="4"/>
+    <String name="c">
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b">
+        <Attribute name="c" type="String">
+            <Value></Value>
+        </Attribute>
+    </Byte>
+    <Int16 name="s">
+        <Attribute name="b" type="Byte">
+            <Value>128</Value>
+        </Attribute>
+        <Attribute name="s" type="Int16">
+            <Value>-32768</Value>
+            <Value>32767</Value>
+        </Attribute>
+    </Int16>
+    <Int32 name="i">
+        <Attribute name="i" type="Int32">
+            <Value>-2147483648</Value>
+            <Value>2147483647</Value>
+            <Value>-2147483648</Value>
+        </Attribute>
+        <Attribute name="f" type="Float32">
+            <Value>-3.40282347e+38</Value>
+            <Value>3.40282347e+38</Value>
+            <Value>-3.40282347e+38</Value>
+            <Value>3.40282347e+38</Value>
+        </Attribute>
+        <Attribute name="d" type="Float64">
+            <Value>-1.797693134862316e+308</Value>
+            <Value>1.797693134862316e+308</Value>
+            <Value>-1.000000000000000</Value>
+            <Value>1.000000000000000</Value>
+            <Value>660.0000000000000</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="f"/>
+    <Float64 name="d">
+        <Attribute name="c" type="String">
+            <Value>\200\177AZ$&amp;</Value>
+        </Attribute>
+    </Float64>
+    <String name="cr">
+        <Attribute name="string_length" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </String>
+    <String name="c1">
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <String name="c2">
+        <Attribute name="string_length" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </String>
+    <String name="c3">
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <String name="c4">
+        <Attribute name="string_length" type="Int32">
+            <Value>4</Value>
+        </Attribute>
+    </String>
+    <Byte name="br">
+        <Dim name="/Dr"/>
+    </Byte>
+    <Int16 name="sr">
+        <Dim name="/Dr"/>
+    </Int16>
+    <Int32 name="ir">
+        <Dim name="/Dr"/>
+    </Int32>
+    <Float32 name="fr">
+        <Dim name="/Dr"/>
+    </Float32>
+    <Float64 name="dr">
+        <Dim name="/Dr"/>
+    </Float64>
+    <Byte name="b1">
+        <Dim name="/D1"/>
+    </Byte>
+    <Int16 name="s1">
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i1">
+        <Dim name="/D1"/>
+    </Int32>
+    <Float32 name="f1">
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d1">
+        <Dim name="/D1"/>
+    </Float64>
+    <Byte name="b2">
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s2">
+        <Dim name="/D2"/>
+    </Int16>
+    <Int32 name="i2">
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f2">
+        <Dim name="/D2"/>
+    </Float32>
+    <Float64 name="d2">
+        <Dim name="/D2"/>
+    </Float64>
+    <Byte name="b3">
+        <Dim name="/D3"/>
+    </Byte>
+    <Int16 name="s3">
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i3">
+        <Dim name="/D3"/>
+    </Int32>
+    <Float32 name="f3">
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d3">
+        <Dim name="/D3"/>
+    </Float64>
+    <Byte name="b4">
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s4">
+        <Dim name="/D4"/>
+    </Int16>
+    <Int32 name="i4">
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f4">
+        <Dim name="/D4"/>
+    </Float32>
+    <Float64 name="d4">
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="cr1">
+        <Dim name="/Dr"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="br2">
+        <Dim name="/Dr"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="sr3">
+        <Dim name="/Dr"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="ir4">
+        <Dim name="/Dr"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f11">
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d12">
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c13">
+        <Dim name="/D1"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b14">
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s21">
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i22">
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f23">
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d24">
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c31">
+        <Dim name="/D3"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b32">
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s33">
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i34">
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f41">
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d42">
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c43">
+        <Dim name="/D4"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b44">
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="sr11">
+        <Dim name="/Dr"/>
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="ir12">
+        <Dim name="/Dr"/>
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="fr13">
+        <Dim name="/Dr"/>
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="dr14">
+        <Dim name="/Dr"/>
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="cr21">
+        <Dim name="/Dr"/>
+        <Dim name="/D2"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="br22">
+        <Dim name="/Dr"/>
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="sr23">
+        <Dim name="/Dr"/>
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="ir24">
+        <Dim name="/Dr"/>
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="fr31">
+        <Dim name="/Dr"/>
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="dr32">
+        <Dim name="/Dr"/>
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="cr33">
+        <Dim name="/Dr"/>
+        <Dim name="/D3"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="br34">
+        <Dim name="/Dr"/>
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="sr41">
+        <Dim name="/Dr"/>
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="ir42">
+        <Dim name="/Dr"/>
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="fr43">
+        <Dim name="/Dr"/>
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="dr44">
+        <Dim name="/Dr"/>
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c111">
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b112">
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s113">
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i114">
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f121">
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d122">
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c123">
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b124">
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s131">
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i132">
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f133">
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d134">
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c141">
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b142">
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s143">
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i144">
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f211">
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d212">
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c213">
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b214">
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s221">
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i222">
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f223">
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d224">
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c231">
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b232">
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s233">
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i234">
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f241">
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d242">
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c243">
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b244">
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s311">
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i312">
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f313">
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d314">
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c321">
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b322">
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s323">
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i324">
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f331">
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d332">
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c333">
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b334">
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s341">
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i342">
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f343">
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d344">
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c411">
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b412">
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s413">
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i414">
+        <Dim name="/D4"/>
+        <Dim name="/D1"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Float32 name="f421">
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+        <Dim name="/D1"/>
+    </Float32>
+    <Float64 name="d422">
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+        <Dim name="/D2"/>
+    </Float64>
+    <String name="c423">
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
+    <Byte name="b424">
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+        <Dim name="/D4"/>
+    </Byte>
+    <Int16 name="s431">
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+        <Dim name="/D1"/>
+    </Int16>
+    <Int32 name="i432">
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+        <Dim name="/D2"/>
+    </Int32>
+    <Float32 name="f433">
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+        <Dim name="/D3"/>
+    </Float32>
+    <Float64 name="d434">
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+        <Dim name="/D4"/>
+    </Float64>
+    <String name="c441">
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
+    <Byte name="b442">
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+        <Dim name="/D2"/>
+    </Byte>
+    <Int16 name="s443">
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+        <Dim name="/D3"/>
+    </Int16>
+    <Int32 name="i444">
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+        <Dim name="/D4"/>
+    </Int32>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Gc" type="String">
+            <Value>\200</Value>
+        </Attribute>
+        <Attribute name="Gb" type="Byte">
+            <Value>128</Value>
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="Gs" type="Int16">
+            <Value>-32768</Value>
+            <Value>32767</Value>
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="Gi" type="Int32">
+            <Value>-2147483648</Value>
+            <Value>2147483647</Value>
+            <Value>-2147483648</Value>
+            <Value>2147483647</Value>
+        </Attribute>
+        <Attribute name="Gf" type="Float32">
+            <Value>-3.40282347e+38</Value>
+            <Value>3.40282347e+38</Value>
+            <Value>-3.40282347e+38</Value>
+            <Value>3.40282347e+38</Value>
+            <Value>531.000000</Value>
+        </Attribute>
+        <Attribute name="Gd" type="Float64">
+            <Value>-1.797693134862316e+308</Value>
+            <Value>1.797693134862316e+308</Value>
+            <Value>-1.000000000000000</Value>
+            <Value>1.000000000000000</Value>
+            <Value>660.0000000000000</Value>
+            <Value>650.0000000000000</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>Dr</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="20060328.185927.chp.bsh.fts">
+    <Structure name="HDU_1">
+        <Structure name="key_1">
+            <String name="name"/>
+            <String name="value"/>
+            <String name="comment"/>
+        </Structure>
+        <Attribute name="SIMPLE" type="String">
+            <Value>&quot;T / file does conform to FITS standard&quot;</Value>
+        </Attribute>
+        <Attribute name="BITPIX" type="String">
+            <Value>&quot;16 / number of bits per data pixel&quot;</Value>
+        </Attribute>
+        <Attribute name="NAXIS" type="String">
+            <Value>&quot;2 / number of data axes&quot;</Value>
+        </Attribute>
+        <Attribute name="NAXIS1" type="String">
+            <Value>&quot;1024 / length of data axis 1&quot;</Value>
+        </Attribute>
+        <Attribute name="NAXIS2" type="String">
+            <Value>&quot;1024 / length of data axis 2&quot;</Value>
+        </Attribute>
+        <Attribute name="EXTEND" type="String">
+            <Value>&quot;T / FITS dataset may contain extensions&quot;</Value>
+        </Attribute>
+        <Attribute name="COMMENT" type="String">
+            <Value>&quot; /   FITS (Flexible Image Transport System) format is defined in 'Astronomy&quot;</Value>
+            <Value>&quot; /   and Astrophysics', volume 376, page 359; bibcode: 2001A&amp;A...376..359H&quot;</Value>
+            <Value>&quot; / &quot;</Value>
+            <Value>&quot; /   THE MAUNA LOA SOLAR OBSERVATORY (MLSO) IS LOCATED ON THE ISLAND OF&quot;</Value>
+            <Value>&quot; /   HAWAII, AND IS OPERATED BY THE HIGH ALTITUDE OBSERVATORY (HAO),&quot;</Value>
+            <Value>&quot; /   A DIVISION OF THE NATIONAL CENTER FOR ATMOSPHERIC RESEARCH (NCAR),&quot;</Value>
+            <Value>&quot; /   UNDER SPONSORSHIP OF THE NATIONAL SCIENCE FOUNDATION (NSF).&quot;</Value>
+            <Value>&quot; /   THE ADVANCED CORONAL OBSERVING SYSTEM (ACOS) CONSISTS OF 3 SOLAR&quot;</Value>
+            <Value>&quot; /   INSTRUMENTS (ALL LOCATED AT MLSO):&quot;</Value>
+            <Value>&quot; /      DIGITAL PROMINENCE MONITOR (DPM), LOW K-CORONA POLARIMETER (LOWK),&quot;</Value>
+            <Value>&quot; /      &amp; CHROMOSPHERIC HELIUM-1 IMAGING PHOTOMETER (CHIP).&quot;</Value>
+            <Value>&quot; /   IMAGE ORIGIN IS THE LOWER LEFT CORNER; X: LEFT-&gt;RIGHT, Y: BOTTOM-&gt;TOP.&quot;</Value>
+        </Attribute>
+        <Attribute name="DATE-OBS" type="String">
+            <Value>&quot;'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006&quot;</Value>
+        </Attribute>
+        <Attribute name="TIME-OBS" type="String">
+            <Value>&quot;'18:59:27' / OBSERVATION TIME: HH:MM:SS [UTC]&quot;</Value>
+        </Attribute>
+        <Attribute name="TIMESYS" type="String">
+            <Value>&quot;'UTC     ' / COORDINATED UNIVERSAL TIME&quot;</Value>
+        </Attribute>
+        <Attribute name="ORIGIN" type="String">
+            <Value>&quot;'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY&quot;</Value>
+        </Attribute>
+        <Attribute name="TELESCOP" type="String">
+            <Value>&quot;'CHIP    ' / CHROMOSPHERIC HELIUM-1 IMAGING PHOTOMETER&quot;</Value>
+        </Attribute>
+        <Attribute name="INSTRUME" type="String">
+            <Value>&quot;'CCD     ' / KODAK MEGAPLUS 1.6 CCD&quot;</Value>
+        </Attribute>
+        <Attribute name="CODE-OBS" type="String">
+            <Value>&quot;'BSH     ' / TYPE OF OBSERVATION [CHARACTER CODE]&quot;</Value>
+        </Attribute>
+        <Attribute name="TYPE-OBS" type="String">
+            <Value>&quot;'NEAR BLUE' / TYPE OF OBSERVATION [DESCRIPTION]&quot;</Value>
+        </Attribute>
+        <Attribute name="OBJECT" type="String">
+            <Value>&quot;'SUN     ' / SOURCE OBJECT&quot;</Value>
+        </Attribute>
+        <Attribute name="TYPE-DP" type="String">
+            <Value>&quot;'CAL+HELIOCEN' / DATA PROCESSING TYPE&quot;</Value>
+        </Attribute>
+        <Attribute name="WAVELEN" type="String">
+            <Value>&quot;1082.96 / CENTRAL WAVE LENGTH OF OBSERVATION [NM]&quot;</Value>
+        </Attribute>
+        <Attribute name="WAVEWID" type="String">
+            <Value>&quot;0.14 / BANDPASS OF FILTER [NM]&quot;</Value>
+        </Attribute>
+        <Attribute name="CTYPE1" type="String">
+            <Value>&quot;'X       ' / AXIS 1 TYPE: X [EAST-&gt;WEST ] HELIOCENTRIC&quot;</Value>
+        </Attribute>
+        <Attribute name="CRPIX1" type="String">
+            <Value>&quot;5.125000000000000E+02 / X [EAST-&gt;WEST ] SUN CENTER [INDEX:PIXELS]&quot;</Value>
+        </Attribute>
+        <Attribute name="CRVAL1" type="String">
+            <Value>&quot;0.00 / X [EAST-&gt;WEST ] SUN CENTER [ARCSEC]&quot;</Value>
+        </Attribute>
+        <Attribute name="CDELT1" type="String">
+            <Value>&quot;2.2900 / X [EAST-&gt;WEST ] COORD INCREMENT [ARCSEC/PIXEL]&quot;</Value>
+        </Attribute>
+        <Attribute name="CROTA1" type="String">
+            <Value>&quot;0.00 / X [EAST-&gt;WEST ] ROTATION [DEG.] FROM REFERENCE&quot;</Value>
+        </Attribute>
+        <Attribute name="CTYPE2" type="String">
+            <Value>&quot;'Y       ' / AXIS 2 TYPE: Y [SOUTH-&gt;NORTH] HELIOCENTRIC&quot;</Value>
+        </Attribute>
+        <Attribute name="CRPIX2" type="String">
+            <Value>&quot;5.125000000000000E+02 / Y [SOUTH-&gt;NORTH] SUN CENTER [INDEX:PIXELS]&quot;</Value>
+        </Attribute>
+        <Attribute name="CRVAL2" type="String">
+            <Value>&quot;0.00 / Y [SOUTH-&gt;NORTH] SUN CENTER [ARCSEC]&quot;</Value>
+        </Attribute>
+        <Attribute name="CDELT2" type="String">
+            <Value>&quot;2.2900 / Y [SOUTH-&gt;NORTH] COORD INCREMENT [ARCSEC/PIXEL]&quot;</Value>
+        </Attribute>
+        <Attribute name="CROTA2" type="String">
+            <Value>&quot;0.00 / Y [SOUTH-&gt;NORTH] ROTATION [DEG.] FROM REFERENCE&quot;</Value>
+        </Attribute>
+        <Attribute name="COORDNAM" type="String">
+            <Value>&quot;'HELIOCENTRIC' / COORDINATE SYSTEM NAME&quot;</Value>
+        </Attribute>
+        <Attribute name="CRRADIUS" type="String">
+            <Value>&quot;419.85 / SOLAR RADIUS [PIXELS]&quot;</Value>
+        </Attribute>
+        <Attribute name="RSUN" type="String">
+            <Value>&quot;961.45 / SOLAR RADIUS [ARCSEC]&quot;</Value>
+        </Attribute>
+        <Attribute name="XCEN_RAW" type="String">
+            <Value>&quot;0.00 / X-AXIS CENTER [PIXELS] RAW IMAGE&quot;</Value>
+        </Attribute>
+        <Attribute name="YCEN_RAW" type="String">
+            <Value>&quot;0.00 / Y-AXIS CENTER [PIXELS] RAW IMAGE&quot;</Value>
+        </Attribute>
+        <Attribute name="FILECEN" type="String">
+            <Value>&quot;'NONE    ' / NAME OF FILE USED FOR CENTER&quot;</Value>
+        </Attribute>
+        <Attribute name="SOLAR_P0" type="String">
+            <Value>&quot;-25.98 / SOLAR P-ANGLE [DEGREES]&quot;</Value>
+        </Attribute>
+        <Attribute name="SOLAR_B0" type="String">
+            <Value>&quot;-6.71 / SOLAR B-ANGLE [DEGREES]&quot;</Value>
+        </Attribute>
+        <Attribute name="SOLAR_L0" type="String">
+            <Value>&quot;173.10 / SOLAR L-ANGLE [DEGREES]: CARR. LONGITUDE&quot;</Value>
+        </Attribute>
+        <Attribute name="CARR_ROT" type="String">
+            <Value>&quot;2041 / CARRINGTON ROTATION NUMBER&quot;</Value>
+        </Attribute>
+        <Attribute name="SOLAR_RA" type="String">
+            <Value>&quot;0.49 / SOLAR ASCENSION [HOURS: 0-24]&quot;</Value>
+        </Attribute>
+        <Attribute name="SOLARDEC" type="String">
+            <Value>&quot;3.16 / SOLAR DECLINATION [DEGREES]&quot;</Value>
+        </Attribute>
+        <Attribute name="HOUR-ANG" type="String">
+            <Value>&quot;308.03 / SOLAR HOUR ANGLE [DEG](W.R.T.ZENITH E- W+)&quot;</Value>
+        </Attribute>
+        <Attribute name="ELEV" type="String">
+            <Value>&quot;36.73 / SOLAR ELEVATION [DEGREES]&quot;</Value>
+        </Attribute>
+        <Attribute name="AZIMUTH" type="String">
+            <Value>&quot;101.07 / SOLAR AZIMUTH [DEGREES]&quot;</Value>
+        </Attribute>
+        <Attribute name="AIRMASS" type="String">
+            <Value>&quot;1.67 / AIRMASS [ATMOSPHERES]&quot;</Value>
+        </Attribute>
+        <Attribute name="H2O" type="String">
+            <Value>&quot;0.00 / WATER VAPOR&quot;</Value>
+        </Attribute>
+        <Attribute name="OFFSET" type="String">
+            <Value>&quot;0.00 / FILTER OFFSET (KM/SEC)&quot;</Value>
+        </Attribute>
+        <Attribute name="GAIN-DET" type="String">
+            <Value>&quot;1.000 / DETECTOR GAIN FACTOR&quot;</Value>
+        </Attribute>
+        <Attribute name="NIMSUM" type="String">
+            <Value>&quot;1 / NUMBER OF IMAGES SUMMED&quot;</Value>
+        </Attribute>
+        <Attribute name="EXPDUR" type="String">
+            <Value>&quot;0.009 / EXPOSURE DURATION [SECONDS]&quot;</Value>
+        </Attribute>
+        <Attribute name="BUNIT" type="String">
+            <Value>&quot;'BSUN    ' / PIXEL MAGNITUDE UNITS&quot;</Value>
+        </Attribute>
+        <Attribute name="BSCALE" type="String">
+            <Value>&quot;1.000 / PHYSICAL = DATA * BSCALE + BZERO&quot;</Value>
+        </Attribute>
+        <Attribute name="BZERO" type="String">
+            <Value>&quot;0.000 / PHOTOMETRIC SCALING OFFSET [SEE BSCALE]&quot;</Value>
+        </Attribute>
+        <Attribute name="DATAMIN" type="String">
+            <Value>&quot;-998.00 / MINIMUM DATA VALUE [CCD]&quot;</Value>
+        </Attribute>
+        <Attribute name="DATAMAX" type="String">
+            <Value>&quot;1022.00 / MAXIMUM DATA VALUE [CCD]&quot;</Value>
+        </Attribute>
+        <Attribute name="DISPMIN" type="String">
+            <Value>&quot;-1200.00 / MIN VALUE FOR DISPLAY [UNSCALED]&quot;</Value>
+        </Attribute>
+        <Attribute name="DISPMAX" type="String">
+            <Value>&quot;600.00 / MAX VALUE FOR DISPLAY [UNSCALED]&quot;</Value>
+        </Attribute>
+        <Attribute name="DISP-DIR" type="String">
+            <Value>&quot;'RU      ' / DISPLAY DIRECTION (AXIS 1 2 3): R/L  U/D  O/I&quot;</Value>
+        </Attribute>
+        <Attribute name="VERSION" type="String">
+            <Value>&quot;'ACOS V1.03' / ACOS FITS S/W VERSION&quot;</Value>
+        </Attribute>
+        <Attribute name="DATE" type="String">
+            <Value>&quot;'2006-03-29' / FITS FILE GENERATION DATE: CCYY-MM-DD&quot;</Value>
+        </Attribute>
+        <Attribute name="DATE-CAL" type="String">
+            <Value>&quot;'0000-00-00' / ACOS CALIBRATION DATE: CCYY-MM-DD&quot;</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>8b9d6a8d</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Structure {
+        String name;
+        String value;
+        String comment;
+    } key_1;
+} HDU_1 = { { "SIMPLE", "T", "file does conform to FITS standard" } };
+

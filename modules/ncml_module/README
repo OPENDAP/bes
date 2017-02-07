@@ -1,0 +1,226 @@
+
+Updated for version 1.4.0
+
+This README only gives a general overview of the module.  Much more
+detailed and up-to-date documentation for this module can be found at:
+
+http://docs.opendap.org/index.php/BES_-_Modules_-_NcML_Module
+
+The old README follows:
+
+----------------------------------------------------------------------
+
+** Welcome to the OPeNDAP NcML Module for Hyrax! **
+
+This module can be added to the currently released Hyrax 1.7
+installation to extend its data serving capability to NcML 2.2 files
+(see http://www.unidata.ucar.edu/software/netcdf/ncml/).  NcML
+provides a syntax for adding metadata and variables to existing
+datasets of any type also being locally served by a Hyrax server.
+NcML also specifies several ways of aggregating existing datasets.
+This module currently implements a subset of NcML 2.2 functionality
+and also extends it in some ways.
+
+This README only gives a general overview of the module.  Much more
+detailed and up-to-date documentation for this module can be found at:
+
+http://docs.opendap.org/index.php/BES_-_Modules_-_NcML_Module
+
+For information on how to build and install the NcML Data Module,
+please see the INSTALL file.
+
+Note that adding metadata to HDF or NetCDF datasets may involve a
+little more care due to deviations from the DAP2 spec in those
+handlers in their creation of the DAS response.  Please see the
+related sections below or the Wiki for more information.
+       
+The current version implements only a subset of NcML 2.2
+functionality, and also adds some functionality -- please see the
+sections "Functionality" and "NcML Additions" below and the Wiki for
+more details.
+
+----------------------------------------------------------------------
+* Contents
+
+  * Installation Overview
+  * Functionality
+  * NcML Additions
+  * Example NcML
+  * HDF4 DAS Compatibility Issue
+  * NetCDF DAS Compatibility Issue
+  * International Components for Unicode
+  * Copyright
+
+----------------------------------------------------------------------
+* Installation Overview
+
+The NcML Module requires a working Hyrax 1.6 installation.  It is a
+module that is dynamically loaded into the Hyrax BES (Back End Server)
+to allow it to handle NcML files.
+
+Please see the file INSTALL for full build and install instructions as
+well as requirements.  NOTE: After installation, you MUST restart
+Hyrax by restarting the BES and OLFS so the NcML Module is loaded.
+
+Example test data is installed to see if the installation was
+successful (fnoc1_improved.ncml), but it requires the NetCDF Module to
+be installed since it adds metadata to a netCDF dataset (fnoc1.nc).
+When testing this, if you see a "Unable to add container, type of data
+must be specified" error, the BES probably has not been configured to
+use netCDF data.  Make sure you have installed the handler properly
+and that the BES can load netcdf data.  We also provide other example
+files, some of which use the HDF4 and HDF5 Modules.
+
+----------------------------------------------------------------------
+* Functionality
+
+This version of the NcML Module implements a subset of NcML
+functionality.  This section gives a broad overview of functionality.
+For more detailed and complete information, please see the online
+documentation at:
+
+http://docs.opendap.org/index.php/BES_-_Modules_-_NcML_Module
+
+This version of the NcML module can:
+
+     * Add metadata (attributes) to files being served locally (not
+       remotely).
+     
+     * Add, modify, and remove metadata of both NcML types and also
+       all DAP2 types.
+
+     * Remove and rename existing variables in a wrapped dataset.
+
+     * Add new variables and data: scalars of basic type, Structures,
+       and arrays (N-dimensional) of basic NcML or DAP2 types.
+
+     * Create a purely virtual dataset (no wrapped dataset).
+
+     * Specify <dimension> elements for named lookup of variable@shape
+
+     * Allows specification of attributes with special DAP type =
+       "OtherXML" which allow arbitrary XML metadata to appear in a
+       DDX response.
+
+     * Allows the creation of two NcML aggregations: "union" and
+       "joinNew".
+
+     * Aggregations may be specified with an explicit list of <netcdf>
+       elements or a <scan> element may be used
+
+
+** Future Plans
+
+We plan to add more features and NcML functionality:
+
+   *** More NcML Aggregations: joinExisting and FMRC (Forecast Model Run
+       Collection).
+
+   *** We plan to allow the netcdf@location to refer to remote data as
+       well as local.  This would be an install and/or compile time
+       option so that it may be turned off for security reasons.
+
+----------------------------------------------------------------------
+* NcML Additions
+
+This module also adds functionality beyond the current NcML 2.2 schema
+--- it can handle nested <attribute> elements in order to make
+attribute structures.  This is done by using the <attribute
+type="Structure"> form:
+
+<attribute name="MySamples" type="Structure">
+  <attribute name="Location" type="string" value="Station 1"/>
+  <attribute name="Samples" type="int">1 4 6</attribute>
+</attribute>
+
+"MyContainer" is now an attribute structure with two attribute fields,
+a string and an array of int's.  Note that an attribute structure can
+only contain other <attribute> elements and NOT a value.
+
+Additionally, DAP2 atomic types (such as UInt32, URL) can also be used
+in addition to the NcML types.  The NcML types are mapped onto the
+closest DAP2 type internally.  
+
+The special "OtherXML" attribute type can be used for specifying an
+arbitrary subtree of XML as metadata --- this will be injected into
+the DDX response at the scope it is defined.  All parent namespaces
+will be pulled into the subtree (See the Wiki for more information).
+
+----------------------------------------------------------------------
+* Example NcML
+
+Numerous example NcML files (both valid and error cases) used by the
+testsuite can be found in the "data" directory of a src distribution.
+
+----------------------------------------------------------------------
+* HDF4 DAS Compatibility Issue
+
+There is a bug in the Hyrax HDF4 Module such that the DAS produced
+does not conform to the DAP2 RFC.  If an NcML file is used to "wrap"
+an HDF4 dataset, the correct DAP2 DAS response will be generated.
+
+This is important for those writing NcML for HDF4 data since the
+lexical scope for attributes relies on the correct DAS form --- to
+handle this, the user should start with a "passthrough" NcML file and
+use the DAS from that as the starting point for knowing the structure
+the NcML handler expects to see in the NcML file.
+
+----------------------------------------------------------------------
+* NetCDF DAS Compatibility Issue
+
+Similarly to HDF4, there is a problem with the DAS created by the
+NetCDF Module in the case of Grid (at least).  A NetCDF dataset with
+shared dimensions will generate a DAP 2 Grid for the data with map
+vectors for these dimensions.  Attributes (metadata) specified on
+these map vectors are placed into the dataset attribute container
+instead of within the Grid attribute container, however, which is a
+deviation from the DAP 2 specification.  The NcML handler uses the
+(correctly created) DDX to generate the DAS, so the output of an NcML
+dataset with a Grid in it will have the map vector attributes within
+the Grid container.  This is DIFFERENT from the original DAS response
+for the dataset, however.
+
+To specify or change attributes on map vectors, the
+NcML author needs to use the DDX lexical scoping to specify the
+location of the map vector attributes.  The easiest way to do this is
+to start from a "passthrough" NcML file with just the wrapped dataset
+and ask for the DAS response.  This will show the attribute hierarchy
+that the NcML Module is expecting.
+
+----------------------------------------------------------------------
+* International Components for Unicode (ICU)
+
+We use the International Components for Unicode library for some
+processing in the module.  Distributions can be found at:
+
+http://site.icu-project.org/
+
+----------------------------------------------------------------------
+* Copyright
+
+This software is copyrighted under the GNU Lesser GPL.  
+
+Please also see the files COPYING and COPYRIGHT that came with this
+distribution for more information.
+
+----------------------------------------------------------------------
+* Author: Michael Johnson <m.johnson@opendap.org>
+
+Please send bug reports and build problems to <support@opendap.org>!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

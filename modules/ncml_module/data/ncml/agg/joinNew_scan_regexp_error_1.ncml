@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Error test of joinNew Grid aggregation using the scan element with a bad regexp">
+  
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <!-- Bad case, mismatched [ ] -->
+    <scan 
+       location="data/" 
+       subdirs="true" 
+       regExp="^.*/grids/f[0-9+\.hdf$"
+       />
+  </aggregation> 
+  
+</netcdf>

@@ -9,7 +9,7 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      <!-- ...only added decimal values to half the numbers. jhtg 7/6/13 -->
+      <!-- ...only added decimal values to half the numbers. jhrg 7/6/13 -->
         <bes:constraint>bind_shape("[8][8]",$UInt16(64:1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8))</bes:constraint>
     </bes:container>
   </bes:define>

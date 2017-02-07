@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test that we can successfully parse OtherXML that contains </Attribute> from different namespace... -->
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+
+  <attribute name="TestOtherXML" type="OtherXML">
+    <Root xmlns="http://www.some_place_that_uses_attribute.com">
+      <SomeElement>
+	<variable> <!-- This should get passed through as well and not NCML parsed!! -->
+	  <attribute name="I_Am_In_A_New_Namespace_Not_NCML">
+	    We better not think the parse of OtherXML is done here since we're not back to 0 depth!
+	  </attribute> <!-- Better not think we're done here! -->
+	</variable>
+      </SomeElement>
+    </Root>
+  </attribute> <!-- But here we are officially at depth 0 and done -->
+  
+</netcdf>

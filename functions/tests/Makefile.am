@@ -33,10 +33,10 @@ bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-build_responses.conf: build_responses.conf.in $(top_srcdir)/configure.ac
+data/build_responses.conf: data/build_responses.conf.in $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > build_responses.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
 # This is a more general tool for managing cache contents for tests.
 # This code only needs to clean out the cache.
@@ -53,10 +53,19 @@ TESTSUITEFLAGS =
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4
 
+# Note 
 check-local: atconfig atlocal $(TESTSUITE)
 	@echo "Run tests with an empty cache"
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	-rm -rf dap_cache/*
+	test `ls -1 dap_cache/ | wc -l` -eq 0
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	-test `ls -1 dap_cache/ | wc -l` -eq 44
+	@echo "These tests will mysteriously fail if function caching is turned off"
+	@echo "Run tests with a full cache"
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	-test `ls -1 dap_cache/ | wc -l` -eq 44
+	
+#	-rm -rf dap_cache/*
 	
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

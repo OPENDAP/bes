@@ -1,0 +1,12 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+m4_include([handler_tests_macros.m4])
+
+AT_BESCMD_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.0.bescmd], [tif], [pass])
+AT_BESCMD_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.1.bescmd], [tif], [pass])
+
+# No baselines for the error tests.
+AT_BESCMD_ERROR_RESPONSE_TEST([gdal/coads_climatology.nc.1.err.bescmd], [pass])
+
+# Function result unwrap test
+AT_BESCMD_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_tif.bescmd], [tif], [pass])

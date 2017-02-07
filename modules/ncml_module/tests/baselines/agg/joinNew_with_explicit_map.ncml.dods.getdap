@@ -1,0 +1,4 @@
+The data:
+Int32 V[day = 2][sensors = 3] = {{1, 2, 3},{4, 5, 6}};
+Int32 day[day = 2] = {1, 30};
+

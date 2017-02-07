@@ -1,0 +1,4 @@
+Dataset {
+    Int32 Grues[lat = 5];
+    Int32 Zorks[station = 3][lat = 5];
+} union_with_dimensions.ncml;

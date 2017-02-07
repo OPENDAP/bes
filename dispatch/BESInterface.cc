@@ -56,7 +56,11 @@
 
 #include "BESExceptionManager.h"
 
+#include "BESTransmitterNames.h"
 #include "BESDataNames.h"
+#include "BESTransmitterNames.h"
+#include "BESReturnManager.h"
+#include "BESSyntaxUserError.h"
 
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -83,14 +87,26 @@ static bool timeout_jump_valid = false;
 
 // timeout period in seconds; 0 --> no timeout. This is a static value so
 // that it can be accessed by the signal handler. jhrg 1/4/16
-static volatile int timeout = 0;
+// I've made this globally visible so that other code that might want to
+// alter the time out value can do so and this variable can be kept consistent.
+// See BESStreamResponseHandler::execute() for an example. jhrg 1/24/17
+volatile int bes_timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
+// This function uses the static variables timeout_jump_valid and timeout_jump
+// The code looks at the value of BES.TimeOutInSeconds and/or the timeout
+// context sent in the current request and, if that is greater than zero,
+// uses that as the maximum amount of time for the request. The system alarm
+// is set and this function is registered as the handler. If timeout_jump_valid
+// is true, then it will use longjmp() (yes, really...) to end the request. Look
+// below in execute_request() for the call to setjump() to see how this works.
+// See the SIGWAIT code that's commented out below for an alternative impl.
+// jhrg 5/31/16
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        LOG("Child listener timeout after " << timeout << " seconds, exiting." << endl);
+        LOG("Child listener timeout after " << bes_timeout << " seconds, exiting." << endl);
 
         // Causes setjmp() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
@@ -209,7 +225,7 @@ BESInterface::BESInterface(ostream *output_stream) :
     // Grab the BES Key for the timeout. Note that the Hyrax server generally
     // overrides this value using a 'context' that is set/sent by the OLFS.
     // Also note that a value of zero means no timeout, but that the context
-    // with override that too. jhrg 1/4/16
+    // can override that too. jhrg 1/4/16
     bool found;
     string timeout_key_value;
     TheBESKeys::TheKeys()->get_value(BES_TIMEOUT_KEY, timeout_key_value, found);
@@ -273,7 +289,7 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 
 int BESInterface::execute_request(const string &from)
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     if (!_dhi) {
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
@@ -339,7 +355,7 @@ int BESInterface::execute_request(const string &from)
         }
         else {
             ostringstream oss;
-            oss << "BES listener timeout after " << timeout << " seconds." << ends;
+            oss << "BES listener timeout after " << bes_timeout << " seconds." << ends;
             throw BESTimeoutError(oss.str(), __FILE__, __LINE__);
         }
 
@@ -379,7 +395,7 @@ int BESInterface::execute_request(const string &from)
 // call is redundant. This means that so is the param 'status'. jhrg 12/23/15
 int BESInterface::finish(int /*status*/)
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << " ***" << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << " ***" << endl);
 
 #if 0
     int status = 0;
@@ -478,6 +494,25 @@ void BESInterface::add_init_callback(p_bes_init init)
  */
 void BESInterface::initialize()
 {
+    // dhi has not been filled in at this point, so let's set a default
+    // transmitter given the protocol. The transmitter might change after
+    // parsing a request and given a return manager to use. This is done in
+    // build_data_plan.
+    //
+    // The reason I moved this from the build_data_plan method is because a
+    // registered initialization routine might throw an exception and we
+    // will need to transmit the exception info, which needs a transmitter.
+    // If an exception happens before this then the exception info is just
+    // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
+    BESDEBUG("bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl);
+
+    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
+    if (!_transmitter) {
+        string s = (string) "Unable to find transmitter " + BASIC_TRANSMITTER;
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    BESDEBUG("bes", "OK" << endl);
+
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::initialize", _dhi->data[REQUEST_ID]);
 
@@ -499,6 +534,32 @@ void BESInterface::initialize()
         BESDEBUG("bes", "OK" << endl);
     }
 }
+
+void BESInterface::build_data_request_plan()
+{
+    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+
+    // The derived class build_data_request_plan should be run first to
+    // parse the incoming request. Once parsed we can determine if there is
+    // a return command
+
+    // The default _transmitter (either basic or http depending on the
+    // protocol passed) has been set in initialize. If the parsed command
+    // sets a RETURN_CMD (a different transmitter) then look it up here. If
+    // it's set but not found then this is an error. If it's not set then
+    // just use the defaults.
+    if (_dhi->data[RETURN_CMD] != "") {
+        BESDEBUG("bes", "Finding transmitter: " << _dhi->data[RETURN_CMD] << " ...  " << endl);
+
+        _transmitter = BESReturnManager::TheManager()->find_transmitter(_dhi->data[RETURN_CMD]);
+        if (!_transmitter) {
+            string s = (string) "Unable to find transmitter " + _dhi->data[RETURN_CMD];
+            throw BESSyntaxUserError(s, __FILE__, __LINE__);
+        }
+        BESDEBUG("bes", "OK" << endl);
+    }
+}
+
 
 /** @brief Validate the incoming request information
  */
@@ -524,6 +585,11 @@ void BESInterface::validate_data_request()
  */
 void BESInterface::execute_data_request_plan()
 {
+    if (BESLog::TheLog()->is_verbose()) {
+        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] executing" << endl;
+    }
+
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG))
         sw.start("BESInterface::execute_data_request_plan(\"" + _dhi->data[DATA_REQUEST] + "\")",
@@ -534,14 +600,14 @@ void BESInterface::execute_data_request_plan()
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
-        timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE("Set request timeout to " << timeout << " seconds (from context)." << endl);
-        alarm(timeout);
+        bes_timeout = strtol(context.c_str(), NULL, 10);
+        VERBOSE("Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+        alarm(bes_timeout);
     }
     else if (_timeout_from_keys != 0) {
-        timeout = _timeout_from_keys;
-        VERBOSE("Set request timeout to " << timeout << " seconds (from keys)." << endl);
-        alarm(timeout);
+        bes_timeout = _timeout_from_keys;
+        VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
+        alarm(bes_timeout);
     }
 
 
@@ -564,8 +630,8 @@ void BESInterface::execute_data_request_plan()
     transmit_data();
 
     // Only clear the timeout if it has been set.
-    if (timeout != 0) {
-        timeout = 0;
+    if (bes_timeout != 0) {
+        bes_timeout = 0;
         alarm(0);
     }
 }
@@ -574,6 +640,28 @@ void BESInterface::execute_data_request_plan()
  */
 void BESInterface::invoke_aggregation()
 {
+    if (_dhi->data[AGG_CMD] == "") {
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "]" << " not aggregating, command empty" << endl;
+        }
+    }
+    else {
+        BESAggregationServer *agg = BESAggFactory::TheFactory()->find_handler(_dhi->data[AGG_HANDLER]);
+        if (!agg) {
+            if (BESLog::TheLog()->is_verbose()) {
+                *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                    << _dhi->data[DATA_REQUEST] << "]" << " not aggregating, no handler" << endl;
+            }
+        }
+        else {
+            if (BESLog::TheLog()->is_verbose()) {
+                *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                    << _dhi->data[DATA_REQUEST] << "] aggregating" << endl;
+            }
+        }
+    }
+
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::invoke_aggregation", _dhi->data[REQUEST_ID]);
 
@@ -607,43 +695,30 @@ void BESInterface::invoke_aggregation()
  */
 void BESInterface::transmit_data()
 {
+    if (BESLog::TheLog()->is_verbose()) {
+        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] transmitting" << endl;
+    }
+
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", _dhi->data[REQUEST_ID]);
 
     BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting request: " << _dhi->data[DATA_REQUEST] << endl);
-#if 0
-    if (_transmitter) {
-#endif
-        if (_dhi->error_info) {
-            ostringstream strm;
-            _dhi->error_info->print(strm);
-            (*BESLog::TheLog()) << strm.str() << endl;
-            BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
 
-            _dhi->error_info->transmit(_transmitter, *_dhi);
-        }
-        else if (_dhi->response_handler) {
-            BESDEBUG("bes", "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+    if (_dhi->error_info) {
+        ostringstream strm;
+        _dhi->error_info->print(strm);
+        (*BESLog::TheLog()) << strm.str() << endl;
+        BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
 
-            _dhi->response_handler->transmit(_transmitter, *_dhi);
-        }
-#if 0
-   }
-    else {
-
-        if (_dhi->error_info) {
-            BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting error info using cout ... " << endl);
-            _dhi->error_info->print(cout);
-            delete _dhi->error_info;
-            _dhi->error_info = 0;
-        }
-        else {
-            BESDEBUG("bes", "BESInterface::transmit_data() - Unable to transmit the response ... FAILED " << endl);
-            //string err = ;
-            throw BESInternalError("Unable to transmit the response, no transmitter", __FILE__, __LINE__);
-        }
+        _dhi->error_info->transmit(_transmitter, *_dhi);
     }
-#endif
+    else if (_dhi->response_handler) {
+        BESDEBUG("bes",
+            "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+
+        _dhi->response_handler->transmit(_transmitter, *_dhi);
+    }
 
     BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl);
 }
@@ -652,6 +727,12 @@ void BESInterface::transmit_data()
  */
 void BESInterface::log_status()
 {
+    string result = "completed";
+    if (_dhi->error_info) result = "failed";
+    if (BESLog::TheLog()->is_verbose()) {
+        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] " << result << endl;
+    }
 }
 
 /** @brief Report the request and status of the request to
@@ -710,6 +791,10 @@ void BESInterface::end_request()
 void BESInterface::clean()
 {
     if (_dhi) _dhi->clean();
+    if (BESLog::TheLog()->is_verbose()) {
+        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+    }
 }
 
 /** @brief Manage any exceptions thrown during the whole process

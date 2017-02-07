@@ -1,0 +1,60 @@
+dnl Test suite for miscellaneous parse errors
+AT_BANNER([Misc Parse Error Tests])
+
+dnl Check for misspelled attributes are a parse error.  
+dnl For now I will also compare against a DDX baseline
+dnl to ensure that all misspellings are checked by hand and caught.
+
+dnl <aggregation>
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_agg_bad_attr.ncml])
+
+dnl <attribute>
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_attribute_attrs.ncml])
+
+dnl <dimension>
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_dimension_attrs.ncml])
+
+dnl <explicit> should have none
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_explicit_attrs.ncml])
+
+dnl <readMetadata> should have none
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_readMetadata_attrs.ncml])
+
+dnl <remove> 
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_remove_attrs.ncml])
+
+dnl <values> 
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_values_attrs.ncml])
+
+dnl <variable>
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_variable_attrs.ncml])
+
+dnl Reject attributes not in scheme
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_netcdf_attrs.ncml])
+
+dnl Parse error on valid but currently unsupported attributes.
+dnl NOTE: these tests will be removed if/when we implement these
+dnl features, but for now we want to reject them!
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_netcdf_invalid_1.ncml])
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_netcdf_invalid_2.ncml])
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_netcdf_invalid_3.ncml])
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_netcdf_invalid_4.ncml])
+
+dnl Tests for variableAgg
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_variableAgg_attrs.ncml])
+
+dnl Check for empty name
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_variableAgg_1.ncml])
+
+dnl Check for not child of aggregation
+AT_ASSERT_PARSE_ERROR([invalid_attrs/error_variableAgg_2.ncml])
+
+
+
+
+
+
+
+
+
+

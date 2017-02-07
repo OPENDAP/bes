@@ -1,0 +1,105 @@
+
+Updated for version 1.1.2
+
+Code and production rule changes to support OS-X 10.9 compatibility
+
+Updated for version 1.1.1
+
+In this version of the handler, we added an optional parameter that
+can be used to suppres use of a proxy server for certain hosts. This can
+be used to address problems with using caching proxy servers and the
+gateway when it is used to access a web service running on the localhost.
+To use this feature, add, for example:
+
+   Gateway.NoProxy=http://localhost
+
+Updated for version 1.0.0
+
+This is the OPeNDAP gateway module. It is used along with OPeNDAP Hyrax.
+
+For information about building the OPeNDAP gateway module, see the
+INSTALL file.
+
+This module is a component of the OPeNDAP DAP Server; the server base
+software is designed to allow any number of handlers to be configured easily.
+See the DAP Server README and INSTALL files for information about
+configuration, including how to use this handler.
+
+Test data are also installed, so after installing this handler, Hyrax 
+will have data to serve providing an easy way to test your new installation
+and to see how a working csv.conf should look. To use this, make sure
+that you first install the bes, and that dap-server gets installed too.
+Finally, every time you install or reinstall handlers, make sure to restart
+the BES and OLFS.
+
+See also the online documentation for this handler at
+http://docs.opendap.org/index.php/BES_-_Modules_-_Gateway_Module
+
+Special options supported by the handler: 
+* Gateway.Whitelist - provides a list of URL of the form
+    protocol://host.domain:port
+that are allowed to be passed through the gateway module. If none
+specified, then an error will be thrown during BES initialization. One
+URL per line, as in the example below.
+
+example:
+  Gateway.Whitelist=http://test.opendap.org/opendap
+  Gateway.Whitelist+=http://opendap.rpi.edu/opendap
+
+* Gateway.MimeTypes - provides a list of mappings from data handler
+module to returned mime types. These are the default types. Please do
+not erase. One per line, as in these default values.
+
+Gateway.MimeTypes=nc:application/x-netcdf
+Gateway.MimeTypes+=h4:application/x-hdf
+Gateway.MimeTypes+=h5:application/x-hdf5
+
+* Gateway.ProxyHost and Gateway.ProxyPort - provides a way to define a
+proxy server that must be used to make the remote request, and the
+port to use.
+
+Gateway.ProxyProtocol= 
+Gateway.ProxyHost=
+Gateway.ProxyPort=
+
+* Using Squid. Squid makes a great cache for the gateway. In our
+  testing we have  used Squid only for services running on port 80.
+  
+* Squid, in its default configuration, typically does not cache dynamic
+  content when the responses lack cache-control headers (e.g., Expires:).
+  To work-around this, look for the 'refresh_pattern' lines in the default
+  squid configuration file and change
+  
+      refresh_pattern -i (/cgi-bin/|\?) 0  0% 0
+
+  to
+     
+      refresh_pattern -i (/cgi-bin/|\?) 1440  20% 10080
+      
+  Of course this assumes that the service you're referencing uses 'cgi-bin'
+  or '?' in the URL; edit the pattern to match your case if need be.
+
+* Using Squid on OS/X. If you're using OS/X to run Hyrax, the easiest
+  Squid port is SquidMan (http://web.me.com/adg/squidman/index.html).
+  We tested version SquidMan 3.0 (Squid 3.1.1). Run the SquidMan
+  application and under Preferences... General set the port to
+  something like 3218, the cache size to something big (16GB) and
+  Maximum object size to 256M. Click 'Save' and you're almost done. 
+
+  Now in the gateway.conf file, set the proxy parameters like so:
+
+      Gateway.ProxyProtocol=http
+      Gateway.ProxyHost=localhost
+      Gateway.ProxyPort=3218
+
+  assuming you're running both Squid and Hyrax on the same host.
+
+  Restart the BES and you're all set. 
+
+  Make some requests using the gateway
+  (http://localhost/opendap/gateway) and click on SquidMan's 'Access
+  Log' button to see the caching at work. The first access, which
+  fetches the data, will say 'DIRECT/<ip number>' while cache hits
+  will be labeled 'NONE/-'.
+
+

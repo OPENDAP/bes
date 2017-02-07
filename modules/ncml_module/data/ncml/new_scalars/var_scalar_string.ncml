@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Create a new simple scalar variable at Dataset scope -->
+  <variable name="MyNewString" type="string">
+    <!-- make sure we can add metadata properly to new variable -->
+    <attribute name="IAmNotAnAttributeIAmAFreeString" type="String" value="Bling!"/>
+    <!-- Change the tokenize separator so the full string is parsed and not trying to make an array of words -->
+    <values>This is a special case where we don't tokenize on whitespace since we KNOW it's a scalar string!</values>
+  </variable>
+</netcdf>
+

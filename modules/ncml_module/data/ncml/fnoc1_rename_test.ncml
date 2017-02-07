@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  
+  <!-- Test renaming an attribute container -->
+  <attribute name="NC_GLOBAL_INFO" type="Structure" orgName="NC_GLOBAL"/>
+  
+  <!-- Test renaming of an atomic attribute with orgName -->
+  <variable name="u">
+    <attribute name="longName" type="String" orgName="long_name"/>
+  </variable> 
+  <variable name="v">
+    <attribute name="longName" type="String" orgName="long_name"/>
+  </variable> 
+  
+  
+</netcdf>

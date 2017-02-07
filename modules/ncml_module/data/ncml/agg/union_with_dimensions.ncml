@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+	
+  <!-- Test that a correct union with dimensions in the virtual datasets will work if the dimensions match as they need to -->
+  <attribute name="title" type="string" value="Testing union with dimensions"/>
+
+  <aggregation type="union">
+    
+    <netcdf>
+      <attribute name="Description" type="string" value="The first dataset"/>
+      <dimension name="lat" length="5"/>
+      
+      <!-- A variable that uses the dimension, this one will be used -->
+      <variable name="Grues" type="int" shape="lat">
+	<attribute name="Description" type="string">I should be in the output!</attribute>
+	<values>1 3 5 3 1</values>
+      </variable>
+ 
+    </netcdf>
+    
+    <netcdf>
+      <attribute name="Description" type="string" value="The second dataset"/>
+
+      <!-- This dimension will be skipped, but the length matches the previous as required -->
+      <dimension name="lat" length="5"/>
+
+      <!-- This dimension is new so will be used... -->
+      <dimension name="station" length="3"/>
+
+      <!-- A variable that uses it, this one will NOT be used -->
+      <variable name="Grues" type="int" shape="lat">
+	<attribute name="Description" type="string">!!!! I should NOT be in the output! !!!!</attribute>
+	<values>-3 -5 -7 -3 -1</values>
+      </variable>
+      
+      <!-- This variable uses both and will show up in output correctly -->
+      <variable name="Zorks" type="int" shape="station lat">
+	<attribute name="Description" type="string">I should be in the output!</attribute>
+	<values>
+	  1  2   3   4   5
+	  2  4   6   8  10
+	  4  8  12 16 20
+	</values>
+      </variable>
+      
+   </netcdf>
+    
+  </aggregation>
+
+</netcdf>

@@ -96,8 +96,8 @@ dnl the autoconf internal cache isn't avoided because we really check for
 dnl libnetcdf, other libraries that implement the same api have other names
 dnl  AC_LINK_IFELSE([AC_LANG_CALL([],[$ac_check_func_checked])],
       AC_CHECK_LIB([netcdf],[$ac_check_nc_func_checked],
-        [NC_LIBS='-lnetcdf -lcurl -lhdf5_hl -lhdf5'; ac_netcdf_ok='yes'], [],
-	[-lcurl -lhdf5_hl -lhdf5 -lz -lm])
+        [NC_LIBS='-lnetcdf -lcurl -lhdf5_hl -lhdf5 -ldl'; ac_netcdf_ok='yes'], [],
+	[-lcurl -lhdf5_hl -lhdf5 -ldl -lz -lm])
     ],
     [
       for ac_netcdf_libdir in "" \

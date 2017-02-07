@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="reentrancy_test.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Wrappee_Description" type="String">
+            <value>This is the wrapped NcML file for the reentrancy test.</value>
+        </Attribute>
+        <Attribute name="WrapperDescription" type="String">
+            <value>The combined data set will include this one as well as the WrappeeDescription!</value>
+        </Attribute>
+    </Attribute>
+    <String name="Wrapped_Wrappee_Variable">
+        <Attribute name="Description" type="String">
+            <value>This should be modified from the wrappee in a successful wrap!</value>
+        </Attribute>
+    </String>
+    <Array name="Foo">
+        <Int32/>
+        <dimension size="10"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

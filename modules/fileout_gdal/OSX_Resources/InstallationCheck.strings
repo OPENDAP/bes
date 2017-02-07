@@ -1,0 +1,5 @@
+"16" = "This software has not been tested with Mac OS/X versions prior to Panther. Even though the installer says you cannot install the software, you can go ahead and give it a try...";
+"17" = "To install this version of bes you must have libdap version 3.7.10 or newer already installed. See http://opendap.org/download/.";
+"19" = "This distribution is for the PowerPC CPU but it appears you have an Intel Mac.";
+"20" = "This distribution is for the Intel CPU but it appears you have a PowerPC Mac.";
+

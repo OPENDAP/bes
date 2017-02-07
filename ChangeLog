@@ -1,3 +1,579 @@
+2016-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	besd.logrotate modified to rotate logs every day.
+	I also fixed some issues with the file (added compression), set the
+	retention number (all old logs were deleted in the previous version).
+
+	Fixed some language in the new besd.logrotate script
+
+	Merge pull request #27 from OPENDAP/hyrax-292
+	Hyrax 292
+
+2016-12-28  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the log rotate bug.
+	I tried using the process group to stop all of the beslisteners,
+	but that was not going to work since the OLFS keeps the connections
+	active. I modified the besd.logroate script instead. Seems to work.
+
+	Merge branch 'master' into hyrax-292
+
+2016-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	New module hashes
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	New commit hashs for submodules
+
+2016-12-19  James Gallagher  <jgallagher@opendap.org>
+
+	Attempt to use process groups to restart server and fix logrotate bug.
+
+2016-12-16  James Gallagher  <jgallagher@opendap.org>
+
+	For now, do not install the logrotate script in the RPM package.
+	Using logrotate breaks the BES until we sort out how best to stop all of the
+	child listeners talking to the OLFS.
+
+	Catch exceptions in the BESInterface code that resets the timeout alarm.
+
+2016-11-08  ndp-opendap  <ndp@opendap.org>
+
+	Sync
+
+	Added more control features to getDAP.
+
+2016-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for fileout_netcdf (Hyrax-282)
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Modules updated, commited and pushed for Hyrax 1.13.2 bes 1.17.3
+
+	Version 3.17.3
+
+	Added TestFunction.h to Makefile.am EXTRA_DIST for distcheck
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Added TestFunction.h to Makefile.am EXTRA_DIST for distcheck
+
+2016-11-01  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an error in the memory cache in bes/dap
+	Kent pointed out that the entries_threashold was being set incorrectly.
+
+2016-11-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #25 from OPENDAP/logrotate
+	Log rotate merge down to master
+
+2016-10-29  James Gallagher  <jgallagher@opendap.org>
+
+	Tested on CentOS 6 - the logrotate file is in the rpm package
+
+2016-10-25  James Gallagher  <jgallagher@opendap.org>
+
+	First stab at adding a logrotate script for linux
+
+2016-10-21  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed errant change to functions/unit-tests/GridGeoConstraintTest.cc
+
+	Fixed Hyrax-270. The Memory Cache was not purging elements correctly.
+	This fix is in the bes/dap/ObjMemCache::add code.
+
+2016-09-28  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits to GridGeoContraintTest
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Module updates for the response_cache merge
+
+	Module updates for the response_cahce merge
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	After a pull of response_cache
+
+	Merge branch 'response_cache' of https://github.com/opendap/bes into response_cache
+
+	Merge branch 'master' into response_cache
+
+	Submodule commits on CentOS
+	These are a bit of a mystery...
+
+	Added missing cstdlib include for mkstemp() on CentOS 6
+
+	Removed C++-11 code from BESUtil::assemblePaths() - for CentOS 6
+
+	Fixed an error in BESFileLockingCache where the prefix was treated as a path component
+
+2016-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint for response_cache
+	This is ready for more testing and a possible pull request.
+
+2016-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed bes.conf.in in the bes/dap/tests
+	It now uses the correct key name for the function response
+	cache.
+
+	Updated modules
+
+	Comments editied in DapResponseBuilder.h and FileLockingCache
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Updated submodules after making changes for BESDataDDSResponse header refactor
+
+	Fixed Hyrax-254 - again!
+	The problem I found and fixed in BESDDSResponse was also present in
+	BESDataDDSResponse. But I didn't fix it there. Now I have. Added
+	a refactor to remove header includes  and 'using namespace...' from
+	headers, which is a minor refactor we should be doing as time allows.
+
+2016-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	fixed tests in the gateway module
+
+	dap-server updates - I removed some #includes from BESDDSResponse.h
+	Headers in headers are less than optimal and I've been slowly removing them
+	where it makes sense.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	 Conflicts:
+		modules/hdf5_handler
+
+2016-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	The BESDDSResponse object incorrectly deleted the BaseType Factory
+	This was the cause of https://opendap.atlassian.net/browse/HYRAX-254
+
+2016-09-20  ndp-opendap  <ndp@opendap.org>
+
+	comiiting hdf5_handler commits to project
+
+2016-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore (unit test binaries)
+
+2016-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	FunctionResponseCache now works
+
+	More testing of FunctionResponseCache
+	Two tests fail.
+
+	FunctionResponseCache - first caching test works
+	Added a server function to the unit tests
+
+	Started to wrk on a server function to test the FunctionResponseCache code
+
+	The unit-tests for FunctionResponseCache use empty CEs, which
+	breaks the ConstraintEvaluator. Fix this.
+
+2016-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	FunctionResponseCache tests build, but fail
+
+	FunctionResultCache now compiles - tests need work to build
+
+2016-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	minor (and incomplete) fixes to the FunctionResponseCache code
+
+2016-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Function cache hacking... Working on write_dataset_to_cache()
+
+	Minor comment edits in DapFunctionResponseCache and FileLockngCache
+
+2016-09-14  James Gallagher  <jgallagher@opendap.org>
+
+	Started on a fix for the function cache collision code.
+
+	Comment typo fix in BESHandlerUtil
+
+2016-09-09  James Gallagher  <jgallagher@opendap.org>
+
+	Minor error in TemporaryFile ctor
+
+2016-09-08  James Gallagher  <jgallagher@opendap.org>
+
+	Commentary for BESHandlerUtil
+
+	Merge branch 'response_cache' of https://github.com/opendap/bes into response_cache
+	Conflicts:
+		dap/Makefile.am
+
+	Removed BESDapResponseCache; refactor/fix of BESFunctionResponse Cache in progress
+
+	Added process_dap2_dds() to BESDapResponseBuilder
+	This method is the companion to intern_dap2_data(), but is used
+	for metdata responses, not data responses.
+
+2016-09-07  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed include typo in BESHandlerUtil
+
+	Added BESHandlerUtil (it only has TemporaryFile now).
+
+	Comments regarding DAP4 and an intern method in ResponseBuilder.
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Minor fixed after merging master to response_cache.
+
+	Merge branch 'master' into response_cache
+	 Conflicts:
+		dap/BESDapResponseCache.cc
+		dap/Makefile.am
+		dap/unit-tests/.gitignore
+		dap/unit-tests/Makefile.am
+		modules/csv_handler
+		modules/dap-server
+		modules/fileout_gdal
+		modules/fileout_json
+		modules/fileout_netcdf
+		modules/fits_handler
+		modules/freeform_handler
+		modules/gdal_handler
+		modules/hdf4_handler
+		modules/hdf5_handler
+		modules/ncml_module
+		modules/netcdf_handler
+		modules/w10n_handler
+		modules/xml_data_handler
+
+2016-09-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for https://opendap.atlassian.net/browse/HYRAX-242
+
+	Tentative fix for ticket https://opendap.atlassian.net/browse/HYRAX-242
+
+2016-09-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added a little comment to the common handler_tests_macros.m4 file
+
+2016-08-24  Nathan Potter  <ndp@opendap.org>
+
+	Updating modules
+
+2016-06-24  Nathan Potter  <ndp@opendap.org>
+
+	finishing up merge
+
+	finsihing up merge
+
+	Enabled the disabling of the BESDapResponseCache
+
+2016-06-09  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the ascii handler and fileout_gdal.
+	See Hyrax-220 and Hyrax-225
+
+	GDAL handler update
+
+2016-06-08  James Gallagher  <jgallagher@opendap.org>
+
+	quick hack for install deps script and broken libdap
+	libdap has a 'conflict'; generated file wad in git. main_page.doxygen
+
+2016-06-08  Cloud User  <centos@ip-172-31-39-143.ec2.internal>
+
+	Merge branch 'master' of github.com:/opendap/bes
+
+2016-06-08  James Gallagher  <jgallagher@opendap.org>
+
+	Repairs for netcdf and hdf5 builds
+	The hdf5 library now uses libdl and that has to be used when
+	calling autoconf's CHECK_LIB (for both netcdf4 and HDF5). This
+	broke the HDF5 handker (and the netcdf handler on CentOS 7).
+
+2016-06-08  Cloud User  <centos@ip-172-31-39-143.ec2.internal>
+
+	HDF5 needs libdl and so netcdf4 also needs libdl
+	The configure script was not finding netcdf on CentOS 7. I think this
+	will be an issue elsewhere but it has not shown up because not all of
+	the deps code has been updated to the newer HDF5 library.
+
+2016-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.13.1 	modified:   modules/fileout_netcdf 	modified:   modules/hdf4_handler 	modified:   modules/hdf5_handler
+
+	Updated install_be_source_deps.sh to clean hyrax-deps before building
+
+	Could this be the last edit for fileout_netcdf?
+
+	New tests & baselines in fileout_netcdf
+
+	Update for fileout_netcdf 	modified:   modules/fileout_netcdf
+
+	Updated fir the latest from fileout_netcdf
+
+2016-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge branch 'master' into function_module_version
+	 Conflicts:
+		modules/hdf5_handler
+
+	Modules updated on CentOS 6 	modified:   modules/csv_handler 	modified:   modules/dap-server 	modified:   modules/gdal_handler 	modified:   modules/hdf4_handler 	modified:   modules/hdf5_handler
+
+	Added all_modules.txt to bes/modules
+
+	Removed generated dap/tests/package.m4
+
+	Added data directory to EXTRA_DIST
+	This fixes a problem with distcheck
+2016-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Comments.
+
+	Merge pull request #24 from OPENDAP/mem_cache
+	Mem cache
+
+2016-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hashes for gdal_, hdf4_ and hdf5_handler submodules
+
+2016-05-24  James Gallagher  <jgallagher@opendap.org>
+
+	doc update
+
+2016-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	The ObjMemCache now frees all of the pointers it holds...
+	when it removes the item or when it's destructor is called.
+
+2016-05-20  James Gallagher  <jgallagher@opendap.org>
+
+	gitignore update
+
+	Simplified names for the ObjMemCache.
+
+	Changed DDSMemCache to ObjMemCache - a memory cache for DapObj
+	This memory cache does not copy objects or protect its users from
+	the referenced objects being deleted; the code using the cache must
+	handle ensuring that objects are valid (e.g., by copying them before
+	add() and after get() calls.
+
+	Added comments to the DDSMemCache
+
+	The DDSMemCache code is working and tested
+
+2016-05-19  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2016-05-18  James Gallagher  <jgallagher@opendap.org>
+
+	Added DDSMemCache to Makefile.am
+
+	Added DDSMemCache
+
+	new commits in hdf4 & 5
+
+2016-05-11  James Gallagher  <jgallagher@opendap.org>
+
+	The BES now includes line numbers for BESDapError throws.
+
+2016-05-10  James Gallagher  <jgallagher@opendap.org>
+
+	Updates in some handlers
+
+2016-04-22  Nathan Potter  <ndp@opendap.org>
+
+	commiting submodules
+
+2016-04-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2016-04-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #21 from OPENDAP/dap_tests
+	Dap tests!!
+
+2016-04-01  James Gallagher  <jgallagher@opendap.org>
+
+	Header includes reorganized.
+
+2016-04-01  Nathan Potter  <ndp@opendap.org>
+
+	Minor edit
+
+2016-03-31  Nathan Potter  <ndp@opendap.org>
+
+	bes/dap: Fixed test issues. Got dap4 tests started (completion
+	blokcked by outside bug). Make check passes.
+
+	DAP4 function unwrap test added.
+
+	DAP4 function unwrap test added.
+
+	bes/dap/ autotests working now. woot.
+
+2016-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added calls for dap/tests
+
+2016-03-31  Nathan Potter  <ndp@opendap.org>
+
+	Update handler_tests_macros.m4
+
+	Merge branch 'master' into dap_tests
+
+2016-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge pull request #20 from OPENDAP/function_metadata
+	Function metadata
+
+2016-03-23  Nathan Potter  <ndp@opendap.org>
+
+	Updated comments and clenaing up dev mess.
+
+	Global Attributes fixed for functions using _unwrap convention
+
+	Function metadata debugging.
+
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Trying to get bes/dap/tests working
+
+	Trying to get bes/dap/tests working
+
+	Cleaning up code for merge.
+
+	Cleaning up code for merge.
+
+	Merge branch 'master' into function_result_unwrapper
+
+	Comments...
+
+	Committing modules
+
+	Simplified wrapitup() API. Changed ServerFunction class name
+	to more appropo WrapItUp.
+
+	Small changes in wrapit() function
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Tests for function result promotion in transmitters. TEst
+	function wrapitup() added.
+
+	modules
+
+	Tests for function result promotion in transmitters. TEst
+	function wrapitup() added.
+
+2016-03-18  Nathan Potter  <ndp@opendap.org>
+
+	Changes...
+
+2016-03-11  Nathan Potter  <ndp@opendap.org>
+
+	Refactored function result promoter code to be a function and
+	not a method.
+
+	Adding required code dependency to bes/dap tests.
+
+	More informative debugging output.
+
+	Documentation update
+
+2016-03-10  Nathan Potter  <ndp@opendap.org>
+
+	Debugging statements
+
+	Documenttion
+
+	Documentation
+
+2016-03-09  Nathan Potter  <ndp@opendap.org>
+
+	Syntax correction
+
+	Syntax correction
+
+	Updated function result promoter, instrumentation, etc.
+
+2016-02-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added comment to XMLInterface's ctor
+
+	Added comment to RequestHandlerList::execute_all()
+
+2016-02-18  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting for dap/BESDASResponse.h
+	[ci skip]
+
+2016-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Patch for gcc-6 from Orion Poplawski.
+
+2016-02-09  Nathan Potter  <ndp@opendap.org>
+
+	Edits to bes.conf.in for clarity etc.
+
+	Edits to bes.conf.in for clarity etc.
+
+2016-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	I editied the bes.conf.in and dap.conf.in files
+	Fixed spelling and grammar; needs another set of eyes, however.
+	[ci skip]
+
+2016-02-05  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	tweking .gitignore
+
+2016-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	Update to ugrid module
+
+2016-02-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2016-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	dap-server updated
+
+	Merge branch 'master' into hyrax_release_1.13
+
+	Updates to modules and the generic tests macros for modules
+
+2016-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #18 from OPENDAP/BES-97
+	Bes 97
+
+	cleanup in dapreader - the new tests are better organized.
+
+2016-02-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added tests for zero_length_arrays
+
+2016-01-29  James Gallagher  <jgallagher@opendap.org>
+
+	Module hash updates
+
+	Merge pull request #16 from OPENDAP/besdebug_ndebug
+	Besdebug ndebug
+
 2016-01-26  James Gallagher  <jgallagher@opendap.org>
 
 	Module commit hash updates

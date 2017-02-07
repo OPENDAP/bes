@@ -1,0 +1,18 @@
+
+Welcome to newformX alpha 3.2 Jul 11 1996 -- an NGDC FreeForm application
+
+Memtrack logging file "memtrack.log" enabled
+Input file: califtap.sav
+Output file: test.out
+
+The input file size is 10206 bytes.
+The output file size will be 4662 bytes.
+The data processing cache size is 10206 bytes.
+
+(calift3.fmt) ASCII Input Data:  "Made from eqtape.afm"
+Each record contains 17 fields and is 81 characters long.
+
+(calift3.fmt) ASCII Output Data:  "Made from hypoe.afm"
+Each record contains 15 fields and is 37 characters long.
+
+100% processed     Elapsed time - 00:00:2600:00:31

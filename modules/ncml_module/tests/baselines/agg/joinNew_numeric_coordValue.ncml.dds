@@ -1,0 +1,8 @@
+Dataset {
+    Float64 source[source = 3];
+    Float32 lat[lat = 17];
+    Float32 lon[lon = 21];
+    Float32 time[time = 16];
+    Int16 u[source = 3][time_a = 16][lat = 17][lon = 21];
+    Int16 v[source = 3][time_a = 16][lat = 17][lon = 21];
+} joinNew_numeric_coordValue.ncml;

@@ -1,0 +1,7 @@
+Dataset {
+    String Station[record = 5];
+    Float32 latitude[record = 5];
+    Float32 longitude[record = 5];
+    Float32 temperature_K[record = 5];
+    String Notes[record = 5];
+} temperature.csv;

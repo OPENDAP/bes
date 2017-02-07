@@ -1,0 +1,48 @@
+dnl Test suite for creating new variables of scalar type
+AT_BANNER([Adding new scalar simple types])
+
+dnl Straight up acceptance tests
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_int.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_int.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_string.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_string.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_url.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_url.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_float.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_float.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_double.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_double.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_byte.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_byte.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_short.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_short.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_long.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_long.ncml])
+
+AT_CHECK_ALL_DAP_RESPONSES([new_scalars/var_scalar_uint32.ncml])
+AT_CHECK_DATADDS_GETDAP([new_scalars/var_scalar_uint32.ncml])
+
+dnl This one has more than one token for a scalar
+AT_ASSERT_PARSE_ERROR([new_scalars/var_scalar_parse_error_1.ncml])
+
+dnl This one has zero tokens for a scalar
+AT_ASSERT_PARSE_ERROR([new_scalars/var_scalar_parse_error_2.ncml])
+
+dnl This one is just a malformed number... all these should work fine since we use the same code as for attributes, so I won't do them all here.
+AT_ASSERT_PARSE_ERROR([new_scalars/var_scalar_parse_error_3.ncml])
+
+dnl Test for the case of a <values> element not within a <variable>...</variable>
+AT_ASSERT_PARSE_ERROR([new_scalars/var_scalar_parse_error_4.ncml])
+
+dnl Test for the error adding a variable within an attribute container 
+AT_ASSERT_PARSE_ERROR([new_scalars/var_scalar_parse_error_5.ncml])
+
+dnl Test for error adding variable within a simple variable
+AT_ASSERT_PARSE_ERROR([new_scalars/var_scalar_parse_error_6.ncml])

@@ -82,7 +82,7 @@ public:
     {
 	cout << "*****************************************" << endl;
 	cout << "Entered keysT::run" << endl;
-	int retVal = 0;
+	// unused. jhrg 5/24/16 int retVal = 0;
 
 	if( KeyFile != "" )
 	{

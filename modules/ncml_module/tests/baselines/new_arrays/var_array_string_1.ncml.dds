@@ -1,0 +1,3 @@
+Dataset {
+    String MyCharArray[3];
+} var_array_string_1.ncml;

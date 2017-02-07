@@ -1,0 +1,16 @@
+The data:
+Grid {
+  Array:
+    String station[lat = 6][lon = 5];
+  Maps:
+    Int32 lat[lat = 6];
+    Int32 lon[lon = 5];
+} station = {  Array: {{"one", "two", "three", "four", "five"},{"one_b", "two_b", "three_b", "four_b", "five_b"},{"one_c", "two_c", "three_c", "four_c", "five_c"},{"one", "two", "three", "four", "five"},{"one", "two", "three", "four", "five"},{"one_f", "two_f", "three_f", "four_f", "five_f"}}  Maps: {0, 10, 20, 30, 40, 50}, {-140, -118, -96, -84, -52} };
+Grid {
+  Array:
+    String scan_line[lon = 5];
+  Maps:
+    Int32 lon[lon = 5];
+} scan_line = {  Array: {"r", "r1", "r2", "r3", "r4"}  Maps: {-140, -118, -96, -84, -52} };
+String codec_name = "mp3";
+

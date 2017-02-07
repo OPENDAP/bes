@@ -1,0 +1,7 @@
+Dataset {
+    Structure {
+        Structure {
+            Float32 percipitate[scan = 1][longitude = 360][latitude = 80];
+        } PlanetaryGrid;
+    } DATA_GRANULE;
+} nested_passthrough.ncml;

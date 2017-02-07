@@ -1,0 +1,36 @@
+
+// -*- C++ -*-
+// This is a FreeForm format description file for isee3 data.
+
+// The header looks like:
+//  IYR = The year as a two digits
+//  IDAY = The day of the year
+//  ISC = Spacecraft code
+//  TRAJ(1) = Geocentric Solar Ecliptic (GSE) x-coordinate of the 
+//            spacecraft position at start of day's data, in meters.
+//  TRAJ(2) = GSE y-coordinate of spacecraft position, in meters.
+//  TRAJ(3) = GSE z-coordinate of spacecraft position, in meters.
+//  TRAJ(4) = TRAJ(5) = TRAJ(6) = 0  
+//  TEXT = ?
+
+dbase_file_header "ISEE3_header"
+iyr 4 5 short 0
+iday 8 10 short 0
+isc 15 15 char 0
+traj1 31 45 double 6
+traj2 46 60 double 6
+traj3 61 75 double 6
+traj4 76 90 double 6
+traj5 91 105 double 6
+traj6 106 120 double 6
+text 121 240 char 0
+
+dbase_input_data "ISEE3_data"
+t 1 15 double 6
+Bx 16 30 double 6
+By 31 45 double 6
+Bz 46 60 double 6
+Bx2 61 75 double 6
+
+ASCII_output_data "ISEE3_data"
+Bx 1 8 double 6

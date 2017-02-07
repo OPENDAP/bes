@@ -1,0 +1,50 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+m4_include([handler_tests_macros.m4])
+
+AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.2.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/test.nc.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/test.nc.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/test.nc.2.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/test.nc.2a.bescmd])
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.3.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/test.nc.3.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/test.nc.3a.bescmd])
+
+# These are the DAP4 tests
+
+AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.dmr.bescmd])
+# There's a ton of data in coads, so skip testing that
+
+AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.dmr.bescmd])
+# AT_BESCMD_DAP4DATA_RESPONSE_TEST
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/fnoc1.nc.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([nc/test.nc.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/test.nc.dmr_1.bescmd])
+# AT_BESCMD_DAP4DATA_RESPONSE_TEST([nc/test.nc.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/test.nc.dap.bescmd])
+
+# DAP2 and 4 tests for zero-length arrays
+
+AT_BESCMD_RESPONSE_TEST([nc/zero_length_array.nc.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/zero_length_array.nc.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/zero_length_array.nc.2.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/zero_length_array.nc.3.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/zero_length_array.nc.4.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/zero_length_array.nc.5.bescmd])
+
+# Cache tests
+
+AT_BESCMD_CACHED_RESPONSE_TEST([nc/fnoc1.nc.das.cached.bescmd])
+AT_BESCMD_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dds.cached.bescmd])
+AT_BESCMD_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dmr.cached.bescmd])
+
+# Data using cached metadata? I'm not sure how to test this using besstandalone.
+# jhrg 5/23/16
+# AT_BESCMD_BINARYDATA_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dods.cached.bescmd])

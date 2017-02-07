@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-bio-8080-exec-10:49">
+  <bes:setContext name="bes_timeout">300</bes:setContext>
+  <bes:setContext name="cf_history_entry">2016-11-03 21:02:32 GMT Hyrax-@HyraxVersion@ http://localhost:8080/opendap/data/ncml/agg/dated/CG2006158_130000h_usfc.nc.nc4?CGusfc.altitude</bes:setContext>
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContainer name="catalogContainer" space="catalog">/data/ncml/agg/dated/CG2006158_130000h_usfc.nc</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <bes:constraint>CGusfc.altitude</bes:constraint>
+    </bes:container>
+  </bes:define>
+  <bes:get type="dods" definition="d1" returnAs="netcdf-4" />
+</bes:request>

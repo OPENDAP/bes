@@ -135,21 +135,21 @@ static void read_values(int argc, BaseType *argv[], Array *dest)
 
     string requestedTypeName = extract_string_argument(argv[0]);
     Type requestedType = libdap::get_type(requestedTypeName.c_str());
-    BESDEBUG("functions", "Requested array type: " << requestedTypeName<< endl);
+    BESDEBUG("functions", "make_dap2_array() - Requested array type: " << requestedTypeName<< endl);
 
     // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
     for (int i = 2; i < argc; ++i) {
-        BESDEBUG("functions", "Adding value of type " << argv[i]->type_name() << endl);
+        BESDEBUG("functions", "make_dap2_array() - Adding value of type " << argv[i]->type_name() << endl);
         if (!isValidTypeMatch(requestedType, argv[i]->type())) {
             throw Error(malformed_expr,
                     "make_array(): Expected values to be of type " + requestedTypeName + " but argument "
                             + long_to_string(i) + " evaluated into a type " + argv[i]->type_name() + " instead.");
         }
-        BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(argv[i])->value() << endl);
+        BESDEBUG("functions", "make_dap2_array() - Adding value: " << static_cast<DAP_BaseType*>(argv[i])->value() << endl);
         values.push_back(static_cast<DAP_BaseType*>(argv[i])->value());
     }
 
-    BESDEBUG("functions", "values size: " << values.size() << endl);
+    BESDEBUG("functions", "make_dap2_array() - values size: " << values.size() << endl);
 
     // copy the values to the DAP Array
     dest->set_value(values, values.size());
@@ -163,7 +163,7 @@ static void read_values(D4RValueList *args, DMR &dmr, Array *dest)
 
     string requestedTypeName = extract_string_argument(args->get_rvalue(0)->value(dmr));
     Type requestedType = libdap::get_type(requestedTypeName.c_str());
-    BESDEBUG("functions", "Requested array type: " << requestedTypeName<< endl);
+    BESDEBUG("functions", "make_dap2_array() - Requested array type: " << requestedTypeName<< endl);
 
     // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
     for (unsigned int i = 2; i < args->size(); ++i) {

@@ -18,11 +18,12 @@
 # Options: -n: Do not modify files like Makefile.am but do make the 
 #              the temp files.
 #          -v: Verbose
+#          -k: clean temp files
 
 args=`getopt "nvk" $*`
 if test $? != 0
 then
-    echo "Usage: version_update_modules.sh [-nv] <directories>"
+    echo "Usage: version_update_modules.sh [-nvk] <directories>"
     exit 2
 fi
 
@@ -148,7 +149,7 @@ EOF
      cat <<EOF >NEWS.tmp.top
 News for version $new_version
 
-Minor updates, see the ChangeLog
+Updates since $start_date, see the ChangeLog
 
 EOF
 

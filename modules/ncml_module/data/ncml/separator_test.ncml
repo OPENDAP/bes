@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Testing separator">
+  
+  <!-- Make sure the whitespace on tokens is trimmed for numeric type's but not string -->
+  <attribute name="foo" type="int" separator=",">
+    1 , 2 , 3 , 4 , 5  
+  </attribute>
+
+  <!-- Make sure this generates 5 values in the DDX! -->
+  <attribute name="bar" type="string" separator=",">a,b,c,d,e</attribute>
+
+  <!-- Make sure that we do NOT trim whitespace for string type arrays 
+    Each resultant string in the DDX should have a leading and trailing space -->
+  <attribute name="baz" type="string" separator=","> a , b , c , d , e </attribute>
+
+  <!-- Make sure we DO trim URL's into tokens -->
+  <attribute name="frobozz" type="URL" separator=",">
+    http://www.gnu.org, 
+    http://www.opendap.org
+  </attribute>
+  
+  <!-- Make sure unspecified separator for string defaults to not separating -->
+  <attribute name="zork" type="string">I am a string without a specified separator so won't get separated into an array.</attribute>
+
+  <!-- Unless we force it to do so by giving space explicitly as separator-->
+  <attribute name="enchanter" type="string" separator=" ">Each One Is A Token</attribute>
+
+  <!-- Also check values@separator works with strings...  -->
+  <variable name="sorcerer" type="string">
+    <values>Test string shouldn't get separated!</values>
+  </variable>
+
+  <variable name="grue" type="string" shape="3">
+    <values>This is three</values>
+  </variable>
+  
+  <variable name="dungeon_master" type="string" shape="3">
+    <values separator="*">This*is*three</values>
+  </variable>
+
+</netcdf>

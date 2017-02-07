@@ -1,0 +1,3 @@
+Dataset {
+    Url MyArray[3];
+} var_array_url_1.ncml;

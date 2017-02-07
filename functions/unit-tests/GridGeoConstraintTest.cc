@@ -56,9 +56,9 @@ static bool debug = false;
 static bool debug2 = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
 #undef DBG2
-#define DBG2(x) do { if (debug2) (x); } while(false);
+#define DBG2(x) do { if (debug2) (x); } while(false)
 
 namespace functions
 {
@@ -1321,17 +1321,3 @@ int main(int argc, char*argv[]) {
 
     return wasSuccessful ? 0 : 1;
 }
-
-
-#if 0
-int
-main( int, char** )
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() );
-
-    bool wasSuccessful = runner.run( "", false ) ;
-
-    return wasSuccessful ? 0 : 1;
-}
-#endif

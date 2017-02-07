@@ -1,0 +1,5 @@
+The data:
+String SelfReferentialVariable = "My name is \"SelfReferentialVariable\"";
+String Foo = "I am the winning Foo!";
+String Bar = "I am the winning Bar!";
+

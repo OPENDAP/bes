@@ -1,0 +1,47 @@
+netcdf test {
+dimensions:
+	row = 458 ;
+	WVC = 24 ;
+variables:
+	short NSCAT_Rev_20.WVC_Lat(row, WVC) ;
+		NSCAT_Rev_20.WVC_Lat:long_name = "latitude" ;
+		NSCAT_Rev_20.WVC_Lat:units = "deg" ;
+		NSCAT_Rev_20.WVC_Lat:scale_factor = 0.01 ;
+		NSCAT_Rev_20.WVC_Lat:scale_factor_err = 0. ;
+		NSCAT_Rev_20.WVC_Lat:add_offset = 0. ;
+		NSCAT_Rev_20.WVC_Lat:add_offset_err = 0. ;
+		NSCAT_Rev_20.WVC_Lat:calibrated_nt = 22 ;
+		NSCAT_Rev_20.WVC_Lat:valid_range = -9000s, 7771s ;
+		NSCAT_Rev_20.WVC_Lat:dim_0.name = "row" ;
+		NSCAT_Rev_20.WVC_Lat:dim_0.long_name = "WVC row" ;
+		NSCAT_Rev_20.WVC_Lat:dim_1.name = "WVC" ;
+		NSCAT_Rev_20.WVC_Lat:dim_1.long_name = "WVC index" ;
+		NSCAT_Rev_20.WVC_Lat:fonc_original_name = "NSCAT Rev 20.WVC_Lat" ;
+
+// global attributes:
+		:Producer_Agency = "NASA\\000" ;
+		:Producer_Institution = "JPL\\000" ;
+		:Sensor_Name = "NSCAT\\000" ;
+		:Project_ID = "NSCAT\\000" ;
+		:SIS_ID = "597-512-24/1996-07-01\\000" ;
+		:Build_ID = "3.2.1/1996-11-05\\000" ;
+		:ADEOS_Data_Package_ID = "S2\\000" ;
+		:ADEOS_Data_Package_Type = "S\\000" ;
+		:Product_Creation_Time = "1996-318T01:35:16.000\\000" ;
+		:Data_Type = "L2\\000" ;
+		:Data_Status = "COMPLETE\\000" ;
+		:First_Rev_Number = 415 ;
+		:First_Rev_Eq_Crossing_Time = "1996-259T04:01:28.226\\000" ;
+		:First_Rev_Eq_Crossing_Lon = 279.983f ;
+		:First_Data_Time = "1996-259T03:43:48.945\\000" ;
+		:Last_Data_Time = "1996-259T05:09:48.997\\000" ;
+		:Num_Expected_Output_Records = 458 ;
+		:Num_Actual_Output_Records = 458 ;
+		:Ambig_Removal_Method = "Baseline used\\000" ;
+		:HDF_Build_ID = "JPL D-xxxxx 12/15/94\\000" ;
+		:HDF_SIS_ID = "JPL D-12060 12/15/94\\000" ;
+		:HDF_Conversion_Organization = "JPL PO.DAAC\\000" ;
+		:HDF_Conversion_Time = "1996-320T17:32:34       " ;
+		:Data_Format_Type = "HDF\\000" ;
+		:history = "removed date-time Hyrax S2000415.HDF?WVC_Lat" ;
+}

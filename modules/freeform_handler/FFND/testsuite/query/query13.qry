@@ -1,0 +1,4 @@
+(([lvar1] < 0) and ([lvar2] < 0)) or (([lvar1] > 0) and ([lvar2] > 0)) 
+This query excludes all records where lvar1 and lvar2 are of different signs.
+Note that this query is identical to query2.qry; this just tests replacement
+of the 'and' with '&', and 'or' with '|'.

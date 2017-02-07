@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <attribute name="UInt16_Invalid" type="UInt16" value="UInt16"/>
+</netcdf>
+

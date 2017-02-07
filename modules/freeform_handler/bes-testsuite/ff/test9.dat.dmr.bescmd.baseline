@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test9.dat">
+    <Sequence name="ISEE3">
+        <String name="t"/>
+        <Float64 name="Bx"/>
+        <String name="By"/>
+        <String name="Bz"/>
+        <String name="Bx2"/>
+    </Sequence>
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
+        </Attribute>
+        <Attribute name="iyr" type="Int16">
+            <Value>79</Value>
+        </Attribute>
+        <Attribute name="iday" type="Int16">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="isc" type="String">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="traj1" type="Float64">
+            <Value>1356310000.000000</Value>
+        </Attribute>
+        <Attribute name="traj2" type="Float64">
+            <Value>637963000.000000</Value>
+        </Attribute>
+        <Attribute name="traj3" type="Float64">
+            <Value>1716290.000000</Value>
+        </Attribute>
+        <Attribute name="traj4" type="Float64">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="traj5" type="Float64">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="traj6" type="Float64">
+            <Value>0.000000</Value>
+        </Attribute>
+        <Attribute name="text" type="String">
+            <Value>I,S COORDINATES 800102  2.5                                                     TRAJCOR     AVEDT 800207</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -1,0 +1,935 @@
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'response_cache'
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DataDDS include and libdap namespace after repairing the BESDataDDSResponse header
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in favor of the DDS class.
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 
+	1) Ensured that libdap::Error objects are converted to BESDapError objects 
+	when caught. and 2) Catch and rethrow BESError objects whenever they could 
+	be thrown so they don't get swept up as unidentified errors in a catch(...)
+	clause.
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+	
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'cache_control_patch_02'
+
+2015-10-01  James Gallagher  <jgallagher@opendap.org>
+
+	distcheck fix
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fits_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.0.12
+2015-03-25  James Gallagher  <jgallagher@opendap.org>
+
+	Accommodate autoconf 2.63
+	Changed the AT_ARG_OPTION_ARG macro so that it uses _ instead of -
+	for the word separator in multi-word options.
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for distcheck and the modules build.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2014-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge remote-tracking branch 'origin/dap4'
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac after the merge with the modules branch.
+
+	Merge remote-tracking branch 'origin/modules'
+
+	Merge branch 'modules' of https://github.com/opendap/fits_handler into modules
+
+	Fixes for make dist and make check.
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Updated	the spec file to release 2.
+
+	Updated for hyrax-1.10
+
+2014-11-29  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for the bes modules build.
+
+2014-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	commets
+
+2014-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for xml:base
+
+2014-08-18  James Gallagher  <jgallagher@opendap.org>
+
+	Error message text fixed.
+
+2014-08-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for DAP4 using the DDS --> DMR hack. Added tests.
+
+	Made a branch for the dap4 version of the fits handler
+	A    https://scm.opendap.org/svn/branch/fits_handler/dap4
+
+2014-04-23  Nathan Potter  <ndp@opendap.org>
+
+	fits_handler: Checking software version update and associated release changes.
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	fixed namespace libdap
+
+	M    fits_read_attributes.h
+	M    fits_read_descriptors.h
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the new OSX compiler prints warnings about it and it seems to not make a difference with newer g++ versions.
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	fits_handler: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-06-14  James Gallagher <jgallagher@opendap.org>
+
+	Release 1.0.9
+
+	M    ChangeLog
+	M    fits_handler.spec
+	M    README
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+
+2013-06-14  James Gallagher <jgallagher@opendap.org>
+
+	Fix for the bug where info responses were not working for some of the datasets. The problem turned out to be that the cfitsio library seems to treat TLONG not as a 32-bit int but as a 64-bit int. Image that were typed 'long' were being read into an array of 32-bit ints and that was overwriting memory. I added 12 tests, including some for datasets that triggered this bug.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2013-06-14  James Gallagher <jgallagher@opendap.org>
+
+	Release 1.0.9
+
+	M    ChangeLog
+	M    fits_handler.spec
+	M    README
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+
+2013-06-14  James Gallagher <jgallagher@opendap.org>
+
+	Fix for the bug where info responses were not working for some of the datasets. The problem turned out to be that the cfitsio library seems to treat TLONG not as a 32-bit int but as a 64-bit int. Image that were typed 'long' were being read into an array of 32-bit ints and that was overwriting memory. I added 12 tests, including some for datasets that triggered this bug.
+
+2013-06-14  James Gallagher <jgallagher@opendap.org>
+
+	Fix for the bug where info responses were not working for some of
+	the datasets. The problem turned out to be that the cfitsio
+	library seems to treat TLONG not as a 32-bit int but as a 64-bit
+	int. Image that were typed 'long' were being read into an array of
+	32-bit ints and that was overwriting memory. I added 12 tests,
+	including some for datasets that triggered this bug.
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Source release hacks... bumped the version to 1.0.8
+
+	M    ChangeLog
+	M    fits_handler.spec
+	M    README
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a mistake in the processing of attributes in the FITS
+	handler. Also fixed a potential resource leak n the attribute
+	processing code since the code could exit leaving the data file
+	open. Made some other refactoring changes that removed unneeded
+	variables.
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Repaired the fits hadnler's attribute processing.
+
+	M    fits_read_attributes.cc
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the test baselines; the handler was not returning the
+	correct attribtues and the baselines were incorrectly checked in
+	with the broken attributes.
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a mistake in the processing of attributes in the FITS
+	handler. Also fixed a potential resource leak n the attribute
+	processing code since the code could exit leaving the data file
+	open. Made some other refactoring changes that removed unneeded
+	variables.
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Repaired the fits handler's attribute processing.
+
+	M    fits_read_attributes.cc
+
+2013-06-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the test baselines; the handler was not returning the
+	correct attributes and the baselines were incorrectly checked in
+	with the broken attributes.
+
+2013-01-20  James Gallagher <jgallagher@opendap.org>
+
+	Merged the hyrax 1.8 branch to the trunk.
+
+	_M   .
+	M    bes-testsuite/fits/cpb.ddx.bescmd.baseline
+	M    bes-testsuite/fits/cpb.das.bescmd.baseline
+
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	After merge with hyrax 1.8 release branch and full build w/o test
+	failures.
+
+	_M   .
+	A  + foo
+	D    conf/cdf_header.m4
+	D    conf/cdf.m4
+	M    ChangeLog
+	M    fits_read_attributes.cc
+	M    fits_handler.spec
+	M    README
+	M    bes-testsuite/fits/cpb.ddx.bescmd.baseline
+	M    configure.ac
+	M    fits_read_descriptors.cc
+	M    INSTALL
+	M    Makefile.am
+	M    NEWS
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  Patrick West <pwest@ucar.edu>
+
+	Was using prefix in defining the library directory instead of libdir.
+	M    fits_handler.spec
+	M    Makefile.am
+
+2011-11-21  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	added log dump
+
+2011-11-21  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Patching RPM production rules.
+
+2011-11-21  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-11-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	removing unused macro files from fits_handler config
+
+2011-11-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	More changes to fits_handler configure
+
+2011-11-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	More changes to fits_handler configure
+
+2011-11-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Fixing configure check for cfits
+
+2011-10-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a DDX baseline
+
+	M    bes-testsuite/fits/cpb.ddx.bescmd.baseline
+
+2011-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Modified configure so that this code builds only the so version of the library by default.
+
+2011-09-22  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+	A    http://scm.opendap.org/svn/branch/fits_handler/1.0.7
+
+2011-06-30  Patrick West <pwest@ucar.edu>
+
+	Up to date to libdap 3.11.1 and bes 3.9.1
+	M    ChangeLog
+	M    fits_handler.spec
+	M    configure.ac
+	M    NEWS
+
+2011-04-26  Patrick West <pwest@ucar.edu>
+
+	Cleared the container after building the DAS.
+	M    FitsRequestHandler.cc
+
+2011-04-26  Patrick West <pwest@ucar.edu>
+
+	Made this handler more like the others, where if the format of the
+	request is for dap2, then the additional structure for the container.
+	M    FitsRequestHandler.cc
+	M    bes-testsuite/fits/cpb.ddx.bescmd.baseline
+	M    bes-testsuite/fits/cpb.data.bescmd.baseline
+	M    bes-testsuite/fits/cpb.dds.bescmd.baseline
+	M    fits_read_descriptors.cc
+	M    fits_read_descriptors.h
+
+2011-04-25  Patrick West <pwest@ucar.edu>
+
+	Using the containers correctly in the dap responses.
+	M    bes-testsuite/fits/cpb.das.bescmd
+	M    bes-testsuite/fits/cpb.data.bescmd
+	M    bes-testsuite/fits/cpb.dds.bescmd
+	M    bes-testsuite/fits/cpb.ddx.bescmd
+	M    FitsRequestHandler.cc
+
+2011-04-26  Patrick West <pwest@ucar.edu>
+
+	Cleared the container after building the DAS.
+	M    FitsRequestHandler.cc
+
+2011-04-26  Patrick West <pwest@ucar.edu>
+
+	Made this handler more like the others, where if the format of the
+	request is for dap2, then the additional structure for the container.
+	M    FitsRequestHandler.cc
+	M    bes-testsuite/fits/cpb.ddx.bescmd.baseline
+	M    bes-testsuite/fits/cpb.data.bescmd.baseline
+	M    bes-testsuite/fits/cpb.dds.bescmd.baseline
+	M    fits_read_descriptors.cc
+	M    fits_read_descriptors.h
+
+2011-04-26  Patrick West <pwest@ucar.edu>
+
+	Using the containers correctly in the dap responses.
+	M    bes-testsuite/fits/cpb.das.bescmd
+	M    bes-testsuite/fits/cpb.data.bescmd
+	M    bes-testsuite/fits/cpb.dds.bescmd
+	M    bes-testsuite/fits/cpb.ddx.bescmd
+	M    FitsRequestHandler.cc
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added include of dependent dap.conf
+
+2010-06-05  Patrick West <pwest@ucar.edu>
+
+	Ability to run distcheck. Updated for new release.
+	M    ChangeLog
+	M    bes-testsuite/Makefile.am
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+
+2010-06-05  Patrick West <pwest@ucar.edu>
+
+	Updated ddx response
+	M    bes-testsuite/fits/cpb.ddx.bescmd.baseline
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Updated to new version of BES and libdap
+	D    conf/mkinstalldirs
+	D    conf/depcomp
+	D    conf/missing
+	D    conf/config.guess
+	D    conf/config.sub
+	D    conf/ltmain.sh
+	D    conf/install-sh
+	M    fits_handler.spec
+	M    configure.ac
+
+2010-03-29  Patrick West <pwest@ucar.edu>
+
+	Using += instead of = for BES.modules
+	M    fits.conf.in
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	Using standalone configuration file instead of script to modify bes.conf
+	A    fits.conf.in
+	D    bes-fits-data.sh.in
+	M    Makefile.am
+
+2010-01-08  Patrick West <pwest@ucar.edu>
+
+	--clean to clean build and src files for rpmbuild
+	M    Makefile.am
+
+2009-08-31  Patrick West <pwest@ucar.edu>
+
+	changed path variables to use during autotest
+
+2009-08-31  Patrick West <pwest@ucar.edu>
+
+	changed include of cgi_util to mime_util and removed include where not needed
+
+2009-08-27  Patrick West <pwest@ucar.edu>
+
+	Converted bes-testsuite to use autotest instead of dejagnu
+	A    bes-testsuite/atlocal.in
+	D    bes-testsuite/config
+	D    bes-testsuite/common_tests.exp
+	A    bes-testsuite/fits_handlerTest.at
+	D    bes-testsuite/besstandalone.fits
+	M    bes-testsuite/Makefile.am
+	M    configure.ac
+
+2009-08-23  Patrick West <pwest@ucar.edu>
+
+	Added ; after each BESDEBUG statement
+
+2009-08-21  Patrick West <pwest@ucar.edu>
+
+	Removed Server 3 app from .spec file
+	M    fits_handler.spec
+
+2009-08-21  Patrick West <pwest@ucar.edu>
+
+	Removed Server 3 CGI build, conditional build parameter to build BES
+	components.
+	M    configure.ac
+	M    Makefile.am
+	D    dap_fits_handler.cc
+
+2009-08-18  Patrick West <pwest@ucar.edu>
+
+	DAP Macro changes
+
+2009-04-10  Patrick West <pwest@ucar.edu>
+
+	Up to date with Hyrax 1.5
+	M    FitsModule.cc
+	M    FitsRequestHandler.cc
+	M    configure.ac
+
+2008-11-14  Patrick West <pwest@ucar.edu>
+
+	send_data and send_ddx signature changes
+
+	M    dap_fits_handler.cc
+
+2008-11-14  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlrequest branch to the trunk.
+
+	_M   .
+	M    bes-testsuite/fits/cpb.das.bescmd
+	M    bes-testsuite/fits/cpb.data.bescmd
+	M    bes-testsuite/fits/cpb.dds.bescmd
+	M    bes-testsuite/fits/cpb.ddx.bescmd
+
+2008-09-18  James Gallagher <jgallagher@opendap.org>
+
+	Merged multifile branch
+
+2008-08-29  Patrick West <pwest@ucar.edu>
+
+	Moved testsuite to bes-testsuite, consistent with other data handlers.
+	D    testsuite
+	A    bes-testsuite
+	M    configure.ac
+	M    Makefile.am
+
+2008-08-29  Patrick West <pwest@ucar.edu>
+
+	Removed dap-server dependency as they might not be installed. Added data
+	test using getdap
+	M    testsuite/bes.conf.in
+	M    testsuite/config/unix.exp
+	D    testsuite/fits/cpb.ascii.bescmd
+	D    testsuite/fits/cpb.ascii.bescmd.baseline
+	A    testsuite/fits/cpb.data.bescmd
+	A    testsuite/fits/cpb.data.bescmd.baseline
+	D    testsuite/besstandalone.fits/cpb.ascii.exp
+	A    testsuite/besstandalone.fits/cpb.data.exp
+
+2008-08-29  Patrick West <pwest@ucar.edu>
+
+	Removed dependency of handler library from module library, instead compiling
+	in sources into that library. This is consistent with the other handlers.
+	M    Makefile.am
+
+2008-08-29  Patrick West <pwest@ucar.edu>
+
+	Updated testsuite command list. Changed dependency requirements in
+	configuration for modules.
+	M    testsuite/bes.conf.in
+	M    testsuite/fits/cpb.das.bescmd
+	M    testsuite/fits/cpb.ascii.bescmd
+	M    testsuite/fits/cpb.dds.bescmd
+	M    testsuite/fits/cpb.ddx.bescmd
+	M    testsuite/Makefile.am
+
+2008-07-16  Patrick West <pwest@ucar.edu>
+
+	Checking result of dynamic cast, throwing cast error if fails.
+	M    FitsRequestHandler.cc
+
+2008-05-30  Patrick West <pwest@ucar.edu>
+
+	Adding ancillary das and dds information.
+	M    FitsRequestHandler.cc
+
+2008-05-01  Patrick West <pwest@ucar.edu>
+
+	1.0.3 version
+	M    ChangeLog
+	M    fits_handler.spec
+	M    README
+	M    FitsModule.cc
+	M    OSX_Resources/InstallationCheck
+	M    OSX_Resources/update_mac_package_contents.pl
+	M    INSTALL
+	M    NEWS
+
+2008-04-04  Patrick West <pwest@ucar.edu>
+
+	No longer need individual bes.conf files for testing. Using main one in
+	<prefix>/etc/bes/bes.conf.
+	D    bes.conf
+
+2008-03-03  Patrick West <pwest@ucar.edu>
+	Release 1.0.3. Added testsuite. Updated README and INSTALL.
+	M    ChangeLog
+	A    testsuite
+	A    testsuite/bes.conf.in
+	A    testsuite/common_tests.exp
+	A    testsuite/config
+	A    testsuite/config/unix.exp
+	A    testsuite/fits
+	A    testsuite/fits/cpb.ddx.bescmd.baseline
+	A    testsuite/fits/cpb.das.bescmd
+	A    testsuite/fits/cpb.ascii.bescmd
+	A    testsuite/fits/cpb.das.bescmd.baseline
+	A    testsuite/fits/cpb.ascii.bescmd.baseline
+	A    testsuite/fits/cpb.dds.bescmd
+	A    testsuite/fits/cpb.dds.bescmd.baseline
+	A    testsuite/fits/cpb.ddx.bescmd
+	A    testsuite/besstandalone.fits
+	A    testsuite/besstandalone.fits/cpb.das.exp
+	A    testsuite/besstandalone.fits/cpb.ascii.exp
+	A    testsuite/besstandalone.fits/cpb.dds.exp
+	A    testsuite/besstandalone.fits/cpb.ddx.exp
+	A    testsuite/Makefile.am
+	M    fits_handler.spec
+	M    README
+	M    FitsRequestHandler.cc
+	M    OSX_Resources/InstallationCheck
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/Welcome.html
+	M    configure.ac
+	M    INSTALL
+	M    Makefile.am
+	M    NEWS
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Removed the version of Hyrax so we don't keep having to edit the
+	Welcome.html file
+	M    OSX_Resources/Welcome.html
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Grabbing version information from configure.ac properly.
+	M    OSX_Resources/Info.plist
+	M    configure.ac
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Updated pkg build for Mac OSX. Automated to use package maker and
+	dropdmg.
+	AM   OSX_Resources/update_mac_package_contents.pl
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/ReadMe.txt
+	M    Makefile.am
+
+2008-02-20  Patrick West <pwest@ucar.edu>
+
+	Package config used by libdap and bes
+	A    conf/pkg.m4
+
+2008-02-14  Patrick West <pwest@ucar.edu>
+
+	config_fits.h.in is generated, so don't need to have it in svn.
+	Updated configure to use latest and greatest libdap and bes config
+	macros and m4 files.
+	D    config_fits.h.in
+	M    conf/bes.m4
+	M    conf/libdap.m4
+	M    configure.ac
+	M    Makefile.am
+
+2008-02-02  Patrick West <pwest@ucar.edu>
+
+	Added using namespace libdap where needed.
+	M    fits_read_attributes.h
+	M    fits_read_descriptors.h
+
+2008-01-25  Patrick West <pwest@ucar.edu>
+
+	Forgot to add the bes configuration script updater.
+	A    bes-fits-data.sh.in
+
+2008-01-25  Patrick West <pwest@ucar.edu>
+
+	Error/exception handling changes in the BES. Added OSX resource
+	files for building OSX packages. Added sample data files that are
+	installed in the datadir during an install. Added a configuration
+	script to add inforamtion to the bes configuration file.
+	M    FitsRequestHandler.cc
+	A    OSX_Resources
+	AM   OSX_Resources/InstallationCheck
+	A    OSX_Resources/License.txt
+	A    OSX_Resources/Info.plist
+	A    OSX_Resources/InstallationCheck.strings
+	A    OSX_Resources/ReadMe.txt
+	A    OSX_Resources/Description.plist
+	AM   OSX_Resources/background.jpg
+	A    OSX_Resources/Welcome.html
+	M    configure.ac
+	M    Makefile.am
+	A    data
+	A    data/20060328.185927.chp.bsh.fts
+	A    data/20060308.172859.mk4.rpb.fts
+	A    data/20060308.172859.mk4.cpb.fts
+	A    data/20060328.190602.dpm.alr.fts
+
+2007-08-22  Patrick West <pwest@ucar.edu>
+
+	Changed from using Passive classes to parent classes (Structure,
+	Array, Int16, etc...) as Passive functionality moved there.
+	M    bes.conf
+	M    fits_read_descriptors.cc
+
+2007-07-31  Patrick West <pwest@ucar.edu>
+
+	BESDebug modifications, passing context to BESDEBUG and registering
+	debug context in Module classes.
+	M    FitsModule.cc
+
+2007-07-11  Patrick West <pwest@ucar.edu>
+
+	Using BESDebug rather than BESLog. Removing all things added in the
+	module in the terminate method.
+	M    FitsModule.cc
+
+2007-06-07  Patrick West <pwest@ucar.edu>
+
+	Changed the constructor to the request handler class to take a const
+	string & instead of a string.
+	M    FitsRequestHandler.cc
+	M    FitsRequestHandler.h
+
+2007-04-25  Patrick West <pwest@ucar.edu>
+
+	Moving opendap.ini to bes.conf.
+	A    bes.conf
+	D    opendap.ini
+
+2007-01-09  Patrick West <pwest@ucar.edu>
+
+	Moved source from fits-handler to fits_handler. Changed this in the
+	following files and updated the ChangeLog once more before release.
+	M    ChangeLog
+	M    fits_handler.spec
+	M    configure.ac
+	M    Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2007-01-09  Patrick West <pwest@ucar.edu>
+
+	Handler naming convention, change dash to underscore.
+	A    http://scm.opendap.org:8090/svn/trunk/fits_handler
+	D    http://scm.opendap.org:8090/svn/trunk/fits-handler
+
+2007-01-09  Patrick West <pwest@ucar.edu>
+
+	Release 1.0.1
+	A    fits-handler/ChangeLog
+	A    fits-handler/fits_handler.spec
+	A    fits-handler/README
+	M    fits-handler/configure.ac
+	A    fits-handler/INSTALL
+	M    fits-handler/Makefile.am
+	M    fits-handler/NEWS
+
+2007-01-09  Patrick West <pwest@ucar.edu>
+
+	Added dump method to the request handler for debugging assistance.
+	Modified the configure.ac file to look for includes in the correct
+	place. Updated the .ini file for testing purposes.
+	M    fits-handler/FitsRequestHandler.cc
+	M    fits-handler/FitsRequestHandler.h
+	M    fits-handler/configure.ac
+	M    fits-handler/opendap.ini
+
+2006-11-23  Patrick West <pwest@ucar.edu>
+
+	Added a dump method to the Module class for BES debugging.
+	M    fits-handler/FitsModule.cc
+	M    fits-handler/FitsModule.h
+	M    fits-handler/opendap.ini
+
+2006-11-06  Patrick West <pwest@ucar.edu>
+
+	Was setting BES_LDFLAGS and using BES_LIBS. Now only setting and using
+	BES_LIBS.
+	M    conf/bes.m4
+	M    configure.ac
+
+2006-11-02  Patrick West <pwest@ucar.edu>
+
+	ConstraintEvaluator is now a part of the BESDDSResponse and
+	BESDataDDSResponse classes instead of BESDataHandlerInterface. Any
+	Error exceptions need to be caught in the request handlers and
+	converted into BESHandlerException, which is the non-fatal
+	exception. Removed the building of a bes style cgi application,
+	building only the typical dap style cgi application.
+	D    fits-handler/bes_fits-handler.cc
+	D    fits-handler/FitsHandlerApp.cc
+	D    fits-handler/FitsHandlerApp.h
+	D    fits-handler/fits_module.cc
+	M    fits-handler/FitsRequestHandler.cc
+	M    fits-handler/Makefile.am
+
+2006-09-27  Patrick West <pwest@ucar.edu>
+
+	--without-bes now works for the different handler directories as
+	well as for the dap-server directory. cedar-handler requires bes. If
+	--without-bes is not specified then either --with-bes is looked at
+	if specified, or the bes-config script is looked for.
+	M    fits-handler/configure.ac
+	M    netcdf_handler/configure.ac
+	M    freeform_handler/configure.ac
+	M    hdf4_handler/configure.ac
+	M    hdf5_handler/configure.ac
+	M    jgofs_handler/configure.ac
+	M    cdf-handler/configure.ac
+	M    dap-server/configure.ac
+	M    fits-handler/configure.ac
+	M    netcdf_handler/configure.ac
+	M    freeform_handler/configure.ac
+	M    hdf4_handler/configure.ac
+	M    hdf5_handler/configure.ac
+	M    jgofs_handler/configure.ac
+	M    cdf-handler/configure.ac
+	M    dap-server/configure.ac
+
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Changed the _module library to not use version information and to be
+	built as a module. Update the bes.m4 file to use the --modulesdir
+	flag to bes-config to get the name of the module directory, which is
+	lib/bes.  Updated bes.m4 to be like the other handlers bes.m4.
+	M    conf/bes.m4
+	M    configure.ac
+	M    opendap.ini
+	M    Makefile.am
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	Setting the post constraint variable in the data handler interface
+	to be used when sending the response object.
+	M    FitsRequestHandler.cc
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Passing the name of the module to the initialize and terminate
+	methods of the Module class so that it is set in the bes
+	configuration file instead of hard-coded
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	changed access to file to use access method on Container and added
+	compression parameters to the BES configuraiton file
+
+2006-07-11  Patrick West <pwest@ucar.edu>
+
+	If an attribute doesn't have a name then create one for it in
+	fits_read_attributes. In fits_read_descriptors added the dataset
+	name to the dds and data dds so that client applications could parse
+	it.
+	M    fits_read_attributes.cc
+	M    fits_read_descriptors.cc
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	dap_cmdmodule library renamed to dap_cmd_module so that all loaded module libraries are named <something>_module
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	In the help response added begin and end tags called handler to
+	separate the different hander help responses and added a tag called
+	name within the handler tag to say which handler this help is for
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	distribution check
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	distribution check
+
+2006-06-28  Patrick West <pwest@ucar.edu>
+
+	bes exception updates, cleaned up configuration file
+
+2006-06-14  Patrick West <pwest@ucar.edu>
+
+	configuration updates, bes modules in lib/bes
+
+2006-05-24  Patrick West <pwest@ucar.edu>
+
+	bes module updates
+
+2006-05-10  Patrick West <pwest@ucar.edu>
+
+	default modules loaded in handler app
+
+2006-05-10  Patrick West <pwest@ucar.edu>
+
+	bes enabled
+
+2006-01-18  Patrick West <pwest@ucar.edu>
+
+	up to date configuration with cgi handler using just dap and one
+	using bes
+
+2005-09-28  Patrick West <pwest@ucar.edu>
+
+	up to date with latest bes code
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	Copied etc scripts into this directory
+
+2005-08-22  Patrick West <pwest@ucar.edu>
+
+	using App class for Handler and cleaned up Makefile for Handler
+
+2005-08-08  root
+
+	Auto reset of Subversion properties
+
+2005-08-01  Patrick West <pwest@ucar.edu>
+
+	no need to link in aggregation handler
+
+2005-07-06  Patrick West <pwest@ucar.edu>
+
+	Adding fits handler to OPeNDAP svn trunk
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Creating fits-hander.

@@ -1,0 +1,4 @@
+Attributes {
+    MyArray3D {
+    }
+}

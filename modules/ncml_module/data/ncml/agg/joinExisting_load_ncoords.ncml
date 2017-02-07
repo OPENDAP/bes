@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<netcdf title="joinExisting test on netcdf Array granules without specified ncoords or cache"
+	>
+  
+  <attribute name="Description" type="string"
+	     value=" joinExisting test on netcdf granules"/>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <!-- Has ncoords == 2 -->
+    <netcdf location="data/nc/simple_test/test_1.nc"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/simple_test/test_1.nc" />
+    </netcdf>
+
+    <!-- Has ncoords == 2 -->
+    <netcdf location="data/nc/simple_test/test_1.nc"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/simple_test/test_1.nc" />
+    </netcdf>
+
+    <!-- Has ncoords == 2 -->
+    <netcdf location="data/nc/simple_test/test_1.nc"> 
+      <attribute name="GranuleFilename" type="string" 
+		 value="data/nc/simple_test/test_1.nc" />
+    </netcdf>
+
+  </aggregation>
+  
+</netcdf>

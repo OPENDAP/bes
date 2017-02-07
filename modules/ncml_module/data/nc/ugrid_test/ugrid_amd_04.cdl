@@ -1,0 +1,55 @@
+
+netcdf ugrid_amd_04 {
+dimensions:
+	condition = 4 ;
+	time = 1 ;
+	faces = 8 ;
+	nodes = 9 ;
+	three = 3 ;
+variables:
+	int fvcom_mesh ;
+		fvcom_mesh:face_node_connectivity = "fnca" ;
+		fvcom_mesh:standard_name = "mesh_topology" ;
+		fvcom_mesh:topology_dimension = 2 ;
+		fvcom_mesh:node_coordinates = "X Y" ;
+    float time(time);
+	float X(nodes) ;
+		X:grid = "element" ;
+		X:grid_location = "node" ;
+	float Y(nodes) ;
+		Y:grid = "element" ;
+		Y:grid_location = "node" ;
+	int fnca(faces, three) ;
+		fnca:start_index = 1 ;
+		fnca:standard_name = "face_node_connectivity" ;
+	float twoDnodedata(time, nodes) ;
+		twoDnodedata:coordinates = "Y X" ;
+		twoDnodedata:mesh = "fvcom_mesh" ;
+		twoDnodedata:location = "node" ;
+    
+data:
+
+ fvcom_mesh = 17;
+ 
+ time = 9.0;
+ 
+ X = -1.0, 0.0, 1.0, 1.5,  1.0,  0.0, -1.0, -1.5, 0.0 ;
+
+ Y =  1.0, 1.5, 1.0, 0.0, -1.0, -1.5, -1.0,  0.0, 0.0 ;
+
+ fnca =
+  1, 2, 9,
+  2, 3, 9,
+  3, 4, 9,
+  4, 5, 9,
+  5, 6, 9,
+  6, 7, 9,
+  7, 8, 9,
+  8, 1, 9;
+ 
+
+
+ twoDnodedata = 
+  9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9;
+
+}

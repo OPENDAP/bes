@@ -1,0 +1,12 @@
+/ This is the format description file for the data files mdy.dat and
+/ yymmdd.dat.
+
+ASCII_input_data "Aif"
+/ASCII_input_data "ASCII input format"
+date_mm/dd/yy 1 10 char 0
+/date_m/d/y 1 10 char 0
+
+ASCII_output_data "Aof"
+/ASCII_output_data "ASCII output format"
+/date_yymmdd 1 6 char 0
+date_yymmdd 1 12 char 0

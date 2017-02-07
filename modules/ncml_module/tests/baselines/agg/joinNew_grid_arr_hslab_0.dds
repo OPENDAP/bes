@@ -1,0 +1,5 @@
+Dataset {
+    Structure {
+        UInt32 dsp_band_1[filename = 1][lat = 1][lon = 1024];
+    } dsp_band_1;
+} joinNew_grid.ncml;

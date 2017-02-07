@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- joinExisting test on netcdf Grid granules  -->
+<netcdf title="joinExisting test to add metadata container on netcdf Grid granules">
+  
+  <attribute name="Test Description" type="string"
+	     value="Adding metadata to the auto-generated aggregated map vector."/>
+
+  <!-- Specify only metadata for the variable.
+       Since this is a "forward declaration" of the variable, 
+       the type must match too! -->
+  <variable name="time" type="int">
+    <!-- Specify an attr container -->
+    <attribute name="AdditionContainer"
+	       type="Structure">
+      <attribute name="AddedAttribute" type="string" value="Added attribute inside container."/>
+    </attribute>
+	       
+  </variable>
+
+  <aggregation type="joinExisting" 
+	       dimName="time" >
+
+    <netcdf location="data/nc/simple_test/test_grid_0.nc" 
+	    ncoords="1"> 
+    </netcdf>
+    
+    <netcdf location="data/nc/simple_test/test_grid_1.nc"
+	    ncoords="1"> 
+    </netcdf>
+        
+    <netcdf location="data/nc/simple_test/test_grid_2.nc" 
+	    ncoords="1"> 
+    </netcdf>
+
+  </aggregation>
+
+   
+</netcdf>

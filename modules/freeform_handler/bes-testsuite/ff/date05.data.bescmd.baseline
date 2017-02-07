@@ -1,0 +1,9 @@
+The data:
+Sequence {
+    String DODS_URL;
+} GSO_AVHRR = { 
+0: { "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/f98181072632.pvu.Z" }, 
+1: { "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/f98181185133.pvu.Z" }, 
+2: { "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/h98181105202.pvu.Z" }, 
+3: { "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/h98181221128.pvu.Z" } };
+

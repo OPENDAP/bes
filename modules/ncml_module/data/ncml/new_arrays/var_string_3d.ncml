@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <dimension name="x" length="3"/>
+  <dimension name="y" length="3"/>
+  <dimension name="z" length="3"/>
+  <!-- Create a new 3D array -->
+  <variable name="MyArray3D" type="string" shape="x y z">
+    <values>
+      (0,0,0) (0,0,1) (0,0,2)
+      (0,1,0) (0,1,1) (0,1,2)
+      (0,2,0) (0,2,1) (0,2,2)
+      (1,0,0) (1,0,1) (1,0,2)
+      (1,1,0) (1,1,1) (1,1,2)
+      (1,2,0) (1,2,1) (1,2,2)
+      (2,0,0) (2,0,1) (2,0,2)
+      (2,1,0) (2,1,1) (2,1,2)
+      (2,2,0) (2,2,1) (2,2,2)
+  </values> <!-- these must be in row slowest varying first order (left to right in shape) -->
+  </variable>
+</netcdf>

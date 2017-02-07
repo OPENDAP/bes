@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     Passthrough test case, no transformations,
+     for use in testing constraints.
+     @author mjohnson
+  -->
+<netcdf location="data/ncml/3B42.001003.5.HDF">
+</netcdf>
+

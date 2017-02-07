@@ -33,22 +33,13 @@
 #ifndef I_BESDapResponse
 #define I_BESDapResponse 1
 
-//#include <DAS.h>
-
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
-
-#if 0
-using namespace libdap;
-#endif
 
 /** @brief Represents an OPeNDAP DAP response object within the BES
  */
 class BESDapResponse: public BESResponseObject {
 private:
-#if 0
-	DAS * _das;
-#endif
 	string d_dap_client_protocol;
 	bool d_explicit_containers;
 
@@ -87,11 +78,12 @@ public:
 		return d_request_xml_base;
 	}
 
-	virtual void set_container(const string &cn) = 0;
 	virtual void set_constraint(BESDataHandlerInterface &dhi);
 	virtual void set_dap4_constraint(BESDataHandlerInterface &dhi);
 	virtual void set_dap4_function(BESDataHandlerInterface &dhi);
-	virtual void clear_container() = 0;
+
+    virtual void set_container(const string &cn) = 0;
+    virtual void clear_container() = 0;
 
 	virtual void dump(ostream &strm) const;
 };

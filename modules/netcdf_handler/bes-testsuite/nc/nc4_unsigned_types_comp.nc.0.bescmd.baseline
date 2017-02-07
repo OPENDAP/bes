@@ -1,0 +1,24 @@
+Attributes {
+    lat {
+        String units "degrees_north";
+    }
+    lon {
+        String units "degrees_east";
+    }
+    time {
+        String units "seconds";
+    }
+    temp {
+    }
+    rh {
+        UInt16 _FillValue 9999;
+    }
+    NC_GLOBAL {
+        String title "Hyrax/netcdf handler test file 2";
+        Float64 version 1.000000000000000;
+        String description "This file has all of the new netcdf 4 cardinal data types.";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "time";
+    }
+}

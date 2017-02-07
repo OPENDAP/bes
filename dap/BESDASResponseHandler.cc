@@ -30,11 +30,15 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DAS.h>
+
 #include "BESDASResponseHandler.h"
 #include "BESDASResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
-//#include "BESDapTransmit.h"
+
+using namespace libdap;
+using namespace std;
 
 BESDASResponseHandler::BESDASResponseHandler( const string &name )
     : BESResponseHandler( name )

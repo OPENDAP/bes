@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Test we can't add a variable in the wrong place, here within an attribute -->
+  <attribute name="NewAttributeContainer" type="Structure">
+    <variable name="Badness" type="string"><values>This should error!</values></variable>`
+  </attribute>
+</netcdf>
+
+

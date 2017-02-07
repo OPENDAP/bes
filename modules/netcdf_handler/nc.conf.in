@@ -1,0 +1,79 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP NetCDF Data Handler BES Module Configuration file             #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=nc
+BES.module.nc=@bes_modules_dir@/libnc_module.so
+
+#-----------------------------------------------------------------------#
+# Setting the data information
+#-----------------------------------------------------------------------#
+
+# The TypeMatch parameter is a list of handler/module names and a regular
+# expression separated by a colon. If the regular expression matches an item,
+# then the BES uses the associated handler/module. Each <handler>:<regular
+# expression> pair is followed by a semicolon. This is used when creating
+# containers in the BES (the 'set container' command). The example regular
+# expression says to use the 'h4' handler for any file with an extension of
+# 'hdf', 'HDF' or 'eos' which may also end in '.gz' or '.bz2'. In the latter
+# case the file will be treated as a compressed file.
+
+# BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
+
+# To test your TypeMatch regular expression you can use besregtest as
+# follows:
+
+# % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
+# expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
+
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+
+#-----------------------------------------------------------------------#
+# NetCDF handler specific parameters
+#-----------------------------------------------------------------------#
+# ShowSharedDimensions: Include shared dimensions as separate variables.
+#   (true,yes|false,no, defaults to true for DAP 3.2 clients and earlier, 
+#    false for DAP 3.3 and later)
+#
+# When set tot true, the DAP2 Grid type will no longer have 'coordinate 
+# variables' added outside its scope. Not doing this makes logical sense, 
+# but adding those CVs makes it easier for clients like Ferret, GrADS, etc.
+#
+NC.ShowSharedDimensions=true
+
+# In previous versions of this handler, we used the unsigned DAP2 type
+# Byte for signed bytes in netcdf. This can be confusing for client programs
+# and people. This option, when set (true), makes the handler use a signed
+# 16-bit inerger for Bytes (so that the sign is not lost). To get the old
+# behavior, change true to false or comment out the line.
+
+NC.PromoteByteToShort=true
+
+# Caching. 
+# 
+# The netCDF handler can cache (in memory) many of the different
+# responses it builds. If the NC.CacheEntries value is zero, the cache
+# is turned off. Setting the NC.CacheEntries to a value greater than
+# zero enables caching in memory that number of responses. The cache
+# uses a LRU policy for purging old entries; tune its behavior by
+# changing the value and the CachePurgeLevel value below. Note that
+# this feature is on by default.
+
+NC.CacheEntries = 100
+
+# The NC.CachePurgeLevel key determines how much of the in-memory cache is
+# removed when it is purged. The value 0.2 (the default) configures the 
+# software to remove the oldest 20% of items from the cache. You do not 
+# need to edit this to use the cache since 0.2 is the default value.
+
+# NC.CachePurgeLevel = 0.2
+

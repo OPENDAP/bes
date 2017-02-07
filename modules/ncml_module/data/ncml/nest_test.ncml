@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test case for NcML handler for complex 
+     hierarchical data.  Tests:
+     1) Changing an attribute value within a nested attribute
+     container
+     2) Adding a new attibute container (Structure) containing 
+     new atomic attributes. 
+     3) Adding a new atomic attribute to a variable
+     several levels deep within a variable hierarchy
+     
+     @author mjohnson
+  -->
+<netcdf location="data/ncml/3B42.001003.5.HDF">
+  
+  <!-- 1) Change an existing nested attribute structure 
+       by changing the OrbitNumber as mandatory  
+    i.e.  change existing "CoreMetadata.OrbitNumber.Mandatory" -->
+  <attribute name="CoreMetadata" type="Structure">
+    <attribute name="OrbitNumber" type="Structure">
+     <attribute name="Mandatory" type="String" value="TRUE"/>
+    </attribute>
+  </attribute>
+  
+ <!-- 2) Add an entirely new attribute structure of our own to
+       the "CoreMetadata" container in global (dataset) 
+       attribute container.  Also notice use of DAP URL type. -->
+  <attribute name="CoreMetadata" type="Structure">
+    <attribute name="ExtraInfoURL" type="Structure">
+      <attribute name="Value" type="URL" value="http://foo.bar.net"/>
+      <attribute name="Data_Location" type="String" value="PGE"/>
+      <attribute name="Mandatory" type="String" value="FALSE" />
+    </attribute>
+  </attribute>
+	
+  <!-- 3) Add a new attribute to the "percipitate" variable 
+       within nested variables (Structures in this case) 
+    i.e. Add attribute:
+       "DATA_GRANULE.PlanetaryGrid.percipitate.units" to existing
+       variable "DATA_GRANULE.PlanetaryGrid.percipitate" -->
+  <variable name="DATA_GRANULE" type="Structure">
+    <variable name="PlanetaryGrid" type="Structure">
+      <variable name="percipitate">
+	<attribute name="units" type="String" value="inches"/>
+      </variable>
+    </variable>
+  </variable>
+
+  </netcdf>
+

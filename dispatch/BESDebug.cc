@@ -39,15 +39,11 @@
 #include <iostream>
 #include <sstream>
 
-using std::ofstream;
-using std::ios;
-using std::cout;
-using std::endl;
-using std::ostringstream;
-
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
+
+using namespace std;
 
 ostream *BESDebug::_debug_strm = NULL;
 bool BESDebug::_debug_strm_created = false;

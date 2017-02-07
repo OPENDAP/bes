@@ -1,0 +1,11 @@
+Dataset {
+    Grid {
+      Array:
+        UInt32 dsp_band_1[station = 1][lat = 1024][lon = 1024];
+      Maps:
+        Float64 station[station = 1];
+        Float64 lat[1024];
+        Float64 lon[1024];
+    } dsp_band_1;
+    Float64 station[station = 1];
+} joinNew_grid_meta_2.ncml;

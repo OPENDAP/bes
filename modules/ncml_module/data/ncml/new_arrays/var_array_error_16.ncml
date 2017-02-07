@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Product of dimensions will be > 2147483647, the max size of flattened array -->
+  <dimension name="time" length="2147483647"/>
+  <dimension name="x" length="2"/>
+  <variable name="MyAutoArray" type="int" shape="time x">
+    <attribute name="Description" type="string">Testing too large of an array is error</attribute>
+    <values start="0" increment="1"/>
+  </variable>
+</netcdf>

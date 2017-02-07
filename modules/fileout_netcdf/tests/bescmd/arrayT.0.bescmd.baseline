@@ -1,0 +1,10 @@
+Dataset {
+    Byte byte_array[byte_dim1 = 2][byte_dim2 = 5];
+    Int16 i16_array[i16_dim1 = 3][i16_dim2 = 6];
+    Int32 i32_array[i32_dim1 = 2][i32_dim2 = 20];
+    UInt16 ui16_array[ui16_dim1 = 3][ui16_dim2 = 7];
+    UInt32 ui32_array[ui32_dim1 = 3][ui32_dim2 = 40];
+    Float32 f32_array[f32_dim1 = 100];
+    Float64 f64_array[f64_dim1 = 2][f64_dim2 = 2][f64_dim3 = 100];
+    String str_array[str_dim1 = 2][str_dim2 = 3][str_dim3 = 6];
+} virtual;

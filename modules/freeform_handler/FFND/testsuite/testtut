@@ -1,0 +1,99 @@
+# version testing tutorial on the sun
+date >&trash
+cat trash 
+$TSBIN_DIR/newform >&trash 
+cat trash
+rm trash
+echo "**************************************************************"
+echo "TESTING the FREEFORM Tutorial" 
+echo "**************************************************************"
+echo "**************************************************************"
+echo "TESTING latlon (DOUBLE)" 
+echo "**************************************************************"
+rm latlond.bin
+echo "$TSBIN_DIR/newform latlon.dat -f latlon1.fmt -o latlond.bin" 
+($TSBIN_DIR/newform latlon.dat -f latlon1.fmt -o latlond.bin) 
+rm latlon.tst
+echo "$TSBIN_DIR/newform latlond.bin -f latlond.fmt -o latlon.tst" 
+($TSBIN_DIR/newform latlond.bin -f latlond.fmt -o latlon.tst)
+diff latlon.tst latlon.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING latlon (LONG)" 
+echo "*********************************************************"
+rm latlon.bin
+echo "$TSBIN_DIR/newform latlon.dat -f latlon.fmt -o latlon.bin" 
+($TSBIN_DIR/newform latlon.dat -f latlon.fmt -o latlon.bin) 
+rm latlonst.dat
+echo "$TSBIN_DIR/newform latlon.bin -f latlon.fmt -o latlonst.dat" 
+($TSBIN_DIR/newform latlon.bin -f latlon.fmt -o latlonst.dat)
+diff latlonst.dat latlon.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING latlon (deg_min_sec)" 
+echo "*********************************************************"
+rm d_m_s.tst
+echo "$TSBIN_DIR/newform latlon.bin -f latlon2.fmt -o d_m_s.tst" 
+($TSBIN_DIR/newform latlon.bin -f latlon2.fmt -o d_m_s.tst) 
+diff d_m_s.tst d_m_s.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING latlon (deg_min)" 
+echo "*********************************************************"
+rm d_m.tst
+echo "$TSBIN_DIR/newform latlon.bin -f latlon3.fmt -o d_m.tst" 
+($TSBIN_DIR/newform latlon.bin -f latlon3.fmt -o d_m.tst) 
+diff d_m.tst d_m.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING latlon (degabsm)" 
+echo "*********************************************************"
+rm degabsm.tst
+echo "$TSBIN_DIR/newform latlon.bin -f latlon4.fmt -o degabsm.tst" 
+($TSBIN_DIR/newform latlon.bin -f latlon4.fmt -o degabsm.tst) 
+diff degabsm.tst degabsm.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING latlon (deg_min_geog)" 
+echo "*********************************************************"
+rm degmgeog.tst
+echo "$TSBIN_DIR/newform latlon.bin -f latlon5.fmt -o degmgeog.tst" 
+($TSBIN_DIR/newform latlon.bin -f latlon5.fmt -o degmgeog.tst)  
+diff degmgeog.tst degmgeog.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING Degrees, Minutes, Seconds conversion"
+echo "*********************************************************"
+rm ll_d_m_s.dat
+echo "$TSBIN_DIR/newform latlon2.bin -f ll_d_m_s.fmt -o ll_d_m_s.dat"
+($TSBIN_DIR/newform latlon2.bin -f ll_d_m_s.fmt -o ll_d_m_s.dat) 
+diff ll_d_m_s.dat ll_d_m_s.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING Date and Time conversions"
+echo "*********************************************************"
+echo "*********************************************************"
+echo "TESTING Year/Month/Day formatting"
+echo "*********************************************************"
+rm yymmdd.dat
+echo "$TSBIN_DIR/newform mdy.dat -f yymmdd.fmt -o yymmdd.dat"
+($TSBIN_DIR/newform mdy.dat -f yymmdd.fmt -o yymmdd.dat) 
+diff yymmdd.dat yymmdd.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "*********************************************************"
+echo "TESTING Serial Time conversions"
+echo "*********************************************************"
+rm serial.bin
+echo "$TSBIN_DIR/newform time.dat -f serial.fmt -ift "ASCII ymdhms date" -o serial.bin"
+($TSBIN_DIR/newform time.dat -f serial.fmt -ift "ASCII ymdhms date" -o serial.bin) 
+rm serial.dat
+echo "$TSBIN_DIR/newform serial.bin -oft "ASCII serial date" -o serial.dat"
+($TSBIN_DIR/newform serial.bin -oft "ASCII serial date" -o serial.dat) 
+diff serial.dat serial.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed
+echo "***** TUTORIAL TEST WORKED LIKE A CHARM *****"
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed
+

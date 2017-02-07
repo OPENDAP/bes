@@ -1,0 +1,7 @@
+ASCII_input_data	"Made from degmgeog.afm"
+latitude_deg_abs   6  7 int16 0
+latitude_min_abs  11 15 float32 2
+longitude_deg_abs 21 23 int16 0
+longitude_min_abs 27 31 float32 2
+geog_quad_code    40 40 text 1
+

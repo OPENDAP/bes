@@ -1,0 +1,2 @@
+Dataset: function_result_fnoc1.nc
+promoted_message, "This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type."

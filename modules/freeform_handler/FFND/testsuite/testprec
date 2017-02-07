@@ -1,0 +1,233 @@
+# this file is for testing precisions of freeform on the sun
+#onintr
+date >&trash
+cat trash
+$TSBIN_DIR/newform >&trash
+cat trash
+$TSBAT_DIR/line_feed
+echo "***********************************************************"
+echo "                TESTING PRECISION MANIPULATIONS"
+echo "***********************************************************"
+$TSBAT_DIR/line_feed
+#
+# This section tests the FREEFORM Precision Calculations
+#
+#	The data is in the file testprec.in:
+#		1234567
+#		      1
+#		     12
+#		    123
+#		   1234
+#		  12345
+#		 123456
+#		1234567
+#
+#	These numbers are:
+#	   Precision = 1   Precision = 3   Precision = 5
+#		      .1    	    .001     	  .00001
+#		     1.2    	    .012     	  .00012
+#		    12.3    	    .123     	  .00123
+#		   123.4    	   1.234     	  .01234
+#		  1234.5    	  12.345     	  .12345
+#		 12345.6    	 123.456     	 1.23456
+#		123456.7    	1234.567     	12.34567
+#
+$TSBAT_DIR/line_feed
+echo "*********************************************************"
+echo " TESTING NINE ASCII LONG TO ASCII FLOAT COMBINATIONS "
+echo "*********************************************************"
+#                   convert  binary
+#                   to         1 3 5
+#                   ASCII    1      
+#                            3      
+#                            5      
+#
+echo " ASCII LONG(1) to ASCII FLOAT(1) "
+$TSBAT_DIR/bin2asc prec_l1a.fmt prec_f1a.fmt testprec.in al1af1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(1) to ASCII FLOAT(1) "
+echo " ASCII LONG(3) to ASCII FLOAT(3) "
+$TSBAT_DIR/bin2asc prec_l3a.fmt prec_f3a.fmt testprec.in al3af3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(3) to ASCII FLOAT(3) "
+echo " ASCII LONG(5) to ASCII FLOAT(5) "
+$TSBAT_DIR/bin2asc prec_l5a.fmt prec_f5a.fmt testprec.in al5af5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(5) to ASCII FLOAT(5) "
+echo " ASCII LONG(3) to ASCII FLOAT(1) "
+$TSBAT_DIR/bin2asc prec_l3a.fmt prec_f1a.fmt testprec.in al3af1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(3) to ASCII FLOAT(1) "
+echo " ASCII LONG(5) to ASCII FLOAT(1) "
+$TSBAT_DIR/bin2asc prec_l5a.fmt prec_f1a.fmt testprec.in al5af1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(5) to ASCII FLOAT(1) "
+echo " ASCII LONG(5) to ASCII FLOAT(3) "
+$TSBAT_DIR/bin2asc prec_l5a.fmt prec_f3a.fmt testprec.in al5af3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(5) to ASCII FLOAT(3) "
+echo " ASCII LONG(1) to ASCII FLOAT(3) "
+$TSBAT_DIR/bin2asc prec_l1a.fmt prec_f3a.fmt testprec.in al1af3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(1) to ASCII FLOAT(3) "
+echo " ASCII LONG(1) to ASCII FLOAT(5) "
+$TSBAT_DIR/bin2asc prec_l1a.fmt prec_f5a.fmt testprec.in al1af5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(1) to ASCII FLOAT(5) "
+echo " ASCII LONG(3) to ASCII FLOAT(5) "
+$TSBAT_DIR/bin2asc prec_l3a.fmt prec_f5a.fmt testprec.in al3af5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(3) to ASCII FLOAT(5) "
+$TSBAT_DIR/line_feed 
+echo "**************************************************************"
+echo "     TESTING NINE BINARY LONG TO ASCII FLOAT COMBINATIONS "
+echo "**************************************************************"
+$TSBAT_DIR/line_feed
+#                   convert  binary
+#                   to         1 3 5
+#                   ASCII    1 x x x
+#                            3 x x x
+#                            5 x x x
+#
+echo " BINARY LONG(1) to ASCII FLOAT(1) "
+$TSBAT_DIR/bin2asc prec_l1b.fmt prec_f1a.fmt testprec.bin bl1af1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(1) to ASCII FLOAT(1) "
+echo " BINARY LONG(3) to ASCII FLOAT(3) "
+$TSBAT_DIR/bin2asc prec_l3b.fmt prec_f3a.fmt testprec.bin bl3af3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(3) to ASCII FLOAT(3) "
+echo " BINARY LONG(5) to ASCII FLOAT(5) "
+$TSBAT_DIR/bin2asc prec_l5b.fmt prec_f5a.fmt testprec.bin bl5af5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(5) to ASCII FLOAT(5) "
+echo " BINARY LONG(3) to ASCII FLOAT(1) "
+$TSBAT_DIR/bin2asc prec_l3b.fmt prec_f1a.fmt testprec.bin bl3af1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(3) to ASCII FLOAT(1) "
+echo " BINARY LONG(5) to ASCII FLOAT(1) "
+$TSBAT_DIR/bin2asc prec_l5b.fmt prec_f1a.fmt testprec.bin bl5af1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(5) to ASCII FLOAT(1) "
+echo " BINARY LONG(5) to ASCII FLOAT(3) "
+$TSBAT_DIR/bin2asc prec_l5b.fmt prec_f3a.fmt testprec.bin bl5af3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(5) to ASCII FLOAT(3) "
+echo " BINARY LONG(1) to ASCII FLOAT(3) "
+$TSBAT_DIR/bin2asc prec_l1b.fmt prec_f3a.fmt testprec.bin bl1af3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(1) to ASCII FLOAT(3) "
+echo " BINARY LONG(1) to ASCII FLOAT(5) "
+$TSBAT_DIR/bin2asc prec_l1b.fmt prec_f5a.fmt testprec.bin bl1af5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(1) to ASCII FLOAT(5) "
+echo " BINARY LONG(3) to ASCII FLOAT(5) "
+$TSBAT_DIR/bin2asc prec_l3b.fmt prec_f5a.fmt testprec.bin bl3af5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(3) to ASCII FLOAT(5) "
+$TSBAT_DIR/line_feed
+echo "**************************************************************"
+echo " NINE ASCII to BINARY LONG COMBINATIONS "
+echo "**************************************************************"
+$TSBAT_DIR/line_feed
+#                     convert  ASCII
+#                     to       1 3 5
+#                     binary 1 x x x
+#                            3 x x x
+#                            5 x x x
+#
+#
+echo " ASCII LONG(1) to BINARY LONG(1) "
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/asc2bin prec_l1a.fmt prec_l1b.fmt testprec.in readfile.in sameprec.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(1) to BINARY LONG(1) "
+echo " ASCII LONG(3) to BINARY LONG(3) "
+$TSBAT_DIR/asc2bin prec_l3a.fmt prec_l3b.fmt testprec.in readfile.in sameprec.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(3) to BINARY LONG(3) "
+echo " ASCII LONG(5) to BINARY LONG(5) "
+$TSBAT_DIR/asc2bin prec_l5a.fmt prec_l5b.fmt testprec.in readfile.in sameprec.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(5) to BINARY LONG(5) "
+echo " ASCII LONG(1) to BINARY LONG(3) "
+$TSBAT_DIR/asc2bin prec_l1a.fmt prec_l3b.fmt testprec.in readfile.in asc1bin3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(1) to BINARY LONG(3) "
+echo " ASCII LONG(1) to binary LONG(5)"
+$TSBAT_DIR/asc2bin prec_l1a.fmt prec_l5b.fmt testprec.in readfile.in asc1bin5.sav 6
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(1) to BINARY LONG(5) "
+echo " ASCII LONG(3) to BINARY LONG(1) "
+$TSBAT_DIR/asc2bin prec_l3a.fmt prec_l1b.fmt testprec.in readfile.in asc3bin1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(3) to BINARY LONG(1) "
+echo " ASCII LONG(3) to BINARY LONG(5) "
+$TSBAT_DIR/asc2bin prec_l3a.fmt prec_l5b.fmt testprec.in readfile.in asc3bin5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(3) to BINARY LONG(5) "
+echo " ASCII LONG(5) to BINARY LONG(1) "
+$TSBAT_DIR/asc2bin prec_l5a.fmt prec_l1b.fmt testprec.in readfile.in asc5bin1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(5) to BINARY LONG(1) "
+echo " ASCII LONG(5) to BINARY LONG(3) "
+$TSBAT_DIR/asc2bin prec_l5a.fmt prec_l3b.fmt testprec.in readfile.in asc5bin3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE ASCII LONG(5) to BINARY LONG(3) "
+$TSBAT_DIR/line_feed
+echo "**************************************************************"
+echo " NINE BINARY TO ASCII LONG COMBINATIONS "
+echo "**************************************************************"
+$TSBAT_DIR/line_feed
+#                   convert  binary
+#                   to         1 3 5
+#                   ASCII    1 x x x 
+#                            3 x x x 
+#                            5 x x x 
+#
+echo " BINARY LONG(1) to ASCII LONG(1) "
+$TSBAT_DIR/bin2asc prec_l1b.fmt prec_l1a.fmt testprec.bin bin1asc1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(1) to ASCII LONG(1) "
+echo " BINARY LONG(3) to ASCII LONG(3) "
+$TSBAT_DIR/bin2asc prec_l3b.fmt prec_l3a.fmt testprec.bin bin3asc3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(3) to ASCII LONG(3) "
+echo " BINARY LONG(5) to ASCII LONG(5) "
+$TSBAT_DIR/bin2asc prec_l5b.fmt prec_l5a.fmt testprec.bin bin5asc5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(5) to ASCII LONG(5) "
+echo " BINARY LONG(3) to ASCII LONG(1) "
+$TSBAT_DIR/bin2asc prec_l3b.fmt prec_l1a.fmt testprec.bin bin3asc1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(3) to ASCII LONG(1) "
+echo " BINARY LONG(5) to ASCII LONG(1) "
+$TSBAT_DIR/bin2asc prec_l5b.fmt prec_l1a.fmt testprec.bin bin5asc1.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(5) to ASCII LONG(1) "
+echo " BINARY LONG(5) to ASCII LONG(3) "
+$TSBAT_DIR/bin2asc prec_l5b.fmt prec_l3a.fmt testprec.bin bin5asc3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(5) to ASCII LONG(3) "
+echo " BINARY LONG(1) to ASCII LONG(3) "
+$TSBAT_DIR/bin2asc prec_l1b.fmt prec_l3a.fmt testprec.bin bin1asc3.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(1) to ASCII LONG(3) "
+echo " BINARY LONG(1) to ASCII LONG(5) "
+$TSBAT_DIR/bin2asc prec_l1b.fmt prec_l5a.fmt testprec.bin bin1asc5.sav 6
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(1) to ASCII LONG(5) "
+echo " BINARY LONG(3) to ASCII LONG(5) "
+$TSBAT_DIR/bin2asc prec_l3b.fmt prec_l5a.fmt testprec.bin bin3asc5.sav 0
+$TSBAT_DIR/chktrash || exit 3
+echo " DONE BINARY LONG(3) to ASCII LONG(5) "
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed
+echo "***** PRECISION TEST WORKED LIKE A CHARM *****"
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed
+#if everything was fine
+exit 0
+#if there is a failure
+stop:
+	exit 1

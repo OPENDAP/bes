@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-bio-8080-exec-1:37">
+  <bes:setContext name="xdap_accept">2.0</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">dap2</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContainer name="catalogContainer" space="catalog">/data/TRMM_3A11_two_granule_aggregation.ncml</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer" />
+  </bes:define>
+  <bes:get type="dds" definition="d1" />
+</bes:request>

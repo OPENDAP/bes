@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- Create a new simple scalar variable at Dataset scope -->
+  <variable name="AYummyFish" type="char">
+    <!-- make sure we can add metadata properly to new variable -->
+    <attribute name="FishedFrom" type="String" value="The Arctic"/>
+    <values>C</values> <!-- Standard C character, will be a DAP Byte value == 67 -->
+  </variable>
+</netcdf>

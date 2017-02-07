@@ -1,0 +1,112 @@
+m4_include([package.m4])
+
+# The template file used to create the input files for besstandalone
+m4_define([bescmd_template],[$abs_srcdir/template.bescmd.in])
+m4_define([bes_conf_path],[$abs_builddir/bes.conf])
+m4_define([datadir], [/data])
+m4_define([baselines_path],[$abs_srcdir/baselines])
+
+dnl m4_define([full_data_path],[$abs_topsrcdir/data])
+
+AT_INIT([xml data handler autotest testsuite])
+
+AT_TESTED([besstandalone])
+
+AT_ARG_OPTION_ARG([generate g],
+    [  -g arg, --generate=arg   Build the baseline file for test 'arg'],
+    [if ./generate_metadata_baseline.sh $at_arg_generate; then
+         echo "Built baseline for $at_arg_generate"
+     else
+         echo "Could not generate baseline for $at_arg_generate"
+     fi     
+     exit],[])
+
+AT_ARG_OPTION_ARG([generate_data a],
+    [  -a arg, --generate_data=arg   Build the baseline file for test 'arg'],
+    [if ./generate_data_baseline.sh $at_arg_generate_data; then
+         echo "Built baseline for $at_arg_generate_data"
+     else
+         echo "Could not generate baseline for $at_arg_generate_data"
+     fi     
+     exit],[])
+
+dnl $1 == filename
+dnl $2 == The response type; used in "<get type="%response_type%" definition="d" />"
+m4_define([AT_MAKE_BESCMD_FILE_NO_CONSTRAINT],
+[
+sed -e "s:%filename%:datadir/$1:" -e "s:%response_type%:$2:" -e "s|%constraint_expr%||" < bescmd_template > test.bescmd
+])
+
+dnl $1 == filename
+dnl $2 == {ascii | xd}
+dnl $3 == "constraint_expr"
+m4_define([AT_MAKE_BESCMD_FILE_WITH_CONSTRAINT],
+[
+sed -e "s:%filename%:datadir/$1:" -e "s:%response_type%:$2:" -e "s|%constraint_expr%|<constraint>$3</constraint>|" < bescmd_template > test.bescmd
+])
+
+dnl $1 == filename
+dnl $2 == The response type
+dnl $3 == "constraint_expr" (can be [] if none)
+m4_define([AT_MAKE_BESCMD_FILE],
+[
+m4_if([$3], [], [AT_MAKE_BESCMD_FILE_NO_CONSTRAINT([$1], [$2])], [AT_MAKE_BESCMD_FILE_WITH_CONSTRAINT([$1], [$2], [$3])]) 
+])
+
+
+dnl Run the besstandlone on the filename for the response type
+dnl and compare stdout to the baseline for the response.
+dnl filename is expected to be the basename as the datadir is added.
+dnl $1 == filename
+dnl $2 == The response type
+dnl $3 == baseline_filename (with path prefix but not response suffix!)
+dnl $4 == (optional) constraint_expression
+m4_define([AT_RUN_BES_AND_COMPARE],
+[
+AT_SETUP([Comparing $2 response for $1 to baseline baselines_path/$3])
+AT_KEYWORDS([$2])
+AT_MAKE_BESCMD_FILE([$1], [$2], [$4])
+AT_CHECK([besstandalone -c bes_conf_path -i test.bescmd], [], [stdout], [ignore])
+AT_CHECK([diff -w -b -B baselines_path/$3.$2 stdout], [], [ignore], [], [])
+AT_CLEANUP
+])
+
+dnl This is not used, but it's a good idea and might be someday... jhrg
+
+dnl Run the besstandalone for the response type and log to stdout,
+dnl then do a string match on stdout to $3 to find a pattern.
+dnl Useful for checking for Parse Errors, etc.
+dnl $1 == filename
+dnl $2 ==  {ascii | xd}
+dnl $3 == "pattern"
+dnl $4 == (optional) constraint_expression
+dnl $5 == (optional) expected besstandalone return status
+m4_define([AT_RUN_BES_AND_MATCH],
+[
+AT_SETUP([$2 response for $1: seeking match to $3])
+AT_KEYWORDS([$2])
+AT_MAKE_BESCMD_FILE([$1], [$2], [$4])
+AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [$5], [stdout], [ignore])
+AT_CHECK([grep $3 stdout], [], [ignore], [], [])
+AT_CLEANUP
+])
+
+dnl -----------------------------------------------------------------
+dnl The actual tests!
+dnl -----------------------------------------------------------------
+
+AT_RUN_BES_AND_COMPARE([fnoc1.nc], [xml_data], [fnoc1.nc])
+AT_RUN_BES_AND_COMPARE([fnoc1.nc], [xml_data], [fnoc1.nc.u], [u])
+AT_RUN_BES_AND_COMPARE([fnoc1.nc], [xml_data], [fnoc1.nc.lat], [lat])
+
+AT_RUN_BES_AND_COMPARE([coads_climatology.nc], [xml_data], [coads_climatology.nc])
+AT_RUN_BES_AND_COMPARE([coads_climatology.nc], [xml_data], [coads_climatology.nc.COADSY], [SST.COADSY])
+
+AT_RUN_BES_AND_COMPARE([S2000415.HDF], [xml_data], [S2000415.HDF.NSCAT_Rev_20.WVC_Lat], [NSCAT%20Rev%2020.WVC_Lat])
+AT_RUN_BES_AND_COMPARE([S2000415.HDF], [xml_data], [S2000415.HDF.NSCAT_Rev_20.WVC_Lat.WVC_Lon], [NSCAT%20Rev%2020.WVC_Lat,WVC_Lon])
+AT_RUN_BES_AND_COMPARE([S2000415.HDF], [xml_data], [S2000415.HDF.SwathIndex], [NSCAT%20Rev%2020.SwathIndex[[0:100]]])
+
+AT_RUN_BES_AND_COMPARE([S2000415.HDF], [xml_data], [S2000415.HDF.NSCAT_L2_0_10], [NSCAT%20Rev%2020.NSCAT%20L2[[0:10]]])
+
+AT_RUN_BES_AND_COMPARE([fnoc1.nc], [xml_data], [function_result_unwrap], [wrapitup()])
+

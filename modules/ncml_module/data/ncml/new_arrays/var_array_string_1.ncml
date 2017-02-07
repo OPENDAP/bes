@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Create a new 1D array at Dataset global level with an explicit size -->
+  <variable name="MyCharArray" type="string" shape="3">
+    <attribute name="Description" type="string">Testing Strings with seaprator</attribute>
+    <values separator="*">This is the first string!*Then the second string!*Finally, the third string!</values> 
+  </variable>
+</netcdf>

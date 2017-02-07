@@ -1,0 +1,7 @@
+The data:
+String Foo = "Foo the First!";
+String Var_0_0 = "A variable at top agg level, first set.";
+String Var_1_0 = "A variable at depth 2, first set.";
+String Var_1_1 = "A variable at depth 2, second set.";
+String Var_0_1 = "A variable at top agg level, second set.";
+

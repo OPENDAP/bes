@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Bad exception for Ticket #1514">
+  
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <netcdf location="data/ncml/agg/grids/f97182070958.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97182183448.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97183065853.hdf"/>  
+    <netcdf location="data/ncml/agg/grids/f97183182355.hdf"/> 
+  </aggregation> 
+  
+  
+  <!-- Ticket #1514  This error in the lexical structure, ie using
+       attribute elements instead of variable elements, causes an
+       unknown exception which is not correct. 
+       The fix will produce an error since it will check for the
+       name collision in variable and attribute containers.
+  -->
+  <attribute name="dsp_band_1" type="Structure">
+    <attribute name="lat" type="Structure">
+      <attribute name="units" type="string">degrees_north</attribute>
+    </attribute>
+  </attribute>
+  
+</netcdf>

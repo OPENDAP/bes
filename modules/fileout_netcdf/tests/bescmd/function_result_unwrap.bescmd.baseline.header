@@ -1,0 +1,9 @@
+netcdf test {
+dimensions:
+	promoted_message_len = 121 ;
+variables:
+	char promoted_message(promoted_message_len) ;
+
+// global attributes:
+		:history = "removed date-time Hyrax ?wrapitup()" ;
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test multiple nested ancestral namespaces with lexical shadowing 
+get canonicalized into OtherXML attributes. -->
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2"
+	xmlns:a="http://www.a.edu/a"
+	>
+  <!-- Make an attribute container with it's own namespaces to test
+	lexical flattener -->
+  <attribute name="OtherXMLContainer" type="Structure"
+	     xmlns:b="http://www.b.org/b">
+    
+    <attribute name="FirstOtherXML" type="OtherXML">
+      <!-- This one should get a and b normally -->
+      <SomeElement xmlns="http://www.eponymous.edu/new_default"/>
+    </attribute>
+
+    <attribute name="SecondOtherXML" type="OtherXML" xmlns:b="http://www.the_shadow_of_b.org/">
+      <!-- This element should get a, but a SHADOWED b, as well as its c in it. -->
+      <RandomXMLElement xmlns="" 
+			xmlns:c="http://www.c.com/c">
+	<RandomXMLChild>Some characters</RandomXMLChild>
+      </RandomXMLElement>
+    </attribute>
+
+  </attribute>
+  
+</netcdf>

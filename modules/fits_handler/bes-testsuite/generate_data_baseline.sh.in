@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# Called from the autotest driver when that program is called using 
+# --generate=arg where 'arg' is the pathname of the test.
+
+besstandalone -c @abs_builddir@/bes.conf -i @abs_srcdir@/$1 | getdap -M - > @abs_srcdir@/$1.baseline

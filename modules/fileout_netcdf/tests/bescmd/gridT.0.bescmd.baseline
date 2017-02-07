@@ -1,0 +1,28 @@
+Dataset {
+    Int32 i[i = 2];
+    Grid {
+      Array:
+        Int16 order[i = 2][j = 3];
+      Maps:
+        Int32 i[i = 2];
+        Float32 j[j = 3];
+    } order;
+    Structure {
+        Grid {
+          Array:
+            Int32 shot[i = 2][j = 3];
+          Maps:
+            Int32 i[i = 2];
+            Float32 j[j = 3];
+        } shot;
+    } gstruct;
+    Structure {
+        Grid {
+          Array:
+            Int32 bears[i = 2][k = 4];
+          Maps:
+            Int32 i[i = 2];
+            String k[k = 4];
+        } bears;
+    } bstruct;
+} virtual;
