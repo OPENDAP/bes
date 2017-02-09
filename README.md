@@ -1,9 +1,10 @@
 
-README for the OpenDAP BES 
+![status](https://travis-ci.org/OPENDAP/bes.svg?branch=master)
+
+README for the OPeNDAP BES 
+==========================
 
 Updated for version 3.17.4
-
-Travis: ![status](https://travis-ci.org/OPENDAP/bes.svg?branch=master)
 
 Added support for cached metadata objects.
 
@@ -82,7 +83,7 @@ _docs_: Where some bes documentation resides
 
 ## About the BES
 
-Note see [http://docs.opendap.org/index.php/Hyrax]
+Note see http://docs.opendap.org/index.php/Hyrax
 for the latest and most comprehensive documentation.
 
 ## Configuration
@@ -91,8 +92,8 @@ for the latest and most comprehensive documentation.
 
 Once the BES software has been installed, you will need to make a few
 changes to the BES configuration file, which is the bes.conf located in
-_<prefix>_`/etc/bes/bes.conf`. Module and handler configuration files will
-be installed in the _<prefix>_`/etc/bes/modules` directory.
+_prefix_`/etc/bes/bes.conf`. Module and handler configuration files will
+be installed in the _prefix_`/etc/bes/modules` directory.
 
 Only a few parameters need to be modified to get the BES up and running
 for the first time. These parameters are located at the top of the
@@ -103,7 +104,8 @@ configuration file are are:
   there are issues with your installation of the server.
 
 **BES.User=user_name**
-*BES.Group=group_name**
+
+**BES.Group=group_name**
 - set these to a valid username and groupname on your system. We
   recommend that you create a username and groupname called bes that has
   permissions to write only to the BES installation directory. We'll
@@ -121,7 +123,7 @@ but the BES should run.
 
 For the BES to run with Hyrax, additional changes will need to be made
 to the dap.conf and dap-server.conf files, which are located in the
-modules directory _<prefix>_`/etc/bes/modules`. The dap module should be
+modules directory _prefix_`/etc/bes/modules`. The dap module should be
 installed by default with the BES. If the dap.conf file is not found, be
 sure that you have libdap installed. The dap-server module, known as the
 General purpose handlers, adds responses for the DAP ascii response, the
@@ -143,7 +145,7 @@ The changes required for Hyrax are:
   this parameter is looked at, the Exclude parameter is then looked at
   to see what files you might want to exclude.
 
-**BES.Catalog.catalog.Exclude=^\..*;**
+__BES.Catalog.catalog.Exclude=^\..*;__
 - This parameter specifies what files/directories to include in the list
   of nodes in the catalog. The default, shown here, is to exclude any
   files or directories that starts with a dot (.)
@@ -173,14 +175,15 @@ To test your regular expression for the TypeMatch parameter, or the
 Include and Exclude parameters, use the supplied besregtest program.
 Simply run besregtest to discover its usage.
 
-### Installing a handler/module
+### Installing a custom handler/module
 
-Once you have this configuration done you will need to build and install
-at least one data handler. I'll use the netcdf handler as an example.
+By default, The BES for Hyrax comes with a suite of handlers that read
+a number of data formats. However, you can install custom handlers that 
+are not distributed by default. I'll use the SQL handler as an example.
 
-Get the netcdf handler source code from [http://www.opendap.org/download/],
-making sure that the version supports Hyrax (anything past 3.7.0 should).
-Expand the tar.gz file and follow the instructions with the following caveat:
+Get the SQL  handler source code from http://github.com/opendap/,
+making sure that the version supports Hyrax. Expand the tar.gz file 
+and follow the instructions with the following caveat:
 If you have installed the BES using a prefix other than /usr/local (the
 default), make sure that the correct bes-config is being run. If you are
 having problems compiling or linking the handler, try using not only
@@ -191,18 +194,18 @@ having problems compiling or linking the handler, try using not only
 Once built, install the handler using 'make install'. This will install
 the BES module and a configuration file to use for that module. Each
 module will have its own configuration file. In this case it is nc.conf
-and installed in the _<prefix>_`/etc/bes/modules` directory. The next time
+and installed in the _prefix_`/etc/bes/modules` directory. The next time
 the BES is run, this configuration file will be read and the netcdf
 module loaded. No modifications are necessary.
 
 ## Testing
 
 To test the server, open a new terminal window and start the bes by using
-the bes control script besctl, which is installed in _<prefix>_`/bin`.
+the bes control script besctl, which is installed in _prefix_`/bin`.
 using the -c switch to name the configuration file. If the server standalone
 starts correctly it should print something like the following to stdout:
 
-```bash
+```
     [jimg@zoe sbin]$ besctl start
     BES install directory: <prefix>/bin
     Starting the BES daemon
@@ -212,7 +215,7 @@ starts correctly it should print something like the following to stdout:
 Go back to your first window and run the bescmdln program. Use the -h (host)
 and -p (port) switches to tell it how to connect to the BES.
 
-```bash
+```
     [jimg@zoe bin]$ bescmdln -p 10002 -h localhost
 
     Type 'exit' to exit the command line client and 'help' or '?' to display
@@ -223,7 +226,7 @@ and -p (port) switches to tell it how to connect to the BES.
 
 Try some simple commands:
 
-```bash
+```
     BESClient> show help;
     <showHelp>
 	<response>
@@ -284,7 +287,7 @@ is configured correctly and is running.
 
 To stop the BES use the bes control script with the stop option:
 
-```bash
+```
     [jimg@zoe sbin]$ besctl stop
 ```
 
@@ -293,7 +296,7 @@ Note: Constraints and the bes command line client
 Constraints are added to the 'define' command using the modifier 'with' like
 so: 
 
-```bash
+```
     define d as nscat with nscat.constraint="WVC_LAT";
 ```
 
