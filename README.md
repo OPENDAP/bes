@@ -1,5 +1,5 @@
 
-README for the OpenDAP BES
+README for the OpenDAP BES https://travis-ci.org/OPENDAP/bes.svg?branch=master
 
 Updated for version 3.17.4
 
