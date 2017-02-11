@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0"
+    dmrVersion="1.0" 
+    name="nc4_group_atomic.h5"
+    xml:base="data/dmrpp/nc4_group_atomic.h5">
+  <Dimension name="dim1" size="2"/>
+  <Int32 name="dim1">
+    <Dim name="/dim1"/>
+    <Attribute name="CLASS" type="String">
+      <Value>DIMENSION_SCALE</Value>
+    </Attribute>
+    <Attribute name="NAME" type="String">
+      <Value>dim1</Value>
+    </Attribute>
+    <Attribute name="_Netcdf4Dimid" type="Int32">
+      <Value>0</Value>
+    </Attribute>
+    <h4:byteStream nBytes="8" uuid="d6d6cbc9-04bf-4d3d-8827-4d7c52939e6d" md5="a068b90f3c19bf407f80db4945944e29" offset="6192"/>
+  </Int32>
+  <Float32 name="d1">
+    <Dim name="/dim1"/>
+    <h4:byteStream nBytes="8" uuid="55d3ca3d-4e1b-472e-822b-23d48838cf4d" md5="53163d5fb838cd8dabfd4425feda2b12" offset="6200"/>
+  </Float32>
+  <Group name="g1">
+    <Dimension name="dim2" size="3"/>
+    <Int32 name="dim2">
+      <Dim name="/g1/dim2"/>
+      <Attribute name="CLASS" type="String">
+        <Value>DIMENSION_SCALE</Value>
+      </Attribute>
+      <Attribute name="NAME" type="String">
+        <Value>dim2</Value>
+      </Attribute>
+      <Attribute name="_Netcdf4Dimid" type="Int32">
+        <Value>1</Value>
+      </Attribute>
+      <h4:byteStream nBytes="12" uuid="4c91c3f7-73a1-43d5-a0fc-cfa23e92b3d2" md5="1719bc13ae9f2ad5aa50c720edc400a6" offset="6208"/>
+    </Int32>
+    <Float32 name="d2">
+      <Dim name="/dim1"/>
+      <Dim name="/g1/dim2"/>
+      <h4:byteStream nBytes="24" uuid="62569081-e56e-47b5-ab10-ea9132cc8ef2" md5="2162ed0aecd0db6abb21fd1b4d56af73" offset="6220"/>
+    </Float32>
+  </Group>
+</Dataset>

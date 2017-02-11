@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="data/dmrpp/chunked_oneD_uneven.h5" dapVersion="4.0" dmrVersion="1.0" name="chunked_oneD_uneven.h5">
+    <Float32 name="d_5_odd_chunks">
+        <Dim size="6"/>
+        <Attribute name="origname" type="String">
+            <Value>d_5_odd_chunks</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d_5_odd_chunks</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>6835f270</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 d_5_odd_chunks[6] = {10000, 10100, 10200, 10300, 10400, 10500};
+
