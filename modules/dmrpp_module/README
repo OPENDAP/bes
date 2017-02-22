@@ -1,0 +1,8 @@
+README
+ Created on: Nov 16, 2016
+     Author: ndp
+
+This module ingests special DMR files that contain range, offset and structural
+information about the associated HDF4 & HDF55 files. This information should allow the 
+server to use "range GETs" against the datasets, either in the file system or 
+over the network such that the HDF libraries are not needed to retrieve the values.
