@@ -32,6 +32,7 @@
 #include <DMR.h>
 
 #include <BESDebug.h>
+#include <BESUtil.h>
 
 #include "H4ByteStream.h"
 #include "DmrppArray.h"
