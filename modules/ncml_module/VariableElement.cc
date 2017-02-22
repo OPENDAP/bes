@@ -628,7 +628,8 @@ unsigned int VariableElement::getProductOfDimensionSizes(NCMLParser& p) const
         const string& dimName = *it;
         unsigned int dimSize = getSizeForDimension(p, dimName); // might throw if not found...
         // if multiplying this in will cause over DODS_MAX_ARRAY, then error
-        if (dimSize > (DODS_MAX_ARRAY / product)) {
+        // Added test for product == 0. Coverity. jhrg 2/7/17
+        if (product == 0 || dimSize > (DODS_MAX_ARRAY / product)) {
             THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
                 "Product of dimension sizes exceeds the maximum DAP2 size of 2147483647 (2^31-1)!");
         }

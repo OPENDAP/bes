@@ -14,13 +14,17 @@ DONE Move asciival and www-interface up to modules
 
 DONE Rename dap-server to 'usage'
 
+Move the modules' test data and common test scripts up into the 
+modules dir. This way we can minimize duplication of test data and
+keep the autotest m4 macros more or less in sync.
+
 Separate the BES configure from the part specific to the modules
     Use separate M4 calls in a different file and include them?
     Modify the configure script so that uses environment vars (?)
     see https://autotools.io/index.html.
     
 Remove unused M4 macros from configure (these are function and header
-searches where teh compile-time symbols are never tested.
+searches where the compile-time symbols are never tested.
 
 Rename/remove the bes.conf.modules.in files
 
