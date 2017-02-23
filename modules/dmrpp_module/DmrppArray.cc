@@ -857,6 +857,7 @@ bool DmrppArray::read_chunks()
             BESDEBUG("dmrpp",
                 "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_started()?"QUEUED":"NOT_QUEUED") << " and " << (h4bs.is_read()?"READ":"NOT_READ") << ")"<< endl);
         }
+        //##############################################################################
         BESDEBUG("dmrpp",
             "DmrppArray::" << __func__ <<"(): CHUNKS:"<< endl);
         for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
@@ -883,6 +884,8 @@ bool DmrppArray::read_chunks()
             BESDEBUG("dmrpp",
                 "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_read()?"READ":"SKIPPED") << ")"<< endl);
         }
+        //##############################################################################
+
         break;
     }
 
@@ -975,12 +978,13 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
     }
 
     /* Free the CURL handles */
-    curl_multi_cleanup(multi_handle);
     for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
         CURL *easy_handle = (*chunk_refs)[idx].get_curl_handle();
         curl_multi_remove_handle(multi_handle, easy_handle);
         (*chunk_refs)[idx].cleanup_curl_handle();
     }
+    curl_multi_cleanup(multi_handle);
+
     if(mcode != CURLM_OK) {
         ostringstream oss;
         oss << "DmrppArray: CURL operation Failed!. multi_code: " << mcode  << endl;
