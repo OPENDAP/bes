@@ -937,9 +937,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
             unsigned long long offset = 0;
             unsigned long long size = 0;
-            string md5 = "";
-            string uuid = "";
-            string chunk_position_in_array = "";
+            string md5("");
+            string uuid("");
+            string chunk_position_in_array("");
 
             if (parser->check_required_attribute("offset")) {
                 istringstream offset_ss(parser->xml_attrs["offset"].value);

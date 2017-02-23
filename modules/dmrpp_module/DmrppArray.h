@@ -28,6 +28,8 @@
 #include <string>
 #include <map>
 
+#include <curl/curl.h>
+
 #include <Array.h>
 #include "DmrppCommon.h"
 #include "Odometer.h"
@@ -68,7 +70,9 @@ private:
 			vector<unsigned int> *target_address,
 			vector<unsigned int> *chunk_source_address,
     		H4ByteStream *chunk,
-    		std::map< std::string, H4ByteStream *> *chunk_read_list);
+    		CURLM *multi_handle);
+
+    void multi_finish(CURLM *curl_multi_handle, vector<H4ByteStream> *chunk_refs);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);

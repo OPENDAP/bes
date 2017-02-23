@@ -145,6 +145,106 @@ bool H4ByteStream::is_read()
     return d_is_read;
 }
 
+void H4ByteStream::set_is_read(bool state) { d_is_read = state; }
+
+void H4ByteStream::start_read(CURLM *multi_handle)
+{
+    if (d_is_read || d_is_started) {
+        BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - H4ByteStream has been " << (d_is_started?"queued to be ":"") << "read! Returning." << endl);
+        return;
+    }
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - BEGIN  " << to_string() << endl);
+
+    // This call uses the internal size param and allocates the buffer's memory
+    set_rbuf_to_size();
+
+    string data_access_url = get_data_url();
+
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
+
+#if 1
+    /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
+     * in order to track S3 requests. The tag is submitted as a BESContext with the
+     * request. Here we check to see if the request is for an AWS S3 object, if
+     * it is AND we have the magic BESContext "cloudydap" then we add a query
+     * parameter to the S3 URL for tracking purposes.
+     *
+     * Should this be a function? FFS why? This is the ONLY place where this needs
+     * happen, as close to the curl call as possible and we can just turn it off
+     * down the road. - ndp 1/20/17 (EOD)
+     */
+    std::string aws_s3_url("https://s3.amazonaws.com/");
+    // Is it an AWS S3 access?
+    if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
+        // Yup, headed to S3.
+        string cloudydap_context("cloudydap");
+
+        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
+                "AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
+
+        bool found;
+        string cloudydap_context_value;
+        cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
+        if (found) {
+            BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Found '"<<
+                    cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
+            data_access_url += "?cloudydap=" + cloudydap_context_value;
+        }
+        else {
+            BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - The context "
+                    "key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
+        }
+    }
+    /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+#endif
+    string range = get_curl_range_arg_string();
+
+    BESDEBUG(debug,
+            "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
+                    "from "<< data_access_url << ": " << range << endl);
+
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        throw BESError("H4ByteStream: Unable to initialize libcurl! '", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    CURLcode res = curl_easy_setopt(curl,
+                        CURLOPT_URL,
+                        data_access_url.c_str() /*"http://example.com"*/);
+    if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // Use CURLOPT_ERRORBUFFER for a human-readable message
+    //
+    res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, d_curl_error_buf);
+    if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // get the offset to offset + size bytes
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/)) throw BESError(
+            string("HTTP Error: ").append(d_curl_error_buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // Pass all data to the 'write_data' function
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, h4bytestream_write_data)) throw BESError(
+            string("HTTP Error: ").append(d_curl_error_buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // Pass this to write_data as the fourth argument
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, this)) throw BESError(
+            string("HTTP Error: ").append(d_curl_error_buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    /* add the individual transfers */
+    curl_multi_add_handle(multi_handle, curl);
+
+    /* we start some action by calling perform right away */
+    // int still_running;
+    //  curl_multi_perform(multi_handle, &still_running);
+    d_curl_handle = curl;
+    d_is_started = true;
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - END  "<< to_string() << endl);
+
+    return;
+
+}
+
 /**
  * @brief Read the chunk associated with this H4ByteStream
  *
@@ -279,6 +379,15 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
     d_is_read = true;
 }
 
+
+void H4ByteStream::cleanup_curl_handle(){
+    if(d_curl_handle!=0)
+        curl_easy_cleanup(d_curl_handle);
+    d_curl_handle = 0;
+    d_is_started = false;
+}
+
+
 /**
  *
  *  unsigned long long d_size;
@@ -305,12 +414,22 @@ void H4ByteStream::dump(ostream &oss) const
     oss << ")]";
 }
 
+
+
+
 string H4ByteStream::to_string()
 {
     std::ostringstream oss;
     dump(oss);
     return oss.str();
 }
+
+
+
+
+
+
+
 
 } // namespace dmrpp
 

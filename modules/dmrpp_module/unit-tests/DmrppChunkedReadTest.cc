@@ -560,6 +560,8 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
+    // CPPUNIT_TEST(test_read_fourD_chunked_array);
+
 #if 1
     CPPUNIT_TEST(test_read_oneD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_array);
