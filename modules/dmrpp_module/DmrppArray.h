@@ -26,6 +26,7 @@
 #define _dmrpp_array_h 1
 
 #include <string>
+#include <map>
 
 #include <Array.h>
 #include "DmrppCommon.h"
@@ -66,7 +67,8 @@ private:
     		unsigned int dim,
 			vector<unsigned int> *target_address,
 			vector<unsigned int> *chunk_source_address,
-    		H4ByteStream *chunk);
+    		H4ByteStream *chunk,
+    		std::map< std::string, H4ByteStream *> *chunk_read_list);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
