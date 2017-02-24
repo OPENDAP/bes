@@ -65,7 +65,7 @@ private:
 			const vector<unsigned int> &array_shape,
 			H4ByteStream *h4bytestream);
 
-    virtual void insert_constrained_chunk(
+    virtual bool insert_constrained_chunk(
     		unsigned int dim,
 			vector<unsigned int> *target_address,
 			vector<unsigned int> *chunk_source_address,

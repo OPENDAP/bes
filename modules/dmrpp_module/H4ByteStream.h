@@ -59,7 +59,7 @@ private:
     CURL *d_curl_handle;
     char d_curl_error_buf[CURL_ERROR_SIZE];
 
-    bool d_is_started;
+    bool d_is_in_multi_queue;
 
     friend class H4ByteStreamTest;
 
@@ -74,7 +74,7 @@ protected:
         d_read_pointer = 0;
         d_is_read = false;
         d_curl_handle = 0;
-        d_is_started = false;
+        d_is_in_multi_queue = false;
 
         // These vars are easy to duplicate.
         d_size = bs.d_size;
@@ -91,7 +91,7 @@ public:
             d_data_url(""), d_size(0), d_offset(0), d_md5(""), d_uuid(""),
             d_is_read(false), d_bytes_read(0),
             d_read_buffer(0), d_read_buffer_size(0), d_read_pointer(0),
-            d_curl_handle(0), d_is_started(false)
+            d_curl_handle(0), d_is_in_multi_queue(false)
     {
     }
 
@@ -99,7 +99,7 @@ public:
             std::string uuid, std::string position_in_array = "") :
             d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid),
             d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), d_read_pointer(0),
-            d_curl_handle(0), d_is_started(false)
+            d_curl_handle(0), d_is_in_multi_queue(false)
     {
         ingest_position_in_array(position_in_array);
     }
@@ -314,7 +314,7 @@ public:
 
     virtual void read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_size);
 
-    virtual bool is_started(){ return d_is_started; };
+    virtual bool is_started(){ return d_is_in_multi_queue; };
     virtual bool is_read();
     virtual void set_is_read(bool state);
 
@@ -324,7 +324,8 @@ public:
 
     virtual std::string to_string();
 
-    virtual void start_read(CURLM *multi_handle);
+    virtual void add_to_multi_read_queue(CURLM *multi_handle);
+    void complete_read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width);
 
 
 };

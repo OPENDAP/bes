@@ -843,19 +843,22 @@ bool DmrppArray::read_chunks()
         CURLM *curl_multi_handle = curl_multi_init();
         for (unsigned long i = 0; i < chunk_refs->size(); i++) {
 
+            H4ByteStream *h4bs = &(*chunk_refs)[i];
+
             BESDEBUG("dmrpp",
-                "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+                "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs->to_string() << endl);
 
-            H4ByteStream h4bs = (*chunk_refs)[i];
 
-            vector<unsigned int> target_element_address = h4bs.get_position_in_array();
+            vector<unsigned int> target_element_address = h4bs->get_position_in_array();
             vector<unsigned int> chunk_source_address(dimensions(), 0);
 
             // Recursive insertion operation.
-            insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs, curl_multi_handle);
+            bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, h4bs, curl_multi_handle);
 
             BESDEBUG("dmrpp",
-                "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_started()?"QUEUED":"NOT_QUEUED") << " and " << (h4bs.is_read()?"READ":"NOT_READ") << ")"<< endl);
+                "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  "
+                    "(chunk was " << (h4bs->is_started()?"QUEUED":"NOT_QUEUED") <<
+                    " and " << (h4bs->is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
         }
         //##############################################################################
         BESDEBUG("dmrpp",
@@ -870,19 +873,20 @@ bool DmrppArray::read_chunks()
 
         for (unsigned long i = 0; i < chunk_refs->size(); i++) {
 
+            H4ByteStream *h4bs = &(*chunk_refs)[i];
+
             BESDEBUG("dmrpp",
-                "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+                "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs->to_string() << endl);
 
-            H4ByteStream h4bs = (*chunk_refs)[i];
 
-            vector<unsigned int> target_element_address = h4bs.get_position_in_array();
+            vector<unsigned int> target_element_address = h4bs->get_position_in_array();
             vector<unsigned int> chunk_source_address(dimensions(), 0);
 
             // Recursive insertion operation.
-            insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs, 0);
+            bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, h4bs, 0);
 
             BESDEBUG("dmrpp",
-                "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_read()?"READ":"SKIPPED") << ")"<< endl);
+                "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs->is_read()?"READ":"SKIPPED") << ") flag: "<< flag << endl);
         }
         //##############################################################################
 
@@ -953,12 +957,13 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
             string h4bs_str = "No Chunk Found For Handle!";
             /* Find out which handle this message is about */
             for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
-                H4ByteStream this_h4bs = (*chunk_refs)[idx];
-                CURL *curl_handle = this_h4bs.get_curl_handle();
+                H4ByteStream *this_h4bs = &(*chunk_refs)[idx];
+
+                CURL *curl_handle = this_h4bs->get_curl_handle();
                 found = (msg->easy_handle == curl_handle);
                 if (found) {
-                    this_h4bs.set_is_read(true);
-                    h4bs_str = this_h4bs.to_string();
+                    //this_h4bs->set_is_read(true);
+                    h4bs_str = this_h4bs->to_string();
                     break;
                 }
             }
@@ -1126,8 +1131,9 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
  * element address from where data will be read. The values of this are relative to
  * the chunk's origin (position in array).
  * @param chunk The H4ByteStream containing the read data values to insert.
+ * @return
  */
-void DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
+bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
     vector<unsigned int> *chunk_source_address, H4ByteStream *chunk, CURLM *multi_handle)
 {
 
@@ -1174,7 +1180,7 @@ void DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
     // Is the next point to be sent in this chunk at all?
     if (first_element_offset > chunk_shape[dim]) {
         // Nope! Time to bail
-        return;
+        return false;
     }
 
     unsigned long long start_element = chunk_origin[dim] + first_element_offset;
@@ -1194,21 +1200,23 @@ void DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
         // No. No, we do not. Skip this.
         BESDEBUG("dmrpp",
             "DmrppArray::"<< __func__ <<"() - dim: " << dim << " Chunk not accessed by CE. SKIPPING." << endl);
-        return;
+        return false ;
     }
 
     unsigned long long chunk_start = start_element - chunk_origin[dim];
     unsigned long long chunk_end = end_element - chunk_origin[dim];
 
     if (dim == last_dim) {
-
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " THIS IS THE INNER-MOST DIM. "<< endl);
-
         if(multi_handle){
-             chunk->start_read(multi_handle);
+            BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Queuing chunk for retrieval: " << chunk->to_string() << endl);
+             chunk->add_to_multi_read_queue(multi_handle);
+             return true;
+
         }
         else {
-            // Now. Now we are going to read this thing.
+            BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Reading " << chunk->to_string() << endl);
+
             // Read and Process chunk
             chunk->read(is_deflate_compression(), get_chunk_size_in_elements() * var()->width(),
                 is_shuffle_compression(), var()->width());
@@ -1327,9 +1335,12 @@ void DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
                 "DmrppArray::" << __func__ << "() - RECURSION STEP - " << "Departing dim: " << dim << " dim_index: " << dim_index << " target_element_address: " << vec2str((*target_element_address)) << " chunk_source_address: " << vec2str((*chunk_source_address)) << endl);
 
             // Re-entry here:
-            insert_constrained_chunk(dim + 1, target_element_address, chunk_source_address, chunk, multi_handle);
+            bool flag = insert_constrained_chunk(dim + 1, target_element_address, chunk_source_address, chunk, multi_handle);
+            if(flag)
+                return true;
         }
     }
+    return false;
 }
 
 bool DmrppArray::read()
