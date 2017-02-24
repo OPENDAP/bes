@@ -211,6 +211,8 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
     if(true == use_disk_cache) {
 
+        BESDEBUG("h5","Coming to use disk cache "<<endl);
+
         string diskcache_dir = HDF5RequestHandler::get_disk_cache_dir();
         string diskcache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
 
@@ -405,6 +407,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
             if(true == data_to_disk_cache) {
                 try {
+                    BESDEBUG("h5","writing data to disk cache "<<endl);
                     write_data_to_cache(dsetid,dspace,mspace,memtype,cache_fpath,2,val,nelms);
                 }
                 catch(...) {
@@ -458,6 +461,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             set_read_p(true);
 
             if(true == data_to_disk_cache) {
+                BESDEBUG("h5","writing data to disk cache "<<endl);
                 try {
                     write_data_to_cache(dsetid,dspace,mspace,memtype,cache_fpath,dtype_size,val,nelms);
                 }
@@ -793,10 +797,13 @@ bool HDF5CFArray::valid_disk_cache() {
     bool ret_value = false;
     if(true == HDF5RequestHandler::get_use_disk_cache()) {
 
+        BESDEBUG("h5","Coming to disk cache "<<endl);
         // Check if this is a valid numeric datatype we want to support
         if(dtype == H5CHAR || dtype ==H5UCHAR || dtype==H5INT16 || dtype ==H5UINT16 ||
            dtype == H5INT32 || dtype ==H5UINT32 || dtype ==H5FLOAT32 || dtype==H5FLOAT64 ||
            dtype == H5INT64 || dtype ==H5UINT64){
+
+            BESDEBUG("h5","Coming to disk cache datatype block"<<endl);
 
             string diskcache_dir = HDF5RequestHandler::get_disk_cache_dir();
             string diskcache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
@@ -829,10 +836,15 @@ bool HDF5CFArray::valid_disk_cache() {
 
             short dtype_size = HDF5CFUtil::H5_numeric_atomic_type_size(dtype);
             // Check if we only need to cache the specific compressed dat
-            if(true == HDF5RequestHandler::get_disk_cache_comp_data()) 
+            if(true == HDF5RequestHandler::get_disk_cache_comp_data()){ 
+                BESDEBUG("h5","Compression disk cache key is true"<<endl);
                 ret_value = valid_disk_cache_for_compressed_data(dtype_size);
-            else 
+                BESDEBUG("h5","variable disk cache passes the compression parameter check"<<endl);
+            }
+            else {
+                BESDEBUG("h5","Compression disk cache key is NOT set, disk cache key is true."<<endl);
                 ret_value = true;
+            }
 
         }
 

@@ -137,7 +137,7 @@ H5.CheckIgnoreObj=false
 # changing the value and the CachePurgeLevel value below. Note that
 # this feature is on by default.
 
-H5.MetaDataMemCacheEntries=300
+H5.MetaDataMemCacheEntries=1000
 #H5.MetaDataMemCacheEntries=0
 
 # 2. Caching the data values of HDF5 coordinate variables or specific variables.
@@ -331,13 +331,33 @@ H5.SmallDataMemCacheEntries=0
 # # Example:
 # # H5.EnableDiskDataCache=true
 # # H5.DiskCacheDataPath=/opt/tmp
-# # H5.DiskCacheSize=20000
-H5.EnableDiskDataCache=true
-H5.DiskCacheDataPath=/opt/tmp
+# # H5.DiskCacheSize=100000
+H5.EnableDiskDataCache=false
+H5.DiskCacheDataPath=/tmp
 H5.DiskCacheFilePrefix=c
-H5.DiskCacheSize=20000
+#Set to ~100GB.
+H5.DiskCacheSize=100000
 
-H5.DiskCacheComp=true
+# The following keys provide a way for users to fine tune the data to be cached in the disk.
+# The main concern here is that users may not want to cache all variables either because the disk limitations or
+# the performance gain is less optimal for some variables. 
+# These BES keys will help mitigate these issues. 
+# If H5.DiskCacheComp is true, only compressed HDF5 variables are cached. If compressed variables
+# are cached, there is no longer data decompression time. 
+# We further provide more BES keys for users to fine tune according to their specific patterns.
+# 
+# If H5.DiskCacheFloatOnlyComp is set to be true, only floating-point variables are cached.
+# If H5.DiskCacheCompThreshold is set, it should be a floating-point number that is greater than 1. 
+# The handler will compare the compression ratio of a variable with this number, only when the compression
+# ratio is smaller than this number, the variable is cached. In other words, hard compressed variable
+# usually takes longer decompression time. 
+# H5.DiskCacheCompVarSize must be a positive integer number. It represents the variable size in kilobytes 
+# Only the (uncompressed) variable size that is greater than this VarSize, the variable will be compressed.
+# For example, if this number is 100, only the size of variable that is >100K will be cached.
+# 
+#
+H5.DiskCacheComp=false
+H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=100
