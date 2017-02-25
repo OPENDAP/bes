@@ -382,7 +382,7 @@ int main(int argc, char **argv) {
 
         /* See how the transfers went */
         while ((msg = curl_multi_info_read(curl_multi_handle, &msgs_left))) {
-            cerr << "CuRL Messages remaining: " << msgs_left << endl;
+            if(debug) cerr << "CuRL Messages remaining: " << msgs_left << endl;
             string shard_str = "No Chunk Found For Handle!";
             /* Find out which handle this message is about */
             it = shards_map.find(msg->easy_handle);
@@ -415,7 +415,7 @@ int main(int argc, char **argv) {
 
     for(it=shards_map.begin(); it!=shards_map.end(); ++it){
         Shard *shard = it->second;
-        cerr << shard->to_string() << endl;
+        if(debug) cerr << shard->to_string() << endl;
         curl_multi_remove_handle(curl_multi_handle, it->second->d_curl_easy_handle);
         shard->clean_up_curl();
     }
