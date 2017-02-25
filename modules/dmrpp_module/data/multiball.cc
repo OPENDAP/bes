@@ -94,9 +94,9 @@ public:
     }
     ~Shard(){
         delete[] d_read_buffer;
-        if(d_fstream){
-            d_fstream->close();
-            delete d_fstream;
+        if(d_fd){
+            fclose(d_fd);
+            d_fd = 0;
         }
     }
 
@@ -133,8 +133,9 @@ public:
     void init_curl_handle()
     {
         allocate();
-        d_fstream = new fstream();
-        d_fstream->open(d_output_filename, std::fstream::out);
+        //d_fstream = new fstream();
+        //d_fstream->open(d_output_filename, std::fstream::out);
+        d_fd = fopen(d_output_filename.c_str(),"w");
 
         string range = get_curl_range_arg_string(d_offset,d_size);
         cerr << __func__ << "() - Initializing CuRL handle. url: " << d_url << " offset: "<< d_offset <<
@@ -201,7 +202,8 @@ size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
     assert(bytes_read + nbytes <= shard->d_size);
 
     // memcpy(shard->d_read_buffer + bytes_read, buffer, nbytes);
-    shard->d_fstream->write((const char *)buffer,nbytes);
+    // shard->d_fstream->write((const char *)buffer,nbytes);
+    fwrite (buffer , sizeof(char), nbytes, shard->d_fd);
 
     shard->d_bytes_read += nbytes;
     if(debug) cerr << shard->d_output_filename << ":" << shard->d_bytes_read << ":"<< nbytes << endl;
