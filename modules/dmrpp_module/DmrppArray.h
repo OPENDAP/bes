@@ -28,8 +28,6 @@
 #include <string>
 #include <map>
 
-#include <curl/curl.h>
-
 #include <Array.h>
 #include "DmrppCommon.h"
 #include "Odometer.h"

@@ -201,7 +201,7 @@ void H4ByteStream::add_to_multi_read_queue(CURLM *multi_handle)
     string range = get_curl_range_arg_string();
 
     BESDEBUG(debug,
-            "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
+            "H4ByteStream::"<< __func__ <<"() - Building CuRL hndle to retrieve  " << get_size() << " bytes "
                     "from "<< data_access_url << ": " << range << endl);
 
     CURL* curl = curl_easy_init();
