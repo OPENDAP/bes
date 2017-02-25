@@ -37,6 +37,7 @@
 #include <curl/curl.h>
 
 static bool debug = false;
+static bool deep_debug = false;
 using namespace std;
 
 long long get_file_size(string filename) {
@@ -138,7 +139,8 @@ public:
         d_fd = fopen(d_output_filename.c_str(),"w");
 
         string range = get_curl_range_arg_string(d_offset,d_size);
-        cerr << __func__ << "() - Initializing CuRL handle. url: " << d_url << " offset: "<< d_offset <<
+        if(debug)
+            cerr << __func__ << "() - Initializing CuRL handle. url: " << d_url << " offset: "<< d_offset <<
             " size: " << d_size << " curl_range: " << range << endl;
         CURL* curl = curl_easy_init();
         if (!curl) {
@@ -206,7 +208,7 @@ size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
     fwrite (buffer , sizeof(char), nbytes, shard->d_fd);
 
     shard->d_bytes_read += nbytes;
-    if(debug) cerr << shard->d_output_filename << ":" << shard->d_bytes_read << ":"<< nbytes << endl;
+    if(deep_debug) cerr << shard->d_output_filename << ":" << shard->d_bytes_read << ":"<< nbytes << endl;
 
     return nbytes;
 }
@@ -223,7 +225,7 @@ string usage(string prog_name) {
 
 void make_shards(map<CURL*, Shard *> *shards_map, unsigned int shard_count, string url, unsigned int file_size, string output_filename){
 
-    cerr << __func__ << "() - Target size: " << file_size << endl;
+    if(debug) cerr << __func__ << "() - Target size: " << file_size << endl;
 
     int shard_size = file_size/shard_count;
 
@@ -272,12 +274,15 @@ int main(int argc, char **argv) {
     file_size = 140904652;
 
 
-    GetOpt getopt(argc, argv, "dc:s:o:u:");
+    GetOpt getopt(argc, argv, "Ddc:s:o:u:");
     int option_char;
     while ((option_char = getopt()) != EOF) {
         switch (option_char) {
+        case 'D':
+            deep_debug = true;
+            break;
         case 'd':
-            debug = 1;
+            debug = true;
             break;
         case 'o':
             output_file = getopt.optarg;
@@ -326,7 +331,7 @@ int main(int argc, char **argv) {
     std::map<CURL*, Shard*>::iterator it;
     for(it=shards_map.begin(); it!=shards_map.end(); ++it){
         curl_multi_add_handle(curl_multi_handle, it->second->d_curl_easy_handle);
-        cerr << it->second->d_output_filename << " added to CuRL multi_handle."<< endl;
+        if(debug) cerr << it->second->d_output_filename << " added to CuRL multi_handle."<< endl;
     }
 
     int repeats;
@@ -390,7 +395,7 @@ int main(int argc, char **argv) {
             Shard *shard = it->second;
 
             if (msg->msg == CURLMSG_DONE) {
-                cerr << __func__ <<"() Chunk Read Completed For Chunk: " << shard->to_string() << endl;
+                if(debug) cerr << __func__ <<"() Chunk Read Completed For Chunk: " << shard->to_string() << endl;
             }
             else {
                 ostringstream oss;
@@ -400,13 +405,13 @@ int main(int argc, char **argv) {
                 throw oss.str();
             }
         }
-        cerr << "CuRL Messages remaining: " << msgs_left << endl;
+        if(debug) cerr << "CuRL Messages remaining: " << msgs_left << endl;
 
     }
     else {
         cerr << "CuRL MultiFAIL! mcode: " << mcode << endl;
     }
-    cerr << "Cleaning up CuRL" << endl;
+    if(debug) cerr << "Cleaning up CuRL" << endl;
 
     for(it=shards_map.begin(); it!=shards_map.end(); ++it){
         Shard *shard = it->second;
