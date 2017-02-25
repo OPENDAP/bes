@@ -133,7 +133,7 @@ public:
     void init_curl_handle()
     {
         allocate();
-        d_ofstream = new ofstream(d_output_filename);
+        d_ofstream = new ofstream("d_output_filename.txt", std::ofstream::out);
 
         string range = get_curl_range_arg_string(d_offset,d_size);
         cerr << __func__ << "() - Initializing CuRL handle. url: " << d_url << " offset: "<< d_offset <<
