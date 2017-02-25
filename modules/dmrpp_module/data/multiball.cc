@@ -77,7 +77,7 @@ public:
     // libcurl call back uses these.
     unsigned long long d_bytes_read;
     char *d_read_buffer;
-    ofstream *d_ofstream;
+    fstream *d_fstream;
 
 
     Shard() :
@@ -89,14 +89,14 @@ public:
         d_output_filename("/dev/null"),
         d_bytes_read(0),
         d_read_buffer(0),
-        d_ofstream(0)
+        d_fstream(0)
     {
     }
     ~Shard(){
         delete[] d_read_buffer;
-        if(d_ofstream){
-            d_ofstream->close();
-            delete d_ofstream;
+        if(d_fstream){
+            d_fstream->close();
+            delete d_fstream;
         }
     }
 
@@ -113,7 +113,7 @@ public:
         oss << "[curl_handle=" << (void *)d_curl_easy_handle << "]"<< (pretty?"\n":"");
         oss << "[bytes_read=" << d_bytes_read << "]"<< (pretty?"\n":"");
         oss << "[read_buffer=" << (void *)d_read_buffer << "]"<< (pretty?"\n":"");
-        oss << "[ofstream=" << (void *)d_ofstream << "]"<< (pretty?"\n":"");
+        oss << "[fstream=" << (void *)d_fstream << "]"<< (pretty?"\n":"");
     }
 
     string to_string()
@@ -133,7 +133,8 @@ public:
     void init_curl_handle()
     {
         allocate();
-        d_ofstream = new ofstream("d_output_filename.txt", std::ofstream::out);
+        d_fstream = new fstream();
+        d_fstream->open(d_output_filename, std::fstream::out);
 
         string range = get_curl_range_arg_string(d_offset,d_size);
         cerr << __func__ << "() - Initializing CuRL handle. url: " << d_url << " offset: "<< d_offset <<
@@ -200,7 +201,7 @@ size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
     assert(bytes_read + nbytes <= shard->d_size);
 
     // memcpy(shard->d_read_buffer + bytes_read, buffer, nbytes);
-    shard->d_ofstream->write((const char *)buffer,nbytes);
+    shard->d_fstream->write((const char *)buffer,nbytes);
 
     shard->d_bytes_read += nbytes;
     if(debug) cerr << shard->d_output_filename << ":" << shard->d_bytes_read << ":"<< nbytes << endl;
