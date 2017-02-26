@@ -28,7 +28,7 @@ function get_resource_size(){
 #url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
-name="mvi_1803"
+name=`basename $url`
 
 #############################
 #MULTIBALL
@@ -36,18 +36,19 @@ for shards in 20 10 5 2 1
 do
     file_base=$name"_"$shards;
     rm -f $file_base*
+    reps=10;
     for rep in {1..10}
     do
-        echo -n "url: $url size: $resource_size shards: $shards  rep: $rep  seconds: "
+        echo -n "CuRL_multi_perform file_base: $file_base size $resource_size shards: $shards  rep: $rep  seconds: "
         (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo $seconds;
-        echo "CuRL_multi_perfom $file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
+        echo "CuRL_multi_perform file_base: $file_base shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
     done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     #echo "time_vals: $time_vals";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-    echo "CuRL_multi_perform file: $file_base  shards: $shards average_time: $avg" | tee -a $file_base.log
+    echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards reps: $reps average_time: $avg" | tee -a $file_base.log
     #exit;
 done
 
@@ -55,6 +56,7 @@ done
 # CuRL Command Line
 #
 file_base=$name"_curl_cmdln";
+reps=10;
 for rep in {1..10}
 do
     echo -n "url: $url CuRL_command_line rep: $rep  seconds: "
