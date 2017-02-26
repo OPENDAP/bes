@@ -86,11 +86,11 @@ do
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
             if [[ $(($shards % $resource_size)) ]] 
             then
-                let shards=$shards-1
-                echo "shards: $shards"
+                let whole_shards=$shards-1
+                echo "whole_shards: $whole_shards"
             fi
             #echo "shard_size: $shard_size";
-            for ((i = 0; i < $shards; i++)); 
+            for ((i = 0; i < $whole_shards; i++)); 
             do
                 # echo "shard_size; $shard_size i: $i";
                 rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
