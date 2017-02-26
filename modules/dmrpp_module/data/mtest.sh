@@ -80,7 +80,6 @@ do
     reps=10;
     for rep in {1..10}
     do
-        echo -n ".";
         time -p (
             echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
@@ -96,10 +95,10 @@ do
                 rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
                 rend=`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
                 range="$rbegin-$rend";
-                curl -s "$url" -r $range -o $file_base"_"$i"_shard" & 
+                curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
                 pid=$!
                 pids="$pids $pid";
-                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" | tee -a $file_base.log;
+                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >> $file_base.log;
             done   
             if [[ $rend -lt $resource_size ]] 
             then
@@ -107,10 +106,10 @@ do
                 rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
                 rend=` echo "v=$resource_size-1; v" | bc `;
                 range="$rbegin-$rend";
-                curl -s "$url" -r $range -o $file_base"_"$i"_shard" & 
+                curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
                 pid=$!
                 pids="$pids $pid";
-                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" | tee -s  $file_base.log;
+                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >>  $file_base.log;
             fi
             
             echo "CuRL_command_line_multi_proc Waiting for $pids ("`jobs -p`")"; 
@@ -120,10 +119,9 @@ do
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
     done
-    echo "";
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-    echo "CuRL_command_line_multi_proc shards: $shards reps: $reps avg_time: $avg resource_size: $resource_size url: $url" | tee -a $file_base.log
+    echo "CuRL_command_line_multi_proc  file_base: $file_base shards: $shards reps: $reps avg_time: $avg resource_size: $resource_size url: $url" | tee -a $file_base.log
 done
 
 
