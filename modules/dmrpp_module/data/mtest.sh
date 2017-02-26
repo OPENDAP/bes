@@ -39,11 +39,9 @@ do
     reps=10;
     for rep in {1..10}
     do
-        echo -n "CuRL_multi_perform file_base: $file_base size $resource_size shards: $shards  rep: $rep  seconds: "
         (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-        echo $seconds;
-        echo "CuRL_multi_perform file_base: $file_base shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
+        echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
     done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     #echo "time_vals: $time_vals";
