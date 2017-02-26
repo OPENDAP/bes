@@ -39,6 +39,7 @@ do
     reps=10;
     for rep in {1..10}
     do
+        echo -n "."
         (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
@@ -57,10 +58,9 @@ file_base=$name"_curl_cmdln";
 reps=10;
 for rep in {1..10}
 do
-    echo -n "url: $url CuRL_command_line rep: $rep  seconds: "
+    echo -n "."
     (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
     seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-    echo $seconds;
     echo "CuRL_command_line file: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
 done
 time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
