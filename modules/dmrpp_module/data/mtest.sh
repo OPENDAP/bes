@@ -86,13 +86,13 @@ done
 file_base=$name"_curl_cmdln";
 for rep in {1..10}
 do
-    echo "url: $url CuRL_command_line rep: $rep  seconds: \c"
-    (time -p curl -s "$url" -o $file_base) 2>> $file_base.time
-    seconds=`tail -3 $file_base.time | grep real | awk '{print $2;}' -`
+    echo -n "url: $url CuRL_command_line rep: $rep  seconds: \c"
+    (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
+    seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
     echo $seconds;
-     echo "$file_base: rep: $rep seconds: $seconds" >> $file_base.log;
+    echo "$file_base: rep: $rep seconds: $seconds" >> $file_base.log;
 done
-time_vals=`grep real $file_base.time | awk '{printf("%s + ",$2);}' -`"0.0";
+time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
 avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
 echo "$file_base:  CuRL_command_line average_time: $avg" | tee -a $file_base.log
 
@@ -105,12 +105,12 @@ do
     for rep in {1..10}
     do
         echo "url: $url CuRL_command_line_multi_proc rep: $rep  seconds: \c"
-        (time -p curl_multi_process_get $url $file_base $shards $resource_size) 2>> $file_base.time
-        seconds=`tail -3 $file_base.time | grep real | awk '{print $2;}' -`
+        (time -p curl_multi_process_get $url $file_base $shards $resource_size) 2>> $file_base.log
+        seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo $seconds;
         echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
     done
-    time_vals=`grep real $file_base.time | awk '{printf("%s + ",$2);}' -`"0.0";
+    time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
     echo "$file_base:  CuRL_command_line_multi_proc shards: $shards avg_time: $avg" | tee -a $file_base.log
 done
