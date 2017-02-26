@@ -72,9 +72,8 @@ do
     file_base=$name"_curl_mproc";
     for rep in {1..10}
     do
-        echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
-        (
-        time -p  {
+       (
+            echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
             #echo "shards: $shards"
             #echo "shard_size: $shard_size";
@@ -91,16 +90,15 @@ do
             if [[ $rend -lt $resource_size ]] 
             then
                 rbegin=`echo "v=$i+1; v*=$shard_size; v" | bc`;
-                rend=$resource_size;
-                range="$rbegin-$rend";
+                range="$rbegin-$resource_size";
                 echo "$file_base Launching cmdln CuRL for range: $range";
                 curl -s "$url" -r $range -o $file_base"_$i_shard" & 
                 pid=$!
-                              
+                pids="$pids $pid";
             fi
             echo "Waiting for $pids"; 
             wait $pids;
-        }; ) >> $file_base.log  2>&1
+        ) >> $file_base.log  2>&1
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >>  $file_base.log;
     done
