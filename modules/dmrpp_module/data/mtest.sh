@@ -42,12 +42,12 @@ do
         (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo $seconds;
-        echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
+        echo "CuRL_multi_perfom $file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
     done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     #echo "time_vals: $time_vals";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-    echo "$file_base:  shards: $shards average_time: $avg" | tee -a $file_base.log
+    echo "CuRL_multi_perform file: $file_base  shards: $shards average_time: $avg" | tee -a $file_base.log
     #exit;
 done
 
@@ -61,11 +61,11 @@ do
     (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
     seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
     echo $seconds;
-    echo "$file_base: rep: $rep seconds: $seconds" >> $file_base.log;
+    echo "CuRL_command_line file: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
 done
 time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
 avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-echo "$file_base:  CuRL_command_line average_time: $avg" | tee -a $file_base.log
+echo "CuRL_command_line file: $file_base average_time: $avg" | tee -a $file_base.log
 
 
 
@@ -96,7 +96,7 @@ do
                 curl -s "$url" -r $range -o $file_base"_"$i"_shard" & 
                 pid=$!
                 pids="$pids $pid";
-                echo "$file_base Launched cmdln CuRL for range: $range  pid: $pid";
+                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" | tee -a $file_base.log;
             done   
             if [[ $rend -lt $resource_size ]] 
             then
@@ -107,15 +107,15 @@ do
                 curl -s "$url" -r $range -o $file_base"_"$i"_shard" & 
                 pid=$!
                 pids="$pids $pid";
-                echo "$file_base Launched cmdln CuRL. pid: $pid range: $range";
+                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" | tee -s  $file_base.log;
             fi
             
-            echo "Waiting for $pids ("`jobs -p`")"; 
+            echo "CuRL_command_line_multi_proc Waiting for $pids ("`jobs -p`")"; 
             wait `jobs -p`
             
         )  >> $file_base.log  2>&1
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-        echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >>  $file_base.log;
+        echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" |tee -a  $file_base.log;
    done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
