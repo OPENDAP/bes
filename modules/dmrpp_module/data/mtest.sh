@@ -34,7 +34,7 @@ function get_resource_size(){
 
 #url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
-url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
+#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="mvi_1803"
 
 
@@ -43,10 +43,10 @@ name="mvi_1803"
 #
 # CuRL Command Line, use HTTP Range GET to shard and background processes
 #
-for shards in 3 #20 10 5 2 1
+for shards in 20 10 5 2 1
 do
     file_base=$name"_curl_mproc";
-    for rep in {1..2}
+    for rep in {1..10}
     do
        time -p (
             echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
