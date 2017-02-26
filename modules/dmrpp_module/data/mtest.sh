@@ -72,7 +72,7 @@ do
     file_base=$name"_curl_mproc";
     for rep in {1..10}
     do
-       (
+       time -p (
             echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
             #echo "shards: $shards"
@@ -98,10 +98,11 @@ do
             fi
             echo "Waiting for $pids"; 
             wait $pids;
-        ) >> $file_base.log  2>&1
+        ) tee -a $file_base.log  2>&1
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >>  $file_base.log;
-    done
+        exit;
+   done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
     echo "CuRL_command_line_multi_proc shards: $shards avg_time: $avg resource_size: $resource_size url: $url" | tee -a $file_base.log
