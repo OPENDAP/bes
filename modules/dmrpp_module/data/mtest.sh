@@ -117,7 +117,7 @@ do
             
         )  >> $file_base.log  2>&1
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-        echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" |tee -a  $file_base.log;
+        echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
    done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
