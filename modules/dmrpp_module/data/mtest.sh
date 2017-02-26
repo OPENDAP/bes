@@ -62,13 +62,13 @@ url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; r
 name="mvi_1803"
 #############################
 #MULTIBALL
-for shards in 20 #10 5 2 1
+for shards in 20 10 5 2 1
 do
     file_base=$name"_"$shards;
     rm -f $file_base*
-    for rep in {1..2}
+    for rep in {1..10}
     do
-        echo "url: $url size: $resource_size shards: $shards  rep: $rep  seconds: \c"
+        echo -n "url: $url size: $resource_size shards: $shards  rep: $rep  seconds: \c"
         (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo $seconds;
@@ -78,7 +78,7 @@ do
     #echo "time_vals: $time_vals";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
     echo "$file_base:  shards: $shards average_time: $avg" | tee -a $file_base.log
-    exit;
+    #exit;
 done
 #
 # CuRL Command Line
