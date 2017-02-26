@@ -80,7 +80,7 @@ do
     reps=10;
     for rep in {1..10}
     do
-        echo ".";
+        echo -n ".";
         time -p (
             echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
