@@ -21,30 +21,6 @@ function get_resource_size(){
     fi    
 }
 
-function curl_multi_process_get(){
-    target_url=$1
-    target_output_file=$2
-    children=$3;
-    remote_size=$4;
-    shard_size=`echo "v=$remote_size/$children; v" | bc`;
-    echo "shard_size: $shard_size";
-    for ((i = 0; i < children; i++)); 
-    do
-        rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
-        rend=`echo "v=$rbegin; v+=$shard_size; v--; v" | bc`;
-        range="$rbegin-$rend";
-        echo "range: $range";
-        curl -s "$target_url" -r $range -o $target_output_file"_$i_shard" & 
-        pid=$!
-        pids="$pids $pid";
-    done   
-    echo "Waiting for $pids"; 
-    wait $(jobs -p);
-}
-export -f curl_multi_process_get
-
-
-
 ##################################################
 #
 # Here are some simple tests to see...
@@ -58,7 +34,7 @@ export -f curl_multi_process_get
 
 #url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
-url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140023;
+url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="mvi_1803"
 
 
@@ -67,41 +43,49 @@ name="mvi_1803"
 #
 # CuRL Command Line, use HTTP Range GET to shard and background processes
 #
-for shards in 20 10 5 2 1
+for shards in 3 #20 10 5 2 1
 do
     file_base=$name"_curl_mproc";
-    for rep in {1..10}
+    for rep in {1..2}
     do
        time -p (
             echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
-            #echo "shards: $shards"
+            if [[ $(($shards % $resource_size)) ]] 
+            then
+                let shards=$shards-1
+                echo "shards: $shards"
+            fi
             #echo "shard_size: $shard_size";
             for ((i = 0; i < $shards; i++)); 
             do
+                # echo "shard_size; $shard_size i: $i";
                 rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
                 rend=`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
                 range="$rbegin-$rend";
-                echo "$file_base Launching cmdln CuRL for range: $range";
-                curl -s "$url" -r $range -o $file_base"_$i_shard" & 
+                curl -s "$url" -r $range -o $file_base"_"$i"_shard" & 
                 pid=$!
                 pids="$pids $pid";
+                echo "$file_base Launched cmdln CuRL for range: $range  pid: $pid";
             done   
             if [[ $rend -lt $resource_size ]] 
             then
-                rbegin=`echo "v=$i+1; v*=$shard_size; v" | bc`;
-                range="$rbegin-$resource_size";
-                echo "$file_base Launching cmdln CuRL for range: $range";
-                curl -s "$url" -r $range -o $file_base"_$i_shard" & 
+                # echo "shard_size; $shard_size i: $i";
+                rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
+                rend=` echo "v=$resource_size-1; v" | bc `;
+                range="$rbegin-$rend";
+                curl -s "$url" -r $range -o $file_base"_"$i"_shard" & 
                 pid=$!
                 pids="$pids $pid";
+                echo "$file_base Launched cmdln CuRL. pid: $pid range: $range";
             fi
-            echo "Waiting for $pids"; 
-            wait $pids;
-        ) tee -a $file_base.log  2>&1
+            
+            echo "Waiting for $pids ("`jobs -p`")"; 
+            wait `jobs -p`
+            
+        )  >> $file_base.log  2>&1
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >>  $file_base.log;
-        exit;
    done
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
