@@ -100,7 +100,7 @@ do
             fi
             echo "Waiting for $pids"; 
             wait $pids;
-        } ) >> $file_base.log  2>&1
+        }; ) >> $file_base.log  2>&1
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >>  $file_base.log;
     done
