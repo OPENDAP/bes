@@ -80,7 +80,8 @@ do
     reps=10;
     for rep in {1..10}
     do
-       time -p (
+        echo -n ""
+        time -p (
             echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
             shard_size=`echo "v=$resource_size/$shards; v" | bc`
             if [[ $(($shards % $resource_size)) ]] 
@@ -116,6 +117,7 @@ do
             wait `jobs -p`
             
         )  >> $file_base.log  2>&1
+        echo "";
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
    done
