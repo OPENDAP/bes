@@ -44,6 +44,7 @@ do
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
     done
+    echo "";
     time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
     #echo "time_vals: $time_vals";
     avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
@@ -63,6 +64,7 @@ do
     seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
     echo "CuRL_command_line file: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
 done
+echo "";
 time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
 avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
 echo "CuRL_command_line file: $file_base average_time: $avg" | tee -a $file_base.log
