@@ -21,6 +21,109 @@ function get_resource_size(){
     fi    
 }
 
+#############################
+#MULTIBALL
+function multiball() {
+    for shards in 20 10 5 2 1
+    do
+        file_base=$name"_"$shards;
+        rm -f $file_base*
+        reps=10;
+        for rep in {1..10}
+        do
+            echo -n "."
+            (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
+            seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
+            echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
+        done
+        echo "";
+        time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
+        #echo "time_vals: $time_vals";
+        avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
+        echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards reps: $reps average_time: $avg" | tee -a $file_base.log
+        #exit;
+    done
+
+}
+
+
+#
+# CuRL Command Line
+#
+function cmdln_curl() {
+    file_base=$name"_curl_cmdln";
+    reps=10;
+    for rep in {1..10}
+    do
+        echo -n "."
+        (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
+        seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
+        echo "CuRL_command_line file_base: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
+    done
+    echo "";
+    time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
+    avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
+    echo "CuRL_command_line file_base: $file_base average_time: $avg" | tee -a $file_base.log
+}
+
+
+
+#
+# CuRL Command Line, use HTTP Range GET to shard and background processes
+#
+function multi_process_curl_cmdln() {
+    for shards in 20 10 5 2 1
+    do
+        file_base=$name"_curl_mproc";
+        rm -f $file_base*
+        reps=10;
+        for rep in {1..10}
+        do
+            time -p (
+                echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
+                shard_size=`echo "v=$resource_size/$shards; v" | bc`
+                if [[ $(($shards % $resource_size)) ]] 
+                then
+                    let whole_shards=$shards-1
+                    echo "whole_shards: $whole_shards"
+                fi
+                #echo "shard_size: $shard_size";
+                for ((i = 0; i < $whole_shards; i++)); 
+                do
+                    # echo "shard_size; $shard_size i: $i";
+                    rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
+                    rend=`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
+                    range="$rbegin-$rend";
+                    curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
+                    pid=$!
+                    pids="$pids $pid";
+                    echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >> $file_base.log;
+                done   
+                if [[ $rend -lt $resource_size ]] 
+                then
+                    # echo "shard_size; $shard_size i: $i";
+                    rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
+                    rend=` echo "v=$resource_size-1; v" | bc `;
+                    range="$rbegin-$rend";
+                    curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
+                    pid=$!
+                    pids="$pids $pid";
+                    echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >>  $file_base.log;
+                fi
+                
+                echo "CuRL_command_line_multi_proc Waiting for $pids ("`jobs -p`")"; 
+                wait `jobs -p`
+                
+            )  >> $file_base.log  2>&1
+            seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
+            echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
+        done
+        time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
+        avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
+        echo "CuRL_command_line_multi_proc  file_base: $file_base shards: $shards reps: $reps avg_time: $avg resource_size: $resource_size url: $url" | tee -a $file_base.log
+    done
+}
+
 ##################################################
 #
 # Here are some simple tests to see...
@@ -30,102 +133,9 @@ url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; r
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="scratch/"`basename $url`
 
-#############################
-#MULTIBALL
-for shards in 20 10 5 2 1
-do
-    file_base=$name"_"$shards;
-    rm -f $file_base*
-    reps=10;
-    for rep in {1..10}
-    do
-        echo -n "."
-        (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
-        seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-        echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
-    done
-    echo "";
-    time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
-    #echo "time_vals: $time_vals";
-    avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-    echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards reps: $reps average_time: $avg" | tee -a $file_base.log
-    #exit;
-done
-
-#
-# CuRL Command Line
-#
-file_base=$name"_curl_cmdln";
-reps=10;
-for rep in {1..10}
-do
-    echo -n "."
-    (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
-    seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-    echo "CuRL_command_line file_base: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
-done
-echo "";
-time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
-avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-echo "CuRL_command_line file_base: $file_base average_time: $avg" | tee -a $file_base.log
-
-
-
-#
-# CuRL Command Line, use HTTP Range GET to shard and background processes
-#
-for shards in 20 10 5 2 1
-do
-    file_base=$name"_curl_mproc";
-    rm -f $file_base*
-    reps=10;
-    for rep in {1..10}
-    do
-        time -p (
-            echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
-            shard_size=`echo "v=$resource_size/$shards; v" | bc`
-            if [[ $(($shards % $resource_size)) ]] 
-            then
-                let whole_shards=$shards-1
-                echo "whole_shards: $whole_shards"
-            fi
-            #echo "shard_size: $shard_size";
-            for ((i = 0; i < $whole_shards; i++)); 
-            do
-                # echo "shard_size; $shard_size i: $i";
-                rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
-                rend=`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
-                range="$rbegin-$rend";
-                curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
-                pid=$!
-                pids="$pids $pid";
-                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >> $file_base.log;
-            done   
-            if [[ $rend -lt $resource_size ]] 
-            then
-                # echo "shard_size; $shard_size i: $i";
-                rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
-                rend=` echo "v=$resource_size-1; v" | bc `;
-                range="$rbegin-$rend";
-                curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
-                pid=$!
-                pids="$pids $pid";
-                echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >>  $file_base.log;
-            fi
-            
-            echo "CuRL_command_line_multi_proc Waiting for $pids ("`jobs -p`")"; 
-            wait `jobs -p`
-            
-        )  >> $file_base.log  2>&1
-        seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-        echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
-    done
-    time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
-    avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-    echo "CuRL_command_line_multi_proc  file_base: $file_base shards: $shards reps: $reps avg_time: $avg resource_size: $resource_size url: $url" | tee -a $file_base.log
-done
-
-
+multiball
+cmdln_curl
+multi_process_curl_cmdln
 
 exit;
 
