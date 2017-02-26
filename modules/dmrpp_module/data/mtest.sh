@@ -38,7 +38,7 @@ do
     rm -f $file_base*
     for rep in {1..10}
     do
-        echo -n "url: $url size: $resource_size shards: $shards  rep: $rep  seconds: \c"
+        echo -n "url: $url size: $resource_size shards: $shards  rep: $rep  seconds: "
         (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo $seconds;
@@ -57,7 +57,7 @@ done
 file_base=$name"_curl_cmdln";
 for rep in {1..10}
 do
-    echo -n "url: $url CuRL_command_line rep: $rep  seconds: \c"
+    echo -n "url: $url CuRL_command_line rep: $rep  seconds: "
     (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
     seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
     echo $seconds;
