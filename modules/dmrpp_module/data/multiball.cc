@@ -376,10 +376,9 @@ int main(int argc, char **argv) {
 
 
     // cerr << endl;
-    cerr << output_file <<": CuRL multi_perfom has finished! mcode: "<< mcode <<
-        " laps: " << lap_counter <<
-        "  still_running: "<< still_running <<
-        "  shards_map.size(): "<< shards_map.size() << endl;
+    cerr << output_file <<": CuRL multi_perfom has finished. mcode: "<< mcode <<
+        " multi_wait_laps: " << lap_counter <<
+        " shards: "<< shards_map.size() << endl;
 
     if(mcode == CURLM_OK) {
         CURLMsg *msg; /* for picking up messages with the transfer status */
