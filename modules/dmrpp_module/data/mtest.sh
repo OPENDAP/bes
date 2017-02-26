@@ -31,7 +31,7 @@ function curl_multi_process_get(){
     for ((i = 0; i < children; i++)); 
     do
         rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
-        rend=`echo "v=$rbegin; v+=$shard_size; v--; v" | dbcc`;
+        rend=`echo "v=$rbegin; v+=$shard_size; v--; v" | bc`;
         range="$rbegin-$rend";
         echo "range: $range";
         curl -s "$target_url" -r $range -o $target_output_file"_$i_shard" & 
@@ -60,6 +60,67 @@ export -f curl_multi_process_get
 url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140023;
 name="mvi_1803"
+
+
+
+
+#
+# CuRL Command Line, use HTTP Range GET to shard and background processes
+#
+for shards in 20 10 5 2 1
+do
+    file_base=$name"_curl_mproc";
+    for rep in {1..10}
+    do
+        echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
+        (
+        time -p  {
+            shard_size=`echo "v=$resource_size/$shards; v" | bc`
+            #echo "shards: $shards"
+            #echo "shard_size: $shard_size";
+            for ((i = 0; i < $shards; i++)); 
+            do
+                rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
+                rend=`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
+                range="$rbegin-$rend";
+                echo "$file_base Launching cmdln CuRL for range: $range";
+                curl -s "$url" -r $range -o $file_base"_$i_shard" & 
+                pid=$!
+                pids="$pids $pid";
+            done   
+            if [[ $rend -lt $resource_size ]] 
+            then
+                rbegin=`echo "v=$i+1; v*=$shard_size; v" | bc`;
+                rend=$resource_size;
+                range="$rbegin-$rend";
+                echo "$file_base Launching cmdln CuRL for range: $range";
+                curl -s "$url" -r $range -o $file_base"_$i_shard" & 
+                pid=$!
+                              
+            fi
+            echo "Waiting for $pids"; 
+            wait $pids;
+        }
+        ) >> $file_base.log  2>&1
+        seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
+        echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >>  $file_base.log;
+    done
+    time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
+    avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
+    echo "CuRL_command_line_multi_proc shards: $shards avg_time: $avg resource_size: $resource_size url: $url" | tee -a $file_base.log
+done
+
+
+
+exit;
+
+
+
+
+
+
+
+
 #############################
 #MULTIBALL
 for shards in 20 10 5 2 1
@@ -95,26 +156,6 @@ done
 time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
 avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
 echo "$file_base:  CuRL_command_line average_time: $avg" | tee -a $file_base.log
-
-#
-# CuRL Command Line, use HTTP Range GET to shard and background processes
-#
-for shards in 20 10 5 2 1
-do
-    file_base=$name"_curl_mproc";
-    for rep in {1..10}
-    do
-        echo "url: $url CuRL_command_line_multi_proc rep: $rep  seconds: \c"
-        (time -p curl_multi_process_get $url $file_base $shards $resource_size) 2>> $file_base.log
-        seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-        echo $seconds;
-        echo "$file_base: shards: $shards rep: $rep seconds: $seconds" >> $file_base.log;
-    done
-    time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
-    avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
-    echo "$file_base:  CuRL_command_line_multi_proc shards: $shards avg_time: $avg" | tee -a $file_base.log
-done
-
 
 
 
