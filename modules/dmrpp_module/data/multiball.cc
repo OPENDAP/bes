@@ -301,7 +301,7 @@ int main(int argc, char **argv) {
             break;
         }
     }
-    cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
+//    cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
     if (debug) {
         cerr << "url: '" << url << "'" << endl;
         cerr << "output_file: '" << output_file << "'" << endl;
@@ -373,8 +373,13 @@ int main(int argc, char **argv) {
             repeats = 0;
 
     } while(still_running);
+
+
     // cerr << endl;
-    cerr << __func__ <<"() CURL-MULTI has finished! mcode: "<< mcode << " laps: " << lap_counter << "  still_running: "<< still_running << endl;
+    cerr << output_file <<": CuRL multi_perfom has finished! mcode: "<< mcode <<
+        " laps: " << lap_counter <<
+        "  still_running: "<< still_running <<
+        "  shards_map.size(): "<< shards_map.size() << endl;
 
     if(mcode == CURLM_OK) {
         CURLMsg *msg; /* for picking up messages with the transfer status */
