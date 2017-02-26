@@ -77,6 +77,7 @@ echo "CuRL_command_line file_base: $file_base average_time: $avg" | tee -a $file
 for shards in 20 10 5 2 1
 do
     file_base=$name"_curl_mproc";
+    rm -f $file_base*
     reps=10;
     for rep in {1..10}
     do
