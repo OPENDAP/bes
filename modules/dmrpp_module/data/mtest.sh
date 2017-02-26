@@ -28,7 +28,7 @@ function get_resource_size(){
 #url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
-name=`basename $url`
+name="scratch/"`basename $url`
 
 #############################
 #MULTIBALL
