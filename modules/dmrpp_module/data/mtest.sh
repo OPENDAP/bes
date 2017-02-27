@@ -157,7 +157,7 @@ function multi_process_curl_cmdln() {
 # Here are some simple tests to see...
 
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
-#url="http://54.152.22.48/MVI_1803.MOV"  resource_size=1647477620;
+#url="http://107.23.252.39/MVI_1803.MOV"  resource_size=1647477620;
 
 #resource_size=164747;
 
