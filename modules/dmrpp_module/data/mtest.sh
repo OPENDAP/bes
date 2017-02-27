@@ -24,6 +24,7 @@ function get_resource_size(){
 #############################
 #MULTIBALL
 function multiball() {
+    echo "########################## MULTI-BALL ##########################"
     for shards in 20 10 5 2 1
     do
         file_base=$name"_"$shards;
@@ -31,7 +32,7 @@ function multiball() {
         reps=10;
         for rep in {1..10}
         do
-            echo -n "."
+            #echo -n "."
             (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
             seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
             echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
@@ -51,11 +52,12 @@ function multiball() {
 # CuRL Command Line
 #
 function cmdln_curl() {
+    echo "########################## CuRL Command Line ##########################"
     file_base=$name"_curl_cmdln";
     reps=10;
     for rep in {1..10}
     do
-        echo -n "."
+        #echo -n "."
         (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_command_line file_base: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
@@ -72,6 +74,7 @@ function cmdln_curl() {
 # CuRL Command Line, use HTTP Range GET to shard and background processes
 #
 function multi_process_curl_cmdln() {
+    echo "########################## CuRL Command Line Multi Process ##########################"
     for shards in 20 10 5 2 1
     do
         file_base=$name"_curl_mproc";
@@ -116,7 +119,7 @@ function multi_process_curl_cmdln() {
                 
             )  >> $file_base.log  2>&1
             seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-            echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
+            # echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
         done
         time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
         avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
