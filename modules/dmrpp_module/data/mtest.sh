@@ -28,7 +28,7 @@ function multiball() {
     echo "########################## CuRL multi_perform ##########################"
     test_base=$name"_multi_perform_";
     echo "TEST_BASE: $test_base";
-    rm -f $test_base*;
+    rm -f "$test_base*";
 
     for shards in 50 20 10 5 2 1
     do
