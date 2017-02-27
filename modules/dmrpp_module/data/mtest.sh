@@ -40,7 +40,8 @@ function multiball() {
             echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
         done
         #echo "";
-        time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
+        # time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
+        time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
         echo "time_vals: $time_vals";        
         metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
         # avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
