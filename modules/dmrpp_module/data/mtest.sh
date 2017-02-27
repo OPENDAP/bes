@@ -33,7 +33,7 @@ function multiball() {
     for shards in 50 20 10 5 2 1
     do
         file_base=$test_base$shards;
-        echo "file_base: $file_base"
+        echo "file_base: $file_base" >> $file_base.log
         reps=10;
         for rep in {1..10}
         do
@@ -66,7 +66,7 @@ function multiball() {
 function cmdln_curl() {
     echo "########################## CuRL Command Line ##########################"
     file_base=$name"_curl_cmdln";
-    rm -f $file_base*
+    rm -f "$file_base*"
     reps=10;
     for rep in {1..10}
     do
@@ -79,7 +79,7 @@ function cmdln_curl() {
     done
     #echo "";
     time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
-    echo "time_vals: $time_vals";        
+    #echo "time_vals: $time_vals";        
     metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
     avg=`echo $metrics | awk '{print $1}' -`;
     stdev=`echo $metrics | awk '{print $2}' -`;
@@ -94,7 +94,7 @@ function cmdln_curl() {
 #
 function multi_process_curl_cmdln() {
     file_base=$name"_curl_mproc";
-    rm -f $file_base*;
+    rm -f "$file_base*";
     echo "########################## CuRL Command Line Multi Process ##########################" | tee $file_base.log
     for shards in 50 20 10 5 2 1
     do
@@ -156,12 +156,15 @@ echo "NAME: $name"
 
 rm -f $name*
 
-multiball
-cmdln_curl
+#multiball
+#cmdln_curl
 multi_process_curl_cmdln
 
 exit;
 
+
+
+#pthre
 # time -p ./multiball -u "https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc" -s 140904652 -o MB2006001_2006001_chla.nc -c 20
 
 
