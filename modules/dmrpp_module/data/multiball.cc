@@ -227,15 +227,18 @@ void make_shards(map<CURL*, Shard *> *shards_map, unsigned int shard_count, stri
 
     if(debug) cerr << __func__ << "() - Target size: " << file_size << endl;
 
-    int shard_size = file_size/shard_count;
-
+    unsigned long long int shard_size = file_size/shard_count;
     long long byte_count = 0;
     for(unsigned int i=0; i<shard_count ; i++){
-        int offset = i * shard_size;
+        unsigned long long my_size=shard_size;
+        unsigned long long offset = i * shard_size;
+        if((offset + shard_size) > file_size){
+            my_size=file_size - offset;
+        }
         Shard *shard = new Shard();
         shard->d_url = url;
         shard->d_offset = offset;
-        shard->d_size = shard_size;
+        shard->d_size = my_size;
         ostringstream oss;
         oss << output_filename << "_" << (i<10?"0":"")<< i<< "_shard";
         shard->d_output_filename = oss.str();
@@ -243,21 +246,6 @@ void make_shards(map<CURL*, Shard *> *shards_map, unsigned int shard_count, stri
         shards_map->insert(
             std::pair<CURL*,Shard*>(shard->d_curl_easy_handle,shard));
         byte_count+=shard_size;
-    }
-    if(byte_count < file_size){
-        int offset = shard_count * shard_size;
-        long long size = file_size - byte_count;
-        Shard *shard = new Shard();
-        shard->d_url = url;
-        shard->d_offset = offset;
-        shard->d_size = shard_size;
-        ostringstream oss;
-        oss << output_filename << "_" << (shard_count<10?"0":"")<< shard_count << "_shard";
-        shard->d_output_filename = oss.str();
-        shard->init_curl_handle();
-        shards_map->insert(
-            std::pair<CURL*,Shard*>(shard->d_curl_easy_handle,shard));
-        byte_count+=size;
     }
 
 }
@@ -269,9 +257,9 @@ int main(int argc, char **argv) {
     unsigned int shard_count;
 
 
-    url = "https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc";
+    url = "";
     shard_count=1;
-    file_size = 140904652;
+    file_size = 0;
 
 
     GetOpt getopt(argc, argv, "Ddc:s:o:u:");
