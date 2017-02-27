@@ -103,24 +103,26 @@ function multi_process_curl_cmdln() {
         for rep in {1..10}
         do
             time -p (
-                echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
-                shard_size=`echo "v=$resource_size/$shards; v" | bc`
-
+                echo "CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
+                shard_size=`echo "v=$resource_size/($shards-1); v" | bc`
                 echo "shard_size: $shard_size";
                 for ((i = 0; i < $shards; i++)); 
                 do
                     # echo "shard_size; $shard_size i: $i";
                     rbegin=`echo "v=$i*$shard_size; v" | bc`;
-                    if [[ $(($rbegin + $shard_size)) -gt $resource_size ]] 
+                    let end_diff=$resource_size-$rbegin;
+                    #echo "shard_size: $shard_size";
+                    #echo "end_diff:   $end_diff";
+                    let rend=$rbegin+$shard_size-1;
+                    if [ $rend -ge $resource_size ] 
                     then
                         let rend=$resource_size-1;
-                        echo " - "
-                    else                  
-                        let rend=$rbegin+$shard_size-1;
-                        echo "*"
+                        #echo "------------------ rend: $rend"
+                    #else 
+                        #echo "rend: $rend"
                     fi
                     range="$rbegin-$rend";
-                    echo "rbegin: $rbegin rend: $rend range: $range";
+                    #echo "rbegin: $rbegin rend: $rend range: $range";
                     cmd="curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard
                     echo "COMMAND: $cmd" >> $file_base.log
                     $cmd &
