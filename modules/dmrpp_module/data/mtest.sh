@@ -150,8 +150,9 @@ url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=16474776
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="scratch/"`basename $url`
+echo "NAME: $name"
 
-rm -f $name*
+#rm -f $name*
 
 multiball
 cmdln_curl
