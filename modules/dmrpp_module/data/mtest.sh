@@ -27,7 +27,7 @@ function multiball() {
     
     echo "########################## CuRL multi_perform ##########################"
     test_base=$name"_multi_perform_";
-    echo "test_base: $test_base";
+    #echo "test_base: $test_base";
     rm -f "$test_base*";
 
     for shards in 50 20 10 5 2 1
@@ -157,7 +157,7 @@ url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=16474776
 name="scratch/"`basename $url`
 echo "NAME: $name"
 
-#rm -f $name*
+rm -f $name*
 
 multiball
 cmdln_curl
