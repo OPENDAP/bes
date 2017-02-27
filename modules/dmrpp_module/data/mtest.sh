@@ -25,7 +25,7 @@ function get_resource_size(){
 #MULTIBALL
 function multiball() {
     echo "########################## CuRL multi_perform ##########################"
-    for shards in 20 10 5 2 1
+    for shards in 50 20 10 5 2 1
     do
         file_base=$name"_multi_perform_"$shards;
         rm -f $file_base*
@@ -82,7 +82,7 @@ function multi_process_curl_cmdln() {
     file_base=$name"_curl_mproc";
     rm -f $file_base*;
     echo "########################## CuRL Command Line Multi Process ##########################" | tee $file_base.log
-    for shards in 20 10 5 2 1
+    for shards in 50 20 10 5 2 1
     do
         echo "SHARDS: $shards ##########################" >> $file_base.log
         reps=10;
