@@ -106,11 +106,11 @@ function multi_process_curl_cmdln() {
                 echo `date `" CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
                 shard_size=`echo "v=$resource_size/$shards; v" | bc`
 
-                #echo "shard_size: $shard_size";
+                echo "shard_size: $shard_size";
                 for ((i = 0; i < $shards; i++)); 
                 do
                     # echo "shard_size; $shard_size i: $i";
-                    rbegin=`echo "v=$i*shard_size; v" | bc`;
+                    rbegin=`echo "v=$i*$shard_size; v" | bc`;
                     if [[ $(($rbegin + $shard_size)) -gt $resource_size ]] 
                     then
                         let rend=$resource_size-1;
@@ -118,9 +118,9 @@ function multi_process_curl_cmdln() {
                     else                  
                         let rend=$rbegin+$shard_size-1;
                         echo "*"
-                        #`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
                     fi
                     range="$rbegin-$rend";
+                    echo "rbegin: $rbegin rend: $rend range: $range";
                     cmd="curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard
                     echo "COMMAND: $cmd" >> $file_base.log
                     $cmd &
@@ -150,7 +150,7 @@ function multi_process_curl_cmdln() {
 
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
-#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
+url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="scratch/"`basename $url`
 echo "NAME: $name"
 
