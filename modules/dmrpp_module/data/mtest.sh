@@ -96,15 +96,21 @@ function multi_process_curl_cmdln() {
     file_base=$name"_curl_mproc";
     rm -f "$file_base*";
     echo "########################## CuRL Command Line Multi Process ##########################" | tee $file_base.log
-    for shards in 50 20 10 5 2 1
+    for shards in  50 20 10 5 2 1
     do
-        echo "SHARDS: $shards ##########################" >> $file_base.log
+        echo "SHARDS: $shards ##########################" >> $file_base.log;
         reps=10;
         for rep in {1..10}
         do
             time -p (
-                echo "CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url "
-                shard_size=`echo "v=$resource_size/($shards-1); v" | bc`
+                echo "CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url ";
+                if [ $shards -gt 1 ]
+                then
+                    shard_size=`echo "v=$resource_size/($shards-1); v" | bc`;
+                else
+                    shard_size=$resource_size;
+                fi
+                    
                 echo "shard_size: $shard_size";
                 for ((i = 0; i < $shards; i++)); 
                 do
@@ -151,6 +157,10 @@ function multi_process_curl_cmdln() {
 # Here are some simple tests to see...
 
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
+#url="http://54.152.22.48/MVI_1803.MOV"  resource_size=1647477620;
+
+#resource_size=164747;
+
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="scratch/"`basename $url`
@@ -158,9 +168,9 @@ echo "NAME: $name"
 
 rm -f $name*
 
-#multiball
+multiball
 #cmdln_curl
-multi_process_curl_cmdln
+#multi_process_curl_cmdln
 
 exit;
 
