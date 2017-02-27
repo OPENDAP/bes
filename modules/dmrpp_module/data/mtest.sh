@@ -33,7 +33,9 @@ function multiball() {
         for rep in {1..10}
         do
             #echo -n "."
-            (time -p ./multiball -u $url -s $resource_size -o $file_base -c $shards) 2>> $file_base.log 
+            cmd="./multiball -u $url -s $resource_size -o $file_base -c $shards"
+            echo "COMMAND: $cmd" >> $file_base.log
+            (time -p $cmd) 2>> $file_base.log 
             seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
             echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
         done
@@ -54,11 +56,14 @@ function multiball() {
 function cmdln_curl() {
     echo "########################## CuRL Command Line ##########################"
     file_base=$name"_curl_cmdln";
+    rm -f $file_base*
     reps=10;
     for rep in {1..10}
     do
         #echo -n "."
-        (time -p curl -s "$url" -o $file_base) 2>> $file_base.log
+        cmd="curl -s "$url" -o $file_base"
+        echo "COMMAND: $cmd" >> $file_base.log
+        (time -p $cmd) 2>> $file_base.log
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_command_line file_base: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
     done
@@ -74,11 +79,12 @@ function cmdln_curl() {
 # CuRL Command Line, use HTTP Range GET to shard and background processes
 #
 function multi_process_curl_cmdln() {
-    echo "########################## CuRL Command Line Multi Process ##########################"
+    file_base=$name"_curl_mproc";
+    rm -f $file_base*;
+    echo "########################## CuRL Command Line Multi Process ##########################" | tee $file_base.log
     for shards in 20 10 5 2 1
     do
-        file_base=$name"_curl_mproc";
-        rm -f $file_base*
+        echo "SHARDS: $shards ##########################" >> $file_base.log
         reps=10;
         for rep in {1..10}
         do
@@ -97,7 +103,9 @@ function multi_process_curl_cmdln() {
                     rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
                     rend=`echo "v=$rbegin; v+=$shard_size-1; v" | bc`;
                     range="$rbegin-$rend";
-                    curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
+                    cmd="curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard
+                    echo "COMMAND: $cmd" >> $file_base.log
+                    $cmd &
                     pid=$!
                     pids="$pids $pid";
                     echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >> $file_base.log;
@@ -108,7 +116,9 @@ function multi_process_curl_cmdln() {
                     rbegin=`echo "v=$i; v*=$shard_size; v" | bc`;
                     rend=` echo "v=$resource_size-1; v" | bc `;
                     range="$rbegin-$rend";
-                    curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard" & 
+                    cmd="curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard
+                    echo "COMMAND: $cmd" >> $file_base.log
+                    $cmd &
                     pid=$!
                     pids="$pids $pid";
                     echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >>  $file_base.log;
@@ -133,13 +143,13 @@ function multi_process_curl_cmdln() {
 
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
-#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
+url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="scratch/"`basename $url`
 
 rm -f $name*
 
-multiball
-cmdln_curl
+#multiball
+#cmdln_curl
 multi_process_curl_cmdln
 
 exit;
