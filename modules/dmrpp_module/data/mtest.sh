@@ -28,7 +28,7 @@ function multiball() {
     for shards in 50 20 10 5 2 1
     do
         file_base=$name"_multi_perform_"$shards;
-        rm -f $file_base*
+        rm -f $file_base.* $file_base_*
         reps=10;
         for rep in {1..10}
         do
