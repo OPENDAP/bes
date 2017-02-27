@@ -136,6 +136,8 @@ url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; r
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 name="scratch/"`basename $url`
 
+rm -fv $name*
+
 multiball
 cmdln_curl
 multi_process_curl_cmdln
