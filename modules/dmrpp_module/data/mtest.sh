@@ -148,8 +148,8 @@ name="scratch/"`basename $url`
 
 rm -f $name*
 
-#multiball
-#cmdln_curl
+multiball
+cmdln_curl
 multi_process_curl_cmdln
 
 exit;
