@@ -24,10 +24,15 @@ function get_resource_size(){
 #############################
 #MULTIBALL
 function multiball() {
+    
     echo "########################## CuRL multi_perform ##########################"
+    test_base=$name"_multi_perform_";
+    echo "TEST_BASE: $test_base";
+    rm -f $test_base*;
+
     for shards in 50 20 10 5 2 1
     do
-        file_base=$name"_multi_perform_"$shards;
+        file_base=$test_base$shards;
         rm -f $file_base.* $file_base_*
         reps=10;
         for rep in {1..10}
