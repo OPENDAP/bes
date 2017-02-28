@@ -26,6 +26,8 @@ function get_resource_size(){
 function multiball() {
     
     echo "########################## CuRL multi_perform ##########################"
+    echo "Target URL: $url"
+    echo "Target Size: $resource_size" 
     test_base=$name"_multi_perform_";
     #echo "test_base: $test_base";
     rm -f "$test_base*";
@@ -37,23 +39,19 @@ function multiball() {
         reps=10;
         for rep in {1..10}
         do
-            #echo -n "."
             cmd="./multiball -u $url -s $resource_size -o $file_base -c $shards"
             echo "COMMAND: $cmd" >> $file_base.log
             (time -p $cmd) 2>> $file_base.log 
             seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
             echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
         done
-        #echo "";
-        # time_vals=`grep real $file_base.log | awk '{printf("%s + ",$2);}' -`"0.0";
         time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
         # echo "time_vals: $time_vals";        
         metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
-        # avg=`echo "scale=3; v=$time_vals; v=v/10.0; v" | bc`;
         avg=`echo $metrics | awk '{print $1}' -`;
         stdev=`echo $metrics | awk '{print $2}' -`;
 
-        echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards reps: $reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
+        echo "CuRL_multi_perform shards: $shards reps: $reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
         #exit;
     done
 
@@ -65,6 +63,8 @@ function multiball() {
 #
 function cmdln_curl() {
     echo "########################## CuRL Command Line ##########################"
+    echo "Target URL: $url"
+    echo "Target Size: $resource_size" 
     file_base=$name"_curl_cmdln";
     rm -f "$file_base*"
     reps=10;
@@ -84,7 +84,7 @@ function cmdln_curl() {
     avg=`echo $metrics | awk '{print $1}' -`;
     stdev=`echo $metrics | awk '{print $2}' -`;
 
-    echo "CuRL_command_line file_base: $file_base average_time: $avg stddev: $stdev" | tee -a $file_base.log
+    echo "CuRL_command_line shards: 1 reps: $reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
 }
 
 
@@ -93,9 +93,13 @@ function cmdln_curl() {
 # CuRL Command Line, use HTTP Range GET to shard and background processes
 #
 function multi_process_curl_cmdln() {
+ 
+
     file_base=$name"_curl_mproc";
     rm -f "$file_base*";
     echo "########################## CuRL Command Line Multi Process ##########################" | tee $file_base.log
+    echo "Target URL: $url" | tee $file_base.log
+    echo "Target Size: $resource_size" | tee $file_base.log
     for shards in  50 20 10 5 2 1
     do
         echo "SHARDS: $shards ##########################" >> $file_base.log;
@@ -134,7 +138,7 @@ function multi_process_curl_cmdln() {
                     $cmd &
                     pid=$!
                     pids="$pids $pid";
-                    echo " Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range" >> $file_base.log;
+                    echo "Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range";
                 done   
                 echo "CuRL_command_line_multi_proc Waiting for $pids ("`jobs -p`")"; 
                 wait `jobs -p`
@@ -148,7 +152,7 @@ function multi_process_curl_cmdln() {
         metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
         avg=`echo $metrics | awk '{print $1}' -`;
         stdev=`echo $metrics | awk '{print $2}' -`;
-        echo "CuRL_command_line_multi_proc  file_base: $file_base resource_size: $resource_size shards: $shards reps: $reps avg_time: $avg stddev: $stdev  url: $url" | tee -a $file_base.log
+        echo "CuRL_command_line_multi_proc  shards: $shards reps: $reps avg_time: $avg stddev: $stdev" | tee -a $file_base.log
     done
 }
 
