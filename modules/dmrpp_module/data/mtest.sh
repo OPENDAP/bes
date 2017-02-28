@@ -163,14 +163,19 @@ url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=16474776
 
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
+
+
+echo "# MTEST ########################## MTEST ########################## MTEST #"
+
+echo "Target URL: $url"
 name="scratch/"`basename $url`
-echo "NAME: $name"
+echo "Local Name Base: $name"
 
 rm -f $name*
 
 multiball
-#cmdln_curl
-#multi_process_curl_cmdln
+cmdln_curl
+multi_process_curl_cmdln
 
 exit;
 
