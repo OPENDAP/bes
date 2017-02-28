@@ -4,7 +4,7 @@
 #
 # Here are some simple tests to see...
 
-total_reps=2;
+total_reps=10;
 
 # 1.6GB resource held in S3 with access via S3 http
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
@@ -60,7 +60,7 @@ function multiball() {
     for shards in 50 20 10 5 2 1
     do
         file_base=$test_base$shards;
-        echo "$header" >> tee $file_base.log
+        echo "$header" >> $file_base.log
         echo "file_base: $file_base" >> $file_base.log
         for ((rep = 0; i < $total_reps; rep++))
         do
@@ -91,12 +91,12 @@ function cmdln_curl() {
     file_base=$name"_curl_cmdln";
     rm -f "$file_base*"
 
-    echo "-------------------------------------------------------------------------" | tee $file_base.log
-    echo "- Testing CuRL Command Line" | tee $file_base.log
-    echo "-" | tee $file_base.log
-    echo "- Target URL: $url" | tee $file_base.log
-    echo "- Target Size: $resource_size"  | tee $file_base.log
-    echo "-" | tee $file_base.log
+    echo "-------------------------------------------------------------------------" | tee -a $file_base.log
+    echo "- Testing CuRL Command Line" | tee -a $file_base.log
+    echo "-" | tee -a $file_base.log
+    echo "- Target URL: $url" | tee -a  $file_base.log
+    echo "- Target Size: $resource_size"  | tee -a $file_base.log
+    echo "-" | tee -a $file_base.log
 
 
     for ((rep = 0; i < $total_reps; rep++))
@@ -128,12 +128,12 @@ function multi_process_curl_cmdln() {
 
     file_base=$name"_curl_mproc";
     rm -f "$file_base*";
-    echo "-------------------------------------------------------------------------" | tee $file_base.log
-    echo "- Testing CuRL command line using a multi process RANGE GET approach." | tee $file_base.log
-    echo "-"  | tee $file_base.log
-    echo "- Target URL: $url"  | tee $file_base.log
-    echo "- Target Size: $resource_size"  | tee $file_base.log
-    echo "-"  | tee $file_base.log
+    echo "-------------------------------------------------------------------------" | tee -a $file_base.log
+    echo "- Testing CuRL command line using a multi process RANGE GET approach." | tee -a $file_base.log
+    echo "-"  | tee -a $file_base.log
+    echo "- Target URL: $url"  | tee -a $file_base.log
+    echo "- Target Size: $resource_size"  | tee -a $file_base.log
+    echo "-"  | tee -a $file_base.log
     for shards in  50 20 10 5 2 1
     do
         echo "SHARDS: $shards ##########################" >> $file_base.log;
