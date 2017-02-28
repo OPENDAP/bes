@@ -1,7 +1,27 @@
 #!/bin/bash
 
+##################################################
+#
+# Here are some simple tests to see...
+
+total_reps=10;
+
+# 1.6GB resource held in S3 with access via S3 http
+url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
+
+# 1.6GB resource held in EC2 access via httpd
+#url="http://107.23.252.39/MVI_1803.MOV"  resource_size=1647477620;
+
+#resource_size=164747;
+
+#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
+#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 
 
+
+################################################################################
+################################################################################
+################################################################################
 function get_resource_size(){
     resource_id=$1;
     
@@ -36,8 +56,7 @@ function multiball() {
     do
         file_base=$test_base$shards;
         echo "file_base: $file_base" >> $file_base.log
-        reps=10;
-        for rep in {1..10}
+        for ((rep = 0; i < $total_reps; rep++))
         do
             cmd="./multiball -u $url -s $resource_size -o $file_base -c $shards"
             echo "COMMAND: $cmd" >> $file_base.log
@@ -51,7 +70,7 @@ function multiball() {
         avg=`echo $metrics | awk '{print $1}' -`;
         stdev=`echo $metrics | awk '{print $2}' -`;
 
-        echo "CuRL_multi_perform shards: $shards reps: $reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
+        echo "CuRL_multi_perform shards: $shards reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
         #exit;
     done
 
@@ -67,8 +86,7 @@ function cmdln_curl() {
     echo "Target Size: $resource_size" 
     file_base=$name"_curl_cmdln";
     rm -f "$file_base*"
-    reps=10;
-    for rep in {1..10}
+    for ((rep = 0; i < $total_reps; rep++))
     do
         #echo -n "."
         cmd="curl -s "$url" -o $file_base"
@@ -84,7 +102,7 @@ function cmdln_curl() {
     avg=`echo $metrics | awk '{print $1}' -`;
     stdev=`echo $metrics | awk '{print $2}' -`;
 
-    echo "CuRL_command_line shards: 1 reps: $reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
+    echo "CuRL_command_line shards: 1 reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
 }
 
 
@@ -103,8 +121,7 @@ function multi_process_curl_cmdln() {
     for shards in  50 20 10 5 2 1
     do
         echo "SHARDS: $shards ##########################" >> $file_base.log;
-        reps=10;
-        for rep in {1..10}
+        for ((rep = 0; i < $total_reps; rep++))
         do
             time -p (
                 echo "CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url ";
@@ -152,28 +169,19 @@ function multi_process_curl_cmdln() {
         metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
         avg=`echo $metrics | awk '{print $1}' -`;
         stdev=`echo $metrics | awk '{print $2}' -`;
-        echo "CuRL_command_line_multi_proc  shards: $shards reps: $reps avg_time: $avg stddev: $stdev" | tee -a $file_base.log
+        echo "CuRL_command_line_multi_proc  shards: $shards reps: $total_reps avg_time: $avg stddev: $stdev" | tee -a $file_base.log
     done
 }
 
-##################################################
-#
-# Here are some simple tests to see...
-
-url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
-#url="http://107.23.252.39/MVI_1803.MOV"  resource_size=1647477620;
-
-#resource_size=164747;
-
-#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
-#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 
 
 echo "# MTEST ########################## MTEST ########################## MTEST #"
 
 echo "Target URL: $url"
+echo "Target size: $resource_size"
 name="scratch/"`basename $url`
-echo "Local Name Base: $name"
+echo "LocalNameBase: $name"
+echo "Total Reps: $total_reps"
 
 rm -f $name*
 
