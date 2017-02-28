@@ -310,7 +310,8 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
       
         he5ddsparse(&p);
         he5ddslex_destroy();
-        //      p.print();
+        p.add_projparams(st_str);
+        //p.print();
         // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
 
         if (c.check_grids_unknown_parameters(&p)) {
@@ -534,6 +535,9 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
 //cerr<<"cvar new name latlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
                 HDFEOS5CFMissLLArray *ar = NULL;
                 try {
+//cerr<<"cvar zone here is "<<cvar->getZone() <<endl;
+//cerr<<"cvar Sphere here is "<<cvar->getSphere() <<endl;
+//cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     ar = new HDFEOS5CFMissLLArray (
                                     cvar->getRank(),
                                     filename,
@@ -547,6 +551,9 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
                                     cvar->getPixelReg(),
                                     cvar->getOrigin(),
                                     cvar->getProjCode(),
+                                    cvar->getParams(),
+                                    cvar->getZone(),
+                                    cvar->getSphere(),
                                     cvar->getXDimSize(),
                                     cvar->getYDimSize(),
                                     cvar->getNewName(),

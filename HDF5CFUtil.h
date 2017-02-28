@@ -37,6 +37,7 @@
 #include <string>
 #include <iostream>
 #include "hdf5.h"
+#include "HE5Grid.h"
 
 // We create this intermediate enum H5DataType in order to totally separate the 
 // creating of DAS and DDS from any HDF5 API calls. When mapping to DAP, only this
@@ -159,7 +160,7 @@ struct HDF5CFUtil {
         int spherecode, int xdimsize, int ydimsize,
         double upleftpt[], double lowrightpt[],
         int npnts, int row[], int col[],
-        double longitude[], double latitude[], int pixcen, int pixcnr);
+        double longitude[], double latitude[], EOS5GridPRType pixcen, EOS5GridOriginType pixcnr);
 
 //extern int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
 

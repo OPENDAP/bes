@@ -44,6 +44,7 @@
 #include <map>
 #include <set>
 #include <list>
+#include <algorithm>
 #include "HDF5CFUtil.h"
 //#include "h5cfdaputil.h"
 #include "HDF5GCFProduct.h"
@@ -437,8 +438,10 @@ namespace HDF5CF
                  ydimsize(0),
                  eos5_pixelreg(HE5_HDFE_CENTER),// may change later
                  eos5_origin(HE5_HDFE_GD_UL), // may change later
-                 eos5_projcode(HE5_GCTP_GEO)//may change later
-                {};
+                 eos5_projcode(HE5_GCTP_GEO),//may change later
+                 zone(-1),
+                 sphere(0)
+                { std::fill_n(param,13,0);};
             EOS5CVar(Var *);
 
             ~EOS5CVar() {}
@@ -479,6 +482,22 @@ namespace HDF5CF
                 return this->ydimsize;
             }
 
+            std::vector<double> getParams() const {
+                std::vector<double> ret_params;
+                for(int i = 0;i<13;i++)
+                   ret_params.push_back(param[i]);
+                return ret_params; 
+            }
+
+            int getZone() const {
+                return this->zone;
+            }
+
+            int getSphere() const {
+                return this->sphere;
+            }
+
+
         private:
             EOS5Type eos_type;
             bool is_2dlatlon;
@@ -491,6 +510,10 @@ namespace HDF5CF
             EOS5GridPRType eos5_pixelreg;
             EOS5GridOriginType eos5_origin;
             EOS5GridPCType eos5_projcode;
+
+            double param[13];
+            int zone;
+            int sphere;
         friend class EOS5File;
     };
 
@@ -988,13 +1011,15 @@ namespace HDF5CF
                  eos5_pixelreg(HE5_HDFE_CENTER),// may change later
                  eos5_origin(HE5_HDFE_GD_UL), // may change later
                  eos5_projcode(HE5_GCTP_GEO),//may change later
+                 zone(-1),
+                 sphere(0),
                  xdimsize(0),
                  ydimsize(0),
                  has_nolatlon(true),
                  has_1dlatlon(false),
                  has_2dlatlon(false),
                  has_g2dlatlon(false)
-            {};
+            {std:fill_n(param,13,0);};
             ~EOS5CFGrid() {};
         protected:
             void Update_Dimnamelist();
@@ -1006,6 +1031,10 @@ namespace HDF5CF
             EOS5GridPRType eos5_pixelreg;
             EOS5GridOriginType eos5_origin;
             EOS5GridPCType eos5_projcode;
+            
+            double param[13];
+            int zone;
+            int sphere;
 
             vector <string> dimnames;
             set <string> vardimnames;

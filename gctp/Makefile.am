@@ -2,4 +2,5 @@
 
 # Subdirectories
 SUBDIRS=src
+CFLAGS="CFLAGS -fPIC"
 

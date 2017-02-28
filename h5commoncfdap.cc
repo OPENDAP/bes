@@ -482,3 +482,193 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr) {
     }
 }
 
+#if 0
+// This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
+//Note: Since we don't add these artifical CF variables to our main engineering at HDFEOS2.cc, the information
+// to handle DAS won't pass to DDS by the file pointer, we need to re-call the routines to check projection
+// and dimension. The time to retrieve these information is trivial compared with the whole translation.
+void add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
+
+    //1. Check the projection information, now, we only handle sinusoidal now
+    if(GCTP_SNSOID == gdset->getProjection().getCode()) {
+
+        //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
+        string dim0name,dim1name;
+        int32  dim0size = -1,dim1size = -1;
+        HDFCFUtil::obtain_grid_latlon_dim_info(gdset,dim0name,dim0size,dim1name,dim1size);
+        
+        //3. Add the 1-D CV variables and the dummy projection variable
+        // Note: we just need to pass the parameters that calculate 1-D cv to the data reading function,
+        // in that way, we save the open cost of HDF-EOS2.
+        BaseType *bt_dim0 = NULL;
+        BaseType *bt_dim1 = NULL;
+
+        HDFEOS2GeoCF1D * ar_dim0 = NULL;
+        HDFEOS2GeoCF1D * ar_dim1 = NULL;
+
+        float64 *upleft = NULL;
+        float64 *lowright = NULL;
+
+        try {
+
+            bt_dim0 = new(HDFFloat64)(dim0name,gdset->getName());
+            bt_dim1 = new(HDFFloat64)(dim1name,gdset->getName());
+
+            // Obtain the upleft and lowright coordinates
+            upleft = const_cast<float64 *>(gdset->getInfo().getUpLeft());
+            lowright = const_cast<float64 *>(gdset->getInfo().getLowRight());
+           
+            // Note ar_dim0 is y, ar_dim1 is x.
+            ar_dim0 = new HDFEOS2GeoCF1D(GCTP_SNSOID,
+                                         upleft[1],lowright[1],dim0size,dim0name,bt_dim0);
+            ar_dim0->append_dim(dim0size,dim0name);
+                                         
+            ar_dim1 = new HDFEOS2GeoCF1D(GCTP_SNSOID,
+                                         upleft[0],lowright[0],dim1size,dim1name,bt_dim1);
+            ar_dim1->append_dim(dim1size,dim1name);
+            dds.add_var(ar_dim0);
+            dds.add_var(ar_dim1);
+        
+        }
+        catch(...) {
+            if(bt_dim0) 
+                delete bt_dim0;
+            if(bt_dim1) 
+                delete bt_dim1;
+            if(ar_dim0) 
+                delete ar_dim0;
+            if(ar_dim1) 
+                delete ar_dim1;
+            throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFEOS2GeoCF1D instance.");
+        }
+
+        if(bt_dim0)
+            delete bt_dim0;
+        if(bt_dim1)
+            delete bt_dim1;
+        if(ar_dim0)
+            delete ar_dim0;
+        if(ar_dim1)
+            delete ar_dim1;
+
+        // Also need to add the dummy projection variable.
+        string cf_projection_base = "eos_cf_projection";
+
+        // To handle multi-grid cases, we need to add the grid name.
+        string cf_projection = HDFCFUtil::get_CF_string(gdset->getName()) +"_"+cf_projection_base;
+
+        HDFEOS2GeoCFProj * dummy_proj_cf = new HDFEOS2GeoCFProj(cf_projection,gdset->getName());
+        dds.add_var(dummy_proj_cf);
+        if(dummy_proj_cf)
+            delete dummy_proj_cf;
+
+    }
+
+}
+
+
+
+//This function adds 1D grid mapping CF attributes to CV and data variables.
+void add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
+
+    //1. Check the projection information, now, we only handle sinusoidal now
+    if(GCTP_SNSOID == gdset->getProjection().getCode()) {
+
+        //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
+        string dim0name,dim1name;
+        int32  dim0size = -1,dim1size = -1;
+        HDFCFUtil::obtain_grid_latlon_dim_info(gdset,dim0name,dim0size,dim1name,dim1size);
+        
+        //3. Add 1D CF attributes to the 1-D CV variables and the dummy projection variable
+        AttrTable *at = das.get_table(dim0name);
+        if (!at)
+            at = das.add_table(dim0name, new AttrTable);
+        at->append_attr("standard_name","String","projection_y_coordinate");
+
+        //at->append_attr("long_name","String","y coordinate" );
+        string long_name="y coordinate of projection for grid "+ gdset->getName();
+        at->append_attr("long_name","String",long_name);
+        // Change this to meter.
+        at->append_attr("units","string","meter");
+        //at->append_attr("units","string","km");
+        
+        at->append_attr("_CoordinateAxisType","string","GeoY");
+
+        at = das.get_table(dim1name);
+        if (!at)
+            at = das.add_table(dim1name, new AttrTable);
+ 
+        at->append_attr("standard_name","String","projection_x_coordinate");
+        //at->append_attr("long_name","String","x coordinate");
+        long_name="x coordinate of projection for grid "+ gdset->getName();
+        at->append_attr("long_name","String",long_name);
+         
+        // change this to meter.
+        at->append_attr("units","string","meter");
+        //at->append_attr("units","string","km");
+        at->append_attr("_CoordinateAxisType","string","GeoX");
+        
+        // Add the attributes for the dummy projection variable.
+        string cf_projection_base = "eos_cf_projection";
+        string cf_projection = HDFCFUtil::get_CF_string(gdset->getName()) +"_"+cf_projection_base;
+        at = das.get_table(cf_projection);
+        if (!at)
+            at = das.add_table(cf_projection, new AttrTable);
+
+        //if(at->simple_find("grid_mapping_name") == at->attr_end())
+        at->append_attr("grid_mapping_name","String","sinusoidal");
+        //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
+        at->append_attr("longitude_of_central_meridian","Float64","0.0");
+        //if(at->simple_find("earth_radius") == at->attr_end())
+        at->append_attr("earth_radius","Float64","6371007.181");
+
+        at->append_attr("_CoordinateAxisTypes","string","GeoX GeoY");
+
+        // Fill in the data fields that contains the dim0name and dim1name dimensions with the grid_mapping
+        // We only apply to >=2D data fields.
+        HDFCFUtil::add_cf_grid_mapping_attr(das,gdset,cf_projection,dim0name,dim0size,dim1name,dim1size);
+    }
+
+}
+
+
+// This function adds the 1-D cf grid projection mapping attribute to data variables
+// it is called by the function add_cf_grid_attrs. 
+void add_cf_grid_mapping_attr(DAS &das, HDFEOS2::GridDataset*gdset,const string& cf_projection,
+                                         const string & dim0name,int32 dim0size,const string &dim1name,int32 dim1size) {
+
+    // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
+    const vector<HDFEOS2::Field*>gfields = gdset->getDataFields();
+    vector<HDFEOS2::Field*>::const_iterator it_gf;
+    for (it_gf = gfields.begin();it_gf != gfields.end();++it_gf) {
+
+        if(0 == (*it_gf)->getFieldType() && (*it_gf)->getRank() >1) {
+            bool has_dim0 = false;
+            bool has_dim1 = false;
+            const vector<HDFEOS2::Dimension*>& dims= (*it_gf)->getCorrectedDimensions();
+            for (vector<HDFEOS2::Dimension *>::const_iterator j =
+                dims.begin(); j!= dims.end();++j){
+                if((*j)->getName()== dim0name && (*j)->getSize() == dim0size)
+                    has_dim0 = true;
+                else if((*j)->getName()== dim1name && (*j)->getSize() == dim1size)
+                    has_dim1 = true;
+
+            }
+            if(true == has_dim0 && true == has_dim1) {// Need to add the grid_mapping attribute
+                AttrTable *at = das.get_table((*it_gf)->getNewName());
+                if (!at)
+                    at = das.add_table((*it_gf)->getNewName(), new AttrTable);
+
+                // The dummy projection name is the value of the grid_mapping attribute
+                at->append_attr("grid_mapping","String",cf_projection);
+            }
+        }
+    }
+}
+#endif
+
+
+
+
+
+
