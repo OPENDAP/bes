@@ -62,7 +62,7 @@ function multiball() {
         file_base=$test_base$shards;
         echo "$header" >> $file_base.log
         echo "file_base: $file_base" >> $file_base.log
-        for ((rep = 0; i < $total_reps; rep++))
+        for ((rep = 0; rep < $total_reps; rep++))
         do
             cmd="./multiball -u $url -s $resource_size -o $file_base -c $shards"
             echo "COMMAND: $cmd" >> $file_base.log
@@ -99,7 +99,7 @@ function cmdln_curl() {
     echo "-" | tee -a $file_base.log
 
 
-    for ((rep = 0; i < $total_reps; rep++))
+    for ((rep = 0; rep < $total_reps; rep++))
     do
         #echo -n "."
         cmd="curl -s "$url" -o $file_base"
@@ -137,7 +137,7 @@ function multi_process_curl_cmdln() {
     for shards in  50 20 10 5 2 1
     do
         echo "SHARDS: $shards ##########################" >> $file_base.log;
-        for ((rep = 0; i < $total_reps; rep++))
+        for ((rep = 0; rep < $total_reps; rep++))
         do
             time -p (
                 echo "CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url ";

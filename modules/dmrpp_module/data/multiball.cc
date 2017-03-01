@@ -364,7 +364,7 @@ int main(int argc, char **argv) {
 
 
     // cerr << endl;
-    cerr << output_file <<": CuRL multi_perfom has finished. mcode: "<< mcode <<
+    cerr << "CuRL multi_perfom has finished. mcode: "<< mcode <<
         " multi_wait_laps: " << lap_counter <<
         " shards: "<< shards_map.size() << endl;
 
