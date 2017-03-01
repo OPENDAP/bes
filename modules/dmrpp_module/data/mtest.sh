@@ -4,7 +4,7 @@
 #
 # Here are some simple tests to see...
 
-total_reps=10;
+total_reps=100;
 
 # 1.6GB resource held in S3 with access via S3 http
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
