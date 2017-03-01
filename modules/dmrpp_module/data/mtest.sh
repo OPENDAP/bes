@@ -173,7 +173,8 @@ function multi_process_curl_cmdln() {
                     pids="$pids $pid";
                     echo "Launched cmdln CuRL. file_base: $file_base pid: $pid range: $range";
                 done   
-                echo "CuRL_command_line_multi_proc Waiting for $pids ("`jobs -p`")"; 
+                echo "CuRL_command_line_multi_proc Waiting for "`jobs -p`; 
+                echo "Wait Started At: "`date`;
                 wait `jobs -p`
                 
             )  >> $file_base.log  2>&1
