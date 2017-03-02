@@ -49,6 +49,8 @@ void gen_eos5_cfdds(DDS &, HDF5CF::EOS5File*);
 void gen_eos5_cfdas(DAS &, hid_t, HDF5CF::EOS5File*);
 void gen_eos5_cf_ignored_obj_info(DAS &,HDF5CF::EOS5File*);
 void gen_dap_oneeos5cvar_dds(DDS &,const HDF5CF::EOS5CVar*,const hid_t, const string &);
+void gen_dap_oneeos5cf_dds(DDS &,const HDF5CF::EOS5CVar* );
+void gen_dap_oneeos5cf_das(DAS &,const vector<HDF5CF::Var*>&,const HDF5CF::EOS5CVar* );
 void read_ecs_metadata(hid_t file_id, string & st_str, string & core_str, string & arch_str,string &xml_str, string& subset_str, string & product_str,string &other_str,bool st_only);
 int get_metadata_num(const string &);
 #endif

@@ -2107,7 +2107,7 @@ cerr<<"dim names "<<(*its) <<endl;
 
                 eos5cvar_dim = new Dimension((hsize_t)cfgrid->xdimsize);
                 eos5cvar_dim->name = xdim_full_path;
-                eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "YDim":xdim_full_path;
+                eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "XDim":xdim_full_path;
                 EOS5cvar->dims.push_back(eos5cvar_dim);
 
             }

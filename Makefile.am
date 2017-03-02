@@ -51,13 +51,13 @@ HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5dmr.h h5common.h h5get.h  HDF5PathF
 
 HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFFillIndexArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc HDF5GMCFSpecialCVArray.cc \
                    HDFEOS5CFMissLLArray.cc HDFEOS5CFMissNonLLCVArray.cc  HDFEOS5CFSpecialCVArray.cc \
-                   HDF5CFArray.cc HDF5BaseArray.cc \
-                   HDF5CFByte.cc HDF5CFUInt16.cc HDF5CFInt16.cc HDF5CFInt32.cc HDF5CFUInt32.cc \
+                   HDF5CFArray.cc HDF5CFGeoCF1D.cc HDF5BaseArray.cc \
+                   HDF5CFGeoCFProj.cc HDF5CFByte.cc HDF5CFUInt16.cc HDF5CFInt16.cc HDF5CFInt32.cc HDF5CFUInt32.cc \
 	           HDF5CFFloat32.cc HDF5CFFloat64.cc HDF5CFStr.cc   
 
 HDF5CFDTYPE_HDRS =  HDF5GMSPCFArray.h HDF5GMCFFillIndexArray.h HDF5GMCFMissLLArray.h HDF5GMCFMissNonLLCVArray.h HDF5GMCFSpecialCVArray.h \
-	            HDFEOS5CFMissLLArray.h HDFEOS5CFMissNonLLCVArray.h  HDFEOS5CFSpecialCVArray.h HDF5CFArray.h HDF5BaseArray.h \
-                    HDF5CFByte.h HDF5CFUInt16.h HDF5CFInt16.h HDF5CFInt32.h HDF5CFUInt32.h \
+	            HDFEOS5CFMissLLArray.h HDFEOS5CFMissNonLLCVArray.h  HDFEOS5CFSpecialCVArray.h HDF5CFArray.h HDF5CFGeoCF1D.h HDF5BaseArray.h \
+                    HDF5CFGeoCFProj.h HDF5CFByte.h HDF5CFUInt16.h HDF5CFInt16.h HDF5CFInt32.h HDF5CFUInt32.h \
 	            HDF5CFFloat32.h HDF5CFFloat64.h HDF5CFStr.h 
 
 HDF5CF_SRCS = h5cfdap.cc HDF5CFModule.cc heos5cfdap.cc h5gmcfdap.cc h5commoncfdap.cc HDFEOS5CF.cc HDF5GMCF.cc HDF5GCFProduct.cc HDF5CF.cc h5cfdaputil.cc HDF5CFUtil.cc \
