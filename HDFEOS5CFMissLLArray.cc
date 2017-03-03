@@ -162,11 +162,11 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     BESDEBUG("h5", " lowright[0] is "  << lowright[0] <<endl);
     BESDEBUG("h5", " lowright[1] is "  << lowright[1] <<endl);
     
+#if 0
     cerr<< " eos5_params[0] is "  << eos5_params[0] <<endl;
     cerr<< " eos5_params[1] is "  << eos5_params[1] <<endl;
     cerr<< " eos5_sphere is "  << eos5_sphere <<endl;
     cerr<<  " eos5_zone is "  << eos5_zone <<endl;
-#if 0
     cerr<< " Before calling GDij2ll, check all projection parameters. "  << endl;
     cerr<<  " eos5_zone is "  << eos5_zone <<endl;
     cerr<< " eos5_params[0] is "  << eos5_params[0] <<endl;

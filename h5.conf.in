@@ -137,7 +137,7 @@ H5.CheckIgnoreObj=false
 # changing the value and the CachePurgeLevel value below. Note that
 # this feature is on by default.
 
-H5.MetaDataMemCacheEntries=300
+H5.MetaDataMemCacheEntries=1000
 #H5.MetaDataMemCacheEntries=0
 
 # 2. Caching the data values of HDF5 coordinate variables or specific variables.
@@ -309,5 +309,5 @@ H5.SmallDataMemCacheEntries=0
 # H5.CachePurgeLevel = 0.2
 
 #  State Plane Projection east and north files: Must provide the absolute path
-H5.STPEastFileName=/usr/tmp/nad27sp_le
-H5.STPNorthFileName=/usr/tmp/nad83sp_le
+#H5.STPEastFileName=/usr/tmp/nad27sp_le
+#H5.STPNorthFileName=/usr/tmp/nad83sp_le

@@ -575,14 +575,14 @@ void add_cf_grid_cv_attrs(DAS & das,  const vector<HDF5CF::Var*>& vars,EOS5GridP
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
 //        vector <HDF5CF::Dimension*>:: const_iterator it_d;
-for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d)
- cerr<<"dim name in loop is"<<(*it_d)->getNewName() <<endl;
+//for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d)
+// cerr<<"dim name in loop is"<<(*it_d)->getNewName() <<endl;
 
         string dim0name = (dims[0])->getNewName();
-cerr<<"dim0name is "<<dim0name <<endl;
+//cerr<<"dim0name is "<<dim0name <<endl;
         int dim0size = dims[0]->getSize();
         string dim1name = (dims[1])->getNewName();
-cerr<<"dim1name is "<<dim1name <<endl;
+//cerr<<"dim1name is "<<dim1name <<endl;
         int dim1size = dims[1]->getSize();
 
 
@@ -649,13 +649,15 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
                                          const string & dim0name,int dim0size,const string &dim1name,int dim1size) {
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
+#if 0
 cerr<<"dim0name is "<<dim0name <<endl;
 cerr<<"dim1name is "<<dim1name <<endl;
 cerr<<"dim0size is "<<dim0size <<endl;
 cerr<<"dim1size is "<<dim1size <<endl;
+#endif
     vector<HDF5CF::Var *>::const_iterator it_v;
     for (it_v = vars.begin();it_v != vars.end();++it_v) {
-cerr<<"var name is "<<(*it_v)->getNewName() <<endl;
+//cerr<<"var name is "<<(*it_v)->getNewName() <<endl;
 
         if((*it_v)->getRank() >1) {
             bool has_dim0 = false;
@@ -663,8 +665,8 @@ cerr<<"var name is "<<(*it_v)->getNewName() <<endl;
             const vector<HDF5CF::Dimension*>& dims= (*it_v)->getDimensions();
             for (vector<HDF5CF::Dimension *>::const_iterator j =
                 dims.begin(); j!= dims.end();++j){
-cerr<<"var dim name 0 "<<(*j)->getNewName() <<endl;
-cerr<<"var dim size 0 "<<(*j)->getSize() <<endl;
+//cerr<<"var dim name 0 "<<(*j)->getNewName() <<endl;
+//cerr<<"var dim size 0 "<<(*j)->getSize() <<endl;
                 if((*j)->getNewName()== dim0name && (*j)->getSize() == dim0size)
                     has_dim0 = true;
                 else if((*j)->getNewName()== dim1name && (*j)->getSize() == dim1size)
@@ -676,7 +678,7 @@ cerr<<"var dim size 0 "<<(*j)->getSize() <<endl;
                 if (!at)
                     at = das.add_table((*it_v)->getNewName(), new AttrTable);
 
-cerr<<"coming to add grid_mapping "<<endl;
+//cerr<<"coming to add grid_mapping "<<endl;
                 // The dummy projection name is the value of the grid_mapping attribute
                 at->append_attr("grid_mapping","String",cf_projection);
             }
