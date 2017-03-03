@@ -547,23 +547,25 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
         if(ar_dim1)
             delete ar_dim1;
 
-        // Also need to add the dummy projection variable.
-        string cf_projection_base = "eos_cf_projection";
-
-        // To handle multi-grid cases, we need to add the grid name.
-        //string cf_projection = HDFCFUtil::get_CF_string(gdset->getName()) +"_"+cf_projection_base;
-
-        //HDFEOS2GeoCFProj * dummy_proj_cf = new HDFEOS2GeoCFProj(cf_projection,gdset->getName());
-        HDF5CFGeoCFProj * dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_base,cf_projection_base);
-        dds.add_var(dummy_proj_cf);
-        if(dummy_proj_cf)
-            delete dummy_proj_cf;
-
     }
 
 }
 
+void add_cf_grid_mapinfo_var(DDS & dds) {
 
+    //Add the dummy projection variable. The attributes of this variable can be used to store the grid mapping info.
+    string cf_projection_base = "eos_cf_projection";
+
+    // To handle multi-grid cases, we need to add the grid name.
+    //string cf_projection = HDFCFUtil::get_CF_string(gdset->getName()) +"_"+cf_projection_base;
+
+    //HDFEOS2GeoCFProj * dummy_proj_cf = new HDFEOS2GeoCFProj(cf_projection,gdset->getName());
+    HDF5CFGeoCFProj * dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_base,cf_projection_base);
+    dds.add_var(dummy_proj_cf);
+    if(dummy_proj_cf)
+        delete dummy_proj_cf;
+
+}
 
 //This function adds 1D grid mapping CF attributes to CV and data variables.
 void add_cf_grid_cv_attrs(DAS & das,  const vector<HDF5CF::Var*>& vars,EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims) {

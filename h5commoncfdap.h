@@ -47,6 +47,7 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
                                          const string & dim0name,int dim0size,const string &dim1name,int dim1size);
 void add_cf_grid_cv_attrs(DAS & das,  const vector<HDF5CF::Var*>& vars,EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims);
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims);
+void add_cf_grid_mapinfo_var(DDS &dds);
 bool need_special_attribute_handling(const HDF5CF::Attribute*,const HDF5CF::Var*);
 void gen_dap_special_oneobj_das(AttrTable*,const HDF5CF::Attribute*,const HDF5CF::Var*);
 bool is_fvalue_valid(H5DataType,const HDF5CF::Attribute*);

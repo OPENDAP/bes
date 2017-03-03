@@ -435,12 +435,17 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
 
     }
 
+    bool has_cf_grid_mapping = false;
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
                 gen_dap_oneeos5cf_dds(dds,*it_cv);
+                has_cf_grid_mapping = true;
             }
         }
+    }
+    if (true == has_cf_grid_mapping){
+        add_cf_grid_mapinfo_var(dds);
     }
 
 }
