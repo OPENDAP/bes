@@ -24,7 +24,7 @@ Separate the BES configure from the part specific to the modules
     see https://autotools.io/index.html.
     
 Remove unused M4 macros from configure (these are function and header
-searches where the compile-time symbols are never tested.
+searches where the compile-time symbols are never tested).
 
 Rename/remove the bes.conf.modules.in files
 
