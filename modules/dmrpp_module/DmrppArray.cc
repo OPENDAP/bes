@@ -300,11 +300,20 @@ bool DmrppArray::read_no_chunks()
     return true;
 }
 
+/**
+ * Reads a the chunks that make up this array's content and copies just the
+ * relevant values into the array's memory buffer.
+ *
+ * Currently, this will collect a curl_easy handle for each chunk required
+ * by the current constraint (might be all of them). The handles are placed in
+ * a curl_multi handle. Once collected the curl_multi handle is "run"
+ * until everything has been completely retrieved or has erred. With the chunks
+ * read and in memory the code then initiates a copy of the results into the
+ * array variable's internal buffer.
+ */
 bool DmrppArray::read_chunks()
 {
     BESDEBUG("dmrpp", __FUNCTION__ << " for variable '" << name() << "' - BEGIN" << endl);
-
-    // FIXME Remove if (read_p()) return true;
 
     vector<H4ByteStream> *chunk_refs = get_chunk_vec();
     if (chunk_refs->size() == 0) {
@@ -317,7 +326,6 @@ bool DmrppArray::read_chunks()
     // FIXME - I think this needs to be the constrained size!
     reserve_value_capacity(length());
     vector<unsigned int> array_shape = get_shape(false);
-
     BESDEBUG("dmrpp",
         "DmrppArray::"<< __func__ <<"() - dimensions(): " << dimensions(false) << " array_shape.size(): " << array_shape.size() << endl);
 
@@ -329,11 +337,16 @@ bool DmrppArray::read_chunks()
 
     BESDEBUG("dmrpp",
         "DmrppArray::"<< __func__ << "() - "<< dimensions() << "D Array. Processing " << chunk_refs->size() << " chunks" << endl);
-    //########################### N-Dimensional Arrays ###############################
-    /* init a multi stack */
+
+    /* get a curl_multi handle */
     CURLM *curl_multi_handle = curl_multi_init();
 
-    /* Find the chunks to be read */
+    /*
+     * Find the chunks to be read, make curl_easy handles for them, and
+     * stuff them into our curl_multi handle. This is a recursive activity
+     * which utilizes the same code that copies the data from the chunk to
+     * the variables.
+     */
     for (unsigned long i = 0; i < chunk_refs->size(); i++) {
         H4ByteStream *h4bs = &(*chunk_refs)[i];
         BESDEBUG("dmrpp",
@@ -347,7 +360,6 @@ bool DmrppArray::read_chunks()
                 "(chunk was " << (h4bs->is_started()?"QUEUED":"NOT_QUEUED") <<
                 " and " << (h4bs->is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
     }
-    //##############################################################################
     BESDEBUG("dmrpp",
         "DmrppArray::" << __func__ <<"(): CHUNKS:"<< endl);
     for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
@@ -356,8 +368,16 @@ bool DmrppArray::read_chunks()
             "DmrppArray::" << __func__ <<"(): chunk[" << idx << "]"<< this_h4bs.to_string() << endl);
     }
 
+    /*
+     * Now that we have all of the curl_easy handles in our curl_multi handle
+     * we dive into multi_finish to get all of the chunks read.
+     */
     multi_finish(curl_multi_handle, chunk_refs);
 
+    /*
+     * The chunks are all read, so we jump back into the recursive code to copy the
+     * correct values out of each chunk and into the array memory.
+     */
     for (unsigned long i = 0; i < chunk_refs->size(); i++) {
         H4ByteStream *h4bs = &(*chunk_refs)[i];
         BESDEBUG("dmrpp",
@@ -375,7 +395,14 @@ bool DmrppArray::read_chunks()
 }
 
 /**
+ * This helper method reads completely all of the curl_easy handles in the multi_handle.
  *
+ * This means that we are reading some or all of the chunks and the chunk vector is
+ * passed in so that the curl_easy handle held in each H4ByteStream that was read can be
+ * cleaned up once the request has been completed.
+ *
+ * Once this method is completed we will be ready to copy all of the data from the
+ * chunks to the array memory
  */
 void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_refs)
 {
@@ -473,117 +500,6 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
         oss << "DmrppArray: CURL operation Failed!. multi_code: " << mcode  << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
-
-
-#if 0
-
-    curl_multi_perform(multi_handle, &still_running);
-    BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"()  still_running: "<< still_running << endl);
-    while (still_running) {
-        struct timeval timeout;
-        int rc; /* select() return code */
-        CURLMcode mc; /* curl_multi_fdset() return code */
-
-        fd_set fdread;
-        fd_set fdwrite;
-        fd_set fdexcep;
-        int maxfd = -1;
-
-        long curl_timeo = -1;
-
-        FD_ZERO(&fdread);
-        FD_ZERO(&fdwrite);
-        FD_ZERO(&fdexcep);
-
-        /* set a suitable timeout to play around with */
-        timeout.tv_sec = 1;
-        timeout.tv_usec = 0;
-
-        curl_multi_timeout(multi_handle, &curl_timeo);
-        if (curl_timeo >= 0) {
-            timeout.tv_sec = curl_timeo / 1000;
-            if (timeout.tv_sec > 1)
-                timeout.tv_sec = 1;
-            else
-                timeout.tv_usec = (curl_timeo % 1000) * 1000;
-        }
-
-        /* get file descriptors from the transfers */
-        mc = curl_multi_fdset(multi_handle, &fdread, &fdwrite, &fdexcep, &maxfd);
-
-        if (mc != CURLM_OK) {
-            fprintf(stderr, "curl_multi_fdset() failed, code %d.\n", mc);
-            break;
-        }
-
-        /* On success the value of maxfd is guaranteed to be >= -1. We call
-         select(maxfd + 1, ...); specially in case of (maxfd == -1) there are
-         no fds ready yet so we call select(0, ...) --or Sleep() on Windows--
-         to sleep 100ms, which is the minimum suggested value in the
-         curl_multi_fdset() doc. */
-
-        if (maxfd == -1) {
-            /* Portable sleep for platforms other than Windows. */
-            struct timeval wait = { 0, 100 * 1000 }; /* 100ms */
-            rc = select(0, NULL, NULL, NULL, &wait);
-        }
-        else {
-            /* Note that on some platforms 'timeout' may be modified by select().
-             If you need access to the original value save a copy beforehand. */
-            rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
-        }
-
-        switch (rc) {
-        case -1:
-            /* select error */
-            break;
-        case 0: /* timeout */
-        default: /* action */
-            curl_multi_perform(multi_handle, &still_running);
-            break;
-        }
-
-        // cerr << "DmrppArray::" << __func__ <<"() Waiting for CURL-MULTI to finish. lap: " << lap_counter++ << " still_running: "<< still_running << endl;
-        BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"() Waiting for CURL-MULTI to finish. lap: " << lap_counter++ << "  still_running: "<< still_running << endl);
-    }
-    BESDEBUG("dmrpp",
-        "DmrppArray::" << __func__ <<"() CURL-MULTI has finished! laps: " << lap_counter << "  still_running: "<< still_running << endl);
-
-    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
-    CURLMsg *msg; /* for picking up messages with the transfer status */
-    int msgs_left; /* how many messages are left */
-
-    /* See how the transfers went */
-    while ((msg = curl_multi_info_read(multi_handle, &msgs_left))) {
-        if (msg->msg == CURLMSG_DONE) {
-            int found = 0;
-            /* Find out which handle this message is about */
-            string h4bs_str = "";
-            for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
-                H4ByteStream this_h4bs = (*chunk_refs)[idx];
-                CURL *curl_handle = this_h4bs.get_curl_handle();
-                found = (msg->easy_handle == curl_handle);
-                if (found) {
-                    this_h4bs.set_is_read(true);
-                    h4bs_str = this_h4bs.to_string();
-                    break;
-                }
-            }
-            BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Chunk Read Completed For: " << h4bs_str << endl);
-        }
-    }
-
-    /* Free the CURL handles */
-    curl_multi_cleanup(multi_handle);
-    for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
-        CURL *easy_handle = (*chunk_refs)[idx].get_curl_handle();
-        curl_multi_remove_handle(multi_handle, easy_handle);
-        (*chunk_refs)[idx].cleanup_curl_handle();
-    }
-#endif
-
-
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() END" << endl);
 }
 
@@ -821,10 +737,15 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
     return false;
 }
 
+/**
+ * Reads chunked array data from the relevant sources (as indicated by each
+ * H4ByteStream object) for this array.
+ */
 bool DmrppArray::read()
 {
     if (read_p()) return true;
 
+    // IF the variable is not chunked then go read it.
     if (get_chunk_dimension_sizes().empty()) {
         if (get_immutable_chunks().size() == 1) {
             // This handles the case for arrays that have exactly one h4:byteStream
@@ -838,7 +759,7 @@ bool DmrppArray::read()
         }
     }
     else {
-        // so now we know we are handling the chunks
+        // Handle the more complex case where the data is chunked.
         return read_chunks();
     }
 }
