@@ -360,17 +360,11 @@ bool DmrppArray::read_chunks()
                 "(chunk was " << (h4bs->is_started()?"QUEUED":"NOT_QUEUED") <<
                 " and " << (h4bs->is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
     }
-    BESDEBUG("dmrpp",
-        "DmrppArray::" << __func__ <<"(): CHUNKS:"<< endl);
-    for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
-        H4ByteStream this_h4bs = (*chunk_refs)[idx];
-        BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"(): chunk[" << idx << "]"<< this_h4bs.to_string() << endl);
-    }
 
     /*
-     * Now that we have all of the curl_easy handles in our curl_multi handle
-     * we dive into multi_finish to get all of the chunks read.
+     * Now that we have all of the curl_easy handles for all the chunks of this array
+     * that we need to read in our curl_multi handle
+     * we dive into multi_finish() to get all of the chunks read.
      */
     multi_finish(curl_multi_handle, chunk_refs);
 
