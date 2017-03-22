@@ -344,7 +344,7 @@ void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
 
 }
 
-void no_curl_handle_reuse_a2(vector<Shard*>*shards, unsigned int max_connections, bool keep_alive){
+void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_easy_handles, bool keep_alive){
 
     cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: " << (keep_alive?"true":"false") << endl;
     if(dry_run) return;
@@ -370,7 +370,7 @@ void no_curl_handle_reuse_a2(vector<Shard*>*shards, unsigned int max_connections
         /**
          * If it's time, pull the trigger and get the stuff.
          */
-        if(n && !(n%max_connections)){
+        if(n && !(n%max_easy_handles)){
             // get the stuff
             run_multi_perform(curl_multi_handle,&shards_map);
             // clean up
@@ -412,8 +412,11 @@ void no_curl_handle_reuse_a2(vector<Shard*>*shards, unsigned int max_connections
 
 }
 
-
-void reuse_curl_handles_a2(vector<Shard*>*shards, unsigned int max_connections, bool keep_alive){
+/**
+ * Gets all the shards from whereever while reusing the curl easy handles and setting keep-alive
+ *
+ */
+void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_handles, bool keep_alive){
 
     cerr << __func__ << "() - Recycling curl easy handles. keep_alive: " << (keep_alive?"true":"false") << endl;
     if(dry_run) return;
@@ -430,12 +433,12 @@ void reuse_curl_handles_a2(vector<Shard*>*shards, unsigned int max_connections, 
         shard->open();
 
         CURL* curl;
-        if(all_easy_handles.size()<max_connections){
+        if(all_easy_handles.size()<max_easy_handles){
             curl = curl_easy_init();
             all_easy_handles.push_back(curl);
         }
         else {
-            curl = all_easy_handles[n%max_connections];
+            curl = all_easy_handles[n%max_easy_handles];
         }
         active_easy_handles.push_back(curl);
         groom_curl_handle(curl,shard,keep_alive);
@@ -446,7 +449,7 @@ void reuse_curl_handles_a2(vector<Shard*>*shards, unsigned int max_connections, 
         /**
          * If it's time, pull the trigger and get the stuff.
          */
-        if(n && !(n%max_connections)){
+        if(n && !(n%max_easy_handles)){
             // get the stuff
             run_multi_perform(curl_multi_handle,&shards_map);
             // clean up
@@ -517,7 +520,7 @@ int main(int argc, char **argv) {
     unsigned int shard_count;
     bool reuse_curl_easy_handles;
     bool keep_alive;
-    unsigned int max_connections;
+    unsigned int max_easy_handles;
 
 
     url = "https://s3.amazonaws.com/opendap.test/MVI_1803.MOV";
@@ -525,10 +528,10 @@ int main(int argc, char **argv) {
     shard_count=10000;
     reuse_curl_easy_handles=false;
     keep_alive = false;
-    max_connections = 16;
+    max_easy_handles = 16;
 
 
-    GetOpt getopt(argc, argv, "Ddkrc:s:o:u:");
+    GetOpt getopt(argc, argv, "Ddkrc:s:o:u:m:");
     int option_char;
     while ((option_char = getopt()) != EOF) {
         switch (option_char) {
@@ -556,6 +559,9 @@ int main(int argc, char **argv) {
         case 's':
             std::istringstream(getopt.optarg) >> file_size;
             break;
+        case 'm':
+            std::istringstream(getopt.optarg) >> max_easy_handles;
+            break;
         case '?':
             cerr << usage(argv[0]);
             break;
@@ -569,6 +575,7 @@ int main(int argc, char **argv) {
         cerr << "shard_count: '" << shard_count << "'" << endl;
         cerr << "reuse_easy_curl_handles: " << (reuse_curl_easy_handles?"true":"false") << endl;
         cerr << "keep_alive: " << (keep_alive?"true":"false") << endl;
+        cerr << "max_easy_handles: " << (max_easy_handles?"true":"false") << endl;
     }
 
 
@@ -589,10 +596,10 @@ int main(int argc, char **argv) {
     make_shards(&shards,shard_count,url,file_size,output_file);
 
     if(reuse_curl_easy_handles){
-        reuse_curl_handles_a2(&shards,max_connections,keep_alive);
+        get_shards_reuse_curl_handles(&shards,max_easy_handles,keep_alive);
     }
     else {
-        no_curl_handle_reuse_a2(&shards,max_connections,keep_alive);
+        get_shards_no_curl_handle_reuse(&shards,max_easy_handles,keep_alive);
     }
 
 #if 0
@@ -617,7 +624,7 @@ int main(int argc, char **argv) {
         /**
          * If it's time, pull the trigger and get the stuff.
          */
-        if(n && !(n%max_connections)){
+        if(n && !(n%max_easy_handles)){
             // get the stuff
             run_multi_perform(curl_multi_handle,&shards_map);
             // clean up
