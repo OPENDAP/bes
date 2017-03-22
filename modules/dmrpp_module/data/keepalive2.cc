@@ -34,33 +34,15 @@
 #include <GetOpt.h>
 #include <cassert>
 #include <map>
+#include <vector>
 #include <curl/curl.h>
 
 static bool debug = false;
 static bool deep_debug = false;
 using namespace std;
 
-long long get_file_size(string filename) {
-    long long size;
-    ifstream in(filename.c_str(), ifstream::ate | ifstream::binary);
-    size = in.tellg();
-    in.close();
-    return size;
-}
+char curl_error_buf[CURL_ERROR_SIZE];
 
-long long get_remote_resource_size(string url) {
-    long long size;
-    ifstream in(url.c_str(), ifstream::ate | ifstream::binary);
-    size = in.tellg();
-    in.close();
-    return size;
-}
-std::string get_curl_range_arg_string(unsigned long offset,unsigned long size)
-{
-    ostringstream range;   // range-get needs a string arg for the range
-    range << offset << "-" << offset + size - 1;
-    return range.str();
-}
 
 size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data);
 
@@ -71,7 +53,6 @@ public:
     unsigned long long d_offset;
     unsigned long long d_size;
     CURL *d_curl_easy_handle;
-    char d_curl_error_buf[CURL_ERROR_SIZE];
     FILE *d_fd;
     string d_output_filename;
 
@@ -129,54 +110,30 @@ public:
         d_bytes_read = 0;
     }
 
-
-
-    void init_curl_handle()
-    {
+    void open(){
         allocate();
-        //d_fstream = new fstream();
-        //d_fstream->open(d_output_filename, std::fstream::out);
+        open_output_file();
+    }
+
+    void close(){
+        delete[] d_read_buffer;
+        d_read_buffer = 0;
+        d_bytes_read = 0;
+
+        if(d_fd)
+            fclose(d_fd);
+        d_fd=0;
+    }
+
+
+    void open_output_file(){
         d_fd = fopen(d_output_filename.c_str(),"w");
-
-        string range = get_curl_range_arg_string(d_offset,d_size);
-        if(debug)
-            cerr << __func__ << "() - Initializing CuRL handle. url: " << d_url << " offset: "<< d_offset <<
-            " size: " << d_size << " curl_range: " << range << endl;
-        CURL* curl = curl_easy_init();
-        if (!curl) {
-            throw string("Shard: Unable to initialize libcurl! '");
-        }
-        CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, d_url.c_str());
-        if (res != CURLE_OK)
-            throw string(curl_easy_strerror(res));
-
-        // Use CURLOPT_ERRORBUFFER for a human-readable message
-        //
-        res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, d_curl_error_buf);
-        if (res != CURLE_OK)
-            throw string(curl_easy_strerror(res));
-
-        // get the offset to offset + size bytes
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-            throw  string("HTTP Error: ").append(d_curl_error_buf);
-
-        // Pass all data to the 'write_data' function
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, do_the_multiball))
-            throw string("HTTP Error: ").append(d_curl_error_buf);
-
-        // Pass this to write_data as the fourth argument
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, this))
-            throw string("HTTP Error: ").append(d_curl_error_buf);
-
-        d_curl_easy_handle = curl;
     }
-
-    void clean_up_curl(){
-        if(d_curl_easy_handle!=0)
-            curl_easy_cleanup(d_curl_easy_handle);
-        d_curl_easy_handle = 0;
+    std::string get_curl_range_arg_string(){
+        ostringstream range;   // range-get needs a string arg for the range
+        range << d_offset << "-" << d_offset + d_size - 1;
+        return range.str();
     }
-
 
 };
 
@@ -215,15 +172,7 @@ size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
 
 
 
-
-string usage(string prog_name) {
-    ostringstream ss;
-    ss << "usage: " << prog_name << "[-d] -o output -u <url> ]" << endl;
-    return ss.str();
-}
-
-
-void make_shards(map<CURL*, Shard *> *shards_map, unsigned int shard_count, string url, unsigned int file_size, string output_filename){
+void make_shards(vector<Shard *> *shards, unsigned int shard_count, string url, unsigned int file_size, string output_filename){
 
     if(debug) cerr << __func__ << "() - Target size: " << file_size << endl;
 
@@ -240,92 +189,70 @@ void make_shards(map<CURL*, Shard *> *shards_map, unsigned int shard_count, stri
         shard->d_offset = offset;
         shard->d_size = my_size;
         ostringstream oss;
-        oss << output_filename << "_" << (i<10?"0":"")<< i<< "_shard";
+        oss << output_filename << "_" << (i<10?"0":"") << (i<100?"0":"") << (i<1000?"0":"") << i << "_shard";
         shard->d_output_filename = oss.str();
-        shard->init_curl_handle();
-        shards_map->insert(
-            std::pair<CURL*,Shard*>(shard->d_curl_easy_handle,shard));
+        shards->push_back(shard);
         byte_count+=shard_size;
     }
 
 }
 
-int main(int argc, char **argv) {
-    string output_file;
-    string url;
-    long long file_size;
-    unsigned int shard_count;
+void groom_curl_handle(CURL *curl, Shard *shard, bool keep_alive)
+{
 
+    string url = shard->d_url;
+    string range = shard->get_curl_range_arg_string();
+    if(debug)
+        cerr << __func__ << "() - Initializing CuRL handle. url: " << url <<
+        " curl_range: " << range <<
+        " keep_alive: " << (keep_alive?"true":"false") <<
+        endl;
 
-    url = "";
-    shard_count=1;
-    file_size = 0;
+    CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    if (res != CURLE_OK)
+        throw string(curl_easy_strerror(res));
 
+    // Use CURLOPT_ERRORBUFFER for a human-readable message
+    //
+    res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, curl_error_buf);
+    if (res != CURLE_OK)
+        throw string(curl_easy_strerror(res));
 
-    GetOpt getopt(argc, argv, "Ddc:s:o:u:");
-    int option_char;
-    while ((option_char = getopt()) != EOF) {
-        switch (option_char) {
-        case 'D':
-            deep_debug = true;
-            break;
-        case 'd':
-            debug = true;
-            break;
-        case 'o':
-            output_file = getopt.optarg;
-            break;
-        case 'u':
-            url = getopt.optarg;
-            break;
-        case 'c':
-            std::istringstream(getopt.optarg) >> shard_count;
-            break;
-        case 's':
-            std::istringstream(getopt.optarg) >> file_size;
-            break;
-        case '?':
-            cerr << usage(argv[0]);
-            break;
-        }
+    // get the offset to offset + size bytes
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
+        throw  string("HTTP Error: ").append(curl_error_buf);
+
+    // Pass all data to the 'write_data' function
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, do_the_multiball))
+        throw string("HTTP Error: ").append(curl_error_buf);
+
+    // Pass this to write_data as the fourth argument
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, shard))
+        throw string("HTTP Error: ").append(curl_error_buf);
+
+    if(keep_alive){
+        /* enable TCP keep-alive for this transfer */
+        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L))
+            throw string("HTTP Error: ").append(curl_error_buf);
+
+        /* keep-alive idle time to 120 seconds */
+        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_TCP_KEEPIDLE, 120L))
+            throw string("HTTP Error: ").append(curl_error_buf);
+
+        /* interval time between keep-alive probes: 60 seconds */
+        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L))
+            throw string("HTTP Error: ").append(curl_error_buf);
     }
-//    cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
-    if (debug) {
-        cerr << "url: '" << url << "'" << endl;
-        cerr << "output_file: '" << output_file << "'" << endl;
-        cerr << "file_size: '" << file_size << "'" << endl;
-        cerr << "shard_count: '" << shard_count << "'" << endl;
-    }
+}
 
-    bool qc_flag = false;
-    if (output_file.empty()) {
-        cerr << "Output File name must be specified using the -o option" << endl;
-        qc_flag = true;
-    }
-    if (url.empty()) {
-        cerr << "Ingest URL must be specified using the -u option" << endl;
-        qc_flag = true;
-    }
-    if (qc_flag) {
-        return 1;
-    }
-    map<CURL*, Shard *> shards_map;
 
-    make_shards(&shards_map,shard_count,url,file_size,output_file);
-
-    CURLM *curl_multi_handle = curl_multi_init();
-    // curl_multi_add_handle(curl_multi_handle, shard->d_curl_easy_handle);
-    // Show shards
-    std::map<CURL*, Shard*>::iterator it;
-    for(it=shards_map.begin(); it!=shards_map.end(); ++it){
-        curl_multi_add_handle(curl_multi_handle, it->second->d_curl_easy_handle);
-        if(debug) cerr << it->second->d_output_filename << " added to CuRL multi_handle."<< endl;
-    }
-
+void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
     int repeats;
     long long lap_counter = 0;
     CURLMcode mcode;
     int still_running=0;
+
+    if(debug) cerr << __func__ << "() - BEGIN" << endl;
 
     do {
         int numfds;
@@ -364,9 +291,9 @@ int main(int argc, char **argv) {
 
 
     // cerr << endl;
-    cerr << "CuRL multi_perfom has finished. mcode: "<< mcode <<
+    cerr << __func__ << "() - CuRL multi_perfom has finished. mcode: "<< mcode <<
         " multi_wait_laps: " << lap_counter <<
-        " shards: "<< shards_map.size() << endl;
+        " shards: "<< shards_map->size() << endl;
 
     if(mcode == CURLM_OK) {
         CURLMsg *msg; /* for picking up messages with the transfer status */
@@ -377,8 +304,8 @@ int main(int argc, char **argv) {
             if(debug) cerr << "CuRL Messages remaining: " << msgs_left << endl;
             string shard_str = "No Chunk Found For Handle!";
             /* Find out which handle this message is about */
-            it = shards_map.find(msg->easy_handle);
-            if(it==shards_map.end()){
+            std::map<CURL*, Shard*>::iterator it = shards_map->find(msg->easy_handle);
+            if(it==shards_map->end()){
                 ostringstream oss;
                 oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(msg->easy_handle)<<endl;
                 cerr << oss.str() << endl;
@@ -387,11 +314,11 @@ int main(int argc, char **argv) {
             Shard *shard = it->second;
 
             if (msg->msg == CURLMSG_DONE) {
-                if(debug) cerr << __func__ <<"() Chunk Read Completed For Chunk: " << shard->to_string() << endl;
+                if(debug) cerr << __func__ <<"() Shard Read Completed For Chunk: " << shard->to_string() << endl;
             }
             else {
                 ostringstream oss;
-                oss << "DmrppArray::" << __func__ <<"() Chunk Read Did Not Complete. CURLMsg.msg: "<< msg->msg <<
+                oss << __func__ <<"() Shard Read Did Not Complete. CURLMsg.msg: "<< msg->msg <<
                     " Chunk: " << shard->to_string();
                 cerr << oss.str() << endl;
                 throw oss.str();
@@ -401,27 +328,329 @@ int main(int argc, char **argv) {
 
     }
     else {
-        cerr << "CuRL MultiFAIL! mcode: " << mcode << endl;
-    }
-    if(debug) cerr << "Cleaning up CuRL" << endl;
-
-    for(it=shards_map.begin(); it!=shards_map.end(); ++it){
-        Shard *shard = it->second;
-        if(debug) cerr << shard->to_string() << endl;
-        curl_multi_remove_handle(curl_multi_handle, it->second->d_curl_easy_handle);
-        shard->clean_up_curl();
-    }
-    curl_multi_cleanup(curl_multi_handle);
-
-    if(mcode != CURLM_OK) {
         ostringstream oss;
-        oss << "DmrppArray: CuRL operation Failed!. multi_code: " << mcode  << endl;
+        oss << __func__ <<"() CuRL MultiFAIL. mcode: "<< mcode <<
+            " msg: " << curl_multi_strerror(mcode);
         cerr << oss.str() << endl;
         throw oss.str();
     }
+    if(debug) cerr << __func__ << "() - END" << endl;
+
+}
+
+void no_curl_handle_reuse_a2(vector<Shard*>*shards, unsigned int max_connections, bool keep_alive){
+
+    cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: " << (keep_alive?"true":"false") << endl;
+    //return;
+
+    map<CURL*, Shard *> shards_map;
+    vector<CURL *> all_easy_handles;
+    vector<CURL *> current_easy_handles;
+    CURLM *curl_multi_handle = curl_multi_init();
+
+    unsigned long int n = 0;
+    std::vector<Shard*>::iterator sit;
+    for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
+        // Set up the shard to be read .
+        CURL* curl = curl_easy_init();
+        Shard *shard = *sit;
+        shard->open();
+        groom_curl_handle(curl,shard,keep_alive);
+        current_easy_handles.push_back(curl);
+        shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
+        // Add it to our current multi handle
+        curl_multi_add_handle(curl_multi_handle, curl);
+
+        /**
+         * If it's time, pull the trigger and get the stuff.
+         */
+        if(n && !(n%max_connections)){
+            // get the stuff
+            run_multi_perform(curl_multi_handle,&shards_map);
+            // clean up
+            std::vector<CURL*>::iterator cit;
+            for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
+                CURL *easy_handle = *cit;
+                std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
+                if(mit==shards_map.end()){
+                    ostringstream oss;
+                    oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+                    cerr << oss.str() << endl;
+                    throw oss.str();
+                }
+                Shard *shard = mit->second;
+                shard->close();
+                curl_multi_remove_handle(curl_multi_handle, easy_handle);
+                curl_easy_cleanup(easy_handle);
+
+            }
+            current_easy_handles.clear();
+            shards_map.clear();
+            curl_multi_cleanup(curl_multi_handle);
+            curl_multi_handle = curl_multi_init();
+        }
+    }
+    if(current_easy_handles.size()){
+        run_multi_perform(curl_multi_handle,&shards_map);
+        // clean up
+        std::vector<CURL*>::iterator cit;
+        for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
+            CURL *easy_handle = *cit;
+            curl_multi_remove_handle(curl_multi_handle, easy_handle);
+            curl_easy_cleanup(easy_handle);
+        }
+        current_easy_handles.clear();
+        curl_multi_cleanup(curl_multi_handle);
+        // curl_multi_handle = curl_multi_init();
+    }
+
+}
+
+
+void reuse_curl_handles_a2(vector<Shard*>*shards, unsigned int max_connections, bool keep_alive){
+
+    cerr << __func__ << "() - Recycling curl easy handles. keep_alive: " << (keep_alive?"true":"false") << endl;
+    // return;
+
+    map<CURL*, Shard *> shards_map;
+    vector<CURL *> all_easy_handles;
+    vector<CURL *> active_easy_handles;
+    CURLM *curl_multi_handle = curl_multi_init();
+
+    unsigned long int n = 0;
+    std::vector<Shard*>::iterator sit;
+    for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
+        Shard *shard = *sit;
+        shard->open();
+
+        CURL* curl;
+        if(all_easy_handles.size()<max_connections){
+            curl = curl_easy_init();
+            all_easy_handles.push_back(curl);
+        }
+        else {
+            curl = all_easy_handles[n%max_connections];
+        }
+        active_easy_handles.push_back(curl);
+        groom_curl_handle(curl,shard,keep_alive);
+        shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
+        // Add it to our current multi handle
+        curl_multi_add_handle(curl_multi_handle, curl);
+
+        /**
+         * If it's time, pull the trigger and get the stuff.
+         */
+        if(n && !(n%max_connections)){
+            // get the stuff
+            run_multi_perform(curl_multi_handle,&shards_map);
+            // clean up
+            std::vector<CURL*>::iterator cit;
+            for(cit=active_easy_handles.begin(); cit!=active_easy_handles.end(); ++cit){
+                CURL *easy_handle = *cit;
+                std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
+                if(mit==shards_map.end()){
+                    ostringstream oss;
+                    oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+                    cerr << oss.str() << endl;
+                    throw oss.str();
+                }
+                Shard *shard = mit->second;
+                shard->close();
+                curl_multi_remove_handle(curl_multi_handle, easy_handle);
+                curl_easy_reset(easy_handle);
+
+            }
+            active_easy_handles.clear();
+            shards_map.clear();
+        }
+    }
+    if(active_easy_handles.size()){
+        run_multi_perform(curl_multi_handle,&shards_map);
+        // clean up
+        std::vector<CURL*>::iterator cit;
+        for(cit=active_easy_handles.begin(); cit!=active_easy_handles.end(); ++cit){
+            CURL *easy_handle = *cit;
+            std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
+            if(mit==shards_map.end()){
+                ostringstream oss;
+                oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+                cerr << oss.str() << endl;
+                throw oss.str();
+            }
+            Shard *shard = mit->second;
+            shard->close();
+            curl_multi_remove_handle(curl_multi_handle, easy_handle);
+            curl_easy_reset(easy_handle);
+
+        }
+        active_easy_handles.clear();
+        shards_map.clear();
+    }
+
+}
 
 
 
+
+
+
+
+
+
+
+string usage(string prog_name) {
+    ostringstream ss;
+    ss << "usage: " << prog_name << "[-d] -o output -u <url> ]" << endl;
+    return ss.str();
+}
+
+int main(int argc, char **argv) {
+    string output_file;
+    string url;
+    long long file_size;
+    unsigned int shard_count;
+    bool reuse_curl_easy_handles;
+    bool keep_alive;
+    unsigned int max_connections;
+
+
+    url = "https://s3.amazonaws.com/opendap.test/MVI_1803.MOV";
+    file_size = 1647477620;
+    shard_count=10000;
+    reuse_curl_easy_handles=false;
+    keep_alive = false;
+    max_connections = 16;
+
+
+    GetOpt getopt(argc, argv, "Ddkrc:s:o:u:");
+    int option_char;
+    while ((option_char = getopt()) != EOF) {
+        switch (option_char) {
+        case 'D':
+            deep_debug = true;
+            break;
+        case 'd':
+            debug = true;
+            break;
+        case 'k':
+            keep_alive = true;
+            break;
+        case 'r':
+            reuse_curl_easy_handles = true;
+            break;
+        case 'o':
+            output_file = getopt.optarg;
+            break;
+        case 'u':
+            url = getopt.optarg;
+            break;
+        case 'c':
+            std::istringstream(getopt.optarg) >> shard_count;
+            break;
+        case 's':
+            std::istringstream(getopt.optarg) >> file_size;
+            break;
+        case '?':
+            cerr << usage(argv[0]);
+            break;
+        }
+    }
+//    cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
+    if (debug) {
+        cerr << "url: '" << url << "'" << endl;
+        cerr << "output_file: '" << output_file << "'" << endl;
+        cerr << "file_size: '" << file_size << "'" << endl;
+        cerr << "shard_count: '" << shard_count << "'" << endl;
+        cerr << "reuse_easy_curl_handles: " << (reuse_curl_easy_handles?"true":"false") << endl;
+        cerr << "keep_alive: " << (keep_alive?"true":"false") << endl;
+    }
+
+
+    bool qc_flag = false;
+    if (output_file.empty()) {
+        cerr << "Output File name must be specified using the -o option" << endl;
+        qc_flag = true;
+    }
+    if (url.empty()) {
+        cerr << "Ingest URL must be specified using the -u option" << endl;
+        qc_flag = true;
+    }
+    if (qc_flag) {
+        return 1;
+    }
+
+    vector<Shard *> shards;
+    make_shards(&shards,shard_count,url,file_size,output_file);
+
+    if(reuse_curl_easy_handles){
+        reuse_curl_handles_a2(&shards,max_connections,keep_alive);
+    }
+    else {
+        no_curl_handle_reuse_a2(&shards,max_connections,keep_alive);
+    }
+
+#if 0
+    map<CURL*, Shard *> shards_map;
+    vector<CURL *> all_easy_handles;
+    vector<CURL *> current_easy_handles;
+    CURLM *curl_multi_handle = curl_multi_init();
+
+    unsigned long int n = 0;
+    std::vector<Shard*>::iterator sit;
+    for(sit=shards.begin(); sit!=shards.end(); sit++, n++){
+        // Set up the shard to be read .
+        CURL* curl = curl_easy_init();
+        Shard *shard = *sit;
+        shard->open();
+        groom_curl_handle(curl,shard,keep_alive);
+        current_easy_handles.push_back(curl);
+        shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
+        // Add it to our current multi handle
+        curl_multi_add_handle(curl_multi_handle, curl);
+
+        /**
+         * If it's time, pull the trigger and get the stuff.
+         */
+        if(n && !(n%max_connections)){
+            // get the stuff
+            run_multi_perform(curl_multi_handle,&shards_map);
+            // clean up
+            std::vector<CURL*>::iterator cit;
+            for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
+                CURL *easy_handle = *cit;
+                std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
+                if(mit==shards_map.end()){
+                    ostringstream oss;
+                    oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+                    cerr << oss.str() << endl;
+                    throw oss.str();
+                }
+                Shard *shard = mit->second;
+                shard->close();
+                curl_multi_remove_handle(curl_multi_handle, easy_handle);
+                curl_easy_cleanup(easy_handle);
+
+            }
+            current_easy_handles.clear();
+            shards_map.clear();
+            curl_multi_cleanup(curl_multi_handle);
+            curl_multi_handle = curl_multi_init();
+        }
+    }
+    if(current_easy_handles.size()){
+        run_multi_perform(curl_multi_handle,&shards_map);
+        // clean up
+        std::vector<CURL*>::iterator cit;
+        for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
+            CURL *easy_handle = *cit;
+            curl_multi_remove_handle(curl_multi_handle, easy_handle);
+            curl_easy_cleanup(easy_handle);
+        }
+        current_easy_handles.clear();
+        curl_multi_cleanup(curl_multi_handle);
+        // curl_multi_handle = curl_multi_init();
+    }
+#endif
 
 
     return 0;
