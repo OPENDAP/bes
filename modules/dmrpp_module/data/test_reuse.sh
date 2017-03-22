@@ -50,9 +50,9 @@ do
             echo "More curl handles than chunks, skipping edge case"
         else 
             
-            log_tag="m"$m_handles"_c"$c_count"_s"$t_size
-            no_reuse_log_file=scratch/keepalive2_$log_tag.log
-            reuse_log_file=scratch/keepalive2_$log_tag"_rk".log
+            log_tag="_s"$t_size"_c"$c_count"_m"$m_handles
+            no_reuse_log_file="scratch/keepalive2"$log_tag".log"
+            reuse_log_file="scratch/keepalive2"$log_tag"_rk.log"
     
             rm -f $no_reuse_log_file $reuse_log_file
         
