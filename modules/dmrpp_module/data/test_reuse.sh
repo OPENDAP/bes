@@ -45,7 +45,7 @@ for c_count in  1 2 4 8 16 32 64 128 256 512 1024 2048 4096
 do
     for m_handles in  1 2 4 8 16 32 64 
     do
-        if [ m_handles > c_count ]
+        if [ m_handles -gt c_count ]
         then
             echo "More curl handles than chunks, skipping edge case"
         else 
