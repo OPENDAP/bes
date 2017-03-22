@@ -44,7 +44,7 @@ using namespace std;
 char curl_error_buf[CURL_ERROR_SIZE];
 
 
-size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data);
+size_t write_shard(void *buffer, size_t size, size_t nmemb, void *data);
 
 class Shard {
 
@@ -137,7 +137,7 @@ public:
 
 };
 
-size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
+size_t write_shard(void *buffer, size_t size, size_t nmemb, void *data)
 {
     Shard *shard = reinterpret_cast<Shard*>(data);
 
@@ -229,7 +229,7 @@ void groom_curl_handle(CURL *curl, Shard *shard, bool keep_alive)
         throw  string("HTTP Error: ").append(curl_error_buf);
 
     // Pass all data to the 'write_data' function
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, do_the_multiball))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_shard))
         throw string("HTTP Error: ").append(curl_error_buf);
 
     // Pass this to write_data as the fourth argument
@@ -507,12 +507,20 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
 
 
 
-
-
-
 string usage(string prog_name) {
     ostringstream ss;
-    ss << "usage: " << prog_name << "[-d] -o output -u <url> ]" << endl;
+    ss << "usage: " << prog_name << " [-?][-D][-h][-d][-r][-k] "
+        "[-o <output_file_base>] "
+        "[-u <url>] "
+        "[-m <max_easy_handles>] "
+        "[-s <total_size>] "
+        "[-c <chunk_count>] "
+        << endl;
+    ss << "  -?|h  Print this message." << endl;
+    ss << "   -D   Dryrun." << endl;
+    ss << "   -d   Produce debugging output." << endl;
+    ss << "   -r   Reuse CuRL Easy handles." << endl;
+    ss << "   -k   Utilize Keep-Alive" << endl;
     return ss.str();
 }
 
@@ -534,7 +542,7 @@ int main(int argc, char **argv) {
     max_easy_handles = 16;
 
 
-    GetOpt getopt(argc, argv, "Ddkrc:s:o:u:m:");
+    GetOpt getopt(argc, argv, "h?Ddkrc:s:o:u:m:");
     int option_char;
     while ((option_char = getopt()) != EOF) {
         switch (option_char) {
@@ -566,7 +574,9 @@ int main(int argc, char **argv) {
             std::istringstream(getopt.optarg) >> max_easy_handles;
             break;
         case '?':
+        case 'h':
             cerr << usage(argv[0]);
+            return 0;
             break;
         }
     }
@@ -604,69 +614,6 @@ int main(int argc, char **argv) {
     else {
         get_shards_no_curl_handle_reuse(&shards,max_easy_handles,keep_alive);
     }
-
-#if 0
-    map<CURL*, Shard *> shards_map;
-    vector<CURL *> all_easy_handles;
-    vector<CURL *> current_easy_handles;
-    CURLM *curl_multi_handle = curl_multi_init();
-
-    unsigned long int n = 0;
-    std::vector<Shard*>::iterator sit;
-    for(sit=shards.begin(); sit!=shards.end(); sit++, n++){
-        // Set up the shard to be read .
-        CURL* curl = curl_easy_init();
-        Shard *shard = *sit;
-        shard->open();
-        groom_curl_handle(curl,shard,keep_alive);
-        current_easy_handles.push_back(curl);
-        shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
-        // Add it to our current multi handle
-        curl_multi_add_handle(curl_multi_handle, curl);
-
-        /**
-         * If it's time, pull the trigger and get the stuff.
-         */
-        if(n && !(n%max_easy_handles)){
-            // get the stuff
-            run_multi_perform(curl_multi_handle,&shards_map);
-            // clean up
-            std::vector<CURL*>::iterator cit;
-            for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
-                CURL *easy_handle = *cit;
-                std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
-                if(mit==shards_map.end()){
-                    ostringstream oss;
-                    oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
-                    cerr << oss.str() << endl;
-                    throw oss.str();
-                }
-                Shard *shard = mit->second;
-                shard->close();
-                curl_multi_remove_handle(curl_multi_handle, easy_handle);
-                curl_easy_cleanup(easy_handle);
-
-            }
-            current_easy_handles.clear();
-            shards_map.clear();
-            curl_multi_cleanup(curl_multi_handle);
-            curl_multi_handle = curl_multi_init();
-        }
-    }
-    if(current_easy_handles.size()){
-        run_multi_perform(curl_multi_handle,&shards_map);
-        // clean up
-        std::vector<CURL*>::iterator cit;
-        for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
-            CURL *easy_handle = *cit;
-            curl_multi_remove_handle(curl_multi_handle, easy_handle);
-            curl_easy_cleanup(easy_handle);
-        }
-        current_easy_handles.clear();
-        curl_multi_cleanup(curl_multi_handle);
-        // curl_multi_handle = curl_multi_init();
-    }
-#endif
 
 
     return 0;
