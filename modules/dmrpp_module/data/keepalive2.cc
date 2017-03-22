@@ -38,7 +38,7 @@
 #include <curl/curl.h>
 
 static bool debug = false;
-static bool deep_debug = false;
+static bool dry_run = false;
 using namespace std;
 
 char curl_error_buf[CURL_ERROR_SIZE];
@@ -165,7 +165,7 @@ size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
     fwrite (buffer , sizeof(char), nbytes, shard->d_fd);
 
     shard->d_bytes_read += nbytes;
-    if(deep_debug) cerr << shard->d_output_filename << ":" << shard->d_bytes_read << ":"<< nbytes << endl;
+    // cerr << shard->d_output_filename << ":" << shard->d_bytes_read << ":"<< nbytes << endl;
 
     return nbytes;
 }
@@ -174,9 +174,12 @@ size_t do_the_multiball(void *buffer, size_t size, size_t nmemb, void *data)
 
 void make_shards(vector<Shard *> *shards, unsigned int shard_count, string url, unsigned int file_size, string output_filename){
 
-    if(debug) cerr << __func__ << "() - Target size: " << file_size << endl;
-
     unsigned long long int shard_size = file_size/shard_count;
+
+    cerr << __func__ << "() - Target size: " << file_size <<
+        " shard_size: " << shard_size <<
+        " shard_count: " << shard_count << endl;
+
     long long byte_count = 0;
     for(unsigned int i=0; i<shard_count ; i++){
         unsigned long long my_size=shard_size;
@@ -189,7 +192,10 @@ void make_shards(vector<Shard *> *shards, unsigned int shard_count, string url, 
         shard->d_offset = offset;
         shard->d_size = my_size;
         ostringstream oss;
-        oss << output_filename << "_" << (i<10?"0":"") << (i<100?"0":"") << (i<1000?"0":"") << i << "_shard";
+        oss << output_filename << "_" <<
+            (i<10?"0":"") << (i<100?"0":"") <<
+            (i<1000?"0":"") << (i<10000?"0":"") <<
+            i << "_shard";
         shard->d_output_filename = oss.str();
         shards->push_back(shard);
         byte_count+=shard_size;
@@ -341,14 +347,14 @@ void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
 void no_curl_handle_reuse_a2(vector<Shard*>*shards, unsigned int max_connections, bool keep_alive){
 
     cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: " << (keep_alive?"true":"false") << endl;
-    //return;
+    if(dry_run) return;
 
     map<CURL*, Shard *> shards_map;
     vector<CURL *> all_easy_handles;
     vector<CURL *> current_easy_handles;
     CURLM *curl_multi_handle = curl_multi_init();
 
-    unsigned long int n = 0;
+    unsigned long int n = 1;
     std::vector<Shard*>::iterator sit;
     for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
         // Set up the shard to be read .
@@ -410,14 +416,14 @@ void no_curl_handle_reuse_a2(vector<Shard*>*shards, unsigned int max_connections
 void reuse_curl_handles_a2(vector<Shard*>*shards, unsigned int max_connections, bool keep_alive){
 
     cerr << __func__ << "() - Recycling curl easy handles. keep_alive: " << (keep_alive?"true":"false") << endl;
-    // return;
+    if(dry_run) return;
 
     map<CURL*, Shard *> shards_map;
     vector<CURL *> all_easy_handles;
     vector<CURL *> active_easy_handles;
     CURLM *curl_multi_handle = curl_multi_init();
 
-    unsigned long int n = 0;
+    unsigned long int n = 1;
     std::vector<Shard*>::iterator sit;
     for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
         Shard *shard = *sit;
@@ -527,7 +533,7 @@ int main(int argc, char **argv) {
     while ((option_char = getopt()) != EOF) {
         switch (option_char) {
         case 'D':
-            deep_debug = true;
+            dry_run = true;
             break;
         case 'd':
             debug = true;
