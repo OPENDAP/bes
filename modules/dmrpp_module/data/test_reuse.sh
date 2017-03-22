@@ -45,20 +45,25 @@ for c_count in  1 2 4 8 16 32 64 128 256 512 1024 2048 4096
 do
     for m_handles in  1 2 4 8 16 32 64 
     do
-        log_tag="m"$m_handles"_c"$c_count"_s"$t_size
-        no_reuse_log_file=scratch/keepalive2_$log_tag.log
-        reuse_log_file=scratch/keepalive2_$log_tag"_rk".log
-
-        rm -f $no_reuse_log_file $reuse_log_file
+        if [ m_handles > c_count ]
+        then
+            echo "More curl handles than chunks, skipping edge case"
+        else 
+            
+            log_tag="m"$m_handles"_c"$c_count"_s"$t_size
+            no_reuse_log_file=scratch/keepalive2_$log_tag.log
+            reuse_log_file=scratch/keepalive2_$log_tag"_rk".log
     
-        for i in {1..10}
-        do
-            echo "no_handle_reuse_no_keepalive $log_tag lap $i"
-            run_keep_alive $no_reuse_log_file $t_size $c_count $m_handles " " " " >> $no_reuse_log_file 2>&1
-            echo "reuse_handles_and_keepalive $log_tag lap $i"
-            run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "-k" >> $reuse_log_file 2>&1
-        done
+            rm -f $no_reuse_log_file $reuse_log_file
         
+            for i in {1..10}
+            do
+                echo "no_handle_reuse_no_keepalive $log_tag lap $i"
+                run_keep_alive $no_reuse_log_file $t_size $c_count $m_handles " " " " >> $no_reuse_log_file 2>&1
+                echo "reuse_handles_and_keepalive $log_tag lap $i"
+                run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "-k" >> $reuse_log_file 2>&1
+            done
+        fi
     done
     
     
