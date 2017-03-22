@@ -344,13 +344,46 @@ void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
 
 }
 
+void no_easy_handle_reuse_worker(
+    CURLM *curl_multi_handle,
+    vector<CURL *> *current_easy_handles, map<CURL*,
+    Shard *> *shards_map)
+{
+
+
+  // get the stuff
+    run_multi_perform(curl_multi_handle,shards_map);
+    // clean up
+    std::vector<CURL*>::iterator cit;
+    for(cit=current_easy_handles->begin(); cit!=current_easy_handles->end(); ++cit){
+        CURL *easy_handle = *cit;
+        std::map<CURL*, Shard*>::iterator mit = shards_map->find(easy_handle);
+        if(mit==shards_map->end()){
+            ostringstream oss;
+            oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+            cerr << oss.str() << endl;
+            throw oss.str();
+        }
+        Shard *shard = mit->second;
+        shard->close();
+        curl_multi_remove_handle(curl_multi_handle, easy_handle);
+        curl_easy_cleanup(easy_handle);
+
+    }
+    current_easy_handles->clear();
+    shards_map->clear();
+    curl_multi_cleanup(curl_multi_handle);
+}
+
+
+
 void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_easy_handles, bool keep_alive){
 
     cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: " << (keep_alive?"true":"false") << endl;
     if(dry_run) return;
 
     map<CURL*, Shard *> shards_map;
-    vector<CURL *> all_easy_handles;
+    // vector<CURL *> all_easy_handles;
     vector<CURL *> current_easy_handles;
     CURLM *curl_multi_handle = curl_multi_init();
 
@@ -371,44 +404,46 @@ void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_eas
          * If it's time, pull the trigger and get the stuff.
          */
         if(n && !(n%max_easy_handles)){
-            // get the stuff
-            run_multi_perform(curl_multi_handle,&shards_map);
-            // clean up
-            std::vector<CURL*>::iterator cit;
-            for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
-                CURL *easy_handle = *cit;
-                std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
-                if(mit==shards_map.end()){
-                    ostringstream oss;
-                    oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
-                    cerr << oss.str() << endl;
-                    throw oss.str();
-                }
-                Shard *shard = mit->second;
-                shard->close();
-                curl_multi_remove_handle(curl_multi_handle, easy_handle);
-                curl_easy_cleanup(easy_handle);
-
-            }
-            current_easy_handles.clear();
-            shards_map.clear();
-            curl_multi_cleanup(curl_multi_handle);
+            no_easy_handle_reuse_worker(curl_multi_handle,&current_easy_handles,&shards_map);
             curl_multi_handle = curl_multi_init();
-        }
+       }
     }
     if(current_easy_handles.size()){
-        run_multi_perform(curl_multi_handle,&shards_map);
-        // clean up
-        std::vector<CURL*>::iterator cit;
-        for(cit=current_easy_handles.begin(); cit!=current_easy_handles.end(); ++cit){
-            CURL *easy_handle = *cit;
-            curl_multi_remove_handle(curl_multi_handle, easy_handle);
-            curl_easy_cleanup(easy_handle);
-        }
-        current_easy_handles.clear();
-        curl_multi_cleanup(curl_multi_handle);
-        // curl_multi_handle = curl_multi_init();
+        no_easy_handle_reuse_worker(curl_multi_handle,&current_easy_handles,&shards_map);
     }
+
+}
+
+
+
+
+
+void reuse_easy_handles_worker(
+    CURLM *curl_multi_handle,
+    vector<CURL *> *active_easy_handles, map<CURL*,
+    Shard *> *shards_map)
+{
+    // get the stuff
+    run_multi_perform(curl_multi_handle,shards_map);
+    // clean up
+    std::vector<CURL*>::iterator cit;
+    for(cit=active_easy_handles->begin(); cit!=active_easy_handles->end(); ++cit){
+        CURL *easy_handle = *cit;
+        std::map<CURL*, Shard*>::iterator mit = shards_map->find(easy_handle);
+        if(mit==shards_map->end()){
+            ostringstream oss;
+            oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+            cerr << oss.str() << endl;
+            throw oss.str();
+        }
+        Shard *shard = mit->second;
+        shard->close();
+        curl_multi_remove_handle(curl_multi_handle, easy_handle);
+        curl_easy_reset(easy_handle);
+
+    }
+    active_easy_handles->clear();
+    shards_map->clear();
 
 }
 
@@ -450,51 +485,19 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
          * If it's time, pull the trigger and get the stuff.
          */
         if(n && !(n%max_easy_handles)){
-            // get the stuff
-            run_multi_perform(curl_multi_handle,&shards_map);
-            // clean up
-            std::vector<CURL*>::iterator cit;
-            for(cit=active_easy_handles.begin(); cit!=active_easy_handles.end(); ++cit){
-                CURL *easy_handle = *cit;
-                std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
-                if(mit==shards_map.end()){
-                    ostringstream oss;
-                    oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
-                    cerr << oss.str() << endl;
-                    throw oss.str();
-                }
-                Shard *shard = mit->second;
-                shard->close();
-                curl_multi_remove_handle(curl_multi_handle, easy_handle);
-                curl_easy_reset(easy_handle);
+            reuse_easy_handles_worker(curl_multi_handle,&active_easy_handles,&shards_map);
 
-            }
-            active_easy_handles.clear();
-            shards_map.clear();
         }
     }
     if(active_easy_handles.size()){
-        run_multi_perform(curl_multi_handle,&shards_map);
-        // clean up
-        std::vector<CURL*>::iterator cit;
-        for(cit=active_easy_handles.begin(); cit!=active_easy_handles.end(); ++cit){
-            CURL *easy_handle = *cit;
-            std::map<CURL*, Shard*>::iterator mit = shards_map.find(easy_handle);
-            if(mit==shards_map.end()){
-                ostringstream oss;
-                oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
-                cerr << oss.str() << endl;
-                throw oss.str();
-            }
-            Shard *shard = mit->second;
-            shard->close();
-            curl_multi_remove_handle(curl_multi_handle, easy_handle);
-            curl_easy_reset(easy_handle);
-
-        }
-        active_easy_handles.clear();
-        shards_map.clear();
+        reuse_easy_handles_worker(curl_multi_handle,&active_easy_handles,&shards_map);
     }
+
+    std::vector<CURL*>::iterator cit;
+    for(cit=all_easy_handles.begin(); cit!=all_easy_handles.end(); ++cit){
+        curl_easy_cleanup(*cit);
+    }
+    curl_multi_cleanup(curl_multi_handle);
 
 }
 
