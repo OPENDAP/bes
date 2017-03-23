@@ -27,7 +27,7 @@ basic_stats()
             mean=sum/NR; 
             stdev=sqrt(sumsq/NR - (sum/NR)**2); 
             # printf("n=%3d, min=%8.2f,  mean=%8.2f +/-%6.2f,  max=%8.2f",NR,min,mean,stdev,max);
-            printf("%3d, %8.2f,  %8.2f, %6.2f, %8.2f",NR,min,mean,stdev,max);
+            printf("%3d,%8.2f,%8.2f,%6.2f,%8.2f",NR,min,mean,stdev,max);
         }' -
 }
 
@@ -56,7 +56,7 @@ do
         else {
             reuse_n_keepalive = "false";
         }
-        printf("%-30s, %10d, %6d, %10d, %3d, %5s, ",
+        printf("%50s,%10d,%6d,%10d,%3d,%5s, ",
             $0, 
             total_size, 
             shard_count, 
