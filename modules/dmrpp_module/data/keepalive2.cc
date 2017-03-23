@@ -640,7 +640,7 @@ int main(int argc, char **argv) {
     reuse_curl_easy_handles=false;
     keep_alive = false;
     max_easy_handles = 16;
-    max_threads = 8;
+    max_threads = 4;
 
 
     GetOpt getopt(argc, argv, "h?Ddkrpc:s:o:u:m:");
