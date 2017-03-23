@@ -617,7 +617,7 @@ string usage(string prog_name) {
     ss << "   -d   Produce debugging output." << endl;
     ss << "   -r   Reuse CuRL Easy handles." << endl;
     ss << "   -k   Utilize Keep-Alive" << endl;
-    ss << "   -p   Use Pthreads and Multi" << endl;
+    ss << "   -p   Use pThreads and Multi" << endl;
     return ss.str();
 }
 
