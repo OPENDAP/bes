@@ -441,7 +441,7 @@ void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_eas
  *
  *
  */
-void get_shards_pthread_multi_reuse(
+void get_shards_pthread_multi(
         vector<Shard*>*shards,
         unsigned int max_easy_handles,
         unsigned int max_threads)
@@ -716,7 +716,7 @@ int main(int argc, char **argv) {
 
 
     if(use_pthreads){
-        get_shards_pthread_multi_reuse(&shards, max_easy_handles, max_threads);
+        get_shards_pthread_multi(&shards, max_easy_handles, max_threads);
     }
     else if(reuse_curl_easy_handles){
         get_shards_reuse_curl_handles(&shards,max_easy_handles,keep_alive);
