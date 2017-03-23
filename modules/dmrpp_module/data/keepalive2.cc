@@ -461,7 +461,8 @@ void get_shards_pthread_multi_reuse(
     for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
         shard_bundle->push_back(*sit);
         /**
-         * If it's time, pull the trigger and get the stuff.
+         * If the bundle is "full", then toss it
+         * into a pthread and get the stuff.
          */
         if(!(n%max_easy_handles)){
             cerr << "Collected  "<< shard_bundle->size() << " Shards." <<
@@ -486,7 +487,6 @@ void get_shards_pthread_multi_reuse(
                   for(unsigned int i=0; i< max_threads; i++) {
                     int error = pthread_join(tid[i], NULL);
                     cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. errno: "<< error << endl;
-                    tid[i] = 0;
                   }
                   thread_num = 0;
               }
