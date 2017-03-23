@@ -610,12 +610,14 @@ string usage(string prog_name) {
         "[-m <max_easy_handles>] "
         "[-s <total_size>] "
         "[-c <chunk_count>] "
+        "[-t <max_threads>] "
         << endl;
     ss << "  -?|h  Print this message." << endl;
     ss << "   -D   Dryrun." << endl;
     ss << "   -d   Produce debugging output." << endl;
     ss << "   -r   Reuse CuRL Easy handles." << endl;
     ss << "   -k   Utilize Keep-Alive" << endl;
+    ss << "   -p   Use Pthreads and Multi" << endl;
     return ss.str();
 }
 
@@ -674,6 +676,9 @@ int main(int argc, char **argv) {
         case 's':
             std::istringstream(getopt.optarg) >> file_size;
             break;
+        case 't':
+            std::istringstream(getopt.optarg) >> max_threads;
+            break;
         case 'm':
             std::istringstream(getopt.optarg) >> max_easy_handles;
             break;
@@ -692,6 +697,7 @@ int main(int argc, char **argv) {
         cerr << "shard_count: '" << shard_count << "'" << endl;
         cerr << "reuse_easy_curl_handles: " << (reuse_curl_easy_handles?"true":"false") << endl;
         cerr << "use_pthreads: " << (use_pthreads?"true":"false") << endl;
+        cerr << "max_threads: " << max_threads << endl;
         cerr << "keep_alive: " << (keep_alive?"true":"false") << endl;
         cerr << "max_easy_handles: " << (max_easy_handles?"true":"false") << endl;
     }
