@@ -645,7 +645,7 @@ int main(int argc, char **argv) {
     max_threads = 4;
 
 
-    GetOpt getopt(argc, argv, "h?Ddkrpc:s:o:u:m:");
+    GetOpt getopt(argc, argv, "h?Ddkrpc:s:o:u:m:t:");
     int option_char;
     while ((option_char = getopt()) != EOF) {
         switch (option_char) {
