@@ -56,7 +56,7 @@ do
         else {
             reuse_n_keepalive = "false";
         }
-        printf("%24s, %10d, %6d, %10d, %3d, %5s, ",
+        printf("%-30s, %10d, %6d, %10d, %3d, %5s, ",
             $0, 
             total_size, 
             shard_count, 
@@ -66,6 +66,6 @@ do
     }' - ;         
     vals=`grep real $file | awk '{print $2}' -`;
     #stats "$vals";    
-    echo  "  $( basic_stats "$vals" )";    
+    echo  "$( basic_stats "$vals" )";    
 
 done
