@@ -56,7 +56,7 @@ do
         else {
             reuse_n_keepalive = "false";
         }
-        printf("%14s, %10d, %6d, %10d, %3d, %5s, ",
+        printf("%24s, %10d, %6d, %10d, %3d, %5s, ",
             $0, 
             total_size, 
             shard_count, 
