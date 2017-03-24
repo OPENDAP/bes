@@ -26,11 +26,17 @@
 #define _dmrpp_array_h 1
 
 #include <string>
+#include <vector>
+#if 0
 #include <map>
+#endif
 
 #include <Array.h>
+
 #include "DmrppCommon.h"
+#if 0
 #include "Odometer.h"
+#endif
 
 namespace dmrpp {
 
@@ -59,18 +65,18 @@ private:
     void insert_constrained_no_chunk(
 			Dim_iter p,
 			unsigned long *target_index,
-			vector<unsigned int> &subsetAddress,
-			const vector<unsigned int> &array_shape,
+			std::vector<unsigned int> &subsetAddress,
+			const std::vector<unsigned int> &array_shape,
 			H4ByteStream *h4bytestream);
 
     virtual bool insert_constrained_chunk(
     		unsigned int dim,
-			vector<unsigned int> *target_address,
-			vector<unsigned int> *chunk_source_address,
+    		std::vector<unsigned int> *target_address,
+    		std::vector<unsigned int> *chunk_source_address,
     		H4ByteStream *chunk,
     		CURLM *multi_handle);
 
-    void multi_finish(CURLM *curl_multi_handle, vector<H4ByteStream> *chunk_refs);
+    void multi_finish(CURLM *curl_multi_handle, std::vector<H4ByteStream> *chunk_refs);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
@@ -88,7 +94,7 @@ public:
     virtual void dump(ostream & strm) const;
 
     virtual unsigned long long get_size(bool constrained=false);
-    virtual vector<unsigned int> get_shape(bool constrained);
+    virtual std::vector<unsigned int> get_shape(bool constrained);
 };
 
 } // namespace dmrpp

@@ -318,16 +318,7 @@ void H4ByteStream::complete_read(bool deflate, unsigned int chunk_size, bool shu
 #endif
 
     d_is_read = true;
-
-
-
-
 }
-
-
-
-
-
 
 /**
  * @brief Read the chunk associated with this H4ByteStream
@@ -396,6 +387,7 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
 
         curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
     }
+
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
         ostringstream oss;
@@ -416,7 +408,7 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
     // Added support for shuffle. Assuming unshuffle always is applied _after_
     // inflating the data (reversing the shuffle --> deflate process). It is
     // possible that data could just be deflated or shuffled (because we
-    // have test data are use only shuffle). jhrg 1/20/17
+    // have test data that use only shuffle). jhrg 1/20/17
 
     if (deflate) {
         char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17

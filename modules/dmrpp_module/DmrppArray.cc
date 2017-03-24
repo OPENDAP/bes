@@ -27,10 +27,12 @@
 #include <sstream>
 #include <iomanip>
 #include <set>
-#include <unistd.h>
+#include <stack>
 
 #include <cstring>
-#include <stack>
+#include <cassert>
+
+#include <unistd.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -39,7 +41,10 @@
 #include "DmrppUtil.h"
 #include "Odometer.h"
 
+
+#if 0
 using namespace dmrpp;
+#endif
 using namespace libdap;
 using namespace std;
 
@@ -115,24 +120,31 @@ bool DmrppArray::is_projected()
 
 /**
  * @brief Compute the index of the address_in_target for an an array of target_shape.
- * Since we store multidimensional arrays as a single one dimensional array
- * internally we need to be able to locate a particular address in the one dimensional
- * storage utilizing an n-tuple (where n is the dimension of the array). The get_index
- * function does this by computing the location based on the n-tuple address_in_target
- * and the shape of the array, passed in as target_shape.
+ *
+ * Internally we store N-dimensional arrays using a one dimensional array (i.e., a
+ * vector). Compute the offset in that vector that corresponds to a location in
+ * the N-dimensional array. For example, for three dimensional array of size
+ * 2 x 3 x 4, the data values are stored in a 24 element vector and the item at
+ * location 1,1,1 (zero-based indexing) would be at offset 1*1 + 1*4 + 1 * 4*3 == 15.
+ *
+ * @param address_in_target N-tuple zero-based index of an element in N-space
+ * @param target_shape N-tuple of the array's dimension sizes.
+ * @return The offset into the vector used to store the values.
  */
-unsigned long long get_index(vector<unsigned int> address_in_target, const vector<unsigned int> target_shape)
+unsigned long long get_index(const vector<unsigned int> &address_in_target, const vector<unsigned int> &target_shape)
 {
+#if 0
     if (address_in_target.size() != target_shape.size()) {
         ostringstream oss;
         oss << "The target_shape  (size: " << target_shape.size() << ")" << " and the address_in_target (size: "
             << address_in_target.size() << ")" << " have different dimensionality.";
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
+
     unsigned long long digit_multiplier = 1;
     unsigned long long subject_index = 0;
     for (int i = target_shape.size() - 1; i >= 0; i--) {
-        if (address_in_target[i] > target_shape[i]) {
+        if (address_in_target[i] >= target_shape[i]) {      // Changes > to >= size we use zero-based indexing
             ostringstream oss;
             oss << "The address_in_target[" << i << "]: " << address_in_target[i] << " is larger than target_shape["
                 << i << "]: " << target_shape[i] << " This will make the bad things happen.";
@@ -141,7 +153,24 @@ unsigned long long get_index(vector<unsigned int> address_in_target, const vecto
         subject_index += address_in_target[i] * digit_multiplier;
         digit_multiplier *= target_shape[i];
     }
-    return subject_index;
+#endif
+
+    assert(address_in_target.size() == target_shape.size());    // ranks must be equal
+
+    vector<unsigned int>::const_reverse_iterator shape_index = target_shape.rbegin();
+    vector<unsigned int>::const_reverse_iterator index = address_in_target.rbegin(), index_end = address_in_target.rend();
+
+    unsigned long long multiplier = *shape_index++;
+    unsigned long long offset = *index++;
+
+    while (index != index_end) {
+        assert(*index < *shape_index); // index < shape for each dim
+
+        offset += multiplier * *index++;
+        multiplier *= *shape_index++;   // TODO Remove the unneeded multiply. jhrg 3/24/17
+    }
+
+    return offset;
 }
 
 vector<unsigned int> DmrppArray::get_shape(bool constrained)
@@ -150,11 +179,21 @@ vector<unsigned int> DmrppArray::get_shape(bool constrained)
     for (Dim_iter dim = dim_begin(); dim != dim_end(); dim++) {
         array_shape.push_back(dimension_size(dim, constrained));
     }
+
     return array_shape;
 }
 
-DmrppArray::dimension DmrppArray::get_dimension(unsigned int dim_num)
+/**
+ * @brief Return the ith dimension object for this Array
+ * @param i The index of the dimension object to return
+ * @return The dimension object
+ */
+DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
 {
+    assert(i <= (dim_end() - dim_begin()));
+    return *(dim_begin() + i);
+
+#if 0
     Dim_iter dimIter = dim_begin();
     unsigned int dim_index = 0;
 
@@ -166,6 +205,7 @@ DmrppArray::dimension DmrppArray::get_dimension(unsigned int dim_num)
     ostringstream oss;
     oss << "DmrppArray::get_dimension() -" << " The array " << name() << " does not have " << dim_num << " dimensions!";
     throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+#endif
 }
 
 /**
@@ -251,16 +291,26 @@ void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *ta
     }
 }
 
+/**
+ * @brief Return the total number of elements in this Array
+ * @param constrained If true, use the constrained size of the array,
+ * otherwise use the full size.
+ * @return The number of elements in this Array
+ */
 unsigned long long DmrppArray::get_size(bool constrained)
 {
     // number of array elements in the constrained array
     unsigned long long constrained_size = 1;
-    for (Dim_iter dim = dim_begin(); dim != dim_end(); dim++) {
+    for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
         constrained_size *= dimension_size(dim, constrained);
     }
     return constrained_size;
 }
 
+/**
+ * @brief Read an array that is stored with using two or more 'chunks.'
+ * @return Always returns true, matching the libdap::Array::read() behavior.
+ */
 bool DmrppArray::read_no_chunks()
 {
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " BEGIN" << endl);
@@ -269,13 +319,13 @@ bool DmrppArray::read_no_chunks()
     if (chunk_refs->size() == 0) {
         ostringstream oss;
         oss << "DmrppArray::" << __func__ << "() - Unable to obtain a ByteStream object for array " << name()
-                        << " Without a ByteStream we cannot read! " << endl;
+                        << " Without a ByteStream we cannot read!";
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     // For now we only handle the one chunk case.
     H4ByteStream h4_byte_stream = (*chunk_refs)[0];
-    h4_byte_stream.read(); // Use the default vlaues for deflate (false) and chunk size (0)
+    h4_byte_stream.read(); // Use the default values for deflate (false) and chunk size (0)
 
     if (!is_projected()) {      // if there is no projection constraint
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - No projection, copying all values into array. " << endl);
@@ -404,49 +454,58 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
 
     int still_running;
     int repeats;
-    long long lap_counter = 0;
+    long long lap_counter = 0;  // TODO Remove or ... see below
     CURLMcode mcode;
 
     do {
-      int numfds;
+        int numfds;
 
-      lap_counter++;
-      BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_perform()" << endl);
-      mcode = curl_multi_perform(multi_handle, &still_running);
-      BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_perform() mcode: " << mcode << endl);
+        lap_counter++;        // TODO make this depend on BESDEBG if we really need it
+        BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_perform()" << endl);
+        // Read from one or more handles and get the number 'still running'.
+        // This returns when there's currently no more to read
+        mcode = curl_multi_perform(multi_handle, &still_running);
+        BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_perform() mcode: " << mcode << endl);
 
-      if(mcode == CURLM_OK ) {
-        /* wait for activity, timeout or "nothing" */
-          BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_wait()" << endl);
-          mcode = curl_multi_wait(multi_handle, NULL, 0, 1000, &numfds);
-          BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_wait() mcode: " << mcode << endl);
-     }
+        if (mcode == CURLM_OK) {
+            /* wait for activity, timeout or "nothing" */
+            BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_wait()" << endl);
+            // Block until one or more handles have new data to be read or until a timer expires.
+            // The timer is set to 1000 milliseconds. Return the numer of handles ready for reading.
+            mcode = curl_multi_wait(multi_handle, NULL, 0, 1000, &numfds);
+            BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_wait() mcode: " << mcode << endl);
+        }
 
-      if(mcode != CURLM_OK) {
-          break;
-      }
+        // TODO Can cmode be anything other than CURLM_OK?
+        // TODO Move this to an else clause and maybe add a note that the error is handled below
+        // TODO Actually, it would be clearer to throw here...
+        if (mcode != CURLM_OK) {
+            break;
+        }
 
-      /* 'numfds' being zero means either a timeout or no file descriptors to
+        // TODO I don't get the point of this loop... I see it in the docs, but I don't see why it's needed
+
+        /* 'numfds' being zero means either a timeout or no file descriptors to
          wait for. Try timeout on first occurrence, then assume no file
          descriptors and no file descriptors to wait for means wait for 100
          milliseconds. */
 
-      if(!numfds) {
-        repeats++; /* count number of repeated zero numfds */
-        if(repeats > 1) {
-          /* sleep 100 milliseconds */
-          usleep(100 * 1000);   // usleep takes sleep time in us (1 millionth of a second)
-      }
-      }
-      else
-        repeats = 0;
+        if (!numfds) {
+            repeats++; /* count number of repeated zero numfds */
+            if (repeats > 1) {
+                /* sleep 100 milliseconds */
+                usleep(100 * 1000);   // usleep takes sleep time in us (1 millionth of a second)
+            }
+        }
+        else
+            repeats = 0;
 
-    } while(still_running);
+    } while (still_running);
 
     BESDEBUG("dmrpp",
         "DmrppArray::" << __func__ <<"() CURL-MULTI has finished! laps: " << lap_counter << "  still_running: "<< still_running << endl);
 
-    if(mcode == CURLM_OK) {
+    if (mcode == CURLM_OK) {
         CURLMsg *msg; /* for picking up messages with the transfer status */
         int msgs_left; /* how many messages are left */
 
@@ -468,12 +527,13 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
             }
 
             if (msg->msg == CURLMSG_DONE) {
-                BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Chunk Read Completed For Chunk: " << h4bs_str << endl);
+                BESDEBUG("dmrpp",
+                    "DmrppArray::" << __func__ <<"() Chunk Read Completed For Chunk: " << h4bs_str << endl);
             }
             else {
                 ostringstream oss;
-                oss << "DmrppArray::" << __func__ <<"() Chunk Read Did Not Complete. CURLMsg.msg: "<< msg->msg <<
-                    " Chunk: " << h4bs_str;
+                oss << "DmrppArray::" << __func__ << "() Chunk Read Did Not Complete. CURLMsg.msg: " << msg->msg
+                    << " Chunk: " << h4bs_str;
                 BESDEBUG("dmrpp", oss.str() << endl);
                 throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
             }
@@ -487,13 +547,15 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
         curl_multi_remove_handle(multi_handle, easy_handle);
         (*chunk_refs)[idx].cleanup_curl_handle();
     }
+
     curl_multi_cleanup(multi_handle);
 
-    if(mcode != CURLM_OK) {
+    if (mcode != CURLM_OK) {
         ostringstream oss;
-        oss << "DmrppArray: CURL operation Failed!. multi_code: " << mcode  << endl;
+        oss << "DmrppArray: CURL operation Failed!. multi_code: " << mcode << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
+
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() END" << endl);
 }
 
@@ -527,7 +589,8 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " BEGIN "<< endl);
 
-    // The size, in elements, of each of the chunks dimensions.
+    // The size, in elements, of each of the chunk's dimensions.
+    // TODO We assume all chunks have the same size for any given array.
     vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 
     // The array index of the last dimension
@@ -565,6 +628,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
         BESDEBUG("dmrpp",
             "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " thisDim.start is beyond the chunk origin at this dim. first_element_offset: " << first_element_offset << endl);
     }
+
     // Is the next point to be sent in this chunk at all?
     if (first_element_offset > chunk_shape[dim]) {
         // Nope! Time to bail
