@@ -403,9 +403,9 @@ void *pthread_multi_worker(void *muh_pointer)
 
 
 
-void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_easy_handles, bool keep_alive){
+void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_easy_handles){
 
-    cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: " << (keep_alive?"true":"false") << endl;
+    cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: true " << endl;
     if(dry_run) return;
 
     vector<vector<Shard*>*> shard_bundles;
@@ -540,20 +540,65 @@ void reuse_easy_handles_worker(
 
 }
 
+void reuse_curl_easy_handles_worker(map<CURL*, Shard *> *shards_map)
+{
+    cerr << __func__ << "() - BEGIN" << endl;
+
+    CURLM *curl_multi_handle = curl_multi_init();
+
+    std::map<CURL*,Shard*>::iterator mit;
+    for(mit=shards_map->begin(); mit!=shards_map->end(); ++mit){
+        CURL *easy_handle = mit->first;
+        Shard *shard = mit->second;
+        shard->open();
+        groom_curl_handle(easy_handle,shard,true);
+        curl_multi_add_handle(curl_multi_handle, easy_handle);
+    }
+
+    // get the stuff
+    run_multi_perform(curl_multi_handle,shards_map);
+    // clean up
+    std::vector<CURL*>::iterator cit;
+    for(mit=shards_map->begin(); mit!=shards_map->end(); ++mit){
+        CURL *easy_handle = mit->first;
+        Shard *shard = mit->second;
+        std::map<CURL*, Shard*>::iterator mit = shards_map->find(easy_handle);
+        if(mit==shards_map->end()){
+            ostringstream oss;
+            oss << "OUCH! Failed to locate Shard instance for curl_easy_handle: " << (void*)(easy_handle)<<endl;
+            cerr << oss.str() << endl;
+            throw oss.str();
+        }
+        shard->close();
+        curl_multi_remove_handle(curl_multi_handle, easy_handle);
+        curl_easy_reset(easy_handle);
+
+    }
+    shards_map->clear();
+    curl_multi_cleanup(curl_multi_handle);
+
+    cerr << __func__ << "() - END" << endl;
+}
+
+void *pthread_multi_reuse_worker(void *miss_thang){
+    map<CURL*, Shard *> *shards_map = reinterpret_cast<map<CURL*, Shard *> *>(miss_thang);
+    cerr << __func__ << "() - Got " << shards_map->size() << " Shards. calling reuse_curl_easy_handles_worker."<< endl;
+    reuse_curl_easy_handles_worker(shards_map);
+    return NULL;
+}
+
+
 /**
  * Gets all the shards from whereever while reusing the curl easy handles and setting keep-alive
  *
  */
-void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_handles, bool keep_alive){
+void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_handles){
 
-    cerr << __func__ << "() - Recycling curl easy handles. keep_alive: " << (keep_alive?"true":"false") << endl;
+    cerr << __func__ << "() - Recycling curl easy handles. keep_alive: true" << endl;
     if(dry_run) return;
 
     map<CURL*, Shard *> shards_map;
     vector<CURL *> all_easy_handles;
-    vector<CURL *> active_easy_handles;
-
-    CURLM *curl_multi_handle = curl_multi_init();
 
     unsigned long int n = 1;
     std::vector<Shard*>::iterator sit;
@@ -569,21 +614,17 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
         else {
             curl = all_easy_handles[n%max_easy_handles];
         }
-        active_easy_handles.push_back(curl);
-        groom_curl_handle(curl,shard,keep_alive);
         shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
-        // Add it to our current multi handle
-        curl_multi_add_handle(curl_multi_handle, curl);
 
         /**
          * If it's time, pull the trigger and get the stuff.
          */
         if(n && !(n%max_easy_handles)){
-            reuse_easy_handles_worker(curl_multi_handle,&active_easy_handles,&shards_map);
+            reuse_curl_easy_handles_worker(&shards_map);
         }
     }
-    if(active_easy_handles.size()){
-        reuse_easy_handles_worker(curl_multi_handle,&active_easy_handles,&shards_map);
+    if(shards_map.size()){
+        reuse_curl_easy_handles_worker(&shards_map);
     }
     /**
      * Clean up, all done...
@@ -592,7 +633,101 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
     for(cit=all_easy_handles.begin(); cit!=all_easy_handles.end(); ++cit){
         curl_easy_cleanup(*cit);
     }
-    curl_multi_cleanup(curl_multi_handle);
+
+}
+
+/**
+ * Gets all the shards from whereever while reusing the curl easy handles and setting keep-alive
+ *
+ */
+void get_shards_pthreads_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_threads, unsigned int max_easy_handles_per_thread){
+
+    cerr << __func__ << "() - Recycling curl easy handles. keep_alive: true" << endl;
+    if(dry_run) return;
+
+    unsigned int max_easy_handles =  max_threads * max_easy_handles_per_thread;
+
+    pthread_t tid[max_threads];
+
+    map<CURL*, Shard *> *shards_map;
+    vector<map<CURL *,Shard*>*> shards_maps;
+    shards_map =  new  map<CURL*, Shard *>();
+    shards_maps.push_back(shards_map);
+
+    vector<CURL *> all_easy_handles;
+
+    unsigned int thread_num = 0;;
+    unsigned long int n = 1;
+    std::vector<Shard*>::iterator sit;
+    for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
+        Shard *shard = *sit;
+        CURL* curl;
+        if(all_easy_handles.size()<max_easy_handles){
+            curl = curl_easy_init();
+            all_easy_handles.push_back(curl);
+            cerr << __func__  <<
+                "() - all_easy_handles.size(): " << all_easy_handles.size() << endl;
+        }
+        else {
+            curl = all_easy_handles[n%max_easy_handles];
+        }
+        shards_map->insert(std::pair<CURL*,Shard*>(curl,shard));
+        /**
+         * If it's time, pull the trigger and get the stuff.
+         */
+        if(!(n%max_easy_handles_per_thread)){
+            cerr << "Collected  "<< shards_map->size() << " Shards." <<
+                " n: " << n << " max_threads: " << max_threads <<
+                " thread_num: " << thread_num << endl;
+            int error;
+
+            error = pthread_create(
+                    &(tid[thread_num]),
+                   NULL, /* default attributes please */
+                   pthread_multi_reuse_worker,
+                   (void *)shards_map);
+
+
+
+            if(0 != error)
+              cerr << "Couldn't start thread number " << thread_num << " errno: "<< error << endl;
+            else {
+              cerr << "Started Thread " << thread_num << endl;
+              thread_num++;
+            }
+            if(thread_num == max_threads){
+                cerr << "waiting for all threads to terminate " << endl;
+                for(unsigned int i=0; i< max_threads; i++) {
+                  int error = pthread_join(tid[i], NULL);
+                  cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. errno: "<< error << endl;
+                }
+                thread_num = 0;
+            }
+            shards_map =  new  map<CURL*, Shard *>();
+            shards_maps.push_back(shards_map);
+        }
+    }
+    if(shards_map->size()){
+        cerr << __func__ <<
+            "() - Getting final shards: " << shards_map->size() << endl;
+        reuse_curl_easy_handles_worker(shards_map);
+        cerr << __func__ <<
+            "() - Got final shards: " << shards_map->size() << endl;
+   }
+
+
+    std::vector<map<CURL *,Shard*>*>::iterator vvit;
+    for(vvit=shards_maps.begin(); vvit!=shards_maps.end(); vvit++, n++){
+        delete *vvit;
+    }
+    /**
+     * Clean up, all done...
+     */
+    std::vector<CURL*>::iterator cit;
+    for(cit=all_easy_handles.begin(); cit!=all_easy_handles.end(); ++cit){
+        curl_easy_cleanup(*cit);
+    }
+
 
 }
 
@@ -602,9 +737,23 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 string usage(string prog_name) {
     ostringstream ss;
-    ss << "usage: " << prog_name << " [-?][-D][-h][-d][-r][-k] "
+    ss << "usage: " << prog_name << " [-?][-D][-h][-d][-r] "
         "[-o <output_file_base>] "
         "[-u <url>] "
         "[-m <max_easy_handles>] "
@@ -615,8 +764,7 @@ string usage(string prog_name) {
     ss << "  -?|h  Print this message." << endl;
     ss << "   -D   Dryrun." << endl;
     ss << "   -d   Produce debugging output." << endl;
-    ss << "   -r   Reuse CuRL Easy handles." << endl;
-    ss << "   -k   Utilize Keep-Alive" << endl;
+    ss << "   -r   Reuse CuRL Easy handles and keep-alive." << endl;
     ss << "   -p   Use pThreads and Multi" << endl;
     return ss.str();
 }
@@ -627,7 +775,6 @@ int main(int argc, char **argv) {
     long long file_size;
     unsigned int shard_count;
     bool reuse_curl_easy_handles;
-    bool keep_alive;
     unsigned int max_easy_handles;
     unsigned int max_threads;
 
@@ -640,7 +787,6 @@ int main(int argc, char **argv) {
     file_size = 1647477620;
     shard_count=10000;
     reuse_curl_easy_handles=false;
-    keep_alive = false;
     max_easy_handles = 16;
     max_threads = 4;
 
@@ -654,9 +800,6 @@ int main(int argc, char **argv) {
             break;
         case 'd':
             debug = true;
-            break;
-        case 'k':
-            keep_alive = true;
             break;
         case 'p':
             use_pthreads = true;
@@ -698,7 +841,6 @@ int main(int argc, char **argv) {
         cerr << "reuse_easy_curl_handles: " << (reuse_curl_easy_handles?"true":"false") << endl;
         cerr << "use_pthreads: " << (use_pthreads?"true":"false") << endl;
         cerr << "max_threads: " << max_threads << endl;
-        cerr << "keep_alive: " << (keep_alive?"true":"false") << endl;
         cerr << "max_easy_handles: " << (max_easy_handles?"true":"false") << endl;
     }
 
@@ -719,19 +861,22 @@ int main(int argc, char **argv) {
     vector<Shard *> shards;
     make_shards(&shards,shard_count,url,file_size,output_file);
 
-
-
     if(use_pthreads){
-        get_shards_pthread_multi(&shards, max_easy_handles, max_threads);
-    }
-    else if(reuse_curl_easy_handles){
-        get_shards_reuse_curl_handles(&shards,max_easy_handles,keep_alive);
+        if(reuse_curl_easy_handles){
+            get_shards_pthreads_reuse_curl_handles(&shards, max_threads, max_easy_handles);
+        }
+        else {
+            get_shards_pthread_multi(&shards, max_easy_handles, max_threads);
+        }
     }
     else {
-        get_shards_no_curl_handle_reuse(&shards,max_easy_handles,keep_alive);
+        if(reuse_curl_easy_handles){
+            get_shards_reuse_curl_handles(&shards,max_easy_handles);
+        }
+        else {
+            get_shards_no_curl_handle_reuse(&shards,max_easy_handles);
+        }
     }
-
-
     return 0;
 }
 
