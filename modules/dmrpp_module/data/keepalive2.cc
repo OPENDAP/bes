@@ -606,9 +606,12 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
     cerr << __func__ << "() - Recycling curl easy handles. keep_alive: true" << endl;
     if(dry_run) return;
 
-    map<CURL*, Shard *> shards_map;
     vector<CURL *> all_easy_handles;
     muh_thang miss_thang;
+
+    map<CURL*, Shard *> shards_map;
+    miss_thang.shards_map = &shards_map;
+
     CURLM *curl_multi_handle = curl_multi_init();
     miss_thang.multi_handle = curl_multi_handle;
 
@@ -633,13 +636,11 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
         /**
          * If it's time, pull the trigger and get the stuff.
          */
-        if(n && !(current_easy_handle_index)){
-            miss_thang.shards_map = &shards_map;
+        if(current_easy_handle_index == 0){
             reuse_curl_easy_handles_worker(&miss_thang);
         }
     }
     if(shards_map.size()){
-        miss_thang.shards_map = &shards_map;
         reuse_curl_easy_handles_worker(&miss_thang);
     }
     /**
