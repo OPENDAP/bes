@@ -510,7 +510,7 @@ void get_shards_pthread_multi(
 
 
 
-
+#if 0
 void reuse_easy_handles_worker(
     CURLM *curl_multi_handle,
     vector<CURL *> *active_easy_handles, map<CURL*,
@@ -539,12 +539,19 @@ void reuse_easy_handles_worker(
     shards_map->clear();
 
 }
+#endif
 
-void reuse_curl_easy_handles_worker(map<CURL*, Shard *> *shards_map)
+
+struct muh_thang {
+    CURLM *multi_handle;
+    map<CURL*, Shard *> *shards_map;
+};
+
+void reuse_curl_easy_handles_worker(muh_thang *miss_thang)
 {
     cerr << __func__ << "() - BEGIN" << endl;
-
-    CURLM *curl_multi_handle = curl_multi_init();
+    map<CURL *,Shard*> *shards_map = miss_thang->shards_map;
+    CURLM *curl_multi_handle = miss_thang->multi_handle;
 
     std::map<CURL*,Shard*>::iterator mit;
     for(mit=shards_map->begin(); mit!=shards_map->end(); ++mit){
@@ -575,15 +582,15 @@ void reuse_curl_easy_handles_worker(map<CURL*, Shard *> *shards_map)
 
     }
     shards_map->clear();
-    curl_multi_cleanup(curl_multi_handle);
+    //curl_multi_cleanup(curl_multi_handle);
 
     cerr << __func__ << "() - END" << endl;
 }
 
 void *pthread_multi_reuse_worker(void *miss_thang){
-    map<CURL*, Shard *> *shards_map = reinterpret_cast<map<CURL*, Shard *> *>(miss_thang);
-    cerr << __func__ << "() - Got " << shards_map->size() << " Shards. calling reuse_curl_easy_handles_worker."<< endl;
-    reuse_curl_easy_handles_worker(shards_map);
+    muh_thang *thang = reinterpret_cast<muh_thang *>(miss_thang);
+    cerr << __func__ << "() - Got " << thang->shards_map->size() << " Shards. calling reuse_curl_easy_handles_worker."<< endl;
+    reuse_curl_easy_handles_worker(thang);
     return NULL;
 }
 
@@ -599,6 +606,9 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
 
     map<CURL*, Shard *> shards_map;
     vector<CURL *> all_easy_handles;
+    muh_thang miss_thang;
+    CURLM *curl_multi_handle = curl_multi_init();
+    miss_thang.multi_handle = curl_multi_handle;
 
     unsigned long int n = 1;
     std::vector<Shard*>::iterator sit;
@@ -620,11 +630,13 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
          * If it's time, pull the trigger and get the stuff.
          */
         if(n && !(n%max_easy_handles)){
-            reuse_curl_easy_handles_worker(&shards_map);
+            miss_thang.shards_map = &shards_map;
+            reuse_curl_easy_handles_worker(&miss_thang);
         }
     }
     if(shards_map.size()){
-        reuse_curl_easy_handles_worker(&shards_map);
+        miss_thang.shards_map = &shards_map;
+        reuse_curl_easy_handles_worker(&miss_thang);
     }
     /**
      * Clean up, all done...
@@ -633,44 +645,73 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
     for(cit=all_easy_handles.begin(); cit!=all_easy_handles.end(); ++cit){
         curl_easy_cleanup(*cit);
     }
+    curl_multi_cleanup(curl_multi_handle);
 
 }
 
 /**
- * Gets all the shards from whereever while reusing the curl easy handles and setting keep-alive
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * Gets all the shards from wherever while reusing the curl easy handles and setting keep-alive
  *
  */
-void get_shards_pthreads_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_threads, unsigned int max_easy_handles_per_thread){
+void get_shards_pthreads_reuse_curl_handles(
+    vector<Shard*>*shards,
+    unsigned int max_threads,
+    unsigned int max_easy_handles_per_thread){
 
     cerr << __func__ << "() - Recycling curl easy handles. keep_alive: true" << endl;
     if(dry_run) return;
 
     unsigned int max_easy_handles =  max_threads * max_easy_handles_per_thread;
+    cerr << __func__ << "() - max_threads:" << max_threads << " max_easy_handles_per_thread: " <<max_easy_handles_per_thread << " max_easy_handles: " << max_easy_handles << endl;
 
     pthread_t tid[max_threads];
-
-    map<CURL*, Shard *> *shards_map;
-    vector<map<CURL *,Shard*>*> shards_maps;
-    shards_map =  new  map<CURL*, Shard *>();
-    shards_maps.push_back(shards_map);
+    muh_thang the_things[max_threads];
 
     vector<CURL *> all_easy_handles;
 
-    unsigned int thread_num = 0;;
+    unsigned int thread_num;
     unsigned long int n = 1;
+
+    for(thread_num=0 ; thread_num<max_threads ; thread_num++){
+        the_things[thread_num].shards_map = new  map<CURL*, Shard *>();
+        cerr << __func__ << "() - the_things[" << thread_num << "].shards_map:   " << (void *) the_things[thread_num].shards_map << " ";
+        the_things[thread_num].multi_handle = curl_multi_init();
+        cerr << __func__ <<  "() - the_things[" << thread_num << "].multi_handle: " << (void *) the_things[thread_num].multi_handle << endl;
+    }
+
+    thread_num = 0;
     std::vector<Shard*>::iterator sit;
     for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
         Shard *shard = *sit;
+        map<CURL*, Shard *> *shards_map = the_things[thread_num].shards_map;
+
+        unsigned int current_easy_handle_index = n%max_easy_handles;
         CURL* curl;
         if(all_easy_handles.size()<max_easy_handles){
             curl = curl_easy_init();
             all_easy_handles.push_back(curl);
             cerr << __func__  <<
-                "() - all_easy_handles.size(): " << all_easy_handles.size() << endl;
+                "() - Made new curl easy handle. all_easy_handles.size(): " << all_easy_handles.size() << endl;
         }
         else {
-            curl = all_easy_handles[n%max_easy_handles];
+            curl = all_easy_handles[current_easy_handle_index];
+            cerr << __func__  <<
+                "() - Reusing CuRL easy handle." << endl;
         }
+        cerr << "() - "
+            "thread_num: " << thread_num <<
+            " shards_map: " << (void *) shards_map <<
+            "current_easy_handle_index: " << current_easy_handle_index <<
+            " shards["<< n << "]: " << (void *) shard <<
+            " easy_handle: " << (void *) curl <<
+            endl;
         shards_map->insert(std::pair<CURL*,Shard*>(curl,shard));
         /**
          * If it's time, pull the trigger and get the stuff.
@@ -685,47 +726,44 @@ void get_shards_pthreads_reuse_curl_handles(vector<Shard*>*shards, unsigned int 
                     &(tid[thread_num]),
                    NULL, /* default attributes please */
                    pthread_multi_reuse_worker,
-                   (void *)shards_map);
+                   (void *)&(the_things[thread_num]));
 
-
-
-            if(0 != error)
-              cerr << "Couldn't start thread number " << thread_num << " errno: "<< error << endl;
+            if(0 != error){
+                cerr << "Couldn't start thread number " << thread_num << " errno: "<< error << endl;
+            }
             else {
-              cerr << "Started Thread " << thread_num << endl;
-              thread_num++;
+                cerr << "Started Thread " << thread_num << endl;
+                thread_num++;
             }
             if(thread_num == max_threads){
-                cerr << "waiting for all threads to terminate " << endl;
+                cerr << "Waiting for all "<< thread_num << " threads to terminate " << endl;
                 for(unsigned int i=0; i< max_threads; i++) {
                   int error = pthread_join(tid[i], NULL);
-                  cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. errno: "<< error << endl;
+                  cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. (errno: "<< error << ")"<< endl;
                 }
                 thread_num = 0;
             }
-            shards_map =  new  map<CURL*, Shard *>();
-            shards_maps.push_back(shards_map);
         }
     }
-    if(shards_map->size()){
+    if(the_things[thread_num].shards_map->size()){
         cerr << __func__ <<
-            "() - Getting final shards: " << shards_map->size() << endl;
-        reuse_curl_easy_handles_worker(shards_map);
+            "() - Getting final shards: " << the_things[thread_num].shards_map->size() << endl;
+        reuse_curl_easy_handles_worker(&(the_things[thread_num]));
         cerr << __func__ <<
-            "() - Got final shards: " << shards_map->size() << endl;
+            "() - Got final shards: " << the_things[thread_num].shards_map->size() << endl;
    }
 
-
-    std::vector<map<CURL *,Shard*>*>::iterator vvit;
-    for(vvit=shards_maps.begin(); vvit!=shards_maps.end(); vvit++, n++){
-        delete *vvit;
-    }
     /**
      * Clean up, all done...
      */
     std::vector<CURL*>::iterator cit;
     for(cit=all_easy_handles.begin(); cit!=all_easy_handles.end(); ++cit){
         curl_easy_cleanup(*cit);
+    }
+
+    for(unsigned int i=0 ; i<max_threads ; i++){
+        delete the_things[i].shards_map;
+        curl_multi_cleanup(the_things[i].multi_handle);
     }
 
 
