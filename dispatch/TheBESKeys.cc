@@ -42,7 +42,6 @@ string TheBESKeys::ConfigFile = "";
 
 BESKeys *TheBESKeys::TheKeys()
 {
-#if 1
     if (_instance)
         return _instance;
 
@@ -76,41 +75,4 @@ BESKeys *TheBESKeys::TheKeys()
     }
 
     throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__, __LINE__);
-
-#else
-
-    if (_instance == 0) {
-        string use_ini = TheBESKeys::ConfigFile;
-        if (use_ini == "") {
-            string try_ini = "/usr/local/etc/bes/bes.conf";
-            struct stat buf;
-            int statret = stat(try_ini.c_str(), &buf);
-            if (statret == -1 || !S_ISREG(buf.st_mode)) {
-                try_ini = "/etc/bes/bes.conf";
-                int statret = stat(try_ini.c_str(), &buf);
-                if (statret == -1 || !S_ISREG(buf.st_mode)) {
-                    try_ini = "/usr/etc/bes/bes.conf";
-                    int statret = stat(try_ini.c_str(), &buf);
-                    if (statret == -1 || !S_ISREG(buf.st_mode)) {
-                        throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__,
-                            __LINE__);
-                    }
-                    else {
-                        use_ini = try_ini;
-                    }
-                }
-                else {
-                    use_ini = try_ini;
-                }
-            }
-            else {
-                use_ini = try_ini;
-            }
-        }
-        _instance = new TheBESKeys(use_ini);
-    }
-
-    return _instance;
-
-#endif
 }

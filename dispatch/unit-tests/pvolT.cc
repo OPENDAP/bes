@@ -34,17 +34,17 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ofstream ;
-using std::ios ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ofstream;
+using std::ios;
 
 #include "BESContainerStorageVolatile.h"
 #include "BESContainer.h"
@@ -57,173 +57,176 @@ class pvolT: public TestFixture {
 private:
 
 public:
-    pvolT() {}
-    ~pvolT() {}
+    pvolT()
+    {
+    }
+    ~pvolT()
+    {
+    }
 
     void setUp()
     {
-	string bes_conf = (string)TEST_SRC_DIR + "/persistence_cgi_test.ini" ;
-	TheBESKeys::ConfigFile = bes_conf ;
+        string bes_conf = (string) TEST_SRC_DIR + "/persistence_cgi_test.ini";
+        TheBESKeys::ConfigFile = bes_conf;
 
-	ofstream real1( "./real1", ios::trunc ) ;
-	real1 << "real1" << endl ;
-	real1.close() ;
-	ofstream real2( "./real2", ios::trunc ) ;
-	real2 << "real2" << endl ;
-	real2.close() ;
-	ofstream real3( "./real3", ios::trunc ) ;
-	real3 << "real3" << endl ;
-	real3.close() ;
-	ofstream real4( "./real4", ios::trunc ) ;
-	real4 << "real4" << endl ;
-	real4.close() ;
-	ofstream real5( "./real5", ios::trunc ) ;
-	real5 << "real5" << endl ;
-	real5.close() ;
-    } 
+#if 0
+        // TODO Remove. Not used and seems to cause (but why?) an error when
+        // this test is run in parallel with the keysT test. jhrg 3/26/17
+        ofstream real1( "./real1", ios::trunc );
+        real1 << "real1" << endl;
+        //real1.close() ;
+        ofstream real2( "./real2", ios::trunc );
+        real2 << "real2" << endl;
+        //real2.close() ;
+        ofstream real3( "./real3", ios::trunc );
+        real3 << "real3" << endl;
+        //real3.close() ;
+        ofstream real4( "./real4", ios::trunc );
+        real4 << "real4" << endl;
+        //real4.close() ;
+        ofstream real5( "./real5", ios::trunc );
+        real5 << "real5" << endl;
+        //real5.close() ;
+#endif
+    }
 
     void tearDown()
     {
-	remove( "./real1" ) ;
-	remove( "./real2" ) ;
-	remove( "./real3" ) ;
-	remove( "./real4" ) ;
-	remove( "./real5" ) ;
+#if 0
+        remove( "./real1" );
+        remove( "./real2" );
+        remove( "./real3" );
+        remove( "./real4" );
+        remove( "./real5" );
+#endif
     }
 
-    CPPUNIT_TEST_SUITE( pvolT ) ;
+    CPPUNIT_TEST_SUITE( pvolT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END();
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered pvolT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered pvolT::run" << endl;
 
-	BESContainerStorageVolatile cpv( "volatile" ) ;
+        BESContainerStorageVolatile cpv("volatile");
 
-	cout << "*****************************************" << endl;
-	cout << "Create volatile and add five elements" << endl;
-	try
-	{
-	    cpv.add_container( "sym1", "real1", "type1" ) ;
-	    cpv.add_container( "sym2", "real2", "type2" ) ;
-	    cpv.add_container( "sym3", "real3", "type3" ) ;
-	    cpv.add_container( "sym4", "real4", "type4" ) ;
-	    cpv.add_container( "sym5", "real5", "type5" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( ! "failed to add elements" ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Create volatile and add five elements" << endl;
+        try {
+            cpv.add_container("sym1", "real1", "type1");
+            cpv.add_container("sym2", "real2", "type2");
+            cpv.add_container("sym3", "real3", "type3");
+            cpv.add_container("sym4", "real4", "type4");
+            cpv.add_container("sym5", "real5", "type5");
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( ! "failed to add elements" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "show containers" << endl;
-	BESTextInfo info ;
-	cpv.show_containers( info ) ;
-	info.print( cout ) ;
+        cout << "*****************************************" << endl;
+        cout << "show containers" << endl;
+        BESTextInfo info;
+        cpv.show_containers(info);
+        info.print(cout);
 
-	cout << "*****************************************" << endl;
-	cout << "try to add sym1 again" << endl;
-	try
-	{
-	    cpv.add_container( "sym1", "real1", "type1" ) ;
-	    CPPUNIT_ASSERT( !"succesfully added sym1 again" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cout << "unable to add sym1 again, good" << endl ;
-	    cout << e.get_message() << endl ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "try to add sym1 again" << endl;
+        try {
+            cpv.add_container("sym1", "real1", "type1");
+            CPPUNIT_ASSERT( !"succesfully added sym1 again" );
+        }
+        catch (BESError &e) {
+            cout << "unable to add sym1 again, good" << endl;
+            cout << e.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Look for containers" << endl ;
-	{
-	    char s[10] ;
-	    char r[10] ;
-	    char c[10] ;
-	    for( int i = 1; i < 6; i++ )
-	    {
-		sprintf( s, "sym%d", i ) ;
-		sprintf( r, "./real%d", i ) ;
-		sprintf( c, "type%d", i ) ;
-		cout << "    looking for " << s << endl;
-		BESContainer *d = cpv.look_for( s ) ;
-		CPPUNIT_ASSERT( d ) ;
-		CPPUNIT_ASSERT( d->get_real_name() == r ) ;
-		CPPUNIT_ASSERT( d->get_container_type() == c ) ;
-	    }
-	}
+        cout << "*****************************************" << endl;
+        cout << "Look for containers" << endl;
+        {
+            char s[10];
+            char r[10];
+            char c[10];
+            for (int i = 1; i < 6; i++) {
+                sprintf(s, "sym%d", i);
+                sprintf(r, "./real%d", i);
+                sprintf(c, "type%d", i);
+                cout << "    looking for " << s << endl;
+                BESContainer *d = cpv.look_for(s);
+                CPPUNIT_ASSERT( d );
+                CPPUNIT_ASSERT( d->get_real_name() == r );
+                CPPUNIT_ASSERT( d->get_container_type() == c );
+            }
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "remove sym1" << endl;
-	CPPUNIT_ASSERT( cpv.del_container( "sym1" ) ) ;
+        cout << "*****************************************" << endl;
+        cout << "remove sym1" << endl;
+        CPPUNIT_ASSERT( cpv.del_container( "sym1" ) );
 
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "find sym1" << endl;
-	    BESContainer *d = cpv.look_for( "sym1" ) ;
-	    CPPUNIT_ASSERT( !d ) ;
-	}
+        {
+            cout << "*****************************************" << endl;
+            cout << "find sym1" << endl;
+            BESContainer *d = cpv.look_for("sym1");
+            CPPUNIT_ASSERT( !d );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "remove sym5" << endl;
-	CPPUNIT_ASSERT( cpv.del_container( "sym5" ) ) ;
+        cout << "*****************************************" << endl;
+        cout << "remove sym5" << endl;
+        CPPUNIT_ASSERT( cpv.del_container( "sym5" ) );
 
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "find sym5" << endl;
-	    BESContainer *d = cpv.look_for( "sym5" ) ;
-	    CPPUNIT_ASSERT( !d ) ;
-	}
+        {
+            cout << "*****************************************" << endl;
+            cout << "find sym5" << endl;
+            BESContainer *d = cpv.look_for("sym5");
+            CPPUNIT_ASSERT( !d );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "remove nosym" << endl;
-	CPPUNIT_ASSERT( !cpv.del_container( "nosym" ) ) ;
+        cout << "*****************************************" << endl;
+        cout << "remove nosym" << endl;
+        CPPUNIT_ASSERT( !cpv.del_container( "nosym" ) );
 
-	cout << "*****************************************" << endl;
-	cout << "Look for containers" << endl ;
-	{
-	    char s[10] ;
-	    char r[10] ;
-	    char c[10] ;
-	    for( int i = 2; i < 5; i++ )
-	    {
-		sprintf( s, "sym%d", i ) ;
-		sprintf( r, "./real%d", i ) ;
-		sprintf( c, "type%d", i ) ;
-		cout << "    looking for " << s << endl;
-		BESContainer *d = cpv.look_for( s ) ;
-		CPPUNIT_ASSERT( d ) ;
-		CPPUNIT_ASSERT( d->get_real_name() == r ) ;
-		CPPUNIT_ASSERT( d->get_container_type() == c ) ;
-	    }
-	}
+        cout << "*****************************************" << endl;
+        cout << "Look for containers" << endl;
+        {
+            char s[10];
+            char r[10];
+            char c[10];
+            for (int i = 2; i < 5; i++) {
+                sprintf(s, "sym%d", i);
+                sprintf(r, "./real%d", i);
+                sprintf(c, "type%d", i);
+                cout << "    looking for " << s << endl;
+                BESContainer *d = cpv.look_for(s);
+                CPPUNIT_ASSERT( d );
+                CPPUNIT_ASSERT( d->get_real_name() == r );
+                CPPUNIT_ASSERT( d->get_container_type() == c );
+            }
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "show containers" << endl;
-	BESTextInfo info2 ;
-	cpv.show_containers( info2 ) ;
-	info2.print( cout ) ;
+        cout << "*****************************************" << endl;
+        cout << "show containers" << endl;
+        BESTextInfo info2;
+        cpv.show_containers(info2);
+        info2.print(cout);
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from pvolT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from pvolT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( pvolT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( pvolT );
 
-int 
-main( int, char** )
+int main(int, char**)
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    bool wasSuccessful = runner.run("", false);
 
-    return wasSuccessful ? 0 : 1 ;
+    return wasSuccessful ? 0 : 1;
 }
 
