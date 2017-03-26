@@ -298,7 +298,7 @@ void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
 
 
     // cerr << endl;
-    cerr << __func__ << "() - CuRL multi_perfom has finished. mcode: "<< mcode <<
+    if(debug) cerr << __func__ << "() - CuRL multi_perfom has finished. mcode: "<< mcode <<
         " multi_wait_laps: " << lap_counter <<
         " shards: "<< shards_map->size() << endl;
 
@@ -394,7 +394,7 @@ void curl_multi_worker( vector<Shard *> *shards)
 void *pthread_multi_worker(void *muh_pointer)
 {
     vector<Shard *> *shards = reinterpret_cast<vector<Shard *> *>(muh_pointer);
-    cerr << __func__ << "() - Got " << shards->size() << " Shards. calling curl_multi_worker."<< endl;
+    if(debug) cerr << __func__ << "() - Got " << shards->size() << " Shards. calling curl_multi_worker."<< endl;
     curl_multi_worker(shards);
     return NULL;
 }
@@ -447,7 +447,7 @@ void get_shards_pthread_multi(
         unsigned int max_threads)
 {
 
-    cerr << __func__ << "() - PThreads and Curl multi..; " << endl;
+    cerr << __func__ << "() - PThreads and CuRL multi_perform" << endl;
     if(dry_run) return;
 
     pthread_t tid[max_threads];
@@ -465,7 +465,7 @@ void get_shards_pthread_multi(
          * into a pthread and get the stuff.
          */
         if(!(n%max_easy_handles)){
-            cerr << "Collected  "<< shard_bundle->size() << " Shards." <<
+            if(debug) cerr << "Collected  "<< shard_bundle->size() << " Shards." <<
                 " n: " << n << " max_threads: " << max_threads <<
                 " thread_num: " << thread_num << endl;
             int error;
@@ -475,18 +475,19 @@ void get_shards_pthread_multi(
                    pthread_multi_worker,
                    (void *)shard_bundle);
 
-              if(0 != error)
-                cerr << "Couldn't start thread number " << thread_num << " errno: "<< error << endl;
+              if(0 != error){
+                  if(debug) cerr << "Couldn't start thread number " << thread_num << " errno: "<< error << endl;
+              }
               else {
-                cerr << "Started Thread " << thread_num << endl;
+                  if(debug) cerr << "Started Thread " << thread_num << endl;
                 thread_num++;
               }
 
               if(thread_num == max_threads){
-                  cerr << "waiting for all threads to terminate " << endl;
+                  if(debug) cerr << "waiting for all threads to terminate " << endl;
                   for(unsigned int i=0; i< max_threads; i++) {
                     int error = pthread_join(tid[i], NULL);
-                    cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. errno: "<< error << endl;
+                    if(debug) cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. errno: "<< error << endl;
                   }
                   thread_num = 0;
               }
@@ -549,7 +550,7 @@ struct muh_thang {
 
 void reuse_curl_easy_handles_worker(muh_thang *miss_thang)
 {
-    cerr << __func__ << "() - BEGIN" << endl;
+    if(debug) cerr << __func__ << "() - BEGIN" << endl;
     map<CURL *,Shard*> *shards_map = miss_thang->shards_map;
     CURLM *curl_multi_handle = miss_thang->multi_handle;
 
@@ -584,12 +585,12 @@ void reuse_curl_easy_handles_worker(muh_thang *miss_thang)
     }
     shards_map->clear();
 
-    cerr << __func__ << "() - END" << endl;
+    if(debug) cerr << __func__ << "() - END" << endl;
 }
 
 void *pthread_multi_reuse_worker(void *miss_thang){
     muh_thang *thang = reinterpret_cast<muh_thang *>(miss_thang);
-    cerr << __func__ << "() - Got " << thang->shards_map->size() << " Shards. calling reuse_curl_easy_handles_worker."<< endl;
+    if(debug) cerr << __func__ << "() - Got " << thang->shards_map->size() << " Shards. calling reuse_curl_easy_handles_worker."<< endl;
     reuse_curl_easy_handles_worker(thang);
     return NULL;
 }
@@ -671,7 +672,7 @@ void get_shards_pthreads_reuse_curl_handles(
     if(dry_run) return;
 
     unsigned int max_easy_handles =  max_threads * max_easy_handles_per_thread;
-    cerr << __func__ << "() - max_threads:" << max_threads << " max_easy_handles_per_thread: " <<max_easy_handles_per_thread << " max_easy_handles: " << max_easy_handles << endl;
+    cerr << __func__ << "() - max_threads: " << max_threads << " max_easy_handles_per_thread: " <<max_easy_handles_per_thread << " max_easy_handles: " << max_easy_handles << endl;
 
     pthread_t tid[max_threads];
     muh_thang the_things[max_threads];
@@ -699,12 +700,12 @@ void get_shards_pthreads_reuse_curl_handles(
         if(all_easy_handles.size()<max_easy_handles){
             curl = curl_easy_init();
             all_easy_handles.push_back(curl);
-            cerr << __func__  <<
+            if(debug) cerr << __func__  <<
                 "() - Made new curl easy handle. all_easy_handles.size(): " << all_easy_handles.size() << endl;
         }
         else {
             curl = all_easy_handles[current_easy_handle_index];
-            cerr << __func__  <<
+            if(debug) cerr << __func__  <<
                 "() - Reusing CuRL easy handle." << endl;
         }
         if(debug) cerr << "() - "
@@ -738,10 +739,10 @@ void get_shards_pthreads_reuse_curl_handles(
                 thread_num++;
             }
             if(thread_num == max_threads){
-                cerr << "Waiting for all "<< thread_num << " threads to terminate " << endl;
+                if(debug) cerr << "Waiting for all "<< thread_num << " threads to terminate " << endl;
                 for(unsigned int i=0; i< max_threads; i++) {
                   int error = pthread_join(tid[i], NULL);
-                  cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. (errno: "<< error << ")"<< endl;
+                  if(debug) cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. (errno: "<< error << ")"<< endl;
                 }
                 thread_num = 0;
             }
@@ -751,7 +752,7 @@ void get_shards_pthreads_reuse_curl_handles(
         cerr << __func__ <<
             "() - Getting final shards: " << the_things[thread_num].shards_map->size() << endl;
         reuse_curl_easy_handles_worker(&(the_things[thread_num]));
-        cerr << __func__ <<
+        if(debug) cerr << __func__ <<
             "() - Got final shards: " << the_things[thread_num].shards_map->size() << endl;
    }
 
