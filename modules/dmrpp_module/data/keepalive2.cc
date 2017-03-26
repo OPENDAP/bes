@@ -619,10 +619,7 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
     std::vector<Shard*>::iterator sit;
     for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
         Shard *shard = *sit;
-        shard->open();
-
         unsigned int current_easy_handle_index = n%max_easy_handles;
-
         CURL* curl;
         if(all_easy_handles.size()<max_easy_handles){
             curl = curl_easy_init();
