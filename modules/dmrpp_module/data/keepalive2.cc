@@ -564,6 +564,7 @@ void reuse_curl_easy_handles_worker(muh_thang *miss_thang)
 
     // get the stuff
     run_multi_perform(curl_multi_handle,shards_map);
+
     // clean up
     std::vector<CURL*>::iterator cit;
     for(mit=shards_map->begin(); mit!=shards_map->end(); ++mit){
@@ -582,7 +583,6 @@ void reuse_curl_easy_handles_worker(muh_thang *miss_thang)
 
     }
     shards_map->clear();
-    //curl_multi_cleanup(curl_multi_handle);
 
     cerr << __func__ << "() - END" << endl;
 }
@@ -616,20 +616,22 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
         Shard *shard = *sit;
         shard->open();
 
+        unsigned int current_easy_handle_index = n%max_easy_handles;
+
         CURL* curl;
         if(all_easy_handles.size()<max_easy_handles){
             curl = curl_easy_init();
             all_easy_handles.push_back(curl);
         }
         else {
-            curl = all_easy_handles[n%max_easy_handles];
+            curl = all_easy_handles[current_easy_handle_index];
         }
         shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
 
         /**
          * If it's time, pull the trigger and get the stuff.
          */
-        if(n && !(n%max_easy_handles)){
+        if(n && !(current_easy_handle_index)){
             miss_thang.shards_map = &shards_map;
             reuse_curl_easy_handles_worker(&miss_thang);
         }
@@ -681,9 +683,9 @@ void get_shards_pthreads_reuse_curl_handles(
 
     for(thread_num=0 ; thread_num<max_threads ; thread_num++){
         the_things[thread_num].shards_map = new  map<CURL*, Shard *>();
-        cerr << __func__ << "() - the_things[" << thread_num << "].shards_map:   " << (void *) the_things[thread_num].shards_map << " ";
+        if(debug) cerr << __func__ << "() - the_things[" << thread_num << "].shards_map:   " << (void *) the_things[thread_num].shards_map << " ";
         the_things[thread_num].multi_handle = curl_multi_init();
-        cerr << __func__ <<  "() - the_things[" << thread_num << "].multi_handle: " << (void *) the_things[thread_num].multi_handle << endl;
+        if(debug) cerr << __func__ <<  "() - the_things[" << thread_num << "].multi_handle: " << (void *) the_things[thread_num].multi_handle << endl;
     }
 
     thread_num = 0;
@@ -705,7 +707,7 @@ void get_shards_pthreads_reuse_curl_handles(
             cerr << __func__  <<
                 "() - Reusing CuRL easy handle." << endl;
         }
-        cerr << "() - "
+        if(debug) cerr << "() - "
             "thread_num: " << thread_num <<
             " shards_map: " << (void *) shards_map <<
             "current_easy_handle_index: " << current_easy_handle_index <<
@@ -717,7 +719,7 @@ void get_shards_pthreads_reuse_curl_handles(
          * If it's time, pull the trigger and get the stuff.
          */
         if(!(n%max_easy_handles_per_thread)){
-            cerr << "Collected  "<< shards_map->size() << " Shards." <<
+            if(debug) cerr << "Collected  "<< shards_map->size() << " Shards." <<
                 " n: " << n << " max_threads: " << max_threads <<
                 " thread_num: " << thread_num << endl;
             int error;
@@ -732,7 +734,7 @@ void get_shards_pthreads_reuse_curl_handles(
                 cerr << "Couldn't start thread number " << thread_num << " errno: "<< error << endl;
             }
             else {
-                cerr << "Started Thread " << thread_num << endl;
+                if(debug) cerr << "Started Thread " << thread_num << endl;
                 thread_num++;
             }
             if(thread_num == max_threads){
