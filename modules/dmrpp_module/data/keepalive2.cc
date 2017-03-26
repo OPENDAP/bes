@@ -177,7 +177,8 @@ void make_shards(vector<Shard *> *shards, unsigned int shard_count, string url, 
 
     unsigned long long int shard_size = file_size/shard_count;
 
-    cerr << __func__ << "() - Target size: " << file_size <<
+    cerr << __func__ << "() - url: "<< url <<
+        " total_size: " << file_size <<
         " shard_size: " << shard_size <<
         " shard_count: " << shard_count << endl;
 
