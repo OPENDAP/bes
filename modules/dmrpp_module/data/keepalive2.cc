@@ -53,7 +53,7 @@ public:
     string d_url;
     unsigned long long d_offset;
     unsigned long long d_size;
-    CURL *d_curl_easy_handle;
+    CURL *d_curl_easy_handle;   // Not used when reusing curl handles
     FILE *d_fd;
     string d_output_filename;
 
@@ -138,6 +138,14 @@ public:
 
 };
 
+/**
+ * @brief The libcurl callback function
+ * @param buffer
+ * @param size
+ * @param nmemb
+ * @param data
+ * @return
+ */
 size_t write_shard(void *buffer, size_t size, size_t nmemb, void *data)
 {
     Shard *shard = reinterpret_cast<Shard*>(data);
@@ -172,7 +180,14 @@ size_t write_shard(void *buffer, size_t size, size_t nmemb, void *data)
 }
 
 
-
+/**
+ * @brief Make all the shards needed and pushes them into the 'shards' vector.
+ * @param shards
+ * @param shard_count
+ * @param url
+ * @param file_size
+ * @param output_filename
+ */
 void make_shards(vector<Shard *> *shards, unsigned int shard_count, string url, unsigned int file_size, string output_filename){
 
     unsigned long long int shard_size = file_size/shard_count;
@@ -204,6 +219,12 @@ void make_shards(vector<Shard *> *shards, unsigned int shard_count, string url, 
 
 }
 
+/**
+ * @brief configure the curl handle
+ * @param curl
+ * @param shard
+ * @param keep_alive
+ */
 void groom_curl_handle(CURL *curl, Shard *shard, bool keep_alive)
 {
 
@@ -252,7 +273,11 @@ void groom_curl_handle(CURL *curl, Shard *shard, bool keep_alive)
     }
 }
 
-
+/**
+ * @brief Gets all of the data for all of the curl handles
+ * @param curl_multi_handle
+ * @param shards_map
+ */
 void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
     int repeats;
     long long lap_counter = 0;
@@ -345,7 +370,10 @@ void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
 
 }
 
-
+/**
+ * @brief Get data for each shard sequentially
+ * @param shards
+ */
 void curl_easy_worker( vector<Shard *> *shards)
 {
     std::vector<Shard*>::iterator sit;
@@ -359,7 +387,11 @@ void curl_easy_worker( vector<Shard *> *shards)
     }
 }
 
-
+/**
+ * @breif Use curl multi to get the data referenced by the shards
+ * @note will exceed the max open files if allowed too
+ * @param shards
+ */
 void curl_multi_worker( vector<Shard *> *shards)
 {
 
@@ -375,7 +407,7 @@ void curl_multi_worker( vector<Shard *> *shards)
         shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
         curl_multi_add_handle(curl_multi_handle, curl);
     }
-  // get the stuff
+    // get the stuff
     run_multi_perform(curl_multi_handle,&shards_map);
     // clean up
     std::map<CURL*,Shard*>::iterator mit;
@@ -391,6 +423,10 @@ void curl_multi_worker( vector<Shard *> *shards)
     curl_multi_cleanup(curl_multi_handle);
 }
 
+/**
+ * @brief
+ * @param muh_pointer
+ */
 void *pthread_multi_worker(void *muh_pointer)
 {
     vector<Shard *> *shards = reinterpret_cast<vector<Shard *> *>(muh_pointer);
@@ -399,10 +435,13 @@ void *pthread_multi_worker(void *muh_pointer)
     return NULL;
 }
 
-
-
-
-
+/**
+ * @brief Use curl multi to limit the max number of shards reading at any one time
+ * @note Desigend to use the same memory layout as the pthreads version
+ * @param shards
+ * @param max_easy_handles
+ * @param keep_alive
+ */
 void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_easy_handles, bool keep_alive){
 
     cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: " << (keep_alive?"true":"false") << endl;
@@ -417,29 +456,31 @@ void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_eas
     std::vector<Shard*>::iterator sit;
     for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
         shard_bundle->push_back(*sit);
-        /**
+        /*
          * If it's time, pull the trigger and get the stuff.
          */
-        if(n && !(n%max_easy_handles)){
+        if((n % max_easy_handles) == 0){
             curl_multi_worker(shard_bundle);
             shard_bundle = new vector<Shard *>();
             shard_bundles.push_back(shard_bundle);
        }
     }
+
     if(shard_bundle->size()){
         curl_multi_worker(shard_bundle);
     }
+
     std::vector<vector<Shard*>*>::iterator vvit;
     for(vvit=shard_bundles.begin(); vvit!=shard_bundles.end(); vvit++, n++){
         delete *vvit;
     }
-
 }
+
 /**
- *
- *
- *
- *
+ * @brief Same as get_shards_no_curl_handle_reuse but uses pthreads
+ * @param shards
+ * @param max_easy_handles
+ * @param max_threads
  */
 void get_shards_pthread_multi(
         vector<Shard*>*shards,
@@ -464,7 +505,7 @@ void get_shards_pthread_multi(
          * If the bundle is "full", then toss it
          * into a pthread and get the stuff.
          */
-        if(!(n%max_easy_handles)){
+        if((n%max_easy_handles) == 0){
             cerr << "Collected  "<< shard_bundle->size() << " Shards." <<
                 " n: " << n << " max_threads: " << max_threads <<
                 " thread_num: " << thread_num << endl;
@@ -491,24 +532,20 @@ void get_shards_pthread_multi(
                   thread_num = 0;
               }
 
-
               shard_bundle = new vector<Shard *>();
               shard_bundles.push_back(shard_bundle);
          }
     }
+
     if(shard_bundle->size()){
         curl_multi_worker(shard_bundle);
     }
+
     std::vector<vector<Shard*>*>::iterator vvit;
     for(vvit=shard_bundles.begin(); vvit!=shard_bundles.end(); vvit++, n++){
         delete *vvit;
     }
-
 }
-
-
-
-
 
 
 void reuse_easy_handles_worker(
@@ -535,9 +572,9 @@ void reuse_easy_handles_worker(
         curl_easy_reset(easy_handle);
 
     }
+
     active_easy_handles->clear();
     shards_map->clear();
-
 }
 
 /**
