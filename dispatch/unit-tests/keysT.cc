@@ -34,8 +34,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
-
 #include <cstdlib>
 #include <iostream>
 
@@ -45,9 +43,23 @@ using std::endl;
 
 #include "TheBESKeys.h"
 #include "BESError.h"
-#include <test_config.h>
 
-string KeyFile;
+#include <GetOpt.h>
+#include <debug.h>
+
+#include "test_config.h"
+
+static bool debug = false;
+static bool debug_2 = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+#undef DBG2
+#define DBG2(x) do { if (debug_2) (x); } while(false);
+
+using namespace CppUnit;
+
+//string KeyFile;
 
 class keysT: public TestFixture {
 private:
@@ -76,6 +88,7 @@ public:
 
     void do_test()
     {
+#if 0
         cout << "*****************************************" << endl;
         cout << "Entered keysT::run" << endl;
         // unused. jhrg 5/24/16 int retVal = 0;
@@ -93,14 +106,14 @@ public:
                 cout << "unable to create BESKeys: unkown exception caught" << endl;
             }
         }
-
+#endif
         cout << "*****************************************" << endl;
         cout << "bad keys, not enough equal signs" << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/bad_keys1.ini";
         TheBESKeys::ConfigFile = bes_conf;
         try {
             TheBESKeys::TheKeys();
-            CPPUNIT_ASSERT( !"loaded keys, should have failed" );
+            CPPUNIT_FAIL( "loaded keys, should have failed" );
         }
         catch (BESError &e) {
             cout << "unable to create BESKeys, good, because:" << endl;
@@ -111,12 +124,15 @@ public:
         cout << "good keys file, should load" << endl;
         bes_conf = (string) TEST_SRC_DIR + "/keys_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
+
+        cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
+
         try {
             TheBESKeys::TheKeys();
         }
         catch (BESError &e) {
-            cerr << "Error: " << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"unable to create BESKeys" );
+            //cerr << "Error: " << e.get_message() << endl;
+            CPPUNIT_FAIL( "Unable to create BESKeys: " + e.get_message());
         }
 
         cout << "*****************************************" << endl;
@@ -297,17 +313,39 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( keysT );
 
-int main(int argC, char **argV)
+int main(int argc, char*argv[])
 {
-    if (argC == 2) {
-        KeyFile = argV[1];
-    }
-
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run("", false);
+    GetOpt getopt(argc, argv, "dD");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'D':
+            debug_2 = 1;
+            break;
+        default:
+            break;
+        }
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            test = string("keysT::") + argv[i++];
+
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
 
     return wasSuccessful ? 0 : 1;
 }
-

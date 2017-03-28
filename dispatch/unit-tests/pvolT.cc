@@ -51,7 +51,19 @@ using std::ios;
 #include "TheBESKeys.h"
 #include "BESError.h"
 #include "BESTextInfo.h"
-#include <test_config.h>
+
+#include <GetOpt.h>
+#include <debug.h>
+
+#include "test_config.h"
+
+static bool debug = false;
+static bool debug_2 = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+#undef DBG2
+#define DBG2(x) do { if (debug_2) (x); } while(false);
 
 class pvolT: public TestFixture {
 private:
@@ -59,6 +71,8 @@ private:
 public:
     pvolT()
     {
+        string bes_conf = (string) TEST_SRC_DIR + "/persistence_cgi_test.ini";
+        TheBESKeys::ConfigFile = bes_conf;
     }
     ~pvolT()
     {
@@ -66,33 +80,27 @@ public:
 
     void setUp()
     {
-        string bes_conf = (string) TEST_SRC_DIR + "/persistence_cgi_test.ini";
-        TheBESKeys::ConfigFile = bes_conf;
-
-#if 0
-        // TODO Remove. Not used and seems to cause (but why?) an error when
-        // this test is run in parallel with the keysT test. jhrg 3/26/17
+#if 1
         ofstream real1( "./real1", ios::trunc );
         real1 << "real1" << endl;
-        //real1.close() ;
+
         ofstream real2( "./real2", ios::trunc );
         real2 << "real2" << endl;
-        //real2.close() ;
+
         ofstream real3( "./real3", ios::trunc );
         real3 << "real3" << endl;
-        //real3.close() ;
+
         ofstream real4( "./real4", ios::trunc );
         real4 << "real4" << endl;
-        //real4.close() ;
+
         ofstream real5( "./real5", ios::trunc );
         real5 << "real5" << endl;
-        //real5.close() ;
 #endif
     }
 
     void tearDown()
     {
-#if 0
+#if 1
         remove( "./real1" );
         remove( "./real2" );
         remove( "./real3" );
@@ -138,7 +146,7 @@ public:
         cout << "try to add sym1 again" << endl;
         try {
             cpv.add_container("sym1", "real1", "type1");
-            CPPUNIT_ASSERT( !"succesfully added sym1 again" );
+            CPPUNIT_FAIL( "Successfully added sym1 again" );
         }
         catch (BESError &e) {
             cout << "unable to add sym1 again, good" << endl;
@@ -220,6 +228,43 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( pvolT );
 
+int main(int argc, char*argv[])
+{
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    GetOpt getopt(argc, argv, "dD");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'D':
+            debug_2 = 1;
+            break;
+        default:
+            break;
+        }
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            test = string("pvolT::") + argv[i++];
+
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
+}
+#if 0
 int main(int, char**)
 {
     CppUnit::TextTestRunner runner;
@@ -229,4 +274,4 @@ int main(int, char**)
 
     return wasSuccessful ? 0 : 1;
 }
-
+#endif
