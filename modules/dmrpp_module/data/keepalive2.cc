@@ -581,7 +581,10 @@ void reuse_easy_handles_worker(
 }
 #endif
 
-
+/**
+ * The multi handle was bundled with the curl handle and shard map because the multi handle
+ * needed be re-cycled in addition to the easy handles in order for keep-alive to work.
+ */
 struct muh_thang {
     CURLM *multi_handle;
     map<CURL*, Shard *> *shards_map;
@@ -619,8 +622,9 @@ void reuse_curl_easy_handles_worker(muh_thang *miss_thang)
         }
         shard->close();
         curl_multi_remove_handle(curl_multi_handle, easy_handle);
+        // This call is important for the Keep-Alive option; normally when a curl easy handle
+        // is removed from a multi handle, it is 'cleaned up' using curl_easy_cleanup.
         curl_easy_reset(easy_handle);
-
     }
     shards_map->clear();
 
@@ -634,10 +638,10 @@ void *pthread_multi_reuse_worker(void *miss_thang){
     return NULL;
 }
 
-
 /**
- * Gets all the shards from whereever while reusing the curl easy handles and setting keep-alive
- *
+ * @brief Get all the shards while reusing the curl easy handles and setting keep-alive
+ * @param shards
+ * @param max_easy_handles
  */
 void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_handles){
 
@@ -690,15 +694,10 @@ void get_shards_reuse_curl_handles(vector<Shard*>*shards, unsigned int max_easy_
 }
 
 /**
- *
- *
- *
- *
- *
- *
- *
- * Gets all the shards from wherever while reusing the curl easy handles and setting keep-alive
- *
+ * @brief Get all the shards  while reusing the curl easy handles and setting keep-alive
+ * @param shards
+ * @param max_threads
+ * @param max_easy_handles_per_thread
  */
 void get_shards_pthreads_reuse_curl_handles(
     vector<Shard*>*shards,
@@ -809,26 +808,6 @@ void get_shards_pthreads_reuse_curl_handles(
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 string usage(string prog_name) {
     ostringstream ss;
     ss << "usage: " << prog_name << " [-?][-D][-h][-d][-r] "
@@ -860,14 +839,12 @@ int main(int argc, char **argv) {
 
     curl_global_init(CURL_GLOBAL_ALL);
 
-
     url = "https://s3.amazonaws.com/opendap.test/MVI_1803.MOV";
     file_size = 1647477620;
     shard_count=10000;
     reuse_curl_easy_handles=false;
     max_easy_handles = 16;
     max_threads = 4;
-
 
     GetOpt getopt(argc, argv, "h?Ddkrpc:s:o:u:m:t:");
     int option_char;
@@ -910,7 +887,7 @@ int main(int argc, char **argv) {
             break;
         }
     }
-//    cerr << "debug:     " << (debug ? "ON" : "OFF") << endl;
+
     if (debug) {
         cerr << "url: '" << url << "'" << endl;
         cerr << "output_file: '" << output_file << "'" << endl;
@@ -921,7 +898,6 @@ int main(int argc, char **argv) {
         cerr << "max_threads: " << max_threads << endl;
         cerr << "max_easy_handles: " << (max_easy_handles?"true":"false") << endl;
     }
-
 
     bool qc_flag = false;
     if (output_file.empty()) {
@@ -955,11 +931,7 @@ int main(int argc, char **argv) {
             get_shards_no_curl_handle_reuse(&shards,max_easy_handles);
         }
     }
+
     return 0;
 }
-
-
-
-
-
 
