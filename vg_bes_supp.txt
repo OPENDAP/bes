@@ -1,0 +1,187 @@
+
+# Memory leaks reported by valgrind in the BES that are one-time-only allocations
+
+{
+   B1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:LI_get_thread_info
+   fun:LI_set_thread_item
+   fun:getservbyport
+   fun:_ZN9TcpSocket6listenEv
+   fun:_ZN14SocketListener6listenEP6Socket
+   fun:_ZN9ServerApp3runEv
+   fun:_ZN10BESBaseApp4mainEiPPc
+   fun:main
+}
+
+{
+   B2
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:xmlNewMutex
+   fun:xmlInitGlobals
+   fun:xmlInitParser
+   fun:xmlParseDocument
+   fun:_ZN11ncml_module16SaxParserWrapper5parseERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+   fun:_ZN11ncml_module10NCMLParser9parseIntoERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEN8agg_util9DDSLoader12ResponseTypeEP14BESDapResponse
+   fun:_ZN11ncml_module18NCMLRequestHandler14ncml_build_ddsER23BESDataHandlerInterface
+   fun:_ZN21BESRequestHandlerList15execute_currentER23BESDataHandlerInterface
+   fun:_ZN21BESRequestHandlerList12execute_eachER23BESDataHandlerInterface
+   fun:_ZN21BESDDSResponseHandler7executeER23BESDataHandlerInterface
+   fun:_ZN12BESInterface25execute_data_request_planEv
+}
+
+{
+   B3
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:xmlNewMutex
+   fun:xmlInitMemory
+   fun:xmlInitParser
+   fun:xmlParseDocument
+   fun:_ZN11ncml_module16SaxParserWrapper5parseERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+   fun:_ZN11ncml_module10NCMLParser9parseIntoERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEN8agg_util9DDSLoader12ResponseTypeEP14BESDapResponse
+   fun:_ZN11ncml_module18NCMLRequestHandler14ncml_build_ddsER23BESDataHandlerInterface
+   fun:_ZN21BESRequestHandlerList15execute_currentER23BESDataHandlerInterface
+   fun:_ZN21BESRequestHandlerList12execute_eachER23BESDataHandlerInterface
+   fun:_ZN21BESDDSResponseHandler7executeER23BESDataHandlerInterface
+   fun:_ZN12BESInterface25execute_data_request_planEv
+}
+
+{
+   B4
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:_ZL12realizeClassP10objc_class
+   fun:_os_object_alloc_realized
+   fun:_xpc_pipe_create
+   fun:xpc_pipe_create
+   fun:_od_xpc_pipe
+   fun:_od_running
+   fun:ds_service_byport
+   fun:search_service_byport
+   fun:getservbyport
+   fun:_ZN9TcpSocket6listenEv
+   fun:_ZN14SocketListener6listenEP6Socket
+}
+   
+{
+   B5
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:xmlNewRMutex
+   fun:__xmlInitializeDict
+   fun:xmlDictCreate
+   fun:xmlInitParserCtxt
+   fun:xmlNewParserCtxt
+   fun:xmlCreateURLParserCtxt
+   fun:_ZN11ncml_module16SaxParserWrapper11setupParserERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+   fun:_ZN11ncml_module16SaxParserWrapper5parseERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+   fun:_ZN11ncml_module10NCMLParser9parseIntoERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEN8agg_util9DDSLoader12ResponseTypeEP14BESDapResponse
+   fun:_ZN11ncml_module18NCMLRequestHandler14ncml_build_ddsER23BESDataHandlerInterface
+   fun:_ZN21BESRequestHandlerList15execute_currentER23BESDataHandlerInterface
+}
+   
+{
+   B6
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   ...
+   fun:GDALAllRegister
+   ...
+   fun:_ZN12BESModuleApp11loadModulesEv
+   ...
+}
+
+{
+   B6.1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   ...
+   fun:GDALAllRegister
+   ...
+   fun:_ZN12BESModuleApp11loadModulesEv
+   ...
+}
+
+{
+   B7
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:__smakebuf
+   fun:__srefill0
+   fun:__fread
+   fun:fread
+   fun:_ZNSt3__113basic_filebufIcNS_11char_traitsIcEEE9underflowEv
+   fun:_ZNSt3__115basic_streambufIcNS_11char_traitsIcEEE5uflowEv
+   fun:_ZNSt3__17getlineIcNS_11char_traitsIcEENS_9allocatorIcEEEERNS_13basic_istreamIT_T0_EES9_RNS_12basic_stringIS6_S7_T1_EES6_
+   fun:_ZN7BESKeys9load_keysEv
+   fun:_ZN7BESKeys15initialize_keysEv
+   fun:_ZN7BESKeysC2ERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+   fun:_ZN10TheBESKeysC2ERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+}
+
+{
+   B8
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:__smakebuf
+   fun:__swsetup
+   fun:__sfvwrite
+   fun:fwrite
+   fun:_ZNSt3__113basic_filebufIcNS_11char_traitsIcEEE8overflowEi
+   fun:_ZNSt3__115basic_streambufIcNS_11char_traitsIcEEE6xsputnEPKcl
+   fun:_ZNSt3__116__pad_and_outputIcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_
+   fun:_ZNSt3__124__put_character_sequenceIcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m
+   fun:_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc
+   fun:_ZN6BESLog9dump_timeEv
+   fun:_ZN6BESLoglsERNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE
+}
+
+{
+   B9
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:map_images_nolock
+   fun:_ZL25batchFinalizeOnTwoThreadsP14_malloc_zone_tPFvP16auto_zone_cursorPFvPvS3_ES3_ES2_m
+   fun:_ZN4dyldL18notifyBatchPartialE17dyld_image_statesbPFPKcS0_jPK15dyld_image_infoE
+   fun:_ZN11ImageLoader4linkERKNS_11LinkContextEbbbRKNS_10RPathChainE
+   fun:_ZN4dyld4linkEP11ImageLoaderbbRKNS0_10RPathChainE
+   fun:dlopen
+   fun:dlopen
+   fun:_ZN9BESPluginI17BESAbstractModuleE7get_libEv
+   fun:_ZN9BESPluginI17BESAbstractModuleE11instantiateEv
+   fun:_ZN16BESPluginFactoryI17BESAbstractModuleE3getERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE
+   fun:_ZN12BESModuleApp11loadModulesEv
+}
+
+{
+   NCML1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:xmlInitCharEncodingHandlers
+   fun:xmlGetCharEncodingHandler
+   fun:xmlAllocParserInputBuffer
+   fun:__xmlParserInputBufferCreateFilename
+   fun:xmlNewInputFromFile
+   fun:xmlDefaultExternalEntityLoader
+   fun:xmlCreateURLParserCtxt
+   fun:_ZN11ncml_module16SaxParserWrapper11setupParserERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+   fun:_ZN11ncml_module16SaxParserWrapper5parseERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+   fun:_ZN11ncml_module10NCMLParser9parseIntoERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEN8agg_util9DDSLoader12ResponseTypeEP14BESDapResponse
+   fun:_ZN11ncml_module18NCMLRequestHandler14ncml_build_ddsER23BESDataHandlerInterface
+}
+
+   

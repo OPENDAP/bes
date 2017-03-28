@@ -1,9 +1,0 @@
-{
-  "name": "varInt",
-  "type": "Int32",
-  "attributes": [
-    {"name": "description", "value": ["More like 4 dollars."]}
-  ],
-  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/atomicTypes.nc\/varInt"},{"name":"identifier","value":"\/"}]
-
-}

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <showPathInfo>
-        <PathInfo path="data/fnoc1.nc/u">
-            <validPath isData="true" isDir="false" isFile="true">/data/fnoc1.nc</validPath>
-            <remainder>u</remainder>
-        </PathInfo>
-    </showPathInfo>
-</response>

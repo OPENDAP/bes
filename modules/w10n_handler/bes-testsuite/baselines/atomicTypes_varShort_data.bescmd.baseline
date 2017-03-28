@@ -1,9 +1,0 @@
-{
-  "name": "varShort",
-  "type": "Int16",
-  "attributes": [
-    {"name": "description", "value": ["Short people got no reason to..."]}
-  ],
-  "data": 1568,
-  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/atomicTypes.nc\/varShort"},{"name":"identifier","value":"\/"}]
-}

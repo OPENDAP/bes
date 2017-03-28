@@ -1,9 +1,0 @@
-{
-  "name": "varFloat",
-  "type": "Float32",
-  "attributes": [
-    {"name": "description", "value": ["Floating in blissful silence through time and space."]}
-  ],
-  "data": 3.14159,
-  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/atomicTypes.nc\/varFloat"},{"name":"identifier","value":"\/"}]
-}
