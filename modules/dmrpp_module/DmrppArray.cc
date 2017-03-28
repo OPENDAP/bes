@@ -664,7 +664,6 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Queuing chunk for retrieval: " << chunk->to_string() << endl);
              chunk->add_to_multi_read_queue(multi_handle);
              return true;
-
         }
         else {
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Reading " << chunk->to_string() << endl);

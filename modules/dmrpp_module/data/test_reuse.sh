@@ -23,54 +23,80 @@ function run_keep_alive() {
     chunk_count=$3;
     max_handles=$4;
     reuse_handles=$5
-    keep_alive=$6
+    pthreads=$6;
     
-if [ 1 ] 
-then
-    time -p { ./keepalive2 \
-        -o scratch/foo \
-        -m $max_handles \
-        -c $chunk_count \
-        -s $total_size \
-        $reuse_handles $keep_alive >> $log_file 2>&1 ;
-    }
-fi
+    if [[ -z "${pthreads// }" ]] || [ ! -n $pthreads ] 
+    then 
+        pthreads=""
+    else 
+        pthreads="-t $pthreads"
+    fi
+
+    params="-o scratch/foo -m $max_handles -c $chunk_count  -s $total_size $pthreads $reuse_handles"
+    echo "keepalive2 params: $params"
+    echo "keepalive2 log_file: $log_file"
+            
+    time -p { ./keepalive2 $params >> $log_file 2>&1 ; }
+
 }
 
 
-t_size=500000000;
-
-
-for c_count in  1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768
-do
-    for m_handles in  1 2 4 8 16 32 64 
+function runz_it() {
+    t_size=$1
+    c_count=$2
+    for m_handles in  1 2 4 8 16 
     do
-        for m_handles in  1 2 4 8 16 32 64 
-        do
-            if [ $m_handles -gt $c_count ]
-            then
-                echo "More curl handles than chunks, skipping edge case"
-            else 
-                
+        if [ $m_handles -gt $c_count ]
+        then
+            echo "More curl handles than chunks, skipping edge case"
+        else 
+            for i in {1..10}
+            do
                 log_tag="_s"$t_size"_c"$c_count"_m"$m_handles
-                no_reuse_log_file="scratch/keepalive2"$log_tag".log"
                 reuse_log_file="scratch/keepalive2"$log_tag"_rk.log"
-        
-                rm -f $no_reuse_log_file $reuse_log_file
-            
-                for i in {1..10}
+                rm -f $reuse_log_file
+                echo "reuse_handles with_keepalive lap: $i log: $reuse_log_file"
+                run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "" >> $reuse_log_file 2>&1
+
+                for p_threads in  2 4 8 
                 do
-                    echo "no_handle_reuse_no_keepalive $log_tag lap $i"
-                    run_keep_alive $no_reuse_log_file $t_size $c_count $m_handles " " " " >> $no_reuse_log_file 2>&1
-                    echo "reuse_handles_and_keepalive $log_tag lap $i"
-                    run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "-k" >> $reuse_log_file 2>&1
+                    pthreads_reuse_log_file="scratch/keepalive2"$log_tag"_p"$p_threads"_rk.log"
+            
+                    rm -f $pthreads_reuse_log_file 
+                    echo "pthreads_and_reuse_handles_with_keepalive lap: $i log: $pthreads_reuse_log_file "
+                    run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "$p_threads" >> $reuse_log_file 2>&1
+
                 done
-            fi
-        done
+            done
+        fi
     done
     
     
+}
+
+
+# MERRA2
+total_size=112966523 # 107.7MB
+
+for chunk_size in  1444 2304 52416 831744 # 4
+do
+   let chunk_count=total_size/chunk_size;
+   echo "Running MERRA2 test. total_size: $total_size  chunk_size: $chunk_size  chunk_count: $chunk_count"
+   runz_it "$total_size" "$chunk_count"
 done
+
+
+
+# AIRS
+total_size=317869561 # 302.0MB
+
+for chunk_size in 12 16 48 720 1440 259200 777600 1036800 3110400 6220800
+do
+   let chunk_count=total_size/chunk_size;
+   echo "Running AIRS test. total_size: $total_size  chunk_size: $chunk_size  chunk_count: $chunk_count"
+   runz_it "$total_size" "$chunk_count"
+done
+
 
 
 
