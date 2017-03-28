@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This test and data is taken from the aggregation tutorial page at 
+http://www.unidata.ucar.edu/software/netcdf/ncml/v2.2/Aggregation.html -->
+<netcdf title="Test parse error in SimpleDateFormat (after the # mark) of dateFormatMark.  We use a malformed pattern.">
+  
+  <aggregation type="joinNew" dimName="fileTime">
+    <variableAgg name="CGusfc"/>  
+    <!-- Error is that the dfm has an x instead of y typo for year part.  -->
+    <scan location="data/ncml/agg/dated" 
+	  suffix=".nc" 
+	  subdirs="false"
+	  dateFormatMark="CG#yyyxDDD_HHmmss"
+	  />
+  </aggregation> 
+
+</netcdf>

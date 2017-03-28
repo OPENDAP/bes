@@ -1,0 +1,6 @@
+/ This format is for poisson.ar from exrate
+/ and contains a ascii  header description
+
+filename 1 12 char 0
+num_dsets 15 19 long 0
+num_samps 20 25 long 0

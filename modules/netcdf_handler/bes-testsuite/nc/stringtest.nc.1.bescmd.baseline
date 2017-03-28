@@ -1,0 +1,4 @@
+The data:
+String v2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmlnopqrstuvwyz0123456789-=./[]{}'|~`<>!@#$%^&*()              ";
+String v1[d1 = 5] = {"testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmlnopqrstuvwyz0123456789-=./[]{}'|~`<>!@#$%^&*()              ", "                                                                                                    ", "                                                                                                    ", "                                                                                                    "};
+

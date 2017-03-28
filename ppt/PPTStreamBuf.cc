@@ -22,13 +22,15 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
+#include "config.h"
 
 #include <sys/types.h>
 
@@ -38,105 +40,70 @@
 #include <iomanip>
 #include <iostream>
 
-using std::ostringstream ;
-using std::hex ;
-using std::setw ;
-using std::setfill ;
+using std::ostringstream;
+using std::hex;
+using std::setw;
+using std::setfill;
 
 #include "PPTStreamBuf.h"
-#include "BESDebug.h"
 
 const char* eod_marker = "0000000d";
-const size_t eod_marker_len = 8 ;
+const size_t eod_marker_len = 8;
 
-PPTStreamBuf::PPTStreamBuf( int fd, unsigned bufsize )
-    : d_bufsize( bufsize ),
-      d_buffer( 0 ),
-      count( 0 )
+PPTStreamBuf::PPTStreamBuf(int fd, unsigned bufsize) :
+    d_bufsize(bufsize), d_buffer(0), count(0)
 {
-    open( fd, bufsize ) ;
+    open(fd, bufsize);
 }
 
 PPTStreamBuf::~PPTStreamBuf()
 {
-    if(d_buffer)
-    {
-	sync() ;
-	delete [] d_buffer ;
+    if (d_buffer) {
+        sync();
+        delete[] d_buffer;
     }
 }
 
-void
-PPTStreamBuf::open( int fd, unsigned bufsize )
+void PPTStreamBuf::open(int fd, unsigned bufsize)
 {
-    d_fd = fd ;
-    d_bufsize = bufsize == 0 ? 1 : bufsize ;
+    d_fd = fd;
+    d_bufsize = bufsize == 0 ? 1 : bufsize;
 
-    d_buffer = new char[d_bufsize] ;
-    setp( d_buffer, d_buffer + d_bufsize ) ;
+    d_buffer = new char[d_bufsize];
+    setp(d_buffer, d_buffer + d_bufsize);
 }
 
 // We're stuck with this return type because this is inherited from stdc++ streambuf. jhrg
-int
-PPTStreamBuf::sync()
+int PPTStreamBuf::sync()
 {
-    if( pptr() > pbase() )
-    {
-	ostringstream strm ;
-	strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)(pptr() - pbase()) << "d" ;
-	string tmp_str = strm.str() ;
-	write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
-	count += write( d_fd, d_buffer, pptr() - pbase() ) ;
-	setp( d_buffer, d_buffer + d_bufsize ) ;
-#if 0
-	// If something doesn't look right try using fsync
-	// fsync is not supported for sockets. jhrg 5/4/11
-	fsync(d_fd);
-#endif
+    if (pptr() > pbase()) {
+        ostringstream strm;
+        strm << hex << setw(7) << setfill('0') << (unsigned int) (pptr() - pbase()) << "d";
+        write(d_fd, strm.str().c_str(), strm.str().length());
+
+        count += write(d_fd, d_buffer, pptr() - pbase());
+        setp(d_buffer, d_buffer + d_bufsize);
     }
 
-    return 0 ;
+    return 0;
 }
 
-int
-PPTStreamBuf::overflow( int c )
+int PPTStreamBuf::overflow(int c)
 {
-    sync() ;
-    if( c != EOF )
-    {
-	*pptr() = static_cast<char>(c) ;
-	pbump( 1 ) ;
+    sync();
+    if (c != EOF) {
+        *pptr() = static_cast<char>(c);
+        pbump(1);
     }
-    return c ;
+    return c;
 }
 
-void
-PPTStreamBuf::finish()
+void PPTStreamBuf::finish()
 {
-    sync() ;
+    sync();
 
-#if 0
-    // jhrg 5/5/11
-    ostringstream strm ;
-    /*
-    ostringstream xstrm ;
-    xstrm << "count=" << hex << setw( 7 ) << setfill( '0' ) << how_many() << ";" ;
-    string xstr = xstrm.str() ;
-    strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)xstr.length() << "x" << xstr ;
-    */
-    strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)0 << "d" ;
-    string tmp_str = strm.str() ;
-#endif
+    write(d_fd, eod_marker, eod_marker_len); // tmp_str.c_str(), tmp_str.length() ) ;
 
-    BESDEBUG( "ppt", "PPTStreamBuf::finish - writing " << eod_marker << endl ) ;
-    
-    write( d_fd, eod_marker, eod_marker_len ) ; // tmp_str.c_str(), tmp_str.length() ) ;
-
-#if 0
-    // If something doesn't look right try using fsync
-    // jhrg 5/5/11
-    fsync(d_fd);
-#endif
-    count = 0 ;
+    count = 0;
 }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_compounds5.nc">
+    <Dimension name="phony_dim" size="2"/>
+    <Structure name="phony_compound_var">
+        <Structure name="cmp1">
+            <Int16 name="i"/>
+            <Int32 name="j"/>
+        </Structure>
+        <Structure name="cmp2">
+            <Float32 name="x"/>
+            <Float64 name="y">
+                <Dim size="3"/>
+                <Dim size="2"/>
+            </Float64>
+        </Structure>
+        <Dim name="/phony_dim"/>
+    </Structure>
+</Dataset>

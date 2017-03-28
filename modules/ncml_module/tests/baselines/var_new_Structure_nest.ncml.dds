@@ -1,0 +1,8 @@
+Dataset {
+    Structure {
+        String ContainedScalar1;
+        Structure {
+            String ChildSays;
+        } MyChildStructure;
+    } MyStructure;
+} var_new_Structure_nest.ncml;

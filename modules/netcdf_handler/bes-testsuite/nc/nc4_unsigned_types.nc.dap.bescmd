@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContainer name="c" space="catalog">/data/nc4_test_files/nc4_unsigned_types.nc</setContainer>
+    <define name="d">
+	<container name="c" />
+    </define>
+    <get type="dap" definition="d" />
+</request>

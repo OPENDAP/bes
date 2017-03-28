@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<netcdf>
+  
+  <variable name="Foo" type="string">
+    <values>I come before the aggregation, so will appear in the output!</values>
+  </variable>
+  
+  <aggregation type="union">
+    
+    <netcdf>
+      <variable name="Foo" type="string">
+	<values>I will be skipped since there's a Foo in the dataset prior to the aggregation.</values>
+      </variable>
+   </netcdf>
+
+    <netcdf>
+      <variable name="Bar" type="string">
+	<values>I do not exist prior, so will be in the output!</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+</netcdf>

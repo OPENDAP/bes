@@ -1,0 +1,8 @@
+ASCII_data	"Made from latlon.afm"
+latitude   1 10 float64 6
+longitude 12 22 float64 6
+
+binary_data	"Made from latlon.bfm"
+latitude  1 4 int32 6
+longitude 5 8 int32 6
+

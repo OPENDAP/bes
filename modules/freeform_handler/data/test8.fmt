@@ -1,0 +1,16 @@
+
+// -*- C++ -*-
+//
+// Simple directory information for a multifile dataset
+
+ASCII_input_data "pathfinder"
+year 1 4 int32 0
+day 6 8 int32 0
+time 10 10 char 0
+DODS_URL 12 31 text 0
+
+binary_output_data "DODS binary output data"
+year 1 4 int32 0
+day 5 8 int32 0
+time 9 108 text 0
+DODS_URL 109 140 text 0

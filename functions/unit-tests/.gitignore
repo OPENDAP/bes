@@ -8,4 +8,4 @@ OdometerTest
 MaskArrayFunctionTest
 MakeMaskFunctionTest
 MakeNormalizedMaskFunctionTest
-/ScaleUtilTest
+ScaleUtilTest

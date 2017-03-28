@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDODS>
+        <BESError>
+            <Type>4</Type>
+            <Message>A BESForbiddenError was requested.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>error_ssf</File>
+                <Line>0</Line>
+            </Location>
+        </BESError>
+    </getDODS>
+</response>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This is the same as DMR_7.7.xml from the dapreader tests -->
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xml:base="file:structure_2"    
+    name="sequence_1"
+    dapVersion="4.0"
+    dmrVersion="1.0">
+
+    <Sequence name="s">
+        <Int32 name="i"/>
+        <Int32 name="j"/>      
+    </Sequence>
+</Dataset>   

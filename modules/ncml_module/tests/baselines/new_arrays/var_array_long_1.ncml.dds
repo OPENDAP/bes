@@ -1,0 +1,3 @@
+Dataset {
+    Int32 MyArray[10];
+} var_array_long_1.ncml;

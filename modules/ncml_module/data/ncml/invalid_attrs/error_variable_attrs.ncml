@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes of variable element.  -->
+
+<netcdf>
+  <!-- some obvious mistakes ... -->
+  <variable name="NewVar" type="int" dims="10" origName="OldVar">
+    <values start="0" increment="2"/>
+  </variable>
+</netcdf>

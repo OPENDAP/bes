@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <!-- <values> element at improper location is an error! -->
+  <values>Help me I am a lost values element!</values> 
+</netcdf>
+
+

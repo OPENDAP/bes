@@ -1,8 +1,6 @@
 #!/bin/sh
 
-#export REQUESTED_DAP_OBJ=`echo $1 | awk '{print tolower($0)}' -`
-#export RESOURCE_ID=$2
-
+export SPACE="catalog"
 export REQUESTED_DAP_OBJ="dds"
 export RESOURCE_ID="/data/nc/fnoc1.nc"
 
@@ -17,7 +15,7 @@ show_usage () {
     echo ""
     echo "SYNOPSIS"
     echo ""
-    echo "    $0 [-v] [-c bes_conf_file] -d dap_request_type -i resource_id "; 
+    echo "    $0 [-v] [-c bes_conf_file] [-s bes_space_name] [-t dap2_constraint] -d dap_request_type -i resource_id "; 
     echo ""
     echo "DESCRIPTION"
     echo ""
@@ -36,10 +34,17 @@ show_usage () {
     echo "               BES.Catalog.catalog.RootDirectory property in the"
     echo "               BES configuration file."
     echo ""
+    echo "    -s  name   The name of the BES 'space' in which the requested data"
+    echo "               can be found. Default: catalog"
+    echo ""
     echo "    -d  dds|das|dods|dmr|dap "
-    echo "               The type of the DAP object to request"
+    echo "               The type of the DAP object to request. Default: dds"
+    echo ""
+    echo "    -t  ce     The DAP2 constraint expression to apply to the request."
+    echo ""
     echo ""
     echo "    -c  file   Specifies the BES configuration file"
+    echo ""
     echo ""
     echo "OPeNDAP              December 9, 2015"
 
@@ -50,19 +55,23 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 verbose=0
 
-while getopts "h?vd:i:c:" opt; do
+while getopts "h?vd:i:c:s:t:" opt; do
     case "$opt" in
     h|\?)
         show_usage
         exit 0
         ;;
-    d)  REQUESTED_DAP_OBJ=$OPTARG
+    d)  REQUESTED_DAP_OBJ=`echo $OPTARG | awk '{print tolower($0)}' -`
         ;;
     i)  RESOURCE_ID=$OPTARG
         ;;
     v)  verbose=1
         ;;
     c)  BES_CONF=$OPTARG
+        ;;
+    s)  SPACE=$OPTARG
+        ;;
+    t)  CE=$OPTARG
         ;;
     esac
 done
@@ -125,26 +134,54 @@ then
 fi
 
 
-
+# http://cloudydap.s3.amazonaws.com/merra2/MERRA2_100.instM_2d_gas_Nx.198508.nc4
 
 
 if [ $verbose = 1 ]
 then
+    echo "SPACE: $SPACE"
     echo "REQUESTED_DAP_OBJ: $REQUESTED_DAP_OBJ"
     echo "RESOURCE_ID: $RESOURCE_ID"
 fi
 
 
+
+if [ -z ${CE+"true"} ]
+then 
+    if [ $verbose = 1 ]
+    then
+        echo "CE: Is Not Set"; 
+    fi
+CONTAINER_ELEMENT=`cat <<EOF 
+    <bes:container name="myContainer" />
+EOF
+`
+else 
+    if [ $verbose = 1 ]
+    then
+        echo "CE: $CE"; 
+    fi
+
+CONTAINER_ELEMENT=`cat <<EOF 
+    <bes:container name="myContainer">
+        <bes:constraint>$CE</bes:constraint>
+    </bes:container>
+EOF
+`
+fi
+
+
 cmdDoc=`cat <<EOF 
 <?xml version="1.0" encoding="UTF-8"?>
-<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
-  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-bio-8080-exec-1:20:gateway_request]">
+  <bes:setContext name="bes_timeout">300</bes:setContext>
+  <bes:setContext name="xdap_accept">2.0</bes:setContext>
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
-  <bes:setContainer name="catalogContainer" space="catalog">$RESOURCE_ID</bes:setContainer>
+  <bes:setContainer name="myContainer" space="$SPACE">$RESOURCE_ID</bes:setContainer>
   <bes:define name="d1" space="default">
-    <bes:container name="catalogContainer"/>
+    $CONTAINER_ELEMENT
   </bes:define>
   <bes:get type="$REQUESTED_DAP_OBJ" definition="d1" />
 </bes:request>
@@ -152,7 +189,7 @@ EOF
 `
 
 
-COMMAND_FILE=$(mktemp -t getDAP_$$)
+COMMAND_FILE=$(mktemp -t getDAP_XXXXXX)
 if [ $verbose = 1 ]
 then
     echo "COMMAND_FILE: " $COMMAND_FILE

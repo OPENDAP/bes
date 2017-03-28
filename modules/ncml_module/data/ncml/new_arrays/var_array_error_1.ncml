@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Test that a size not matching number of values is an error -->
+  <variable name="MyFloatArray" type="float" shape="10">
+    <attribute name="Description" type="string">Testing only 9 values with dimension=10.</attribute>
+    <values>0.0 1.1 2.22 3.333 4.4444 5.55555 6.666666 7.7777777 8.88888888</values>
+  </variable>
+</netcdf>

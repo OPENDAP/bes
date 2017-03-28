@@ -1,0 +1,37 @@
+
+
+Updated for version 4.1.2 of the dap-server package 
+
+This package contains general purpose handlers for use with the newHyrax data server. These are the Usage, ASCII and HTML form handlers.Each takes input from a 'data handler' and returns a HTML or plain textresponse --- something other than a DAP response object.
+
+The older versions of this package contained the 'Server3' CGI software; thathas been removed.
+
+Hyrax BES module
+
+  For Hyrax this package includes the library modules that can be  dynamically loaded into the OPeNDAP Back-End Server (BES) as well as  help files for the modules. To load these modules into the BES  simply edit the BES configuration file, its default location in  /etc/bes/bes.conf. Directions for editing the configuration file  follow, however, you can run the bes-dap-data.sh script to edit the  script automatically. Or, if building from source you can use the  bes-conf target of make to run the script for you.
+
+  To edit the bes.conf script by hand:
+
+  Set the BES user, group and admin email (see the comments in the  bes.conf file for instructions).
+
+  Change the parameter BES.modules to include the three dap-server  modules ascii, usage and www as follows (example assumes you have  installed the netcdf_handler module):
+
+    BES.modules=dap,cmds,ascii,usage,www,nc
+
+
+  And add the following three lines below this:
+
+    BES.module.ascii=/usr/lib/bes/libascii_module.so
+    BES.module.usage=/usr/lib/bes/libusage_module.so
+    BES.module.www=/usr/lib/bes/libwww_module.so
+
+
+  Also add the following near where the bes_help files are specified.
+
+    DAP-SERVER.Help.TXT=/usr/share/bes/dap-server_help.txt
+    DAP-SERVER.Help.HTML=/usr/share/bes/dap-server_help.html
+    DAP-SERVER.Help.XML=/usr/share/bes/dap-server_help.html
+
+
+  The next time the BES is started these modules will be loaded and  the ascii, info_page, and html_form responses will be supported as  well as the help files for dap-server specifying the syntax of these  commands.
+

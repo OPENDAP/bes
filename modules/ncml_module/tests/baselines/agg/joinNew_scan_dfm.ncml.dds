@@ -1,0 +1,17 @@
+Dataset {
+    String fileTime[fileTime = 4];
+    Float64 time[time = 1];
+    Float32 altitude[altitude = 1];
+    Float32 lat[lat = 29];
+    Float32 lon[lon = 26];
+    Grid {
+      Array:
+        Float32 CGusfc[fileTime = 4][time = 1][altitude = 1][lat = 29][lon = 26];
+      Maps:
+        String fileTime[fileTime = 4];
+        Float64 time[time = 1];
+        Float32 altitude[altitude = 1];
+        Float32 lat[lat = 29];
+        Float32 lon[lon = 26];
+    } CGusfc;
+} joinNew_scan_dfm.ncml;

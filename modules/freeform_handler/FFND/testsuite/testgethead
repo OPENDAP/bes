@@ -1,0 +1,76 @@
+#!/bin/csh
+echo "TESTING FILE HEADERS"
+line_feed
+echo "ascii/ascii conversions:"
+echo "**********gethead a2a.fmt newhead.afm hdyes.dat**********" 
+echo gethead hdyes.dat -if a2a.fmt -of newhead.afm
+gethead hdyes.dat -if a2a.fmt -of newhead.afm >& tmp
+diff tmp ghiaon.sav > trash
+chktrash || exit 3
+line_feed
+echo "**********gethead newhead.afm hdyes.dat**********"
+echo gethead hdyes.dat -of newhead.afm
+gethead hdyes.dat -of newhead.afm >& tmp
+diff tmp ghon.sav > trash
+chktrash || exit 3
+line_feed
+echo "ascii/ascii displays:"
+echo "**********gethead a2a.fmt hdyes.dat**********"
+echo gethead hdyes.dat -if a2a.fmt
+gethead hdyes.dat -if a2a.fmt >& tmp
+diff tmp ghia.sav > trash
+chktrash || exit 3
+line_feed
+echo "**********gethead hdyes.dat**********"
+echo gethead hdyes.dat
+gethead hdyes.dat >& tmp
+diff tmp gh.sav > trash
+chktrash || exit 3
+line_feed
+line_feed
+echo "TESTING RECORD HEADERS"
+line_feed
+echo "dbase/ascii conversions:"
+echo "**********gethead nodc.fmt new_nodc.afm nodc.dab**********"
+echo gethead nodc.dab -if nodc.fmt -of new_nodc.afm
+gethead nodc.dab -if nodc.fmt -of new_nodc.afm >& tmp
+diff tmp gninon.sav > trash
+chktrash || exit 3
+line_feed
+echo "**********gethead new_nodc.afm nodc.dab**********"
+echo gethead nodc.dab -of new_nodc.afm
+gethead nodc.dab -of new_nodc.afm >& tmp
+diff tmp gnon.sav > trash
+chktrash || exit 3
+line_feed
+echo "dbase/ascii displays:"
+echo "**********gethead nodc.fmt nodc.dab**********"
+echo gethead nodc.dab -if nodc.fmt
+gethead nodc.dab -if nodc.fmt >& tmp
+diff tmp gnin.sav > trash
+chktrash || exit 3
+line_feed
+echo "**********gethead nodc.dab**********"
+echo gethead nodc.dab
+gethead nodc.dab >& tmp
+diff tmp gn.sav > trash
+chktrash || exit 3
+line_feed
+#####################################################################################
+line_feed
+echo "binary/ascii conversions:"
+echo "**********gethead ar.fmt arhead.afm ar.bin**********"
+echo gethead ar.bin -if ar.fmt -of arhead.afm
+gethead ar.bin -if ar.fmt -of arhead.afm
+echo "**********gethead arhead.afm ar.bin**********"
+echo gethead ar.bin -of arhead.afm
+gethead ar.bin -of arhead.afm
+echo "binary/ascii displays:"
+echo "**********gethead ar.fmt ar.bin**********"
+echo gethead ar.bin -if ar.fmt
+gethead ar.bin -if ar.fmt
+echo "**********gethead ar.bin**********"
+echo gethead ar.bin
+gethead ar.bin
+line_feed
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Rejection test of joinNew with a scan aggregation with bad path">
+
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/>
+    <!-- Error: dir aggs doesn't exist... -->
+    <scan location="data/ncml/aggs/" suffix=".hdf" subdirs="true"/>
+   </aggregation> 
+  
+</netcdf>

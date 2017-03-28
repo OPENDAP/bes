@@ -1,0 +1,6 @@
+Dataset {
+    Structure {
+        String ContainedScalar1;
+        Int32 DougAdamsSays;
+    } MyStructure;
+} var_new_Structure.ncml;

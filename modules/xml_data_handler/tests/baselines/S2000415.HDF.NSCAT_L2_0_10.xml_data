@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/dap/3.3#">
+    <Structure name="NSCAT Rev 20">
+        <Sequence name="NSCAT L2">
+            <row number="0">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:43:48.945   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="1">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:43:54.457   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="2">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:01.046   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="3">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:08.694   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="4">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:16.035   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="5">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:23.459   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="6">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:30.919   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="7">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:38.282   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="8">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:45.699   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="9">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:44:53.075   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+            <row number="10">
+                <Structure name="Mean_Time">
+                    <String name="Mean_Time__0">
+                        <value>1996-259T03:45:00.404   </value>
+                    </String>
+                </Structure>
+                <Structure name="Low_Wind_Speed_Flag">
+                    <UInt32 name="Low_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+                <Structure name="High_Wind_Speed_Flag">
+                    <UInt32 name="High_Wind_Speed_Flag__0">
+                        <value>0</value>
+                    </UInt32>
+                </Structure>
+            </row>
+        </Sequence>
+    </Structure>
+</Dataset>

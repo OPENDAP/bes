@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="avhrr.dat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <value>DODS FreeFrom based on FFND release 4.2.3</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Global" type="Container">
+        <Attribute name="DODS_FileType" type="String">
+            <value>FileServer</value>
+        </Attribute>
+        <Attribute name="DODS_Interfaces" type="String">
+            <value>date</value>
+            <value>time</value>
+            <value>date_time</value>
+        </Attribute>
+        <Attribute name="DODS_Title" type="String">
+            <value>Univ. R.I. 5.5KM AVHRR Browse Archive</value>
+        </Attribute>
+        <Attribute name="DODS_LatRange" type="String">
+            <value>60.5750</value>
+            <value>9.4250</value>
+        </Attribute>
+        <Attribute name="DODS_LonRange" type="String">
+            <value>-96.2220</value>
+            <value>-33.7780</value>
+        </Attribute>
+        <Attribute name="Sel_Vars" type="String">
+            <value>Sea_Temp</value>
+        </Attribute>
+        <Attribute name="Dod_Vars" type="String">
+            <value>dsp_band_1</value>
+        </Attribute>
+        <Attribute name="DODS_StartDate" type="String">
+            <value>1979/4/11</value>
+        </Attribute>
+        <Attribute name="DODS_EndDate" type="String">
+            <value>2002/12/31</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Date" type="Container">
+        <Attribute name="year_variable" type="String">
+            <value>URI_Avhrr.year</value>
+        </Attribute>
+        <Attribute name="month_variable" type="String">
+            <value>URI_Avhrr.month</value>
+        </Attribute>
+        <Attribute name="day_variable" type="String">
+            <value>URI_Avhrr.day</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Time" type="Container">
+        <Attribute name="hours_variable" type="String">
+            <value>URI_Avhrr.hours</value>
+        </Attribute>
+        <Attribute name="minutes_variable" type="String">
+            <value>URI_Avhrr.minutes</value>
+        </Attribute>
+        <Attribute name="seconds_variable" type="String">
+            <value>URI_Avhrr.seconds</value>
+        </Attribute>
+        <Attribute name="gmt_time" type="String">
+            <value>true</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Date_Time" type="Container">
+        <Attribute name="year_variable" type="String">
+            <value>URI.Avhrr.year</value>
+        </Attribute>
+        <Attribute name="month_variable" type="String">
+            <value>URI_Avhrr.month</value>
+        </Attribute>
+        <Attribute name="day_variable" type="String">
+            <value>URI_Avhrr.day</value>
+        </Attribute>
+        <Attribute name="hours_variable" type="String">
+            <value>URI_Avhrr.hours</value>
+        </Attribute>
+        <Attribute name="minutes_variable" type="String">
+            <value>URI_Avhrr.minutes</value>
+        </Attribute>
+        <Attribute name="seconds_variable" type="String">
+            <value>URI_Avhrr.seconds</value>
+        </Attribute>
+        <Attribute name="gmt_time" type="String">
+            <value>true</value>
+        </Attribute>
+    </Attribute>
+    <Sequence name="URI_Avhrr">
+        <Int32 name="year"/>
+        <Int32 name="month"/>
+        <Int32 name="day"/>
+        <Int32 name="hours"/>
+        <Int32 name="minutes"/>
+        <Int32 name="seconds"/>
+        <String name="DODS_URL"/>
+    </Sequence>
+    <dataBLOB href=""/>
+</Dataset>
+

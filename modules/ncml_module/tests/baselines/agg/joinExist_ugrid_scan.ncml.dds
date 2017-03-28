@@ -1,0 +1,8 @@
+Dataset {
+    Int32 fvcom_mesh;
+    Float32 X[nodes = 9];
+    Float32 Y[nodes = 9];
+    Int32 fnca[faces = 8][three = 3];
+    Float32 time[time = 10];
+    Float32 twoDnodedata[time = 10][nodes = 9];
+} joinExist_ugrid_scan.ncml;

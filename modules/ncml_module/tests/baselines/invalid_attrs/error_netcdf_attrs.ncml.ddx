@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDDX>
+        <BESError>
+            <Type>3</Type>
+            <Message>NCMLModule ParseError: at *.ncml line=14: Got invalid attribute for element = netcdf The invalid attributes were: {filename, ID, toitle, enhanced, addRectords, FMRCDefinition, coordsVal, nuMCoords}</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+        </BESError>
+    </getDDX>
+</response>

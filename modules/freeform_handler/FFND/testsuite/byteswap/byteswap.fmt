@@ -1,0 +1,30 @@
+input_eqv 
+begin constant
+        data_byte_order text little_endian
+end constant
+
+ASCII_input_file_header_separate "defines byte order"
+create_format_from_data_file 0 0 text 0
+
+ASCII_data "ascii"
+piu 1 2 uint8 1
+pius 4 8 uint16 4
+pis 10 14 int16 4
+pil 16 24 int32 8
+piul 26 35 uint32 9
+pif 37 44 float32 6
+pid 46 56 float64 9
+
+output_eqv
+begin constant
+	data_byte_order char big_endian
+end constant
+
+binary_data "binary"
+piu 1 1 uint8 1
+pius 2 3 uint16 4
+pis 4 5 int16 4
+pil 6 9 int32 8
+piul 10 13 uint32 9
+pif 14 17 float32 6
+pid 18 25 float64 9

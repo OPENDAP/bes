@@ -1,0 +1,7 @@
+Attributes {
+    raw_obs {
+        Byte _FillValue 202, 254, 186, 190, 202, 254, 186, 190, 202, 254, 186;
+        String DAP2_OriginalNetCDFBaseType "NC_OPAQUE";
+        String DAP2_OriginalNetCDFTypeName "raw_obs_t";
+    }
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc" xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  
+  <!-- Although variable@type attribute is technically required by the schema, i have been
+       using type="" to mean "whatever type a variable with the given name has" -->
+  <variable name="u" type="">
+
+    <!-- Test adding new attributes to the variable -->   
+    <attribute type="int" name="max" value="2000"/>
+    <attribute type="int" name="min" value="0"/>
+    
+    <!-- test putting the values in the element content.  -->
+    <attribute type="int" name="range">0 2000</attribute>
+
+    <!-- Test the separator attribute works as well. -->
+    <attribute type="int" name="oldRange" separator=",">-1,1023</attribute>
+    
+  </variable> 
+  
+</netcdf>
+

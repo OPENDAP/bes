@@ -1,0 +1,7 @@
+The data:
+String day[day = 2] = {"Virtual_Dataset_0", "Virtual_Dataset_1"};
+Int32 V[day = 2][station = 5] = {{1, 3, 5, 7, 9},{2, 4, 6, 8, 10}};
+Int32 W[day = 2][sensor = 3] = {{-1, -2, -3},{-2, -4, -6}};
+Int32 V_expected[day = 2][station = 5] = {{1, 3, 5, 7, 9},{2, 4, 6, 8, 10}};
+Int32 W_expected[day = 2][sensor = 3] = {{-1, -2, -3},{-2, -4, -6}};
+

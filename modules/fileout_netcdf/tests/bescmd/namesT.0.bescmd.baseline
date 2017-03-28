@@ -1,0 +1,14 @@
+Dataset {
+    Int32 i%20dim[i%20dim = 2];
+    Grid {
+      Array:
+        Int16 /order%20name/%23with%5echars%26[i%20dim = 2][j%21dim = 3];
+      Maps:
+        Int32 i%20dim[i%20dim = 2];
+        Float32 j%21dim[j%21dim = 3];
+    } /order%20name/%23with%5echars%26;
+    Structure {
+        UInt32 ui%2832%29;
+        Float32 f%5b32%5d;
+    } my%26struct;
+} virtual;

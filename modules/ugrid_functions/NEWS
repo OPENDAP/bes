@@ -1,0 +1,36 @@
+News for version 1.0.8
+
+Updates since 2016-06-01, see the ChangeLog
+
+News for version 1.0.7
+
+Updates since 2016-03-23, see the ChangeLog
+
+News for version 1.0.6
+
+Updates since 2016-01-26, see the ChangeLog
+
+News for version 1.0.5
+
+Changed the name of the result structure so that now the bes (3.17)
+will unpack it and return a collection of variables that netCDF3 will
+be able to read.
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.4
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.3
+
+Minor updates, see the ChangeLog
+
+Version 1.0.1
+
+This is the first official release of the ugrid_functions module. This module
+adds a server side function to Hyrax that allows a user to request domain subsets 
+of unstructured gridded data sets that conform to the convention described here: 
+
+    https://github.com/ugrid-conventions/ugrid-conventions
+

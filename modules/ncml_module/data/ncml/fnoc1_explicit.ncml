@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test case for NcML handler:
+     Test <explicit/> 
+     
+     Tests:
+     1) Erase existing metadata
+     2) Adding a new attibute container (Structure) containing 
+     new atomic attributes. 
+     3) Adding a new atomic attributes to variables
+    
+     @author mjohnson
+  -->
+<netcdf location="data/ncml/fnoc1.nc">
+
+  <!-- 1) Nuke all existing metadata -->
+  <explicit/>
+
+
+  <!-- 2) Add an entirely new attribute structure of our own to
+       the empty global (dataset) attribute container -->
+  <attribute name="Metadata" type="Structure">
+    <attribute name="SourceInfo" type="Structure">
+      <attribute name="Station" type="String" value="Foo_23"/>
+      <attribute name="URL" type="URL" value="http://foo.bar.net"/>
+    </attribute>
+  </attribute>
+  
+  <!-- 3) Add units to two variables -->
+  <variable name="u"> <!-- No type means just match any -->
+    <attribute name="units" type="String" value="m/s"/>
+    <attribute name="component" type="String" value="Wind.E"/>
+    <attribute name="range" type="Float32" value="0 1023"/>
+  </variable>
+
+  <variable name="v"> <!-- No type means just match any -->
+    <attribute name="units" type="String" value="m/s"/>
+    <attribute name="component" type="String" value="Wind.N"/>
+    <attribute name="range" type="Float32" value="0 1023"/>
+  </variable>
+
+   
+</netcdf>
+

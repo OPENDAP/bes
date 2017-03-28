@@ -1,0 +1,17 @@
+
+#-----------------------------------------------------------------------#
+# OPeNDAP UgridFunctions Configuration file                                 #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=debug_functions
+
+BES.module.debug_functions=@bes_modules_dir@/libdebug_functions.so

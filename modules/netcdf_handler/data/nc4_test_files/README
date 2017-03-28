@@ -1,0 +1,28 @@
+README
+
+ Created on: May 5, 2011
+     Author: jimg
+
+In this directory there are two nc4 files that both use the netcdf 4 API
+but only the netCDF3 data model. nc4_nc_classic_no_comp.nc is a version
+without internal compression while ..._comp.nc is one with. Both were made
+using ncgen (and nccopy for the compressed version). 
+
+Note that even though these files use the netcdf 3 data model, since they
+were made using the netcdf 4 api, they can only be read using that API (but
+all that needs to be done for netcdf 3 data model and API code is to relink
+with the new library).
+
+How the files were made:
+
+To make a netcdf4 file that uses the NC_CLASSIC_MODEL (but can be chunked
+and/or compressed), use ncgen -k 4 <file>. To make source code you can hack
+to actually do the chunking and/or compression, use -lc too, like this:
+ncgen -k 4 -lc nc4_nc_classic_no_comp.ncgen > mk_nc4_nc_classic.c. Or make
+the nc4_nc_classic file with compression using nccopy like this:
+nccopy -d 9 -k 4 nc4_nc_classic_no_comp.nc nc4_nc_classic_comp.nc
+
+Docs
+
+ncgen: http://www.unidata.ucar.edu/software/netcdf/docs/ncgen-man-1.html
+nccopy: http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/nccopy.html

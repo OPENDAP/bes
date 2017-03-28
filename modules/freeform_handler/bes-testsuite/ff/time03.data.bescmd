@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/1998-6-avhrr.dat</setContainer>
+    <define name="d">
+	<container name="c">
+	    <constraint>DODS_URL,DODS_Time(GSO_AVHRR)&amp;time("17:00:00","18:00:00")</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

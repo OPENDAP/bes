@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <!-- Without the setContext, the value of BES.TimeOutInSeconds set in the
+       bes.conf file (4 for these tests) will be used. -->
+        
+  <bes:setContainer name="catalogContainer" space="catalog">/data/temperature.csv</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <bes:constraint>sum_until(10000, 0)</bes:constraint>
+    </bes:container>
+  </bes:define>
+  <bes:get type="dods" definition="d1" />
+</bes:request>

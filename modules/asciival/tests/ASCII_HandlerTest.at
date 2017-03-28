@@ -1,0 +1,41 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+m4_include([handler_tests_macros.m4])
+
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dods.ascii.bescmd])
+
+# Added these to test different subsetting of a single array and 
+# (see Hyrax-225) the case where the rightmost dim is subset to 
+# a single element. jhrg 6/9/16
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dods.ascii2.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dods.ascii3.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dods.ascii4.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dap.ascii.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dap.ascii_ce_1.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/fnoc1.data.dap.ascii_ce_2.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([ascii/structure_1.dds.dods.ascii.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/structure_1.dds.dap.ascii.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/structure_2.dmr.dap.ascii.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/structure_3.dmr.dap.ascii.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([ascii/sequence_1.dds.dods.ascii.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/sequence_1.dmr.dap.ascii.bescmd])
+
+# nested seqs are broken in libdap as of 9/11/14
+# AT_BESCMD_RESPONSE_TEST([ascii/sequence_2.dds.dods.ascii.bescmd])
+# AT_BESCMD_RESPONSE_TEST([ascii/sequence_2.dds.dap.ascii.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii2.bescmd])
+
+
+# there is a bug in the way dapreader or DAP4 handles reading values
+# from variables that causes this test to use the Test* class' default
+# values instead of the values loaded into the variables by dapreader.
+# This shows up only in cases where the variables are copied. When
+# the bug is fixed, this test should pass. jhrg 2/2/16
+AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii3.bescmd], [xfail])
+
+AT_BESCMD_RESPONSE_TEST([ascii/function_result_unwrap.ascii.bescmd])

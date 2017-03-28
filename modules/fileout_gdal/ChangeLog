@@ -1,0 +1,393 @@
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-09-01  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the build of the JPEG2000 file response for now.
+	See ticket https://opendap.atlassian.net/browse/HYRAX-248
+
+2016-06-09  James Gallagher  <jgallagher@opendap.org>
+
+	Removed code that was commented out
+
+	Moved GDALAllRegister() into the RequestHandler ctor
+
+2016-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for tests that intentionally trigger errors
+	The file name info breaks with distcheck since the file name
+	path is different.
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in fvor of the DDS class.
+
+2016-04-13  Nathan Potter  <ndp@opendap.org>
+
+	Add tests/generate_data_baseline.sh.in file to satisfy some up stream autoconf deal in the bes.
+2016-04-13  Nathan Potter  <ndp@opendap.org>
+
+	Add tests/generate_data_baseline.sh.in file to satisfy some up stream autoconf deal in the bes.
+
+2016-04-05  James Gallagher  <jgallagher@opendap.org>
+
+	Added baselines for jpeg2000 reponses
+	These were made using gdal 1.10, not 2.0.2
+
+	Merge branch 'master' of https://github.com/opendap/fileout_gdal
+
+	Trying to repair the damage to the fo gdal tests...
+
+	Updated tests for gdal 2.0.2
+	Added handler_tests_macros and updated baselines for jp2 responses.
+
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Added tests for tif and jp2 output using the function result unwrap scheme.
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Tests for function result promotion in transmitters. Test function wrapitup() added.
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 
+	1) Ensured that libdap::Error objects are converted to BESDapError objects 
+	when caught. and 2) Catch and rethrow BESError objects whenever they could 
+	be thrown so they don't get swept up as unidentified errors in a catch(...) clause.
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+
+2015-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	coverity fixes
+2015-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	coverity fixes
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and BES.CacheSize to specifically reference the decompression cache (which is waht it actually is) so as to avoid cache configuration collisions with various handlers that also were utilizing teh same cache with different expectations. Now, by calling these BES keys BES.UncompressCache.dir, BES.UncompressCache.prefix, and BES.UncompressCache.size we specifically isolate the decompression cache configuration from the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_gdal
+
+	Changes for package.m4
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-05-14  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_gdal
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 0.9.5
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to git ignore
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am for distcheck combined with the modules build of the BES
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed tests after module branch merge
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Added jp2 testsuite to gitignore
+
+	Added support for the BES modules build.
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac files. Subclasses for/of Sequence were not defining the length() virtual method correctly - adding 'const' quieted the warning. Fileout GDAL had an unneeded param (ConstraintEvaluator).
+
+2014-08-01  James Gallagher  <jgallagher@opendap.org>
+
+	Release 0.9.4 checklist
+	M    ChangeLog
+	M    INSTALL
+	M    NEWS
+	M    README
+	M    configure.ac
+	M    fileout_gdal.spec
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a memory leak in the *Transmitter.cc code (both GeoTiff and
+	JPEG200) that was discovered in the BESAsciiTransmit.cc file (see
+	ticket 2240).
+
+2014-04-28  James Gallagher <jgallagher@opendap.org>
+
+	Bumped up the version to match the versio in configure.ac
+
+	M    fileout_gdal.spec
+
+2014-04-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_gdal: Checking software version update and associated release changes.
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	names libdap fixes for osx 10.9
+
+	M    FONgGrid.h
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	names libdap fixes for osx 10.9
+
+	M    FONgGrid.h
+
+2014-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Changes for OSX 10.9
+
+2013-11-15  James Gallagher <jgallagher@opendap.org>
+
+	Updated the spec file dependency for gdal
+
+	M    fileout_gdal.spec
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-10  Nathan Potter <ndp@opendap.org>
+
+	fileout_gdal: Updated ChangeLog, NEWS, INSTALL, etc. for Hyrax 1.9
+
+2013-08-29  James Gallagher <jgallagher@opendap.org>
+
+	RPM fixes
+
+	M    fileout_gdal/fileout_gdal.spec
+	M    gdal_handler/gdal_handler.spec
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2013-08-29  James Gallagher <jgallagher@opendap.org>
+
+	RPM fixes
+
+	M    fileout_gdal/fileout_gdal.spec
+	M    gdal_handler/gdal_handler.spec
+
+2013-08-26  James Gallagher <jgallagher@opendap.org>
+
+	Removed COPYRIGHT file from .spec (it does not exist)
+
+	M    fileout_gdal.spec
+
+2013-05-03  James Gallagher <jgallagher@opendap.org>
+
+	Added an include of <algorithm> for an issue that shows up on gcc 4.4
+
+	M    FONgGrid.cc
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for all and distcheck
+
+	M    FONgGrid.cc
+	M    tests/Makefile.am
+	M    FONgTransform.cc
+
+2013-01-22  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for the JP2 code and its lone test. Still does not work on the
+	trunk although that may be an artifact of the gdal build in
+	dependencies...
+
+	D    .project
+	D    .cproject
+	M    tests/Makefile.am
+	M    JPEG2000Transmitter.cc
+	M    Makefile.am
+	M    JPEG2000Transmitter.h
+
+2013-01-21  James Gallagher <jgallagher@opendap.org>
+
+	Copied code started on the hyrax 1.8 release branch to the trunk for continued development.
+
+	A    https://scm.opendap.org/svn/trunk/fileout_gdal
+
+2012-12-31  James Gallagher <jgallagher@opendap.org>
+
+2012-12-31  James Gallagher <jgallagher@opendap.org>
+
+	paths
+
+2012-12-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed/ignored some files.
+
+2012-12-31  James Gallagher <jgallagher@opendap.org>
+
+	make check now works. Split the tests o the jp2 tests are run only when
+	that feature is compiled into the code.
+
+	M    tests/Makefile.am
+	M    configure.ac
+	M    NEWS
+
+2012-12-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed/ignored some files.
+
+2012-12-31  James Gallagher <jgallagher@opendap.org>
+
+	Split the tests into two parts, one for TIF and one for jp2.
+
+2012-12-21  James Gallagher <jgallagher@opendap.org>
+
+	Added the functions patch to the JPEG2000 output (already added to the GeoTIFF output).
+
+2012-12-21  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the bug where server functions were not working for geotiff responses.
+
+2012-12-18  James Gallagher <jgallagher@opendap.org>
+
+	Made the error messages better.
+
+2012-12-17  James Gallagher <jgallagher@opendap.org>
+
+	Added test for GMLJP2
+
+2012-12-17  James Gallagher <jgallagher@opendap.org>
+
+	This version supports GMLJP2 files.
+
+2012-12-14  James Gallagher <jgallagher@opendap.org>
+
+	Added JPEG2000
+
+2012-12-14  James Gallagher <jgallagher@opendap.org>
+
+	Added support for multiband images
+
+2012-12-13  James Gallagher <jgallagher@opendap.org>
+
+	ChangeLog and README updated
+
+2012-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Removed this extraneous file
+
+	D    svn-commit.tmp
+
+2012-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a bug in the way the geotransform coefs were computed. Images now look correct and a simple sampling of values shows the lat/lon values are sensible.
+
+2012-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Removed this extraneous file
+
+	D    svn-commit.tmp
+
+2012-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a bug in the way the geotransform coefs were computed.
+	Images now look correct and a simple sampling of values shows the
+	lat/lon values are sensible.
+
+2012-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Added an 'error response' test.
+
+2012-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Changed svn ignore properties
+
+2012-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Fixed minor issues with the conf file.
+
+2012-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Tweaks plus more info in the README.
+
+2012-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Made a handful of minor changes, added README information and one test.
+
+2012-11-21  James Gallagher <jgallagher@opendap.org>
+
+	Initial version of the GeoTiff response builder. This version
+	works for Grids only and only knows about two datums: Spherical
+	Earth and WGS84. It relies on CF to provide mapping information.
+
+2012-11-20  James Gallagher <jgallagher@opendap.org>
+
+	Checkpoint - some of the hardcoded values have been removed.
+	Forced to use double values.
+
+2012-11-20  James Gallagher <jgallagher@opendap.org>
+
+	Changed svn ignore properties
+
+2012-11-20  James Gallagher <jgallagher@opendap.org>
+
+	Added fileout gdal to the hyrax 1.8 release branch.
+

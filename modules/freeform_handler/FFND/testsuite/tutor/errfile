@@ -1,0 +1,18 @@
+
+Welcome to newformX alpha 3.2 Jul 11 1996 -- an NGDC FreeForm application
+
+Memtrack logging file "memtrack.log" enabled
+Input file: serial.bin
+Output file: serial.dat
+
+The input file size is 160 bytes.
+The output file size will be 340 bytes.
+The data processing cache size is 160 bytes.
+
+(serial.fmt) Binary Input Data:  "binary serial date"
+Each record contains 1 field and is 8 bytes long.
+
+(serial.fmt) ASCII Output Data:  "ASCII serial date"
+Each record contains 1 field and is 17 characters long.
+
+100% processed     Elapsed time - 00:00:1800:00:19

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+    <attribute name="String_Not_ASCII" type="String"
+	       value=" should break me."/>
+</netcdf>
+

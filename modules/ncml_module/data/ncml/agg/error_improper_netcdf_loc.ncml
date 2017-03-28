@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Parse error test for netcdf not within an aggregation-->
+<netcdf>
+  
+  <aggregation type="union">
+    <netcdf/>
+    <netcdf/>   
+  </aggregation>
+  
+  <!-- the bug -->
+  <netcdf/>
+  
+</netcdf>
+  

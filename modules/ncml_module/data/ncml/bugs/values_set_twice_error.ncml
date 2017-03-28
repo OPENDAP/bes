@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test whether specifying two values element for the same new variable is a parse error-->
+<netcdf>
+  
+  <dimension name="t" length="3"/>
+  <variable name="Foo" type="int" shape="t">
+    <attribute name="Desc" type="string" value="I can't set values twice!"/>
+    <values>1 2 3</values>
+    <values start="1" increment="1"/> <!-- This is an error -->
+  </variable>
+
+</netcdf>

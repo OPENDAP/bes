@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <BES>
+        <BESError>
+            <Type>3</Type>
+            <Message>The root element should be a request element, name is Dataset</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+            <Location>
+                <File>BESXMLInterface.cc</File>
+                <Line>145</Line>
+            </Location>
+        </BESError>
+    </BES>
+</response>

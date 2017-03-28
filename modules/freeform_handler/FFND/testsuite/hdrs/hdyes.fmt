@@ -1,0 +1,51 @@
+ascii_file_header "test header"      
+ones 1 10 char 0
+ones1 11 20 char 0
+ones2 21 30 char 0
+ones3 31 40 char 0
+ones4 41 50 char 0
+ones5 51 60 char 0
+ones6 61 70 char 0
+ones7 71 80 char 0
+ones8 81 90 char 0
+ones9 91 100 char 0
+ones10 101 107 char 0
+eol_char 108 108 char 0
+tens 115 118 short 0
+tens1 125 128 short 0
+tens2 135 138 short 0
+tens3 145 148 short 0
+tens4 155 158 short 0
+tens5 165 168 short 0
+tens6 175 178 short 0
+tens7 185 188 short 0
+tens8 195 198 short 0
+tens9 205 208 short 0
+blanks 209 215 char 0
+
+binary_data "Binary data with ascii header"       
+fvar1 1 4 long 2
+fvar2 5 8 long 4
+svar1 9 10 short 0
+svar2 11 12 short 2
+usvar1 13 14 ushort 1
+usvar2 15 16 ushort 3
+lvar1 17 20 long 0
+lvar2 21 24 long 3
+ulvar1 25 28 ulong 4
+ulvar2 29 32 ulong 2
+alpha 33 34 char 0
+
+ascii_data "ASCII data with header"       
+fvar1 1 10 float 2
+fvar2 11 19 float 4
+svar1 25 30 short 0
+svar2 33 38 short 2
+usvar1 43 47 ushort 1
+usvar2 52 56 ushort 3
+lvar1 58 68 long 0
+lvar2 70 80 long 3
+ulvar1 83 92 ulong 4
+ulvar2 95 104 ulong 2
+alpha 106 107 char 0
+

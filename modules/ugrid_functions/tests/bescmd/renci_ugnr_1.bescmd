@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <!-- This file uses the new coordinate order (I think) and uppercase names. jhrg 2/2/16 -->
+  
+  <bes:setContainer name="catalogContainer" space="catalog">/data/maxele_nc998.63_reorg.nc</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <bes:constraint>ugnr(depth, "Y &gt; 26 &amp; Y &lt; 26.1")</bes:constraint>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dods" definition="d1" />
+</bes:request>

@@ -1,0 +1,168 @@
+#!/bin/csh
+# TEST COVERAGE:
+#		O means it has passed initial tests
+#		X means it is not currently working 
+#		  means the test has not been added to this file 
+#
+# HEADERS WITH HEADER VARIABLE - FFF_FILE
+#
+#	IN	no	yes	yes
+#	OUT	yes	no	yes
+#
+# ASC - ASC	O	O	O 
+# ASC - BIN	O	O	O
+# BIN - ASC	O	O	O
+# BIN - BIN
+# ASC - DB
+# DB  - ASC
+# DB  - DB
+# BIN - DB
+# DB  - BIN
+#
+# HEADERS WITH FORMATS - FFF_FILE
+#	header formats assume that an input file is described,
+#	therefore a NY combination is incorrect and a NN is the
+#	same as a YY
+#
+#	IN	yes	yes	no	
+#	OUT	no	yes	no
+#
+# ASC - ASC	O	O	O 
+# ASC - BIN	O	O	O
+# BIN - ASC
+# BIN - BIN
+# ASC - DB
+# DB  - ASC
+# DB  - DB
+# BIN - DB
+# DB  - BIN
+#
+# HEADERS WITH FORMAT DESCRIPTIONS - RECORD TYPE
+#
+#
+# NODC type - 	with count number of data in header
+#		dbase to ascii (ibt.fmt changed to nodc.fmt)	
+#
+echo "********************************************************"
+echo "  TESTING HEADERS"
+echo "********************************************************"
+echo "********************************************************"
+echo "  HEADERS WITHOUT FORMATS - header variable"
+echo "********************************************************"
+$TSBAT_DIR/line_feed
+echo "********************************************************"
+echo "  TESTING ASCII to ASCII"
+echo "********************************************************"
+echo "$TSBIN_DIR/newform hdno.dat -if hdno.afm -of hdyes.afm > hdblank.tst"
+($TSBIN_DIR/newform hdno.dat -if hdno.afm -of hdyes.afm > hdblank.tst) >&errfile 
+diff hdblank.tst hdblank.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.dat -if hdyes.afm -of hdno.afm > hdno.tst"
+($TSBIN_DIR/newform hdyes.dat -if hdyes.afm -of hdno.afm > hdno.tst) >&errfile 
+diff hdno.tst hdno.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.dat -if hdyes.afm -of hdyes.afm > hdyes.tst"
+($TSBIN_DIR/newform hdyes.dat -if hdyes.afm -of hdyes.afm > hdyes.tst) >&errfile 
+diff hdyes.tst hdyes.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+echo "********************************************************"
+echo "  TESTING ASCII to BINARY"
+echo "********************************************************"
+#$TSBAT_DIR/asc2bin echos current process and has 5 arguments,
+#	1-input format, 2-output format, 3-data file
+#	4-input for readfile, 5-readfile output to compare against
+#readblanks.out - blanks are written in place of header
+#readnohead.out - no header is written
+#readhd.out     - the header is written
+# 
+$TSBAT_DIR/asc2bin hdno.afm hdyes.bfm hdno.dat readhd.in readblanks.out
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/asc2bin hdyes.afm hdno.bfm hdyes.dat readnohd.in readnohd.out 
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/asc2bin hdyes.afm hdyes.bfm hdyes.dat readhd.in readhd.out 
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+echo "********************************************************"
+echo "  TESTING BINARY to ASCII"
+echo "********************************************************"
+# $TSBAT_DIR/bin2asc echos process to stdout and takes 4 arguments,
+#	1-input format, 2-output format, 3-data file
+#	4-ascii file to compare against
+#
+$TSBAT_DIR/bin2asc hdno.bfm hdyes.afm hdno.bin hdblank.dat  
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/bin2asc hdyes.bfm hdno.afm hdyes.bin hdno.dat
+$TSBAT_DIR/chktrash || exit 3
+#NOTE: binary headers DO NOT get written to ascii files.
+$TSBAT_DIR/bin2asc hdyes.bfm hdyes.afm hdyes.bin hdno.dat 
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+echo "********************************************************"
+echo "  HEADERS WITH FORMATS - FFF_FILE using  .fmt file"
+echo "********************************************************"
+echo "********************************************************"
+echo "  TESTING ASCII to ASCII" 
+echo "********************************************************"
+echo "$TSBIN_DIR/newform hdyes.dat -if a2aNN.fmt > hdyes.tst"
+($TSBIN_DIR/newform hdyes.dat -if a2aNN.fmt > hdyes.tst) >&errfile
+diff hdyes.tst hdyes.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.dat -if a2aYN.fmt > hdno.tst"
+($TSBIN_DIR/newform hdyes.dat -if a2aYN.fmt > hdno.tst) >&errfile
+diff hdno.tst hdno.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.dat -if a2aYY.fmt > hdyes.tst"
+($TSBIN_DIR/newform hdyes.dat -if a2aYY.fmt > hdyes.tst) >&errfile
+diff hdyes.tst hdyes.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "********************************************************"
+echo "  TESTING ASCII to BINARY" 
+echo "********************************************************"
+echo "$TSBIN_DIR/newform hdyes.dat -if a2bNN.fmt > hdyes.tst"
+($TSBIN_DIR/newform hdyes.dat -if a2bNN.fmt > hdyes.tst) >&errfile
+diff hdyes.tst hdyes.bin > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.dat -if a2bYN.fmt > hdno.tst"
+($TSBIN_DIR/newform hdyes.dat -if a2bYN.fmt > hdno.tst) >&errfile
+diff hdno.tst hdno.bin > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.dat -if a2bYY.fmt > hdyes.tst"
+($TSBIN_DIR/newform hdyes.dat -if a2bYY.fmt > hdyes.tst) >&errfile
+diff hdyes.tst hdyes.bin > trash
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+echo "********************************************************"
+echo "  TESTING BINARY to ASCII" 
+echo "********************************************************"
+echo " NOTE: These are ascii headers in a binary file, otherwise"
+echo "		the header would not be written"
+$TSBAT_DIR/line_feed
+echo "$TSBIN_DIR/newform hdyes.bin -if b2aNN.fmt > hdyes.tst"
+($TSBIN_DIR/newform hdyes.bin -if b2aNN.fmt > hdyes.tst) >&errfile
+diff hdyes.tst hdyes.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.bin -if b2aYN.fmt > hdno.tst"
+($TSBIN_DIR/newform hdyes.bin -if b2aYN.fmt > hdno.tst) >&errfile
+diff hdno.tst hdno.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+echo "$TSBIN_DIR/newform hdyes.bin -if b2aYY.fmt > hdyes.tst"
+($TSBIN_DIR/newform hdyes.bin -if b2aYY.fmt > hdyes.tst) >&errfile
+diff hdyes.tst hdyes.dat > trash
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+echo "********************************************************"
+echo "  HEADERS WITH FORMATS - FFF_RECORD"
+echo "********************************************************"
+echo "********************************************************"
+echo "  TESTING DBASE to ASCII"
+echo "********************************************************"
+$TSBAT_DIR/line_feed
+echo "  $TSBIN_DIR/newform nodc.dab > ibt.tst"
+($TSBIN_DIR/newform nodc.dab > ibt.tst) >&errfile
+diff ibt.tst ibt.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+$TSBAT_DIR/line_feed
+echo "******  HEADER TESTS WORKED LIKE A CHARM ******"
+$TSBAT_DIR/line_feed
+$TSBAT_DIR/line_feed

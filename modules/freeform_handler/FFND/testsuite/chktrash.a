@@ -1,0 +1,9 @@
+( ($8=="trash" && $4!=0) || ($9=="trash" && $5!=0) ) {
+	print "SIGNIFICANT DIFFERENCE FOUND"
+	exit 1
+}
+( ($8=="trash" && $4==0) || ($9=="trash" && $5==0) ) {
+	print "NO DIFFERENCE FOUND"
+	exit 0
+}
+

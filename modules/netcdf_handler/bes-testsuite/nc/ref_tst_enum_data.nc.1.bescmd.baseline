@@ -1,0 +1,3 @@
+Dataset {
+    Byte primary_cloud[station = 5];
+} ref_tst_enum_data.nc;

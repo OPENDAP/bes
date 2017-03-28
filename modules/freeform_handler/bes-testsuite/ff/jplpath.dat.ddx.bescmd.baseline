@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="jplpath.dat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <value>DODS FreeFrom based on FFND release 4.2.3</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Date" type="Container">
+        <Attribute name="year_variable" type="String">
+            <value>JPL_Pathfinder.year</value>
+        </Attribute>
+        <Attribute name="year_day_variable" type="String">
+            <value>JPL_Pathfinder.day</value>
+        </Attribute>
+    </Attribute>
+    <Sequence name="JPL_Pathfinder">
+        <Int32 name="year"/>
+        <Int32 name="day"/>
+        <Int32 name="hours"/>
+        <Int32 name="minutes"/>
+        <Int32 name="seconds"/>
+        <String name="DODS_URL"/>
+    </Sequence>
+    <dataBLOB href=""/>
+</Dataset>
+

@@ -1,0 +1,681 @@
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+2016-09-08  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed hyrax 242 - responses with function calls in the CE
+	I also refactored other aspects of the *Transform and *Transmitter
+	classes so they are more compact and easier to use.
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in fvor of the DDS class.
+2016-03-22  Nathan Potter  <ndp@opendap.org>
+
+	Cleaning up code for merge.
+
+2016-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Tests for function result promotion in transmitters. Test function wrapitup() added.
+
+2016-03-18  Nathan Potter  <ndp@opendap.org>
+
+	Added support for the function result promotion (aka the '_unwrap') scheme.
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 
+	1) Ensured that libdap::Error objects are converted to BESDapError objects when 
+	caught. and 2) Catch and rethrow BESError objects whenever they could be thrown
+	so they don't get swept up as unidentified errors in a catch(...) clause.
+	
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+	
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+	
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Modified because a fix in libdap broke this code
+	libdap was setting the output stream precision and not
+	resetting it. Whne I fixed that, this code had to be updated.
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Halfway to removing the tests' need for the netcdf handler.
+	The dapreader handler still does not process Grids correctly...
+
+	Repaired getopt() use. Patch from O. Poplawski.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_json
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.0.0
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a problem with make check
+	It failed when CppUnit was not present. Now those tests
+	are ignored.
+
+2015-03-25  James Gallagher  <jgallagher@opendap.org>
+
+	Accommodate autoconf 2.63
+	Removed -j7 from TESTSUITEFLAGS. Can still pass them in from
+	the command line (make check TESTSUITEFLAGS=-j7).
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_json
+	Conflicts:
+		unit-tests/Makefile.am
+
+	Modified Makefile.am for distcheck combined with the modules build of the BES
+
+2015-03-18  James Gallagher  <jgallagher@opendap.org>
+
+	misspelled name in a Makefile
+
+2015-03-12  Nathan Potter  <ndp@opendap.org>
+
+	Fixed bug in loop
+
+2015-03-11  Nathan Potter  <ndp@opendap.org>
+
+	Renamed FoJsonTransform* and FoJsonTransmitter* to
+	FoInstanceJsonTransform* and FoInstanceJsonTransmitter*
+	respectively to better reflect the classes actual functionality.
+	Also added string escaping to all object names in the
+	ijson (FoJsonTransmitter) output to protect from crazy variable
+	names breaking the validitiy of the returned JSON content.
+
+	Renamed FoW10nJson* to FoDapJson* to better represent the actual
+	functionallity of the classes. Made the json 'type' properties
+	match the DAP types os the associated variables. Fixed baselines
+	and testing regalia.
+
+	Renamed array functions in a more understandable manner.
+
+	Added special method for arrays of strings. Tidied up use of std::
+	for string, Debug statements, etc.
+
+2015-03-11  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an issue with libdap::Vector::value()
+	Code in FoJsonTransform inadvertently built a call to a non-existent
+	version of libdap::Vector:value. I specialized the
+	json_simple_type_array() method as a work-around.
+
+2015-02-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed error in test baseline
+	The test baseline abstract_object_test_DATA.json.baseline
+	used six escaped double quotes that are not in the output. I
+	think the escaped double quotes was something that was an issue
+	but which was fixed. I modified the baseline, so the test passes,
+	by removing the extra (escaped) double quotes.
+
+	Fixed namespace error
+	The function escape_for_json in namespace fojson was
+	declared as string function(string &) but defined as
+	string function(const string &). Different type signatures
+	== different functions. So the problem was not really a
+	namespace issue at all.
+
+2015-02-20  Nathan Potter  <ndp@opendap.org>
+
+	Fixes to fojson to correctly escape strings, and support for arrays of sting and url
+
+	Fixes to fojson to correctly escape strings, and support for arrays of sting and url
+
+2015-02-11  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/fileout_json
+
+2015-02-02  Nathan Potter  <ndp@opendap.org>
+
+	Repaired production rules so distclean works correctly.
+
+2015-01-29  Nathan Potter  <ndp@opendap.org>
+
+	fileout_json: Removed copy-pasta cruft that incorrectly identified the project as fileout_netcdf
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+	Removed use of case libdap::dods_url4_c
+	This type constant was removed from libdap.
+
+2014-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge remote-tracking branch 'origin/dap4'
+
+2014-12-13  James Gallagher  <jgallagher@opendap.org>
+
+	Remove package.m4 from the repo
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac after the merge with the modules branch.
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-11-24  James Gallagher  <jgallagher@opendap.org>
+
+	Build changes.
+	Tweaked	the config.status dep so that it includes $(top_srcdir).
+	Added the new bes.conf.modules.in to EXTRA_DIST	  in Makefile.am.
+
+2014-11-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added bes.conf.modules.in
+	Needed for the modules build.
+
+2014-11-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added tmp using the .gitignore trick to add empty dirs
+
+	Changes for the 'modules' build.
+
+2014-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Branch for DAP4
+	A    https://scm.opendap.org/svn/branch/fileout_json/dap4
+2014-08-08  James Gallagher <jgallagher@opendap.org>
+
+	Removed old code and fixed a typo that introduced a double-free bug.
+
+2014-08-01  James Gallagher <jgallagher@opendap.org>
+
+	changes that parallel ones made on the h 1.9 release branch -
+	simpler to make them in both places than go through the whole
+	merge process.
+
+2014-08-01  James Gallagher <jgallagher@opendap.org>
+
+	Yup, found a bug in the test code...
+
+2014-08-01  James Gallagher <jgallagher@opendap.org>
+
+	Release 0.9.0 checklist
+
+	M    ChangeLog
+	M    configure.ac
+	M    fileout_json.spec
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Hmmm. Putting unit-tests in DIST_SUBDIRS breaks (or seems to be
+	the cause of the break) distcheck.
+
+	M    Makefile.am
+	M    bes-testsuite/Makefile.am
+	M    bes-testsuite/fileout_jsonTest.at
+	M    configure.ac
+	M    unit-tests/Makefile.am
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Checkpoint on the way to getting distcheck working
+
+	M    Makefile.am
+	M    NEWS
+	M    bes-testsuite/Makefile.am
+	M    bes-testsuite/package.m4
+	M    configure.ac
+	M    unit-tests/Makefile.am
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	On the way to a source dist...
+
+	M    ChangeLog
+	M    INSTALL
+	M    NEWS
+	D    conf/config.guess
+	D    conf/config.sub
+	D    conf/depcomp
+	D    conf/foo
+	D    conf/install-sh
+	D    conf/libtool.m4
+	D    conf/ltmain.sh
+	D    conf/ltoptions.m4
+	D    conf/ltsugar.m4
+	D    conf/ltversion.m4
+	D    conf/lt~obsolete.m4
+	D    conf/missing
+	D    conf/netcdf.m4
+	D    conf/netcdf_header.m4
+	M    configure.ac
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	I saw that the fileout JSON code does not need to use a temporary file so I modified the Transform objects to take a stram and, if supplied, write to it directly by passing the temporary file step. There were some changes in the Transmitters too, since that's where the temp file was being made.
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a leak where server function evaluation failed to free a DDS/DataDDS
+	object. I also cleaned up the tests, eliminating some extra autotest code
+	in the unit-tests directory.
+
+	D    COPYRIGHT
+	M    FoJsonTransform.cc
+	M    FoJsonTransform.h
+	M    FoJsonTransmitter.cc
+	M    FoW10nJsonTransmitter.cc
+	M    FoW10nJsonTransmitter.h
+	M    Makefile.am
+	M    aclocal.m4
+	M    conf/config.guess
+	M    conf/config.sub
+	M    conf/depcomp
+	M    conf/install-sh
+	M    conf/libtool.m4
+	M    conf/ltmain.sh
+	M    conf/ltoptions.m4
+	M    conf/ltversion.m4
+	M    conf/missing
+	M    config.h.in
+	D    package.m4
+	_M   unit-tests
+	D    unit-tests/atlocal.in
+	D    unit-tests/bes.conf.in
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	cleaning... Removed the autotest stuff and modified the Makefile.am to
+	run the unit test iteself.
+
+	M    unit-tests/FoJsonTest.cc
+	M    unit-tests/Makefile.am
+	D    unit-tests/fojson_handlerTest
+	D    unit-tests/fojson_handlerTest.at
+	D    unit-tests/package.m4
+	_M   unit-tests/tmp
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a memory leak in the FoJsonTransmitter.cc code that was discovered in the BESAsciiTransmit.cc file (see ticket 2240). This is the first shot at a fix - it works but could be improved to use less duplicated code. The w10n output has not been patched yet.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Hmmm. Putting unit-tests in DIST_SUBDIRS breaks (or seems to be
+	the cause of the break) distcheck.
+
+	M    Makefile.am
+	M    bes-testsuite/Makefile.am
+	M    bes-testsuite/fileout_jsonTest.at
+	M    configure.ac
+	M    unit-tests/Makefile.am
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Checkpoint on the way to getting distcheck working
+
+	M    Makefile.am
+	M    NEWS
+	M    bes-testsuite/Makefile.am
+	M    bes-testsuite/package.m4
+	M    configure.ac
+	M    unit-tests/Makefile.am
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	On the way to a source dist...
+
+	M    ChangeLog
+	M    INSTALL
+	M    NEWS
+	D    conf/config.guess
+	D    conf/config.sub
+	D    conf/depcomp
+	D    conf/foo
+	D    conf/install-sh
+	D    conf/libtool.m4
+	D    conf/ltmain.sh
+	D    conf/ltoptions.m4
+	D    conf/ltsugar.m4
+	D    conf/ltversion.m4
+	D    conf/lt~obsolete.m4
+	D    conf/missing
+	D    conf/netcdf.m4
+	D    conf/netcdf_header.m4
+	M    configure.ac
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	I saw that the fileout JSON code does not need to use a temporary file so I modified the Transform objects to take a stram and, if supplied, write to it directly by passing the temporary file step. There were some changes in the Transmitters too, since that's where the temp file was being made.
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a leak where server function evaluation failed to free a DDS/DataDDS
+	object. I also cleaned up the tests, eliminating some extra autotest code
+	in the unit-tests directory.
+
+	D    COPYRIGHT
+	M    FoJsonTransform.cc
+	M    FoJsonTransform.h
+	M    FoJsonTransmitter.cc
+	M    FoW10nJsonTransmitter.cc
+	M    FoW10nJsonTransmitter.h
+	M    Makefile.am
+	M    aclocal.m4
+	M    conf/config.guess
+	M    conf/config.sub
+	M    conf/depcomp
+	M    conf/install-sh
+	M    conf/libtool.m4
+	M    conf/ltmain.sh
+	M    conf/ltoptions.m4
+	M    conf/ltversion.m4
+	M    conf/missing
+	M    config.h.in
+	D    package.m4
+	_M   unit-tests
+	D    unit-tests/atlocal.in
+	D    unit-tests/bes.conf.in
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	cleaning... Removed the autotest stuff and modified the Makefile.am to
+	run the unit test iteself.
+
+	M    unit-tests/FoJsonTest.cc
+	M    unit-tests/Makefile.am
+	D    unit-tests/fojson_handlerTest
+	D    unit-tests/fojson_handlerTest.at
+	D    unit-tests/package.m4
+	_M   unit-tests/tmp
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a memory leak in the FoJsonTransmitter.cc code that was discovered in the BESAsciiTransmit.cc file (see ticket 2240). This is the first shot at a fix - it works but could be improved to use less duplicated code. The w10n output has not been patched yet.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	I saw that the fileout JSON code does not need to use a temporary
+	file so I modified the Transform objects to take a stram and, if
+	supplied, write to it directly by passing the temporary file step.
+	There were some changes in the Transmitters too, since that's
+	where the temp file was being made.
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a leak where server function evaluation failed to free a
+	DDS/DataDDS object. I also cleaned up the tests, eliminating some
+	extra autotest code in the unit-tests directory.
+
+	D    COPYRIGHT
+	M    FoJsonTransform.cc
+	M    FoJsonTransform.h
+	M    FoJsonTransmitter.cc
+	M    FoW10nJsonTransmitter.cc
+	M    FoW10nJsonTransmitter.h
+	M    Makefile.am
+	M    aclocal.m4
+	M    conf/config.guess
+	M    conf/config.sub
+	M    conf/depcomp
+	M    conf/install-sh
+	M    conf/libtool.m4
+	M    conf/ltmain.sh
+	M    conf/ltoptions.m4
+	M    conf/ltversion.m4
+	M    conf/missing
+	M    config.h.in
+	D    package.m4
+	_M   unit-tests
+	D    unit-tests/atlocal.in
+	D    unit-tests/bes.conf.in
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	cleaning... Removed the autotest stuff and modified the Makefile.am to
+	run the unit test iteself.
+
+	M    unit-tests/FoJsonTest.cc
+	M    unit-tests/Makefile.am
+	D    unit-tests/fojson_handlerTest
+	D    unit-tests/fojson_handlerTest.at
+	D    unit-tests/package.m4
+	_M   unit-tests/tmp
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a memory leak in the FoJsonTransmitter.cc code that was
+	discovered in the BESAsciiTransmit.cc file (see ticket 2240). This
+	is the first shot at a fix - it works but could be improved to use
+	less duplicated code. The w10n output has not been patched yet.
+
+2014-07-24  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Added comments and such to source code.
+
+2014-07-24  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Stopped 'using namespace libdap'
+
+2014-07-24  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Stopped 'using namespace libdap'
+
+2014-07-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Made tests for abstract object and instance object output.
+	Tests pass. woot.
+
+2014-07-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Adiing files
+
+2014-07-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Added second JSON representation, ijson.
+
+2014-07-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Got the copyright sorted on the source files.
+
+2014-07-20  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Restructured json representation of attributes to better represent the DAP data model.
+
+2014-07-19  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: The w10n-esque json response for metadata and data are working.
+
+2014-07-18  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: The w10n-esque json response for metadata and data are working.
+
+2014-07-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Removing Makefile.in files from svn
+
+2014-07-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Adding new transform that uses (mostly) w10n syntax for the json content.
+
+2014-07-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2014-07-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Passes initial tests. woot.
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Passes initial tests. woot.
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Passes initial tests. woot.
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2014-07-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: team sync
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Fixed bes-testsuite
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson:
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson:
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson:
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: bes-testsuite added.
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson:
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: removing templates - unused.
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fojson: Adding bes tests (not working yet)
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_json: Updated spec file.
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_json: Initial check-in of the fileout JSON response handler thingy.
+
+2014-06-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	fileout_json: First check in of the JSON response apparatus.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:

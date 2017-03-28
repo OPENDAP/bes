@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="var_array_string_1.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="MyCharArray">
+        <Attribute name="Description" type="String">
+            <value>Testing Strings with seaprator</value>
+        </Attribute>
+        <String/>
+        <dimension size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

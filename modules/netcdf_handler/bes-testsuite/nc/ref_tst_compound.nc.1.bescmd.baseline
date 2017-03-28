@@ -1,0 +1,9 @@
+Dataset {
+    Structure {
+        Byte day;
+        Int16 elev;
+        Int32 count;
+        Float32 relhum;
+        Float64 time;
+    } obs;
+} ref_tst_compounds.nc;

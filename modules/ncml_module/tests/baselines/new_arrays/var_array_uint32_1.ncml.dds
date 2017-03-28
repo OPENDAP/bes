@@ -1,0 +1,3 @@
+Dataset {
+    UInt32 MyArray[10];
+} var_array_uint32_1.ncml;

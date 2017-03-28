@@ -1,0 +1,13 @@
+binary_input_data	"Made from testalgn.bfm"
+alpha   1  3 text 0
+fvar2   4  7 int32 4
+svar1   8  9 int16 0
+fvar1  10 13 int32 2
+ulvar1 14 17 uint32 4
+svar2  18 19 int16 2
+usvar2 20 21 uint16 3
+lvar1  22 25 int32 0
+usvar1 26 27 uint16 1
+lvar2  28 31 int32 3
+ulvar2 32 35 uint32 2
+

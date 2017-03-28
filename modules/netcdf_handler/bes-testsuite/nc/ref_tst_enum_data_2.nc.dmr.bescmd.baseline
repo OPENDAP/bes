@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_enum_data_2.nc">
+    <UInt32 name="primary_cloud">
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>255</Value>
+            <Value>0</Value>
+            <Value>25973</Value>
+            <Value>108</Value>
+        </Attribute>
+        <Attribute name="DAP2_EnumValues" type="UInt32">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+            <Value>7</Value>
+            <Value>8</Value>
+            <Value>9</Value>
+            <Value>10</Value>
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="DAP2_EnumNames" type="String">
+            <Value>Clear</Value>
+            <Value>Cumulonimbus</Value>
+            <Value>Stratus</Value>
+            <Value>Stratocumulus</Value>
+            <Value>Cumulus</Value>
+            <Value>Altostratus</Value>
+            <Value>Nimbostratus</Value>
+            <Value>Altocumulus</Value>
+            <Value>Cirrostratus</Value>
+            <Value>Cirrocumulus</Value>
+            <Value>Cirrus</Value>
+            <Value>Missing</Value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFBaseType" type="String">
+            <Value>NC_ENUM</Value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFTypeName" type="String">
+            <Value>cloud_class_t</Value>
+        </Attribute>
+    </UInt32>
+</Dataset>

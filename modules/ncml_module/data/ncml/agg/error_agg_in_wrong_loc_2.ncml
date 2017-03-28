@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Parse error test for aggregation in wrong location -->
+<netcdf>
+
+  <aggregation type="joinNew">
+    <netcdf/>
+
+    <!-- this is the bug -->
+    <aggregation/>
+
+    <netcdf/>
+  </aggregation>
+</netcdf>
+  

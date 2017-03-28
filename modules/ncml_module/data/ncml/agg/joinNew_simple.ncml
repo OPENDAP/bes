@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A simple acceptance test for a joinNew aggregation.  -->
+
+<netcdf title="Sample joinNew Aggregation on Pure NCML Datasets">
+  
+  <!-- joinNew and form new outer dimension "day" -->
+  <aggregation type="joinNew" dimName="day">
+    
+    <!-- For variables with this name in child datasets -->
+    <variableAgg name="V"/>
+
+    <netcdf title="Sample Slice 1">
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<!-- This attribute will be used since it's in the first, "template" dataset -->
+	<attribute name="units" type="string" value="bohms"/>
+	<values>1 3 5 7 9</values>
+      </variable>
+
+      <!-- Testing that non aggregation variables get unioned. This comes first so will be in output-->
+      <variable name="station" type="string" shape="station">
+	<attribute name="Desc" type="string" value="I am in the first dataset, so WILL be in the output!"/>
+	<values separator=",">STATION_A,STATION_B,STATION_C,STATION_D,STATION_E</values>
+      </variable>
+
+    </netcdf>
+
+    <netcdf title="Sample Slice 2">
+      <dimension name="station" length="5"/>
+      <variable name="V" type="int" shape="station">
+	<!-- This one won't be used.  Capitalized just for the testing... -->
+	<attribute name="units" type="string" value="Bohms"/>
+	<values>2 4 6 8 10</values>
+      </variable>
+
+      <!-- Testing that non aggregation variables get unioned. This comes second so won't be in output-->
+      <variable name="station" type="string" shape="station">
+	<attribute name="Desc" type="string" value="I am in the second dataset, so won't be in the output."/>
+	<values separator=",">Station_A,Station_B,Station_C,Station_D,Station_E</values>
+      </variable>
+
+    </netcdf>
+
+  </aggregation>
+
+  <!-- This will be what the expected output aggregation will look like.
+       We can use the named dimensions for the shape here since the aggregation
+       comes first and the dimensions will be added to the parent dataset by now,
+       so this checks that that works as well. -->
+  <variable name="V_expected" type="int" shape="day station">
+    <values>
+      1 3 5 7 9 
+      2 4 6 8 10
+    </values>
+  </variable>
+
+</netcdf>

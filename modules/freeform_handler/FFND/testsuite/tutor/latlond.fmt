@@ -1,0 +1,8 @@
+binary_input_data	"Made from latlond.bfm"
+latitude  1  8 float64 6
+longitude 9 16 float64 6
+
+ASCII_output_data	"Made from latlon.afm"
+latitude   1 10 float64 6
+longitude 12 22 float64 6
+

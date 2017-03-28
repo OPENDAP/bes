@@ -1,0 +1,12 @@
+dnl Test suite for <remove name="foo" type="variable"/> 
+
+AT_BANNER([Testing variable removal with <remove/> ])
+
+dnl Test a top-level DDS variable
+AT_CHECK_ALL_DAP_RESPONSES([var_remove.ncml])
+AT_CHECK_DATADDS_GETDAP([var_remove.ncml])
+
+dnl Test a variable nested within structures.
+AT_CHECK_ALL_DAP_RESPONSES([var_remove_nested.ncml])
+AT_CHECK_DATADDS_GETDAP([var_remove_nested.ncml])
+

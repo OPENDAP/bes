@@ -1,0 +1,32 @@
+dnl Test suite for creating new variables of Array 1D type
+AT_BANNER([Adding new multi dimensional arrays])
+
+dnl Test 2D array
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_int_2.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_int_2.ncml])
+
+dnl Test 3D array
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_int_3.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_int_3.ncml])
+
+dnl Test string array, where we can see indices in getdap clearly
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_array_string_2d.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_array_string_2d.ncml])
+
+dnl Test string array, where we can see indices in getdap clearly
+AT_CHECK_ALL_DAP_RESPONSES([new_arrays/var_string_3d.ncml])
+AT_CHECK_DATADDS_GETDAP([new_arrays/var_string_3d.ncml])
+
+dnl Test that specifying too large of a dimension product for an array is an error
+AT_ASSERT_PARSE_ERROR([new_arrays/var_array_error_16.ncml])
+
+dnl note we need to double quote constraints for the brackets to show up!!
+dnl FIXME DAP4 FAILURES
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([new_arrays/var_array_int_2.ncml],[[ MyArray2D[0:1:1][1] ]], [new_arrays/var_array_int_2_cons_1.ncml])
+
+dnl get a 1D slice through (x,1,1)
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([new_arrays/var_string_3d.ncml],[[ MyArray3D[0:2][1][1] ]], [new_arrays/var_string_3d_cons_1.ncml])
+
+dnl Get a 2D slive through (0,x,y)
+AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([new_arrays/var_string_3d.ncml],[[ MyArray3D[0][0:2][0:2] ]], [new_arrays/var_string_3d_cons_2.ncml])
+

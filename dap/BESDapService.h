@@ -43,7 +43,7 @@ using std::string ;
  * To support the dap services a handler must provide the ability to handle
  * the filling in of the OPeNDAP objects DAS, DDS, and DataDDS. The dap
  * service provides additional commands that use these basic three commands.
- * These additional commands are DDX and, provided by the dap-server
+ * These additional commands are DDX and, provided by the (old) dap-server
  * modules, the ascii, info_page, and html_form commands.
  *
  * @see BESServiceRegistry

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Showing how to add metadata to all parts of an aggregated grid">
+  
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <netcdf location="data/ncml/agg/grids/f97182070958.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97182183448.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97183065853.hdf"/>  
+    <netcdf location="data/ncml/agg/grids/f97183182355.hdf"/> 
+  </aggregation> 
+
+  <variable name="dsp_band_1" type="Structure"> <!-- Enter the Grid level scope -->
+    
+    <attribute name="Info" type="String">This is metadata on the Grid itself.</attribute>
+    
+    <variable name="dsp_band_1"> <!-- Enter the scope of the Array dsp_band_1 -->
+      <attribute name="units" type="String">Temp (packed)</attribute> <!-- Units of the array -->
+    </variable> <!-- dsp_band_1.dsp_band_1 -->
+    
+    <variable name="lat"> <!-- dsp_band_1.lat map -->
+      <attribute name="units" type="String">degrees_north</attribute>
+    </variable> 
+    
+    <variable name="lon"> <!-- dsp_band_1.lon map -->
+      <attribute name="units" type="String">degrees_east</attribute>
+    </variable> <!-- dsp_band_1.lon map -->    
+  </variable> <!-- dsp_band_1 Grid -->
+
+  <!-- Note well: this is a new coordinate variable so requires the correct type.
+  Also note that it falls outside of the actual grid since we must specify it 
+  as a sibling coordinate variable it will be made into a Grid when the netcdf is closed. 
+  -->
+  <variable name="filename" type="String">
+    <attribute name="Info" type="String">Filename with timestamp</attribute>
+  </variable> <!-- filename -->
+ 
+</netcdf>

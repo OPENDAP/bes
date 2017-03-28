@@ -1,0 +1,19 @@
+
+Welcome to newformX alpha 3.2 Jul 11 1996 -- an NGDC FreeForm application
+
+Memtrack logging file "memtrack.log" enabled
+Input file: testqry.bin
+Output file: testqry15.dat
+Using query file: query15.qry
+
+The input file size is 1430 bytes.
+The maximum output file size will be 3080 bytes.
+The data processing cache size is 1430 bytes.
+
+(testqry.fmt) Binary Input Data:  "binary for query test"
+Each record contains 8 fields and is 26 bytes long.
+
+(testqry.fmt) ASCII Output Data:  "ascii for query test"
+Each record contains 8 fields and is 56 characters long.
+
+100% processed     Elapsed time - 00:00:19

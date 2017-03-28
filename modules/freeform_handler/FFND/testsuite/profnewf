@@ -1,0 +1,44 @@
+# batch file for profiles of binary and ascii conversions
+# pnewform is created by "make pnewform"
+#	and must be copied to this directory 
+#
+# set up output files
+rm pnewform
+cp ~tam/src/freeutil/pnewform .
+pnewform >&trash
+date >&trash1
+cat trash1 > prof.out
+cat trash >> prof.out
+cat space >> prof.out
+# begin processing
+echo "*********************************************************"
+echo "PROFILING ASCII TO BINARY "
+echo "*********************************************************"
+echo "*********************************************************" >> prof.out
+echo "PROFILING ASCII TO BINARY " >> prof.out
+echo "*********************************************************" >> prof.out
+cat space >> prof.out
+cat space
+echo "pnewform test.afm test.bfm test.dat > testbin.tst" >> prof.out 
+(pnewform test.afm test.bfm test.dat > testbin.tst) >&errfile
+gprof -b pnewform >> prof.out
+echo "*********************************************************" 
+echo "PROFILING BINARY TO ASCII " 
+echo "*********************************************************" 
+echo "*********************************************************" >> prof.out 
+echo "PROFILING BINARY TO ASCII " >> prof.out 
+echo "*********************************************************" >> prof.out 
+cat space >> prof.out
+cat space 
+echo "pnewform test.bfm test.afm test.bin > testasc.tst" >> prof.out 
+(pnewform test.bfm test.afm test.bin > testasc.tst) >&errfile
+gprof -b pnewform >> prof.out
+cat space >> prof.out
+cat space 
+echo "***** DONE PROFILING *****" >> prof.out
+echo "***** DONE PROFILING *****"
+cat space
+echo "File prof.out has been created."
+cat space
+cat space
+cat space

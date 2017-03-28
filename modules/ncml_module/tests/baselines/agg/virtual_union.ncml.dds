@@ -1,0 +1,6 @@
+Dataset {
+    String SelfReferentialVariable;
+    String Foo;
+    String Bar;
+    String Baz;
+} virtual_union.ncml;

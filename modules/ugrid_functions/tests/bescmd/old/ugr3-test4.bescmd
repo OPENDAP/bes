@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:24:fvcom_1step.nc]">
+  <bes:setContext name="xdap_accept">2.0</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContainer name="catalogContainer" space="catalog">/ugrids/test4-ugrid.ncml</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <bes:constraint>ugr3(0,nodedata,"-63.5%3CX&amp;X%3C-63.0")</bes:constraint>
+    </bes:container>
+  </bes:define>
+  <bes:get type="ascii" definition="d1"  />
+</bes:request>
+
+
+

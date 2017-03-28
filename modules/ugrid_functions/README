@@ -1,0 +1,67 @@
+Updated for version 1.0.1
+
+This is the first official release of the ugrid_functions module. 
+This module adds a server side function to Hyrax that allows a 
+user to request domain subsets of unstructured gridded data sets 
+that conform to the convention described here: 
+
+    https://github.com/ugrid-conventions/ugrid-conventions
+
+The subsetting function is called "ugr5". The syntax/usage statement
+for the function is returned when the function is invoked without
+parameters:
+
+    http://<server>/opendap/<datsetname>.ascii?ugr5()
+    
+NOTE While modules that read data (like netCDF or HDF5) are listed 
+in the Hyrax server's 'version' response, the ugrid_functions module
+will not be listed there. Use the above URL to test to see if the
+handler has been loaded by the server.
+    
+This initial version is only compatibly with irregular triangular 
+meshes. Both the Ugrid convention (see above link) and the gridfields 
+library which implements the heavy lifting support other types of
+unstructured grids so in the future support for these may be added.
+
+NOTE: Installing the BES from RPM packages and using this handler?
+
+As of 9 May 2014, the ugrid functions handler does not have a RPM
+package (because libgridfields does not) and so must be built from
+source. It's very easy to combine a Hyrax install from the RPMs with
+one or more handlers built from source, but it does require a little
+bit of information about how the BES configuration files work. Lets
+assume the following scenario: The BES has been installed using RPMs,
+meaning that both the framework and a small number of handlers are 
+in /usr/lib/bes or /usr/lib64/bes and their corresponding configuration
+files are in /etc/bes and /etc/bes/modules. When the ugrid functions
+handler is built from source using './configure --with-gridfields=...'
+the resulting module and conf file will be installed in /usr/local/lib{64}
+and /usr/local/etc/bes/modules (that's the default for anything built
+using 'configure'). You need to tell the BES server to load that 
+module and the way to do that without copying files, etc., is to add
+the following to /etc/bes/bes.conf:
+
+BES.Include=/usr/local/etc/bes/modules/.*\.conf$
+
+That line will instruct the BES to load all of the module configuration 
+files in /usr/local/etc/bes/modules/. I think this is the easiest way.
+
+Is there another way? Yes, there are two other ways to combine a BES 
+installed using RPMs with one or more handlers built from source. The
+first way is to run configure with the following switches:
+
+--prefix=/usr --sysconfdir=/etc <other switches>
+
+Which will install the newly built code in the correct places. The second
+way is to build and install the software and then copy the libugrid_function.so
+and ugrid_functions.conf files to /usr/lib{64}/bes and /etc/bes/modules 
+(respectively) and then edit the ugrid_functions.conf file so that the 
+module pathname is correct.
+
+The easiest way to combine a RPM installation of Hyrax with other modules 
+built from source is to build the other modules using the default prefix 
+supplied by configure and then edit the bes.conf file that the RPMs installed
+in /etc/bes/. Running configure with the the '--sysconfdir' and other switches
+is probably next in line and copying/editing the files is likely to be 
+the most work.
+

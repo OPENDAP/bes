@@ -1,0 +1,3 @@
+Dataset {
+    String MyArray3D[x = 1][y = 3][z = 3];
+} var_string_3d.ncml;
