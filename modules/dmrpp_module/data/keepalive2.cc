@@ -53,7 +53,7 @@ public:
     string d_url;
     unsigned long long d_offset;
     unsigned long long d_size;
-    CURL *d_curl_easy_handle;   // Not used when reusing curl handles
+    // CURL *d_curl_easy_handle;   // Not used when reusing curl handles
     FILE *d_fd;
     string d_output_filename;
 
@@ -67,7 +67,7 @@ public:
         d_url("http://www.opendap.org"),
         d_offset(0),
         d_size(0),
-        d_curl_easy_handle(0),
+        // d_curl_easy_handle(0),
         d_fd(0),
         d_output_filename("/dev/null"),
         d_bytes_read(0),
@@ -93,7 +93,7 @@ public:
         oss << "[offset=" << d_offset << "]"<< (pretty?"\n":"");
         oss << "[size=" << d_size << "]"<< (pretty?"\n":"");
         oss << "[output_filename=" << d_output_filename << "]"<< (pretty?"\n":"");
-        oss << "[curl_handle=" << (void *)d_curl_easy_handle << "]"<< (pretty?"\n":"");
+        // oss << "[curl_handle=" << (void *)d_curl_easy_handle << "]"<< (pretty?"\n":"");
         oss << "[bytes_read=" << d_bytes_read << "]"<< (pretty?"\n":"");
         oss << "[read_buffer=" << (void *)d_read_buffer << "]"<< (pretty?"\n":"");
         oss << "[fstream=" << (void *)d_fstream << "]"<< (pretty?"\n":"");
