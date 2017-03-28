@@ -1,0 +1,267 @@
+2016-11-07  ndp-opendap  <ndp@opendap.org>
+
+	Repaired leak on stderr.
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
+
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Change file modes - no longer executable
+2016-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Change file modes - no longer executable
+
+	Added data/coads_climatology.nc to w10n_handler (again) on the response_cache branch
+
+	Merge branch 'response_cache' of https://github.com/opendap/w10n_handler into response_cache
+
+	Added coads_climatology.nc to w10n_handler/data
+
+2016-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unneeded/generated files
+
+2016-09-07  James Gallagher  <jgallagher@opendap.org>
+
+	Updated for hyrax-242: CEs with functions will now work properly.
+
+2016-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into response_cache
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Dropped use of DataDDS in favor of the DDS class.
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
+
+2015-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused params
+	
+2015-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused params
+
+2015-12-28  Nathan Potter  <ndp@opendap.org>
+
+	Patched error handling problems in Transmitter implmentations. In particular: 
+	1) Ensured that libdap::Error objects are converted to BESDapError objects 
+	when caught. and 2) Catch and rethrow BESError objects whenever they could 
+	be thrown so they don't get swept up as unidentified errors in a catch(...) 
+	clause.
+
+2015-10-27  James Gallagher  <jgallagher@opendap.org>
+
+	Update for bes 3.16.0 release
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/w10n_handler
+
+	Fixed error in Makefile.am from update_version... script.
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error introduced by version_update_modules.sh script.
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	version number bump
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+	
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/w10n_handler
+
+	Delete package.m4.in
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/w10n_handler
+
+	Added new BESStopWatch support.
+
+2015-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed getopt() use. Patch from O. Poplawski.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/w10n_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 1.0.0
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/w10n_handler
+
+	Fixed an issue with make check
+	It failed when CppUnit was not present. Now those tests
+	are ignored.
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Rebuilt data/atomicTypes.nc as a netCDF4 file.
+	This is a work around for an odd issue I'm blaming on the
+	netcdf 4.1.1 rpm.
+
+	Replaced the atomicTypes netCDF3 file with a netCDF4 version.
+	This problem - the netcdf handler not reading integer variables
+	from a netcdf 3 file - only shows up here with the file build
+	using ncgen. Other netcdf3 files work fine. I'm blaming this on
+	netcdf 4.1.1, which had some issues...
+
+	Fix for	distclean and the modules build.
+
+2015-03-11  Nathan Potter  <ndp@opendap.org>
+
+	Cleaned up non-use of size_type in loops. Added method for arrays of libdap strings. Added methods for starting and ending w10n json array content
+
+2015-03-09  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/w10n_handler
+
+	documentations
+
+2015-03-02  James Gallagher  <jgallagher@opendap.org>
+
+	Added 'pattern' test to w10n tests
+	The test coads_SST_data.bescmd results in an (intentional) error. I
+	added a Pattern rule to the *.at test file so that the build options,
+	etc., will not make differences in the output that will make the test
+	erroneously fail. I only modified one test to use the new rule; all
+	tests pass on my version of the master branch.
+
+2015-02-19  Nathan Potter  <ndp@opendap.org>
+
+	Production rule changes for addition to BES submodules integration.
+
+2015-02-18  Nathan Potter  <ndp@opendap.org>
+
+	Adding .gitignore file
+
+	Missing include for <typeinfo>
+
+	Implemented the w10n query string parameter 'traverse'
+
+	Added support for arrays of String and URL types. Corrected string escaping for JSON.
+
+2015-02-16  Nathan Potter  <ndp@opendap.org>
+
+	added implmentations for the flatten and callback w10n query parameters.
+
+	Repaired baselines broken  by previous commit.
+
+	Remove the type declaration for node (aka constructor) variables. Fixed bug in atomic type JSON ouput - removed a spurious comma.
+
+2015-02-13  Nathan Potter  <ndp@opendap.org>
+
+	Fixed w10n data responses to include w10n meta block.
+
+2015-02-12  Nathan Potter  <ndp@opendap.org>
+
+	cant remember
+
+2015-02-11  Nathan Potter  <ndp@opendap.org>
+
+	Removed reference to non existent libdap::dods_url4_c type
+
+2015-02-10  Nathan Potter  <ndp@opendap.org>
+
+	Fixed bad error handling and added tests. WOOT.
+
+	Fixed bad error handling and added tests. WOOT.
+
+	Fixed bad pattern of 'throw new Error/Exception' - a byproduct of thinking in Java and not C++
+
+	patched test baseline
+
+	Basic w10n data responses appear correct. Basic w10n meta responses appear correct.
+
+2015-02-09  Nathan Potter  <ndp@opendap.org>
+
+	Missing baseline
+
+	Reoganizing tests.
+
+2015-02-06  Nathan Potter  <ndp@opendap.org>
+
+	Added w10n speicific json transmitter and support classes
+
+2015-02-05  Nathan Potter  <ndp@opendap.org>
+
+	Chnged util function name
+
+2015-02-04  Nathan Potter  <ndp@opendap.org>
+
+	Changing file names to better align them with their functions.
+
+	Changing file names to better align them with their functions.
+
+	Refactoring request/response syntax from w10n specific to more general showPathInfo
+
+2015-02-03  Nathan Potter  <ndp@opendap.org>
+
+	Added isData attribute to showW10N response
+
+	Tweeky tweeky...
+
+	Updated tests
+
+	Implmented a show w10n info response for the BES
+
+2015-01-30  Nathan Potter  <ndp@opendap.org>
+
+	Fix 'make clean' target for bes-testsuite
+
+	DUmping .DStore
+
+	Fixed minor bug (was breaking make distclean target)
+
+	Creating w10n_handler project.
