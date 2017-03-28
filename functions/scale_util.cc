@@ -48,8 +48,8 @@
 
 #include <util.h>
 #include <Error.h>
-#include <BesDebug.h>
-#include <BesDapError.h>
+#include <BESDebug.h>
+#include <BESDapError.h>
 
 #include "ScaleGrid.h"
 
