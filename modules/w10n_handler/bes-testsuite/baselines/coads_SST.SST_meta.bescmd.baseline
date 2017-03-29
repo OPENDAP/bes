@@ -1,0 +1,14 @@
+{
+  "name": "SST",
+  "type": "Float32",
+  "attributes": [
+    {"name": "missing_value", "value": [-9.99999979e+33]},
+    {"name": "_FillValue", "value": [-9.99999979e+33]},
+    {"name": "long_name", "value": ["SEA SURFACE TEMPERATURE"]},
+    {"name": "history", "value": ["From coads_climatology"]},
+    {"name": "units", "value": ["Deg C"]}
+  ],
+  "shape": [12,90,180],
+  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/nc\/coads_climatology.nc\/SST.SST"},{"name":"identifier","value":"\/"}]
+
+}

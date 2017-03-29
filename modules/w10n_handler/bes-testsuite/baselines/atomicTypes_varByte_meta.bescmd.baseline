@@ -1,0 +1,9 @@
+{
+  "name": "varByte",
+  "type": "Byte",
+  "attributes": [
+    {"name": "description", "value": ["Byte me."]}
+  ],
+  "w10n":[{"name":"spec","value":"draft-20091228"},{"name":"application","value":"Hyrax-@HyraxVersion@"},{"name":"type","value":"dap"},{"name":"path","value":"\/opendap\/w10n\/data\/atomicTypes.nc\/varByte"},{"name":"identifier","value":"\/"}]
+
+}
