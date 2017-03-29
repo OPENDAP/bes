@@ -853,9 +853,6 @@ int main(int argc, char **argv) {
         case 'd':
             debug = true;
             break;
-        case 'p':
-            use_pthreads = true;
-            break;
         case 'r':
             reuse_curl_easy_handles = true;
             break;
@@ -872,6 +869,7 @@ int main(int argc, char **argv) {
             std::istringstream(getopt.optarg) >> file_size;
             break;
         case 't':
+            use_pthreads = true;
             std::istringstream(getopt.optarg) >> max_threads;
             break;
         case 'm':
