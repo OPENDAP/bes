@@ -26,7 +26,7 @@
 
 // #define DODS_DEBUG
 
-#include <float.h>
+//#include <float.h>
 
 #include <iostream>
 #include <vector>
@@ -55,10 +55,8 @@
 
 #define DEBUG_KEY "geo"
 
-
 using namespace std;
 using namespace libdap;
-
 
 namespace functions {
 
@@ -220,10 +218,10 @@ vector<GDAL_GCP> get_gcp_data(Array *x, Array *y, int sample_x, int sample_y)
     vector<GDAL_GCP> gcp_list(n_gcps);
     GDALInitGCPs(n_gcps, &gcp_list[0]); // allocates the 'list'; free with Deinit
 
-    int count = 0;
+    unsigned long count = 0;
     for (int i = 0; i < size.x_size; i += sample_x) {
-	// The test for count < n_gcps corrects for discrepencies between integer
-	// division and the simple increment used by the loops. 3/29/17 jhrg
+        // The test for count < n_gcps corrects for discrepencies between integer
+        // division and the simple increment used by the loops. 3/29/17 jhrg
         for (int j = 0; count < n_gcps && j < size.y_size; j += sample_y) {
             gcp_list[count].dfGCPLine = j;
             gcp_list[count].dfGCPPixel = i;
