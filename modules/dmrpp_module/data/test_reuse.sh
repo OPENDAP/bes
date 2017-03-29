@@ -32,7 +32,10 @@ function run_keep_alive() {
         pthreads="-t $pthreads"
     fi
 
-    params="-o scratch/foo -m $max_handles -c $chunk_count  -s $total_size $pthreads $reuse_handles"
+    shard_base="scratch/foo";
+    rm -f $shard_base*;
+    
+    params="-o $shard_base -m $max_handles -c $chunk_count  -s $total_size $pthreads $reuse_handles"
     echo "keepalive2 params: $params"
     echo "keepalive2 log_file: $log_file"
             
