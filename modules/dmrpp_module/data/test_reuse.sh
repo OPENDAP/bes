@@ -44,7 +44,7 @@ function run_keep_alive() {
 function runz_it() {
     t_size=$1
     c_count=$2
-    for m_handles in  1 2 4 8 16 
+    for m_handles in  2 4 8 16 # 1 # (I started with 1 but omg was it slow)
     do
         if [ $m_handles -gt $c_count ]
         then
@@ -64,7 +64,7 @@ function runz_it() {
             
                     rm -f $pthreads_reuse_log_file 
                     echo "pthreads_and_reuse_handles_with_keepalive lap: $i log: $pthreads_reuse_log_file "
-                    run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "$p_threads" >> $reuse_log_file 2>&1
+                    run_keep_alive "$pthreads_reuse_log_file" "$t_size" "$c_count" "$m_handles" "-r" "$p_threads" >> $pthreads_reuse_log_file 2>&1
 
                 done
             done
