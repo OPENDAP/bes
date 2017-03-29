@@ -34,17 +34,11 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ofstream;
-using std::ios;
+#include <string>
+#include <sstream>
 
 #include "BESContainerStorageVolatile.h"
 #include "BESContainer.h"
@@ -57,20 +51,29 @@ using std::ios;
 
 #include "test_config.h"
 
+using namespace CppUnit;
+using namespace std;
+
 static bool debug = false;
 static bool debug_2 = false;
+
+const string cache_dir = "./cache";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 #undef DBG2
 #define DBG2(x) do { if (debug_2) (x); } while(false);
 
+
 class pvolT: public TestFixture {
 private:
     BESContainerStorageVolatile *cpv;
 
+    string real1, real2, real3, real4, real5;
+
 public:
-    pvolT() : cpv(0)
+    pvolT() : cpv(0), real1(cache_dir + "/real1"), real2(cache_dir + "/real2"),
+    real3(cache_dir + "/real3"), real4(cache_dir + "/real4"), real5(cache_dir + "/real5")
     {
         string bes_conf = (string) TEST_SRC_DIR + "/persistence_cgi_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
@@ -78,31 +81,31 @@ public:
         // This cannot be constructed unless the Keys file can be read.
         cpv = new BESContainerStorageVolatile("volatile");
 
-        ofstream real1( "./real1", ios::trunc );
-        real1 << "real1" << endl;
+        ofstream of1( real1.c_str(), ios::trunc );
+        of1 << "real1" << endl;
 
-        ofstream real2( "./real2", ios::trunc );
-        real2 << "real2" << endl;
+        ofstream of2( real2.c_str(), ios::trunc );
+        of2 << "real2" << endl;
 
-        ofstream real3( "./real3", ios::trunc );
-        real3 << "real3" << endl;
+        ofstream of3( real3.c_str(), ios::trunc );
+        of3 << "real3" << endl;
 
-        ofstream real4( "./real4", ios::trunc );
-        real4 << "real4" << endl;
+        ofstream of4( real4.c_str(), ios::trunc );
+        of4 << "real4" << endl;
 
-        ofstream real5( "./real5", ios::trunc );
-        real5 << "real5" << endl;
+        ofstream of5( real5.c_str(), ios::trunc );
+        of5 << "real5" << endl;
     }
 
     ~pvolT()
     {
         delete cpv;
 
-        remove( "./real1" );
-        remove( "./real2" );
-        remove( "./real3" );
-        remove( "./real4" );
-        remove( "./real5" );
+        remove( real1.c_str() );
+        remove( real2.c_str() );
+        remove( real3.c_str() );
+        remove( real4.c_str() );
+        remove( real5.c_str() );
     }
 
     void setUp()
@@ -159,20 +162,20 @@ public:
 
         DBG(cerr << "test_look_for_containers BEGIN" << endl);
 
-        char s[10];
-        char r[10];
-        char c[10];
         for (int i = 1; i < 6; i++) {
-            sprintf(s, "sym%d", i);
-            sprintf(r, "./real%d", i);
-            sprintf(c, "type%d", i);
+            ostringstream s;
+            s << "sym" << i;
+            ostringstream r;
+            r << cache_dir + "/real" << i;
+            ostringstream c;
+            c << "type" << i;
 
             DBG(cerr << "    looking for " << s << endl);
 
-            BESContainer *d = cpv->look_for(s);
+            BESContainer *d = cpv->look_for(s.str());
             CPPUNIT_ASSERT( d );
-            CPPUNIT_ASSERT( d->get_real_name() == r );
-            CPPUNIT_ASSERT( d->get_container_type() == c );
+            CPPUNIT_ASSERT( d->get_real_name() == r.str() );
+            CPPUNIT_ASSERT( d->get_container_type() == c.str() );
         }
 
         DBG(cerr << "test_look_for_containers END" << endl);
@@ -203,20 +206,20 @@ public:
 
         // Double check the correct containers are really gone
         {
-            char s[10];
-            char r[10];
-            char c[10];
             for (int i = 2; i < 5; i++) {
-                sprintf(s, "sym%d", i);
-                sprintf(r, "./real%d", i);
-                sprintf(c, "type%d", i);
+                ostringstream s;
+                s << "sym" << i;
+                ostringstream r;
+                r << cache_dir + "/real" << i;
+                ostringstream c;
+                c << "type" << i;
 
                 DBG(cerr << "    looking for " << s << endl);
 
-                BESContainer *d = cpv->look_for(s);
+                BESContainer *d = cpv->look_for(s.str());
                 CPPUNIT_ASSERT( d );
-                CPPUNIT_ASSERT( d->get_real_name() == r );
-                CPPUNIT_ASSERT( d->get_container_type() == c );
+                CPPUNIT_ASSERT( d->get_real_name() == r.str() );
+                CPPUNIT_ASSERT( d->get_container_type() == c.str() );
             }
         }
     }

@@ -132,6 +132,7 @@ public:
         }
         catch (BESError &e) {
             //cerr << "Error: " << e.get_message() << endl;
+            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
             CPPUNIT_FAIL( "Unable to create BESKeys: " + e.get_message());
         }
 
