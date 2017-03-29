@@ -60,7 +60,7 @@ OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
 # jhrg 3/12/15
-	
+
 else
 UNIT_TESTS =
 
