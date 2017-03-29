@@ -222,15 +222,9 @@ vector<GDAL_GCP> get_gcp_data(Array *x, Array *y, int sample_x, int sample_y)
 
     int count = 0;
     for (int i = 0; i < size.x_size; i += sample_x) {
-        for (int j = 0; j < size.y_size; j += sample_y) {
-#if 0
-            // is this needed?
-            char pChr[64];
-            snprintf(pChr, 64, "%ld", count);
-
-            gcp_list[count].pszId = strdup(pChr);
-#endif
-            // gcp[i].pszInfo = strdup(""); // already set to this by GDALInitGCPs
+	// The test for count < n_gcps corrects for discrepencies between integer
+	// division and the simple increment used by the loops. 3/29/17 jhrg
+        for (int j = 0; count < n_gcps && j < size.y_size; j += sample_y) {
             gcp_list[count].dfGCPLine = j;
             gcp_list[count].dfGCPPixel = i;
             gcp_list[count].dfGCPX = x_values[i];

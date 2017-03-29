@@ -215,7 +215,7 @@ public:
         CPPUNIT_ASSERT(lat_buf[0] == 4);
         CPPUNIT_ASSERT(lat_buf[x_size - 1] == -4);
 
-        vector<dods_float32> lon_buf(x_size);
+        vector<dods_float32> lon_buf(y_size);
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         lon->value(&lon_buf[0]);
         DBG(cerr << "lon: ");
