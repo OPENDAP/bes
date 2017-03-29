@@ -35,7 +35,7 @@
 #include <debug.h>
 #include <util.h>
 
-#include <BesDebug.h>
+#include <BESDebug.h>
 
 #include "GridFunction.h"
 #include "gse_parser.h"

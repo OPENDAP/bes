@@ -36,7 +36,8 @@
 #include <Str.h>
 #include <Error.h>
 #include <util.h>
-#include <BesDebug.h>
+
+#include <BESDebug.h>
 
 #include "functions_util.h"
 
@@ -45,9 +46,7 @@
 using namespace std;
 using namespace libdap;
 
-
 namespace functions {
-
 
 /**
  * @brief Scale a grid; uses gdal
