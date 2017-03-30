@@ -31,11 +31,38 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <iostream>
+#include <string>
+#include <algorithm>
+#include <unistd.h>
 
+#include "TheBESKeys.h"
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
 #include "BESUtil.h"
 #include "BESContextManager.h"
+
+
+BESBasicTransmitter::BESBasicTransmitter(){
+    bool found = false;
+    string cancel_timeout_on_send = "";
+    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, cancel_timeout_on_send, found);
+    if (found && !cancel_timeout_on_send.empty()) {
+        // The default value is false.
+        std::transform(
+            cancel_timeout_on_send.begin(),
+            cancel_timeout_on_send.end(),
+            cancel_timeout_on_send.begin(),
+            ::tolower);
+        if (cancel_timeout_on_send == "yes" || cancel_timeout_on_send == "true")
+            d_cancel_timeout_on_send = true;
+    }
+
+}
+void BESBasicTransmitter::conditional_timeout_cancel()
+{
+    if (d_cancel_timeout_on_send)
+        alarm(0);
+}
 
 void BESBasicTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
 {
