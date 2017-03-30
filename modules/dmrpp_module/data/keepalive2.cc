@@ -724,9 +724,11 @@ void get_shards_pthreads_reuse_curl_handles(
 
     thread_num = 0;
     std::vector<Shard*>::iterator sit;
-    for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
-        Shard *shard = *sit;
+    //for(sit=shards->begin(); sit!=shards->end(); sit++, n++){
+    for(unsigned long i=0; i<shards->size(); i++, n++){
+        Shard *shard = (*shards)[i];
         map<CURL*, Shard *> *shards_map = the_things[thread_num].shards_map;
+        bool last_shard = (i+1) == shards->size();
 
         unsigned int current_easy_handle_index = n%max_easy_handles;
         CURL* curl;
@@ -752,7 +754,7 @@ void get_shards_pthreads_reuse_curl_handles(
         /**
          * If it's time, pull the trigger and get the stuff.
          */
-        if(!(n%max_easy_handles_per_thread)){
+        if(!(n%max_easy_handles_per_thread) || last_shard){
             if(debug) cerr << "Collected  "<< shards_map->size() << " Shards." <<
                 " n: " << n << " max_threads: " << max_threads <<
                 " thread_num: " << thread_num << endl;
@@ -771,9 +773,9 @@ void get_shards_pthreads_reuse_curl_handles(
                 if(debug) cerr << "Started Thread " << thread_num << endl;
                 thread_num++;
             }
-            if(thread_num == max_threads){
+            if(thread_num == max_threads || last_shard){
                 if(debug) cerr << "Waiting for all "<< thread_num << " threads to terminate " << endl;
-                for(unsigned int i=0; i< max_threads; i++) {
+                for(unsigned int i=0; i< thread_num; i++) {
                   int error = pthread_join(tid[i], NULL);
                   if(debug) cerr << "Thread " << i << " (tid["<< i << "]: "<< tid[i] << ") terminated. (errno: "<< error << ")"<< endl;
                 }
@@ -781,6 +783,7 @@ void get_shards_pthreads_reuse_curl_handles(
             }
         }
     }
+#if 0
     if(the_things[thread_num].shards_map->size()){
         cerr << __func__ <<
             "() - Getting final shards: " << the_things[thread_num].shards_map->size() << endl;
@@ -788,6 +791,7 @@ void get_shards_pthreads_reuse_curl_handles(
         if(debug) cerr << __func__ <<
             "() - Got final shards: " << the_things[thread_num].shards_map->size() << endl;
    }
+#endif
 
     /**
      * Clean up, all done...
