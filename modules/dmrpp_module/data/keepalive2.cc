@@ -838,8 +838,6 @@ int main(int argc, char **argv) {
 
     bool use_pthreads = false;
 
-    curl_global_init(CURL_GLOBAL_ALL);
-
     url = "https://s3.amazonaws.com/opendap.test/MVI_1803.MOV";
     file_size = 1647477620;
     shard_count=10000;
@@ -911,9 +909,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+
     vector<Shard *> shards;
     make_shards(&shards,shard_count,url,file_size,output_file);
 
+    curl_global_init(CURL_GLOBAL_ALL);
     if(use_pthreads){
         if(reuse_curl_easy_handles){
             get_shards_pthreads_reuse_curl_handles(&shards, max_threads, max_easy_handles);
@@ -935,6 +935,7 @@ int main(int argc, char **argv) {
         delete (shards[i]);
         shards[i] = NULL;
     }
+    curl_global_cleanup();
 
     return 0;
 }
