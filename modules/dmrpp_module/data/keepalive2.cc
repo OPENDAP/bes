@@ -930,12 +930,12 @@ int main(int argc, char **argv) {
             get_shards_no_curl_handle_reuse(&shards,max_easy_handles);
         }
     }
+    curl_global_cleanup();
 
     for(unsigned long i=0; i<shards.size() ;i++){
         delete (shards[i]);
         shards[i] = NULL;
     }
-    curl_global_cleanup();
 
     return 0;
 }
