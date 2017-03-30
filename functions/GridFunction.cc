@@ -35,6 +35,8 @@
 #include <debug.h>
 #include <util.h>
 
+#include <BESDebug.h>
+
 #include "GridFunction.h"
 #include "gse_parser.h"
 #include "grid_utils.h"
@@ -106,7 +108,18 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     // Read the maps. Do this before calling parse_gse_expression(). Avoid
     // reading the array until the constraints have been applied because it
-    // might be really large.
+    // might be large.
+
+    BESDEBUG("functions", "original_grid: read_p: " << original_grid->read_p() << endl);
+    BESDEBUG("functions", "l_grid: read_p: " << l_grid->read_p() << endl);
+
+    BESDEBUG("functions", "original_grid->array_(): read_p: " << original_grid->array_var()->read_p() << endl);
+    BESDEBUG("functions", "l_grid->array+var(): read_p: " << l_grid->array_var()->read_p() << endl);
+
+    // FIXME ***
+    //cerr << "original_grid->print_val(cerr)" << endl; original_grid->print_val(cerr);
+    //cerr << endl;
+    //cerr << "l_grid->print_val(cerr)" << endl; l_grid->print_val(cerr);
 
     // This version makes sure to set the send_p flags which is needed for
     // the hdf4 handler (and is what should be done in general).
@@ -116,6 +129,9 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     l_grid->read();
 
+    // FIXME ***
+    //cerr << "second l_grid->print_val(cerr)" << endl; l_grid->print_val(cerr);
+
     DBG(cerr << "grid: past map read" << endl);
 
     // argv[1..n] holds strings; each are little expressions to be parsed.
@@ -123,7 +139,7 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     // GSEClause. GSEClause checks to make sure the named map really exists
     // in the Grid and that the range of values given makes sense.
     vector < GSEClause * > clauses;
-    gse_arg *arg = new gse_arg(l_grid);
+    gse_arg *arg = new gse_arg(l_grid); // unique_ptr here
     for (int i = 1; i < argc; ++i) {
         parse_gse_expression(arg, argv[i]);
         clauses.push_back(arg->get_gsec());

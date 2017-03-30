@@ -26,6 +26,8 @@
 
 #include <iostream>
 
+#include <gdal.h>   // needed for scale_{grid,array}
+
 #include <ServerFunctionsList.h>
 
 #include <BESRequestHandlerList.h>
@@ -46,10 +48,10 @@
 #include "BBoxUnionFunction.h"
 #include "MaskArrayFunction.h"
 #include "DilateArrayFunction.h"
-
 #include "DapFunctionsRequestHandler.h"
 
 #include "DapFunctions.h"
+#include "ScaleGrid.h"
 
 namespace functions {
 
@@ -80,6 +82,16 @@ void DapFunctions::initialize(const string &modname)
 
     libdap::ServerFunctionsList::TheList()->add_function(new MaskArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new DilateArrayFunction());
+
+    libdap::ServerFunctionsList::TheList()->add_function(new ScaleArray());
+    libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
+
+    GDALAllRegister();
+    OGRRegisterAll();
+
+    // WHat to do with the orig error handler? Pitch it for now. jhrg 10/17/16
+    CPLErrorHandler orig_err_handler = CPLSetErrorHandler(CPLQuietErrorHandler);
+
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
