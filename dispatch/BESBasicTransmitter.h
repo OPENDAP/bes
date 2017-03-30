@@ -38,10 +38,11 @@
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
 class BESBasicTransmitter: public BESTransmitter {
-private:
-    bool d_cancel_timeout_on_send;
 public:
-    BESBasicTransmitter();
+    BESBasicTransmitter()
+    {
+
+    }
 	virtual ~BESBasicTransmitter()
 	{
 	}
@@ -49,7 +50,7 @@ public:
 	virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi);
 	virtual void send_html(BESInfo &info, BESDataHandlerInterface &dhi);
 
-	void conditional_timeout_cancel();
+    static void conditional_timeout_cancel();
 
 	virtual void dump(ostream &strm) const;
 };

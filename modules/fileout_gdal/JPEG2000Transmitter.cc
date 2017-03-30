@@ -221,6 +221,10 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     try {
         FONgTransform ft(dds, bdds->get_ce(), &temp_file[0]);
 
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
+
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_jpeg2000();
 

@@ -88,6 +88,10 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
         // Send data values as CSV/ASCII
         auto_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
 
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
+
         get_data_values_as_ascii(ascii_dds.get(), dhi.get_output_stream());
         dhi.get_output_stream() << flush;
     }
@@ -141,6 +145,9 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
         else {
             dmr->root()->set_send_p(true);
         }
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
 
         print_values_as_ascii(dmr, dhi.get_output_stream());
         dhi.get_output_stream() << flush;

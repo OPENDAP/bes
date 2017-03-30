@@ -267,8 +267,11 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
         if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << &temp_file[0] << endl);
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
 
+        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << &temp_file[0] << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(loaded_dds, dhi, &temp_file[0], dhi.data[RETURN_CMD]);

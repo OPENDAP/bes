@@ -135,6 +135,10 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
 
         FoDapJsonTransform ft(loaded_dds);
 
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
+
         ft.transform(o_strm, true /* send data */);
     }
     catch (Error &e) {
@@ -183,6 +187,10 @@ void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerI
             throw BESInternalError("Output stream is not set, can not return as JSON", __FILE__, __LINE__);
 
         FoDapJsonTransform ft(processed_dds);
+
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
 
         ft.transform(o_strm, false /* do not send data */);
     }
