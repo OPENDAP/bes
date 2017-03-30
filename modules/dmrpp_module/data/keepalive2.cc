@@ -931,6 +931,11 @@ int main(int argc, char **argv) {
         }
     }
 
+    for(unsigned long i=0; i<shards.size() ;i++){
+        delete (shards[i]);
+        shards[i] = NULL;
+    }
+
     return 0;
 }
 
