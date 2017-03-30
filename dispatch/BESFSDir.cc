@@ -102,45 +102,53 @@ void BESFSDir::loadDir()
     DIR * dip;
     struct dirent *dit;
 
-    // open a directory stream
-    // make sure the directory is valid and readable
-    if ((dip = opendir(_dirName.c_str())) == NULL) {
-        string err_str = "ERROR: failed to open directory '" + _dirName + "'";
-        throw BESError(err_str, BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-    }
-    else {
-        // read in the files in this directory
-        // add each filename to the list of filenames
-        while ((dit = readdir(dip)) != NULL) {
-            struct stat buf;
-            string dirEntry = dit->d_name;
-            if (dirEntry != "." && dirEntry != "..") {
-                string fullPath = _dirName + "/" + dirEntry;
-                if (-1 == stat(fullPath.c_str(), &buf))
-                    throw BESError(string("Did not find the path: '") + fullPath + "'", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
+    try {
+        // open a directory stream
+        // make sure the directory is valid and readable
+        if ((dip = opendir(_dirName.c_str())) == NULL) {
+            string err_str = "ERROR: failed to open directory '" + _dirName + "'";
+            throw BESError(err_str, BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
+        }
+        else {
+            // read in the files in this directory
+            // add each filename to the list of filenames
+            while ((dit = readdir(dip)) != NULL) {
+                struct stat buf;
+                string dirEntry = dit->d_name;
+                if (dirEntry != "." && dirEntry != "..") {
+                    string fullPath = _dirName + "/" + dirEntry;
+                    if (-1 == stat(fullPath.c_str(), &buf))
+                        throw BESError(string("Did not find the path: '") + fullPath + "'", BES_NOT_FOUND_ERROR,
+                            __FILE__, __LINE__);
 
-                // look at the mode and determine if this is a filename
-                // or a directory name
-                if (S_ISDIR(buf.st_mode)) {
-                    _dirList.push_back(BESFSDir(fullPath));
-                }
-                else {
-                    if (_fileExpr != "") {
-                        BESRegex reg_expr(_fileExpr.c_str());
-                        int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.length());
-                        if (match_ret == static_cast<int>(dirEntry.length())) {
-                            _fileList.push_back(BESFSFile(_dirName, dirEntry));
-                        }
+                    // look at the mode and determine if this is a filename
+                    // or a directory name
+                    if (S_ISDIR(buf.st_mode)) {
+                        _dirList.push_back(BESFSDir(fullPath));
                     }
                     else {
-                        _fileList.push_back(BESFSFile(_dirName, dirEntry));
+                        if (_fileExpr != "") {
+                            BESRegex reg_expr(_fileExpr.c_str());
+                            int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.length());
+                            if (match_ret == static_cast<int>(dirEntry.length())) {
+                                _fileList.push_back(BESFSFile(_dirName, dirEntry));
+                            }
+                        }
+                        else {
+                            _fileList.push_back(BESFSFile(_dirName, dirEntry));
+                        }
                     }
                 }
             }
         }
-    }
 
-    // close the directory
-    closedir(dip);
+        // close the directory
+        closedir(dip);
+    }
+    catch (...) {
+        // close the directory
+        closedir(dip);
+        throw;
+    }
 }
 
