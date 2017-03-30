@@ -57,7 +57,7 @@ function runz_it() {
             do
                 log_tag="_s"$t_size"_c"$c_count"_m"$m_handles
                 reuse_log_file="scratch/keepalive2"$log_tag"_rk.log"
-                rm -f $reuse_log_file
+                #rm -f $reuse_log_file
                 echo "reuse_handles with_keepalive lap: $i log: $reuse_log_file"
                 run_keep_alive $reuse_log_file $t_size $c_count $m_handles "-r" "" >> $reuse_log_file 2>&1
 
@@ -65,7 +65,7 @@ function runz_it() {
                 do
                     pthreads_reuse_log_file="scratch/keepalive2"$log_tag"_p"$p_threads"_rk.log"
             
-                    rm -f $pthreads_reuse_log_file 
+                    #rm -f $pthreads_reuse_log_file 
                     echo "pthreads_and_reuse_handles_with_keepalive lap: $i log: $pthreads_reuse_log_file "
                     run_keep_alive "$pthreads_reuse_log_file" "$t_size" "$c_count" "$m_handles" "-r" "$p_threads" >> $pthreads_reuse_log_file 2>&1
 
