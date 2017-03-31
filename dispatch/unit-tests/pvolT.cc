@@ -57,7 +57,9 @@ using namespace std;
 static bool debug = false;
 static bool debug_2 = false;
 
-const string cache_dir = "./cache";
+// This value must match the value in the persistence_cgi_test.ini
+// keys file.
+const string cache_dir = "."; // "./cache";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
