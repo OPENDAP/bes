@@ -300,7 +300,7 @@ See the FreeForm User's Guide for detailed information.\n"
 		do_log(chkform_log, "Using query file: %s\n", std_args->query_file);
 
 	/* Display some information about the data, ignore errors */
-	db_ask(dbin, DBASK_FORMAT_SUMMARY, FFF_INPUT, &bufsize);
+	(void) db_ask(dbin, DBASK_FORMAT_SUMMARY, FFF_INPUT, &bufsize);
 	do_log(chkform_log, "%s\n", bufsize->buffer);
 	ff_destroy_bufsize(bufsize);
 
@@ -483,7 +483,7 @@ static int chkform
 			FF_BUFSIZE_PTR bufsize = NULL;
 
 			/* Display some information about the data, ignore errors */
-			db_ask(dbin, DBASK_FORMAT_SUMMARY, &bufsize);
+			(void) db_ask(dbin, DBASK_FORMAT_SUMMARY, &bufsize);
 			do_log(chkform_log, "%s\n", bufsize->buffer);
 			ff_destroy_bufsize(bufsize);
 		}

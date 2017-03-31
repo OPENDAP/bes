@@ -4,8 +4,10 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 # Arrange to build with the backward compatibility mode enabled.
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
+#$(LIBS)
+# $(XML2_LIBS)
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
