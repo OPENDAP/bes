@@ -150,6 +150,10 @@ void BESXDTransmit::send_basic_ascii(BESResponseObject * obj, BESDataHandlerInte
         BESDEBUG("xd", "converting to xd datadds" << endl);
         DDS *xd_dds = dds_to_xd_dds(dds);
 
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
+
         BESDEBUG("xd", "getting xd values" << endl);
         XMLWriter writer;
         get_data_values_as_xml(xd_dds, &writer);
