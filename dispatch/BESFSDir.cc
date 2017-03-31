@@ -117,10 +117,24 @@ void BESFSDir::loadDir()
                 string dirEntry = dit->d_name;
                 if (dirEntry != "." && dirEntry != "..") {
                     string fullPath = _dirName + "/" + dirEntry;
+
+                    // This test used to throw a BES_NOT_FOUND_ERROR which I don't think is
+                    // correct. If opendir() is used to open _dirName and iterate over the
+                    // entries returned by repeated calls to readdir() then how can the
+                    // paths be bad? One way, it turns out, is if there is a second process
+                    // adding and removing files in _dirName. But I think it's better to
+                    // ignore that case then return an error - is it really a BES error if
+                    // another process is rude? This showed up when running parallel tests
+                    // because the tests keysT and pvolT were stepping on each other. However,
+                    // I don't think this is limited to 'make check -j9' since it could be
+                    // exploited to crash the bes. jhrg 3/30/17
                     if (-1 == stat(fullPath.c_str(), &buf))
+                        continue;
+#if 0
+                        // Replaced by 'continue'. jhrg 3/30/17
                         throw BESError(string("Did not find the path: '") + fullPath + "'", BES_NOT_FOUND_ERROR,
                             __FILE__, __LINE__);
-
+#endif
                     // look at the mode and determine if this is a filename
                     // or a directory name
                     if (S_ISDIR(buf.st_mode)) {
