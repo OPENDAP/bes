@@ -40,6 +40,7 @@
 #include "BESInfo.h"
 #include "BESUtil.h"
 #include "BESContextManager.h"
+#include "BESDebug.h"
 
 
 /**
@@ -71,6 +72,8 @@ void BESBasicTransmitter::conditional_timeout_cancel()
         if( dosettrue == doset  || dosetyes == doset )
             cancel_timeout_on_send =  true;
     }
+    BESDEBUG("transmit",__func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+
     if (cancel_timeout_on_send)
         alarm(0);
 }

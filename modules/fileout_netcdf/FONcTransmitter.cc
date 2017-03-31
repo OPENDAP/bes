@@ -238,8 +238,11 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // Note that the BESResponseObject will manage the loaded_dds object's
         // memory. Make this a shared_ptr<>. jhrg 9/6/16
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
+        // Now that we are ready to start reading the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        conditional_timeout_cancel();
 
+        BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
 
         // ResponseBuilder splits the CE, so use the DHI or make two calls and
@@ -267,9 +270,6 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
         if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 
-        // Now that we are ready to start building the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
 
         BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << &temp_file[0] << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
