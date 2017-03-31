@@ -4,10 +4,18 @@ AUTOMAKE_OPTIONS = foreign check-news
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-noinst_PROGRAMS = endian_convert
+noinst_PROGRAMS = endian_convert multiball keepalive2
 endian_convert_SOURCES = endian_convert.cc endian_convert.h
 endian_convert_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 endian_convert_LDADD = $(DAP_SERVER_LIBS)
+
+multiball_SOURCES = multiball.cc 
+multiball_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
+multiball_LDADD = $(DAP_SERVER_LIBS) -lcurl
+
+keepalive2_SOURCES = keepalive2.cc 
+keepalive2_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
+keepalive2_LDADD = $(DAP_SERVER_LIBS) -lcurl
 
 EXTRA_PROGRAMS = 
 

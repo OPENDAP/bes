@@ -145,20 +145,15 @@ bool H4ByteStream::is_read()
     return d_is_read;
 }
 
-/**
- * @brief Read the chunk associated with this H4ByteStream
- *
- * @param deflate True if we should deflate the data
- * @param chunk_size The size of the chunk once deflated; ignored with deflate is false
- * @param shuffle_chunk True if the chunk was shuffled.
- * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
- */
-void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width)
+void H4ByteStream::set_is_read(bool state) { d_is_read = state; }
+
+void H4ByteStream::add_to_multi_read_queue(CURLM *multi_handle)
 {
-    if (d_is_read) {
-        BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - Already been read! Returning." << endl);
+    if (d_is_read || d_is_in_multi_queue) {
+        BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - H4ByteStream has been " << (d_is_in_multi_queue?"queued to be ":"") << "read! Returning." << endl);
         return;
     }
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - BEGIN  " << to_string() << endl);
 
     // This call uses the internal size param and allocates the buffer's memory
     set_rbuf_to_size();
@@ -182,33 +177,79 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
     std::string aws_s3_url("https://s3.amazonaws.com/");
     // Is it an AWS S3 access?
     if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
-    	// Yup, headed to S3.
-		string cloudydap_context("cloudydap");
+        // Yup, headed to S3.
+        string cloudydap_context("cloudydap");
 
         BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
-        		"AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
+                "AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
 
-		bool found;
-		string cloudydap_context_value;
-		cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
-		if (found) {
-		    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Found '"<<
-		    		cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
-			data_access_url += "?cloudydap=" + cloudydap_context_value;
-		}
-		else {
-	        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - The context "
-	        		"key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
-		}
-	}
+        bool found;
+        string cloudydap_context_value;
+        cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
+        if (found) {
+            BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Found '"<<
+                    cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
+            data_access_url += "?cloudydap=" + cloudydap_context_value;
+        }
+        else {
+            BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - The context "
+                    "key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
+        }
+    }
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #endif
+    string range = get_curl_range_arg_string();
 
     BESDEBUG(debug,
-            "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
-            		"from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
+            "H4ByteStream::"<< __func__ <<"() - Building CuRL hndle to retrieve  " << get_size() << " bytes "
+                    "from "<< data_access_url << ": " << range << endl);
 
-    curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        throw BESError("H4ByteStream: Unable to initialize libcurl! '", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    CURLcode res = curl_easy_setopt(curl,
+                        CURLOPT_URL,
+                        data_access_url.c_str() /*"http://example.com"*/);
+    if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // Use CURLOPT_ERRORBUFFER for a human-readable message
+    //
+    res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, d_curl_error_buf);
+    if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // get the offset to offset + size bytes
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/)) throw BESError(
+            string("HTTP Error: ").append(d_curl_error_buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // Pass all data to the 'write_data' function
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, h4bytestream_write_data)) throw BESError(
+            string("HTTP Error: ").append(d_curl_error_buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    // Pass this to write_data as the fourth argument
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, this)) throw BESError(
+            string("HTTP Error: ").append(d_curl_error_buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    /* add the individual transfers */
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Adding to multi_handle: "<< to_string() << endl);
+    curl_multi_add_handle(multi_handle, curl);
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Added to multi_handle: "<< to_string() << endl);
+
+    /* we start some action by calling perform right away */
+    // int still_running;
+    //  curl_multi_perform(multi_handle, &still_running);
+    d_curl_handle = curl;
+    d_is_in_multi_queue = true;
+    BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - END  "<< to_string() << endl);
+
+    return;
+
+}
+
+
+void H4ByteStream::complete_read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width)
+{
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
@@ -259,6 +300,143 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
     }
 
 #if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
+                if(BESDebug::IsSet("dmrpp")){
+                    unsigned long long chunk_buf_size = get_rbuf_size();
+                    dods_float32 *vals = (dods_float32 *) get_rbuf();
+                    ostream *os = BESDebug::GetStrm();
+                    (*os) << std::fixed <<
+                            std::setfill('_') <<
+                            std::setw(10) <<
+                            std::setprecision(0)
+                    ;
+                    (*os) << "DmrppArray::"<< __func__ <<"() - Chunk[" << i << "]: " << endl;
+                    for(unsigned long long k=0; k< chunk_buf_size/prototype()->width(); k++){
+                        (*os) << vals[k] << ", " << ((k==0)|((k+1)%10)?"":"\n");
+                    }
+
+                }
+#endif
+
+    d_is_read = true;
+}
+
+/**
+ * @brief Read the chunk associated with this H4ByteStream
+ *
+ * @param deflate True if we should deflate the data
+ * @param chunk_size The size of the chunk once deflated; ignored with deflate is false
+ * @param shuffle_chunk True if the chunk was shuffled.
+ * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
+ */
+void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width)
+{
+    if (d_is_read) {
+        BESDEBUG("dmrpp", "H4ByteStream::"<< __func__ <<"() - Already been read! Returning." << endl);
+        return;
+    }
+
+    if(!d_is_in_multi_queue){
+
+        // This call uses the internal size param and allocates the buffer's memory
+        set_rbuf_to_size();
+
+        string data_access_url = get_data_url();
+
+        BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
+
+        #if 1
+        /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
+         * in order to track S3 requests. The tag is submitted as a BESContext with the
+         * request. Here we check to see if the request is for an AWS S3 object, if
+         * it is AND we have the magic BESContext "cloudydap" then we add a query
+         * parameter to the S3 URL for tracking purposes.
+         *
+         * Should this be a function? FFS why? This is the ONLY place where this needs
+         * happen, as close to the curl call as possible and we can just turn it off
+         * down the road. - ndp 1/20/17 (EOD)
+         */
+        std::string aws_s3_url("https://s3.amazonaws.com/");
+        // Is it an AWS S3 access?
+        if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
+            // Yup, headed to S3.
+            string cloudydap_context("cloudydap");
+
+            BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - data_access_url is pointed at "
+                    "AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
+
+            bool found;
+            string cloudydap_context_value;
+            cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
+            if (found) {
+                BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - Found '"<<
+                        cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
+                data_access_url += "?cloudydap=" + cloudydap_context_value;
+            }
+            else {
+                BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - The context "
+                        "key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
+            }
+        }
+        /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        #endif
+
+        BESDEBUG(debug,
+                "H4ByteStream::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
+                        "from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
+
+        curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
+    }
+
+    // If the expected byte count was not read, it's an error.
+    if (get_size() != get_bytes_read()) {
+        ostringstream oss;
+        oss << "H4ByteStream: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
+                << " but found " << get_bytes_read() << endl;
+        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    // If data are compressed/encoded, then decode them here.
+    // At this point, the bytes_read property would be changed.
+    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
+    // The file that implements the shuffle filter is H5Zshuffle.c.
+
+    // TODO This code is pretty naive - there are apparently a number of
+    // different ways HDF5 can compress data, and it does also use a scheme
+    // where several algorithms can be applied in sequence. For now, get
+    // simple zlib deflate working.jhrg 1/15/17
+    // Added support for shuffle. Assuming unshuffle always is applied _after_
+    // inflating the data (reversing the shuffle --> deflate process). It is
+    // possible that data could just be deflated or shuffled (because we
+    // have test data that use only shuffle). jhrg 1/20/17
+
+    if (deflate) {
+        char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
+        try {
+            inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
+            // This replaces (and deletes) the original read_buffer with dest.
+            set_rbuf(dest, chunk_size);
+        }
+        catch (...) {
+            delete[] dest;
+            throw;
+        }
+    }
+
+    if (shuffle) {
+        // The internal buffer is chunk's full size at this point.
+        char *dest = new char[get_rbuf_size()];
+        try {
+            unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
+            set_rbuf(dest, get_rbuf_size());
+        }
+        catch (...) {
+            delete[] dest;
+            throw;
+        }
+    }
+
+#if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
 				if(BESDebug::IsSet("dmrpp")){
 					unsigned long long chunk_buf_size = get_rbuf_size();
 					dods_float32 *vals = (dods_float32 *) get_rbuf();
@@ -275,9 +453,17 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
 
 				}
 #endif
-
+    d_is_in_multi_queue = false;
     d_is_read = true;
 }
+
+
+void H4ByteStream::cleanup_curl_handle(){
+    if(d_curl_handle!=0)
+        curl_easy_cleanup(d_curl_handle);
+    d_curl_handle = 0;
+}
+
 
 /**
  *
@@ -292,6 +478,7 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
 void H4ByteStream::dump(ostream &oss) const
 {
     oss << "H4ByteStream";
+    oss << "[ptr='" << (void *)this << "']";
     oss << "[data_url='" << d_data_url << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
@@ -303,7 +490,12 @@ void H4ByteStream::dump(ostream &oss) const
         oss << d_chunk_position_in_array[i];
     }
     oss << ")]";
+    oss << "[is_read=" << d_is_read << "]";
+    oss << "[is_in_multi_queue=" << d_is_in_multi_queue << "]";
 }
+
+
+
 
 string H4ByteStream::to_string()
 {
@@ -311,6 +503,13 @@ string H4ByteStream::to_string()
     dump(oss);
     return oss.str();
 }
+
+
+
+
+
+
+
 
 } // namespace dmrpp
 

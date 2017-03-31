@@ -560,7 +560,7 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
-#if 1
+
     CPPUNIT_TEST(test_read_oneD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_asymmetric_array);
@@ -571,6 +571,7 @@ public:
     CPPUNIT_TEST(test_chunked_oneD_CE_01);
     CPPUNIT_TEST(test_read_oneD_uneven_chunked_array);
     CPPUNIT_TEST(test_read_twoD_uneven_chunked_array);
+#if 1
 
     CPPUNIT_TEST(test_chunked_gzipped_oneD);
     CPPUNIT_TEST(test_chunked_gzipped_twoD);

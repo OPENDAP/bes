@@ -57,9 +57,11 @@ namespace dmrpp {
  * @param data Pointer to this
  * @return The number of bytes read
  */
-static size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *data)
+size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
     H4ByteStream *h4bs = reinterpret_cast<H4ByteStream*>(data);
+
+    BESDEBUG("dmrpp", __func__ << "() - BEGIN  chunk: " << h4bs->to_string() << endl);
 
     // rbuf: |******++++++++++----------------------|
     //              ^        ^ bytes_read + nbytes
@@ -83,7 +85,7 @@ static size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, v
 
     h4bs->set_bytes_read(bytes_read + nbytes);
 
-    BESDEBUG("dmrpp", __func__ << "() -"
+    BESDEBUG("dmrpp", __func__ << "() - END "
 			<< " bytes_read: " << h4bs->get_bytes_read() << endl);
 
     return nbytes;
