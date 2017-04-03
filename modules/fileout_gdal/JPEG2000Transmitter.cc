@@ -44,6 +44,7 @@ using namespace libdap;
 #include "JPEG2000Transmitter.h"
 #include "FONgTransform.h"
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESContextManager.h>
@@ -223,7 +224,7 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_jpeg2000();

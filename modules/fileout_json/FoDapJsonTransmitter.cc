@@ -46,6 +46,7 @@
 #include <escaping.h>
 #include <ConstraintEvaluator.h>
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <TheBESKeys.h>
@@ -124,7 +125,7 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
 
         // Now that we are ready to start reading the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         // The response object will manage loaded_dds
         // Use the DDS from the ResponseObject along with the parameters
@@ -190,7 +191,7 @@ void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerI
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         ft.transform(o_strm, false /* do not send data */);
     }

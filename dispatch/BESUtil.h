@@ -119,6 +119,7 @@ public:
     static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
     static bool endsWith(std::string const &fullString, std::string const &ending);
+    static void conditional_timeout_cancel();
 
 } ;
 

@@ -44,6 +44,7 @@
 #include <escaping.h>
 #include <mime_util.h>
 
+#include <BESUtil.h>
 #include <BESDapNames.h>
 #include <BESDataNames.h>
 #include <BESDapTransmit.h>
@@ -82,7 +83,7 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
 
         // Now that we are ready to start reading the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         // Use the DDS from the ResponseObject along with the parameters
         // from the DataHandlerInterface to load the DDS with values.
@@ -148,7 +149,7 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
         }
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         print_values_as_ascii(dmr, dhi.get_output_stream());
         dhi.get_output_stream() << flush;
