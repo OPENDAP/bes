@@ -44,6 +44,7 @@ using namespace libdap;
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESContextManager.h>
@@ -221,7 +222,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_geotiff();

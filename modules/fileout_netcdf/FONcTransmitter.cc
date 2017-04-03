@@ -240,7 +240,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
         // Now that we are ready to start reading the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);

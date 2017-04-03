@@ -43,6 +43,8 @@
 #include "BESDebug.h"
 
 
+#if 0
+
 /**
  * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
  * timeout. The intent of this is to stop the timeout counter once the
@@ -77,6 +79,7 @@ void BESBasicTransmitter::conditional_timeout_cancel()
     if (cancel_timeout_on_send)
         alarm(0);
 }
+#endif
 
 void BESBasicTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
 {
