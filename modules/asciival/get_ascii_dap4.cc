@@ -295,10 +295,10 @@ static void print_values_as_ascii(Array *a, bool print_name, ostream &strm, Crc3
 
 static void print_structure_header(Structure *s, ostream &strm)
 {
-	Constructor::Vars_iter p = s->var_begin(), e = s->var_end();
-	bool needs_comma = false;
-	while (p != e) {
-	    if((*p)->send_p()){
+    Constructor::Vars_iter p = s->var_begin(), e = s->var_end();
+    bool needs_comma = false;
+    while (p != e) {
+        if((*p)->send_p()){
             if ((*p)->is_simple_type())
                 strm << (needs_comma?", ":"") <<  (*p)->FQN();
             else if ((*p)->type() == dods_structure_c)
@@ -308,9 +308,9 @@ static void print_structure_header(Structure *s, ostream &strm)
             else
                 throw InternalErr(__FILE__, __LINE__, "Unknown or unsupported type.");
             needs_comma = true;
-	    }
-		++p;
-	}
+        }
+        ++p;
+    }
 }
 
 static void print_structure_ascii(Structure *s, ostream &strm, bool print_name, Crc32 &checksum)
@@ -381,10 +381,10 @@ static void print_val_by_rows(D4Sequence *seq, ostream &strm, Crc32 &checksum)
 
 static void print_sequence_header(D4Sequence *s, ostream &strm)
 {
-	Constructor::Vars_iter p = s->var_begin(), e = s->var_end();
-	bool needs_comma = false;
-	while (p != e) {
-	    if((*p)->send_p()){
+    Constructor::Vars_iter p = s->var_begin(), e = s->var_end();
+    bool needs_comma = false;
+    while (p != e) {
+        if((*p)->send_p()){
             if((*p)->is_simple_type())
                 strm  << (needs_comma?", ":"") << (*p)->FQN();
             else if ((*p)->type() == dods_structure_c)
@@ -395,9 +395,9 @@ static void print_sequence_header(D4Sequence *s, ostream &strm)
                 throw InternalErr(__FILE__, __LINE__, "Unknown or unsupported type.");
 
             needs_comma = true;
-	    }
-		++p;
-	}
+        }
+        ++p;
+    }
 }
 
 
