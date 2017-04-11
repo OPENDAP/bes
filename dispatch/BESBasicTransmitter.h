@@ -35,17 +35,25 @@
 
 #include "BESTransmitter.h"
 
+#if 0
+const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
+#endif
+
 class BESBasicTransmitter: public BESTransmitter {
 public:
-	BESBasicTransmitter()
-	{
-	}
+    BESBasicTransmitter()
+    {
+
+    }
 	virtual ~BESBasicTransmitter()
 	{
 	}
 
 	virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi);
 	virtual void send_html(BESInfo &info, BESDataHandlerInterface &dhi);
+
+
+    // static void conditional_timeout_cancel();
 
 	virtual void dump(ostream &strm) const;
 };

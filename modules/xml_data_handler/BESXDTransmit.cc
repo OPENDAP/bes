@@ -38,6 +38,7 @@
 #include <mime_util.h>
 #include <XMLWriter.h>
 
+#include <BESUtil.h>
 #include <BESDapTransmit.h>
 #include <BESContainer.h>
 #include <BESDataNames.h>
@@ -149,6 +150,10 @@ void BESXDTransmit::send_basic_ascii(BESResponseObject * obj, BESDataHandlerInte
         // send it as ascii
         BESDEBUG("xd", "converting to xd datadds" << endl);
         DDS *xd_dds = dds_to_xd_dds(dds);
+
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
 
         BESDEBUG("xd", "getting xd values" << endl);
         XMLWriter writer;

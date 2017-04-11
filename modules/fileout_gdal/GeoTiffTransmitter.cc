@@ -44,6 +44,7 @@ using namespace libdap;
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESContextManager.h>
@@ -194,6 +195,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
         throw BESInternalError("Failed to read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
+
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
     string temp_file_name = GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX";
@@ -217,6 +219,10 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
 
     try {
         FONgTransform ft(dds, bdds->get_ce(), &temp_file[0]);
+
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
 
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_geotiff();

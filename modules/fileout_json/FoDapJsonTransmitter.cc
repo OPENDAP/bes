@@ -46,6 +46,7 @@
 #include <escaping.h>
 #include <ConstraintEvaluator.h>
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <TheBESKeys.h>
@@ -122,6 +123,10 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
 
         BESDEBUG("fojson", "FoJsonTransmitter::send_data - Reading data into DataDDS" << endl);
 
+        // Now that we are ready to start reading the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
+
         // The response object will manage loaded_dds
         // Use the DDS from the ResponseObject along with the parameters
         // from the DataHandlerInterface to load the DDS with values.
@@ -183,6 +188,10 @@ void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerI
             throw BESInternalError("Output stream is not set, can not return as JSON", __FILE__, __LINE__);
 
         FoDapJsonTransform ft(processed_dds);
+
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
 
         ft.transform(o_strm, false /* do not send data */);
     }

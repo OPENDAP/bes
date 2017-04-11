@@ -31,11 +31,55 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <iostream>
+#include <string>
+#include <algorithm>
+#include <unistd.h>
 
+#include "TheBESKeys.h"
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
 #include "BESUtil.h"
 #include "BESContextManager.h"
+#include "BESDebug.h"
+
+
+#if 0
+
+/**
+ * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
+ * timeout. The intent of this is to stop the timeout counter once the
+ * BES starts sending data back since, the network link used by a remote
+ * client may be low-bandwidth and data providers might want to ensure those
+ * users get their data (and don't submit second, third, ..., requests when/if
+ * the first one fails). The timeout is initiated in the BES framework when it
+ * first processes the request.
+ *
+ * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
+ * in the 'int BESInterface::execute_request(const string &from)' method.
+ *
+ * @see BESBasicTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+ * methods of the child classes
+ */
+void BESBasicTransmitter::conditional_timeout_cancel()
+{
+    bool cancel_timeout_on_send = false;
+    bool found = false;
+    string doset ="";
+    const string dosettrue ="true";
+    const string dosetyes = "yes";
+
+    TheBESKeys::TheKeys()->get_value( BES_KEY_TIMEOUT_CANCEL, doset, found ) ;
+    if( true == found ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( dosettrue == doset  || dosetyes == doset )
+            cancel_timeout_on_send =  true;
+    }
+    BESDEBUG("transmit",__func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+
+    if (cancel_timeout_on_send)
+        alarm(0);
+}
+#endif
 
 void BESBasicTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
 {
