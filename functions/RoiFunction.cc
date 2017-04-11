@@ -94,7 +94,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         break;
     }
 
-    auto_ptr<Structure> response(new Structure("roi_subset"));
+    auto_ptr<Structure> response(new Structure("roi_subset_unwrap"));
 
     Array *bbox = static_cast<Array*>(argv[argc-1]);
 
