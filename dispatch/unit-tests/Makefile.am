@@ -30,7 +30,8 @@ TESTS = constraintT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest uncompressT
+		urlT BESCatalogListUnitTest \
+		uncompressT 
 
 # cacheT gzT zT uncompressT lockT containerT Temporarily removed while I sort out the cache 
 # errors 5/6/14 jhrg
@@ -75,6 +76,11 @@ DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.log *.sum real*
 
+############################################
+# This was generating a directory of "." so 
+# I migrated it to the abs_srcdir below 
+# - ndp 4/12/17
+#
 #test_config.h: test_config.h.in Makefile
 #	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
 
