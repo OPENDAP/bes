@@ -25,6 +25,7 @@
 
 class BESUncompressCache: public BESFileLockingCache {
 private:
+    static bool d_enabled;
     static BESUncompressCache * d_instance;
     static void delete_instance()
     {

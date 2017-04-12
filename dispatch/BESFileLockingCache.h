@@ -74,6 +74,9 @@ class BESFileLockingCache: public BESObj {
 private:
     static const char DAP_CACHE_CHAR = '#';
 
+    bool d_cache_enabled;
+
+
 protected:
 
     // pathname of the cache directory
@@ -94,27 +97,28 @@ private:
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
-    void m_check_ctor_params();
-    void m_initialize_cache_info();
-
-    unsigned long long m_collect_cache_dir_info(CacheFiles &contents);
-
     /// Name of the file that tracks the size of the cache
     string d_cache_info;
     int d_cache_info_fd;
-
-    void m_record_descriptor(const string &file, int fd);
-    int m_get_descriptor(const string &file);
 
     // map that relates files to the descriptor used to obtain a lock
     typedef std::multimap<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
+    bool m_check_ctor_params();
+    bool m_initialize_cache_info();
+
+    unsigned long long m_collect_cache_dir_info(CacheFiles &contents);
+
+    void m_record_descriptor(const string &file, int fd);
+    int m_get_descriptor(const string &file);
+
+
     // Removed; see comment in .cc file. void unlock_and_close(int fd);
 
 protected:
 
-    BESFileLockingCache(): d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(-1){};
+    BESFileLockingCache(): d_cache_enabled(true),d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(-1){};
     void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
     BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
     virtual ~BESFileLockingCache() { if (d_cache_info_fd != -1){ close(d_cache_info_fd); d_cache_info_fd=-1;} }
@@ -147,6 +151,9 @@ public:
     static bool dir_exists(const string &dir);
     // static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
+    bool cache_enabled(){ return d_cache_enabled; }
+    void disable(){ d_cache_enabled = false; }
+    void enable(){ d_cache_enabled = true; }
 
     virtual void dump(ostream &strm) const ;
 };

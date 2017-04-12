@@ -390,7 +390,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
 }
 
 /** Private method */
-void BESFileLockingCache::m_check_ctor_params()
+bool BESFileLockingCache::m_check_ctor_params()
 {
     // TODO Should this really be a fatal error? What about just not 
     // using the cache in this case or writing out a warning message
@@ -404,8 +404,9 @@ void BESFileLockingCache::m_check_ctor_params()
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
     if (d_cache_dir.empty()) {
-        string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory was not specified";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
+            "The cache directory was not specified. CACHE IS DISABLED." << endl);
+        return false;
     }
 
     int status = mkdir(d_cache_dir.c_str(), 0775);
@@ -428,10 +429,12 @@ void BESFileLockingCache::m_check_ctor_params()
 
     BESDEBUG("cache",
         "BESFileLockingCache::m_check_ctor_params() - directory " << d_cache_dir << ", prefix " << d_prefix << ", max size " << d_max_cache_size_in_bytes << endl);
+
+    return true;
 }
 
 /** Private method. */
-void BESFileLockingCache::m_initialize_cache_info()
+bool BESFileLockingCache::m_initialize_cache_info()
 {
     BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - BEGIN" << endl);
 
@@ -443,32 +446,36 @@ void BESFileLockingCache::m_initialize_cache_info()
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
-    m_check_ctor_params(); // Throws BESInternalError on error.
+    bool status = false;
+    if(m_check_ctor_params()){ // Throws BESInternalError on error.
 
-    d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
+        d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
 
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
+        BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
 
-    // See if we can create it. If so, that means it doesn't exist. So make it and
-    // set the cache initial size to zero.
-    if (createLockedFile(d_cache_info, d_cache_info_fd)) {
-        // initialize the cache size to zero
-        unsigned long long size = 0;
-        if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-            throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`", __FILE__,
-                __LINE__);
+        // See if we can create it. If so, that means it doesn't exist. So make it and
+        // set the cache initial size to zero.
+        if (createLockedFile(d_cache_info, d_cache_info_fd)) {
+            // initialize the cache size to zero
+            unsigned long long size = 0;
+            if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+                throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`", __FILE__,
+                    __LINE__);
 
-        // This leaves the d_cache_info_fd file descriptor open
-        unlock_cache();
-    }
-    else {
-        if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            // This leaves the d_cache_info_fd file descriptor open
+            unlock_cache();
         }
+        else {
+            if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
+                throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            }
+        }
+        BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
+        status = true;
     }
-
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END " <<
+        "status: " << (status?"TRUE":"FALSE") << endl);
+    return status;
 }
 
 const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
