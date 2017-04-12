@@ -403,9 +403,12 @@ bool BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
+    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
+        "d_cache_dir: '" << d_cache_dir << "'" << endl);
     if (d_cache_dir.empty()) {
         BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
             "The cache directory was not specified. CACHE IS DISABLED." << endl);
+        disable();
         return false;
     }
 
@@ -426,10 +429,13 @@ bool BESFileLockingCache::m_check_ctor_params()
         string err = "The cache size was not specified, must be greater than zero";
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
-
+    enable();
     BESDEBUG("cache",
-        "BESFileLockingCache::m_check_ctor_params() - directory " << d_cache_dir << ", prefix " << d_prefix << ", max size " << d_max_cache_size_in_bytes << endl);
-
+        "BESFileLockingCache::" << __func__ << "() -" <<
+        " d_cache_dir: " << d_cache_dir <<
+        " d_prefix: " << d_prefix <<
+        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes <<
+        " (The cache has been " << (cache_enabled()?"enabled)":"disabled)") << endl);
     return true;
 }
 
@@ -446,8 +452,8 @@ bool BESFileLockingCache::m_initialize_cache_info()
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
-    bool status = false;
-    if(m_check_ctor_params()){ // Throws BESInternalError on error.
+    bool status = m_check_ctor_params();
+    if(status){ // Throws BESError on error.
 
         d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
 
@@ -471,10 +477,9 @@ bool BESFileLockingCache::m_initialize_cache_info()
             }
         }
         BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
-        status = true;
     }
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END " <<
-        "status: " << (status?"TRUE":"FALSE") << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END [" <<
+        "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
     return status;
 }
 

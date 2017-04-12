@@ -121,7 +121,14 @@ protected:
     BESFileLockingCache(): d_cache_enabled(true),d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(-1){};
     void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
     BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
-    virtual ~BESFileLockingCache() { if (d_cache_info_fd != -1){ close(d_cache_info_fd); d_cache_info_fd=-1;} }
+
+    virtual ~BESFileLockingCache()
+    {
+        if (d_cache_info_fd != -1){
+            close(d_cache_info_fd);
+            d_cache_info_fd=-1;
+        }
+    }
 
 public:
 

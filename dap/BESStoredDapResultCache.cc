@@ -89,6 +89,7 @@ using namespace std;
 using namespace libdap;
 
 BESStoredDapResultCache *BESStoredDapResultCache::d_instance = 0;
+bool BESStoredDapResultCache::d_enabled = true;
 const string BESStoredDapResultCache::SUBDIR_KEY = "DAP.StoredResultsCache.subdir";
 const string BESStoredDapResultCache::PREFIX_KEY = "DAP.StoredResultsCache.prefix";
 const string BESStoredDapResultCache::SIZE_KEY = "DAP.StoredResultsCache.size";
@@ -209,18 +210,23 @@ BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance(const string &data_root_dir, const string &stored_results_subdir,
     const string &result_file_prefix, unsigned long long max_cache_size)
 {
-    if (d_instance == 0) {
+    if (d_enabled && d_instance == 0) {
         if (dir_exists(data_root_dir)) {
-            try {
-                d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix,
-                    max_cache_size);
+            d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix,
+                max_cache_size);
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
 #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
 #endif
-            }
-            catch (BESInternalError &bie) {
-                BESDEBUG("cache",
-                    "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+                BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
             }
         }
     }
@@ -233,16 +239,21 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
 BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
-    if (d_instance == 0) {
-        try {
-            d_instance = new BESStoredDapResultCache();
+    if (d_enabled && d_instance == 0) {
+        d_instance = new BESStoredDapResultCache();
+        d_enabled = d_instance->cache_enabled();
+        if(!d_enabled){
+            delete d_instance;
+            d_instance = NULL;
+            BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
+                "Cache is DISABLED"<< endl);
+       }
+        else {
 #ifdef HAVE_ATEXIT
             atexit(delete_instance);
 #endif
-        }
-        catch (BESInternalError &bie) {
-            BESDEBUG("cache",
-                "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
+                "Cache is ENABLED"<< endl);
         }
     }
 
