@@ -452,8 +452,8 @@ bool BESFileLockingCache::m_initialize_cache_info()
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
-    bool status = m_check_ctor_params();
-    if(status){ // Throws BESError on error.
+    bool status = m_check_ctor_params(); // Throws BESError on error.
+    if(status){
 
         d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
 
