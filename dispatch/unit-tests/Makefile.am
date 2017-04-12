@@ -31,7 +31,7 @@ TESTS = constraintT defT keysT pfileT			\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
 		urlT BESCatalogListUnitTest \
-		uncompressT 
+		uncompressT cacheT
 
 # cacheT gzT zT uncompressT lockT containerT Temporarily removed while I sort out the cache 
 # errors 5/6/14 jhrg
@@ -122,7 +122,7 @@ infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
 agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
-# cacheT_SOURCES = cacheT.cc
+cacheT_SOURCES = cacheT.cc
 
 # lockT_SOURCES = lockT.cc
 
