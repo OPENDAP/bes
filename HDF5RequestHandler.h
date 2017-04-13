@@ -119,7 +119,6 @@ class HDF5RequestHandler:public BESRequestHandler {
      static ObjMemCache *lrdata_mem_cache;
      static ObjMemCache *srdata_mem_cache;
 
-
      // BES keys
      static bool _usecf;
      static bool _pass_fileid;

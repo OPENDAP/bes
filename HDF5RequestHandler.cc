@@ -132,9 +132,12 @@ bool HDF5RequestHandler::_disk_cache_float_only_comp_data    =false;
 float HDF5RequestHandler::_disk_cache_comp_threshold        =1.0;
 long HDF5RequestHandler::_disk_cache_var_size        =0;
 
+//BaseTypeFactory factory;
+//libdap::DDS HDF5RequestHandler::hd_dds(&factory,"");
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
+//libdap::DDS*cache_dds;
 
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
@@ -283,6 +286,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                 }
 
                 read_cfdas( *das,filename,cf_fileid);
+                das->print(cout);
                 H5Fclose(cf_fileid);
             }
             else {// Default option
@@ -372,7 +376,33 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
 
             // For the time being, not mess up CF's fileID with Default's fileID
             if(true == _usecf) {
+// This block cannot be used to cache the data
+#if 0
+                string base_filename =  HDF5CFUtil::obtain_string_after_lastslash(filename);
+                string dds_filename = "/tmp/"+base_filename+"_dds";
+                FILE *dds_file = fopen(dds_filename.c_str(),"r");
+cerr<<"before parsing "<<endl;
+BaseTypeFactory tf;
+DDS tdds(&tf,name_path(filename),"3.2");
+tdds.filename(filename);
+                //dds->parse(dds_file);
+                tdds.parse(dds_file);
+                //DDS *cache_dds = new DDS(tdds);
+                cache_dds = new DDS(tdds);
+if(dds!=NULL)
+   delete dds;
+dds = cache_dds;
+tdds.print(cout);
+dds->print(cout);
+cerr<<"after parsing "<<endl;
+//dds->print(cout);
+ //               fclose(dds_file);
+//#endif
+
+#endif 
+// end of this block
            
+ 
                 cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
                 if (cf_fileid < 0){
                     string invalid_file_msg="Could not open this HDF5 file ";
@@ -382,7 +412,15 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
                     invalid_file_msg +=" distributor.";
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
+//#if 0
                 read_cfdds(*dds,filename,cf_fileid);
+//#endif
+                // Generate the DDS cached file
+                string base_filename =  HDF5CFUtil::obtain_string_after_lastslash(filename);
+                string dds_filename = "/tmp/"+base_filename+"_dds";
+                FILE *dds_file = fopen(dds_filename.c_str(),"w");
+                dds->print(dds_file);
+                fclose(dds_file);
 
             }
             else {
@@ -467,6 +505,8 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
             }
  
         }
+
+//dds->print(cout);
     
     }
     catch(InternalErr & e) {
@@ -528,11 +568,29 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
         DDS *dds = bdds->get_dds();
 
+        BaseTypeFactory tf;
+        DDS tdds(&tf,name_path(filename),"3.2");
+        tdds.filename(filename);
+
         // Build a DDS in the empty DDS object
         get_dds_with_attributes(dhi.container->access(), container_name, dds);
 
-        bdds->set_constraint( dhi ) ;
+        // The following block reads dds from a dds cache file.   
+#if 0
+        string base_filename =  HDF5CFUtil::obtain_string_after_lastslash(filename);
+        string dds_filename = "/tmp/"+base_filename+"_dds";
 
+        FILE *dds_file = fopen(dds_filename.c_str(),"r");
+        tdds.parse(dds_file);
+//cerr<<"before parsing "<<endl;
+        DDS* cache_dds = new DDS(tdds);
+        if(dds != NULL)
+            delete dds;
+        bdds->set_dds(cache_dds);
+        fclose(dds_file);
+#endif
+
+        bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
     
     }
