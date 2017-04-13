@@ -96,7 +96,7 @@ public:
 
     void setUp()
     {
-        string bes_conf = (string)TEST_ABS_SRC_DIR + "/bes.conf" ;
+        string bes_conf = (string)TEST_ABS_SRC_DIR + "/uncompressT_bes.keys" ;
         TheBESKeys::ConfigFile = bes_conf ;
 
         DBG( cerr << "-------------------------------------------" << endl);
