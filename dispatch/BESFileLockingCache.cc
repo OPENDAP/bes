@@ -550,8 +550,8 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  * the result, the file may have been added to the cache by another
  * process.
  *
- * @param src src file that will be cached eventually
- * @param target a value-result parameter set to the resulting cached file
+ * @param target a Name of the cached file
+ * @param fd a value-result parameter set to the locked cached file
  * @return true if the file is in the cache and has been locked, false if
  * the file is/was not in the cache.
  * @throws Error if the attempt to get the (shared) lock failed for any

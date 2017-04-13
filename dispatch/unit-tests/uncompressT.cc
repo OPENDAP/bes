@@ -202,6 +202,7 @@ public:
             CPPUNIT_ASSERT( !"Unable to create the required cache object." ) ;
         }
 
+        clean_dir(cache_dir, cache_prefix);
 
     }
 
