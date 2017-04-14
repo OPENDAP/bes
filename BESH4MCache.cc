@@ -20,6 +20,8 @@
 using namespace std;
 
 BESH4Cache *BESH4Cache::d_instance = 0;
+bool BESH4Cache::d_enabled = true;
+
 const string BESH4Cache::PATH_KEY = "HDF4.Cache.latlon.path";
 const string BESH4Cache::PREFIX_KEY = "HDF4.Cache.latlon.prefix";
 const string BESH4Cache::SIZE_KEY = "HDF4.Cache.latlon.size";
@@ -97,15 +99,27 @@ BESH4Cache::BESH4Cache()
 BESH4Cache *
 BESH4Cache::get_instance()
 {
-    if (d_instance == 0) {
+    if (d_enabled && d_instance == 0) {
         struct stat buf;
         string cache_dir = getCacheDirFromConfig();
         if ((stat(cache_dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR)) {
             try {
                 d_instance = new BESH4Cache();
-#ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-#endif
+
+                d_enabled = d_instance->cache_enabled();
+                if(!d_enabled){
+                    delete d_instance;
+                    d_instance = NULL;
+                    BESDEBUG("cache", "BESH4Cache::"<<__func__ << "() - " <<
+                        "Cache is DISABLED"<< endl);
+                }
+                else {
+    #ifdef HAVE_ATEXIT
+                    atexit(delete_instance);
+    #endif
+                    BESDEBUG("cache", "BESH4Cache::" << __func__ << "() - " <<
+                        "Cache is ENABLED"<< endl);
+                }
             }
             catch (BESInternalError &bie) {
                 BESDEBUG("cache",

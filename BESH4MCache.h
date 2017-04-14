@@ -16,6 +16,7 @@
 class BESH4Cache: public BESFileLockingCache
 {
 private: 
+    static bool d_enabled;
     static BESH4Cache *d_instance;
     static void delete_instance() { delete d_instance; d_instance = 0; }
 
