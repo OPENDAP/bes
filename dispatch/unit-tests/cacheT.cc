@@ -68,7 +68,7 @@ static bool RUN_64_BIT_CACHE_TEST = false;
 static const std::string CACHE_PREFIX = string("bes_cache");
 static const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
 
-static const std::string TEST_CACHE_DIR = (string)TEST_SRC_DIR + "/cache" ;
+static const string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR,"cache");
 
 
 // For the 64 bit  (> 4G tests)

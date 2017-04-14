@@ -30,10 +30,10 @@ TESTS = constraintT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest \
-		uncompressT cacheT lockT
+		urlT BESCatalogListUnitTest containerT \
+		uncompressT cacheT lockT 
 
-# gzT zT lockT containerT Temporarily removed while I sort out the cache 
+# gzT zT containerT Temporarily removed while I sort out the cache 
 # errors 5/6/14 jhrg
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
 
@@ -97,7 +97,7 @@ clean-local:
 
 constraintT_SOURCES = constraintT.cc
 
-# containerT_SOURCES = containerT.cc
+containerT_SOURCES = containerT.cc
 
 defT_SOURCES = defT.cc
 
