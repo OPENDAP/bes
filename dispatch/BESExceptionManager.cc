@@ -30,11 +30,15 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
+
+
 #include "BESExceptionManager.h"
 
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESInfoList.h"
+#include "BESLog.h"
 
 #define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
@@ -104,6 +108,7 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
     if (action_name == "") action_name = "BES";
     dhi.error_info->begin_response(action_name, dhi);
 
+
     string administrator = "";
     try {
         bool found = false;
@@ -119,6 +124,24 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
     }
     dhi.error_info->add_exception(e, administrator);
     dhi.error_info->end_response();
+
+    /**--------------------------------------------------
+     * ERROR LOG
+     */
+    struct tm *ptm;
+    time_t timer = time(NULL);
+    ptm = gmtime ( &timer );
+
+
+    (*BESLog::TheLog()) <<
+        "time: " << asctime(ptm) << " " <<
+        "error: " << e.get_error_type() << " " <<
+        "file: " << e.get_file() << " " <<
+        "line: " << e.get_line() << " " <<
+        "message: " << e.get_message() << endl ;
+
+    /* ------------------------------------------------*/
+
     return e.get_error_type();
 }
 
