@@ -33,8 +33,6 @@ TESTS = constraintT defT keysT pfileT			\
 		urlT BESCatalogListUnitTest containerT \
 		uncompressT cacheT lockT 
 
-# gzT zT containerT Temporarily removed while I sort out the cache 
-# errors 5/6/14 jhrg
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
 
 if LIBDAP
