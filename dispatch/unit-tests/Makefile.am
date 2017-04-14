@@ -31,9 +31,9 @@ TESTS = constraintT defT keysT pfileT			\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
 		urlT BESCatalogListUnitTest \
-		uncompressT cacheT
+		uncompressT cacheT lockT
 
-# cacheT gzT zT uncompressT lockT containerT Temporarily removed while I sort out the cache 
+# gzT zT lockT containerT Temporarily removed while I sort out the cache 
 # errors 5/6/14 jhrg
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
 
@@ -124,7 +124,7 @@ agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 cacheT_SOURCES = cacheT.cc
 
-# lockT_SOURCES = lockT.cc
+lockT_SOURCES = lockT.cc
 
 # gzT_SOURCES = gzT.cc
 # gzT_LDADD =  $(LDADD) -lz

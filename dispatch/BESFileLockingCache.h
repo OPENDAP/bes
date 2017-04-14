@@ -73,6 +73,7 @@ typedef std::list<cache_entry> CacheFiles;
 class BESFileLockingCache: public BESObj {
 
     friend class cacheT;
+    friend class lockT;
 
 private:
     static const char DAP_CACHE_CHAR = '#';

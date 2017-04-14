@@ -82,8 +82,6 @@ static const unsigned long long FILE_SIZE_IN_MEGS_TEST_64 = 1024ULL; // in Mb
 
 static bool debug = false;
 static bool bes_debug = false;
-
-
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -218,7 +216,7 @@ public:
         TheBESKeys::ConfigFile = bes_conf ;
 
         if (bes_debug){
-            BESDebug::SetUp("DBG( cerr,cache");
+            BESDebug::SetUp("cerr,cache");
             DBG( cerr << "setup() - BESDEBUG Enabled " << endl);
         }
 
