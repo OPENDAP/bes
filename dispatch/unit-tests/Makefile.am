@@ -30,8 +30,8 @@ TESTS = constraintT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest containerT \
-		uncompressT cacheT lockT 
+		urlT BESCatalogListUnitTest \
+		uncompressT cacheT lockT containerT
 
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
 

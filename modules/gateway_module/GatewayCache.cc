@@ -21,6 +21,7 @@ namespace gateway
 {
 
 GatewayCache *GatewayCache::d_instance = 0;
+bool GatewayCache::d_enabled = true;
 const string GatewayCache::DIR_KEY       = "Gateway.Cache.dir";
 const string GatewayCache::PREFIX_KEY    = "Gateway.Cache.prefix";
 const string GatewayCache::SIZE_KEY      = "Gateway.Cache.size";
@@ -106,17 +107,22 @@ GatewayCache::GatewayCache(const string &cache_dir, const string &prefix, unsign
 GatewayCache *
 GatewayCache::get_instance(const string &cache_dir, const string &result_file_prefix, unsigned long long max_cache_size)
 {
-    if (d_instance == 0){
+    if (d_enabled &&  d_instance == 0){
         if (dir_exists(cache_dir)) {
-        	try {
-                d_instance = new GatewayCache(cache_dir, result_file_prefix, max_cache_size);
-#ifdef HAVE_ATEXIT
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
+    #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
-#endif
-        	}
-        	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "[ERROR] GatewayCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-        	}
+    #endif
+                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
+           }
     	}
     }
     return d_instance;
@@ -128,12 +134,23 @@ GatewayCache::get_instance(const string &cache_dir, const string &result_file_pr
 GatewayCache *
 GatewayCache::get_instance()
 {
-    if (d_instance == 0) {
+    if (d_enabled && d_instance == 0) {
 		try {
 			d_instance = new GatewayCache();
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
+    #ifdef HAVE_ATEXIT
+                atexit(delete_instance);
+    #endif
+                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
+           }
 		}
 		catch(BESInternalError &bie){
 			BESDEBUG("cache", "[ERROR] GatewayCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
