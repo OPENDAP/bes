@@ -38,6 +38,7 @@ using namespace CppUnit ;
 
 #include <iostream>
 #include <cstdlib>
+#include <dirent.h>
 #include <GetOpt.h>
 
 using std::cerr ;
@@ -62,6 +63,26 @@ static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR,"cache");
 static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR,"template.txt");
 static const string CACHE_PREFIX("lock_test");
 
+int clean_dir(string dirname, string prefix){
+    DIR *dp;
+    struct dirent *dirp;
+    if((dp  = opendir(dirname.c_str())) == NULL) {
+        DBG( cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
+        return errno;
+    }
+
+    while ((dirp = readdir(dp)) != NULL) {
+        string name(dirp->d_name);
+        if (name.find(prefix) == 0){
+            string abs_name = BESUtil::assemblePath(dirname, name, true);
+            DBG( cerr << __func__ << "() - Purging file: " << abs_name << endl);
+            remove(abs_name.c_str());
+        }
+
+    }
+    closedir(dp);
+    return 0;
+}
 
 class lockT: public TestFixture {
 private:
@@ -83,6 +104,7 @@ public:
 
     void tearDown()
     {
+        clean_dir(CACHE_DIR,CACHE_PREFIX);
     }
 
 

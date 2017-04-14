@@ -38,6 +38,7 @@ using namespace CppUnit;
 
 #include <iostream>
 #include <cstdlib>
+#include <dirent.h>
 
 using std::cerr;
 using std::endl;
@@ -65,6 +66,28 @@ static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR,"cache");
 static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR,"template.txt");
 static const string CACHE_PREFIX("container_test");
 
+int clean_dir(string dirname, string prefix){
+    DIR *dp;
+    struct dirent *dirp;
+    if((dp  = opendir(dirname.c_str())) == NULL) {
+        DBG( cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
+        return errno;
+    }
+
+    while ((dirp = readdir(dp)) != NULL) {
+        string name(dirp->d_name);
+        if (name.find(prefix) == 0){
+            string abs_name = BESUtil::assemblePath(dirname, name, true);
+            DBG( cerr << __func__ << "() - Purging file: " << abs_name << endl);
+            remove(abs_name.c_str());
+        }
+
+    }
+    closedir(dp);
+    return 0;
+}
+
+
 class containerT: public TestFixture {
 private:
 
@@ -88,6 +111,7 @@ public:
 
     void tearDown()
     {
+        clean_dir(CACHE_DIR,CACHE_PREFIX);
     }
 
     void test_default_cannot_find(){
@@ -256,7 +280,7 @@ public:
         string com_file = CACHE_DIR + "/testfile.txt.gz";
 
         TheBESKeys::TheKeys()->set_key("BES.UncompressCache.dir", CACHE_DIR);
-        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.prefix", "cont_cache");
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.prefix", CACHE_PREFIX);
         TheBESKeys::TheKeys()->set_key("BES.UncompressCache.size", "1");
 
         string chmod = (string) "chmod a+w " + CACHE_DIR;
@@ -404,6 +428,8 @@ int main(int argc, char*argv[])
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
+
+
 
 
     return wasSuccessful ? 0 : 1;
