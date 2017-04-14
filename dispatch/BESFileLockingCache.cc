@@ -390,7 +390,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
 }
 
 /** Private method */
-void BESFileLockingCache::m_check_ctor_params()
+bool BESFileLockingCache::m_check_ctor_params()
 {
     // TODO Should this really be a fatal error? What about just not 
     // using the cache in this case or writing out a warning message
@@ -403,9 +403,13 @@ void BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
+    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
+        "d_cache_dir: '" << d_cache_dir << "'" << endl);
     if (d_cache_dir.empty()) {
-        string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory was not specified";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
+            "The cache directory was not specified. CACHE IS DISABLED." << endl);
+        disable();
+        return false;
     }
 
     int status = mkdir(d_cache_dir.c_str(), 0775);
@@ -425,13 +429,18 @@ void BESFileLockingCache::m_check_ctor_params()
         string err = "The cache size was not specified, must be greater than zero";
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
-
+    enable();
     BESDEBUG("cache",
-        "BESFileLockingCache::m_check_ctor_params() - directory " << d_cache_dir << ", prefix " << d_prefix << ", max size " << d_max_cache_size_in_bytes << endl);
+        "BESFileLockingCache::" << __func__ << "() -" <<
+        " d_cache_dir: " << d_cache_dir <<
+        " d_prefix: " << d_prefix <<
+        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes <<
+        " (The cache has been " << (cache_enabled()?"enabled)":"disabled)") << endl);
+    return true;
 }
 
 /** Private method. */
-void BESFileLockingCache::m_initialize_cache_info()
+bool BESFileLockingCache::m_initialize_cache_info()
 {
     BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - BEGIN" << endl);
 
@@ -443,32 +452,35 @@ void BESFileLockingCache::m_initialize_cache_info()
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
-    m_check_ctor_params(); // Throws BESInternalError on error.
+    bool status = m_check_ctor_params(); // Throws BESError on error.
+    if(status){
 
-    d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
+        d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
 
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
+        BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
 
-    // See if we can create it. If so, that means it doesn't exist. So make it and
-    // set the cache initial size to zero.
-    if (createLockedFile(d_cache_info, d_cache_info_fd)) {
-        // initialize the cache size to zero
-        unsigned long long size = 0;
-        if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-            throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`", __FILE__,
-                __LINE__);
+        // See if we can create it. If so, that means it doesn't exist. So make it and
+        // set the cache initial size to zero.
+        if (createLockedFile(d_cache_info, d_cache_info_fd)) {
+            // initialize the cache size to zero
+            unsigned long long size = 0;
+            if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+                throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`", __FILE__,
+                    __LINE__);
 
-        // This leaves the d_cache_info_fd file descriptor open
-        unlock_cache();
-    }
-    else {
-        if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            // This leaves the d_cache_info_fd file descriptor open
+            unlock_cache();
         }
+        else {
+            if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
+                throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            }
+        }
+        BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
     }
-
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END [" <<
+        "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
+    return status;
 }
 
 const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
@@ -538,8 +550,8 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  * the result, the file may have been added to the cache by another
  * process.
  *
- * @param src src file that will be cached eventually
- * @param target a value-result parameter set to the resulting cached file
+ * @param target a Name of the cached file
+ * @param fd a value-result parameter set to the locked cached file
  * @return true if the file is in the cache and has been locked, false if
  * the file is/was not in the cache.
  * @throws Error if the attempt to get the (shared) lock failed for any

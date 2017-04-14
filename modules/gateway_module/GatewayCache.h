@@ -17,6 +17,7 @@ namespace gateway
 class GatewayCache: public BESFileLockingCache
 {
 private:
+    static bool d_enabled;
     static GatewayCache * d_instance;
     static void delete_instance() { delete d_instance; d_instance = 0; }
 

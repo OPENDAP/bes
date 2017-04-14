@@ -12,6 +12,16 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_6.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_7.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_8.dods.bescmd)
 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_0.dap.bescmd)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_1.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_2.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_3.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_4.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_5.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_6.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_7.dap.bescmd, xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_8.dap.bescmd, xfail)
+
 # bbox() is not really intended as a standalone function, but it 
 # returns data values using DAP variables...
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bbox_0.dods.bescmd)
