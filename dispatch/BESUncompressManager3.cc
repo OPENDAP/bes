@@ -122,16 +122,17 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  * request.
  *
  * @param src file to be uncompressed
- * @param target target file to uncompress into
+ * @param cache_file Name of file to uncompress into
  * @param cache BESCache object to uncompress the src file in
  * @return true if the file's contents are in the cache and at the pathname
  * cfile
  * @throws BESInternalError if there is a problem uncompressing
  * the file
  */
-bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFileLockingCache *cache)
+bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BESFileLockingCache *cache)
 {
     BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl );
+
 
     // All compressed files have a 'dot extension'.
     string::size_type dot = src.rfind(".");
@@ -150,23 +151,43 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFile
         return false;
     }
 
+    /**
+     * If the cache object is a null pointer then we can't go further, and
+     * we know that the item isn't in the cache.
+     * FIXME IS THIS AN ERROR??
+     * TODO  IS THIS AN ERROR??
+     * I think maybe it's fine returning false and not throwing because
+     * this means the down stream software will try to read the file
+     * and, since this test is after checks that determine if the file
+     * appears to be compressed, will fail. This may however be difficult
+     * to diagnose for the users.
+     */
+    if(cache==NULL) {
+        std::ostringstream oss;
+        oss << "BESUncompressManager3::" << __func__ << "() - ";
+        oss << "The supplied Cache object is NULL. Decompression Requires An Operational Cache.";
+        BESDEBUG( "uncompress", oss.str() << endl );
+        throw BESInternalError(oss.str(),__FILE__,__LINE__);
+    }
+
+
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).
-    cfile = cache->get_cache_file_name(src);
+    cache_file = cache->get_cache_file_name(src);
 
     try {
         BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - is cached? " << src << endl );
 
         int fd;
-        if (cache->get_read_lock(cfile, fd)) {
-            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cfile << endl );
+        if (cache->get_read_lock(cache_file, fd)) {
+            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cache_file << endl );
             return true;
         }
 
         // Now we actually try to uncompress the file, given that there's not a decomp'd version
         // in the cache. First make an empty file and get an exclusive lock on it.
-        if (cache->create_and_lock(cfile, fd)) {
-            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - caching " << cfile << endl );
+        if (cache->create_and_lock(cache_file, fd)) {
+            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - caching " << cache_file << endl );
 
             // uncompress. Make sure that the decompression function does not close
             // the file descriptor.
@@ -180,15 +201,15 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFile
             // Now update the total cache size info and purge if needed. The new file's
             // name is passed into the purge method because this process cannot detect its
             // own lock on the file.
-            unsigned long long size = cache->update_cache_info(cfile);
+            unsigned long long size = cache->update_cache_info(cache_file);
             if (cache->cache_too_big(size))
-            	cache->update_and_purge(cfile);
+            	cache->update_and_purge(cache_file);
 
             return true;
         }
         else {
-            if (cache->get_read_lock(cfile, fd)) {
-                BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cfile << endl );
+            if (cache->get_read_lock(cache_file, fd)) {
+                BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cache_file << endl );
                 return true;
             }
         }
