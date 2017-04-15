@@ -465,7 +465,10 @@ public:
             bool is_it = cache.get_read_lock( cache_file_name, fd ) ;
             DBG( cerr << __func__ << "() - cache.get_read_lock() returned "<<
                 (is_it?"true":"false")<< endl);
-            CPPUNIT_ASSERT( is_it == true ) ;
+            CPPUNIT_ASSERT( is_it ) ;
+            if(is_it){
+                cache.unlock_and_close(cache_file_name);
+            }
         }
         catch( BESError &e )
         {

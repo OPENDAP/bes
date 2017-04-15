@@ -64,6 +64,10 @@ static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR,"template.
 static const string CACHE_PREFIX("lock_test");
 
 int clean_dir(string dirname, string prefix){
+    DBG( cerr << endl <<  __func__ << "() - BEGIN" << endl);
+    DBG( cerr << __func__ << "() - "
+        "dirname: " << dirname << "prefix: " << prefix << endl);
+
     DIR *dp;
     struct dirent *dirp;
     if((dp  = opendir(dirname.c_str())) == NULL) {
@@ -81,6 +85,7 @@ int clean_dir(string dirname, string prefix){
 
     }
     closedir(dp);
+    DBG( cerr <<  __func__ << "() - END" << endl);
     return 0;
 }
 
@@ -104,6 +109,7 @@ public:
 
     void tearDown()
     {
+        DBG( cerr << endl <<  __func__ << "() - BEGIN" << endl);
         clean_dir(CACHE_DIR,CACHE_PREFIX);
     }
 
@@ -113,15 +119,15 @@ public:
         DBG( cerr << __func__ << "() - "
             "ExLock a file, then try to exLock it again" << endl);
        try {
-            int fd;
+            int fd1, fd2;
             BESFileLockingCache cache( CACHE_DIR, CACHE_PREFIX, 1 ) ;
             CPPUNIT_ASSERT( cache.cache_enabled() );
             DBG( cerr << __func__ << "() - Created cache." << endl);
 
 
             try {
-                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME,fd) ) ;
-                DBG( cerr << __func__ << "() - Got first lock" << endl) ;
+                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME,fd1) ) ;
+                DBG( cerr << __func__ << "() - Got first lock: fd1: " << fd1 << endl) ;
             }
             catch( BESError &e ) {
                 DBG( cerr << __func__ << "() - Caught BESError message: "
@@ -131,8 +137,8 @@ public:
             }
 
             try {
-                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME,fd) ) ;
-                DBG( cerr << __func__ << "() - Got 2nd lock." << endl) ;
+                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME,fd2) ) ;
+                DBG( cerr << __func__ << "() - Got second lock. fd2: " << fd2 << endl) ;
 
             }
             catch( BESError &e ) {
