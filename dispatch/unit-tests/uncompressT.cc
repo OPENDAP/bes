@@ -36,6 +36,7 @@
 
 using namespace CppUnit ;
 
+#include <cerrno>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
