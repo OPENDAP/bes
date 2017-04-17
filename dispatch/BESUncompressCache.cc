@@ -31,6 +31,8 @@
 #include "TheBESKeys.h"
 
 BESUncompressCache *BESUncompressCache::d_instance = 0;
+bool BESUncompressCache::d_enabled = true;
+
 const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";
 const string BESUncompressCache::PREFIX_KEY = "BES.UncompressCache.prefix";
 const string BESUncompressCache::SIZE_KEY = "BES.UncompressCache.size";
@@ -136,6 +138,7 @@ BESUncompressCache::BESUncompressCache()
 {
     BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
 
+    d_enabled = true;
     d_dimCacheDir = getCacheDirFromConfig();
     d_dimCacheFilePrefix = getCachePrefixFromConfig();
     d_maxCacheSize = getCacheSizeFromConfig();
@@ -151,8 +154,8 @@ BESUncompressCache::BESUncompressCache()
 BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix,
     unsigned long long size)
 {
-
     BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
+    d_enabled = true;
 
     d_dataRootDir = data_root_dir;
     d_dimCacheDir = cache_dir;
@@ -168,18 +171,23 @@ BESUncompressCache *
 BESUncompressCache::get_instance(const string &data_root_dir, const string &cache_dir, const string &result_file_prefix,
     unsigned long long max_cache_size)
 {
-    if (d_instance == 0) {
+    if (d_enabled && d_instance == 0) {
         if (dir_exists(cache_dir)) {
-            try {
-                d_instance = new BESUncompressCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
-#ifdef HAVE_ATEXIT
+            d_instance = new BESUncompressCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
+    #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
-#endif
-            }
-            catch (BESInternalError &bie) {
-                BESDEBUG("cache",
-                    "[ERROR] BESUncompressCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-            }
+    #endif
+                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
+           }
         }
     }
     return d_instance;
@@ -191,16 +199,21 @@ BESUncompressCache::get_instance(const string &data_root_dir, const string &cach
 BESUncompressCache *
 BESUncompressCache::get_instance()
 {
-    if (d_instance == 0) {
-        try {
-            d_instance = new BESUncompressCache();
+    if (d_enabled && d_instance == 0) {
+        d_instance = new BESUncompressCache();
+        d_enabled = d_instance->cache_enabled();
+        if(!d_enabled){
+            delete d_instance;
+            d_instance = NULL;
+            BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                "Cache is DISABLED"<< endl);
+        }
+        else {
 #ifdef HAVE_ATEXIT
             atexit(delete_instance);
 #endif
-        }
-        catch (BESInternalError &bie) {
-            BESDEBUG("cache",
-                "[ERROR] BESUncompressCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
+                "Cache is ENABLED"<< endl);
         }
     }
 
