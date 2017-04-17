@@ -70,6 +70,56 @@ void BESExceptionManager::add_ehm_callback(p_bes_ehm ehm)
     _ehm_list.push_back(ehm);
 }
 
+
+/**
+ * Writes a message about the passed in BESError to the
+ * BESLog.
+ */
+void log_error(BESError &e){
+
+
+    struct tm *ptm;
+    time_t timer = time(NULL);
+    ptm = gmtime ( &timer );
+
+    string error_name;
+    switch (e.get_error_type()) {
+    case BES_INTERNAL_FATAL_ERROR:
+        error_name = "BES Internal Fatal Error.";
+        break;
+
+    case BES_INTERNAL_ERROR:
+        error_name = "BES Internal Error";
+        break;
+
+    case BES_SYNTAX_USER_ERROR:
+        error_name = "BES Syntax User Error";
+        break;
+
+    case BES_FORBIDDEN_ERROR:
+        error_name = "BES Forbidden Error";
+        break;
+
+    case BES_NOT_FOUND_ERROR:
+        error_name = "BES Not Found Error";
+        break;
+
+    default:
+        error_name = "Unrecognized BES Error";
+        break;
+    }
+    string m = "|&|";
+
+    LOG(m << asctime(ptm) << m <<
+        "ERROR: " << error_name << m <<
+        "type: " << e.get_error_type() << m <<
+        "file: " << e.get_file() << m <<
+        "line: " << e.get_line() << m <<
+        "message: " << e.get_message() << m <<
+        endl);
+}
+
+
 /** @brief Manage any exceptions thrown during the handling of a request
 
  An informational object should be created and assigned to
@@ -125,22 +175,8 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
     dhi.error_info->add_exception(e, administrator);
     dhi.error_info->end_response();
 
-    /**--------------------------------------------------
-     * ERROR LOG
-     */
-    struct tm *ptm;
-    time_t timer = time(NULL);
-    ptm = gmtime ( &timer );
-
-
-    (*BESLog::TheLog()) <<
-        "time: " << asctime(ptm) << " " <<
-        "error: " << e.get_error_type() << " " <<
-        "file: " << e.get_file() << " " <<
-        "line: " << e.get_line() << " " <<
-        "message: " << e.get_message() << endl ;
-
-    /* ------------------------------------------------*/
+    // Write a message in the log file about this error...
+    log_error(e);
 
     return e.get_error_type();
 }
