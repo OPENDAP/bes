@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/MOD04_CF.sampled.dods</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+      <!-- %22 is a double quote and %3E is greater than -->
+      <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
+      <bes:dap4function>bbox(Latitude,49,50.0)</bes:dap4function>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dap" definition="d1" />
+  
+</bes:request>

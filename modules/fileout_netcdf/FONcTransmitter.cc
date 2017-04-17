@@ -264,7 +264,8 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         umask(original_mode);
 
         // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter hoe we exit. jhrg 9/7/16
+        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
+        // Except if there is a hard crash.. jhrg 3/30/17
         wrap_temp_name w_temp_file(temp_file);
         wrap_temp_descriptor w_fd(fd);
 

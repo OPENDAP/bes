@@ -95,7 +95,7 @@ before_script:
 # so we don't want to repeat that here.
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 -k; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7; fi
 
 after_failure:
   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz

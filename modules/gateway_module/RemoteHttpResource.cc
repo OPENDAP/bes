@@ -101,7 +101,6 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
  * ( Closes the file descriptor opened when retrieveResource() was called.)
  */RemoteHttpResource::~RemoteHttpResource()
 {
-
     BESDEBUG("gateway", "~RemoteHttpResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
     delete d_response_headers;
@@ -113,9 +112,12 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
-        GatewayCache::get_instance()->unlock_and_close(d_resourceCacheFileName);
-        BESDEBUG("gateway", "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
-        d_resourceCacheFileName.clear();
+        GatewayCache *cache= GatewayCache::get_instance();
+        if(cache){
+            cache->unlock_and_close(d_resourceCacheFileName);
+            BESDEBUG("gateway", "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
+            d_resourceCacheFileName.clear();
+        }
     }
 
     if (d_curl) {
@@ -147,8 +149,16 @@ void RemoteHttpResource::retrieveResource()
     }
 
     // Get a pointer to the singleton cache instance for this process.
-    GatewayCache *cache =
-    		GatewayCache::get_instance();
+    GatewayCache *cache = GatewayCache::get_instance();
+    if(!cache){
+        ostringstream oss;
+        oss << __func__ << "() - FAILED to get local cache."
+            " Unable to proceed with request for " << this->d_remoteResourceUrl <<
+            " The gateway_module MUST have a valid cache configuration to operate." << endl;
+        BESDEBUG("gateway", oss.str());
+        throw BESInternalError(oss.str(), __FILE__,__LINE__);
+    }
+
 
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).
