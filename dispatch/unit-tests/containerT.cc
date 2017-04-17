@@ -39,6 +39,7 @@ using namespace CppUnit;
 #include <iostream>
 #include <cstdlib>
 #include <dirent.h>
+#include <cerrno>
 
 using std::cerr;
 using std::endl;
