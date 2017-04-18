@@ -328,8 +328,10 @@ int BESInterface::execute_request(const string &from)
     try {
         initialize();
 
-        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " request received"
-            << endl;
+        string m("|&|");
+        *(BESLog::TheLog()) << m << _dhi->data[REQUEST_FROM] << m <<
+            "request received" << m << endl;
+        BESLog::TheLog()->flush_me();
 
         // This does not do anything here or in BESBasicInterface or BESXMLInterface.
         // Remove it? jhrg 12/23/15

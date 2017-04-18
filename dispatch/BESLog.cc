@@ -272,6 +272,11 @@ BESLog& BESLog::operator<<(p_ostream_manipulator val)
     return *this;
 }
 
+void BESLog::flush_me(){
+    (*_file_buffer) << flush;
+    _flushed = 1;
+}
+
 /** @brief Overloaded inserter that takes ios methods
  *
  * Overloaded inserter that can take the address oct, dec and hex functions.

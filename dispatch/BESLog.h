@@ -183,6 +183,8 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
+    virtual void flush_me();
+
     static BESLog *TheLog();
 
     // I added this so that it's easy to route the BESDebug messages to the
