@@ -30,11 +30,15 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <iostream>
+
 #include "BESXMLCommand.h"
 #include "BESResponseHandlerList.h"
 #include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 #include "BESLog.h"
+
+using std::flush;
 
 map<string, p_xmlcmd_builder> BESXMLCommand::cmd_list;
 
@@ -67,8 +71,12 @@ void BESXMLCommand::set_response()
     // translates that syntax into XML. But I'm not 100% sure... jhrg 12/29/15
     _dhi.data[DATA_REQUEST] = _str_cmd;
 
-    *(BESLog::TheLog()) << _dhi.data[SERVER_PID] << " from " << _dhi.data[REQUEST_FROM] << " [" << _str_cmd
-        << "] received" << endl;
+    BESLog::TheLog()->flush_me();
+    string m = BESLog::mark;
+    *(BESLog::TheLog()) << _dhi.data[REQUEST_FROM] << m
+        << _str_cmd << m <<
+        "request received" << m << endl;
+    BESLog::TheLog()->flush_me();
 }
 
 /** @brief Add a command to the possible commands allowed by this BES

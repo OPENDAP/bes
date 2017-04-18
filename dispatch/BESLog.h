@@ -102,6 +102,8 @@ protected:
 public:
     ~BESLog();
 
+    const static string mark;
+
     /** @brief Suspend logging of any information until resumed.
      *
      * This method suspends any logging of information. If already suspended
@@ -182,6 +184,8 @@ public:
     BESLog& operator<<(p_ios_manipulator);
 
     virtual void dump(std::ostream &strm) const;
+
+    virtual void flush_me();
 
     static BESLog *TheLog();
 
