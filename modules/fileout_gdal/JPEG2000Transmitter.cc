@@ -78,7 +78,7 @@ string JPEG2000Transmitter::default_gcs;
  *
  * @see JPEG2000Module
  */
-JPEG2000Transmitter::JPEG2000Transmitter() :  BESBasicTransmitter()
+JPEG2000Transmitter::JPEG2000Transmitter() :  BESTransmitter()
 {
     // DATA_SERVICE == "dods"
     add_method(DATA_SERVICE, JPEG2000Transmitter::send_data_as_jp2);

@@ -873,7 +873,7 @@ bool BESUtil::endsWith(std::string const &fullString, std::string const &ending)
  * in the 'int BESInterface::execute_request(const string &from)' method.
  *
  * @see See the send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
- * methods of the children of BESBasicTransmitter
+ * methods of the children of BESTransmitter
  */
 void BESUtil::conditional_timeout_cancel()
 {

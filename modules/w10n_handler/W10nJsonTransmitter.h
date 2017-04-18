@@ -33,7 +33,7 @@
 #include <DataDDS.h>
 #include <ConstraintEvaluator.h>
 
-#include <BESBasicTransmitter.h>
+#include <BESTransmitter.h>
 
 class BESContainer;
 
@@ -44,9 +44,9 @@ class BESContainer;
  * JSON file and streams the new (temporary) JSON file back to the
  * client.
  *
- * @see BESBasicTransmitter
+ * @see BESTransmitter
  */
-class W10nJsonTransmitter: public BESBasicTransmitter {
+class W10nJsonTransmitter: public BESTransmitter {
 private:
     static void return_temp_stream(const std::string &filename, std::ostream &strm);
     static std::string temp_dir;

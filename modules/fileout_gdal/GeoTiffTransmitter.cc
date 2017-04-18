@@ -78,7 +78,7 @@ string GeoTiffTransmitter::default_gcs;
  *
  * @see FONgModule
  */
-GeoTiffTransmitter::GeoTiffTransmitter() :  BESBasicTransmitter()
+GeoTiffTransmitter::GeoTiffTransmitter() :  BESTransmitter()
 {
     // DATA_SERVICE == "dods"
     add_method(DATA_SERVICE, GeoTiffTransmitter::send_data_as_geotiff);

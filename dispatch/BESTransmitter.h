@@ -38,6 +38,7 @@
 using std::string;
 
 #include "BESObj.h"
+
 #include "BESDataHandlerInterface.h"
 #include "BESResponseObject.h"
 
@@ -67,8 +68,8 @@ public:
 	// but maybe not... should check. jhrg 2/20/15
 	virtual void send_response(const string &method, BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
-	virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi) = 0;
-	virtual void send_html(BESInfo &info, BESDataHandlerInterface &dhi) = 0;
+	virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi); // = 0;
+	virtual void send_html(BESInfo &info, BESDataHandlerInterface &dhi); // = 0;
 
 	virtual void dump(ostream &strm) const;
 };
