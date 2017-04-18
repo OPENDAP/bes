@@ -31,6 +31,10 @@
 #include<map>
 #include "BESRequestHandler.h"
 #include "HDF5_DataMemCache.h"
+#include <BESDDSResponse.h>
+#include <BESDataDDSResponse.h>
+#include <hdf5.h>
+
 
 class ObjMemCache; // in bes/dap
 
@@ -142,6 +146,9 @@ class HDF5RequestHandler:public BESRequestHandler {
      static long _disk_cache_var_size;
 
          
+     static bool _use_disk_meta_cache;
+     static string _disk_meta_cache_path;
+
      static bool _common_cache_dirs;
      static vector<string> lrd_cache_dir_list;
      static vector<string> lrd_non_cache_dir_list;
@@ -150,7 +157,20 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
-     static void get_dds_with_attributes(const string &filename, const string&container_name,libdap::DDS*dds);
+     //static void get_dds_with_attributes(const string &filename, const string&container_name,libdap::DDS*dds);
+     static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const string &container_name,const string &filename, const string &dds_cache_fname, const string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
+
+     static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const string & container_name,const string & h5_fname,
+                              const string & dds_cache_fname,const string &das_cache_fname, hid_t h5_fd, bool das_from_dc);
+
+     static void add_das_to_dds(DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc);
+
+     static bool write_dds_to_disk_cache(const string& dds_cache_fname,DDS *dds_ptr);
+
+     static bool write_das_to_disk_cache(const string & das_cache_fname, DAS *das_ptr);
+
+     static bool read_das_from_disk_cache(const string & cache_filename,DAS *das_ptr);
+
 };
 
 #endif

@@ -31,11 +31,15 @@
 
 #ifndef _HDF5CFUtil_H
 #define _HDF5CFUtil_H
+#include <stdlib.h>
+#include <fcntl.h>
 #include <string.h>
 #include <set>
 #include <vector>
 #include <string>
 #include <iostream>
+#include <unistd.h>
+#include <cerrno>
 #include "hdf5.h"
 
 // We create this intermediate enum H5DataType in order to totally separate the 
@@ -125,6 +129,26 @@ struct HDF5CFUtil {
                                                 int index);
 #endif
 } ;
+
+static inline struct flock *lock(int type) {
+    static struct flock lock;
+    lock.l_type = type;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_pid = getpid();
+
+    return &lock;
+}
+
+static inline string get_errno() {
+        char *s_err = strerror(errno);
+        if (s_err)
+                return s_err;
+        else
+                return "Unknown error.";
+}
+
 
 //size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
  //                                const std::vector < size_t > &pos);

@@ -361,3 +361,8 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=100
+
+# HDF5 metadata disk cache
+
+H5.EnableDiskMetaDataCache=false
+H5.DiskMetaDataCachePath=/tmp
