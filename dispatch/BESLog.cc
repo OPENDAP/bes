@@ -47,6 +47,7 @@
 using namespace std;
 
 BESLog *BESLog::_instance = 0;
+const string BESLog::mark = string("|&|");
 
 /** @brief constructor that sets up logging for the application.
  *
@@ -121,11 +122,11 @@ void BESLog::dump_time()
     char zone_name[10];
     strftime(zone_name, sizeof(zone_name), "%Z", sttime);
     char *b = asctime(sttime);
-    (*_file_buffer) << "[" << zone_name << " ";
+    (*_file_buffer) << mark << zone_name << " ";
     for (register int j = 0; b[j] != '\n'; j++)
         (*_file_buffer) << b[j];
     pid_t thepid = getpid();
-    (*_file_buffer) << " id: " << thepid << "] ";
+    (*_file_buffer) << mark << "pid: " << thepid << mark;
     _flushed = 0;
 }
 

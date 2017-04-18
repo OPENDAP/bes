@@ -328,8 +328,8 @@ int BESInterface::execute_request(const string &from)
     try {
         initialize();
 
-        string m("|&|");
-        *(BESLog::TheLog()) << m << _dhi->data[REQUEST_FROM] << m <<
+        string m = BESLog::mark;
+        *(BESLog::TheLog()) << _dhi->data[REQUEST_FROM] << m <<
             "request received" << m << endl;
         BESLog::TheLog()->flush_me();
 

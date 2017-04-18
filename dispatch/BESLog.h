@@ -102,6 +102,8 @@ protected:
 public:
     ~BESLog();
 
+    const static string mark;
+
     /** @brief Suspend logging of any information until resumed.
      *
      * This method suspends any logging of information. If already suspended

@@ -72,8 +72,8 @@ void BESXMLCommand::set_response()
     _dhi.data[DATA_REQUEST] = _str_cmd;
 
     BESLog::TheLog()->flush_me();
-    string m("|&|");
-    *(BESLog::TheLog()) << m << _dhi.data[REQUEST_FROM] << m
+    string m = BESLog::mark;
+    *(BESLog::TheLog()) << _dhi.data[REQUEST_FROM] << m
         << _str_cmd << m <<
         "request received" << m << endl;
     BESLog::TheLog()->flush_me();

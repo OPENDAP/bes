@@ -113,39 +113,27 @@ void log_error(BESError &e){
         error_name = "Unrecognized BES Error";
         break;
     }
-    string m = "|&|";
+    string m = BESLog::mark;
     std::ostringstream  msg;
-
-    msg << m ;
-    // msg << now << m;
     msg << "ERROR: " << error_name << m <<
         "type: " << e.get_error_type() << m <<
         "file: " << e.get_file() << m <<
         "line: " << e.get_line() << m <<
         "message: " << e.get_message() << m;
     if(log_to_verbose){
-#if 0
         if( BESLog::TheLog()->is_verbose() )
         {
             // This seems buggy - if you don't flush the
             // log it won't print the time correctly.
-            *(BESLog::TheLog()) << std::flush;
+            BESLog::TheLog()->flush_me();
             *(BESLog::TheLog()) << msg.str() << endl ;
-            *(BESLog::TheLog()) << std::flush;
+            BESLog::TheLog()->flush_me();
         }
-#endif
-        VERBOSE(std::flush);
-        VERBOSE(msg.str() << endl );
-        VERBOSE(std::flush);
     }
     else {
-        //*(BESLog::TheLog()) << std::flush;
-        //*(BESLog::TheLog()) << msg.str() << endl ;
-        //*(BESLog::TheLog()) << std::flush;
-
-        LOG(std::flush);
-        LOG(msg.str() << endl);
-        LOG(std::flush);
+        BESLog::TheLog()->flush_me();
+        *(BESLog::TheLog()) << msg.str() << endl ;
+        BESLog::TheLog()->flush_me();
     }
 }
 
