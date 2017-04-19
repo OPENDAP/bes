@@ -29,6 +29,6 @@ Attributes {
         String base_time "88- 10-00:00:00";
         String title " FNOC UV wind components from 1988- 10 to 1988- 13.";
         String DODS_EXTRA.Unlimited_Dimension "time_a";
-        String history "removed date-time http://test.opendap.org:8080/opendap/data/nc/fnoc1.nc.nc?";
+        String history "removed date-time http://test.opendap.org:80/opendap/data/nc/fnoc1.nc.nc?";
     }
 }

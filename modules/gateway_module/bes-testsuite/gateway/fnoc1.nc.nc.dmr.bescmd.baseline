@@ -82,7 +82,7 @@
             <Value>time_a</Value>
         </Attribute>
         <Attribute name="history" type="String">
-            <Value>removed date-time http://test.opendap.org:8080/opendap/data/nc/fnoc1.nc.nc?</Value>
+            <Value>removed date-time http://test.opendap.org:80/opendap/data/nc/fnoc1.nc.nc?</Value>
         </Attribute>
     </Attribute>
 </Dataset>
