@@ -14,7 +14,8 @@ AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.nc.dods.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.nc.dap.bescmd])
+# This next test fails because of the ever shifting history attribute added by FoNC.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.nc.dap.bescmd],xfail)
 
 # Utilizing dapreader to read returned and cached DAP2 responses.
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dods.das.bescmd],xfail)
