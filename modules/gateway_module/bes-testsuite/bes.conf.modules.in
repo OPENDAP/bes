@@ -1,4 +1,7 @@
-
+#
+#  template: bes.conf.modules.in
+#
+#
 BES.ServerAdministrator=admin.email.address@your.domain.name
 
 BES.User=user_name
@@ -17,9 +20,10 @@ BES.module.gateway=@abs_top_builddir@/modules/gateway_module/.libs/libgateway_mo
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/gateway_module
 BES.Data.RootDirectory=/dev/null
 
-# It would be cool if dapreader worked here, but it does not...
-# jhrg 7/14/15
-BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(.bz2|.gz|.Z)?$;dapreader:.*.dds(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.dods(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.dds(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.dap(.bz2|.gz|.Z)?$;
 BES.Catalog.catalog.TypeMatch+=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
@@ -72,7 +76,7 @@ Gateway.Cache.dir=/tmp
 Gateway.Cache.prefix=gateway_cache
 Gateway.Cache.size=500
 
-Gateway.Whitelist=http://opendap.rpi.edu
+Gateway.Whitelist=http://localhost:8080/
 Gateway.Whitelist+=http://test.opendap.org
 
 Gateway.MimeTypes=nc:application/x-netcdf
