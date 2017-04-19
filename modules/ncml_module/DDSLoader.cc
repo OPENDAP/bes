@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <sstream>
+#include <algorithm>
 
 #include <DataDDS.h>
 
