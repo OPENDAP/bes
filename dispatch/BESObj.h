@@ -38,7 +38,7 @@
 
 #include <iostream>
 
-using std::ostream ;
+//using std::ostream ;
 using std::endl ;
 
 #include "BESIndent.h"
@@ -75,7 +75,7 @@ public:
      *
      * @param strm C++ i/o stream to dump the object to
      */
-    virtual void	dump( ostream &strm ) const = 0 ;
+    virtual void	dump( std::ostream &strm ) const = 0 ;
 } ;
 
 /** @brief dump the contents of the specified object to the specified ostream
@@ -96,8 +96,8 @@ public:
  * @param strm C++ i/o stream to dump the object to
  * @param obj The BESObj to dump
  */
-inline ostream &
-operator<<( ostream &strm, const BESObj &obj )
+inline std::ostream &
+operator<<( std::ostream &strm, const BESObj &obj )
 {
     obj.dump( strm ) ;
     return strm ;
