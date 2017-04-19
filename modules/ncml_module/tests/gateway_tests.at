@@ -1,4 +1,5 @@
 dnl Test suite containing tests that do not fit another file
 AT_BANNER([------------------  NcML + Gateway Tests -----------------------])
 
-AT_CHECK_ALL_DAP_RESPONSES([gateway/ncml_gateway.ncml])
+AT_CHECK_ALL_DAP_RESPONSES([gateway/gateway_aggregation.ncml])
+AT_CHECK_ALL_DAP_RESPONSES([gateway/gateway_var_mods.ncml])
