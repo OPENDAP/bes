@@ -71,6 +71,7 @@ class BaseTypeFactory;
 
 class BESDapFunctionResponseCache: public BESFileLockingCache {
 private:
+    static bool d_enabled;
     static BESDapFunctionResponseCache *d_instance;
 
     /**

@@ -27,6 +27,8 @@ namespace agg_util
 {
 
 AggMemberDatasetDimensionCache *AggMemberDatasetDimensionCache::d_instance = 0;
+bool AggMemberDatasetDimensionCache::d_enabled = true;
+
 const string AggMemberDatasetDimensionCache::CACHE_DIR_KEY = "NCML.DimensionCache.directory";
 const string AggMemberDatasetDimensionCache::PREFIX_KEY    = "NCML.DimensionCache.prefix";
 const string AggMemberDatasetDimensionCache::SIZE_KEY      = "NCML.DimensionCache.size";
@@ -164,17 +166,23 @@ AggMemberDatasetDimensionCache::AggMemberDatasetDimensionCache(const string &dat
 AggMemberDatasetDimensionCache *
 AggMemberDatasetDimensionCache::get_instance(const string &data_root_dir, const string &cache_dir, const string &result_file_prefix, unsigned long long max_cache_size)
 {
-    if (d_instance == 0){
+    if (d_enabled && d_instance == 0){
         if (libdap::dir_exists(cache_dir)) {
-        	try {
-                d_instance = new AggMemberDatasetDimensionCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
-#ifdef HAVE_ATEXIT
+            d_instance = new AggMemberDatasetDimensionCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "AggMemberDatasetDimensionCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
+    #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
-#endif
-        	}
-        	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "[ERROR] AggMemberDatasetDimensionCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-        	}
+    #endif
+                BESDEBUG("cache", "AggMemberDatasetDimensionCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
+           }
     	}
     }
     return d_instance;
@@ -188,17 +196,23 @@ AggMemberDatasetDimensionCache::get_instance(const string &data_root_dir, const 
 AggMemberDatasetDimensionCache *
 AggMemberDatasetDimensionCache::get_instance()
 {
-    if (d_instance == 0) {
-		try {
-			d_instance = new AggMemberDatasetDimensionCache();
+    if (d_enabled && d_instance == 0) {
+        d_instance = new AggMemberDatasetDimensionCache();
+        d_enabled = d_instance->cache_enabled();
+        if(!d_enabled){
+            delete d_instance;
+            d_instance = NULL;
+            BESDEBUG("cache", "AggMemberDatasetDimensionCache::"<<__func__ << "() - " <<
+                "Cache is DISABLED"<< endl);
+       }
+        else {
 #ifdef HAVE_ATEXIT
             atexit(delete_instance);
 #endif
-		}
-		catch(BESInternalError &bie){
-			BESDEBUG("cache", "[ERROR] AggMemberDatasetDimensionCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-		}
-    }
+            BESDEBUG("cache", "AggMemberDatasetDimensionCache::"<<__func__ << "() - " <<
+                "Cache is ENABLED"<< endl);
+       }
+}
 
     return d_instance;
 }

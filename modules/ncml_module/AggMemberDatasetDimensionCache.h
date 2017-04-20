@@ -32,6 +32,7 @@ class AggMemberDataset;
 class AggMemberDatasetDimensionCache: public BESFileLockingCache
 {
 private:
+    static bool d_enabled;
     static AggMemberDatasetDimensionCache * d_instance;
     static void delete_instance();
 

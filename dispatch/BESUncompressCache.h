@@ -24,7 +24,9 @@
 #include "BESFileLockingCache.h"
 
 class BESUncompressCache: public BESFileLockingCache {
+    friend class uncompressT;
 private:
+    static bool d_enabled;
     static BESUncompressCache * d_instance;
     static void delete_instance()
     {

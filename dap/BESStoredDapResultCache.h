@@ -53,7 +53,7 @@ class BaseTypeFactory;
 
 class BESStoredDapResultCache: public BESFileLockingCache {
 private:
-
+    static bool d_enabled;
     static BESStoredDapResultCache *d_instance;
     static void delete_instance()
     {

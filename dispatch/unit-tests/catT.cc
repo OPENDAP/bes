@@ -297,22 +297,22 @@ public:
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered catT::run" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "Entered catT::run" << endl;
 
-	cout << "*****************************************" << endl;
-	cout << "set the default catalog and test" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "set the default catalog and test" << endl;
 	TheBESKeys::TheKeys()->set_key( "BES.Catalog.Default=default" ) ;
 	string defcat = BESCatalogList::TheCatalogList()->default_catalog() ;
 	CPPUNIT_ASSERT( defcat == "default" ) ;
 
-	cout << "*****************************************" << endl;
-	cout << "num catalogs should be zero" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "num catalogs should be zero" << endl;
 	int numcats = BESCatalogList::TheCatalogList()->num_catalogs() ;
 	CPPUNIT_ASSERT( numcats == 0 ) ;
 
-	cout << "*****************************************" << endl;
-	cout << "show empty catalog list" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "show empty catalog list" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -330,8 +330,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl ;
-	cout << "no default catalog, use catalog response" << endl;
+	cerr << "*****************************************" << endl ;
+	cerr << "no default catalog, use catalog response" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -342,11 +342,11 @@ public:
 	}
 	catch( BESError &e )
 	{
-	    cout << e.get_message() << endl ;
+	    cerr << e.get_message() << endl ;
 	}
 
-	cout << "*****************************************" << endl ;
-	cout << "manipulate non-existant catalog" << endl;
+	cerr << "*****************************************" << endl ;
+	cerr << "manipulate non-existant catalog" << endl;
 	BESCatalog *catobj =
 	    BESCatalogList::TheCatalogList()->find_catalog( "dummy" ) ;
 	CPPUNIT_ASSERT( catobj == 0 ) ;
@@ -355,8 +355,8 @@ public:
 	CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->ref_catalog( "dummy" ) == false ) ;
 	CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->deref_catalog( "dummy" ) == false ) ;
 
-	cout << "*****************************************" << endl;
-	cout << "add a catalog with no settings" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "add a catalog with no settings" << endl;
 	try
 	{
 	    BESCatalogList::TheCatalogList()->
@@ -382,8 +382,8 @@ public:
 	    cerr << e.get_message() << endl ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "add good catalog" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "add good catalog" << endl;
 	var = (string)"BES.Catalog.default.TypeMatch=conf:conf&;" ;
 	TheBESKeys::TheKeys()->set_key( var ) ;
 	var = (string)"BES.Catalog.default.Include=.*\\.conf$;" ;
@@ -405,8 +405,8 @@ public:
 	numcats = BESCatalogList::TheCatalogList()->num_catalogs() ;
 	CPPUNIT_ASSERT( numcats == 1 ) ;
 
-	cout << "*****************************************" << endl;
-	cout << "show catalog list" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "show catalog list" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -426,8 +426,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "now try it with BESCatalogResponseHandler" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "now try it with BESCatalogResponseHandler" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -450,8 +450,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "add good catalog" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "add good catalog" << endl;
 	var = (string)"BES.Catalog.other.RootDirectory="
 		     + TEST_SRC_DIR + "/" ;
 	TheBESKeys::TheKeys()->set_key( var ) ;
@@ -479,8 +479,8 @@ public:
 	numcats = BESCatalogList::TheCatalogList()->num_catalogs() ;
 	CPPUNIT_ASSERT( numcats == 2 ) ;
 
-	cout << "*****************************************" << endl;
-	cout << "now try it with BESCatalogResponseHandler" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "now try it with BESCatalogResponseHandler" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -504,8 +504,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler with catalog response" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler with catalog response" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -531,8 +531,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler with info response" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler with info response" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -556,8 +556,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler specific node" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler specific node" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -582,8 +582,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler specific node info" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler specific node info" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -608,8 +608,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler specific default" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler specific default" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -635,8 +635,8 @@ public:
 	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler not there" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler not there" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -651,8 +651,8 @@ public:
 	    cerr << e.get_message() << endl ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler not there" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "BESCatalogResponseHandler not there" << endl;
 	try
 	{
 	    BESDataHandlerInterface dhi ;
@@ -667,8 +667,8 @@ public:
 	    cerr << e.get_message() << endl ;
 	}
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from catT::run" << endl;
+	cerr << "*****************************************" << endl;
+	cerr << "Returning from catT::run" << endl;
     }
 } ;
 
@@ -677,6 +677,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( catT ) ;
 int 
 main( int, char** )
 {
+
     CppUnit::TextTestRunner runner ;
     runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
