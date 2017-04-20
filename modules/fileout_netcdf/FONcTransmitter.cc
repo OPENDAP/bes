@@ -93,7 +93,7 @@ using namespace std;
  * defaults to the macro definition FONC_TEMP_DIR.
  */
 FONcTransmitter::FONcTransmitter() :
-    BESBasicTransmitter()
+    BESTransmitter()
 {
     add_method(DATA_SERVICE, FONcTransmitter::send_data);
 }

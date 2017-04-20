@@ -81,7 +81,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc	\
 	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc			\
 	BESRequestHandler.cc BESRequestHandlerList.cc			\
-	BESTransmitter.cc BESBasicTransmitter.cc BESBasicHttpTransmitter.cc \
+	BESTransmitter.cc BESBasicHttpTransmitter.cc \
 	BESReporterList.cc BESConstraintFuncs.cc			\
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
 	BESMemoryGlobalArea.cc						\
@@ -104,7 +104,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc 
 
-#	 BESCache.cc BESUncompressManager.cc
+#	BESBasicTransmitter.cc BESCache.cc BESUncompressManager.cc
 #	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc 
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
@@ -133,7 +133,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESInfoNames.h 							\
 	BESRequestHandler.h BESRequestHandlerList.h 			\
 	BESDataHandlerInterface.h BESDataRequestInterface.h 		\
-	BESTransmitter.h BESBasicHttpTransmitter.h BESBasicTransmitter.h \
+	BESTransmitter.h BESBasicHttpTransmitter.h \
 	BESReporter.h BESReporterList.h 				\
 	BESServiceRegistry.h BESServicesResponseHandler.h 		\
 	BESError.h BESInternalError.h BESInternalFatalError.h 		\
@@ -162,7 +162,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h
 
-# 	BESCache.h BESUncompressManager.h 
+# 	BESBasicTransmitter.h BESCache.h BESUncompressManager.h 
 #	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h 
 
 C4_DB=$(C4_DIR)/dispatch.db

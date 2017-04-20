@@ -30,8 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "BESTransmitter.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <unistd.h>
+
+#include "BESDataHandlerInterface.h"
+#include "BESResponseObject.h"
 #include "BESInternalError.h"
+#include "BESContextManager.h"
+
+#include "TheBESKeys.h"
+#include "BESInfo.h"
+#include "BESUtil.h"
+#include "BESDebug.h"
+
+#include "BESTransmitter.h"
 
 bool BESTransmitter::add_method(string method_name, p_transmitter trans_method)
 {
@@ -76,6 +90,32 @@ void BESTransmitter::send_response(const string &method_name, BESResponseObject 
 		throw BESInternalError(string("Unable to transmit response, no transmitter for ") + method_name, __FILE__,
 				__LINE__);
 	}
+}
+
+void BESTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
+{
+    bool found = false;
+    string context = "transmit_protocol";
+    string protocol = BESContextManager::TheManager()->get_context(context, found);
+    if (protocol == "HTTP") {
+        if (info.is_buffered()) {
+            BESUtil::set_mime_text(dhi.get_output_stream());
+        }
+    }
+    info.print(dhi.get_output_stream());
+}
+
+void BESTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
+{
+    bool found = false;
+    string context = "transmit_protocol";
+    string protocol = BESContextManager::TheManager()->get_context(context, found);
+    if (protocol == "HTTP") {
+        if (info.is_buffered()) {
+            BESUtil::set_mime_html(dhi.get_output_stream());
+        }
+    }
+    info.print(dhi.get_output_stream());
 }
 
 /** @brief dumps information about this object

@@ -1,4 +1,4 @@
-// BESBasicTransmitter.h
+// BESTransmitter.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,22 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef A_BESBasicTransmitter_h
-#define A_BESBasicTransmitter_h 1
+#ifndef A_BESTransmitter_h
+#define A_BESTransmitter_h 1
 
+#if 0
 #include "BESTransmitter.h"
 
 #if 0
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 #endif
 
-class BESBasicTransmitter: public BESTransmitter {
+class BESTransmitter: public BESTransmitter {
 public:
-    BESBasicTransmitter()
+    BESTransmitter()
     {
 
     }
-	virtual ~BESBasicTransmitter()
+	virtual ~BESTransmitter()
 	{
 	}
 
@@ -58,4 +59,6 @@ public:
 	virtual void dump(ostream &strm) const;
 };
 
-#endif // A_BESBasicTransmitter_h
+#endif
+
+#endif // A_BESTransmitter_h

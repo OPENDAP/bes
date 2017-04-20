@@ -39,7 +39,7 @@ void BESBasicHttpTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &
 	if (info.is_buffered()) {
 		BESUtil::set_mime_text(dhi.get_output_stream());
 	}
-	BESBasicTransmitter::send_text(info, dhi);
+	BESTransmitter::send_text(info, dhi);
 }
 
 void BESBasicHttpTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
@@ -47,7 +47,7 @@ void BESBasicHttpTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &
 	if (info.is_buffered()) {
 		BESUtil::set_mime_html(dhi.get_output_stream());
 	}
-	BESBasicTransmitter::send_html(info, dhi);
+	BESTransmitter::send_html(info, dhi);
 }
 
 /** @brief dumps information about this object
@@ -60,7 +60,7 @@ void BESBasicHttpTransmitter::dump(ostream &strm) const
 {
 	strm << BESIndent::LMarg << "BESBasicHttpTransmitter::dump - (" << (void *) this << ")" << endl;
 	BESIndent::Indent();
-	BESBasicTransmitter::dump(strm);
+	BESTransmitter::dump(strm);
 	BESIndent::UnIndent();
 }
 
