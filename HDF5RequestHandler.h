@@ -147,6 +147,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
          
      static bool _use_disk_meta_cache;
+     static bool _use_disk_dds_cache;
      static string _disk_meta_cache_path;
 
      static bool _common_cache_dirs;

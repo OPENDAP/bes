@@ -77,6 +77,7 @@
 using namespace std;
 using namespace libdap;
 
+void get_attr_contents(AttrTable* temp_table);
 // Check if the BES key is set.
 bool check_beskeys(const string);
 
@@ -122,6 +123,7 @@ bool HDF5RequestHandler::_common_cache_dirs            = false;
 
 
 bool HDF5RequestHandler::_use_disk_cache              =false;
+bool HDF5RequestHandler::_use_disk_dds_cache              =false;
 string HDF5RequestHandler::_disk_cache_dir            ="";
 string HDF5RequestHandler::_disk_cachefile_prefix     ="";
 long HDF5RequestHandler::_disk_cache_size             =0;
@@ -192,6 +194,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _disk_cache_var_size         = 1024*get_uint_key("H5.DiskCacheCompVarSize",0);
 
     _use_disk_meta_cache         = check_beskeys("H5.EnableDiskMetaDataCache");
+    _use_disk_dds_cache         = check_beskeys("H5.EnableDiskDDSCache");
     _disk_meta_cache_path        = get_beskeys("H5.DiskMetaDataCachePath");
 
     if(get_usecf()) {
@@ -336,6 +339,39 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
              
             Ancillary::read_ancillary_das( *das, filename ) ;
 
+AttrTable* top_table = das->get_top_level_attributes();
+get_attr_contents(top_table);
+#if 0
+AttrTable::Attr_iter top_startit = top_table->attr_begin();
+AttrTable::Attr_iter top_endit = top_table->attr_end();
+AttrTable::Attr_iter top_it = top_startit;
+while(top_it != top_endit) {
+cerr<<"attr it name is "<< (*top_it)->name <<endl;
+AttrTable* temp_table = das->get_table(top_it);
+if(temp_table!=0){
+if(temp_table->get_attr_type(top_it)==Attr_container){
+    //cerr<<"Adding the attribute container and the name is "<<temp_table->get_attr_type(top_it)<<endl;
+    cerr<<"Adding the attribute container.  "<<endl;
+    get_attr_contents(temp_table);
+}
+temp_table->print(cerr);
+}
+++top_it;
+}
+#endif
+
+AttrTable::Attr_iter start_aiter=das->var_begin();
+AttrTable::Attr_iter it = start_aiter;
+AttrTable::Attr_iter end_aiter = das->var_end();
+while(it != end_aiter) {
+AttrTable* temp_table = das->get_table(it);
+if(temp_table!=0){
+cerr<<"var_begin"<<endl;
+temp_table->print(cerr);
+}
+++it;
+}
+
             // If the cache is turned on
             if(das_cache) {
                 // add a copy
@@ -428,6 +464,8 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
                 read_cfdds(*dds,filename,cf_fileid);
+//cerr<<"DDS from file "<<endl;
+//dds->dump(cerr);
             }
             else {
 
@@ -523,6 +561,88 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
     }
 
 }
+
+void get_attr_contents(AttrTable*temp_table) {
+    if(temp_table !=NULL) {
+        AttrTable::Attr_iter top_startit = temp_table->attr_begin();
+        AttrTable::Attr_iter top_endit = temp_table->attr_end();
+        AttrTable::Attr_iter top_it = top_startit;
+        while(top_it !=top_endit) {
+            AttrType atype = temp_table->get_attr_type(top_it);
+            if(atype == Attr_unknown) 
+                cerr<<"unsupported DAS attributes" <<endl;
+            else if(atype!=Attr_container) {
+           
+                   cerr<<"Attribute name is "<<temp_table->get_name(top_it)<<endl;
+                   cerr<<"Attribute type is "<<temp_table->get_type(top_it)<<endl;
+                   unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
+                   cerr<<"Attribute values are "<<endl;
+                   for (int i = 0; i <num_attrs;i++) 
+                        cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
+                   cerr<<endl;
+            }
+            else {
+                cerr<<"Coming to the attribute container.  "<<endl;
+                cerr<<"container  name is "<<(*top_it)->name <<endl;
+                AttrTable* sub_table = temp_table->get_attr_table(top_it);
+                get_attr_contents(sub_table);
+            }
+            ++top_it;
+        }
+
+    }
+}
+
+
+#if 0
+void get_attr_contents(AttrTable*temp_table) {
+AttrTable::Attr_iter top_startit = temp_table->attr_begin();
+AttrTable::Attr_iter top_endit = temp_table->attr_end();
+AttrTable::Attr_iter top_it = top_startit;
+while(top_it !=top_endit) {
+    
+
+
+    AttrTable* sub_table = temp_table->get_attr_table(top_it);
+    if(sub_table!=0) {
+        if(sub_table->get_attr_type(top_it)==Attr_container) {
+            cerr<<"Coming to the attribute container.  "<<endl;
+            cerr<<"container  name is "<<(*top_it)->name <<endl;
+AttrTable::Attr_iter start_aiter=sub_table->attr_begin();
+AttrTable::Attr_iter ait = start_aiter;
+AttrTable::Attr_iter end_aiter = sub_table->attr_end();
+while(ait != end_aiter) {
+           
+           cerr<<"Attribute name is "<<sub_table->get_name(ait)<<endl;
+           cerr<<"Attribute type is "<<sub_table->get_type(ait)<<endl;
+           unsigned int num_attrs = sub_table->get_attr_num(sub_table->get_name(ait));
+           cerr<<"Attribute values are "<<endl;
+           for (int i = 0; i <num_attrs;i++) 
+             cerr<<(*(sub_table->get_attr_vector(sub_table->get_name(ait))))[i]<<" ";
+           cerr<<endl;
+ 
+++ait;
+}
+            get_attr_contents(sub_table);
+        }
+        else {
+           cerr<<"Attribute name outer loop is "<<sub_table->get_name(top_it)<<endl;
+           cerr<<"Attribute type outrt loop is "<<sub_table->get_type(top_it)<<endl;
+           unsigned int num_attrs = sub_table->get_attr_num(sub_table->get_name(top_it));
+           cerr<<"Attribute values outer are "<<endl;
+           for (int i = 0; i <num_attrs;i++) 
+             cerr<<(*(sub_table->get_attr_vector(sub_table->get_name(top_it))))[i]<<" ";
+           cerr<<endl;
+        }
+    }
+    ++top_it;
+
+}
+}
+#endif
+
+
+
 
 
 #if 0
@@ -753,11 +873,13 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         if(_use_disk_meta_cache == true) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
-            dds_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_dds";
-            das_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_das";
-            if(access(dds_cache_fname.c_str(),F_OK) !=-1)
-               dds_from_dc = true;
+            if(_use_disk_dds_cache == true) {
+                dds_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_dds";
+                if(access(dds_cache_fname.c_str(),F_OK) !=-1)
+                    dds_from_dc = true;
+            }
 
+            das_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_das";
             if(access(das_cache_fname.c_str(),F_OK) !=-1)
                das_from_dc = true;
 
@@ -814,7 +936,6 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
 
-
     if(true ==_usecf) { 
        
         if(true == _pass_fileid)
@@ -840,10 +961,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         if(_use_disk_meta_cache == true) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
-            dds_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_dds";
             das_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_das";
-            if(access(dds_cache_fname.c_str(),F_OK) !=-1)
-               dds_from_dc = true;
 
             if(access(das_cache_fname.c_str(),F_OK) !=-1)
                das_from_dc = true;
@@ -1496,7 +1614,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
             }
 
             fclose(md_file);
-            throw InternalErr(__FILE__,__LINE__,"Fail to generate a das cache file.");
+            throw InternalErr(__FILE__,__LINE__,"Fail to parse a das cache file.");
         }
     }
     return ret_value;
@@ -1546,12 +1664,21 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
      tdds.parse(dds_file);
 //cerr<<"after parsing "<<endl;
      DDS* cache_dds = new DDS(tdds);
+#if 0
+cerr<<"before dds "<<endl;
+dds->dump(cerr);
+cerr<<"after dds "<<endl;
+cerr<<"before tdds "<<endl;
+cache_dds->dump(cerr);
+cerr<<"after tdds "<<endl;
+#endif
      if(dds != NULL)
         delete dds;
 
      Ancillary::read_ancillary_dds( *cache_dds, h5_fname ) ;
 
      add_das_to_dds(cache_dds,container_name,h5_fname,das_cache_fname,h5_fd,das_from_dc);
+cache_dds->print(cerr);
      if(true == build_data)
         data_bdds->set_dds(cache_dds);
      else 
@@ -1568,7 +1695,7 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
 
 void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc) {
 
-    BESDEBUG(HDF5_NAME, "Coming to add_das_to_ddsi() "  << endl);
+    BESDEBUG(HDF5_NAME, "Coming to add_das_to_dds() "  << endl);
     // Check DAS cache
     DAS *das = 0 ;
     if (das_cache && (das = static_cast<DAS*>(das_cache->get(filename)))) {
