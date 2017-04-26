@@ -39,7 +39,7 @@
 using std::list;
 using std::string;
 
-#include "BESBaseApp.h"
+#include "BESApp.h"
 #include "BESPluginFactory.h"
 #include "BESAbstractModule.h"
 
@@ -56,7 +56,7 @@ using std::string;
  * @see BESApp
  * @see BESGlobalIQ
  */
-class BESModuleApp: public BESBaseApp {
+class BESModuleApp: public BESApp {
 private:
 	BESPluginFactory<BESAbstractModule> _moduleFactory;
 	typedef struct _bes_module {
