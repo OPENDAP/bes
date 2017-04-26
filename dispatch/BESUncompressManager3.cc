@@ -133,6 +133,22 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
 {
     BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl );
 
+    /**
+     * If the cache object is a null pointer then we can't go further, and
+     * we know that the item isn't in the cache.
+     * FIXME IS THIS AN ERROR??
+     * I think maybe it's fine returning false and not throwing because
+     * this means the down stream software will try to read the file
+     * and, since this test is after checks that determine if the file
+     * appears to be compressed, will fail. This may however be difficult
+     * to diagnose for the users.
+     */
+    if (cache == NULL) {
+        std::ostringstream oss;
+        oss << "BESUncompressManager3::" << __func__ << "() - ";
+        oss << "The supplied Cache object is NULL. Decompression Requires An Operational Cache.";
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
 
     // All compressed files have a 'dot extension'.
     string::size_type dot = src.rfind(".");
@@ -149,25 +165,6 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     if (!p) {
         BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - not compressed " << endl );
         return false;
-    }
-
-    /**
-     * If the cache object is a null pointer then we can't go further, and
-     * we know that the item isn't in the cache.
-     * FIXME IS THIS AN ERROR??
-     * TODO  IS THIS AN ERROR??
-     * I think maybe it's fine returning false and not throwing because
-     * this means the down stream software will try to read the file
-     * and, since this test is after checks that determine if the file
-     * appears to be compressed, will fail. This may however be difficult
-     * to diagnose for the users.
-     */
-    if(cache==NULL) {
-        std::ostringstream oss;
-        oss << "BESUncompressManager3::" << __func__ << "() - ";
-        oss << "The supplied Cache object is NULL. Decompression Requires An Operational Cache.";
-        BESDEBUG( "uncompress", oss.str() << endl );
-        throw BESInternalError(oss.str(),__FILE__,__LINE__);
     }
 
     // Get the name of the file in the cache (either the code finds this file or

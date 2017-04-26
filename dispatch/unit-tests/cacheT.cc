@@ -93,9 +93,6 @@ void init_cache(const string &cache_dir)
 {
     DBG(cerr << __func__ << "() - BEGIN " << endl);
 
-    //string chmod = (string)"chmod a+w " + TEST_SRC_DIR + "/cache" ;
-    //system( chmod.c_str() ) ;
-
     string t_file = cache_dir + "/template.txt";
     for (int i = 1; i < 9; i++) {
         ostringstream s;
