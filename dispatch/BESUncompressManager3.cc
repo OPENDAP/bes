@@ -170,7 +170,6 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
         throw BESInternalError(oss.str(),__FILE__,__LINE__);
     }
 
-
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).
     cache_file = cache->get_cache_file_name(src);

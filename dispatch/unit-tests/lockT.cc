@@ -34,7 +34,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <cerrno>
 #include <iostream>
@@ -42,9 +42,9 @@ using namespace CppUnit ;
 #include <dirent.h>
 #include <GetOpt.h>
 
-using std::cerr ;
-using std::cerr ;
-using std::endl ;
+using std::cerr;
+using std::cerr;
+using std::endl;
 
 #include "BESFileLockingCache.h"
 #include "BESError.h"
@@ -53,40 +53,40 @@ using std::endl ;
 #include "BESUtil.h"
 #include <test_config.h>
 
-
 static bool debug = false;
 static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-
-static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR,"cache");
-static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR,"template.txt");
+static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template.txt");
 static const string CACHE_PREFIX("lock_test");
 
-int clean_dir(string dirname, string prefix){
-    DBG( cerr << endl <<  __func__ << "() - BEGIN" << endl);
-    DBG( cerr << __func__ << "() - "
-        "dirname: " << dirname << "prefix: " << prefix << endl);
+int clean_dir(string dirname, string prefix)
+{
+    DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+    DBG(cerr << __func__ << "() - dirname: " << dirname << "; prefix: " << prefix << endl);
 
     DIR *dp;
     struct dirent *dirp;
-    if((dp  = opendir(dirname.c_str())) == NULL) {
-        DBG( cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
+    if ((dp = opendir(dirname.c_str())) == NULL) {
+        DBG(cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
         return errno;
     }
 
     while ((dirp = readdir(dp)) != NULL) {
         string name(dirp->d_name);
-        if (name.find(prefix) == 0){
+        if (name.find(prefix) == 0) {
             string abs_name = BESUtil::assemblePath(dirname, name, true);
-            DBG( cerr << __func__ << "() - Purging file: " << abs_name << endl);
+            DBG(cerr << __func__ << "() - Purging file: " << abs_name << endl);
             remove(abs_name.c_str());
         }
 
     }
+
     closedir(dp);
-    DBG( cerr <<  __func__ << "() - END" << endl);
+
+    DBG(cerr << __func__ << "() - END" << endl);
     return 0;
 }
 
@@ -94,156 +94,144 @@ class lockT: public TestFixture {
 private:
 
 public:
-    lockT() {}
-    ~lockT() {}
+    lockT()
+    {
+    }
+    ~lockT()
+    {
+    }
 
     void setUp()
     {
-        string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
-        TheBESKeys::ConfigFile = bes_conf ;
+        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+        TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug){
+        if (bes_debug) {
             BESDebug::SetUp("cerr,cache,cache2");
-            DBG( cerr << __func__ << "() - setup() - BESDEBUG Enabled " << endl);
+            DBG(cerr << __func__ << "() - setup() - BESDEBUG Enabled " << endl);
         }
-    } 
+    }
 
     void tearDown()
     {
-        DBG( cerr << endl <<  __func__ << "() - BEGIN" << endl);
-        clean_dir(CACHE_DIR,CACHE_PREFIX);
+        clean_dir(CACHE_DIR, CACHE_PREFIX);
     }
 
+    void test_get_2_exlocks()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - ExLock a file, then try to exLock it again" << endl);
 
-    void test_get_2_exlocks() {
-        DBG( cerr << endl <<  __func__ << "() - BEGIN" << endl);
-        DBG( cerr << __func__ << "() - "
-            "ExLock a file, then try to exLock it again" << endl);
-       try {
+        try {
             int fd1, fd2;
-            BESFileLockingCache cache( CACHE_DIR, CACHE_PREFIX, 1 ) ;
-            CPPUNIT_ASSERT( cache.cache_enabled() );
-            DBG( cerr << __func__ << "() - Created cache." << endl);
+            BESFileLockingCache cache(CACHE_DIR, CACHE_PREFIX, 1);
+            CPPUNIT_ASSERT(cache.cache_enabled());
 
-
-            try {
-                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME,fd1) ) ;
-                DBG( cerr << __func__ << "() - Got first lock: fd1: " << fd1 << endl) ;
-            }
-            catch( BESError &e ) {
-                DBG( cerr << __func__ << "() - Caught BESError message: "
-                    <<  e.get_message() << endl) ;
-                cache.unlock_and_close(CACHE_FILE_NAME) ;
-                CPPUNIT_ASSERT( !"Locking test failed" ) ;
-            }
+            DBG(cerr << __func__ << "() - Created cache." << endl);
 
             try {
-                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME,fd2) ) ;
-                DBG( cerr << __func__ << "() - Got second lock. fd2: " << fd2 << endl) ;
+                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME, fd1) );
+                DBG(cerr << __func__ << "() - Got first lock: fd1: " << fd1 << endl);
+            }
+            catch (BESError &e) {
+                DBG(cerr << __func__ << "() - Caught BESError message: " << e.get_message() << endl);
+                cache.unlock_and_close(CACHE_FILE_NAME);
+                CPPUNIT_FAIL( "Locking test failed" );
+            }
+
+            try {
+                CPPUNIT_ASSERT( cache.getExclusiveLock(CACHE_FILE_NAME, fd2) );
+                DBG(cerr << __func__ << "() - Got second lock. fd2: " << fd2 << endl);
 
             }
-            catch( BESError &e ) {
-                DBG( cerr << __func__ << "() - Failed to get lock! "
-                    "Caught BESError message: " <<  e.get_message() << endl) ;
-                CPPUNIT_ASSERT( !"Locking test failed" ) ;
+            catch (BESError &e) {
+                DBG(cerr << __func__ << "() - Failed to get lock! Caught BESError message: " << e.get_message() << endl);
+                CPPUNIT_FAIL( "Locking test failed" );
             }
-            cache.unlock_and_close(CACHE_FILE_NAME) ;
-            DBG( cerr << __func__ << "() - Unlocked file." << endl);
 
+            cache.unlock_and_close(CACHE_FILE_NAME);
+            DBG(cerr << __func__ << "() - Unlocked file." << endl);
         }
-        catch( BESError &e )
-        {
-            DBG( cerr << __func__ << "() - Caught BESError message: "
-                <<  e.get_message() << endl) ;
-            CPPUNIT_ASSERT( !"Failed to use the cache" ) ;
+        catch (BESError &e) {
+            DBG(cerr << __func__ << "() - Caught BESError message: " << e.get_message() << endl);
+            CPPUNIT_FAIL( "Failed to use the cache" );
         }
 
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
-
-    void test_two_cache_objects() {
-        DBG( cerr << endl <<  __func__ << "() - BEGIN" << endl);
+    void test_two_cache_objects()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
 
         try {
             int fd_0;
-            BESFileLockingCache cache_1( CACHE_DIR, CACHE_PREFIX, 1 ) ;
-            CPPUNIT_ASSERT( cache_1.cache_enabled() );
-            DBG( cerr << __func__ << "() - Created cache_1: " << (void *)&cache_1 << endl);
-
+            BESFileLockingCache cache_1(CACHE_DIR, CACHE_PREFIX, 1);
+            CPPUNIT_ASSERT(cache_1.cache_enabled());
+            DBG(cerr << __func__ << "() - Created cache_1: " << (void * )&cache_1 << endl);
 
             try {
-                CPPUNIT_ASSERT( cache_1.getExclusiveLock(CACHE_FILE_NAME,fd_0) ) ;
-                DBG( cerr << __func__ << "() - Got first lock" << endl) ;
+                CPPUNIT_ASSERT( cache_1.getExclusiveLock(CACHE_FILE_NAME,fd_0) );
+                DBG(cerr << __func__ << "() - Got first lock" << endl);
             }
-            catch( BESError &e ) {
-                DBG( cerr << __func__ << "() - Caught BESError message: "
-                    <<  e.get_message() << endl) ;
-                cache_1.unlock_and_close(CACHE_FILE_NAME) ;
-                CPPUNIT_ASSERT( !"Locking test failed" ) ;
-            }
-
-            BESFileLockingCache cache_2( CACHE_DIR, CACHE_PREFIX, 1 ) ;
-            CPPUNIT_ASSERT( cache_2.cache_enabled() );
-            DBG( cerr << __func__ << "() - Created cache_2: " << (void *)&cache_2 << endl);
-            try
-            {
-                CPPUNIT_ASSERT( cache_2.getExclusiveLock(CACHE_FILE_NAME,fd_0) ) ;
-                DBG( cerr << __func__ << "() - Locked 2nd cache" << endl) ;
-            }
-            catch( BESError &e )
-            {
-                DBG( cerr << e.get_message() << endl);
-                cache_2.unlock_and_close(CACHE_FILE_NAME) ;
-                CPPUNIT_ASSERT( !"cache 2 locking failed" ) ;
+            catch (BESError &e) {
+                DBG(cerr << __func__ << "() - Caught BESError message: " << e.get_message() << endl);
+                cache_1.unlock_and_close(CACHE_FILE_NAME);
+                CPPUNIT_ASSERT( !"Locking test failed" );
             }
 
-            DBG( cerr << __func__ << "() - "
+            BESFileLockingCache cache_2(CACHE_DIR, CACHE_PREFIX, 1);
+            CPPUNIT_ASSERT(cache_2.cache_enabled());
+            DBG(cerr << __func__ << "() - Created cache_2: " << (void * )&cache_2 << endl);
+            try {
+                CPPUNIT_ASSERT( cache_2.getExclusiveLock(CACHE_FILE_NAME,fd_0) );
+                DBG(cerr << __func__ << "() - Locked 2nd cache" << endl);
+            }
+            catch (BESError &e) {
+                DBG(cerr << e.get_message() << endl);
+                cache_2.unlock_and_close(CACHE_FILE_NAME);
+                CPPUNIT_ASSERT( !"cache 2 locking failed" );
+            }
+
+            DBG(cerr << __func__ << "() - "
                 "Unlocking the first cache" << endl);
-            cache_1.unlock_and_close(CACHE_FILE_NAME) ;
+            cache_1.unlock_and_close(CACHE_FILE_NAME);
 
-            DBG( cerr << __func__ << "() - "
+            DBG(cerr << __func__ << "() - "
                 "Locking the second cache" << endl);
-            try
-            {
-                CPPUNIT_ASSERT( cache_2.getExclusiveLock(CACHE_FILE_NAME,fd_0) ) ;
-                DBG( cerr << __func__ << "() - Locked second cache." << endl) ;
+            try {
+                CPPUNIT_ASSERT( cache_2.getExclusiveLock(CACHE_FILE_NAME,fd_0) );
+                DBG(cerr << __func__ << "() - Locked second cache." << endl);
             }
-            catch( BESError &e )
-            {
-                DBG( cerr << __func__ << "() - Caught BESError message: "
-                    <<  e.get_message() << endl) ;
-                cache_2.unlock_and_close(CACHE_FILE_NAME) ;
-                CPPUNIT_ASSERT( !"locking second cache failed" ) ;
+            catch (BESError &e) {
+                DBG(cerr << __func__ << "() - Caught BESError message: " << e.get_message() << endl);
+                cache_2.unlock_and_close(CACHE_FILE_NAME);
+                CPPUNIT_ASSERT( !"locking second cache failed" );
             }
 
-            DBG( cerr << __func__ << "() - "
+            DBG(cerr << __func__ << "() - "
                 "Unlock the second cache" << endl);
-            cache_2.unlock_and_close(CACHE_FILE_NAME) ;
+            cache_2.unlock_and_close(CACHE_FILE_NAME);
         }
-        catch( BESError &e )
-        {
-            DBG( cerr << __func__ << "() - Caught BESError message: "
-                <<  e.get_message() << endl) ;
-            CPPUNIT_ASSERT( !"Failed to use the cache" ) ;
+        catch (BESError &e) {
+            DBG(cerr << __func__ << "() - Caught BESError message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT( !"Failed to use the cache" );
         }
 
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
+CPPUNIT_TEST_SUITE( lockT );
 
-    CPPUNIT_TEST_SUITE( lockT ) ;
+    CPPUNIT_TEST( test_get_2_exlocks );
+    CPPUNIT_TEST( test_two_cache_objects );
 
-    CPPUNIT_TEST( test_get_2_exlocks ) ;
-    CPPUNIT_TEST( test_two_cache_objects ) ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
-    CPPUNIT_TEST_SUITE_END() ;
+};
 
-} ;
-
-CPPUNIT_TEST_SUITE_REGISTRATION( lockT ) ;
-
-
+CPPUNIT_TEST_SUITE_REGISTRATION( lockT );
 
 int main(int argc, char*argv[])
 {
@@ -268,10 +256,8 @@ int main(int argc, char*argv[])
 
     // init_cache(TEST_CACHE_DIR);
 
-
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
 
     bool wasSuccessful = true;
     string test = "";
@@ -288,19 +274,5 @@ int main(int argc, char*argv[])
         }
     }
 
-
     return wasSuccessful ? 0 : 1;
 }
-
-#if 0
-int 
-main( int, char** )
-{
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
-
-    bool wasSuccessful = runner.run( "", false )  ;
-
-    return wasSuccessful ? 0 : 1 ;
-}
-#endif
