@@ -108,10 +108,10 @@ void init_cache(const string &cache_dir)
         system(m.str().c_str());
     }
 
-    string touchers[8] = { "7", "6", "4", "2", "8", "5", "3", "1" };
+    string touchers[8] = { "8", "7", "6", "5", "4", "3", "2", "1" };
     for (int i = 0; i < 8; i++) {
         DBG(cerr << __func__ << "() - sleeping for 1 second..." << endl);
-        sleep(1);
+        //sleep(1);
         string cmd = (string) "cat " + BESUtil::assemblePath(cache_dir, CACHE_PREFIX) + +"#usr#local#data#template0"
             + touchers[i] + ".txt > /dev/null";
         DBG(cerr << __func__ << "() - cmd: " << cmd << endl);
@@ -121,9 +121,14 @@ void init_cache(const string &cache_dir)
     DBG(cerr << __func__ << "() - END " << endl);
 }
 
-void check_cache(const string &cache_dir, map<string, string> &should_be)
+/**
+ * @param cache_dir Name of the cache directory
+ * @param should_be This file should be in the cache
+ * @param num_files There should be this many file with the MATCH_PREFIX
+ */
+void check_cache(const string &cache_dir, const string &should_be, unsigned int num_files)
 {
-    DBG(cerr << __func__ << "() - BEGIN " << endl);
+    DBG(cerr << __func__ << "() - BEGIN, should_be: " << should_be << ", num_files: " << num_files << endl);
 
     map<string, string> contents;
     string match_prefix = MATCH_PREFIX;
@@ -134,26 +139,21 @@ void check_cache(const string &cache_dir, map<string, string> &should_be)
         string dirEntry = dit->d_name;
         if (dirEntry.compare(0, match_prefix.length(), match_prefix) == 0) contents[dirEntry] = dirEntry;
     }
+
     closedir(dip);
 
-    CPPUNIT_ASSERT( should_be.size() == contents.size() );
+    CPPUNIT_ASSERT( num_files == contents.size() );
 
-    map<string, string>::const_iterator ci = contents.begin();
-    map<string, string>::const_iterator ce = contents.end();
-    map<string, string>::const_iterator si = should_be.begin();
-    // unused jhrg 4/25/17 map<string, string>::const_iterator se = should_be.end();
-    bool good = true;
-    for (; ci != ce; ci++, si++) {
-        if ((*ci).first != (*si).first) {
-            DBG(cerr << __func__ << "() - contents: " << (*ci).first << " - should be: " << (*si).first << endl);
-            good = false;
+    bool found = false;
+    for (map<string, string>::const_iterator ci = contents.begin(), ce = contents.end(); ci != ce; ci++) {
+        DBG(cerr << "contents: " << (*ci).first << endl);
+        if ((*ci).first == should_be) {
+            found = true;
+            break;
         }
-        else {
-            DBG(cerr << __func__ << "() - " << (*ci).first << " matches." << endl);
-
-        }
-        CPPUNIT_ASSERT( (*ci).first == (*si).first );
     }
+
+    CPPUNIT_ASSERT( found );
 
     DBG(cerr << __func__ << "() - END " << endl);
 }
@@ -182,9 +182,9 @@ string show_cache(const string cache_dir, const string match_prefix)
             contents[dirEntry] = dirEntry;
         }
     }
+
     closedir(dip);
     return oss.str();
-
 }
 
 class cacheT: public TestFixture {
@@ -450,40 +450,37 @@ public:
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
 
-        map<string, string> should_be;
-        should_be["bes_cache#usr#local#data#template01.txt"] = "bes_cache#usr#local#data#template01.txt";
-        should_be["bes_cache#usr#local#data#template03.txt"] = "bes_cache#usr#local#data#template02.txt";
-        should_be["bes_cache#usr#local#data#template05.txt"] = "bes_cache#usr#local#data#template03.txt";
-        should_be["bes_cache#usr#local#data#template08.txt"] = "bes_cache#usr#local#data#template04.txt";
-
         string latest_file = "/usr/local/data/template01.txt";
 
-        DBG(
-            cerr << __func__ << "() - Cache Before update_and_purge():" << endl
+        DBG(cerr << __func__ << "() - Cache Before update_and_purge():" << endl
                 << show_cache(TEST_CACHE_DIR, CACHE_PREFIX));
 
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             string latest_cache_file = cache.get_cache_file_name(latest_file);
+
+            // Purge files but not latest_file/latest_cache_file.
             cache.update_and_purge(latest_cache_file);
-            check_cache(TEST_CACHE_DIR, should_be);
+            check_cache(TEST_CACHE_DIR, latest_cache_file, 4);
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - " << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"purge failed" );
+            CPPUNIT_FAIL( "purge failed: " + e.get_message() );
         }
 
         DBG(cerr << __func__ << "() - Test purge (should not remove any files)" << endl);
+
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             string latest_cache_file = cache.get_cache_file_name(latest_file);
             cache.update_and_purge(latest_cache_file);
-            check_cache(TEST_CACHE_DIR, should_be);
+            check_cache(TEST_CACHE_DIR, latest_cache_file, 4);
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - " << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"purge failed" );
+            CPPUNIT_FAIL( "purge failed: " + e.get_message() );
         }
+
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
@@ -503,7 +500,7 @@ public:
 
     }
 
-CPPUNIT_TEST_SUITE( cacheT );
+    CPPUNIT_TEST_SUITE( cacheT );
 
     CPPUNIT_TEST( test_empty_cache_dir_name_cache_creation );
     CPPUNIT_TEST( test_missing_cache_dir_cache_creation );
@@ -514,179 +511,9 @@ CPPUNIT_TEST_SUITE( cacheT );
     CPPUNIT_TEST( test_cache_purge );
     CPPUNIT_TEST( test_64_bit_cache_sizes );
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
-
-#if 0
-
-    void do_test()
-    {
-        BESKeys *keys = TheBESKeys::TheKeys();
-
-        string target;
-        bool is_it = false;
-
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with empty dir key" << endl);
-        try
-        {
-            // BESFileLockingCache cache( "", "", 1 ) ;
-            CPPUNIT_ASSERT( !"Created cache with empty dir key" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with empty dir key, good" << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with non-exist dir key" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "", "" ) ;
-            CPPUNIT_ASSERT( !"Created cache with non-exist dir key" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with non-exist dir key, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CacheDir", "/dummy" );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with bad dir in conf" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "", "" ) ;
-            CPPUNIT_ASSERT( !"Created cache with bad dir in conf" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with bad dir in conf, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CacheDir", cache_dir );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with empty prefix key" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "", "" ) ;
-            CPPUNIT_ASSERT( !"Created cache with empty prefix key" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with empty prefix key, good" << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with non-exist prefix key" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "" ) ;
-            CPPUNIT_ASSERT( !"Created cache with non-exist prefix key" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with non-exist prefix key, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CachePrefix", "" );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with empty prefix key in conf" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "" ) ;
-            CPPUNIT_ASSERT( !"Created cache with empty prefix in conf" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with empty prefix in conf, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CachePrefix", "bes_cache" );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with empty size key" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "" ) ;
-            CPPUNIT_ASSERT( !"Created cache with empty size key" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with empty size key, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with non-exist size key" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
-            CPPUNIT_ASSERT( !"Created cache with non-exist size key" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with non-exist size key, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CacheSize", "dummy" );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with bad size in conf" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
-            CPPUNIT_ASSERT( !"Created cache with bad size in conf" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with bad size in conf, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CacheSize", "0" );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating cache with 0 size in conf" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
-            CPPUNIT_ASSERT( !"Created cache with 0 size in conf" );
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << "Failed to create cache with 0 size in conf, good"
-                << endl);
-            DBG( cerr << e.get_message() << endl);
-        }
-
-        keys->set_key( "BES.CacheSize", "1" );
-        DBG( cerr << "*****************************************" << endl);
-        DBG( cerr << "creating good cache from config" << endl);
-        try
-        {
-            // BESFileLockingCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
-        }
-        catch( BESError &e )
-        {
-            DBG( cerr << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Failed to create cache with good keys" );
-        }
-    }
-
-#endif
-
+    CPPUNIT_TEST_SUITE_END();
 };
+
 // test fixture class
 
 CPPUNIT_TEST_SUITE_REGISTRATION( cacheT );
