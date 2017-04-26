@@ -36,41 +36,44 @@
 #include <list>
 #include <string>
 
-using std::list ;
-using std::string ;
+#if 0
+using std::std::list;
+using std::std::string;
+#endif
 
 #include "BESFSFile.h"
 
-class BESFSDir
-{
+class BESFSDir {
 private:
-    string    _dirName ;
-    string    _fileExpr ;
-    list<BESFSFile>   _fileList ;
-    list<BESFSDir>   _dirList ;
-    bool    _dirLoaded ;
+    std::string _dirName;
+    std::string _fileExpr;
+    std::list<BESFSFile> _fileList;
+    std::list<BESFSDir> _dirList;
+    bool _dirLoaded;
 
-    void    loadDir() ;
+    void loadDir();
+
 public:
-    BESFSDir(const string &dirName) ;
-    BESFSDir(const string &dirName,
-               const string &fileExpr) ;
-    BESFSDir(const BESFSDir &copyFrom) ;
-    virtual    ~BESFSDir() ;
+    BESFSDir(const std::string &dirName);
+    BESFSDir(const std::string &dirName, const std::string &fileExpr);
+    BESFSDir(const BESFSDir &copyFrom);
+    virtual ~BESFSDir();
 
-    typedef list<BESFSDir>::iterator dirIterator ;
-    virtual BESFSDir::dirIterator beginOfDirList() ;
-    virtual BESFSDir::dirIterator endOfDirList() ;
+    typedef std::list<BESFSDir>::iterator dirIterator;
 
-    typedef list<BESFSFile>::iterator fileIterator ;
-    virtual BESFSDir::fileIterator beginOfFileList() ;
-    virtual BESFSDir::fileIterator endOfFileList() ;
+    virtual BESFSDir::dirIterator beginOfDirList();
+    virtual BESFSDir::dirIterator endOfDirList();
 
-    virtual string   getDirName()
+    typedef std::list<BESFSFile>::iterator fileIterator;
+
+    virtual BESFSDir::fileIterator beginOfFileList();
+    virtual BESFSDir::fileIterator endOfFileList();
+
+    virtual std::string getDirName()
     {
-        return _dirName ;
+        return _dirName;
     }
-} ;
+};
 
 #endif // I_BESFSDir_h
 
