@@ -82,12 +82,14 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-/** @brief Set up the cache.
- Add to the cache a set of eight test files, with names that are easy to
- work with and each with an access time two seconds later than the
- preceding one.
-
- @param cache_dir Directory that holds the cached files.
+/**
+ * @brief Set up the cache.
+ *
+ * Add a set of eight test files to the cache, with names that are easy to
+ * work with and each with an access time two seconds later than the
+ * preceding one
+ *
+ * @param cache_dir Directory that holds the cached files.
  */
 void init_cache(const string &cache_dir)
 {
@@ -96,25 +98,20 @@ void init_cache(const string &cache_dir)
     string t_file = cache_dir + "/template.txt";
     for (int i = 1; i < 9; i++) {
         ostringstream s;
-        s << "cp -f " << t_file << " " << BESUtil::assemblePath(cache_dir, CACHE_PREFIX) << "#usr#local#data#template0"
-            << i << ".txt";
-        DBG(cerr << __func__ << "() - cmd: " << s.str() << endl);
-        system(s.str().c_str());
+        s << BESUtil::assemblePath(cache_dir, CACHE_PREFIX) << "#usr#local#data#template0" << i << ".txt";
 
-        ostringstream m;
-        m << "chmod a+w " << BESUtil::assemblePath(cache_dir, CACHE_PREFIX) << "#usr#local#data#template0" << i
-            << ".txt";
-        DBG(cerr << __func__ << "() - cmd: " << m.str() << endl);
-        system(m.str().c_str());
-    }
+        string cmd = "";
+        cmd.append("cp -f ").append(t_file).append(" ").append(s.str());
+        system(cmd.c_str());
 
-    string touchers[8] = { "8", "7", "6", "5", "4", "3", "2", "1" };
-    for (int i = 0; i < 8; i++) {
-        DBG(cerr << __func__ << "() - sleeping for 1 second..." << endl);
+        cmd = "";
+        cmd.append("chmod a+w ").append(s.str());
+        system(cmd.c_str());
+
+        // DBG(cerr << __func__ << "() - sleeping for 1 second..." << endl);
         //sleep(1);
-        string cmd = (string) "cat " + BESUtil::assemblePath(cache_dir, CACHE_PREFIX) + +"#usr#local#data#template0"
-            + touchers[i] + ".txt > /dev/null";
-        DBG(cerr << __func__ << "() - cmd: " << cmd << endl);
+        cmd = "";
+        cmd.append( "cat ").append(s.str()).append(" > /dev/null");
         system(cmd.c_str());
     }
 
@@ -461,10 +458,12 @@ public:
 
             // Purge files but not latest_file/latest_cache_file.
             cache.update_and_purge(latest_cache_file);
-            check_cache(TEST_CACHE_DIR, latest_cache_file, 4);
+
+            // I used a hard-coded string because 'latest_cache_file' contains
+            // extra path information that won't be found by check_cache. jhrg 4/26/17
+            check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt"/*latest_cache_file*/, 4);
         }
         catch (BESError &e) {
-            DBG(cerr << __func__ << "() - " << e.get_message() << endl);
             CPPUNIT_FAIL( "purge failed: " + e.get_message() );
         }
 
@@ -474,10 +473,9 @@ public:
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             string latest_cache_file = cache.get_cache_file_name(latest_file);
             cache.update_and_purge(latest_cache_file);
-            check_cache(TEST_CACHE_DIR, latest_cache_file, 4);
+            check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt"/*latest_cache_file*/, 4);
         }
         catch (BESError &e) {
-            DBG(cerr << __func__ << "() - " << e.get_message() << endl);
             CPPUNIT_FAIL( "purge failed: " + e.get_message() );
         }
 
@@ -520,8 +518,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( cacheT );
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "db6");
+    GetOpt getopt(argc, argv, "db6p");
     int option_char;
+    bool purge = true;    // the default
     while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
@@ -534,8 +533,11 @@ int main(int argc, char*argv[])
 
         case '6':
             RUN_64_BIT_CACHE_TEST = true;  // RUN_64_BIT_CACHE_TEST is a static global
-            DBG(cerr << __func__ << "() - 64 Bit Cache Tests Enabled." << endl)
-            ;
+            DBG(cerr << __func__ << "() - 64 Bit Cache Tests Enabled." << endl);
+            break;
+
+        case 'p':
+            purge = false;
             break;
 
         default:
@@ -565,7 +567,8 @@ int main(int argc, char*argv[])
         }
     }
 
-    purge_cache(TEST_CACHE_DIR, CACHE_PREFIX);
+    if (purge)
+        purge_cache(TEST_CACHE_DIR, CACHE_PREFIX);
 
     return wasSuccessful ? 0 : 1;
 }
