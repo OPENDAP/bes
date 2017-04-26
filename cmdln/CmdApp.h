@@ -32,11 +32,11 @@
 
 #include <fstream>
 
-#include "BESBaseApp.h"
+#include "BESApp.h"
 
 class CmdClient ;
 
-class CmdApp : public BESBaseApp
+class CmdApp : public BESApp
 {
 private:
     CmdClient *			_client ;

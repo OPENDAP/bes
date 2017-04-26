@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,9 +33,8 @@
 #ifndef A_BESApp_H
 #define A_BESApp_H
 
+#include <map>
 #include <string>
-
-using std::string ;
 
 #include "BESObj.h"
 
@@ -54,18 +53,21 @@ using std::string ;
  *
  * @see BESObj
  */
-class BESApp : public BESObj
-{
+class BESApp: public BESObj {
 protected:
-    string			_appName ;
-    bool			_debug ;
-    bool			_isInitialized ;
-    static BESApp *		_theApplication;
-                                BESApp(void)
-				    : _debug( false ),
-				      _isInitialized( false ) {}
+    string _appName;
+    bool _debug;
+    bool _isInitialized;
+    static BESApp * _theApplication;
+    BESApp(void) :
+        _debug(false), _isInitialized(false)
+    {
+    }
 public:
-    virtual			~BESApp() {};
+    virtual ~BESApp()
+    {
+    }
+    ;
 
     /** @brief main routine, the main entry point for any BES applications.
      *
@@ -79,7 +81,7 @@ public:
      * @param argV arguments passed to the application, which is argv passed
      * to the main function.
      */
-    virtual int			main(int argC, char **argV) = 0;
+    virtual int main(int argC, char **argV) = 0;
 
     /** @brief Initialize the application using the passed argc and argv values
      *
@@ -91,7 +93,7 @@ public:
      * @param argV arguments passed to the application, which is argv passed
      * to the main function.
      */
-    virtual int			initialize(int argC, char **argV) = 0;
+    virtual int initialize(int argC, char **argV) = 0;
 
     /** @brief The body of the application, implementing the primary
      * functionality of the BES application
@@ -99,7 +101,7 @@ public:
      * It is up to the derived classes of BESApp to implement the
      * run method.
      */
-    virtual int			run(void) = 0;
+    virtual int run(void);// = 0;
 
     /** @brief Clean up after the application
      *
@@ -110,7 +112,7 @@ public:
      * @param sig if the applicaiton is terminating due to a signal, pass the
      * signal to terminate routine.
      */
-    virtual int			terminate(int sig = 0) = 0;
+    virtual int terminate(int sig = 0);// = 0;
 
     /** @brief dumps information about this object
      *
@@ -119,7 +121,7 @@ public:
      *
      * @param strm C++ i/o stream to dump the information to
      */
-    virtual void		dump( ostream &strm ) const = 0 ;
+    virtual void dump(std::ostream &strm) const = 0;
 
     /** @brief Returns the name of the application
      *
@@ -129,13 +131,19 @@ public:
      *
      * @return name of the application
      */
-    string			appName( void ) const { return _appName ; }
+    string appName(void) const
+    {
+        return _appName;
+    }
 
     /** @brief Returns the BESApp application object for this application
      *
      * @return The application object
      */
-    static BESApp *		TheApplication(void) { return _theApplication; }
+    static BESApp * TheApplication(void)
+    {
+        return _theApplication;
+    }
 };
 
 #endif

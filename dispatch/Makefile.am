@@ -90,7 +90,7 @@ SRCS = BESInterface.cc \
 	BESReturnManager.cc						\
 	BESError.cc BESExceptionManager.cc				\
 	BESDataHandlerInterface.cc					\
-	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
+	BESIndent.cc BESApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
 	BESFileLockingCache.cc \
 	BESUncompressCache.cc \
@@ -144,7 +144,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESServerSystemResources.h 					\
 	BESAggFactory.h BESAggregationServer.h 				\
 	BESReturnManager.h 						\
-	BESDataNames.h BESApp.h BESObj.h BESIndent.h BESBaseApp.h 	\
+	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
 	BESDefaultModule.h BESTransmitterNames.h 			\
 	BESExceptionManager.h 						\
