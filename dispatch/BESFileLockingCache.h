@@ -37,6 +37,8 @@
 
 #include "BESObj.h"
 
+#define USE_GET_SHARED_LOCK 1
+
 // These typedefs are used to record information about the files in the cache.
 // See BESFileLockingCache.cc and look at the purge() method.
 typedef struct {
@@ -47,8 +49,11 @@ typedef struct {
 
 typedef std::list<cache_entry> CacheFiles;
 
-/** @brief Implementation of a caching mechanism for compressed data.
+/**
+ * @brief Implementation of a caching mechanism for compressed data.
+ *
  * This cache uses simple advisory locking found on most modern unix file systems.
+ * It was originally designed to hold the decompressed versions of compressed files.
  * Compressed files are uncompressed and stored in a cache where they can be
  * used over and over until removed from the cache. Several processes can
  * share the cache with each reading from files. At the same time, new files
@@ -69,19 +74,22 @@ typedef std::list<cache_entry> CacheFiles;
  * used to control access to the whole cache - with the open + lock and
  * close + unlock operations performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
+ *
+ * @note The locking mechanism uses Unix fcntl(2) and so is _per process_. That
+ * means that while getting an exclusive lock in one process will keep other
+ * processes from also getting an exclusive lock, it _will not_ prevent other
+ * threads in the same process from getting another 'exclusive lock.' We could
+ * switch to flock(2) and get thread-safe locking, but we would trade off the
+ * ability to work with files on NFS volumes.
  */
 class BESFileLockingCache: public BESObj {
 
     friend class cacheT;
-    friend class lockT;
 
 private:
     static const char DAP_CACHE_CHAR = '#';
 
     bool d_cache_enabled;
-
-
-protected:
 
     // pathname of the cache directory
     string d_cache_dir;
@@ -95,13 +103,7 @@ protected:
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
     unsigned long long d_target_size;
 
-private:
-
-    // Suppress the assignment operator and default copy ctor, ...
-    BESFileLockingCache(const BESFileLockingCache &);
-    BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
-
-    /// Name of the file that tracks the size of the cache
+    // Name of the file that tracks the size of the cache
     string d_cache_info;
     int d_cache_info_fd;
 
@@ -115,24 +117,30 @@ private:
     unsigned long long m_collect_cache_dir_info(CacheFiles &contents);
 
     void m_record_descriptor(const string &file, int fd);
-    int m_get_descriptor(const string &file);
-
-
-    // Removed; see comment in .cc file. void unlock_and_close(int fd);
+    int m_remove_descriptor(const string &file);
+#if USE_GET_SHARED_LOCK
+    int m_find_descriptor(const string &file);
+#endif
+    // Suppress the assignment operator and default copy ctor, ...
+    BESFileLockingCache(const BESFileLockingCache &);
+    BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
 protected:
 
-    BESFileLockingCache(): d_cache_enabled(true),d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(-1){};
-    void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
+    BESFileLockingCache(): d_cache_enabled(true), d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0),
+        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) {};
+
     BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
 
     virtual ~BESFileLockingCache()
     {
-        if (d_cache_info_fd != -1){
+        if (d_cache_info_fd != -1) {
             close(d_cache_info_fd);
-            d_cache_info_fd=-1;
+            d_cache_info_fd = -1;
         }
     }
+
+    void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
 
 public:
 
@@ -142,9 +150,6 @@ public:
     virtual bool get_read_lock(const string &target, int &fd);
     virtual void exclusive_to_shared_lock(int fd);
     virtual void unlock_and_close(const string &target);
-    // Removed. See comments in the .cc file virtual void unlock_and_close(int fd);
-
-    virtual bool getExclusiveLock(string file_name, int &ref_fd);
 
     virtual void lock_cache_write();
     virtual void lock_cache_read();
@@ -156,17 +161,41 @@ public:
     virtual void update_and_purge(const string &new_file);
     virtual void purge_file(const string &file);
 
-    const string getCacheFilePrefix();
-    const string getCacheDirectory();
+    /// @return The prefix used for items in an instance of BESFileLockingCache
+    const string get_cache_file_prefix()
+    {
+        return d_prefix;
+    }
 
+    /// @return The directory used for the an instance of BESFileLockingCache
+    const string get_cache_directory()
+    {
+        return d_cache_dir;
+    }
+
+    // This is a static method because it's often called from 'get_instance()'
+    // methods that are static.
     static bool dir_exists(const string &dir);
-    // static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
-    bool cache_enabled(){ return d_cache_enabled; }
-    void disable(){ d_cache_enabled = false; }
-    void enable(){ d_cache_enabled = true; }
+    /// @return Is this cache enabled?
+    bool cache_enabled()
+    {
+        return d_cache_enabled;
+    }
 
-    virtual void dump(ostream &strm) const ;
+    /// @brief Disable the cache
+    void disable()
+    {
+        d_cache_enabled = false;
+    }
+
+    /// @brief Enabel the cache
+    void enable()
+    {
+        d_cache_enabled = true;
+    }
+
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESFileLockingCache_h_

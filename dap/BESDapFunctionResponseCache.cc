@@ -289,8 +289,8 @@ string BESDapFunctionResponseCache::get_hash_basename(const string &resource_id)
     size_t hashValue = str_hash(resource_id);
     stringstream hashed_id;
     hashed_id << hashValue;
-    string cache_file_name = getCacheDirectory();
-    cache_file_name.append("/").append(getCacheFilePrefix()).append(hashed_id.str());
+    string cache_file_name = get_cache_directory();
+    cache_file_name.append("/").append(get_cache_file_prefix()).append(hashed_id.str());
 
     return cache_file_name;
 }
