@@ -37,6 +37,8 @@
 
 #include "BESObj.h"
 
+#define USE_GET_SHARED_LOCK 1
+
 // These typedefs are used to record information about the files in the cache.
 // See BESFileLockingCache.cc and look at the purge() method.
 typedef struct {
@@ -47,8 +49,11 @@ typedef struct {
 
 typedef std::list<cache_entry> CacheFiles;
 
-/** @brief Implementation of a caching mechanism for compressed data.
+/**
+ * @brief Implementation of a caching mechanism for compressed data.
+ *
  * This cache uses simple advisory locking found on most modern unix file systems.
+ * It was originally designed to hold the decompressed versions of compressed files.
  * Compressed files are uncompressed and stored in a cache where they can be
  * used over and over until removed from the cache. Several processes can
  * share the cache with each reading from files. At the same time, new files
@@ -69,6 +74,13 @@ typedef std::list<cache_entry> CacheFiles;
  * used to control access to the whole cache - with the open + lock and
  * close + unlock operations performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
+ *
+ * @note The locking mechanism uses Unix fcntl(2) and so is _per process_. That
+ * means that while getting an exclusive lock in one process will keep other
+ * processes from also getting an exclusive lock, it _will not_ prevent other
+ * threads in the same process from getting another 'exclusive lock.' We could
+ * switch to flock(2) and get thread-safe locking, but we would trade off the
+ * ability to work with files on NFS volumes.
  */
 class BESFileLockingCache: public BESObj {
 
@@ -106,8 +118,9 @@ private:
 
     void m_record_descriptor(const string &file, int fd);
     int m_remove_descriptor(const string &file);
+#if USE_GET_SHARED_LOCK
     int m_find_descriptor(const string &file);
-
+#endif
     // Suppress the assignment operator and default copy ctor, ...
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);

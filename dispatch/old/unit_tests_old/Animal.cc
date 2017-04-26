@@ -1,4 +1,4 @@
-// cat.h
+// Animal.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,16 +30,20 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_CAT_H
-#define I_CAT_H
+#include "../unit_tests_old/Animal.h"
 
-#include "Animal.h"
+Animal::Animal( char *name )
+    : _name( name )
+{
+}
 
-class cat : public Animal {
-public:
-				cat(char *name);
-    virtual			~cat(void);
-};
+Animal::~Animal( )
+{
+}
 
-#endif
+string
+Animal::get_name( )
+{
+    return _name ;
+}
 

@@ -136,6 +136,7 @@ inline int BESFileLockingCache::m_remove_descriptor(const string &file)
     return fd;
 }
 
+#if USE_GET_SHARED_LOCK
 inline int BESFileLockingCache::m_find_descriptor(const string &file)
 {
     BESDEBUG("cache", "BESFileLockingCache::m_find_descriptor(): d_locks size: " << d_locks.size() << endl);
@@ -148,6 +149,7 @@ inline int BESFileLockingCache::m_find_descriptor(const string &file)
 
     return i->second;   // return the file descriptor bound to 'file'
 }
+#endif
 
 /**
  * @brief Used in BESDEBUG() statements
@@ -412,7 +414,6 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
     return target;
 }
 
-#define USE_GET_SHARED_LOCK 1
 #if USE_GET_SHARED_LOCK
 /** Get a shared read lock on an existing file.
 
@@ -993,8 +994,6 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
  * be removed. Don't use this to shrink the cache when it gets too big, use
  * update_and_purge() instead since that file optimizes accesses to the cache
  * control file for several changes in a row.
- *
- * @todo This is a new feature; add to BESCache3
  *
  * @param file The name of the file to purge.
  */
