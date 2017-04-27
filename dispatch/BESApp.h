@@ -81,7 +81,7 @@ public:
      * @param argV arguments passed to the application, which is argv passed
      * to the main function.
      */
-    virtual int main(int argC, char **argV) = 0;
+    virtual int main(int argC, char **argV);
 
     /** @brief Initialize the application using the passed argc and argv values
      *
@@ -93,7 +93,7 @@ public:
      * @param argV arguments passed to the application, which is argv passed
      * to the main function.
      */
-    virtual int initialize(int argC, char **argV) = 0;
+    virtual int initialize(int argC, char **argV);
 
     /** @brief The body of the application, implementing the primary
      * functionality of the BES application
@@ -101,7 +101,7 @@ public:
      * It is up to the derived classes of BESApp to implement the
      * run method.
      */
-    virtual int run(void);// = 0;
+    virtual int run(void);
 
     /** @brief Clean up after the application
      *
@@ -112,7 +112,7 @@ public:
      * @param sig if the applicaiton is terminating due to a signal, pass the
      * signal to terminate routine.
      */
-    virtual int terminate(int sig = 0);// = 0;
+    virtual int terminate(int sig = 0);
 
     /** @brief dumps information about this object
      *
