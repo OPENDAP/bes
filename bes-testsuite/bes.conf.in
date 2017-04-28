@@ -290,3 +290,7 @@ H5.LargeDataMemCacheEntries=0
 H5.SmallDataMemCacheEntries=0 
 #H5.CachePurgeLevel=0.2
 
+H5.EnableDiskMetaDataCache=false
+H5.EnableDiskDDSCache=false
+H5.DiskMetaDataCachePath=/tmp
+
