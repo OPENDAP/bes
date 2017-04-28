@@ -121,9 +121,9 @@ extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
 
 // Check the description of cache_entries and cache_purge_level at h5.conf.in.
-unsigned int HDF5RequestHandler::_mdcache_entries = 200;
-unsigned int HDF5RequestHandler::_lrdcache_entries = 40;
-unsigned int HDF5RequestHandler::_srdcache_entries = 200;
+unsigned int HDF5RequestHandler::_mdcache_entries = 500;
+unsigned int HDF5RequestHandler::_lrdcache_entries = 0;
+unsigned int HDF5RequestHandler::_srdcache_entries = 0;
 float HDF5RequestHandler::_cache_purge_level = 0.2;
 
 // Metadata object cache at DAS,DDS and DMR.
@@ -235,6 +235,8 @@ cerr<<"No specific cache info"<<endl;
             }
         }
         if(get_srdcache_entries()) {
+
+            BESDEBUG(HDF5_NAME, "Generate memory cache for smaller coordinate variables" << endl);
             srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
 //cerr<<"small memory data cache "<<endl;
 
@@ -308,6 +310,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             bool das_from_dc = false;
             string das_cache_fname;
 
+            // If the use_disk_meta_cache is set, check if the cache file exists and sets the flag.
             if(_use_disk_meta_cache == true) {
 
                 string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
@@ -318,8 +321,11 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 
             }
 
+            // If reading DAS from the disk cache, call the corresponding function
             if(true == das_from_dc) {
                 read_das_from_disk_cache(das_cache_fname,das);
+
+                // Don't adding the memory cache
                 if (das_cache) {
                     // add a copy
                     BESDEBUG(HDF5_NAME, "HDF5 DAS reading DAS from the disk cache. For memory cache, DAS added to the cache for : " << filename << endl);
@@ -328,41 +334,41 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                 }
             }
 
-           else {
-            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
-            if (true == _usecf) {
+            else {// Need to build from the HDF5 file
+                H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+                if (true == _usecf) {//CF option
 
-                cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-                if (cf_fileid < 0){
-                    string invalid_file_msg="Could not open this HDF5 file ";
-                    invalid_file_msg +=filename;
-                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
-                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
-                    invalid_file_msg +=" distributor.";
-                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                    cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                    if (cf_fileid < 0){
+                        string invalid_file_msg="Could not open this HDF5 file ";
+                        invalid_file_msg +=filename;
+                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg +=" distributor.";
+                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                    }
+
+                    read_cfdas( *das,filename,cf_fileid);
+                    H5Fclose(cf_fileid);
                 }
-
-                read_cfdas( *das,filename,cf_fileid);
-                H5Fclose(cf_fileid);
-            }
-            else {// Default option
-                hid_t fileid = get_fileid(filename.c_str());
-                if (fileid < 0) {
-                    string invalid_file_msg="Could not open this HDF5 file ";
-                    invalid_file_msg +=filename;
-                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
-                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
-                    invalid_file_msg +=" distributor.";
-                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                else {// Default option
+                    hid_t fileid = get_fileid(filename.c_str());
+                    if (fileid < 0) {
+                        string invalid_file_msg="Could not open this HDF5 file ";
+                        invalid_file_msg +=filename;
+                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg +=" distributor.";
+                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
  
-                }
+                    }
 
-                find_gloattr(fileid, *das);
-                depth_first(fileid, "/", *das);
-                close_fileid(fileid);
-            }
+                    find_gloattr(fileid, *das);
+                    depth_first(fileid, "/", *das);
+                    close_fileid(fileid);
+                }
              
-            Ancillary::read_ancillary_das( *das, filename ) ;
+                Ancillary::read_ancillary_das( *das, filename ) ;
 
 #if 0
 // Dump all attribute contents
@@ -382,19 +388,21 @@ temp_table->print(cerr);
 ++it;
 }
 #endif
-            // If the cache is turned on
-            if(das_cache) {
-                // add a copy
-                BESDEBUG(HDF5_NAME, "DAS added to the cache for : " << filename << endl);
-                das_cache->add(new DAS(*das), filename);
-            }
+                // If the cache is turned on
+                if(das_cache) {
+                    // add a copy
+                    BESDEBUG(HDF5_NAME, "DAS added to the cache for : " << filename << endl);
+                    das_cache->add(new DAS(*das), filename);
+                }
 
-            if(das_cache_fname!="") {
-                BESDEBUG(HDF5_NAME, "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
-                write_das_to_disk_cache(das_cache_fname,das);
-            }
+                // DAS cache fname will be set only when the metadata disk cache is turned on
+                // If it comes here, the das cache should be generated.
+                if(das_cache_fname!="") {
+                    BESDEBUG(HDF5_NAME, "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
+                    write_das_to_disk_cache(das_cache_fname,das);
+                }
                
-          }
+            }
         }
 
         bdas->clear_container() ;
@@ -430,6 +438,8 @@ temp_table->print(cerr);
 }
 
 // Convenient function that helps  build DDS and Data
+// Since this function will be used by both the DDS and Data services, we need to pass both BESDDSResponse and BESDataDDSResponse.
+// This two parameters are necessary for the future DDS disk cache feature.
 void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const string &container_name, const string& filename,const string &dds_cache_fname, const string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data)
 {
     DDS *dds;
@@ -451,7 +461,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
             BESDEBUG(HDF5_NAME, "DDS Metadata Cached hit for : " << filename << endl);
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
-        else if (true ==dds_from_dc) {
+        else if (true ==dds_from_dc) {//Currently the dds_from_ds is always false by default. 
             read_dds_from_disk_cache(bdds,data_bdds,build_data,container_name,filename,dds_cache_fname,das_cache_fname,-1,das_from_dc);
         }
         else {
@@ -497,9 +507,10 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         
             Ancillary::read_ancillary_dds( *dds, filename ) ;
 
-            // Generate the DDS cached file if needed
+            // Generate the DDS cached file if needed,currently this if is always false by defaulr
             if(dds_cache_fname!="" && dds_from_dc == false) 
                 write_dds_to_disk_cache(dds_cache_fname,dds);
+
             // Add attributes
             {
                 hid_t h5_fd = -1;
@@ -566,133 +577,6 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
     }
 
 }
-
-void get_attr_contents(AttrTable*temp_table) {
-    if(temp_table !=NULL) {
-        AttrTable::Attr_iter top_startit = temp_table->attr_begin();
-        AttrTable::Attr_iter top_endit = temp_table->attr_end();
-        AttrTable::Attr_iter top_it = top_startit;
-        while(top_it !=top_endit) {
-            AttrType atype = temp_table->get_attr_type(top_it);
-            if(atype == Attr_unknown) 
-                cerr<<"unsupported DAS attributes" <<endl;
-            else if(atype!=Attr_container) {
-           
-                   cerr<<"Attribute name is "<<temp_table->get_name(top_it)<<endl;
-                   cerr<<"Attribute type is "<<temp_table->get_type(top_it)<<endl;
-                   unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
-                   cerr<<"Attribute values are "<<endl;
-                   for (int i = 0; i <num_attrs;i++) 
-                        cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
-                   cerr<<endl;
-            }
-            else {
-                cerr<<"Coming to the attribute container.  "<<endl;
-                cerr<<"container  name is "<<(*top_it)->name <<endl;
-                AttrTable* sub_table = temp_table->get_attr_table(top_it);
-                cerr<<"container table name is "<<sub_table->get_name() <<endl;
-                get_attr_contents(sub_table);
-            }
-            ++top_it;
-        }
-
-    }
-}
-
-void write_das_table_to_file(AttrTable*temp_table,FILE* das_file) {
-
-    if(temp_table !=NULL) {
-
-        uint8_t category_flag = 2;
-
-        AttrTable::Attr_iter top_startit = temp_table->attr_begin();
-        AttrTable::Attr_iter top_endit = temp_table->attr_end();
-        AttrTable::Attr_iter top_it = top_startit;
-        while(top_it !=top_endit) {
-            AttrType atype = temp_table->get_attr_type(top_it);
-            if(atype == Attr_unknown) 
-                throw InternalErr(__FILE__,__LINE__,"Unsupported DAS Attribute type");
-            else if(atype!=Attr_container) {
-                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr name is: " 
-                                       << temp_table->get_name(top_it) << endl);
-                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr type is: " 
-                                       << temp_table->get_type(top_it) << endl);
-                   //unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
-                   //cerr<<"Attribute values are "<<endl;
-                   //for (int i = 0; i <num_attrs;i++) 
-                    //    cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
-                   //cerr<<endl;
-                   //write_das_attr_info(temp_table,top_it,das_file);
-                write_das_attr_info(temp_table,temp_table->get_name(top_it),temp_table->get_type(top_it),das_file);
-            }
-            else {
-                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr container name is: " 
-                                       << (*top_it)->name << endl);
-                AttrTable* sub_table = temp_table->get_attr_table(top_it);
-                write_container_name_to_file(sub_table->get_name(),das_file);
-                write_das_table_to_file(sub_table,das_file);
-                // Write the end flag
-                fwrite((const void*)&category_flag,1,1,das_file);
-                
-            }
-            ++top_it;
-        }
-
-    }
-}
-
-
-
-#if 0
-void get_attr_contents(AttrTable*temp_table) {
-AttrTable::Attr_iter top_startit = temp_table->attr_begin();
-AttrTable::Attr_iter top_endit = temp_table->attr_end();
-AttrTable::Attr_iter top_it = top_startit;
-while(top_it !=top_endit) {
-    
-
-
-    AttrTable* sub_table = temp_table->get_attr_table(top_it);
-    if(sub_table!=0) {
-        if(sub_table->get_attr_type(top_it)==Attr_container) {
-            cerr<<"Coming to the attribute container.  "<<endl;
-            cerr<<"container  name is "<<(*top_it)->name <<endl;
-AttrTable::Attr_iter start_aiter=sub_table->attr_begin();
-AttrTable::Attr_iter ait = start_aiter;
-AttrTable::Attr_iter end_aiter = sub_table->attr_end();
-while(ait != end_aiter) {
-           
-           cerr<<"Attribute name is "<<sub_table->get_name(ait)<<endl;
-           cerr<<"Attribute type is "<<sub_table->get_type(ait)<<endl;
-           unsigned int num_attrs = sub_table->get_attr_num(sub_table->get_name(ait));
-           cerr<<"Attribute values are "<<endl;
-           for (int i = 0; i <num_attrs;i++) 
-             cerr<<(*(sub_table->get_attr_vector(sub_table->get_name(ait))))[i]<<" ";
-           cerr<<endl;
- 
-++ait;
-}
-            get_attr_contents(sub_table);
-        }
-        else {
-           cerr<<"Attribute name outer loop is "<<sub_table->get_name(top_it)<<endl;
-           cerr<<"Attribute type outrt loop is "<<sub_table->get_type(top_it)<<endl;
-           unsigned int num_attrs = sub_table->get_attr_num(sub_table->get_name(top_it));
-           cerr<<"Attribute values outer are "<<endl;
-           for (int i = 0; i <num_attrs;i++) 
-             cerr<<(*(sub_table->get_attr_vector(sub_table->get_name(top_it))))[i]<<" ";
-           cerr<<endl;
-        }
-    }
-    ++top_it;
-
-}
-}
-#endif
-
-
-
-
 
 #if 0
 // Convenient function that helps  build DDS and Data
@@ -922,6 +806,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         if(_use_disk_meta_cache == true) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
+            // The _use_disk_dds_cache is always set to false by default
             if(_use_disk_dds_cache == true) {
                 dds_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_dds";
                 if(access(dds_cache_fname.c_str(),F_OK) !=-1)
@@ -1007,6 +892,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bool build_data  = true;
         string dds_cache_fname,das_cache_fname;
 
+        // Only DAS is read from the cache. dds_from_dc is always false.
         if(_use_disk_meta_cache == true) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
@@ -1669,6 +1555,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
             char* temp_pointer =&buf[0];
 
             AttrTable*at = NULL;
+            // recursively build DAS
             temp_pointer = get_attr_info_from_dc(temp_pointer,das_ptr,at);
 
         }
@@ -1693,6 +1580,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 
 }
 
+// This fucntion will NOT be used by default. Leave here for future improvement.
 bool HDF5RequestHandler::write_dds_to_disk_cache(const string& dds_cache_fname,DDS *dds_ptr) {
 
     BESDEBUG(HDF5_NAME, "Write DDS to disk cache " << dds_cache_fname << endl);
@@ -1740,6 +1628,7 @@ bool HDF5RequestHandler::write_dds_to_disk_cache(const string& dds_cache_fname,D
 
 }
 
+// Write DAS to a binary cached file on disk.
 bool HDF5RequestHandler::write_das_to_disk_cache(const string & das_cache_fname, DAS *das_ptr) {
 
     BESDEBUG(HDF5_NAME, "Write DAS to disk cache " << das_cache_fname << endl);
@@ -1787,8 +1676,10 @@ bool HDF5RequestHandler::write_das_to_disk_cache(const string & das_cache_fname,
 
 }
 
+// The wrapper function to call write_das_table_to_file to generate the cache.
 void write_das_to_file(DAS*das_ptr,FILE* das_file) {
 
+    // When category_flag is 2, it marks the end of the file.
     uint8_t category_flag = 2;
     AttrTable* top_table = das_ptr->get_top_level_attributes();
     write_das_table_to_file(top_table,das_file);
@@ -1798,8 +1689,59 @@ void write_das_to_file(DAS*das_ptr,FILE* das_file) {
 
 }
 
+// The main function to write DAS to a file
+void write_das_table_to_file(AttrTable*temp_table,FILE* das_file) {
+
+    if(temp_table !=NULL) {
+
+        // 2 is the end mark of an attribute table
+        uint8_t category_flag = 2;
+
+        // Loop through the whole DAS top table
+        AttrTable::Attr_iter top_startit = temp_table->attr_begin();
+        AttrTable::Attr_iter top_endit = temp_table->attr_end();
+        AttrTable::Attr_iter top_it = top_startit;
+        while(top_it !=top_endit) {
+            AttrType atype = temp_table->get_attr_type(top_it);
+            if(atype == Attr_unknown) 
+                throw InternalErr(__FILE__,__LINE__,"Unsupported DAS Attribute type");
+            else if(atype!=Attr_container) {
+                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr name is: " 
+                                       << temp_table->get_name(top_it) << endl);
+                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr type is: " 
+                                       << temp_table->get_type(top_it) << endl);
+                // For the debugging purpose
+                //unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
+                //cerr<<"Attribute values are "<<endl;
+                //for (int i = 0; i <num_attrs;i++) 
+                //    cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
+                //cerr<<endl;
+                //write_das_attr_info(temp_table,top_it,das_file);
+                // Write DAS attribute info to the file
+                write_das_attr_info(temp_table,temp_table->get_name(top_it),temp_table->get_type(top_it),das_file);
+            }
+            else {
+                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr container name is: " 
+                                       << (*top_it)->name << endl);
+                // Write the container and then write the info. in this container
+                AttrTable* sub_table = temp_table->get_attr_table(top_it);
+                write_container_name_to_file(sub_table->get_name(),das_file);
+                write_das_table_to_file(sub_table,das_file);
+
+                // Write the end flag
+                fwrite((const void*)&category_flag,1,1,das_file);
+                
+            }
+            ++top_it;
+        }
+
+    }
+}
+
+// Write container name to the disk file
 void write_container_name_to_file(const string& cont_name,FILE *das_file) {
 
+    // 1 marks the starting of a container
     uint8_t category_flag = 1;
     vector<char> buf;
     size_t bytes_to_write = cont_name.size()+sizeof(size_t)+1;
@@ -1809,23 +1751,19 @@ void write_container_name_to_file(const string& cont_name,FILE *das_file) {
     temp_pointer++;
     temp_pointer=copy_str(temp_pointer,cont_name);
 
-    size_t ret_val = fwrite((const void*)&buf[0],1,bytes_to_write,das_file);
-    if(ret_val != bytes_to_write)
-    {
-       printf("Fail to write container name \n");
-       fclose(das_file);
-       exit(1);
-    }
-
+    size_t bytes_to_be_written = fwrite((const void*)&buf[0],1,bytes_to_write,das_file);
+    if(bytes_to_be_written != bytes_to_write)
+        throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS container name to a cache");
     return;
-
 }
 
+
+// Write DAS attribute info. to the disk cache file
 void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & attr_type,FILE * das_file) {
 
+    // 0 marks the starting of a DAS attribute
     uint8_t category_flag = 0;
-    //string attr_name = dtp->get_name(ait);
-    //string attr_type = dtp->get_type(ait);
+
     unsigned int num_attr_elems = dtp->get_attr_num(attr_name);
     vector<string> attr_values;
     size_t total_attr_values_size = 0;
@@ -1837,30 +1775,41 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
     // DAS: category flag, sizeof attirubte name, attribute name, size of attribute type, attribute type
     size_t bytes_to_write_attr = 1 + attr_name.size() + attr_type.size() + 2* sizeof(size_t);
 
-    // Number of element elements + size of all attribute values
+    // One unsigned int to store the number of element elements i
+    // + sizeof(size_t) * number of elements to store the number of characters for each attribute
+    // (in DAP, every attribute is in string format)
+    // +total size of all attribute values 
     bytes_to_write_attr += sizeof(unsigned int) + num_attr_elems*sizeof(size_t)+total_attr_values_size;
 
     vector<char>attr_buf;
     attr_buf.resize(bytes_to_write_attr);
     char* temp_attrp =&attr_buf[0];
+
+    // The attribute flag
     memcpy((void*)temp_attrp,(void*)&category_flag,1);
     temp_attrp++;
 
+    // The attribute name and type
     temp_attrp=copy_str(temp_attrp,attr_name);
     temp_attrp=copy_str(temp_attrp,attr_type);
 
+    // Number of elements
     memcpy((void*)temp_attrp,(void*)&num_attr_elems,sizeof(unsigned int));
     temp_attrp+=sizeof(unsigned int);
 
+    // All attributes 
     for (int i = 0; i <num_attr_elems;i++) 
         temp_attrp=copy_str(temp_attrp,(*(dtp->get_attr_vector(attr_name)))[i]);
 
-    size_t ret_val = fwrite((const void*)&attr_buf[0],1,bytes_to_write_attr,das_file);
-
+    size_t bytes_to_be_written = fwrite((const void*)&attr_buf[0],1,bytes_to_write_attr,das_file);
+    if(bytes_to_be_written != bytes_to_write_attr)
+        throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS attribute to a cache");
+ 
     return;
 
 }
 
+// Read DDS from a disk cache, this function is not used by default.
 void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const string & container_name,const string & h5_fname,
                               const string & dds_cache_fname,const string &das_cache_fname, hid_t h5_fd, bool das_from_dc) {
 
@@ -1912,10 +1861,12 @@ cerr<<"after tdds "<<endl;
 
 }
 
+// Add DAS to DDS. 
 void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc) {
 
     BESDEBUG(HDF5_NAME, "Coming to add_das_to_dds() "  << endl);
-    // Check DAS cache
+
+    // Check DAS memory cache
     DAS *das = 0 ;
     if (das_cache && (das = static_cast<DAS*>(das_cache->get(filename)))) {
         BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
@@ -1932,6 +1883,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, c
         if(das_from_dc == true) 
             read_das_from_disk_cache(das_cache_fname,das);       
         else {
+            // This bool is for the case, when DDS is read from a cache then we need to open the HDF5 file.
             bool h5_file_open = true;
             if(h5_fd == -1) 
                 h5_file_open = false;
@@ -2033,6 +1985,7 @@ static string get_beskeys(const string &key) {
 
 }
 
+// The function to copy a string to a memory buffer. 
 char* copy_str(char*temp_ptr,const string & str) {
 
     size_t str_size=str.size();
@@ -2045,6 +1998,9 @@ char* copy_str(char*temp_ptr,const string & str) {
 
 }
 
+
+//  Obtain the string from a memory buffer.
+//  Note: both char* and stringi(as a reference) will be returned
 char* obtain_str(char*temp_ptr,string & str) {
 
     size_t oname_size =*((size_t *)temp_ptr);
@@ -2060,10 +2016,11 @@ char* obtain_str(char*temp_ptr,string & str) {
 }
 
 // For our case, there are no global attributes for DAS. The global attribures are always under HDF_GLOBAL.
+// The main function to obtain the DAS info. from the cache.
 char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 
+    // 3 is only for the code  to come into the loop.
     uint8_t flag =3;
-    //temp_pointer++;
     while(flag !=2) {
         flag = *((uint8_t*)(temp_pointer));
         BESDEBUG(HDF5_NAME, "Build DAS from the disk cache file flag: "  
@@ -2086,28 +2043,26 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
                 at_par = at_par->append_container(container_name);
                 
             temp_pointer = get_attr_info_from_dc(temp_pointer,das,at_par);
-            // resume
+            // MUST resume the original state
             at_par = temp_at_par;
-            
-            //if(at->get_parent() == NULL)
-            // Not right! 
-
-            //at = NULL;
-            //flag =*((uint8_t*)(temp_pointer));
-            //temp_pointer++;
-            //flag = 2;
  
         }
         else if(flag == 0) {
+            // The attribute must have a table.
             if(at_par ==NULL) 
                 throw BESInternalError( "The AttrTable  must exist for DAS attributes", __FILE__, __LINE__ ) ;
             
+            // Attribute name
             string attr_name;
             temp_pointer = obtain_str(temp_pointer,attr_name);
             BESDEBUG(HDF5_NAME, "DAS from the disk cache, attr name is: " << attr_name << endl);
+
+            // Attribute type
             string attr_type;
             temp_pointer = obtain_str(temp_pointer,attr_type);
             BESDEBUG(HDF5_NAME, "DAS from the disk cache, attr type is: " << attr_type << endl);
+
+            // Attribute values
             unsigned int num_values = *((unsigned int*)(temp_pointer));
             BESDEBUG(HDF5_NAME, "DAS from the disk cache, number of attribute values is: " << num_values << endl);
             temp_pointer+=sizeof(unsigned int);
@@ -2121,20 +2076,45 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
                 BESDEBUG(HDF5_NAME, "DAS from the disk cache,  attribute value is: " << attr_value << endl);
             }
 
-#if 0
-            AttrTable *at = das->get_table(cname);           
-            if(NULL==at) 
-                 throw BESInternalError( "A DAS table must be provided for DAS attributes", __FILE__, __LINE__ ) ;
-#endif
             at_par->append_attr(attr_name,attr_type,&attr_values);
-
-            //flag =*((uint8_t*)(temp_pointer));
-            //temp_pointer++;
         }
 
     }
     return temp_pointer;
 
+}
+
+// The debugging function to get attribute info.
+void get_attr_contents(AttrTable*temp_table) {
+    if(temp_table !=NULL) {
+        AttrTable::Attr_iter top_startit = temp_table->attr_begin();
+        AttrTable::Attr_iter top_endit = temp_table->attr_end();
+        AttrTable::Attr_iter top_it = top_startit;
+        while(top_it !=top_endit) {
+            AttrType atype = temp_table->get_attr_type(top_it);
+            if(atype == Attr_unknown) 
+                cerr<<"unsupported DAS attributes" <<endl;
+            else if(atype!=Attr_container) {
+           
+                   cerr<<"Attribute name is "<<temp_table->get_name(top_it)<<endl;
+                   cerr<<"Attribute type is "<<temp_table->get_type(top_it)<<endl;
+                   unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
+                   cerr<<"Attribute values are "<<endl;
+                   for (int i = 0; i <num_attrs;i++) 
+                        cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
+                   cerr<<endl;
+            }
+            else {
+                cerr<<"Coming to the attribute container.  "<<endl;
+                cerr<<"container  name is "<<(*top_it)->name <<endl;
+                AttrTable* sub_table = temp_table->get_attr_table(top_it);
+                cerr<<"container table name is "<<sub_table->get_name() <<endl;
+                get_attr_contents(sub_table);
+            }
+            ++top_it;
+        }
+
+    }
 }
 
 
