@@ -38,8 +38,7 @@
 
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
-#include "FONgBaseType.h"
-#include "FONgGrid.h"
+#include "FONgType.h"
 
 using namespace libdap;
 
@@ -47,7 +46,7 @@ using namespace libdap;
  *
  * @param g A DAP BaseType that should be a grid
  */
-FONgGrid::FONgGrid(Grid *g) : FONgBaseType(), d_grid(g), d_lat(0), d_lon(0)
+FONgType::FONgGrid(Grid *g) : FONgType(), d_grid(g), d_lat(0), d_lon(0)
 {
     d_type = dods_grid_c;
 

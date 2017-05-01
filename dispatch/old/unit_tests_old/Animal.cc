@@ -1,9 +1,10 @@
-// FONgBaseType.cc
+// Animal.cc
 
-// This file is part of BES GDAL File Out Module
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2012 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,11 +23,27 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-#include "config.h"
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
+// Please read the full copyright statement in the file COPYRIGHT_UCAR.
+//
+// Authors:
+//      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <BaseType.h>
+#include "../unit_tests_old/Animal.h"
 
-#include <BESObj.h>
-#include <BESDebug.h>
+Animal::Animal( char *name )
+    : _name( name )
+{
+}
 
-#include "FONgBaseType.h"
+Animal::~Animal( )
+{
+}
+
+string
+Animal::get_name( )
+{
+    return _name ;
+}
+

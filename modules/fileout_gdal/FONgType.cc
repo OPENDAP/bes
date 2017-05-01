@@ -1,10 +1,9 @@
-// cat.h
+// FONgType.cc
 
-// This file is part of bes, A C++ back-end server implementation framework
-// for the OPeNDAP Data Access Protocol.
+// This file is part of BES GDAL File Out Module
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2012 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,23 +22,9 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#include "config.h"
 
-#ifndef I_CAT_H
-#define I_CAT_H
+#include <BESObj.h>
+#include <BESDebug.h>
 
-#include "Animal.h"
-
-class cat : public Animal {
-public:
-				cat(char *name);
-    virtual			~cat(void);
-};
-
-#endif
-
+#include "FONgType.h"

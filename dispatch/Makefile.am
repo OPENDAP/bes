@@ -108,7 +108,7 @@ SRCS = BESInterface.cc \
 #	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc 
 
 HDRS = BESInterface.h BESLog.h 			\
-	BESKeys.h TheBESKeys.h BESStatus.h 				\
+	TheBESKeys.h BESStatus.h 				\
 	BESNames.h \
 	BESContainer.h BESFileContainer.h BESContainerStorage.h 	\
 	BESContainerStorageFile.h BESContainerStorageList.h 		\

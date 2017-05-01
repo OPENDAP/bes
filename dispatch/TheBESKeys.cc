@@ -37,13 +37,12 @@
 #include "TheBESKeys.h"
 #include "BESInternalFatalError.h"
 
-BESKeys *TheBESKeys::_instance = 0;
+TheBESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";
 
-BESKeys *TheBESKeys::TheKeys()
+TheBESKeys *TheBESKeys::TheKeys()
 {
-    if (_instance)
-        return _instance;
+    if (_instance) return _instance;
 
     if (!TheBESKeys::ConfigFile.empty()) {
         _instance = new TheBESKeys(TheBESKeys::ConfigFile);

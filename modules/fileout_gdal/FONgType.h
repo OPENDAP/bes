@@ -1,4 +1,4 @@
-// FONgBaseType.h
+// FONgType.h
 
 // This file is part of BES GDAL File Out Module
 
@@ -22,14 +22,22 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-#ifndef FONgBaseType_h_
-#define FONgBaseType_h_ 1
+#ifndef FONgType_h_
+#define FONgType_h_ 1
+
+#include <set>
+
+#include <BESObj.h>
 
 #include <Type.h>
 
-class BESObj;
 class FONgTransform;
-class GDALDataset;
+
+namespace libdap {
+    class DDS;
+    class Grid;
+    class Array;
+}
 
 /** @brief A DAP BaseType with file out gdal information included
  *
@@ -37,32 +45,51 @@ class GDALDataset;
  * needed to write it out to a gdal file. Includes a reference to the
  * actual DAP BaseType being converted
  */
-class FONgBaseType: public BESObj {
+class FONgType: public BESObj {
 protected:
-    string d_name;
+    std::string d_name;
     libdap::Type d_type;
 
+private:
+    libdap::Grid *d_grid;
+    libdap::Array *d_lat, *d_lon;
+
+    // Sets of string values used to find stuff in attributes
+    std::set<std::string> d_coards_lat_units;
+    std::set<std::string> d_coards_lon_units;
+
+    std::set<std::string> d_lat_names;
+    std::set<std::string> d_lon_names;
+
+    bool m_lat_unit_or_name_match(const std::string &var_units, const std::string &var_name, const std::string &long_name);
+    bool m_lon_unit_or_name_match(const std::string &var_units, const std::string &var_name, const std::string &long_name);
+
 public:
-    FONgBaseType(): d_name(""), d_type(libdap::dods_null_c) {}
+    FONgType(libdap::Grid *g);
 
-    virtual ~FONgBaseType() {}
+    virtual ~FONgType() {}
 
-    virtual string name() { return d_name; }
-    virtual void set_name(const string &n) { d_name = n; }
+    virtual std::string name() { return d_name; }
+    virtual void set_name(const std::string &n) { d_name = n; }
 
     virtual libdap::Type type() { return d_type; }
     virtual void set_type(libdap::Type t) { d_type = t; }
 
-    virtual void extract_coordinates(FONgTransform &t) = 0;
+    virtual void extract_coordinates(FONgTransform &t);
 
     /// Get the GDAL/OGC WKT projection string
-    virtual string get_projection(libdap::DDS *dds) = 0;
+    virtual std::string get_projection(libdap::DDS *dds);
 
     ///Get the data values for the band(s). Call must delete.
-    virtual double *get_data() = 0;
+    virtual double *get_data();
 
-    virtual void dump(ostream &) const {};
+    virtual void dump(std::ostream &) const {};
+
+    libdap::Grid *grid() { return d_grid; }
+
+    bool find_lat_lon_maps();
+
 };
 
-#endif // FONgBaseType_h_
+#endif // FONgType_h_
 

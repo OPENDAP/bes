@@ -82,7 +82,7 @@
  * BESLog provides a static method for access to a single BESLog object,
  * TheLog.
  *
- * @see BESKeys
+ * @see TheBESKeys
  */
 class BESLog: public BESObj {
 private:

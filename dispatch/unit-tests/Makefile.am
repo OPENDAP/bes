@@ -31,9 +31,10 @@ TESTS = constraintT defT keysT pfileT			\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
 		urlT BESCatalogListUnitTest \
-		uncompressT cacheT lockT containerT
+		uncompressT cacheT containerT
 
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
+# lockT. Removed jhrg 4/26/17 
 
 if LIBDAP
 TESTS += catT
