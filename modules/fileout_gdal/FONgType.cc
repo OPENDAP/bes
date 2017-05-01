@@ -1,4 +1,4 @@
-// FONgBaseType.cc
+// FONgType.cc
 
 // This file is part of BES GDAL File Out Module
 
@@ -24,9 +24,7 @@
 
 #include "config.h"
 
-#include <BaseType.h>
-
 #include <BESObj.h>
 #include <BESDebug.h>
 
-#include "FONgBaseType.h"
+#include "FONgType.h"

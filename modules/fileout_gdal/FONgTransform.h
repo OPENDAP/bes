@@ -27,7 +27,7 @@
 
 //#include <cstdlib>
 
-class FONgBaseType;
+class FONgType;
 class GDALDataset;
 class BESDataHandlerInterface;
 
@@ -50,7 +50,7 @@ private:
 
     string d_localfile;
 
-    vector<FONgBaseType *> d_fong_vars;
+    vector<FONgType *> d_fong_vars;
 
     // used when there is more than one variable; this is possible
     // when returning a GMLJP2 response but not a GeoTiff.
@@ -67,7 +67,7 @@ private:
     int d_num_bands;
 
     void m_scale_data(double *data);
-    bool effectively_two_D(FONgBaseType *fbtp);
+    bool effectively_two_D(FONgType *fbtp);
 
 public:
     FONgTransform(libdap::DDS *dds, libdap::ConstraintEvaluator &evaluator, const string &localfile);
@@ -88,10 +88,10 @@ public:
     int num_bands() { return d_num_bands; }
     void set_num_bands(int n) { d_num_bands = n; }
 
-    void push_var(FONgBaseType *v) { d_fong_vars.push_back(v); }
+    void push_var(FONgType *v) { d_fong_vars.push_back(v); }
     int num_var() { return d_fong_vars.size(); }
 
-    FONgBaseType *var(int i) { return d_fong_vars.at(i); }
+    FONgType *var(int i) { return d_fong_vars.at(i); }
 
     // Image/band height and width in pixels
     virtual void set_width(int width) { d_width = width; }
