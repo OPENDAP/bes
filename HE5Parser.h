@@ -76,6 +76,7 @@ public:
 
     /// Print the information about the members of the Vector list.
     void print();
+    void add_projparams(const string&);
 
 };
 #endif

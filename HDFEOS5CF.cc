@@ -699,6 +699,12 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) thr
         eos5grid->eos5_pixelreg = he5g.pixelregistration;
         eos5grid->eos5_origin    = he5g.gridorigin;
         eos5grid->eos5_projcode    = he5g.projection;
+
+        for(unsigned int k = 0; k <13;k++)
+           eos5grid->param[k] = he5g.param[k];
+        eos5grid->zone    = he5g.zone;
+        eos5grid->sphere  = he5g.sphere;
+
         this->eos5cfgrids.push_back(eos5grid);
 
    }// for(int i=0; i < strmeta_info->grid_list.size(); i++) 
@@ -2058,9 +2064,22 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
 for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) 
 cerr<<"dim names "<<(*its) <<endl;
 #endif
+    
+    string ydim_full_path;
+    string xdim_full_path;
 
+    if(cfgrid->eos5_projcode != HE5_GCTP_GEO) {
+
+        for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
+            if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(*its)) 
+                ydim_full_path = *its;
+            else if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(*its)) 
+                xdim_full_path = *its;
+        }
+    } 
 
     //for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
+
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ) {
         if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(*its)) {
 
@@ -2068,13 +2087,30 @@ cerr<<"dim names "<<(*its) <<endl;
             EOS5CVar *EOS5cvar = new EOS5CVar();
             EOS5cvar->name = "lat";
             Create_Added_Var_NewName_FullPath(GRID,cfgrid->name,EOS5cvar->name,EOS5cvar->newname,EOS5cvar->fullpath);
-            EOS5cvar->rank = 1;
-            EOS5cvar->dtype = H5FLOAT32;
+
+            if(cfgrid->eos5_projcode != HE5_GCTP_GEO){
+                EOS5cvar->rank = 2;
+                EOS5cvar->dtype = H5FLOAT64;
+            }
+            else{
+                EOS5cvar->rank = 1;
+                EOS5cvar->dtype = H5FLOAT32;
+            }
+  
             Dimension* eos5cvar_dim = new Dimension((hsize_t)cfgrid->ydimsize);
             eos5cvar_dim->name = *its;
             eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "YDim":(*its);
             EOS5cvar->dims.push_back(eos5cvar_dim);
             EOS5cvar->cfdimname = eos5cvar_dim->name;
+
+            if(EOS5cvar->rank == 2) {
+
+                eos5cvar_dim = new Dimension((hsize_t)cfgrid->xdimsize);
+                eos5cvar_dim->name = xdim_full_path;
+                eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "XDim":xdim_full_path;
+                EOS5cvar->dims.push_back(eos5cvar_dim);
+
+            }
             EOS5cvar->cvartype = CV_LAT_MISS;
             EOS5cvar->eos_type = GRID;
             EOS5cvar->xdimsize = cfgrid->xdimsize;
@@ -2088,6 +2124,13 @@ cerr<<"dim names "<<(*its) <<endl;
             EOS5cvar->eos5_pixelreg = cfgrid->eos5_pixelreg;
             EOS5cvar->eos5_origin = cfgrid->eos5_origin;
             EOS5cvar->eos5_projcode = cfgrid->eos5_projcode;
+            
+            for(unsigned int k = 0; k <13;k++)
+                EOS5cvar->param[k] = cfgrid->param[k];
+//cerr<<"param "<< cfgrid->param[k];
+
+            EOS5cvar->zone    = cfgrid->zone;
+            EOS5cvar->sphere  = cfgrid->sphere;
 
             // Save this cv to the cv vector
             this->cvars.push_back(EOS5cvar);
@@ -2106,14 +2149,31 @@ cerr<<"dim names "<<(*its) <<endl;
             Create_Added_Var_NewName_FullPath(GRID,cfgrid->name,EOS5cvar->name,EOS5cvar->newname,EOS5cvar->fullpath);
             //EOS5cvar->newname = EOS5cvar->name;
             //EOS5cvar->fullpath = EOS5cvar->name;
-            EOS5cvar->rank = 1;
-            EOS5cvar->dtype = H5FLOAT32;
-            Dimension* eos5cvar_dim = new Dimension((hsize_t)cfgrid->xdimsize);
+            if(cfgrid->eos5_projcode != HE5_GCTP_GEO){
+                EOS5cvar->rank = 2;
+                EOS5cvar->dtype = H5FLOAT64;
+            }
+            else{
+                EOS5cvar->rank = 1;
+                EOS5cvar->dtype = H5FLOAT32;
+            }
+
+            Dimension* eos5cvar_dim = NULL;
+            if(EOS5cvar->rank == 2) {
+                eos5cvar_dim = new Dimension((hsize_t)cfgrid->ydimsize);
+                //eos5cvar_dim->name = EOS5cvar->name;
+                eos5cvar_dim->name = ydim_full_path;
+                eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "YDim":ydim_full_path;
+                EOS5cvar->dims.push_back(eos5cvar_dim);
+            }
+
+            eos5cvar_dim = new Dimension((hsize_t)cfgrid->xdimsize);
             //eos5cvar_dim->name = EOS5cvar->name;
             eos5cvar_dim->name = *its;
             eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "XDim":(*its);
             EOS5cvar->dims.push_back(eos5cvar_dim);
             EOS5cvar->cfdimname = eos5cvar_dim->name;
+
             EOS5cvar->cvartype = CV_LON_MISS;
             EOS5cvar->eos_type = GRID;
             EOS5cvar->xdimsize = cfgrid->xdimsize;
@@ -2128,6 +2188,11 @@ cerr<<"dim names "<<(*its) <<endl;
             EOS5cvar->eos5_pixelreg = cfgrid->eos5_pixelreg;
             EOS5cvar->eos5_origin = cfgrid->eos5_origin;
             EOS5cvar->eos5_projcode = cfgrid->eos5_projcode;
+            for(unsigned int k = 0; k <13;k++)
+                EOS5cvar->param[k] = cfgrid->param[k];
+            EOS5cvar->zone    = cfgrid->zone;
+            EOS5cvar->sphere  = cfgrid->sphere;
+
 
             // Save this cv to the cv vector
             this->cvars.push_back(EOS5cvar);

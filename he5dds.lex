@@ -51,6 +51,8 @@ XDIM                    XDim=
 YDIM                    YDim=
 UPPERLEFTPT		UpperLeftPointMtrs=
 LOWERRIGHTPT		LowerRightMtrs=
+SPHERECODE              SphereCode=
+ZONECODE                ZoneCode=
 DEFAULT			DEFAULT
 INT	                [-+]?[0-9]+
 MANTISA                 ([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)
@@ -75,6 +77,8 @@ NEVER                   [^a-zA-Z0-9_/.+\-{}:;,%]
 {YDIM}	    	    	he5ddslval = yytext; return YDIM;
 {UPPERLEFTPT}  	    	he5ddslval = yytext; return UPPERLEFTPT;
 {LOWERRIGHTPT} 	    	he5ddslval = yytext; return LOWERRIGHTPT;
+{SPHERECODE} 	    	he5ddslval = yytext; return SPHERECODE;
+{ZONECODE} 	    	he5ddslval = yytext; return ZONECODE;
 {DEFAULT} 	    	he5ddslval = yytext; return DEFAULT;
 
 

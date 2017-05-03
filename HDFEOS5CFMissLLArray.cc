@@ -91,14 +91,164 @@ bool HDFEOS5CFMissLLArray::read()
 void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf){
 
     BESDEBUG("h5","Coming to read_data_NOT_from_mem_cache "<<endl);
+
+    // First handle geographic projection. No GCTP is needed.
+    if(eos5_projcode == HE5_GCTP_GEO) {
+        read_data_NOT_from_mem_cache_geo(add_cache,buf);
+        return;
+    }
+
     int nelms = -1;
     vector<int>offset;
     vector<int>count;
     vector<int>step;
 
-    if (eos5_projcode != HE5_GCTP_GEO) 
-        throw InternalErr (__FILE__, __LINE__,"The projection is not supported.");
-                          
+
+    if (rank <=  0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of dimension of this variable should be greater than 0");
+    else {
+
+         offset.resize(rank);
+         count.resize(rank);
+         step.resize(rank);
+         nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    }
+
+    if (nelms <= 0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments is negative.");
+
+    double upleft[2];
+    double lowright[2];
+    vector<int>rows;
+    vector<int>cols;
+    vector<double>lon;
+    vector<double>lat;
+    rows.resize(xdimsize*ydimsize);
+    cols.resize(xdimsize*ydimsize);
+    lon.resize(xdimsize*ydimsize);
+    lat.resize(xdimsize*ydimsize);
+
+    upleft[0] = point_left;
+    upleft[1] = point_upper;
+    lowright[0] = point_right;
+    lowright[1] = point_lower;
+
+
+    int i = 0, j = 0, k = 0;
+
+    int r = -1;
+
+    for (k = j = 0; j < ydimsize; ++j) {
+        for (i = 0; i < xdimsize; ++i) {
+            rows[k] = j;
+            cols[k] = i;
+            ++k;
+        }
+    }
+
+    BESDEBUG("h5", " Before calling GDij2ll, check all projection parameters. "  << endl);
+    BESDEBUG("h5", " eos5_zone is "  << eos5_zone <<endl);
+    BESDEBUG("h5", " eos5_params[0] is "  << eos5_params[0] <<endl);
+    BESDEBUG("h5", " eos5_params[1] is "  << eos5_params[1] <<endl);
+    BESDEBUG("h5", " eos5_sphere is "  << eos5_sphere <<endl);
+    BESDEBUG("h5", " xdimsize is "  << xdimsize <<endl);
+    BESDEBUG("h5", " ydimsize is "  << ydimsize <<endl);
+    BESDEBUG("h5", " eos5_pixelreg is "  << eos5_pixelreg <<endl);
+    BESDEBUG("h5", " eos5_origin is "  << eos5_origin <<endl);
+    BESDEBUG("h5", " upleft[0] is "  << upleft[0] <<endl);
+    BESDEBUG("h5", " upleft[1] is "  << upleft[1] <<endl);
+    BESDEBUG("h5", " lowright[0] is "  << lowright[0] <<endl);
+    BESDEBUG("h5", " lowright[1] is "  << lowright[1] <<endl);
+    
+#if 0
+    cerr<< " eos5_params[0] is "  << eos5_params[0] <<endl;
+    cerr<< " eos5_params[1] is "  << eos5_params[1] <<endl;
+    cerr<< " eos5_sphere is "  << eos5_sphere <<endl;
+    cerr<<  " eos5_zone is "  << eos5_zone <<endl;
+    cerr<< " Before calling GDij2ll, check all projection parameters. "  << endl;
+    cerr<<  " eos5_zone is "  << eos5_zone <<endl;
+    cerr<< " eos5_params[0] is "  << eos5_params[0] <<endl;
+    cerr<< " eos5_params[1] is "  << eos5_params[1] <<endl;
+    BESDEBUG("h5", " xdimsize is "  << xdimsize <<endl);
+    BESDEBUG("h5", " ydimsize is "  << ydimsize <<endl);
+    BESDEBUG("h5", " eos5_pixelreg is "  << eos5_pixelreg <<endl);
+    BESDEBUG("h5", " eos5_origin is "  << eos5_origin <<endl);
+    BESDEBUG("h5", " upleft[0] is "  << upleft[0] <<endl);
+    BESDEBUG("h5", " upleft[1] is "  << upleft[1] <<endl);
+    BESDEBUG("h5", " lowright[0] is "  << lowright[0] <<endl);
+    BESDEBUG("h5", " lowright[1] is "  << lowright[1] <<endl);
+#endif
+ 
+    r = GDij2ll (eos5_projcode, eos5_zone, &eos5_params[0], eos5_sphere, xdimsize, ydimsize, upleft, lowright,
+                 xdimsize * ydimsize, &rows[0], &cols[0], &lon[0], &lat[0], eos5_pixelreg, eos5_origin);
+    if (r != 0) {
+        ostringstream eherr;
+        eherr << "cannot calculate grid latitude and longitude";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    }
+
+    BESDEBUG("h5", " The first value of lon is "  << lon[0] <<endl);
+    BESDEBUG("h5", " The first value of lat is "  << lat[0] <<endl);
+
+    vector<size_t>pos(rank,0);
+    for (int i = 0; i< rank; i++)
+        pos[i] = offset[i];
+
+    vector<size_t>dimsizes;
+    dimsizes.push_back(ydimsize);
+    dimsizes.push_back(xdimsize);
+    int total_elms = xdimsize*ydimsize;
+
+    
+    if(CV_LON_MISS == cvartype) {
+        if(total_elms == nelms)
+            set_value((dods_float64 *)&lon[0],total_elms);
+        else {
+            vector<double>val;
+            subset<double>(
+                           &lon[0],
+                           rank,
+                           dimsizes,
+                           &offset[0],
+                           &step[0],
+                           &count[0],
+                           &val,
+                           pos,
+                           0);
+            set_value((dods_float64 *)&val[0],nelms);              
+        }
+    }
+    else if(CV_LAT_MISS == cvartype) {
+
+        if(total_elms == nelms)
+            set_value((dods_float64 *)&lat[0],total_elms);
+        else {
+            vector<double>val;
+            subset<double>(
+                           &lat[0],
+                           rank,
+                           dimsizes,
+                           &offset[0],
+                           &step[0],
+                           &count[0],
+                           &val,
+                           pos,
+                           0);
+            set_value((dods_float64 *)&val[0],nelms);              
+        }
+    }
+}
+
+void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*buf){
+
+    BESDEBUG("h5","Coming to read_data_NOT_from_mem_cache_geo "<<endl);
+    int nelms = -1;
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+
 
     if (rank <=  0) 
        throw InternalErr (__FILE__, __LINE__,

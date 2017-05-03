@@ -24,6 +24,9 @@
 // Suite 203, Champaign, IL 61820  
 
 #include "HE5Parser.h"
+#include <InternalErr.h>
+#include <HDF5CFUtil.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -130,6 +133,7 @@ void HE5Parser::print()
         cout << "Grid point_upper=" << g.point_upper << endl;
         cout << "Grid point_left="  << g.point_left  << endl;
         cout << "Grid point_right=" << g.point_right << endl;
+        cout << "Grid Sphere code =" <<g.sphere <<endl;
 
         cout << "Grid Dim Size=" << g.dim_list.size() << endl;
         unsigned int j = 0;
@@ -166,6 +170,40 @@ void HE5Parser::print()
         cout << "Grid projection=" << 
             g.projection
              << endl;
+
+        cout <<"Grid zone= "<< g.zone<<endl;
+        cout <<"Grid sphere= "<<g.sphere<<endl;
+
+        cout<<"Grid projection parameters are "<<endl;
+        for(int j= 0;j<13;j++) 
+            cout<<g.param[j]<<endl;
     }
     
+}
+
+void HE5Parser::add_projparams(const string & st_str) {
+
+    string projparms = "ProjParams=(";
+    char parms_end_marker = ')';
+    size_t parms_spos = st_str.find(projparms);
+    int grid_index = 0;
+    while(parms_spos!=string::npos) {
+        size_t parms_epos = st_str.find(parms_end_marker,parms_spos);
+        if(parms_epos == string::npos)
+            throw libdap::InternalErr(__FILE__,__LINE__,"HDF-EOS5 Grid ProjParms syntax error: ProjParams doesn't end with ')'. ");
+        string projparms_raw_values = st_str.substr(parms_spos+projparms.size(),parms_epos-parms_spos-projparms.size());
+        vector<string> projparms_values;
+        HDF5CFUtil::Split(projparms_raw_values.c_str(),',',projparms_values);
+
+        for(int i = 0; i<projparms_values.size();i++) {
+            grid_list[grid_index].param[i] = strtod(projparms_values[i].c_str(),NULL);
+        }
+#if 0
+for(vector<string>::iterator istr=projparms_values.begin();istr!=projparms_values.end();++istr)
+cerr<<"projparms value is "<<*istr<<endl;
+#endif
+        parms_spos = st_str.find(projparms,parms_epos);
+        grid_index++;
+    }
+
 }

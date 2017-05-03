@@ -90,6 +90,8 @@ int  he5ddslex(void);
 %token PIXELREGISTRATION	
 %token PROJECTION
 %token GRIDORIGIN			
+%token SPHERECODE
+%token ZONECODE
 
 %token DIMENSION_NAME  
 %token DIMENSION_SIZE  
@@ -289,6 +291,8 @@ attribute: attribute_grid_name
 | attribute_lowerright
 | attribute_pixelregistration
 | attribute_gridorigin
+| attribute_spherecode
+| attribute_zonecode
 | projection
 | DATA_TYPE 
            // <hyokyung 2011.09.13. 13:22:18> 
@@ -322,6 +326,10 @@ attribute_grid_name: GRID_NAME '=' STR
     g.pixelregistration = HE5_HDFE_MISSING;
     g.gridorigin = HE5_HDFE_GD_MISSING;
     g.projection = HE5_GCTP_MISSING;
+    g.zone = -1;
+    g.sphere = -1;
+    for (int i = 0; i <13;i++)
+        g.param[i] = 0.0;
 
 #ifdef VERBOSE  
     cout << "Grid Name is:" << $3 << endl;
@@ -568,7 +576,7 @@ projection: PROJECTION '=' STR
 {
     HE5Parser* p = (HE5Parser*)he5parser;
 #ifdef VERBOSE  
-    //"h5", "Got projection " << $3 << endl;
+    cout<< "Got projection " << $3 << endl;
 #endif  
     HE5Grid *g = &p->grid_list.back();
     if(strncmp("HE5_GCTP_GEO", $3, 12)==0)
@@ -699,9 +707,39 @@ attribute_gridorigin: GRIDORIGIN STR
 }
 ;
 
+attribute_spherecode: SPHERECODE INT
+{
+#ifdef VERBOSE
+    cout<<"Sphere code is: "<<atoi($2)<<endl;
+#endif
+
+    HE5Parser* p = (HE5Parser*)he5parser;
+    if(p->structure_state == HE5Parser::GRID) {
+        HE5Grid *g = &p->grid_list.back();
+        g->sphere = atoi($2);
+    }
+
+}
+;
+
+attribute_zonecode: ZONECODE INT
+{
+#ifdef VERBOSE
+    cout<<"Zone code is: "<<atoi($2)<<endl;
+#endif
+
+    HE5Parser* p = (HE5Parser*)he5parser;
+    HE5Grid *g = &p->grid_list.back();
+
+    g->zone = atoi($2);
+
+}
+;
+
+
 attribute_upperleft: UPPERLEFTPT '(' FLOAT ',' FLOAT ')'
 {
-#ifdef VEROBSE
+#ifdef VERBOSE
     fprintf(stdout, "## %s %f %f\n", $1, atof($3), atof($5));
 #endif
 
@@ -720,6 +758,7 @@ attribute_upperleft: UPPERLEFTPT '(' FLOAT ',' FLOAT ')'
 #endif
 }
 ;
+
 
 attribute_lowerright: LOWERRIGHTPT '(' FLOAT ',' FLOAT ')'
 {

@@ -146,7 +146,6 @@ bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 
-
 bool HDF5RequestHandler::_use_disk_cache              =false;
 bool HDF5RequestHandler::_use_disk_dds_cache              =false;
 string HDF5RequestHandler::_disk_cache_dir            ="";
@@ -163,6 +162,8 @@ bool HDF5RequestHandler::_use_disk_meta_cache        = false;
 string HDF5RequestHandler::_disk_meta_cache_path       ="";
 //BaseTypeFactory factory;
 //libdap::DDS HDF5RequestHandler::hd_dds(&factory,"");
+string HDF5RequestHandler::_stp_east_filename;
+string HDF5RequestHandler::_stp_north_filename;
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
@@ -255,6 +256,8 @@ cerr<<"No specific cache info"<<endl;
                 throw BESInternalError(invalid_comp_threshold,__FILE__,__LINE__);
             }
         }
+        _stp_east_filename = get_beskeys("H5.STPEastFileName");
+        _stp_north_filename = get_beskeys("H5.STPNorthFileName");
 //        else 
 //cerr<<"no small memory data cache "<<endl;
     }

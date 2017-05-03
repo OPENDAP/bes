@@ -41,6 +41,7 @@
 #include <unistd.h>
 #include <cerrno>
 #include "hdf5.h"
+#include "HE5Grid.h"
 
 // We create this intermediate enum H5DataType in order to totally separate the 
 // creating of DAS and DDS from any HDF5 API calls. When mapping to DAP, only this
@@ -113,6 +114,12 @@ struct HDF5CFUtil {
                static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
                static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname);
                
+               static int GDij2ll(int projcode, int zonecode, double projparm[],
+        int spherecode, int xdimsize, int ydimsize,
+        double upleftpt[], double lowrightpt[],
+        int npnts, int row[], int col[],
+        double longitude[], double latitude[], int pixcen, int pixcnr);
+
                //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                //                           const std::vector < size_t > &pos);
 
@@ -175,7 +182,14 @@ static inline string get_errno() {
     return sum;
 }
 #endif
+        int GDij2ll(int projcode, int zonecode, double projparm[],
+        int spherecode, int xdimsize, int ydimsize,
+        double upleftpt[], double lowrightpt[],
+        int npnts, int row[], int col[],
+        double longitude[], double latitude[], EOS5GridPRType pixcen, EOS5GridOriginType pixcnr);
 
+//extern int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
 
-
+//extern int for_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*for_trans[])(double, double, double *, double *));
+       double HE5_EHconvAng(double inAngle, int code);
 #endif

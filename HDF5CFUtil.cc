@@ -30,14 +30,31 @@
 /// All rights reserved.
 
 #include "HDF5CFUtil.h"
+//#include "HE5GridPara.h"
+#include "HDF5RequestHandler.h"
 #include <set>
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 #include<InternalErr.h>
-using namespace libdap;
 
+// Angle Conversion Codes 
+#define HE5_HDFE_RAD_DEG      0
+#define HE5_HDFE_DEG_RAD      1
+#define HE5_HDFE_DMS_DEG      2
+#define HE5_HDFE_DEG_DMS      3
+#define HE5_HDFE_RAD_DMS      4
+#define HE5_HDFE_DMS_RAD      5
+
+using namespace libdap;
+extern "C" {
+int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
+
+int for_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*for_trans[])(double, double, double *, double *));
+ 
+}
 
 H5DataType
 HDF5CFUtil:: H5type_to_H5DAPtype(hid_t h5_type_id)
@@ -483,6 +500,444 @@ void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
     }
 
 }
+
+int GDij2ll(int projcode, int zonecode, double projparm[],
+        int spherecode, int xdimsize, int ydimsize,
+        double upleftpt[], double lowrightpt[],
+        int npnts, int row[], int col[],
+        double longitude[], double latitude[], EOS5GridPRType pixcen, EOS5GridOriginType pixcnr)
+{
+
+    int errorcode = 0;
+    int(*inv_trans[100]) (double,double,double*,double*);  
+    int(*for_trans[100]) (double,double,double*,double*);  /* GCTP function pointer */
+    double        arg1, arg2;
+    double        pixadjX  = 0.;  /* Pixel adjustment (x)                 */
+    double        pixadjY  = 0.;  /* Pixel adjustment (y)                 */
+    double        lonrad0  = 0.;  /* Longitude in radians of upleft point */
+    double          latrad0  = 0.;  /* Latitude in radians of upleft point  */
+    double          scaleX   = 0.;  /* X scale factor                       */
+    double          scaleY   = 0.;  /* Y scale factor                       */
+    double          lonrad   = 0.;  /* Longitude in radians of point        */
+    double          latrad   = 0.;  /* Latitude in radians of point         */
+    //double          HE5_EHconvAng(double, int);/* Angle conversion routine  */
+    double          xMtr0, yMtr0, xMtr1, yMtr1;
+
+
+
+    /* Compute adjustment of position within pixel */
+  /* ------------------------------------------- */
+  if (pixcen == HE5_HDFE_CENTER)
+    {
+      /* Pixel defined at center */
+      /* ----------------------- */
+      pixadjX = 0.5;
+      pixadjY = 0.5;
+    }
+  else
+    {
+      switch (pixcnr)
+        {
+		  
+        case HE5_HDFE_GD_UL:
+	  {
+	    /* Pixel defined at upper left corner */
+	    /* ---------------------------------- */
+	    pixadjX = 0.0;
+	    pixadjY = 0.0;
+	    break;
+	  }
+
+        case HE5_HDFE_GD_UR:
+	  {
+	    /* Pixel defined at upper right corner */
+	    /* ----------------------------------- */
+	    pixadjX = 1.0;
+	    pixadjY = 0.0;
+	    break;
+	  }
+
+        case HE5_HDFE_GD_LL:
+	  {
+	    /* Pixel defined at lower left corner */
+	    /* ---------------------------------- */
+	    pixadjX = 0.0;
+	    pixadjY = 1.0;
+	    break;
+	  }
+
+        case HE5_HDFE_GD_LR:
+	  {
+	    /* Pixel defined at lower right corner */
+	    /* ----------------------------------- */
+	    pixadjX = 1.0;
+	    pixadjY = 1.0;
+	    break;
+	  }
+
+	default:
+	  {
+            throw InternalErr(__FILE__,__LINE__,"Unknown pixel corner to retrieve lat/lon from a grid.");
+	  }
+        }
+    }
+
+
+
+  // If projection not GEO or BCEA call GCTP initialization routine 
+  if (projcode != HE5_GCTP_GEO && projcode != HE5_GCTP_BCEA)
+    {
+
+      scaleX = (lowrightpt[0] - upleftpt[0]) / xdimsize;
+      scaleY = (lowrightpt[1] - upleftpt[1]) / ydimsize;
+      string eastFile = HDF5RequestHandler::get_stp_east_filename();
+      string northFile = HDF5RequestHandler::get_stp_north_filename();
+      //string northFile;
+
+      inv_init(projcode, zonecode, projparm, spherecode, (char*)eastFile.c_str(), (char*)northFile.c_str(), 
+	       &errorcode, inv_trans);
+
+
+      /* Report error if any */
+      /* ------------------- */
+      if (errorcode != 0)
+        {
+            throw InternalErr(__FILE__,__LINE__,"GCTP inv_init Error to retrieve lat/lon from a grid.");
+
+        }
+      else
+        {
+	  /* For each point ... */
+	  /* ------------------ */
+	  for (int i = 0; i < npnts; i++)
+            {
+	      /* Convert from meters to lon/lat (radians) using GCTP */
+	      /* --------------------------------------------------- */
+	      /*errorcode = inv_trans[projcode] ((col[i] + pixadjX) * scaleX + upleftpt[0], (row[i] + pixadjY) * scaleY + upleftpt[1], &lonrad, &latrad);*/
+
+	      /* modified previous line to the following for the linux64 with -fPIC in cmpilation. 
+		 Whithout the change col[] and row[] values are ridiclous numbers, resulting a strange 
+		 number (very big) for arg1 and arg2. But with (int) typecast they become normal integers,
+		 resulting in a acceptable values for arg1 and arg2. The problem was discovered during the
+		 lat/lon geolocating of an hdfeos5 file with 64-bit hadview plug-in, developped for linux64.
+	      */
+	      arg1 = (((int)col[i] + pixadjX) * scaleX + upleftpt[0]);
+	      arg2 = (((int)row[i] + pixadjY) * scaleY + upleftpt[1]);
+	      errorcode = inv_trans[projcode] (arg1, arg2, &lonrad, &latrad);
+
+	      /* Report error if any */
+	      /* ------------------- */
+	      if (errorcode != 0)
+		{
+                  throw InternalErr(__FILE__,__LINE__,"GCTP inv_trans Error to retrieve lat/lon from a grid.");
+
+		}
+	      else
+		{
+		  /* Convert from radians to decimal degrees */
+		  /* --------------------------------------- */
+		  longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
+		  latitude[i]  = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
+		}
+	    }
+	}
+    }
+  else if (projcode == HE5_GCTP_BCEA)
+    {
+      /* BCEA projection */
+      /* -------------- */
+ 
+      /* Note: upleftpt and lowrightpt are in packed degrees, so they
+	 must be converted to meters for this projection */
+
+      /* Initialize forward transformation */
+      /* --------------------------------- */
+      for_init(projcode, zonecode, projparm, spherecode, NULL, NULL,&errorcode, for_trans);
+
+      /* Report error if any */
+      /* ------------------- */
+      if (errorcode != 0)
+	{
+          throw InternalErr(__FILE__,__LINE__,"GCTP for_init Error to retrieve lat/lon from a grid.");
+	}
+
+      /* Convert upleft and lowright X coords from DMS to radians */
+      /* -------------------------------------------------------- */
+      lonrad0 =HE5_EHconvAng(upleftpt[0], HE5_HDFE_DMS_RAD);
+      lonrad = HE5_EHconvAng(lowrightpt[0], HE5_HDFE_DMS_RAD);
+
+      /* Convert upleft and lowright Y coords from DMS to radians */
+      /* -------------------------------------------------------- */
+      latrad0 = HE5_EHconvAng(upleftpt[1], HE5_HDFE_DMS_RAD);
+      latrad = HE5_EHconvAng(lowrightpt[1], HE5_HDFE_DMS_RAD);
+
+      /* Convert form lon/lat to meters(or whatever unit is, i.e unit
+	 of r_major and r_minor) using GCTP */
+      /* ----------------------------------------- */
+      errorcode = for_trans[projcode] (lonrad0, latrad0, &xMtr0, &yMtr0);
+
+      /* Report error if any */
+      if (errorcode != 0)
+	{
+          throw InternalErr(__FILE__,__LINE__,"GCTP for_trans Error to retrieve lat/lon from a grid.");
+
+	}
+
+      /* Convert from lon/lat to meters or whatever unit is, i.e unit
+	 of r_major and r_minor) using GCTP */
+      /* ----------------------------------------- */
+      errorcode = for_trans[projcode] (lonrad, latrad, &xMtr1, &yMtr1);
+
+      /* Report error if any */
+      if (errorcode != 0)
+	{
+          throw InternalErr(__FILE__,__LINE__,"GCTP for_trans Error to retrieve lat/lon from a grid.");
+	}
+
+      /* Compute x scale factor */
+      /* ---------------------- */
+      scaleX = (xMtr1 - xMtr0) / xdimsize;
+
+      /* Compute y scale factor */
+      /* ---------------------- */
+      scaleY = (yMtr1 - yMtr0) / ydimsize;
+
+      /* Initialize inverse transformation */
+      /* --------------------------------- */
+      inv_init(projcode, zonecode, projparm, spherecode, NULL, NULL, &errorcode, inv_trans);
+      /* Report error if any */
+      /* ------------------- */
+      if (errorcode != 0)
+	{
+          throw InternalErr(__FILE__,__LINE__,"GCTP inv_init Error to retrieve lat/lon from a grid.");
+	}
+      /* For each point ... */
+      /* ------------------ */
+      for (int i = 0; i < npnts; i++)
+	{
+	  /* Convert from meters (or any units that r_major and
+	     r_minor has) to lon/lat (radians) using GCTP */
+	  /* --------------------------------------------------- */
+	  errorcode = inv_trans[projcode] (
+					   (col[i] + pixadjX) * scaleX + xMtr0,
+					   (row[i] + pixadjY) * scaleY + yMtr0,
+					   &lonrad, &latrad);
+
+	  /* Report error if any */
+	  /* ------------------- */
+	  if (errorcode != 0)
+	    {
+              /* status = -1;
+		 sprintf(errbuf, "GCTP Error: %li\n", errorcode);
+		 H5Epush(__FILE__, "HE5_GDij2ll", __LINE__, H5E_ARGS, H5E_BADVALUE , errbuf);
+		 HE5_EHprint(errbuf, __FILE__, __LINE__);
+                 return (status); */
+	      longitude[i] = 1.0e51; /* PGSd_GCT_IN_ERROR */
+	      latitude[i] = 1.0e51; /* PGSd_GCT_IN_ERROR */
+	    }
+
+	  /* Convert from radians to decimal degrees */
+	  /* --------------------------------------- */
+	  longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
+	  latitude[i] = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
+	}
+    }
+
+  else if (projcode == HE5_GCTP_GEO)
+    {
+      /* GEO projection */
+      /* -------------- */
+
+      /*
+       * Note: lonrad, lonrad0, latrad, latrad0 are actually in degrees for
+       * the GEO projection case.
+       */
+
+
+      /* Convert upleft and lowright X coords from DMS to degrees */
+      /* -------------------------------------------------------- */
+      lonrad0 = HE5_EHconvAng(upleftpt[0], HE5_HDFE_DMS_DEG);
+      lonrad  = HE5_EHconvAng(lowrightpt[0], HE5_HDFE_DMS_DEG);
+
+      /* Compute x scale factor */
+      /* ---------------------- */
+      scaleX = (lonrad - lonrad0) / xdimsize;
+
+      /* Convert upleft and lowright Y coords from DMS to degrees */
+      /* -------------------------------------------------------- */
+      latrad0 = HE5_EHconvAng(upleftpt[1], HE5_HDFE_DMS_DEG);
+      latrad  = HE5_EHconvAng(lowrightpt[1], HE5_HDFE_DMS_DEG);
+
+      /* Compute y scale factor */
+      /* ---------------------- */
+      scaleY = (latrad - latrad0) / ydimsize;
+
+      /* For each point ... */
+      /* ------------------ */
+      for (int i = 0; i < npnts; i++)
+        {
+	  /* Convert to lon/lat (decimal degrees) */
+	  /* ------------------------------------ */
+	  longitude[i] = (col[i] + pixadjX) * scaleX + lonrad0;
+	  latitude[i]  = (row[i] + pixadjY) * scaleY + latrad0;
+        }
+    }
+
+
+#if 0
+    inv_init(projcode, zonecode, projparm, spherecode, eastFile, northFile,
+                 (int *)&errorcode, inv_trans);
+
+    for (int i = 0; i < npnts; i++)
+          {
+            /* Convert from meters (or any units that r_major and
+ *                r_minor has) to lon/lat (radians) using GCTP */
+            /* --------------------------------------------------- */
+            errorcode =
+              inv_trans[projcode] (
+                                   upleftpt[0],
+                                   upleftpt[1],
+                                   &lonrad, &latrad);
+
+    }
+#endif
+
+    return 0;
+
+}
+
+
+double 
+HE5_EHconvAng(double inAngle, int code)
+{
+    long      min = 0;        /* Truncated Minutes      */
+    long      deg = 0;        /* Truncated Degrees      */
+
+    double    sec      = 0.;  /* Seconds                */
+    double    outAngle = 0.;  /* Angle in desired units */
+    double    pi  = 3.14159265358979324;/* Pi           */
+    double    r2d = 180 / pi;     /* Rad-deg conversion */
+    double    d2r = 1 / r2d;      /* Deg-rad conversion */
+
+    switch (code)
+    {
+
+        /* Convert radians to degrees */
+        /* -------------------------- */
+    case HE5_HDFE_RAD_DEG:
+        outAngle = inAngle * r2d;
+        break;
+
+        /* Convert degrees to radians */
+        /* -------------------------- */
+    case HE5_HDFE_DEG_RAD:
+        outAngle = inAngle * d2r;
+        break;
+
+
+        /* Convert packed degrees to degrees */
+        /* --------------------------------- */
+    case HE5_HDFE_DMS_DEG:
+        deg = (long)(inAngle / 1000000);
+        min = (long)((inAngle - deg * 1000000) / 1000);
+        sec = (inAngle - deg * 1000000 - min * 1000);
+        outAngle = deg + min / 60.0 + sec / 3600.0;
+        break;
+
+
+        /* Convert degrees to packed degrees */
+        /* --------------------------------- */
+    case HE5_HDFE_DEG_DMS:
+    {
+        deg = (long)inAngle;
+        min = (long)((inAngle - deg) * 60);
+        sec = (inAngle - deg - min / 60.0) * 3600;
+	/*
+        if ((int)sec == 60)
+        {
+            sec = sec - 60;
+            min = min + 1;
+        }
+	*/
+	if ( fabs(sec - 0.0) < 1.e-7 )
+	  {
+	    sec = 0.0;
+	  }
+
+        if ( (fabs(sec - 60) < 1.e-7 ) || ( sec > 60.0 ))
+        {
+	  sec = sec - 60;
+	  min = min + 1;
+	  if(sec < 0.0)
+	    {
+	      sec = 0.0;
+	    }
+        }
+        if (min == 60)
+        {
+            min = min - 60;
+            deg = deg + 1;
+        }
+        outAngle = deg * 1000000 + min * 1000 + sec;
+     }
+        break;
+
+
+        /* Convert radians to packed degrees */
+        /* --------------------------------- */
+    case HE5_HDFE_RAD_DMS:
+    {
+        inAngle = inAngle * r2d;
+        deg = (long)inAngle;
+        min = (long)((inAngle - deg) * 60);
+        sec = ((inAngle - deg - min / 60.0) * 3600);
+	/*
+        if ((int)sec == 60)
+        {
+            sec = sec - 60;
+            min = min + 1;
+        }
+	*/
+	if ( fabs(sec - 0.0) < 1.e-7 )
+	  {
+	    sec = 0.0;
+	  }
+
+        if ( (fabs(sec - 60) < 1.e-7 ) || ( sec > 60.0 ))
+        {
+	  sec = sec - 60;
+	  min = min + 1;
+	  if(sec < 0.0)
+	    {
+	      sec = 0.0;
+	    }
+        }
+        if (min == 60)
+        {
+            min = min - 60;
+            deg = deg + 1;
+        }
+        outAngle = deg * 1000000 + min * 1000 + sec;
+    }
+        break;
+
+
+        /* Convert packed degrees to radians */
+        /* --------------------------------- */
+    case HE5_HDFE_DMS_RAD:
+        deg = (long)(inAngle / 1000000);
+        min = (long)((inAngle - deg * 1000000) / 1000);
+        sec = (inAngle - deg * 1000000 - min * 1000);
+        outAngle = deg + min / 60.0 + sec / 3600.0;
+        outAngle = outAngle * d2r;
+        break;
+    }
+    return (outAngle);
+}
+
+
+
+
 
 #if 0
 /// This inline routine will translate N dimensions into 1 dimension.

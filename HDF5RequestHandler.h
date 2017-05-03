@@ -74,6 +74,10 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
 
     // Handling Memory Cache
+    static string get_stp_east_filename() {return _stp_east_filename;}
+    static string get_stp_north_filename() {return _stp_north_filename;}
+
+    // Handling Cache
     static unsigned int get_mdcache_entries() { return _mdcache_entries;}
     static unsigned int get_lrdcache_entries() { return _lrdcache_entries;}
     static unsigned int get_srdcache_entries() { return _srdcache_entries;}
@@ -135,6 +139,8 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _check_ignore_obj;
      //static bool _ld_mcache_config;
      //static bool _sd_mcache_config;
+     static string _stp_east_filename;
+     static string _stp_north_filename;
      
      static bool _use_disk_cache;
      static string _disk_cache_dir;
