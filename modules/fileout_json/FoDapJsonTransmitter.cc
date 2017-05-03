@@ -79,7 +79,7 @@ string FoDapJsonTransmitter::temp_dir;
  * FoJson.Tempdir. If this variable is not found or is not set then it
  * defaults to the macro definition FO_JSON_TEMP_DIR.
  */
-FoDapJsonTransmitter::FoDapJsonTransmitter() : BESBasicTransmitter()
+FoDapJsonTransmitter::FoDapJsonTransmitter() : BESTransmitter()
 {
     add_method(DATA_SERVICE, FoDapJsonTransmitter::send_data);
     add_method(DDX_SERVICE,  FoDapJsonTransmitter::send_metadata);

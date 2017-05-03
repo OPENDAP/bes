@@ -86,7 +86,7 @@ string W10nJsonTransmitter::temp_dir;
  * defaults to the macro definition FO_JSON_TEMP_DIR.
  */
 W10nJsonTransmitter::W10nJsonTransmitter() :
-    BESBasicTransmitter()
+    BESTransmitter()
 {
     add_method(DATA_SERVICE, W10nJsonTransmitter::send_data);
     add_method(DDX_SERVICE, W10nJsonTransmitter::send_metadata);

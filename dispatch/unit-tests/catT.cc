@@ -34,7 +34,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include "config.h"
 
@@ -49,10 +49,10 @@ using namespace CppUnit ;
 #include <iostream>
 #include <sstream>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ostringstream ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostringstream;
 
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
@@ -68,7 +68,8 @@ using std::ostringstream ;
 #include "BESDefaultModule.h"
 #include <test_config.h>
 
-string empty_response = "BESCatalogEntry::dump - ()\n\
+string empty_response =
+    "BESCatalogEntry::dump - ()\n\
     name: /\n\
     catalog: \n\
     size: \n\
@@ -78,9 +79,10 @@ string empty_response = "BESCatalogEntry::dump - ()\n\
     metadata: none\n\
     is collection? no\n\
     count: 0\n\
-" ;
+";
 
-string one_response = "BESCatalogEntry::dump - ()\n\
+string one_response =
+    "BESCatalogEntry::dump - ()\n\
     name: /\n\
     catalog: \n\
     size:\n\
@@ -110,18 +112,20 @@ string one_response = "BESCatalogEntry::dump - ()\n\
                     metadata: none\n\
                     is collection? no\n\
                     count: 0\n\
-" ;
+";
 
-string cat_root = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string cat_root =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
         <dataset catalog=\"default\" count=\"1\" lastModified=\"\" name=\"/\" node=\"true\" size=\"\">\n\
             <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
         </dataset>\n\
     </showCatalog>\n\
-</response>\n" ;
+</response>\n";
 
-string two_response = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string two_response =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
         <dataset catalog=\"default\" count=\"2\" lastModified=\"\" name=\"/\" node=\"true\" size=\"\">\n\
@@ -129,9 +133,10 @@ string two_response = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
             <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
         </dataset>\n\
     </showCatalog>\n\
-</response>\n" ;
+</response>\n";
 
-string other_root = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string other_root =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
         <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\">\n\
@@ -149,539 +154,490 @@ string other_root = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
             <dataset catalog=\"other\" lastModified=\"\" name=\"other/persistence_mysql_test.ini\" node=\"false\" size=\"\"/>\n\
         </dataset>\n\
     </showCatalog>\n\
-</response>\n" ;
+</response>\n";
 
-string other_root_info = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string other_root_info =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showInfo>\n\
         <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
     </showInfo>\n\
-</response>\n" ;
+</response>\n";
 
-string spec_node = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string spec_node =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
         <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m3.ini\" node=\"false\" size=\"\"/>\n\
     </showCatalog>\n\
-</response>\n" ;
+</response>\n";
 
-string spec_info = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string spec_info =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showInfo>\n\
         <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m3.ini\" node=\"false\" size=\"\"/>\n\
     </showInfo>\n\
-</response>\n" ;
+</response>\n";
 
-string default_node = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string default_node =
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
         <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
     </showCatalog>\n\
-</response>\n" ;
+</response>\n";
 
 class catT: public TestFixture {
 private:
 
 public:
-    catT() {}
-    ~catT() {}
+    catT()
+    {
+    }
+    ~catT()
+    {
+    }
 
     void setUp()
     {
-	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
-	TheBESKeys::ConfigFile = bes_conf ;
-	TheBESKeys::TheKeys()->set_key( "BES.Data.RootDirectory=/dev/null" ) ;
-	TheBESKeys::TheKeys()->set_key( "BES.Info.Buffered=no" ) ;
-	TheBESKeys::TheKeys()->set_key( "BES.Info.Type=xml" ) ;
-	try
-	{
-	    BESDefaultModule::initialize( 0, 0 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    throw e ;
-	}
-    } 
+        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+        TheBESKeys::ConfigFile = bes_conf;
+        TheBESKeys::TheKeys()->set_key("BES.Data.RootDirectory=/dev/null");
+        TheBESKeys::TheKeys()->set_key("BES.Info.Buffered=no");
+        TheBESKeys::TheKeys()->set_key("BES.Info.Type=xml");
+        try {
+            BESDefaultModule::initialize(0, 0);
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            throw e;
+        }
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( catT ) ;
+CPPUNIT_TEST_SUITE( catT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
-    string remove( string &str, string attr, string::size_type s )
+    string remove(string &str, string attr, string::size_type s)
     {
-	string::size_type apos = str.find( attr, s ) ;
-	if( apos == string::npos ) return str ;
-	apos = str.find( "\"", apos+1 ) ;
-	if( apos == string::npos ) return str ;
-	string::size_type qpos = str.find( "\"", apos+1 ) ;
-	if( qpos == string::npos ) return str ;
-	str = str.substr( 0, apos+1 ) + str.substr( qpos ) ;
-	return remove( str, attr, qpos+1 ) ;
+        string::size_type apos = str.find(attr, s);
+        if (apos == string::npos) return str;
+        apos = str.find("\"", apos + 1);
+        if (apos == string::npos) return str;
+        string::size_type qpos = str.find("\"", apos + 1);
+        if (qpos == string::npos) return str;
+        str = str.substr(0, apos + 1) + str.substr(qpos);
+        return remove(str, attr, qpos + 1);
     }
 
-    string remove_ptr( string &str, string::size_type pos = 0 )
+    string remove_ptr(string &str, string::size_type pos = 0)
     {
-	string ret ;
-	string::size_type lparen = str.find( "(", pos ) ;
-	if( lparen != string::npos )
-	{
-	    string::size_type rparen = str.find( ")", lparen ) ;
-	    if( rparen != string::npos )
-	    {
-		ret = str.substr( 0, lparen+1 ) + str.substr( rparen ) ;
-		ret = remove_ptr( ret, rparen + 1 ) ;
-	    }
-	    else
-	    {
-		ret = str ;
-	    }
-	}
-	else
-	{
-	    ret = str ;
-	}
-	return ret ;
+        string ret;
+        string::size_type lparen = str.find("(", pos);
+        if (lparen != string::npos) {
+            string::size_type rparen = str.find(")", lparen);
+            if (rparen != string::npos) {
+                ret = str.substr(0, lparen + 1) + str.substr(rparen);
+                ret = remove_ptr(ret, rparen + 1);
+            }
+            else {
+                ret = str;
+            }
+        }
+        else {
+            ret = str;
+        }
+        return ret;
     }
 
-    string remove_attr( string &str, string &attr, string::size_type pos = 0 )
+    string remove_attr(string &str, string &attr, string::size_type pos = 0)
     {
-	string ret ;
-	string::size_type apos = str.find( attr, pos ) ;
-	if( apos != string::npos )
-	{
-	    string::size_type colon = str.find( ":", apos ) ;
-	    if( colon != string::npos )
-	    {
-		string::size_type end = str.find( "\n", colon ) ;
-		if( end != string::npos )
-		{
-		    ret = str.substr( 0, colon+1 )
-			  + str.substr( end ) ;
-		    ret = remove_attr( ret, attr, end ) ;
-		}
-		else
-		{
-		    ret = str ;
-		}
-	    }
-	    else
-	    {
-		ret = str ;
-	    }
-	}
-	else
-	{
-	    ret = str ;
-	}
-	return ret ;
+        string ret;
+        string::size_type apos = str.find(attr, pos);
+        if (apos != string::npos) {
+            string::size_type colon = str.find(":", apos);
+            if (colon != string::npos) {
+                string::size_type end = str.find("\n", colon);
+                if (end != string::npos) {
+                    ret = str.substr(0, colon + 1) + str.substr(end);
+                    ret = remove_attr(ret, attr, end);
+                }
+                else {
+                    ret = str;
+                }
+            }
+            else {
+                ret = str;
+            }
+        }
+        else {
+            ret = str;
+        }
+        return ret;
     }
 
-    string remove_stuff( string &str )
+    string remove_stuff(string &str)
     {
-	string ret ;
-	string attr = "size" ;
-	ret = remove_attr( str, attr ) ;
-	attr = "modification date" ;
-	ret = remove_attr( ret, attr ) ;
-	attr = "modification time" ;
-	ret = remove_attr( ret, attr ) ;
-	return ret ;
+        string ret;
+        string attr = "size";
+        ret = remove_attr(str, attr);
+        attr = "modification date";
+        ret = remove_attr(ret, attr);
+        attr = "modification time";
+        ret = remove_attr(ret, attr);
+        return ret;
     }
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered catT::run" << endl;
+        cerr << "*****************************************" << endl;
+        cerr << "Entered catT::run" << endl;
 
-	cout << "*****************************************" << endl;
-	cout << "set the default catalog and test" << endl;
-	TheBESKeys::TheKeys()->set_key( "BES.Catalog.Default=default" ) ;
-	string defcat = BESCatalogList::TheCatalogList()->default_catalog() ;
-	CPPUNIT_ASSERT( defcat == "default" ) ;
+        cerr << "*****************************************" << endl;
+        cerr << "set the default catalog and test" << endl;
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
+        string defcat = BESCatalogList::TheCatalogList()->default_catalog();
+        CPPUNIT_ASSERT( defcat == "default" );
 
-	cout << "*****************************************" << endl;
-	cout << "num catalogs should be zero" << endl;
-	int numcats = BESCatalogList::TheCatalogList()->num_catalogs() ;
-	CPPUNIT_ASSERT( numcats == 0 ) ;
+        cerr << "*****************************************" << endl;
+        cerr << "num catalogs should be zero" << endl;
+        int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
+        CPPUNIT_ASSERT( numcats == 0 );
 
-	cout << "*****************************************" << endl;
-	cout << "show empty catalog list" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    BESCatalogEntry *entry = 0 ;
-	    entry = BESCatalogList::TheCatalogList()->show_catalogs( dhi, 0 ) ;
-	    ostringstream strm ;
-	    entry->dump( strm ) ;
-	    string str = strm.str() ;
-	    str = remove_ptr( str ) ;
-	    CPPUNIT_ASSERT( str == empty_response ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "show empty catalog list" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            BESCatalogEntry *entry = 0;
+            entry = BESCatalogList::TheCatalogList()->show_catalogs(dhi, 0);
+            ostringstream strm;
+            entry->dump(strm);
+            string str = strm.str();
+            str = remove_ptr(str);
+            CPPUNIT_ASSERT( str == empty_response );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl ;
-	cout << "no default catalog, use catalog response" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    CPPUNIT_ASSERT( !"Should have failed, no default catalog" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cout << e.get_message() << endl ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "no default catalog, use catalog response" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            CPPUNIT_ASSERT( !"Should have failed, no default catalog" );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl ;
-	cout << "manipulate non-existant catalog" << endl;
-	BESCatalog *catobj =
-	    BESCatalogList::TheCatalogList()->find_catalog( "dummy" ) ;
-	CPPUNIT_ASSERT( catobj == 0 ) ;
+        cerr << "*****************************************" << endl;
+        cerr << "manipulate non-existant catalog" << endl;
+        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("dummy");
+        CPPUNIT_ASSERT( catobj == 0 );
 
-	CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->add_catalog( 0 ) == false ) ;
-	CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->ref_catalog( "dummy" ) == false ) ;
-	CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->deref_catalog( "dummy" ) == false ) ;
+        CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->add_catalog( 0 ) == false );
+        CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->ref_catalog( "dummy" ) == false );
+        CPPUNIT_ASSERT( BESCatalogList::TheCatalogList()->deref_catalog( "dummy" ) == false );
 
-	cout << "*****************************************" << endl;
-	cout << "add a catalog with no settings" << endl;
-	try
-	{
-	    BESCatalogList::TheCatalogList()->
-		add_catalog( new BESCatalogDirectory( "catalog" ) ) ;
-	    CPPUNIT_ASSERT( !"Succeeded in adding catalog, should not have" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "add a catalog with no settings" << endl;
+        try {
+            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
+            CPPUNIT_ASSERT( !"Succeeded in adding catalog, should not have" );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+        }
 
-	string var = (string)"BES.Catalog.default.RootDirectory="
-		     + TEST_SRC_DIR + "/" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	try
-	{
-	    BESCatalogList::TheCatalogList()->
-		add_catalog( new BESCatalogDirectory( "catalog" ) ) ;
-	    CPPUNIT_ASSERT( !"Succeeded in adding catalog, should not have" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	}
+        string var = (string) "BES.Catalog.default.RootDirectory=" + TEST_SRC_DIR + "/";
+        TheBESKeys::TheKeys()->set_key(var);
+        try {
+            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
+            CPPUNIT_ASSERT( !"Succeeded in adding catalog, should not have" );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "add good catalog" << endl;
-	var = (string)"BES.Catalog.default.TypeMatch=conf:conf&;" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.default.Include=.*\\.conf$;" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.default.Exclude=\\..*;cache.*;testdir;" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	try
-	{
-	    BESCatalogList::TheCatalogList()->
-		add_catalog( new BESCatalogDirectory( "default" ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to add catalog" ) ;
-	}
-	catobj = BESCatalogList::TheCatalogList()->find_catalog( "default" ) ;
-	CPPUNIT_ASSERT( catobj ) ;
-	numcats = BESCatalogList::TheCatalogList()->num_catalogs() ;
-	CPPUNIT_ASSERT( numcats == 1 ) ;
+        cerr << "*****************************************" << endl;
+        cerr << "add good catalog" << endl;
+        var = (string) "BES.Catalog.default.TypeMatch=conf:conf&;";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.default.Include=.*\\.conf$;";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.default.Exclude=\\..*;cache.*;testdir;";
+        TheBESKeys::TheKeys()->set_key(var);
+        try {
+            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to add catalog" );
+        }
+        catobj = BESCatalogList::TheCatalogList()->find_catalog("default");
+        CPPUNIT_ASSERT( catobj );
+        numcats = BESCatalogList::TheCatalogList()->num_catalogs();
+        CPPUNIT_ASSERT( numcats == 1 );
 
-	cout << "*****************************************" << endl;
-	cout << "show catalog list" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    BESCatalogEntry *entry = 0 ;
-	    entry = BESCatalogList::TheCatalogList()->show_catalogs( dhi, 0 ) ;
-	    ostringstream strm ;
-	    entry->dump( strm ) ;
-	    string str = strm.str() ;
-	    str = remove_ptr( str ) ;
-	    str = remove_stuff( str ) ;
-	    // cerr << "Catalog list str: " << str << endl;
-	    CPPUNIT_ASSERT( str == one_response ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "show catalog list" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            BESCatalogEntry *entry = 0;
+            entry = BESCatalogList::TheCatalogList()->show_catalogs(dhi, 0);
+            ostringstream strm;
+            entry->dump(strm);
+            string str = strm.str();
+            str = remove_ptr(str);
+            str = remove_stuff(str);
+            //cerr << "Catalog list str: " << str << endl;
+            CPPUNIT_ASSERT( str == one_response );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "now try it with BESCatalogResponseHandler" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-	    CPPUNIT_ASSERT( str == cat_root ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "now try it with BESCatalogResponseHandler" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "lastModified", 0);
+            str = remove(str, "size", 0);
+            CPPUNIT_ASSERT( str == cat_root );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "add good catalog" << endl;
-	var = (string)"BES.Catalog.other.RootDirectory="
-		     + TEST_SRC_DIR + "/" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.other.TypeMatch=info:info&;" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.other.Include=.*\\.ini$;" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.other.Exclude=\\..*;cache.*;testdir;" ;
-	TheBESKeys::TheKeys()->set_key( var ) ;
-	BESCatalog *other = 0 ;
-	try
-	{
-	    other = new BESCatalogDirectory( "other" ) ;
-	    BESCatalogList::TheCatalogList()->add_catalog( other ) ;
-	    CPPUNIT_ASSERT( "Succeeded in adding other catalog" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to add catalog" ) ;
-	}
-	catobj = BESCatalogList::TheCatalogList()->find_catalog( "other" ) ;
-	CPPUNIT_ASSERT( catobj ) ;
-	CPPUNIT_ASSERT( catobj == other ) ;
-	numcats = BESCatalogList::TheCatalogList()->num_catalogs() ;
-	CPPUNIT_ASSERT( numcats == 2 ) ;
+        cerr << "*****************************************" << endl;
+        cerr << "add good catalog" << endl;
+        var = (string) "BES.Catalog.other.RootDirectory=" + TEST_SRC_DIR + "/";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.other.TypeMatch=info:info&;";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.other.Include=.*\\.ini$;";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.other.Exclude=\\..*;cache.*;testdir;";
+        TheBESKeys::TheKeys()->set_key(var);
+        BESCatalog *other = 0;
+        try {
+            other = new BESCatalogDirectory("other");
+            BESCatalogList::TheCatalogList()->add_catalog(other);
+            CPPUNIT_ASSERT( "Succeeded in adding other catalog" );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to add catalog" );
+        }
+        catobj = BESCatalogList::TheCatalogList()->find_catalog("other");
+        CPPUNIT_ASSERT( catobj );
+        CPPUNIT_ASSERT( catobj == other );
+        numcats = BESCatalogList::TheCatalogList()->num_catalogs();
+        CPPUNIT_ASSERT( numcats == 2 );
 
-	cout << "*****************************************" << endl;
-	cout << "now try it with BESCatalogResponseHandler" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-        // cerr << "Catalog list str: " << str << endl;
-	    CPPUNIT_ASSERT( str == two_response ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "now try it with BESCatalogResponseHandler" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "lastModified", 0);
+            str = remove(str, "size", 0);
+            // cerr << "Catalog list str: " << str << endl;
+            CPPUNIT_ASSERT( str == two_response );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler with catalog response" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "other" ;
-	    dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-	    // cerr << str << endl ;
-	    // cerr << other_root << endl ;
-	    CPPUNIT_ASSERT( str == other_root ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler with catalog response" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "other";
+            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "lastModified", 0);
+            str = remove(str, "size", 0);
+            // cerr << str << endl ;
+            // cerr << other_root << endl ;
+            CPPUNIT_ASSERT( str == other_root );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler with info response" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "other" ;
-	    dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-	    CPPUNIT_ASSERT( str == other_root_info ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler with info response" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "other";
+            dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "lastModified", 0);
+            str = remove(str, "size", 0);
+            CPPUNIT_ASSERT( str == other_root_info );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler specific node" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "other/keys_test_m3.ini" ;
-	    dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "count", 0 ) ;
-	    str = remove( str, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-	    CPPUNIT_ASSERT( str == spec_node ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler specific node" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "other/keys_test_m3.ini";
+            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "count", 0);
+            str = remove(str, "lastModified", 0);
+            str = remove(str, "size", 0);
+            CPPUNIT_ASSERT( str == spec_node );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler specific node info" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "other/keys_test_m3.ini" ;
-	    dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "count", 0 ) ;
-	    str = remove( str, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-	    CPPUNIT_ASSERT( str == spec_info ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler specific node info" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "other/keys_test_m3.ini";
+            dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "count", 0);
+            str = remove(str, "lastModified", 0);
+            str = remove(str, "size", 0);
+            CPPUNIT_ASSERT( str == spec_info );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler specific default" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "bes.conf" ;
-	    dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    BESInfo *info =
-		dynamic_cast<BESInfo *>(handler.get_response_object() ) ;
-	    CPPUNIT_ASSERT( info ) ;
-	    ostringstream strm ;
-	    info->print( strm ) ;
-	    string strm_s = strm.str() ;
-	    string str = remove( strm_s, "lastModified", 0 ) ;
-	    str = remove( str, "size", 0 ) ;
-	    // cerr << str << endl ;
-	    // cerr << default_node << endl ;
-	    CPPUNIT_ASSERT( str == default_node ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to show catalogs" ) ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler specific default" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "bes.conf";
+            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
+            CPPUNIT_ASSERT( info );
+            ostringstream strm;
+            info->print(strm);
+            string strm_s = strm.str();
+            string str = remove(strm_s, "lastModified", 0);
+            str = remove(str, "size", 0);
+            // cerr << str << endl ;
+            // cerr << default_node << endl ;
+            CPPUNIT_ASSERT( str == default_node );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to show catalogs" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler not there" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "file/doesnt/exist" ;
-	    dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    CPPUNIT_ASSERT( !"file not found error" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler not there" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "file/doesnt/exist";
+            dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            CPPUNIT_ASSERT( !"file not found error" );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "BESCatalogResponseHandler not there" << endl;
-	try
-	{
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[CONTAINER] = "other/notexist" ;
-	    dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
-	    BESCatalogResponseHandler handler( "catalog" ) ;
-	    handler.execute( dhi ) ;
-	    CPPUNIT_ASSERT( !"file not found error" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	}
+        cerr << "*****************************************" << endl;
+        cerr << "BESCatalogResponseHandler not there" << endl;
+        try {
+            BESDataHandlerInterface dhi;
+            dhi.data[CONTAINER] = "other/notexist";
+            dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
+            BESCatalogResponseHandler handler("catalog");
+            handler.execute(dhi);
+            CPPUNIT_ASSERT( !"file not found error" );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from catT::run" << endl;
+        cerr << "*****************************************" << endl;
+        cerr << "Returning from catT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( catT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( catT );
 
-int 
-main( int, char** )
+int main(int, char**)
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    return wasSuccessful ? 0 : 1 ;
+    bool wasSuccessful = runner.run("", false);
+
+    return wasSuccessful ? 0 : 1;
 }
 

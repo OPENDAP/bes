@@ -307,7 +307,7 @@ private:
 // Public Interface Impl
 
 BESDapTransmit::BESDapTransmit() :
-        BESBasicTransmitter()
+        BESTransmitter()
 {
     add_method(DAS_SERVICE, BESDapTransmit::send_basic_das);
     add_method(DDS_SERVICE, BESDapTransmit::send_basic_dds);

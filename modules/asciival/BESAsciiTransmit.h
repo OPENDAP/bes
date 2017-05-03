@@ -33,7 +33,7 @@
 #ifndef I_BESAsciiTransmit_h
 #define I_BESAsciiTransmit_h 1
 
-#include <BESBasicTransmitter.h>
+#include <BESTransmitter.h>
 
 class BESResponseObject;
 class BESDataHandlerInterface;
@@ -41,7 +41,7 @@ class BESDataHandlerInterface;
 #define ASCII_TRANSMITTER "ascii"
 #define DAP4_CSV_TRANSMITTER "csv"
 
-class BESAsciiTransmit: public BESBasicTransmitter {
+class BESAsciiTransmit: public BESTransmitter {
 public:
 	BESAsciiTransmit();
 	virtual ~BESAsciiTransmit()

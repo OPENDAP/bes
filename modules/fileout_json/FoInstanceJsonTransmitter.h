@@ -29,7 +29,7 @@
 #ifndef A_FoInstanceJsonTransmitter_h
 #define A_FoInstanceJsonTransmitter_h 1
 
-#include <BESBasicTransmitter.h>
+#include <BESTransmitter.h>
 
 class BESResponseObject;
 class BESDataHandlerInterface;
@@ -41,9 +41,9 @@ class BESDataHandlerInterface;
  * JSON file and streams the new (temporary) JSON file back to the
  * client.
  *
- * @see BESBasicTransmitter
+ * @see BESTransmitter
  */
-class FoInstanceJsonTransmitter: public BESBasicTransmitter {
+class FoInstanceJsonTransmitter: public BESTransmitter {
 private:
 	static string temp_dir;
 
