@@ -308,7 +308,6 @@ H5.SmallDataMemCacheEntries=0
 
 # H5.CachePurgeLevel = 0.2
 
-<<<<<<< HEAD
 # HDF5 variable disk data cache key for the CF option
 # 
 # When the H5.EnableDiskDataCache is set to true, the variable data
