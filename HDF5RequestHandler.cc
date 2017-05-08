@@ -332,8 +332,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                 if (das_cache) {
                     // add a copy
                     BESDEBUG(HDF5_NAME, "HDF5 DAS reading DAS from the disk cache. For memory cache, DAS added to the cache for : " << filename << endl);
-                    //das_cache->add(new DAS(*das), filename);
-                    das_cache->add(das, filename);
+                    das_cache->add(new DAS(*das), filename);
+                    //das_cache->add(das, filename);
                 }
             }
 
@@ -1920,8 +1920,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, c
         if (das_cache) {
                     // add a copy
             BESDEBUG(HDF5_NAME, "Reading DDS from Disk Cache routine, For memory cache, DAS added to the cache for : " << filename << endl);
-                    //das_cache->add(new DAS(*das), filename);
-            das_cache->add(das, filename);
+            das_cache->add(new DAS(*das), filename);
         }
         else {
             delete das;
