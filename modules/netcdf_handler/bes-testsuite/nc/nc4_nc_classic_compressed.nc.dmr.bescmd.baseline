@@ -35,17 +35,17 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>1.00000000</Value>
         </Attribute>
-        <Map name="time"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="t">
         <Dim name="/time"/>
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Map name="time"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float64 name="p">
         <Dim name="/time"/>
@@ -54,9 +54,9 @@
         <Attribute name="_FillValue" type="Float64">
             <Value>-9999.000000000000</Value>
         </Attribute>
-        <Map name="time"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float64>
     <Int16 name="rh">
         <Dim name="/time"/>
@@ -65,22 +65,22 @@
         <Attribute name="_FillValue" type="Int16">
             <Value>-1</Value>
         </Attribute>
-        <Map name="time"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Byte name="pixel">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Byte>
     <String name="source">
         <Dim name="/lat"/>
         <Attribute name="string_length" type="Int32">
             <Value>5</Value>
         </Attribute>
-        <Map name="lat"/>
+        <Map name="/lat"/>
     </String>
     <Attribute name="NC_GLOBAL" type="Container">
         <Attribute name="title" type="String">
