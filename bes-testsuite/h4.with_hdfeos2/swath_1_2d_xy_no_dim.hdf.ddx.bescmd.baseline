@@ -40,43 +40,11 @@
         <dimension name="NDim" size="8"/>
     </Array>
     <Array>
-        <Attribute name="Latitude" type="Container">
-            <Attribute name="units" type="String">
-                <value>degrees_north</value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <value>Latitude</value>
-            </Attribute>
-        </Attribute>
-        <Attribute name="Longitude" type="Container">
-            <Attribute name="coordinates" type="String">
-                <value>Latitude</value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <value>Longitude</value>
-            </Attribute>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>level</value>
         </Attribute>
         <Attribute name="long_name" type="String">
             <value>(fake)</value>
-        </Attribute>
-        <Attribute name="temperature" type="Container">
-            <Attribute name="coordinates" type="String">
-                <value>Latitude </value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <value>-9999.000000</value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <value>temperature</value>
-            </Attribute>
-        </Attribute>
-        <Attribute name="HDF_GLOBAL" type="Container">
-            <Attribute name="HDFEOSVersion" type="String">
-                <value>HDFEOS_V2.18</value>
-            </Attribute>
         </Attribute>
         <Int32/>
         <dimension size="4"/>
