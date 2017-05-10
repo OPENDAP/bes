@@ -640,19 +640,17 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 
     // First deal with scalar data. 
     if (dt_inst.ndims == 0) {
-
-        // transform the DAP2 to DAP4 for this DAP base type
-        BaseType* new_var = bt->transform_to_dap4(d4_grp,d4_grp);
-
-        // Map the HDF5 dataset attributes to DAP4 
-        map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
-
-        // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
-        map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
-
-        // Add this variable to the DAP4 group
-        if(new_var) 
-            d4_grp->add_var_nocopy(new_var);
+        // transform the DAP2 to DAP4 for this DAP base type and add it to d4_grp
+        bt->transform_to_dap4(d4_grp,d4_grp);
+        // Get it back - this may return null because the underlying type
+        // may have no DAP2 manifestation.
+        BaseType* new_var = d4_grp->var(bt->name());
+        if(new_var){
+            // Map the HDF5 dataset attributes to DAP4
+            map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
+            // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
+            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
+        }
         delete bt; 
         bt = 0;
     }
@@ -695,7 +693,6 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 
         // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
         map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
-      
 #if 0
         // Test the attribute
         D4Attribute *test_attr = new D4Attribute("DAP4_test",attr_str_c);
@@ -703,8 +700,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         new_var->attributes()->add_attribute_nocopy(test_attr);
 #endif
         // Add this var to DAP4 group.
-        if(new_var) 
-            d4_grp->add_var_nocopy(new_var);
+        d4_grp->add_var_nocopy(new_var);
         delete ar; ar = 0;
     }
 
