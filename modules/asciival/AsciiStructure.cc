@@ -39,6 +39,7 @@
 #include <BESDebug.h>
 
 #include "InternalErr.h"
+#include "D4Group.h"
 #include "AsciiStructure.h"
 #include "AsciiSequence.h"
 //#include "name_map.h"
@@ -78,6 +79,18 @@ AsciiStructure::AsciiStructure(Structure *bt) :
 
 AsciiStructure::~AsciiStructure()
 {
+}
+
+BaseType *AsciiStructure::transform_to_dap4(D4Group *root, Constructor *container){
+    cerr << __func__ << "() -BEGIN " <<
+        "('"<< root->name() << "':"<< (void *)root << ")" <<
+        "('"<< container->name() << "':"<< (void *)container << ")" <<
+        endl;
+    AsciiStructure *dest =  new AsciiStructure(name());
+    Constructor::transform_to_dap4(root,dest);
+    container->add_var_nocopy(dest);
+    cerr << __func__ << "() - END" << endl;
+    return 0;
 }
 
 void AsciiStructure::print_header(ostream &strm)

@@ -97,9 +97,13 @@ GridAggregationBase::operator=(const GridAggregationBase& rhs)
     return *this;
 }
 
+
 BaseType *
 GridAggregationBase::transform_to_dap4(D4Group *root, Constructor *container)
 {
+    return Grid::transform_to_dap4(root,container);
+
+#if 0 // I removed this method because I think the parent class implementation should work correctly.
     BaseType *btp = array_var()->transform_to_dap4(root, container);
     Array *coverage = static_cast<Array*>(btp);
     if (!coverage) throw InternalErr(__FILE__, __LINE__, "Expected an Array while transforming a Grid (coverage)");
@@ -139,6 +143,7 @@ GridAggregationBase::transform_to_dap4(D4Group *root, Constructor *container)
     // return a BaseType*. Callers should assume it has correctly added
     // stuff to the container and group.
     return 0;
+#endif
 }
 
 void GridAggregationBase::setShapeFrom(const libdap::Grid& constProtoSubGrid, bool addMaps)

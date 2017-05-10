@@ -55,9 +55,9 @@
         <Attribute name="units" type="String">
             <Value>Deg C</Value>
         </Attribute>
-        <Map name="TIME"/>
-        <Map name="COADSY"/>
-        <Map name="COADSX"/>
+        <Map name="/TIME"/>
+        <Map name="/COADSY"/>
+        <Map name="/COADSX"/>
     </Float32>
     <Float32 name="AIRT">
         <Dim name="/TIME"/>
@@ -78,9 +78,9 @@
         <Attribute name="units" type="String">
             <Value>DEG C</Value>
         </Attribute>
-        <Map name="TIME"/>
-        <Map name="COADSY"/>
-        <Map name="COADSX"/>
+        <Map name="/TIME"/>
+        <Map name="/COADSY"/>
+        <Map name="/COADSX"/>
     </Float32>
     <Float32 name="UWND">
         <Dim name="/TIME"/>
@@ -101,9 +101,9 @@
         <Attribute name="units" type="String">
             <Value>M/S</Value>
         </Attribute>
-        <Map name="TIME"/>
-        <Map name="COADSY"/>
-        <Map name="COADSX"/>
+        <Map name="/TIME"/>
+        <Map name="/COADSY"/>
+        <Map name="/COADSX"/>
     </Float32>
     <Float32 name="VWND">
         <Dim name="/TIME"/>
@@ -124,9 +124,9 @@
         <Attribute name="units" type="String">
             <Value>M/S</Value>
         </Attribute>
-        <Map name="TIME"/>
-        <Map name="COADSY"/>
-        <Map name="COADSX"/>
+        <Map name="/TIME"/>
+        <Map name="/COADSY"/>
+        <Map name="/COADSX"/>
     </Float32>
     <Attribute name="NC_GLOBAL" type="Container">
         <Attribute name="history" type="String">

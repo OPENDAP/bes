@@ -148,11 +148,9 @@ BaseType *
 NCStructure::transform_to_dap4(D4Group *root, Constructor *container)
 {
 	Structure *dest = new NCStructure(name(), dataset());
-
-	Constructor::transform_to_dap4(root, dest);
-	dest->set_parent(container);
-
-	return dest;
+    Constructor::transform_to_dap4(root, dest);
+    container->add_var_nocopy(dest);
+    return 0;
 }
 
 void NCStructure::do_structure_read(int ncid, int varid, nc_type datatype,
