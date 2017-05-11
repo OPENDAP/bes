@@ -47,7 +47,7 @@ public:
 
     virtual BaseType *ptr_duplicate();
 
-    virtual BaseType *transform_to_dap4(D4Group *root, Constructor *container);
+    virtual void transform_to_dap4(D4Group *root, Constructor *container);
 
     virtual void print_header(ostream &strm);
     virtual void print_ascii(ostream &strm, bool print_name = true)

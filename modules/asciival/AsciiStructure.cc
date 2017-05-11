@@ -81,7 +81,7 @@ AsciiStructure::~AsciiStructure()
 {
 }
 
-BaseType *AsciiStructure::transform_to_dap4(D4Group *root, Constructor *container){
+void AsciiStructure::transform_to_dap4(D4Group *root, Constructor *container){
     cerr << __func__ << "() -BEGIN " <<
         "('"<< root->name() << "':"<< (void *)root << ")" <<
         "('"<< container->name() << "':"<< (void *)container << ")" <<
@@ -90,7 +90,6 @@ BaseType *AsciiStructure::transform_to_dap4(D4Group *root, Constructor *containe
     Constructor::transform_to_dap4(root,dest);
     container->add_var_nocopy(dest);
     cerr << __func__ << "() - END" << endl;
-    return 0;
 }
 
 void AsciiStructure::print_header(ostream &strm)

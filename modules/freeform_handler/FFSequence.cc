@@ -194,7 +194,7 @@ void FFSequence::transfer_attributes(AttrTable *at)
     }
 }
 
-BaseType *FFSequence::transform_to_dap4(D4Group *root, Constructor *container)
+void FFSequence::transform_to_dap4(D4Group *root, Constructor *container)
 {
 	// For this class, ptr_duplicate() calls the const ctor which calls
 	// Constructor's const ctor which calls Constructor::m_duplicate().
@@ -204,7 +204,6 @@ BaseType *FFSequence::transform_to_dap4(D4Group *root, Constructor *container)
 	FFD4Sequence *dest = new FFD4Sequence(name(), dataset(), d_input_format_file);
     Constructor::transform_to_dap4(root, dest);
     container->add_var_nocopy(dest);
-    return 0;
 
 #if 0
     for (Constructor::Vars_citer i = var_begin(), e = var_end(); i != e; ++i) {
