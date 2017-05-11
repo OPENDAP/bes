@@ -70,7 +70,7 @@ public:
 
     GridAggregationBase& operator=(const GridAggregationBase& rhs);
 
-    BaseType *transform_to_dap4(libdap::D4Group *root, libdap::Constructor *container);
+    virtual void  transform_to_dap4(libdap::D4Group *root, libdap::Constructor *container);
 
     /**
      * Use the data array and maps from protoSubGrid as the initial
