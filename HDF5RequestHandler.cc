@@ -1922,9 +1922,9 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, c
             BESDEBUG(HDF5_NAME, "Reading DDS from Disk Cache routine, For memory cache, DAS added to the cache for : " << filename << endl);
             das_cache->add(new DAS(*das), filename);
         }
-        else {
+        //else {
             delete das;
-        }
+        //}
 
     }
     
