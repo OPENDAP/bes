@@ -1,0 +1,15 @@
+Dataset {
+    Float32 altitude[altitude = 1];
+    Float32 lat[lat = 29];
+    Float32 lon[lon = 26];
+    Float64 time[time = 4];
+    Grid {
+      Array:
+        Float32 CGusfc[time = 4][altitude = 1][lat = 29][lon = 26];
+      Maps:
+        Float64 time[time = 4];
+        Float32 altitude[altitude = 1];
+        Float32 lat[lat = 29];
+        Float32 lon[lon = 26];
+    } CGusfc;
+} gateway_aggregation.ncml;
