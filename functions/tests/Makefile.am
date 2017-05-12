@@ -59,11 +59,11 @@ check-local: atconfig atlocal $(TESTSUITE)
 	-rm -rf dap_cache/*
 	test `ls -1 dap_cache/ | wc -l` -eq 0
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-test `ls -1 dap_cache/ | wc -l` -eq 44
+	-test `ls -1 dap_cache/ | wc -l` -eq 52
 	@echo "These tests will mysteriously fail if function caching is turned off"
 	@echo "Run tests with a full cache"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-test `ls -1 dap_cache/ | wc -l` -eq 44
+	-test `ls -1 dap_cache/ | wc -l` -eq 52
 	
 #	-rm -rf dap_cache/*
 	

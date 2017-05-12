@@ -93,7 +93,7 @@ using namespace std;
  * defaults to the macro definition FONC_TEMP_DIR.
  */
 FONcTransmitter::FONcTransmitter() :
-    BESBasicTransmitter()
+    BESTransmitter()
 {
     add_method(DATA_SERVICE, FONcTransmitter::send_data);
 }
@@ -238,8 +238,11 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // Note that the BESResponseObject will manage the loaded_dds object's
         // memory. Make this a shared_ptr<>. jhrg 9/6/16
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
+        // Now that we are ready to start reading the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
 
+        BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
 
         // ResponseBuilder splits the CE, so use the DHI or make two calls and
@@ -261,14 +264,15 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         umask(original_mode);
 
         // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter hoe we exit. jhrg 9/7/16
+        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
+        // Except if there is a hard crash.. jhrg 3/30/17
         wrap_temp_name w_temp_file(temp_file);
         wrap_temp_descriptor w_fd(fd);
 
         if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << &temp_file[0] << endl);
 
+        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << &temp_file[0] << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(loaded_dds, dhi, &temp_file[0], dhi.data[RETURN_CMD]);

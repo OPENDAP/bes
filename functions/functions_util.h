@@ -44,7 +44,7 @@ class Array;
 namespace functions {
 // These functions are defined here in the bes 'functions' module. jhrg 4/28/15
 
-vector<int> parse_dims(const string &shape);
+std::vector<int> parse_dims(const std::string &shape);
 
 void check_number_type_array(libdap::BaseType *btp, unsigned int rank = 0);
 

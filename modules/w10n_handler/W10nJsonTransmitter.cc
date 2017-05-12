@@ -46,6 +46,7 @@
 #include <escaping.h>
 #include <ConstraintEvaluator.h>
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESDapError.h>
@@ -85,7 +86,7 @@ string W10nJsonTransmitter::temp_dir;
  * defaults to the macro definition FO_JSON_TEMP_DIR.
  */
 W10nJsonTransmitter::W10nJsonTransmitter() :
-    BESBasicTransmitter()
+    BESTransmitter()
 {
     add_method(DATA_SERVICE, W10nJsonTransmitter::send_data);
     add_method(DDX_SERVICE, W10nJsonTransmitter::send_metadata);
@@ -212,6 +213,10 @@ void W10nJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterf
         W10nJsonTransform ft(loaded_dds, dhi, &o_strm);
 
         string varName = getProjectedVariableName(dhi.data[POST_CONSTRAINT]);
+
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
 
         BESDEBUG(W10N_DEBUG_KEY,
             "W10nJsonTransmitter::send_data() - Sending w10n data response for variable " << varName << endl);

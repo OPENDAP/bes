@@ -35,7 +35,7 @@
 #include <DataDDS.h>
 #include <ConstraintEvaluator.h>
 
-#include <BESBasicTransmitter.h>
+#include <BESTransmitter.h>
 
 class BESContainer;
 
@@ -48,9 +48,9 @@ using namespace libdap;
  * netcdf file and streams the new (temporary) netcdf file back to the
  * client.
  *
- * @see BESBasicTransmitter
+ * @see BESTransmitter
  */
-class FONcTransmitter: public BESBasicTransmitter {
+class FONcTransmitter: public BESTransmitter {
 private:
 	static string temp_dir;
 

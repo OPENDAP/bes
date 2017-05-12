@@ -4,8 +4,10 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 # Arrange to build with the backward compatibility mode enabled.
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
+#$(LIBS)
+# $(XML2_LIBS)
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
@@ -28,11 +30,11 @@ TESTS = constraintT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest 
+		urlT BESCatalogListUnitTest \
+		uncompressT cacheT containerT
 
-# cacheT gzT zT uncompressT lockT containerT Temporarily removed while I sort out the cache 
-# errors 5/6/14 jhrg
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
+# lockT. Removed jhrg 4/26/17 
 
 if LIBDAP
 TESTS += catT
@@ -73,8 +75,17 @@ DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.log *.sum real*
 
+############################################
+# This was generating a directory of "." so 
+# I migrated it to the abs_srcdir below 
+# - ndp 4/12/17
+#
+#test_config.h: test_config.h.in Makefile
+#	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+
 test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
 clean-local:
 	cd ${srcdir}/cache && rm -f *_cache*
@@ -85,7 +96,7 @@ clean-local:
 
 constraintT_SOURCES = constraintT.cc
 
-# containerT_SOURCES = containerT.cc
+containerT_SOURCES = containerT.cc
 
 defT_SOURCES = defT.cc
 
@@ -110,9 +121,9 @@ infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
 agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
-# cacheT_SOURCES = cacheT.cc
+cacheT_SOURCES = cacheT.cc
 
-# lockT_SOURCES = lockT.cc
+#lockT_SOURCES = lockT.cc
 
 # gzT_SOURCES = gzT.cc
 # gzT_LDADD =  $(LDADD) -lz
@@ -121,7 +132,7 @@ agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 # zT_SOURCES = zT.cc
 
-# uncompressT_SOURCES = uncompressT.cc
+uncompressT_SOURCES = uncompressT.cc
 
 # encodeT_SOURCES = encodeT.cc
 

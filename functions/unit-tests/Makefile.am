@@ -5,7 +5,8 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/functions $(DAP_CFLAGS) $(GDAL_CFLAGS)
+#-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
 AM_LDADD =  $(DAP_SERVER_LIBS) $(GF_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
 #-L.. -lfunctions_module  
 # ../libfunctions_module.la
@@ -54,12 +55,12 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
-OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest
+OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
 # jhrg 3/12/15
-	
+
 else
 UNIT_TESTS =
 
@@ -123,3 +124,6 @@ MakeMaskFunctionTest_OBJ = ../MakeMaskFunction.o
 MakeMaskFunctionTest_SOURCES = MakeMaskFunctionTest.cc $(TEST_SRC)
 MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
+ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)

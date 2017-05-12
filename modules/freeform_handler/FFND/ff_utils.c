@@ -1731,7 +1731,7 @@ See the FreeForm User's Guide for detailed information.\n"
 	}
 
 	/* Display some information about the data, ignore errors */
-	db_ask(dbin, DBASK_FORMAT_SUMMARY, 0, &bufsize);
+	(void) db_ask(dbin, DBASK_FORMAT_SUMMARY, 0, &bufsize);
 	if (newform_log)
 		do_log(newform_log, "%s\n", bufsize->buffer);
 	else
@@ -1781,7 +1781,7 @@ See the FreeForm User's Guide for detailed information.\n"
 			FF_BUFSIZE_PTR bufsize = NULL;
 
 			/* Display some information about the data, ignore errors */
-			db_ask(dbin, DBASK_FORMAT_SUMMARY, 0, &bufsize);
+			(void) db_ask(dbin, DBASK_FORMAT_SUMMARY, 0, &bufsize);
 
 			if (newform_log)
 				do_log(newform_log, "%s\n", bufsize->buffer);
@@ -1969,7 +1969,7 @@ static BOOLEAN input_eqn_vars(DATA_BIN_PTR dbin)
 
 	FF_VALIDATE(dbin);
 
-	db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT, &plist);
+	(void) db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT, &plist);
 
 	plist = dll_first(plist);
 	pinfo = FF_PI(plist);
@@ -2078,7 +2078,10 @@ static int transmogrify
 
 	if (do_newform)
 	{
-		db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT, &plist);
+	    error = db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT, &plist);
+        if (error)
+            goto transmogrify_exit;
+
 		plist = dll_first(plist);
 		pinfo = FF_PI(plist);
 		while (pinfo)
@@ -2266,7 +2269,9 @@ static int transmogrify
 
 	hackmerge_output_data_formats(bufsize);
 
-	db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT, &plist);
+	error = db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT, &plist);
+    if (error)
+        goto transmogrify_exit;
 
 	plist = dll_first(plist);
 	pinfo = FF_PI(plist);
@@ -2338,7 +2343,9 @@ static int transmogrify
 	bufsize->buffer[0] = STR_END;
 
 	/* Make BIP-type interleaved arrays to emulate single-variable data views */
-	db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT | FFF_DATA, &plist);
+	error = db_ask(dbin, DBASK_PROCESS_INFO, FFF_INPUT | FFF_DATA, &plist);
+    if (error)
+        goto transmogrify_exit;
 
 	plist = dll_first(plist);
 	pinfo = FF_PI(plist);
@@ -3553,7 +3560,7 @@ See the FreeForm User's Guide for detailed information.\n"
 		do_log(checkvar_log, "Using query file: %s\n", std_args->query_file);
 
 	/* Display some information about the data, ignore errors */
-	db_ask(dbin, DBASK_FORMAT_SUMMARY, std_args->cv_subset ? 0 : FFF_INPUT, &bufsize);
+	(void) db_ask(dbin, DBASK_FORMAT_SUMMARY, std_args->cv_subset ? 0 : FFF_INPUT, &bufsize);
 	do_log(checkvar_log, "%s\n", bufsize->buffer);
 
 	ff_destroy_bufsize(bufsize);

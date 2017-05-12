@@ -92,6 +92,10 @@ BES.module.gateway=@abs_top_builddir@/.libs/libgateway_module.so
 # with various format handlers distributed for use with the BES. You'll need
 # to change this to point to your data! At this time the BES does not support
 # multiple RootDirectory values. 3/5/07 jhrg
+#
+#  template: bes.conf.in
+#
+#
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
@@ -107,7 +111,11 @@ BES.Data.RootDirectory=/dev/null
 
 # BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(.bz2|.gz|.Z)?$;dapreader:.*.dds(.bz2|.gz|.Z)?$;nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.dods(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.dds(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.dap(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.
@@ -274,7 +282,7 @@ Gateway.Cache.dir=/tmp
 Gateway.Cache.prefix=gateway_cache
 Gateway.Cache.size=500
 
-Gateway.Whitelist=http://opendap.rpi.edu
+Gateway.Whitelist=http://localhost:8080/
 Gateway.Whitelist+=http://test.opendap.org
 
 Gateway.MimeTypes=nc:application/x-netcdf

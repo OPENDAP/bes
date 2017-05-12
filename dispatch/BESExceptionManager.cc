@@ -30,11 +30,16 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
+
+#include <sstream>
+
 #include "BESExceptionManager.h"
 
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESInfoList.h"
+#include "BESLog.h"
 
 #define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
@@ -65,6 +70,73 @@ void BESExceptionManager::add_ehm_callback(p_bes_ehm ehm)
 {
     _ehm_list.push_back(ehm);
 }
+
+
+/**
+ * Writes a message about the passed in BESError to the
+ * BESLog.
+ */
+void log_error(BESError &e){
+
+    struct tm *ptm;
+    time_t timer = time(NULL);
+    ptm = gmtime ( &timer );
+    string now(asctime(ptm));
+    now = now.substr(0,now.length()-1); // drop \n from end of string
+
+    string error_name;
+    bool log_to_verbose = false;
+    switch (e.get_error_type()) {
+    case BES_INTERNAL_FATAL_ERROR:
+        error_name = "BES Internal Fatal Error.";
+        break;
+
+    case BES_INTERNAL_ERROR:
+        error_name = "BES Internal Error";
+        break;
+
+    case BES_SYNTAX_USER_ERROR:
+        error_name = "BES Syntax User Error";
+        log_to_verbose = true;
+        break;
+
+    case BES_FORBIDDEN_ERROR:
+        error_name = "BES Forbidden Error";
+        break;
+
+    case BES_NOT_FOUND_ERROR:
+        error_name = "BES Not Found Error";
+        log_to_verbose = true;
+        break;
+
+    default:
+        error_name = "Unrecognized BES Error";
+        break;
+    }
+    string m = BESLog::mark;
+    std::ostringstream  msg;
+    msg << "ERROR: " << error_name << m <<
+        "type: " << e.get_error_type() << m <<
+        "file: " << e.get_file() << m <<
+        "line: " << e.get_line() << m <<
+        "message: " << e.get_message() << m;
+    if(log_to_verbose){
+        if( BESLog::TheLog()->is_verbose() )
+        {
+            // This seems buggy - if you don't flush the
+            // log it won't print the time correctly.
+            BESLog::TheLog()->flush_me();
+            *(BESLog::TheLog()) << msg.str() << endl ;
+            BESLog::TheLog()->flush_me();
+        }
+    }
+    else {
+        BESLog::TheLog()->flush_me();
+        *(BESLog::TheLog()) << msg.str() << endl ;
+        BESLog::TheLog()->flush_me();
+    }
+}
+
 
 /** @brief Manage any exceptions thrown during the handling of a request
 
@@ -104,6 +176,7 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
     if (action_name == "") action_name = "BES";
     dhi.error_info->begin_response(action_name, dhi);
 
+
     string administrator = "";
     try {
         bool found = false;
@@ -119,6 +192,10 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
     }
     dhi.error_info->add_exception(e, administrator);
     dhi.error_info->end_response();
+
+    // Write a message in the log file about this error...
+    log_error(e);
+
     return e.get_error_type();
 }
 

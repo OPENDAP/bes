@@ -96,6 +96,7 @@ const string BESDapFunctionResponseCache::PREFIX_KEY = "DAP.FunctionResponseCach
 const string BESDapFunctionResponseCache::SIZE_KEY = "DAP.FunctionResponseCache.size";
 
 BESDapFunctionResponseCache *BESDapFunctionResponseCache::d_instance = 0;
+bool BESDapFunctionResponseCache::d_enabled = true;
 
 unsigned long BESDapFunctionResponseCache::get_cache_size_from_config()
 {
@@ -162,12 +163,23 @@ string BESDapFunctionResponseCache::get_cache_dir_from_config()
 BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
-    if (d_instance == 0) {
+    if (d_enabled && d_instance == 0) {
         if (!cache_dir.empty() && dir_exists(cache_dir)) {
             d_instance = new BESDapFunctionResponseCache(cache_dir, prefix, size);
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "BESDapFunctionResponseCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
+    #ifdef HAVE_ATEXIT
+                atexit(delete_instance);
+    #endif
+                BESDEBUG("cache", "BESDapFunctionResponseCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
+           }
         }
     }
 
@@ -180,18 +192,29 @@ BESDapFunctionResponseCache::get_instance(const string &cache_dir, const string 
 BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance()
 {
-    if (d_instance == 0) {
+    if (d_enabled && d_instance == 0) {
         string cache_dir = get_cache_dir_from_config();
         if (!cache_dir.empty() && dir_exists(cache_dir)) {
             d_instance = new BESDapFunctionResponseCache(get_cache_dir_from_config(), get_cache_prefix_from_config(),
                 get_cache_size_from_config());
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
+            d_enabled = d_instance->cache_enabled();
+            if(!d_enabled){
+                delete d_instance;
+                d_instance = NULL;
+                BESDEBUG("cache", "BESDapFunctionResponseCache::"<<__func__ << "() - " <<
+                    "Cache is DISABLED"<< endl);
+           }
+            else {
+    #ifdef HAVE_ATEXIT
+                atexit(delete_instance);
+    #endif
+                BESDEBUG("cache", "BESDapFunctionResponseCache::"<<__func__ << "() - " <<
+                    "Cache is ENABLED"<< endl);
+           }
         }
     }
 
-    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::get_instance() - d_instance: " << d_instance << endl);
+    BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::get_instance() - d_instance: " << (void *) d_instance << endl);
 
     return d_instance;
 }
@@ -266,8 +289,8 @@ string BESDapFunctionResponseCache::get_hash_basename(const string &resource_id)
     size_t hashValue = str_hash(resource_id);
     stringstream hashed_id;
     hashed_id << hashValue;
-    string cache_file_name = getCacheDirectory();
-    cache_file_name.append("/").append(getCacheFilePrefix()).append(hashed_id.str());
+    string cache_file_name = get_cache_directory();
+    cache_file_name.append("/").append(get_cache_file_prefix()).append(hashed_id.str());
 
     return cache_file_name;
 }

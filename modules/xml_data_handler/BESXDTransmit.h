@@ -30,12 +30,14 @@
 #ifndef I_BESXDTransmit_h
 #define I_BESXDTransmit_h 1
 
+#import <BESTransmitter.h>
+
 class BESResponseObject;
 class BESDataHandlerInterface;
 
 #define XD_TRANSMITTER "xml_data"
 
-class BESXDTransmit {
+class BESXDTransmit: public BESTransmitter {
 public:
 	static void send_basic_ascii(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };

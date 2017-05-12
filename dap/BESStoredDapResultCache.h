@@ -27,24 +27,22 @@
 
 #include <string>
 
-#include <DapXmlNamespaces.h>
-#include <DMR.h>
+#include <DapXmlNamespaces.h>   // needed for libdap::DAPVersion
+//#include <DMR.h>
 
 #include "BESFileLockingCache.h"
 
 #undef DAP2_STORED_RESULTS
 
-class BESDapResponseBuilder;
-
-// using the namespace in the forward declaration works with older g++ versions
-// because they are sensible and not literal. It should not work; the decl class
-// libdap::BaseType; tells the compiler go look i the 'libdap' namespace for 'BaseType'
-// but _while it's compiling this file_ there is no 'libdap' namespace. So we make one.
 namespace libdap {
 class DDS;
 class ConstraintEvaluator;
 class BaseTypeFactory;
+
+class DMR;
 }
+
+class BESDapResponseBuilder;
 
 /**
  * This class is used to cache DAP2 response objects.
@@ -53,7 +51,7 @@ class BaseTypeFactory;
 
 class BESStoredDapResultCache: public BESFileLockingCache {
 private:
-
+    static bool d_enabled;
     static BESStoredDapResultCache *d_instance;
     static void delete_instance()
     {

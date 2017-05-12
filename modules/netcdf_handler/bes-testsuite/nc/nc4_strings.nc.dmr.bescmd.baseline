@@ -19,12 +19,12 @@
             <Value>site_2</Value>
             <Value>site_3</Value>
         </Attribute>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </String>
     <String name="scan_line">
         <Dim name="/lon"/>
-        <Map name="lon"/>
+        <Map name="/lon"/>
     </String>
     <String name="codec_name"/>
     <Attribute name="NC_GLOBAL" type="Container">

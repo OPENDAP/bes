@@ -44,6 +44,10 @@
  *
  * Creates an instances of BESContainerStorageVolatile with the given name.
  *
+ * @note This constructor will fail with an Internal Fatal Error if the BES
+ * Keys file cannot be read. That is, the if the singleton TheBESKeys cannot
+ * be initialized, the access to the BES keys will throw a BESInternalFatalError.
+ *
  * @param n name of this persistent store
  * @see BESContainer
  */
@@ -258,7 +262,7 @@ bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> 
 
 /** @brief show information for each container in this persistent store
  *
- * For each container in this persistent store, add infomation about each of
+ * For each container in this persistent store, add information about each of
  * those containers. The information added to the information object
  * includes a line for each container within this persistent store which 
  * includes the symbolic name, the real name, and the data type, 

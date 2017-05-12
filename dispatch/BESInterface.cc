@@ -328,8 +328,10 @@ int BESInterface::execute_request(const string &from)
     try {
         initialize();
 
-        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " request received"
-            << endl;
+        string m = BESLog::mark;
+        *(BESLog::TheLog()) << _dhi->data[REQUEST_FROM] << m <<
+            "request received" << m << endl;
+        BESLog::TheLog()->flush_me();
 
         // This does not do anything here or in BESBasicInterface or BESXMLInterface.
         // Remove it? jhrg 12/23/15
@@ -790,10 +792,17 @@ void BESInterface::end_request()
  */
 void BESInterface::clean()
 {
-    if (_dhi) _dhi->clean();
-    if (BESLog::TheLog()->is_verbose()) {
-        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+    if (_dhi) {
+        _dhi->clean();
+
+        VERBOSE(_dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl);
+#if 0
+        if (BESLog::TheLog()->is_verbose()) {
+            *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
+                << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+        }
+#endif
     }
 }
 

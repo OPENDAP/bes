@@ -272,8 +272,8 @@ static int option_E_(char *argv[], FF_STD_ARGS_PTR std_args, int *i)
 						fp = fopen(std_args->error_log, "w");
 						if (fp)
 						{
-							fclose(fp);
-							remove(std_args->error_log);
+							(void) fclose(fp);
+							(void) remove(std_args->error_log);
 						}
 						else
 							error = err_push(ERR_CREATE_FILE, std_args->error_log);
@@ -611,8 +611,8 @@ static int option_O__(char *argv[], FF_STD_ARGS_PTR std_args, int *i)
 						fp = fopen(std_args->log_file, "w");
 						if (fp)
 						{
-							fclose(fp);
-							remove(std_args->log_file);
+							(void) fclose(fp);
+							(void) remove(std_args->log_file);
 						}
 						else
 							error = err_push(ERR_CREATE_FILE, std_args->log_file);
@@ -1599,7 +1599,9 @@ static int make_unique_format_titles(DATA_BIN_PTR dbin)
 
 	FF_VALIDATE(dbin);
 
-	db_ask(dbin, DBASK_PROCESS_INFO, 0, &plist);
+	error = db_ask(dbin, DBASK_PROCESS_INFO, 0, &plist);
+    if (error)
+        goto exit;
 
 	plist = dll_first(plist);
 	pinfo = FF_PI(plist);
@@ -1630,6 +1632,8 @@ static int make_unique_format_titles(DATA_BIN_PTR dbin)
 	}
 
 	ff_destroy_process_info_list(plist);
+
+	exit:
 
 	return error;
 }
