@@ -25,7 +25,7 @@
 #ifndef A_FONgTransmitter_h
 #define A_FONgTransmitter_h 1
 
-#include <BESBasicTransmitter.h>
+#include <BESTransmitter.h>
 
 class BESContainer;
 
@@ -36,9 +36,9 @@ class BESContainer;
  * geotiff file and streams the new (temporary) geotiff file back to the
  * client.
  *
- * @see BESBasicTransmitter
+ * @see BESTransmitter
  */
-class GeoTiffTransmitter: public BESBasicTransmitter {
+class GeoTiffTransmitter: public BESTransmitter {
 private:
     static void return_temp_stream(const string &filename, ostream &strm);
     static string temp_dir;

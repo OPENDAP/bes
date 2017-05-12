@@ -33,7 +33,7 @@
 #ifndef B_baseApp_H
 #define B_baseApp_H
 
-#include <Application.h>
+#include "../unit_tests_old/Application.h"
 
 class baseApp : public Application {
 public:

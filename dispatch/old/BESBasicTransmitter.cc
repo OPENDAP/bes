@@ -1,4 +1,4 @@
-// BESBasicTransmitter.cc
+// BESTransmitter.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,13 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#if 0
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <unistd.h>
 
 #include "TheBESKeys.h"
-#include "BESBasicTransmitter.h"
+#include "BESTransmitter.h"
 #include "BESInfo.h"
 #include "BESUtil.h"
 #include "BESContextManager.h"
@@ -57,10 +58,10 @@
  * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
  * in the 'int BESInterface::execute_request(const string &from)' method.
  *
- * @see BESBasicTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+ * @see BESTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
  * methods of the child classes
  */
-void BESBasicTransmitter::conditional_timeout_cancel()
+void BESTransmitter::conditional_timeout_cancel()
 {
     bool cancel_timeout_on_send = false;
     bool found = false;
@@ -81,7 +82,7 @@ void BESBasicTransmitter::conditional_timeout_cancel()
 }
 #endif
 
-void BESBasicTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
+void BESTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
 {
 	bool found = false;
 	string context = "transmit_protocol";
@@ -94,7 +95,7 @@ void BESBasicTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
 	info.print(dhi.get_output_stream());
 }
 
-void BESBasicTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
+void BESTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
 {
 	bool found = false;
 	string context = "transmit_protocol";
@@ -113,11 +114,11 @@ void BESBasicTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESBasicTransmitter::dump(ostream &strm) const
+void BESTransmitter::dump(ostream &strm) const
 {
-	strm << BESIndent::LMarg << "BESBasicTransmitter::dump - (" << (void *) this << ")" << endl;
+	strm << BESIndent::LMarg << "BESTransmitter::dump - (" << (void *) this << ")" << endl;
 	BESIndent::Indent();
 	BESTransmitter::dump(strm);
 	BESIndent::UnIndent();
 }
-
+#endif

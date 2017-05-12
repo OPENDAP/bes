@@ -25,7 +25,7 @@
 #ifndef A_JPEG2000Transmitter_h
 #define A_JPEG2000Transmitter_h 1
 
-#include <BESBasicTransmitter.h>
+#include <BESTransmitter.h>
 
 class BESContainer;
 
@@ -36,9 +36,9 @@ class BESContainer;
  * geotiff file and streams the new (temporary) geotiff file back to the
  * client.
  *
- * @see BESBasicTransmitter
+ * @see BESTransmitter
  */
-class JPEG2000Transmitter: public BESBasicTransmitter {
+class JPEG2000Transmitter: public BESTransmitter {
 private:
     static void return_temp_stream(const string &filename, ostream &strm);
     static string temp_dir;

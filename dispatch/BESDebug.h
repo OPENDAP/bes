@@ -59,7 +59,7 @@
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< x << "] " << y ; } while( 0 )
 #endif
 
-#ifndef NDEBUG
+#ifdef NDEBUG
 #define BESISDEBUG( x ) (false)
 #else
 /** @brief macro used to determine if the specified debug context is set

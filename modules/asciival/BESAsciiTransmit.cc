@@ -68,7 +68,7 @@
 using namespace dap_asciival;
 
 BESAsciiTransmit::BESAsciiTransmit() :
-        BESBasicTransmitter()
+        BESTransmitter()
 {
     add_method(DATA_SERVICE, BESAsciiTransmit::send_basic_ascii);
     add_method(DAP4DATA_SERVICE, BESAsciiTransmit::send_dap4_csv);

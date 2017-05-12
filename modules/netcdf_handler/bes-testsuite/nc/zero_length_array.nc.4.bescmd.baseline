@@ -28,20 +28,20 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>1.00000000</Value>
         </Attribute>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="t">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Byte name="pixel">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Byte>
     <Int32 name="time">
         <Dim name="/time"/>

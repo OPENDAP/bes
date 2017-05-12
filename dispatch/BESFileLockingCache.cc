@@ -116,21 +116,40 @@ inline void BESFileLockingCache::m_record_descriptor(const string &file, int fd)
 {
     BESDEBUG("cache",
         "BESFileLockingCache::m_record_descriptor() - Recording descriptor: " << file << ", " << fd << endl);
+
     d_locks.insert(std::pair<string, int>(file, fd));
 }
 
-inline int BESFileLockingCache::m_get_descriptor(const string &file)
+inline int BESFileLockingCache::m_remove_descriptor(const string &file)
 {
-    BESDEBUG("cache", "BESFileLockingCache::m_get_descriptor(): d_locks size: " << d_locks.size() << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_remove_descriptor(): d_locks size: " << d_locks.size() << endl);
+
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
     if (i == d_locks.end()) return -1;
 
     int fd = i->second;
-    BESDEBUG("cache",
-        "BESFileLockingCache::m_get_descriptor(): Found file descriptor [" << fd << "] for file: " << file << endl);
     d_locks.erase(i);
+
+    BESDEBUG("cache",
+        "BESFileLockingCache::m_remove_descriptor(): Found file descriptor [" << fd << "] for file: " << file << endl);
+
     return fd;
 }
+
+#if USE_GET_SHARED_LOCK
+inline int BESFileLockingCache::m_find_descriptor(const string &file)
+{
+    BESDEBUG("cache", "BESFileLockingCache::m_find_descriptor(): d_locks size: " << d_locks.size() << endl);
+
+    FilesAndLockDescriptors::iterator i = d_locks.find(file);
+    if (i == d_locks.end()) return -1;
+
+    BESDEBUG("cache",
+        "BESFileLockingCache::m_find_descriptor(): Found file descriptor [" << i->second << "] for file: " << file << endl);
+
+    return i->second;   // return the file descriptor bound to 'file'
+}
+#endif
 
 /**
  * @brief Used in BESDEBUG() statements
@@ -139,21 +158,13 @@ inline int BESFileLockingCache::m_get_descriptor(const string &file)
  */
 string lockStatus(const int fd)
 {
-    struct flock /*isLocked,*/ lock_query;
-#if 0
-    isLocked.l_type = F_WRLCK; /* Test for any lock on any part of a file. */
-    isLocked.l_start = 0;
-    isLocked.l_whence = SEEK_SET;
-    isLocked.l_len = 0;
-    lock_query = isLocked;
-#endif
+    struct flock lock_query;
 
     lock_query.l_type = F_WRLCK; /* Test for any lock on any part of a file. */
     lock_query.l_start = 0;
     lock_query.l_whence = SEEK_SET;
     lock_query.l_len = 0;
     lock_query.l_pid = 0;
-
 
     int ret = fcntl(fd, F_GETLK, &lock_query);
 
@@ -209,190 +220,17 @@ static void unlock(int fd)
     BESDEBUG("cache", "BESFileLockingCache::unlock() - File Closed. fd: " << fd << endl);
 }
 
-/** Get a shared read lock on an existing file.
-
- @param file_name The name of the file.
- @param ref_fp if successful, the file descriptor of the file on which we
- have a shared read lock. This is used to release the lock.
-
- @return If the file does not exist, return immediately indicating
- failure (false), otherwise block until a shared read-lock can be
- obtained and then return true.
-
- @exception Error is thrown to indicate a number of untoward
- events. */
-static bool getSharedLock(const string &file_name, int &ref_fd)
-{
-    BESDEBUG("cache", "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
-
-    int fd;
-    if ((fd = open(file_name.c_str(), O_RDONLY)) < 0) {
-        switch (errno) {
-        case ENOENT:
-            return false;
-
-        default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-
-    struct flock *l = lock(F_RDLCK);
-    if (fcntl(fd, F_SETLKW, l) == -1) {
-        close(fd);
-        ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
-
-    BESDEBUG("cache", "getSharedLock(): SUCCESS Read Lock Acquired For " << file_name <<endl);
-
-    // Success
-    ref_fd = fd;
-    return true;
-}
-
-/** Get an exclusive read/write lock on an existing file.
-
- @param file_name The name of the file.
- @param ref_fp if successful, the file descriptor of the file on which we
- have an exclusive read/write lock.
-
- @return If the file does not exist, return immediately indicating
- failure (false), otherwise block until an exclusive read/write
- lock can be obtained and then return true.
-
- @exception Error is thrown to indicate a number of untoward
- events. */
-bool BESFileLockingCache::getExclusiveLock(string file_name, int &ref_fd)
-{
-    BESDEBUG("cache", "BESFileLockingCache::getExclusiveLock() - " << file_name <<endl);
-
-    int fd;
-    if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
-        switch (errno) {
-        case ENOENT:
-            return false;
-
-        default:
-            BESDEBUG("cache",
-                "BESFileLockingCache::getExclusiveLock() -  FAILED to open file. name: " << file_name << " name_length: " << file_name.length( )<<endl);
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-
-    struct flock *l = lock(F_WRLCK);
-    if (fcntl(fd, F_SETLKW, l) == -1) {
-        close(fd);
-        ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
-
-    BESDEBUG("cache", "BESFileLockingCache::getExclusiveLock() -  exit: " << file_name <<endl);
-
-    // Success
-    ref_fd = fd;
-    return true;
-}
-
-/** Get an exclusive read/write lock on an existing file without blocking.
-
- @param file_name The name of the file.
- @param ref_fp if successful, the file descriptor of the file on which we
- have an exclusive read/write lock.
-
- @return If the file does not exist or if the file is locked,
- return immediately indicating failure (false), otherwise return true.
-
- @exception Error is thrown to indicate a number of untoward
- events. */
-static bool getExclusiveLockNB(string file_name, int &ref_fd)
-{
-    BESDEBUG("cache", "getExclusiveLock_nonblocking: " << file_name <<endl);
-
-    int fd;
-    if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
-        switch (errno) {
-        case ENOENT:
-            return false;
-
-        default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-
-    struct flock *l = lock(F_WRLCK);
-    if (fcntl(fd, F_SETLK, l) == -1) {
-        switch (errno) {
-        case EAGAIN:
-            BESDEBUG("cache",
-                "getExclusiveLock_nonblocking exit (false): " << file_name << " by: " << l->l_pid << endl);
-            close(fd);
-            return false;
-
-        default: {
-            close(fd);
-            ostringstream oss;
-            oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-        }
-    }
-
-    BESDEBUG("cache", "getExclusiveLock_nonblocking exit (true): " << file_name <<endl);
-
-    // Success
-    ref_fd = fd;
-    return true;
-}
-
-/** Create a new file and get an exclusive read/write lock on it. If
- the file already exists, this call fails.
-
- @param file_name The name of the file.
- @param ref_fp if successful, the file descriptor of the file on which we
- have an exclusive read/write lock.
-
- @return If the file exists, return immediately indicating failure
- (false), otherwise block until the file is created and an
- exclusive read/write lock can be obtained, then return true.
-
- @exception Error is thrown to indicate a number of untoward
- events. */
-static bool createLockedFile(string file_name, int &ref_fd)
-{
-    BESDEBUG("cache", "createLockedFile() - filename: " << file_name <<endl);
-
-    int fd;
-    if ((fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-        switch (errno) {
-        case EEXIST:
-            return false;
-
-        default:
-            throw BESInternalError(file_name + ": " + get_errno(), __FILE__, __LINE__);
-        }
-    }
-
-    struct flock *l = lock(F_WRLCK);
-    if (fcntl(fd, F_SETLKW, l) == -1) {
-        close(fd);
-        ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
-
-    BESDEBUG("cache", "createLockedFile exit: " << file_name <<endl);
-
-    // Success
-    ref_fd = fd;
-    return true;
-}
-
-/** Private method */
+/**
+ * @brief Check the construtor's params and throw on error.
+ *
+ * After checking the constructor's parameters, enable the cache and
+ * return true.
+ *
+ * @return Always returns true; errors result in an exception.
+ */
 bool BESFileLockingCache::m_check_ctor_params()
 {
-    // TODO Should this really be a fatal error? What about just not 
+    // Should this really be a fatal error? What about just not
     // using the cache in this case or writing out a warning message
     // to the log. jhrg 10/23/15
     //
@@ -405,6 +243,7 @@ bool BESFileLockingCache::m_check_ctor_params()
     // jhrg 9/27/16
     BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
         "d_cache_dir: '" << d_cache_dir << "'" << endl);
+
     if (d_cache_dir.empty()) {
         BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
             "The cache directory was not specified. CACHE IS DISABLED." << endl);
@@ -429,13 +268,56 @@ bool BESFileLockingCache::m_check_ctor_params()
         string err = "The cache size was not specified, must be greater than zero";
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
+
     enable();
+
     BESDEBUG("cache",
         "BESFileLockingCache::" << __func__ << "() -" <<
         " d_cache_dir: " << d_cache_dir <<
         " d_prefix: " << d_prefix <<
         " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes <<
         " (The cache has been " << (cache_enabled()?"enabled)":"disabled)") << endl);
+
+    return true;
+}
+
+/**
+ * A blocking call to create a file locked for write.
+ *
+ * @note Used by the methods m_initialize_cache_info() and create_and_lock()
+ *
+ * @param file_name The name of the file to lock
+ * @param ref_fd Return-value parameter that holds the file descriptor that's locked.
+ * @return True when the lock is acquired, false if the file already exists.
+ */
+static bool createLockedFile(string file_name, int &ref_fd)
+{
+    BESDEBUG("cache2", "createLockedFile() - filename: " << file_name <<endl);
+
+    int fd;
+    if ((fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
+        switch (errno) {
+        case EEXIST:
+            return false;
+
+        default:
+            throw BESInternalError(file_name + ": " + get_errno(), __FILE__, __LINE__);
+        }
+    }
+
+    struct flock *l = lock(F_WRLCK);
+    // F_SETLKW == set lock, blocking
+    if (fcntl(fd, F_SETLKW, l) == -1) {
+        close(fd);
+        ostringstream oss;
+        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    BESDEBUG("cache2", "createLockedFile exit: " << file_name <<endl);
+
+    // Success
+    ref_fd = fd;
     return true;
 }
 
@@ -449,12 +331,12 @@ bool BESFileLockingCache::m_initialize_cache_info()
     d_max_cache_size_in_bytes = min(d_max_cache_size_in_bytes, MAX_CACHE_SIZE_IN_MEGABYTES);
     d_max_cache_size_in_bytes *= BYTES_PER_MEG;
     d_target_size = d_max_cache_size_in_bytes * 0.8;
+
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
     bool status = m_check_ctor_params(); // Throws BESError on error.
-    if(status){
-
+    if (status) {
         d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
 
         BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
@@ -465,7 +347,8 @@ bool BESFileLockingCache::m_initialize_cache_info()
             // initialize the cache size to zero
             unsigned long long size = 0;
             if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-                throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`", __FILE__,
+                throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`",
+                    __FILE__,
                     __LINE__);
 
             // This leaves the d_cache_info_fd file descriptor open
@@ -476,10 +359,12 @@ bool BESFileLockingCache::m_initialize_cache_info()
                 throw BESInternalError(get_errno(), __FILE__, __LINE__);
             }
         }
-        BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
+        BESDEBUG("cache",
+            "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
     }
-    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END [" <<
-        "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
+    BESDEBUG("cache",
+        "BESFileLockingCache::m_initialize_cache_info() - END [" << "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
+
     return status;
 }
 
@@ -505,20 +390,9 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
     // Return d_cache_dir + "/" + d_prefix + BESFileLockingCache::DAP_CACHE_CHAR + target;
     BESDEBUG("cache", __FUNCTION__ << " - src: '" << src << "' mangle: "<< mangle << endl);
 
-    string target = getCacheFilePrefix() + src;
-#if 0
-    // BUG This was causing the prefix to be treated as a path component.
-    // jhrg 9/27/16
-    target = BESUtil::assemblePath(getCacheFilePrefix(), src);
-#endif
+    string target = get_cache_file_prefix() + src;
 
     if (mangle) {
-#if 0
-        // This is not needed. jhrg 9/27/16
-        if (target.at(0) == '/') {
-            target = src.substr(1, target.length() - 1);
-        }
-#endif
         string::size_type pos = target.find_first_of(chars_excluded_from_filenames);
         while (pos != string::npos) {
             target.replace(pos, 1, "#", 1);
@@ -533,12 +407,56 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
-    target = BESUtil::assemblePath(getCacheDirectory(), target, true);
+    target = BESUtil::assemblePath(get_cache_directory(), target, true);
 
     BESDEBUG("cache",  __FUNCTION__ << " - target:      '" << target << "'" << endl);
 
     return target;
 }
+
+#if USE_GET_SHARED_LOCK
+/** Get a shared read lock on an existing file.
+
+ @param file_name The name of the file.
+ @param ref_fp if successful, the file descriptor of the file on which we
+ have a shared read lock. This is used to release the lock.
+
+ @return If the file does not exist, return immediately indicating
+ failure (false), otherwise block until a shared read-lock can be
+ obtained and then return true.
+
+ @exception Error is thrown to indicate a number of untoward
+ events. */
+static bool getSharedLock(const string &file_name, int &ref_fd)
+{
+    BESDEBUG("cache2", "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
+
+    int fd;
+    if ((fd = open(file_name.c_str(), O_RDONLY)) < 0) {
+        switch (errno) {
+        case ENOENT:
+            return false;
+
+        default:
+            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        }
+    }
+
+    struct flock *l = lock(F_RDLCK);
+    if (fcntl(fd, F_SETLKW, l) == -1) {
+        close(fd);
+        ostringstream oss;
+        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    BESDEBUG("cache2", "getSharedLock(): SUCCESS Read Lock Acquired For " << file_name <<endl);
+
+    // Success
+    ref_fd = fd;
+    return true;
+}
+#endif
 
 /** @brief Get a read-only lock on the file if it exists.
  *
@@ -550,8 +468,9 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  * the result, the file may have been added to the cache by another
  * process.
  *
- * @param target a Name of the cached file
- * @param fd a value-result parameter set to the locked cached file
+ * @param target The path of the cached file
+ * @param fd A value-result parameter set to the locked cached file. Undefined
+ * if the file could not be locked for read access.
  * @return true if the file is in the cache and has been locked, false if
  * the file is/was not in the cache.
  * @throws Error if the attempt to get the (shared) lock failed for any
@@ -561,28 +480,55 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 {
     lock_cache_read();
 
-    bool status = getSharedLock(target, fd);
+    bool status = true;     // Used to support to techniques. jhrg 4/26/17
 
-    BESDEBUG("cache2",
-        "BESFileLockingCache::get_read_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
+#if USE_GET_SHARED_LOCK
+    status = getSharedLock(target, fd);
 
     if (status) m_record_descriptor(target, fd);
+#else
+    fd = m_find_descriptor(target);
+    // fd == -1 --> The file is not currently open
+    if ((fd == -1) && (fd = open(target.c_str(), O_RDONLY)) < 0) {
+        switch (errno) {
+        case ENOENT:
+            return false;   // The file does not exist
+
+        default:
+            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        }
+    }
+
+    // The file might be open for writing, so setting a read lock is
+    // not possible.
+    struct flock *l = lock(F_RDLCK);
+    if (fcntl(fd, F_SETLKW, l) == -1) {
+        return false;   // cannot get the lock
+    }
+
+    m_record_descriptor(target, fd);
+#endif
 
     unlock_cache();
 
     return status;
 }
 
-/** @brief Create a file in the cache and lock it for write access.
+/**
+ * @brief Create a file in the cache and lock it for write access.
+ *
  * If the file does not exist, make it, open it for read-write access and
  * get an exclusive lock on it. The locking operation blocks, although that
  * should never happen.
+ *
  * @param target The name of the file to make/open/lock
  * @param fd Value-result param that holds the file descriptor of the opened
  * file
+ *
  * @return True if the operation was successful, false otherwise. This method will
  * return false if the file already existed (the file won't be locked and the
  * descriptor reference is undefined - but likely -1).
+ *
  * @throws BESBESInternalErroror if any error except EEXIST is returned by open(2) or
  * if fcntl(2) returns an error. */
 bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
@@ -591,7 +537,7 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 
     bool status = createLockedFile(target, fd);
 
-    BESDEBUG("cache2",
+    BESDEBUG("cache",
         "BESFileLockingCache::create_and_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status) m_record_descriptor(target, fd);
@@ -601,7 +547,9 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
     return status;
 }
 
-/** @brief Transfer from an exclusive lock to a shared lock.
+/**
+ * @brief Transfer from an exclusive lock to a shared lock.
+ *
  * If the file has an exclusive write lock on it, change that to a shared
  * read lock. This is an atomic operation. If the call to fcntl(2) is
  * protected by locking the cache, a dead lock will result given typical use
@@ -701,10 +649,10 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
 {
     BESDEBUG("cache2", "BESFileLockingCache::unlock_and_close() - BEGIN file: " << file_name << endl);
 
-    int fd = m_get_descriptor(file_name);	// returns -1 when no more files desp. remain
+    int fd = m_remove_descriptor(file_name);	// returns -1 when no more files desp. remain
     while (fd != -1) {
         unlock(fd);
-        fd = m_get_descriptor(file_name);
+        fd = m_remove_descriptor(file_name);
     }
 
     BESDEBUG("cache", "BESFileLockingCache::unlock_and_close() - lock status: " << lockStatus(d_cache_info_fd) << endl);
@@ -846,6 +794,63 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
     return current_size;
 }
 
+/**
+ * A non-blocking call to get an exclusive (write) lock on a file in the cache.
+ * Because this cache uses per-process advisory locking, it's possible to
+ * call this several times *from within a single process* and get a lock
+ * each time.
+ *
+ * @note This is used only by the update_and_purge() method.
+ *
+ * @param file_name Name of the file to lock
+ * @param ref_fd Return value parameter that holds the file descriptor that
+ * is locked.
+ * @return Return false if the file does not exist or the non-blocking lock
+ * acquisition fails, otherwise the lock is acquired and then return true.
+ * @exception BESInternalError is thrown on any condition other than the file
+ * not existing or the lock being unavailable.
+ */
+static bool getExclusiveLockNB(string file_name, int &ref_fd)
+{
+    BESDEBUG("cache2", "getExclusiveLock_nonblocking: " << file_name <<endl);
+
+    int fd;
+    if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
+        switch (errno) {
+        case ENOENT:
+            return false;
+
+        default:
+            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        }
+    }
+
+    struct flock *l = lock(F_WRLCK);
+    if (fcntl(fd, F_SETLK, l) == -1) {
+        switch (errno) {
+        case EAGAIN:
+        case EACCES:
+            BESDEBUG("cache2",
+                "getExclusiveLockNB exit (false): " << file_name << " by: " << l->l_pid << endl);
+            close(fd);
+            return false;
+
+        default: {
+            close(fd);
+            ostringstream oss;
+            oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+        }
+    }
+
+    BESDEBUG("cache2", "getExclusiveLock_nonblocking exit (true): " << file_name <<endl);
+
+    // Success
+    ref_fd = fd;
+    return true;
+}
+
 /** @brief Purge files from the cache
  *
  * Purge files, oldest to newest, if the current size of the cache exceeds the
@@ -877,7 +882,8 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
         }
 #endif
         BESDEBUG("cache",
-            "BESFileLockingCache::update_and_purge() - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl);
+            "BESFileLockingCache::update_and_purge() - current and target size (in MB) "
+            << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl);
 
         // This deletes files and updates computed_size
         if (cache_too_big(computed_size)) {
@@ -904,7 +910,8 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
                 ++i;
 
                 BESDEBUG("cache",
-                    "BESFileLockingCache::update_and_purge() - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl);
+                    "BESFileLockingCache::update_and_purge() - current and target size (in MB) "
+                    << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl);
             }
         }
 
@@ -933,14 +940,60 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
     }
 }
 
-/** @brief Purge a single file from the cache
+/**
+ * A blocking call to get an exclusive (write) lock on a file in the cache.
+ * Because this cache uses per-process advisory locking, it's possible to
+ * call this several times *from within a single process* and get a lock
+ * each time.
+ *
+ * @note This is used only by the purge_file() method.
+ *
+ * @param file_name Name of the file to lock
+ * @param ref_fd Return value parameter that holds the file descriptor that
+ * is locked.
+ * @return Return false if the file does not exist, otherwise block until
+ * the lock is acquired and then return true.
+ * @exception BESInternalError is thrown on any condition other than the file
+ * not existing
+ */
+static bool getExclusiveLock(string file_name, int &ref_fd)
+{
+    BESDEBUG("cache2", "BESFileLockingCache::getExclusiveLock() - " << file_name <<endl);
+
+    int fd;
+    if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
+        switch (errno) {
+        case ENOENT:
+            return false;
+
+        default:
+            BESDEBUG("cache2", __func__ << "() -  FAILED to open file: " << file_name << endl);
+            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        }
+    }
+
+    struct flock *l = lock(F_WRLCK);
+    if (fcntl(fd, F_SETLKW, l) == -1) {     // F_SETLKW == blocking lock
+        close(fd);
+        ostringstream oss;
+        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    BESDEBUG("cache2", "BESFileLockingCache::getExclusiveLock() -  exit: " << file_name <<endl);
+
+    // Success
+    ref_fd = fd;
+    return true;
+}
+
+/**
+ * @brief Purge a single file from the cache
  *
  * Purge a single file from the cache. The file might be old, etc., and need to
  * be removed. Don't use this to shrink the cache when it gets too big, use
  * update_and_purge() instead since that file optimizes accesses to the cache
  * control file for several changes in a row.
- *
- * @todo This is a new feature; add to BESCache3
  *
  * @param file The name of the file to purge.
  */
@@ -986,18 +1039,11 @@ void BESFileLockingCache::purge_file(const string &file)
     }
 }
 
-const string BESFileLockingCache::getCacheFilePrefix()
-{
-    return d_prefix;
-}
-
-const string BESFileLockingCache::getCacheDirectory()
-{
-    return d_cache_dir;
-}
-
 /**
  * Does the directory exist?
+ *
+ * @note This is a static method, so it can be called from other
+ * static methods like those that build instances of singletons.
  *
  * @param dir The pathname to test.
  * @return True if the directory exists, false otherwise
@@ -1009,7 +1055,8 @@ bool BESFileLockingCache::dir_exists(const string &dir)
     return (stat(dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR);
 }
 
-/** @brief dumps information about this object
+/**
+ * @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with information about
  * this cache.

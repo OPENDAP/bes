@@ -33,9 +33,9 @@
 #ifndef A_BESBasicHttpTransmitter_h
 #define A_BESBasicHttpTransmitter_h 1
 
-#include "BESBasicTransmitter.h"
+#include "BESTransmitter.h"
 
-class BESBasicHttpTransmitter: public BESBasicTransmitter {
+class BESBasicHttpTransmitter: public BESTransmitter {
 public:
 	BESBasicHttpTransmitter()
 	{

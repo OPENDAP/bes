@@ -25,9 +25,9 @@
         <Dim name="/time"/>
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Map name="time"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt32>
     <UInt16 name="rh">
         <Dim name="/time"/>
@@ -36,9 +36,9 @@
         <Attribute name="_FillValue" type="UInt16">
             <Value>9999</Value>
         </Attribute>
-        <Map name="time"/>
-        <Map name="lat"/>
-        <Map name="lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt16>
     <Attribute name="NC_GLOBAL" type="Container">
         <Attribute name="title" type="String">
