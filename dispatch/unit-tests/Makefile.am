@@ -123,7 +123,7 @@ agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 cacheT_SOURCES = cacheT.cc
 
-lockT_SOURCES = lockT.cc
+#lockT_SOURCES = lockT.cc
 
 # gzT_SOURCES = gzT.cc
 # gzT_LDADD =  $(LDADD) -lz
