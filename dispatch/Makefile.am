@@ -60,7 +60,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 # Sources and Headers
 
 SRCS = BESInterface.cc \
-	BESLog.cc BESKeys.cc TheBESKeys.cc BESStatus.cc			\
+	BESLog.cc TheBESKeys.cc BESStatus.cc			\
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
