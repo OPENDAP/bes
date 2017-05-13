@@ -49,6 +49,7 @@
 #include <util.h>
 #include <Error.h>
 #include <BESDebug.h>
+#include <BESError.h>
 #include <BESDapError.h>
 
 #include "ScaleGrid.h"
@@ -814,16 +815,25 @@ Grid *scale_dap_array(const Array *data, const Array *x, const Array *y, const S
  */
 Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, const string &interp)
 {
+    string func(__func__);
+    func += "() - ";
+
+    if(!g){
+        throw BESError(func+"The Grid object is null.",BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *data = dynamic_cast<Array*>(const_cast<Grid*>(g)->array_var());
+    if(!data){
+        throw BESError(func+"Unable to obtain data array from Grid '"+g->name()+"'",BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
 
     Grid::Map_iter m = const_cast<Grid*>(g)->map_begin();
     Array *x = dynamic_cast<Array*>(*m++);
     Array *y = dynamic_cast<Array*>(*m);
 
-    assert(data);
-    assert(x);
-    assert(y);
+    if(!x || !y){
+        throw BESError(func+"Unable to obtain 2 Map arrays from Grid '"+g->name()+"'",BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
 
     return scale_dap_array(data, x, y, size, crs, interp);
 }
