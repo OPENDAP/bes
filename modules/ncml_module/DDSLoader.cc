@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <sstream>
+#include <algorithm>
 
 #include <DataDDS.h>
 
@@ -211,13 +212,42 @@ void DDSLoader::cleanup()
     ensureClean();
 }
 
+bool is_url(std::string location){
+    std::string http("http://");
+    std::string https("https://");
+
+    // case insensitive check
+    std::string tip = location.substr(0,http.size());
+    std::transform(tip.begin(), tip.end(), tip.begin(), ::tolower);
+    bool result = http.compare(tip)==0;
+
+    // case insensitive check
+    tip = location.substr(0,https.size());
+    std::transform(tip.begin(), tip.end(), tip.begin(), ::tolower);
+
+    result = result || http.compare(tip)==0;
+
+    return result;
+
+
+}
+
 BESContainer*
 DDSLoader::addNewContainerToStorage()
 {
     // Make sure we can find the storage
     BESContainerStorageList *store_list = BESContainerStorageList::TheList();
     VALID_PTR(store_list);
-    BESContainerStorage* store = store_list->find_persistence("catalog");
+
+    // Check for URL in the _filename, 'cause that means gateway!
+    BESContainerStorage* store;
+    if(is_url(_filename)){
+        BESDEBUG("ncml", __func__ << "() - GATEWAY CONTAINER!" << endl);
+        store = store_list->find_persistence("gateway");
+    }
+    else {
+        store = store_list->find_persistence("catalog");
+    }
     if (!store) {
         throw BESInternalError("couldn't find the catalog storage", __FILE__, __LINE__);
     }

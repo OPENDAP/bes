@@ -38,7 +38,7 @@ m4_define([_AT_BESCMD_TEST], [dnl
         AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
         REMOVE_DATE_TIME([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test "$3" = "xfail"])
         ])
 
     AT_CLEANUP

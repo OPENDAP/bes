@@ -1,3 +1,7 @@
+#
+# template: bes.conf.modules.in
+#
+#
 
 BES.ServerAdministrator=admin.email.address@your.domain.name
 
@@ -7,12 +11,13 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,nc,h4,h5,ncml
+BES.modules=dap,cmd,nc,h4,h5,gateway,ncml
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 BES.module.h4=@abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
 BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.gateway=@abs_top_builddir@/modules/gateway_module/.libs/libgateway_module.so
 BES.module.ncml=@abs_top_builddir@/modules/ncml_module/.libs/libncml_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ncml_module
@@ -61,6 +66,21 @@ BES.Memory.GlobalArea.ControlHeap=no
 BES.ProcessManagerMethod=multiple
 
 BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+# Gateway module specific parameters
+#-----------------------------------------------------------------------#
+Gateway.Whitelist=http://test.opendap.org:8080/opendap
+Gateway.Whitelist+=http://test.opendap.org/opendap
+Gateway.Whitelist+=http://localhost
+
+Gateway.MimeTypes=nc:application/x-netcdf
+Gateway.MimeTypes+=h4:application/x-hdf
+Gateway.MimeTypes+=h5:application/x-hdf5
+
+Gateway.Cache.dir=/tmp
+Gateway.Cache.prefix=gateway_cache
+Gateway.Cache.size=500
 
 #-----------------------------------------------------------------------#
 #                                                                       #
