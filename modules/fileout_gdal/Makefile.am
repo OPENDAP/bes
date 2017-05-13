@@ -33,7 +33,7 @@ libfong_module_la_LDFLAGS = -avoid-version -module
 libfong_module_la_LIBADD = $(LIBADD)
 
 FONG_SRC = GeoTiffTransmitter.cc JPEG2000Transmitter.cc FONgRequestHandler.cc	\
-	FONgModule.cc FONgTransform.cc FONgType.cc
+	FONgModule.cc FONgTransform.cc FONgBaseType.cc FONgGrid.cc
 
 FONG_HDR = GeoTiffTransmitter.h JPEG2000Transmitter.h FONgRequestHandler.h	\
 	FONgModule.h FONgTransform.h FONgBaseType.h FONgGrid.h
