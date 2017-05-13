@@ -190,7 +190,7 @@ bool HE5Checker::check_grids_support_projcode(HE5Parser*p) {
     bool flag = false;
     for (unsigned int i = 0; i <p->grid_list.size(); i++) {
         HE5Grid g = p->grid_list.at(i);
-        if (g.projection != HE5_GCTP_GEO) {
+        if (g.projection != HE5_GCTP_GEO && g.projection != HE5_GCTP_SNSOID) {
             flag = true;
             break;
         }

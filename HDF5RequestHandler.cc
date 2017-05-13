@@ -258,8 +258,6 @@ cerr<<"No specific cache info"<<endl;
         }
         _stp_east_filename = get_beskeys("H5.STPEastFileName");
         _stp_north_filename = get_beskeys("H5.STPNorthFileName");
-//        else 
-//cerr<<"no small memory data cache "<<endl;
     }
 
 
@@ -268,7 +266,6 @@ cerr<<"No specific cache info"<<endl;
 
 HDF5RequestHandler::~HDF5RequestHandler()
 {
-    
     // delete the cache.
     delete das_cache;
     delete dds_cache;
@@ -328,12 +325,11 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             if(true == das_from_dc) {
                 read_das_from_disk_cache(das_cache_fname,das);
 
-                // Don't adding the memory cache
+                // If the memory cache is set, adding the DAS copy to the memory cache
                 if (das_cache) {
                     // add a copy
                     BESDEBUG(HDF5_NAME, "HDF5 DAS reading DAS from the disk cache. For memory cache, DAS added to the cache for : " << filename << endl);
                     das_cache->add(new DAS(*das), filename);
-                    //das_cache->add(das, filename);
                 }
             }
 
@@ -391,20 +387,19 @@ temp_table->print(cerr);
 ++it;
 }
 #endif
-                // If the cache is turned on
+                // If the memory cache is turned on
                 if(das_cache) {
                     // add a copy
                     BESDEBUG(HDF5_NAME, "DAS added to the cache for : " << filename << endl);
                     das_cache->add(new DAS(*das), filename);
                 }
 
-                // DAS cache fname will be set only when the metadata disk cache is turned on
-                // If it comes here, the das cache should be generated.
+                // DAS disk cache fname will be set only when the metadata disk cache is turned on
+                // So if it comes here, the das cache should be generated.
                 if(das_cache_fname!="") {
                     BESDEBUG(HDF5_NAME, "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
                     write_das_to_disk_cache(das_cache_fname,das);
                 }
-               
             }
         }
 
@@ -510,7 +505,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         
             Ancillary::read_ancillary_dds( *dds, filename ) ;
 
-            // Generate the DDS cached file if needed,currently this if is always false by defaulr
+            // Generate the DDS cached file if needed,currently this if is always false by default
             if(dds_cache_fname!="" && dds_from_dc == false) 
                 write_dds_to_disk_cache(dds_cache_fname,dds);
 
@@ -582,6 +577,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
 }
 
 #if 0
+// OLD function: Keep it for a while
 // Convenient function that helps  build DDS and Data
 void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const string &container_name, DDS*dds) {
 
@@ -809,6 +805,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         if(_use_disk_meta_cache == true) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
+
             // The _use_disk_dds_cache is always set to false by default
             if(_use_disk_dds_cache == true) {
                 dds_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_dds";
@@ -817,6 +814,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
             }
 
             das_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_das";
+            // Check if das files exist
             if(access(das_cache_fname.c_str(),F_OK) !=-1)
                das_from_dc = true;
 
@@ -908,26 +906,6 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         get_dds_with_attributes(NULL,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
 
-        // The following block reads dds from a dds cache file.   
-#if 0
-        string base_filename =  HDF5CFUtil::obtain_string_after_lastslash(filename);
-        string dds_filename = "/tmp/"+base_filename+"_dds";
-
-        BaseTypeFactory tf;
-        DDS tdds(&tf,name_path(filename),"3.2");
-        tdds.filename(filename);
-
-
-        FILE *dds_file = fopen(dds_filename.c_str(),"r");
-        tdds.parse(dds_file);
-//cerr<<"before parsing "<<endl;
-        DDS* cache_dds = new DDS(tdds);
-        if(dds != NULL)
-            delete dds;
-        bdds->set_dds(cache_dds);
-        fclose(dds_file);
-#endif
-
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
     
@@ -950,53 +928,6 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
        string s = "unknown exception caught building HDF5 DDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
-
-
-#if 0
-    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
-    hid_t fileid    = -1;
-    hid_t cf_fileid = -1;
-
-    BESDEBUG("h5","Building DataDDS without passing file IDs. "<<endl);
-    BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
-    if( !bdds )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-
-    try {
-
-        string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
-        
-        bdds->set_container(container_name);
-        DDS* dds = bdds->get_dds();
-
-        // Build a DDS in the empty DDS object
-        // COMMENT OUT
-        //get_dds_with_attributes(dhi.container->access(), container_name, dds);
-        bdds->set_constraint( dhi ) ;
-        bdds->clear_container() ;
-
-
-    }
-    catch(InternalErr & e) {
-
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch(Error & e) {
-
-       throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch (BESError &e){
-        throw;
-    }
-    catch(...) {
-
-        string s = "unknown exception caught building HDF5 DataDDS";
-        throw BESInternalFatalError(s, __FILE__, __LINE__);
-    }
-#endif
 
     return true;
 }
@@ -1516,7 +1447,6 @@ cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
 }
 
 
-
 bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,DAS *das_ptr) {
 
     BESDEBUG(HDF5_NAME, "Coming to read_das_from_disk_cache() " << cache_filename << endl);
@@ -1916,15 +1846,12 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, c
 
         dds->transfer_attributes(das);
 
-        // Only free the DAS if it's not added to the cache
         if (das_cache) {
                     // add a copy
             BESDEBUG(HDF5_NAME, "Reading DDS from Disk Cache routine, For memory cache, DAS added to the cache for : " << filename << endl);
             das_cache->add(new DAS(*das), filename);
         }
-        //else {
-            delete das;
-        //}
+        delete das;
 
     }
     
@@ -2002,7 +1929,8 @@ char* copy_str(char*temp_ptr,const string & str) {
 
 
 //  Obtain the string from a memory buffer.
-//  Note: both char* and stringi(as a reference) will be returned
+//  Note: both char* and string(as a reference) will be returned
+//  The attribute binary first stores the size of the string, then the string itself
 char* obtain_str(char*temp_ptr,string & str) {
 
     size_t oname_size =*((size_t *)temp_ptr);
