@@ -88,6 +88,9 @@ EOS5CVar::EOS5CVar(Var*var) {
     eos5_pixelreg = HE5_HDFE_CENTER;
     eos5_origin   = HE5_HDFE_GD_UL;
     eos5_projcode = HE5_GCTP_GEO;
+    zone          = -1;
+    sphere        = 0;
+    std::fill_n(param,13,0);
 
 }
 

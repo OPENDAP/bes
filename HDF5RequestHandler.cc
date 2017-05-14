@@ -1475,7 +1475,13 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
         try {
 
             struct stat sb;
-            stat(cache_filename.c_str(),&sb);
+            if(stat(cache_filename.c_str(),&sb) != 0) {
+                string bes_error = "An error occurred trying to stat a metadata cache file size " + cache_filename;
+                throw BESInternalError( bes_error, __FILE__, __LINE__);
+
+            }
+                
+       
             size_t bytes_expected_read=(size_t)sb.st_size;
             BESDEBUG(HDF5_NAME, "DAS Disk cache file size is " << bytes_expected_read << endl);
 

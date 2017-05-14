@@ -54,6 +54,7 @@ Var::Var(Var *var) {
     rank  = var->rank;
     total_elems = var->total_elems;
     dtype = var->dtype;
+    comp_ratio = var->comp_ratio;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_attr_dspace = var->unsupported_attr_dspace;
     unsupported_dspace = var->unsupported_dspace;
