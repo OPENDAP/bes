@@ -488,9 +488,6 @@ hid_t ty_id = -1;
       if ((ty_id = H5Dget_type(dset_id)) < 0)
                  throw1("unable to obtain hdf5 datatype for the dataset ");
 size_t type_size = H5Tget_size(ty_id);
-if(type_size <0) 
-               throw1("unable to obtain hdf5 datatype for the dataset ");
-    //
             comp_ratio = ((float)(var->total_elems)*type_size)/dstorage_size;
          H5Tclose(ty_id);
         }
