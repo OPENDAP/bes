@@ -1,4 +1,4 @@
-dnl Test suite containing tests that do not fit another file
+dnl Test suite containing tests of the remote dataset aggregation and metadata modifications
 AT_BANNER([------------------  NcML + Gateway Tests -----------------------])
 
 AT_CHECK_ALL_DAP_RESPONSES([gateway/gateway_aggregation.ncml])
