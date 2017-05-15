@@ -618,8 +618,6 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
                     }
                 }
 
-                if(false == missingfield_unlim_flag) 
-                    break;
             }
             if(false == missingfield_unlim_flag) 
                 break;
@@ -2415,8 +2413,6 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
                         }
                     }
 
-                    if(false == missingfield_unlim_flag) 
-                        break;
                 }
                 if(false == missingfield_unlim_flag) 
                     break;
