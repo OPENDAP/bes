@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
-// This file is part of the hdf4 data handler for the OPeNDAP data server.
+// This file is part of the hdf5 data handler for the OPeNDAP data server.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org> 
-// Copyright (c) 2009 The HDF Group
+// Copyright (c) 2017 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef HDF5CFGEO_CF1D_H

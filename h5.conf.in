@@ -358,7 +358,6 @@ H5.DiskCacheSize=100000
 #
 H5.DiskCacheComp=false
 H5.DiskCacheFloatOnlyComp=true
-H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=100
 
