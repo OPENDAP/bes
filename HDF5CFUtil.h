@@ -88,6 +88,7 @@ struct HDF5CFUtil {
                static std::string obtain_string_after_lastslash(const std::string s);
                static std::string obtain_string_before_lastslash(const std::string & s);
                static bool cf_strict_support_type(H5DataType dtype); 
+               static bool cf_dap2_support_numeric_type(H5DataType dtype); 
 
                // Obtain the unique name for the clashed names and save it to set namelist.
                static void gen_unique_name(std::string &str, std::set<std::string>&namelist,int&clash_index);

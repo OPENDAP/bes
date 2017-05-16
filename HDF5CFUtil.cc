@@ -167,6 +167,7 @@ bool HDF5CFUtil::use_lrdata_mem_cache(H5DataType h5type, CVType cvtype, bool isl
 #endif
 
 // Check if we cna use data memory cache
+// TODO: This functio is not used, we will check it in the next release.
 bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const string &varpath) {
     if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
             h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&
@@ -189,6 +190,16 @@ bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
         || (H5INT64 == dtype)    ||(H5UINT64 == dtype))
+        return false;
+    else 
+        return true;
+}
+
+bool HDF5CFUtil::cf_dap2_support_numeric_type(H5DataType dtype) {
+    if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
+        || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
+        || (H5INT64 == dtype)    ||(H5UINT64 == dtype)
+        || (H5FSTRING == dtype)  ||(H5VSTRING == dtype))
         return false;
     else 
         return true;

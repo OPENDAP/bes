@@ -1771,7 +1771,7 @@ File:: Var_Has_Attr(Var*var,const string &attrname) {
 string
 File::Retrieve_Str_Attr_Value(Attribute *attr,const string var_path) {
 
-    if(attr !=NULL &&& var_path!=NULL) {
+    if(attr !=NULL && var_path!="") {
        Retrieve_H5_Attr_Value(attr,var_path);
        string orig_attr_value(attr->value.begin(),attr->value.end());
        return orig_attr_value;
