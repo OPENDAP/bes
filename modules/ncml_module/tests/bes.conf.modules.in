@@ -71,6 +71,7 @@ BES.DefaultResponseMethod=POST
 # Gateway module specific parameters
 #-----------------------------------------------------------------------#
 Gateway.Whitelist=http://test.opendap.org:8080/opendap
+Gateway.Whitelist+=http://test.opendap.org:80/opendap
 Gateway.Whitelist+=http://test.opendap.org/opendap
 Gateway.Whitelist+=http://localhost
 
