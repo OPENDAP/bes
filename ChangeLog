@@ -1,3 +1,30 @@
+2017-05-15 Muqun Yang <myang6@hdfgroup.org>
+
+EED-187, fix one issue discovered by the coverity scan. A redundant if-block is removed.
+
+2017-05-11 Nathan Potter <ndp@opendap.org>
+
+    Merge pull request #3 from OPENDAP/dmr2dds
+    
+    Changes to libdap4 API
+
+2017-05-10 ndp-opendap <ndp@opendap.org>
+
+    Updated test baseline to reflect change in libdap
+
+2017-04-14 ndp-opendap <ndp@opendap.org>
+
+    Patched get_instance() pattern so that if the cache is disabl;ed repeated calls to get_instance do not continue to execute the cache constructor.
+
+2017-01-25 James Gallagher <jgallagher@opendap.org>
+
+    Fixed issue with the refactored	BESDebug.h
+
+2017-01-09 James Gallagher <jgallagher@opendap.org>
+
+    updated for Hyrax 1.13.3
+
+
 2016-12-07  James Gallagher  <jgallagher@opendap.org>
 
 	Added both palin and hdfeos tests to the Makefile.am
