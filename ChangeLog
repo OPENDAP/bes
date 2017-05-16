@@ -1,3 +1,148 @@
+2017-05-15 Muqun (Kent) Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-206, remove warnings detected by MacOS 10.12. We have to add another datatype checking function to make sure only numeric atomic datatypes supported by both DAP2 and CF are handled.
+
+2017-05-15 ndp-opendap <ndp@opendap.org>
+Date:   Mon May 15 16:54:52 2017 -0700
+
+    Added gctp lib to .gitignore
+
+2017-05-15 Muqun Yang <myang6@hdfgroup.org>
+
+    Code cleanup a bit. Remove one test from the valgrind.cf.ingore.at file since the test is no longer valid.
+
+2017-05-15 Muqun Yang <myang6@hdfgroup.org>
+Date:   Mon May 15 11:48:41 2017 -0500
+
+    HFVHANDLER-206, fix an issue found by coverity. No need to check if an unsigned integer is <0
+
+2017-05-14 Muqun Yang <myang6@hdfgroup.org>
+
+    Fixed several issues caught by coverity scan. Issues are: 1) Error handling: Forgot checking the returned value of the stat() 2) EOS5 projection parameters: Use default values for zone and sphere, parameters. This is not necessary but still add it to make coverity happen. 3) Forget copying comp_ratio in a copy function. Good catch.
+
+2017-05-12 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-206, 1) clean up code in HDF5RequestHandler.cc 2) Add the projection check for EOS5. Now only GEO and SNSOID are supported. 3) Tested with regular and valgrind at CentOS 7.1
+
+Merge: 716f53b 0fc8851
+2017-05-11 Nathan Potter <ndp@opendap.org>
+
+    Merge pull request #6 from OPENDAP/dmr2dds
+    Change in libdap4 API
+
+2017-05-11 Kent Yang <myang6@hdfgroup.org>
+
+    A simple fix for memory-leak for not deleting object das.
+
+2017-05-10 ndp-opendap <ndp@opendap.org>
+
+    First cut a updating the use of transform_to_dap4(). Next step is chan return to void.
+
+2017-05-08 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-211, A new DAS object needs to be added for the DAS memory cache
+
+2017-05-05 Kent Yang <myang6@hdfgroup.org>
+
+    remove merging typo
+
+2017-05-03 Kent Yang <myang6@hdfgroup.org>
+
+    Merge remote-tracking branch 'origin/cf_grid'
+
+2017-04-28 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-211, check in the DAS disk cache implementation code. Tested fake and NASA testsuites at CentOS6,7 and MacOS10.12.
+    valgrind tests on CentOS 6 and 7.
+
+2017-04-28 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-211, update bes.conf.in to reflect the disk metadata feature.
+
+2017-04-27 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-211, add the implementation code to generate/read disk cache file from DAS.
+
+2017-04-20 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-211, check in some code to generate the DAS attributes in type,name and values.
+    This will be used to write the parsing code of the DAP DAS. The current parsing code DAP
+    provides cannot handle special cases.
+
+2017-04-17 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLEER-211, using the parse function in the libdap to read the cached dds and das files. Data reading still has some issues.
+
+2017-04-13 Muqun Yang <myang6@hdfgroup.org>
+
+    Adding DDS disk cache testing code. The simple test works.
+
+2017-03-03 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-208, clean up debugging comments.
+
+2017-03-02 Kent Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-208, make the cf projection variable unique for the multi-grid case.
+
+2017-03-02 Muqun Yang <myang6@hdfgroup.org>
+
+    Add CF projection handling code. One grid sinusoidal projection passes besstandalone and valgrind.
+
+2017-02-27 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-208,
+    1) Add lat/lon handling routines. gctp library is used.
+    2) Correct non-geographic projection lat/lon. Tested with the sinusoidal projection.
+    3) Add template to handle CF.
+
+2017-02-24 Muqun Yang <myang6@hdfgroup.org>
+
+    Add disk cache debug info. to HDF5CFArray.cc. Change the disk cache to be false by default.
+
+2017-01-25 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-205, fix a bug on to calculate compression ratio. Need to consider the datatype size.
+
+2017-01-25 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-205, adding the BES options to only cache compressed dataset. Need more tests.
+
+2017-01-24 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-205, adding all the code to write data via disk cache. Also adding BES keys to only cache the compressed floating bigger array.
+
+2017-01-23 Muqun Yang <myang6@hdfgroup.org>
+
+    EED-176, adding code to generate a cached file per variable.
+
+2017-01-20 Muqun Yang <myang6@hdfgroup.org>
+
+    HFVHANDLER-205, Add the disk cache code(HDF5DiskCache.cc and HDF5DiskCache.h) that will talk to BES. Modify HDF5RequestHandler to
+    add the retrieval of BES keys. Also update Makefile.am and h5.conf.in to include the disk cache.
+
+    EED-176, add the gctp library to the source release.
+
+2017-01-19  Muqun Yang <myang6@hdfgroup.org>
+Date:   Thu Jan 19 20:39:02 2017 -0600
+
+    EED-176, add the code to calculate lat/lon for grid projections.
+    This follows the HDF-EOS5 library to use the gctp library to do the job.
+
+2017-01-17 Muqun Yang <myang6@hdfgroup.org>
+
+    EED-175, parse the HDF-EOS5 grid projection parameters, zone and sphere information
+    in the structure metadata to the handler.
+    
+    1) Unable to use bison and flex to parse the projection parameters. Write a C++ function
+    to retrieve the information.
+    2) Modify the lex and yy files to parse the zone and sphere information.
+
+2017-01-09  James Gallagher <jgallagher@opendap.org>
+
+    updated for Hyrax 1.13.3
+
+
 2016-11-28  myang6  <myang6@hdfgroup.org>
 
 	HFVHANDLER-203, remove the redundant case(rank==0) in these codes. Run basic and NASA tests at CentOS 7. Valgrind tests are also run. Everything works fine.

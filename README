@@ -36,6 +36,31 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for Hyrax 1.13.4
+----------------------------
+
+CF option: 
+1. Add the disk cache support for raw data and DAS. This support aims to improve the performance to access HDF5 data via Hyrax.
+Since this support may vary from case to case, by default we turn it off. 
+(1) Users, who want to use the disk cache for raw data,should read the description of 
+the following BES keys at h5.conf under /etc/bes/modules and change the BES key values to fit for your own use cases.
+H5.DiskCacheComp=false
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=100
+
+(2) Users, who want to use the disk cache for DAS, should also go to the h5.conf file and change the BES key 
+H5.EnableDiskMetaDataCache to true 
+and set appropriate path that stores the DAS cache file with the BES key H5.DiskMetaDataCachePath
+
+2. Add the HDF-EOS5 sinussoidal projection support 
+For the HDF-EOS5 sinusoidal projection, the latitude and longitude are calculated and CF grid projection information are added.
+
+*****************************************************
+********Special note about the version number********
+*****************************************************
+Since Hyrax 1.13.2, Hyrax just treats each handler as a module. So We stop assigning a individual version 
+for the HDF5 handler.
 What's new for version 2.3.3(Released with Hyrax 1.13.2)
 ----------------------------
 

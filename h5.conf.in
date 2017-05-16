@@ -343,7 +343,7 @@ H5.DiskCacheSize=100000
 # the performance gain is less optimal for some variables. 
 # These BES keys will help mitigate these issues. 
 # If H5.DiskCacheComp is true, only compressed HDF5 variables are cached. If compressed variables
-# are cached, there is no longer data decompression time. 
+# are cached, there is no data decompression time. 
 # We further provide more BES keys for users to fine tune according to their specific patterns.
 # 
 # If H5.DiskCacheFloatOnlyComp is set to be true, only floating-point variables are cached.
@@ -352,7 +352,7 @@ H5.DiskCacheSize=100000
 # ratio is smaller than this number, the variable is cached. In other words, hard compressed variable
 # usually takes longer decompression time. 
 # H5.DiskCacheCompVarSize must be a positive integer number. It represents the variable size in kilobytes 
-# Only the (uncompressed) variable size that is greater than this VarSize, the variable will be compressed.
+# Only the (uncompressed) variable size that is greater than this VarSize, the variable will be cached.
 # For example, if this number is 100, only the size of variable that is >100K will be cached.
 # 
 #
@@ -361,11 +361,14 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=100
 
-# HDF5 metadata disk cache
-
+# HDF5 metadata disk cache key. If this key is set to true, the DAS will be cached into a file.
+# The handler will no longer use the HDF5 library to build DAS since the second time.
 H5.EnableDiskMetaDataCache=false
-#H5.EnableDiskDDSCache=false
+
+# The following is the directory where the DAS cache file will be put.
 H5.DiskMetaDataCachePath=/tmp
+
+
 #  State Plane Projection east and north files: Must provide the absolute path
 #H5.STPEastFileName=/usr/tmp/nad27sp_le
 #H5.STPNorthFileName=/usr/tmp/nad83sp_le
