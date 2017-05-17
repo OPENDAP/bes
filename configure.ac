@@ -721,8 +721,11 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
-		 functions/geo-functions/Makefile
-		 functions/geo-functions/unit-tests/Makefile])
+		 ])
+dnl These need to be moved into the AC_CONFIG_FILES above 
+dnl when geo-functions is reenabled.
+dnl		 functions/geo-functions/Makefile
+dnl		 functions/geo-functions/unit-tests/Makefile
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
