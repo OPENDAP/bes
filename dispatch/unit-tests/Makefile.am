@@ -69,7 +69,7 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-	cache_test.ini bes.conf
+    bes.conf
 
 DISTCLEANFILES = test_config.h
 
