@@ -37,7 +37,7 @@ FOJSON_SRC = FoInstanceJsonTransform.cc FoInstanceJsonTransmitter.cc FoJsonReque
 FOJSON_HDR = FoInstanceJsonTransform.h FoInstanceJsonTransmitter.h FoJsonRequestHandler.h FoJsonModule.h \
 	FoDapJsonTransmitter.h FoDapJsonTransform.h StreamString.h fojson_utils.h
 
-EXTRA_DIST = data COPYING fojson.conf.in doxy.conf
+EXTRA_DIST = data COPYING fojson.conf.in
 
 if !DAP_MODULES
 EXTRA_DIST += fileout_json.spec 
@@ -58,10 +58,6 @@ uninstall-local:
 fojson.conf: fojson.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fojson.conf
 
-.PHONY: docs
-docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
 
 C4_DIR=./cccc
 .PHONY: cccc
