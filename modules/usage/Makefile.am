@@ -41,7 +41,7 @@ libusage_module_la_LDFLAGS = -avoid-version -module
 libusage_module_la_LIBADD = $(LIBADD) # $(BES_DAP_LIBS)
 
 EXTRA_DIST = COPYING COPYRIGHT_URI README \
-	usage.conf.in OSX_Resources
+	usage.conf.in 
 
 if !DAP_MODULES
 EXTRA_DIST += usage.spec
