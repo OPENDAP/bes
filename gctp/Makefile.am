@@ -1,6 +1,6 @@
 # GCTP library top-level Makefile
 
 # Subdirectories
-SUBDIRS=src
+SUBDIRS=include src
 CFLAGS="CFLAGS -fPIC"
 
