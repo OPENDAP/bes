@@ -830,8 +830,8 @@ AM_COND_IF([DAP_MODULES],
     modules/ncml_module/tests/atlocal 
 
     modules/ugrid_functions/Makefile 
-	modules/ugrid_functions/unit-tests/Makefile
-	modules/ugrid_functions/unit-tests/test_config.h
+    modules/ugrid_functions/unit-tests/Makefile
+    modules/ugrid_functions/unit-tests/test_config.h
 	modules/ugrid_functions/tests/Makefile 
 	modules/ugrid_functions/tests/atlocal
         

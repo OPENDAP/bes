@@ -31,30 +31,28 @@ BES.Catalog.catalog.Exclude=^\..*;
 BES.FollowSymLinks=No
 BES.Catalog.catalog.FollowSymLinks=No
 
-BES.ServerPort=10002
-BES.ServerSecure=no
-BES.ServerSecurePort=10003
-BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
-BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
-BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
-BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
+# BES.ServerPort=10002
+# BES.ServerSecure=no
+# BES.ServerSecurePort=10003
+# BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+# BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+# BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+# BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 
-BES.Help.TXT=@pkgdatadir@/bes_help.txt
-BES.Help.HTML=@pkgdatadir@/bes_help.html
-BES.Help.XML=@pkgdatadir@/bes_help.txt
+# BES.Help.TXT=@pkgdatadir@/bes_help.txt
+# BES.Help.HTML=@pkgdatadir@/bes_help.html
+# BES.Help.XML=@pkgdatadir@/bes_help.txt
 
-DAP.Help.TXT=@pkgdatadir@/dap_help.txt
-DAP.Help.HTML=@pkgdatadir@/dap_help.html
-DAP.Help.XML=@pkgdatadir@/dap_help.txt
+# DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+# DAP.Help.HTML=@pkgdatadir@/dap_help.html
+# DAP.Help.XML=@pkgdatadir@/dap_help.txt
 
 BES.Info.Buffered=no
 BES.Info.Type=xml
 
-BES.UncompressCache.dir=@abs_top_srcdir@/modules/ncml_module/tests/cache
+BES.UncompressCache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
-BES.Uncompress.Retry=2000
-BES.Uncompress.NumTries=10
 
 BES.Container.Persistence=strict
 
@@ -70,8 +68,8 @@ BES.DefaultResponseMethod=POST
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
 #-----------------------------------------------------------------------#
-Gateway.Whitelist=http://test.opendap.org:8080/opendap
-Gateway.Whitelist+=http://test.opendap.org:80/opendap
+# Gateway.Whitelist=http://test.opendap.org:8080/opendap
+# Gateway.Whitelist+=http://test.opendap.org:80/opendap
 Gateway.Whitelist+=http://test.opendap.org/opendap
 Gateway.Whitelist+=http://localhost
 
@@ -79,7 +77,7 @@ Gateway.MimeTypes=nc:application/x-netcdf
 Gateway.MimeTypes+=h4:application/x-hdf
 Gateway.MimeTypes+=h5:application/x-hdf5
 
-Gateway.Cache.dir=/tmp
+Gateway.Cache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
 Gateway.Cache.prefix=gateway_cache
 Gateway.Cache.size=500
 
@@ -88,11 +86,12 @@ Gateway.Cache.size=500
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-NCML.TempDirectory=@abs_top_srcdir@/modules/ncml_module/tests/cache
+
+NCML.TempDirectory=@abs_top_builddir@/modules/ncml_module/tests/cache
 NCML.GlobalAttributesContainerName=NC_GLOBAL
 
 # Directory into which the cache files will be stored.
-NCML.DimensionCache.directory=@abs_top_srcdir@/modules/ncml_module/tests/cache
+NCML.DimensionCache.directory=@abs_top_builddir@/modules/ncml_module/tests/cache
 
 # Filename prefix to be used for the cache files
 NCML.DimensionCache.prefix=ncml_dimension_cache

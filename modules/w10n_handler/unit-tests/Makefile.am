@@ -25,7 +25,7 @@ DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.dbg *.log tmp/*
 
-EXTRA_DIST = baselines test_config.h.in tmp
+EXTRA_DIST = test_config.h.in baselines tmp testdir
 
 check_PROGRAMS = $(UNIT_TESTS)
 
