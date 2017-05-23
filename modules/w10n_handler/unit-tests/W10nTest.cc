@@ -113,7 +113,9 @@ CPPUNIT_TEST_SUITE( W10nTest );
     CPPUNIT_TEST(eval_w10_path_to_linked_file_with_variable);
     CPPUNIT_TEST(eval_w10_path_to_forbidden_linked_file_with_variable);
     CPPUNIT_TEST(eval_w10_path_to_bad_linked_file_with_variable);
+#if 0
     CPPUNIT_TEST(eval_w10_path_to_forbidden_bad_linked_file_with_variable);
+#endif
     CPPUNIT_TEST(eval_w10_forbidden_up_traversal_path);
 
     CPPUNIT_TEST_SUITE_END()

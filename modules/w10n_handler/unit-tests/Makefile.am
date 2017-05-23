@@ -1,6 +1,6 @@
 # Tests
 
-AUTOMAKE_OPTIONS = foreign subdir-objects
+AUTOMAKE_OPTIONS = foreign
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
@@ -25,7 +25,7 @@ DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.dbg *.log tmp/*
 
-EXTRA_DIST = baselines test_config.h.in tmp
+EXTRA_DIST = test_config.h.in baselines tmp testdir
 
 check_PROGRAMS = $(UNIT_TESTS)
 

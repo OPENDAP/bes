@@ -20,7 +20,7 @@ noinst_DATA = bes.conf bes_no_nc_global.conf
 
 CLEANFILES = bes.conf bes_no_nc_global.conf
 
-DISTCLEANFILES = atconfig
+DISTCLEANFILES = atconfig cache/*
 
 if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in

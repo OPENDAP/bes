@@ -1,5 +1,5 @@
 
-The new_new_build branch in corporates the modules in to the BES
+The new_new_build branch incorporates the modules in to the BES
 project directly (and looses the individual repo's history in the
 process). The build and various top-level autoconf/make files are the
 same.
