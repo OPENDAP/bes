@@ -153,7 +153,7 @@ exit 0
 
 %files
 %defattr(-,root,root,-)
-%doc ChangeLog NEWS README
+%doc ChangeLog NEWS README.md
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
 
