@@ -2,7 +2,6 @@
 # Tests
 
 AUTOMAKE_OPTIONS = foreign
-# subdir-objects
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
