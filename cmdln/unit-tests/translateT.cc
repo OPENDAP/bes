@@ -48,6 +48,16 @@ using std::ostringstream ;
 #include "CmdTranslation.h"
 #include "BESError.h"
 #include <test_config.h>
+#include <GetOpt.h>
+
+using namespace CppUnit;
+using namespace std;
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+
 
 string d1 = "CmdTranslation::dump\n\
     translations registered\n\
@@ -318,17 +328,49 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( translateT ) ;
 
-int 
-main( int, char** )
+
+int main(int argc, char *argv[])
 {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
 
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+        case 'h': {     // help - show test names
+            cerr << "Usage: translateT has the following tests:" << endl;
+            const std::vector<Test*> &tests = translateT::suite()->getTests();
+            unsigned int prefix_len = translateT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+        default:
+            break;
+        }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        for (; i < argc; ++i) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = translateT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
-

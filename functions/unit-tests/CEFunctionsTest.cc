@@ -805,21 +805,30 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CEFunctionsTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[])
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[]) {
 
-    GetOpt getopt(argc, argv, "d");
-    int option_char;
-    while ((option_char = getopt()) != -1)
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: CEFunctionsTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = CEFunctionsTest::suite()->getTests();
+            unsigned int prefix_len = CEFunctionsTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -830,8 +839,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("functions::ugrid::BindTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = CEFunctionsTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

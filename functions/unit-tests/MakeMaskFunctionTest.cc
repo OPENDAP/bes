@@ -388,10 +388,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MakeMaskFunctionTest);
 } // namespace functions
 
 int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
@@ -401,9 +399,21 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: MakeMaskFunctionTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = MakeMaskFunctionTest::suite()->getTests();
+            unsigned int prefix_len = MakeMaskFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -414,8 +424,8 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("functions::MakeMaskFunctionTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = MakeMaskFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

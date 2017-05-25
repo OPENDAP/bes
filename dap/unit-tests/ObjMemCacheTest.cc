@@ -196,10 +196,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DDSMemCacheTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -209,9 +207,21 @@ int main(int argc, char*argv[])
         case 'D':
             debug_2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: DDSMemCacheTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = DDSMemCacheTest::suite()->getTests();
+            unsigned int prefix_len = DDSMemCacheTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -222,8 +232,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("DDSMemCacheTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = DDSMemCacheTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

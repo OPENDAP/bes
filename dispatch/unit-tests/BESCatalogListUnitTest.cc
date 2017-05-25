@@ -33,6 +33,7 @@
 
 #include "TheBESKeys.h"
 #include "BESCatalogList.h"
+#include <GetOpt.h>
 
 static bool d_debug = false;
 
@@ -40,6 +41,7 @@ static bool d_debug = false;
 #define DBG(x) do { if (d_debug) (x); } while(false);
 
 using namespace std;
+using namespace CppUnit ;
 
 class BESCatalogListUnitTest: public CppUnit::TestFixture {
 
@@ -134,22 +136,46 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BESCatalogListUnitTest);
 
 
 int main(int argc, char*argv[]) {
+
+    int start = 0;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd': {
+            d_debug = 1;  // debug is a static global
+            start = 1;
+            break;
+        }
+        case 'h': {     // help - show test names
+            cerr << "Usage: BESCatalogListUnitTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = BESCatalogListUnitTest::suite()->getTests();
+            unsigned int prefix_len = BESCatalogListUnitTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    //cerr << "argc=" << argc << endl;
-
-    int start = 0;
-    if(argc>1) {
-        string first(argv[1]);
-        cerr << "first=" << first << endl;
-
-        if(first.compare("-d")==0){
-            d_debug = true;  // debug is a static global
-            start = 1;
-            DBG(cerr << "Debug Enabled" << endl);
-        }
-    }
+//    int start = 0;
+//    if(argc>1) {
+//        string first(argv[1]);
+//        cerr << "first=" << first << endl;
+//
+//        if(first.compare("-d")==0){
+//            d_debug = true;  // debug is a static global
+//            start = 1;
+//            DBG(cerr << "Debug Enabled" << endl);
+//        }
+//        if()
+//    }
 
 
     bool wasSuccessful = true;

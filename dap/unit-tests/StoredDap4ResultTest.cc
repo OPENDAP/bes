@@ -67,8 +67,6 @@ static const string c_cache_name = "/dap4_result_cache";
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-using namespace libdap;
-
 class StoredDap4ResultTest: public TestFixture {
 private:
 	D4TestTypeFactory *d4_ttf;
@@ -313,19 +311,29 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(StoredDap4ResultTest);
 
 int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dh");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: StoredDap4ResultTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = StoredDap4ResultTest::suite()->getTests();
+            unsigned int prefix_len = StoredDap4ResultTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -336,8 +344,8 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("StoredDap4ResultTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = StoredDap4ResultTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

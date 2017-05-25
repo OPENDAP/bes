@@ -540,6 +540,16 @@ int main(int argc, char*argv[])
             purge = false;
             break;
 
+        case 'h': {     // help - show test names
+            cerr << "Usage: cacheT has the following tests:" << endl;
+            const std::vector<Test*> &tests = cacheT::suite()->getTests();
+            unsigned int prefix_len = cacheT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+
         default:
             break;
         }

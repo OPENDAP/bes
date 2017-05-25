@@ -375,10 +375,8 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(FunctionResponseCacheTest);
 
 int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbk");
+    GetOpt getopt(argc, argv, "dbkh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -392,9 +390,21 @@ int main(int argc, char*argv[]) {
         case 'k':   // -k turns off cleaning the response_cache dir
             clean = false;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: FunctionResponseCacheTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = FunctionResponseCacheTest::suite()->getTests();
+            unsigned int prefix_len = FunctionResponseCacheTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -405,8 +415,8 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("FunctionResponseCacheTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = FunctionResponseCacheTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
