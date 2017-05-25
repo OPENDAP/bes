@@ -4,8 +4,8 @@
 #include $(top_srcdir)/config/include.am
 
 # Library to build
-#lib_LTLIBRARIES = libGctp.la
-lib_LIBRARIES = libGctp.a
+# Added 'noinst' to suppress installation of this library. jhrg 5/25/17
+noinst_LIBRARIES = libGctp.a
 
 ## Normally DEFAULT_INCLUDES is supplied by Automake, but one of the
 ## directories included by default is $(top_builddir)/include, which
