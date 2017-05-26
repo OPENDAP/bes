@@ -64,7 +64,6 @@
 
 using namespace CppUnit;
 using namespace std;
-using namespace libdap;
 
 int test_variable_sleep_interval = 0;
 

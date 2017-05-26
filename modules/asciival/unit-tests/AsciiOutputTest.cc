@@ -34,7 +34,7 @@
 #include "AsciiOutput.h"
 #include "AsciiOutputFactory.h"
 #include "test_config.h"
-//#include "name_map.h"
+#include <GetOpt.h>
 
 // These globals are defined in ascii_val.cc and are needed by the Ascii*
 // classes. This code has to be linked with those so that the Ascii*
@@ -45,6 +45,11 @@
 bool translate = false;
 extern int ddsdebug;
 using namespace CppUnit;
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class AsciiOutputTest: public TestFixture {
 private:
@@ -96,11 +101,45 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AsciiOutputTest);
 
-int main(int , char*[]) {
+int main(int argc, char*argv[]) {
+
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: AsciiOutputTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = AsciiOutputTest::suite()->getTests();
+            unsigned int prefix_len = AsciiOutputTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run("", false);
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = AsciiOutputTest::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
 
     return wasSuccessful ? 0 : 1;
 }

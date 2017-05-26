@@ -47,6 +47,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 static bool debug = false;
 static bool debug2 = false;

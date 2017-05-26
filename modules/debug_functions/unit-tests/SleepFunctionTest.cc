@@ -147,7 +147,7 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("libdap::NDimArrayTest::") + argv[i++];
+            test = string("libdap::SleepFunctionTest::") + argv[i++];
 
             DBG(cerr << endl << "Running test " << test << endl << endl);
 

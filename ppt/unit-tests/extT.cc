@@ -44,6 +44,7 @@ using namespace CppUnit ;
 #include <list>
 
 using std::cout ;
+using std::cerr ;
 using std::endl ;
 using std::string ;
 using std::ostringstream ;
@@ -51,6 +52,12 @@ using std::list ;
 
 #include "ExtConn.h"
 #include "BESError.h"
+#include <GetOpt.h>
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 list<string> try_list ;
 
@@ -219,22 +226,46 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( extT ) ;
 
-int 
-main( int argc, char** argv )
-{
-    if( argc > 1 )
-    {
-	for( int i = 1; i < argc; i++ )
-	{
-	    try_list.push_back( argv[i] ) ;
-	}
+int main(int argc, char*argv[]) {
+
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: extT has the following tests:" << std::endl;
+            const std::vector<Test*> &tests = extT::suite()->getTests();
+            unsigned int prefix_len = extT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = extT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
     }
 
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
-
-    bool wasSuccessful = runner.run( "", false )  ;
-
-    return wasSuccessful ? 0 : 1 ;
+    return wasSuccessful ? 0 : 1;
 }
 
