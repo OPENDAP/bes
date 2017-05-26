@@ -1,8 +1,5 @@
 # GCTP source directory Makefile
 
-# Boilerplate definitions
-#include $(top_srcdir)/config/include.am
-
 # Library to build
 # Added 'noinst' to suppress installation of this library. jhrg 5/25/17
 noinst_LIBRARIES = libGctp.a
@@ -12,7 +9,7 @@ noinst_LIBRARIES = libGctp.a
 ## contains several header files with the same names as files in the
 ## gctp/include directories.
 ## To work around this, override the DEFAULT_INCLUDES variable.
-DEFAULT_INCLUDES = -I. -I$(srcdir)
+# DEFAULT_INCLUDES = -I. -I$(srcdir)
 
 # Include the libGCTP include directory
 AM_CPPFLAGS=-fpic -I$(srcdir)/../include/
