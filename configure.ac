@@ -823,7 +823,6 @@ AM_COND_IF([DAP_MODULES],
     modules/hdf5_handler/bes-testsuite/atlocal
     modules/hdf5_handler/gctp/Makefile
     modules/hdf5_handler/gctp/src/Makefile
-    modules/hdf5_handler/gctp/include/Makefile
     
     modules/ncml_module/Makefile 
     modules/ncml_module/tests/Makefile 
