@@ -4,6 +4,33 @@
 README for the OPeNDAP BES 
 ==========================
 
+Updated for version 3.18.0
+
+New features:
+
+- hdf5_handler adds support for sinusodial projections.
+
+- ncml_handler adds support for the aggregation and metadata 
+  manipulation of remotely located datasets. This new capanbility
+  utilizes the exisiting gateway_handler and allows the ncml_handler
+  to aggregate anything the gateway_handler can read.
+
+This release fixes a number of bugs:
+
+- Improved error logging (as in errors now get logged)
+    https://opendap.atlassian.net/browse/HYRAX-302
+    
+- Improved server side function response assembly repaired:
+    https://opendap.atlassian.net/browse/HYRAX-352
+    https://opendap.atlassian.net/browse/HYRAX-342
+
+- Stopped prepending "nc_" to netCDF file out responses whose
+  download filename begins with a digit:
+    https://opendap.atlassian.net/browse/HYRAX-341
+
+- Repaired various BES timeout issues.
+    https://opendap.atlassian.net/browse/HYRAX-341
+
 Updated for version 3.17.4
 
 Added support for cached metadata objects.
