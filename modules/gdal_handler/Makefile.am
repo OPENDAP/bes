@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_handler
-M_VER=1.0.7
+M_VER=1.0.8
 
 if DAP_MODULES
 AM_CPPFLAGS = $(GDAL_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
