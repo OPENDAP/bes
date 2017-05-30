@@ -1,3 +1,19 @@
+2017-05-17  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #4 from OPENDAP/hyrax-399
+	Disabling failing test associated with a dataset that contains and unnamed array
+
+2017-05-17  ndp-opendap  <ndp@opendap.org>
+
+	Suspended tests for dataset with a nameless array.
+
+2017-05-16  ndp-opendap  <ndp@opendap.org>
+
+	Disabling failing test associated with a dataset that contains and unamed array
+
+2017-05-16  Muqun Yang  <myang6@hdfgroup.org>
+
+	EED-187, update documents for HDF4 handler for the Hyrax 1.13.4 release.
 2017-05-15 Muqun Yang <myang6@hdfgroup.org>
 
 EED-187, fix one issue discovered by the coverity scan. A redundant if-block is removed.
