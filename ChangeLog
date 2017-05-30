@@ -1,3 +1,37 @@
+2017-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	More changes to the gctp Makefiles - this neatens up things a bit.
+	These changes are needed for the distcheck target and may be the
+	needed fixes for the rpm target.
+
+	Modified the gctp Makefile.am files so that the BES distcheck target works
+
+2017-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Now libGctp does not get installed but is used as a 'convenience' library.
+	I did this so that our RPM builds would work - installing but not packaging
+	files breaks these and installing headers for GCTP into /usr/include is
+	probably not something we intend.
+
+2017-05-18  James Gallagher  <jgallagher@opendap.org>
+
+	Added 'include' to gctp/Makefile.am SUBDIRS
+
+2017-05-16  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-206, Update ChangeLog,NEWS,README and the configuration file
+
+2017-05-15  Muqun (Kent) Yang  <myang6@nene.ad.hdfgroup.org>
+
+	HFVHANDLER-206, remove warnings detected by MacOS 10.12. We have to add another datatype checking function to make sure only numeric atomic datatypes supported by both DAP2 and CF are handled.
+
+2017-05-15  ndp-opendap  <ndp@opendap.org>
+
+	Added gctp lib to .gitignore
+
+2017-05-15  Muqun Yang  <myang6@hdfgroup.org>
+
+	Code cleanup a bit. Remove one test from the valgrind.cf.ingore.at file since the test is no longer valid.
 2017-05-15 Muqun (Kent) Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-206, remove warnings detected by MacOS 10.12. We have to add another datatype checking function to make sure only numeric atomic datatypes supported by both DAP2 and CF are handled.
