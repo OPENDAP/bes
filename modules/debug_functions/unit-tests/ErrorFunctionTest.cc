@@ -238,10 +238,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ErrorFunctionTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -249,9 +246,21 @@ int main(int argc, char*argv[])
             debug = true;  // debug is a static global
             BESDebug::SetUp("cerr,ugrid");
             break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: ErrorFunctionTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = libdap::ErrorFunctionTest::suite()->getTests();
+            unsigned int prefix_len = libdap::ErrorFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -262,10 +271,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("libdap::NDimArrayTest::") + argv[i++];
-
-            DBG(cerr << endl << "Running test " << test << endl << endl);
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = libdap::ErrorFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

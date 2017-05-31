@@ -657,8 +657,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FoJsonTest);
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -666,6 +665,15 @@ int main(int argc, char*argv[])
             debug = 1;  // debug is a static global
             cerr << "##### DEBUG is ON" << endl;
             break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: FoJsonTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = fojson::FoJsonTest::suite()->getTests();
+            unsigned int prefix_len = fojson::FoJsonTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
         default:
             // I'd like the output to be clean unless -d is on so
             // nightly builds are easier to read/understand. jhrg 2/20/15
@@ -685,8 +693,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("fojson::FoJsonTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = fojson::FoJsonTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

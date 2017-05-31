@@ -45,8 +45,10 @@
 #include "XDOutputFactory.h"
 
 #include "test_config.h"
+#include "GetOpt.h"
 
 bool translate = false;
+static bool debug = false;
 
 using namespace CppUnit;
 using namespace std;
@@ -426,12 +428,46 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XDArrayTest);
 
-int main(int /*argc*/, char* /*argv*/[])
+int main(int argc, char*argv[])
 {
+
+    GetOpt getopt(argc, argv, "dh");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = true;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: XDArrayTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = XDArrayTest::suite()->getTests();
+            unsigned int prefix_len = XDArrayTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run("", false);
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = XDArrayTest::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
 
     return wasSuccessful ? 0 : 1;
 }

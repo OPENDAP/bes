@@ -22,7 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-//#include <cstdio>
 
 #include "config.h"
 
@@ -47,7 +46,6 @@
 #include "Str.h"
 #include "DDS.h"
 #include "ServerFunction.h"
-//#include "ServerFunctionsList.h"
 
 static pthread_once_t instance_control = PTHREAD_ONCE_INIT;
 static bool debug = false;
@@ -257,19 +255,28 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PossiblyLost);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: PossiblyLost has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = PossiblyLost::suite()->getTests();
+            unsigned int prefix_len = PossiblyLost::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -280,8 +287,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("ugrid::BindTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = PossiblyLost::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
