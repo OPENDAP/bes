@@ -12,7 +12,7 @@ SUBDIRS = . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_gdal
-M_VER=0.10.1
+M_VER=0.10.2
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(GDAL_CFLAGS) $(DAP_CFLAGS)
