@@ -32,8 +32,8 @@ using namespace std;
 using namespace libdap ;
 
 // From gdal_dds.cc
-void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufType);
-void read_map_array(Array *map, GDALRasterBandH hBand, string filename);
+void read_data_array(GDALArray *array, GDALRasterBandH hBand);
+void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 
 /************************************************************************/
 /* ==================================================================== */
@@ -45,6 +45,7 @@ void GDALArray::m_duplicate(const GDALArray &a)
 {
 	filename = a.filename;
 	hBand = a.hBand;
+	iBandNum = a.iBandNum;
 	eBufType = a.eBufType;
 }
 
@@ -54,15 +55,22 @@ GDALArray::ptr_duplicate()
     return new GDALArray(*this);
 }
 
-GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), hBand(0), eBufType(GDT_Unknown)
+GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), hBand(0), iBandNum(0), eBufType(GDT_Unknown)
 {
     BESDEBUG("gdal", " Called GDALArray::GDALArray() 1" << endl);
 }
 
+// FIXME Replace hBandIn with an index; mirror the fix in GDALGrid
 GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn) :
-		Array(name, proto), filename(filenameIn), hBand(hBandIn), eBufType(eBufTypeIn)
+		Array(name, proto), filename(filenameIn), hBand(hBandIn), iBandNum(0), eBufType(eBufTypeIn)
 {
 	BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
+}
+
+GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, int iBandNumIn, GDALDataType eBufTypeIn) :
+        Array(name, proto), filename(filenameIn), hBand(0), iBandNum(iBandNumIn), eBufType(eBufTypeIn)
+{
+    BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
 }
 
 GDALArray::GDALArray(const GDALArray &src) : Array(src)
@@ -74,20 +82,30 @@ GDALArray::~GDALArray()
 {
 }
 
+// FIXME TEST THIS!
 bool
 GDALArray::read()
 {
 	BESDEBUG("gdal", "Entering GDALArray::read()" << endl);
 
-    if (read_p())
-        return true;
+    if (read_p()) return true;
 
-    if (name() == "northing" || name() == "easting")
-    	read_map_array(this, hBand, filename);
-    else
-    	read_data_array(this, hBand, eBufType);
+    GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
-    set_read_p(true);
+    try {
+        if (name() == "northing" || name() == "easting")
+            read_map_array(this, hBand, hDS);
+        else
+            read_data_array(this, hBand);
+
+        set_read_p(true);
+    }
+    catch (...) {
+        GDALClose(hDS);
+        throw;
+    }
+
+    GDALClose(hDS);
 
     return true;
 }

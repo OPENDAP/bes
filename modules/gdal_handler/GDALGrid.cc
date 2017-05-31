@@ -35,8 +35,8 @@ using namespace std;
 using namespace libdap;
 
 // From gdal_dds.cc
-void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufType);
-void read_map_array(Array *map, GDALRasterBandH hBand, string filename);
+void read_data_array(GDALArray *array, GDALRasterBandH hBand);
+void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 
 /************************************************************************/
 /* ==================================================================== */
@@ -61,12 +61,9 @@ GDALGrid::ptr_duplicate()
 
 // public
 
-GDALGrid::GDALGrid(const string &filenameIn, const string &name, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn) :
-		Grid(name)
+GDALGrid::GDALGrid(const string &filenameIn, const string &name) :
+        Grid(name), filename(filenameIn)
 {
-	filename = filenameIn;	// This is used to open the file in the read() method for GDALGrid
-	hBand = hBandIn;
-	eBufType = eBufTypeIn;
 }
 
 GDALGrid::GDALGrid(const GDALGrid &rhs) : Grid(rhs)
@@ -94,22 +91,35 @@ bool GDALGrid::read()
 	if (read_p()) // nothing to do
 		return true;
 
-	/* -------------------------------------------------------------------- */
-	/*      Collect the x and y sampling values from the constraint.        */
-	/* -------------------------------------------------------------------- */
-	GDALArray *array = static_cast<GDALArray*>(array_var());
-	read_data_array(array, hBand, eBufType);
-	array->set_read_p(true);
+    GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
-	Map_iter miter = map_begin();
-	array = static_cast<GDALArray*>((*miter));
-	read_map_array(array, hBand, filename);
-	array->set_read_p(true);
+    try {
+        // Change: Instead of using the binary hBand (GDALRasterBandH), open the
+        // file and then the Raster Band here. Assume each part of the Grid is in
+        // the same file.
 
-	++miter;
-	array = static_cast<GDALArray*>(*miter);
-	read_map_array(array, hBand, filename);
-	array->set_read_p(true);
+        GDALArray *array = static_cast<GDALArray*>(array_var());
+
+        // TODO Free the raster band?
+        read_data_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()));
+        array->set_read_p(true);
+
+        Map_iter miter = map_begin();
+        array = static_cast<GDALArray*>((*miter));
+        read_map_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()), hDS);
+        array->set_read_p(true);
+
+        ++miter;
+        array = static_cast<GDALArray*>(*miter);
+        read_map_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()), hDS);
+        array->set_read_p(true);
+    }
+    catch (...) {
+        GDALClose(hDS);
+        throw;
+    }
+
+    GDALClose(hDS);
 
 	return true;
 }

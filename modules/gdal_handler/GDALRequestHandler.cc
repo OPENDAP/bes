@@ -98,12 +98,14 @@ bool GDALRequestHandler::gdal_build_das(BESDataHandlerInterface & dhi)
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
     if (!bdas)
         throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    GDALDatasetH hDS = 0;
     try {
         bdas->set_container(dhi.container->get_symbolic_name());
         DAS *das = bdas->get_das();
         string filename = dhi.container->access();
 
-        GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+        hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
@@ -111,21 +113,26 @@ bool GDALRequestHandler::gdal_build_das(BESDataHandlerInterface & dhi)
         gdal_read_dataset_attributes(*das, hDS);
 
         GDALClose(hDS);
+        hDS = 0;
 
         Ancillary::read_ancillary_das(*das, filename);
 
         bdas->clear_container();
     }
     catch (BESError &e) {
+        if (hDS) GDALClose(hDS);
         throw;
     }
     catch (InternalErr & e) {
+        if (hDS) GDALClose(hDS);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
+        if (hDS) GDALClose(hDS);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
+        if (hDS) GDALClose(hDS);
         throw BESInternalFatalError("unknown exception caught building DAS", __FILE__, __LINE__);
     }
 
@@ -141,6 +148,7 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
 
+    GDALDatasetH hDS = 0;
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
         DDS *dds = bdds->get_dds();
@@ -149,7 +157,7 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
         dds->filename(filename);
         dds->set_dataset_name(filename.substr(filename.find_last_of('/') + 1));
 
-        GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+        hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
@@ -162,6 +170,7 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
         gdal_read_dataset_attributes(*das, hDS);
 
         GDALClose(hDS);
+        hDS = 0;
 
         Ancillary::read_ancillary_das(*das, filename);
 
@@ -171,15 +180,19 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
         bdds->clear_container();
     }
     catch (BESError &e) {
+        if (hDS) GDALClose(hDS);
         throw;
     }
     catch (InternalErr & e) {
+        if (hDS) GDALClose(hDS);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
+        if (hDS) GDALClose(hDS);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
+        if (hDS) GDALClose(hDS);
         throw BESInternalFatalError("unknown exception caught building DDS", __FILE__, __LINE__);
     }
 
@@ -195,9 +208,12 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
 
+    GDALDatasetH hDS = 0;
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
 
+        DDS *gdds = bdds->get_dds();
+#if 0
         // This copies the vanilla DDS into a new GDALDDS object, where the
         // handler can store extra information about the dataset.
         GDALDDS *gdds = new GDALDDS(bdds->get_dds());
@@ -209,12 +225,12 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
         // deletes the GDALDDS, the GDAL library will be used to close the
         // dataset.
         bdds->set_dds(gdds);
-
+#endif
         string filename = dhi.container->access();
         gdds->filename(filename);
         gdds->set_dataset_name(filename.substr(filename.find_last_of('/') + 1));
 
-        GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+        hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
@@ -223,14 +239,18 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
         // when the BES is done with the DDS (which is really a GDALDDS,
         // spawn of DataDDS...)
         gdal_read_dataset_variables(gdds, hDS, filename);
+#if 0
         gdds->setGDALDataset(hDS);
+#endif
 
         DAS *das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
         gdal_read_dataset_attributes(*das, hDS);
 
-        // Don't close the data set; leave the handle (hDS) open so the data can be read
+        GDALClose(hDS);
+        hDS = 0;
+
         Ancillary::read_ancillary_das(*das, filename);
 
         gdds->transfer_attributes(das);
@@ -239,15 +259,19 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
         bdds->clear_container();
     }
     catch (BESError &e) {
+        if (hDS) GDALClose(hDS);
         throw;
     }
     catch (InternalErr & e) {
+        if (hDS) GDALClose(hDS);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
+        if (hDS) GDALClose(hDS);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
+        if (hDS) GDALClose(hDS);
         throw BESInternalFatalError("unknown exception caught building DAS", __FILE__, __LINE__);
     }
 

@@ -139,6 +139,7 @@ public:
 class GDALArray: public libdap::Array {
     string filename;
     GDALRasterBandH hBand;
+    int iBandNum;
     GDALDataType eBufType;
 
     void m_duplicate(const GDALArray &a);
@@ -147,10 +148,14 @@ public:
     GDALArray(const string &n = "", BaseType *v = 0);
     // Added for DAP4 support. jhrg 8/26/14
     GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn);
+    GDALArray(const string &name, BaseType *proto, const string &filenameIn, int iBandNumIn, GDALDataType eBufTypeIn);
     GDALArray(const GDALArray &src);
     virtual ~GDALArray();
 
     virtual BaseType *ptr_duplicate();
+
+    virtual int get_gdal_band_num() const { return iBandNum; }
+    virtual GDALDataType get_gdal_buf_type() const { return eBufType; }
 
     virtual bool read();
 };
@@ -169,7 +174,8 @@ class GDALGrid: public libdap::Grid {
 
 public:
     GDALGrid(const GDALGrid &rhs);
-    GDALGrid(const string &filenameIn, const string &name, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn);
+    GDALGrid(const string &filenameIn, const string &name);
+
     virtual ~GDALGrid();
 
     GDALGrid &operator=(const GDALGrid &rhs);

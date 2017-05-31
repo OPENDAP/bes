@@ -106,7 +106,7 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
 /*      Create a grid to hold the raster.                               */
 /* -------------------------------------------------------------------- */
         Grid *grid;
-        grid = new GDALGrid( filename, oss.str(), hBand, eBufType );
+        grid = new GDALGrid( filename, oss.str() );
 
 /* -------------------------------------------------------------------- */
 /*      Make into an Array for the raster data with appropriate         */
@@ -116,7 +116,7 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
         // A 'feature' of Array is that it copies the variable passed to
         // its ctor. To get around that, pass null and use add_var_nocopy().
         // Modified for the DAP4 response; switched to this new ctor.
-        ar = new GDALArray( oss.str(), 0, filename, hBand, eBufType );
+        ar = new GDALArray( oss.str(), 0, filename, iBand+1, eBufType );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterYSize( hDS ), "northing" );
         ar->append_dim( GDALGetRasterXSize( hDS ), "easting" );
@@ -127,14 +127,14 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
 /*      Add the dimension map arrays.                                   */
 /* -------------------------------------------------------------------- */
         bt = new GDALFloat64( "northing" );
-        ar = new GDALArray( "northing", 0, filename, hBand, eBufType );
+        ar = new GDALArray( "northing", 0, filename, iBand+1, eBufType );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterYSize( hDS ), "northing" );
 
         grid->add_var_nocopy( ar, maps );
 
         bt = new GDALFloat64( "easting" );
-        ar = new GDALArray( "easting", 0, filename, hBand, eBufType );
+        ar = new GDALArray( "easting", 0, filename, iBand+1, eBufType );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterXSize( hDS ), "easting" );
 
@@ -160,7 +160,7 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
  *
  * @param array
  */
-void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufType) {
+void read_data_array(GDALArray *array, GDALRasterBandH hBand) {
 	/* -------------------------------------------------------------------- */
 	/*      Collect the x and y sampling values from the constraint.        */
 	/* -------------------------------------------------------------------- */
@@ -203,14 +203,14 @@ void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufT
 	/* -------------------------------------------------------------------- */
 	/*      Allocate buffer.                                                */
 	/* -------------------------------------------------------------------- */
-	int nPixelSize = GDALGetDataTypeSize(eBufType) / 8;
+	int nPixelSize = GDALGetDataTypeSize(array->get_gdal_buf_type()) / 8; //GDALGetDataTypeSize(eBufType) / 8;
 	vector<char> pData(nBufXSize * nBufYSize * nPixelSize);
 
 	/* -------------------------------------------------------------------- */
 	/*      Read request into buffer.                                       */
 	/* -------------------------------------------------------------------- */
 	CPLErr eErr = GDALRasterIO(hBand, GF_Read, nWinXOff, nWinYOff, nWinXSize, nWinYSize,
-			&pData[0], nBufXSize, nBufYSize, eBufType, 0, 0);
+			&pData[0], nBufXSize, nBufYSize, array->get_gdal_buf_type(), 0, 0);
 	if (eErr != CE_None)
 		throw Error("Error reading: " + array->name());
 
@@ -225,7 +225,7 @@ void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufT
  * @param hBand
  * @param filename
  */
-void read_map_array(Array *map, GDALRasterBandH hBand, string filename)
+void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS)
 {
 	Array::Dim_iter p = map->dim_begin();
 	int start = map->dimension_start(p, true);
@@ -250,15 +250,6 @@ void read_map_array(Array *map, GDALRasterBandH hBand, string filename)
 	/*      georeferencing maps.                                            */
 	/* -------------------------------------------------------------------- */
 
-	// Move this into the gdal_dds.cc code so that it store this in the
-	// Grid or maybe in the GDALDDS instance? Then we can avoid a second
-	// open/read operation on the file. jhrg
-	GDALDatasetH hDS;
-
-	hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
-
-	if (hDS == NULL) throw Error(string(CPLGetLastErrorMsg()));
-
 	double adfGeoTransform[6];
 
 	if (GDALGetGeoTransform(hDS, adfGeoTransform) != CE_None) {
@@ -269,8 +260,6 @@ void read_map_array(Array *map, GDALRasterBandH hBand, string filename)
 		adfGeoTransform[4] = 0.0;
 		adfGeoTransform[5] = 1.0;
 	}
-
-	GDALClose(hDS);
 
 	/* -------------------------------------------------------------------- */
 	/*      Set the map array.                                              */
