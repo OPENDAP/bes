@@ -10,8 +10,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-DISTCLEANFILES = atconfig generate_data_baselines.sh \
-generate_metadata_baselines.sh
+DISTCLEANFILES = atconfig
 
 check-local: atconfig atlocal $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)

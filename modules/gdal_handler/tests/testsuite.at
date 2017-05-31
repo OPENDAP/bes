@@ -17,3 +17,4 @@ AT_BESCMD_REPEAT_RESPONSE_PATTERN_TEST([gdal/cea.tif.r2.bescmd], [pass])
 
 # DAP4 responses
 AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/cea.tif.dmr.bescmd], [pass])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/cea.tif.dap.bescmd], [pass])

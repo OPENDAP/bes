@@ -47,8 +47,11 @@ void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 void GDALGrid::m_duplicate(const GDALGrid &g)
 {
 	filename = g.filename;
+#if 0
 	hBand = g.hBand;
 	eBufType = g.eBufType;
+#endif
+
 }
 
 // protected
@@ -100,7 +103,6 @@ bool GDALGrid::read()
 
         GDALArray *array = static_cast<GDALArray*>(array_var());
 
-        // TODO Free the raster band?
         read_data_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()));
         array->set_read_p(true);
 

@@ -116,7 +116,7 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
         // A 'feature' of Array is that it copies the variable passed to
         // its ctor. To get around that, pass null and use add_var_nocopy().
         // Modified for the DAP4 response; switched to this new ctor.
-        ar = new GDALArray( oss.str(), 0, filename, iBand+1, eBufType );
+        ar = new GDALArray( oss.str(), 0, filename, eBufType, iBand+1 );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterYSize( hDS ), "northing" );
         ar->append_dim( GDALGetRasterXSize( hDS ), "easting" );
@@ -127,14 +127,14 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
 /*      Add the dimension map arrays.                                   */
 /* -------------------------------------------------------------------- */
         bt = new GDALFloat64( "northing" );
-        ar = new GDALArray( "northing", 0, filename, iBand+1, eBufType );
+        ar = new GDALArray( "northing", 0, filename, eBufType, iBand+1 );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterYSize( hDS ), "northing" );
 
         grid->add_var_nocopy( ar, maps );
 
         bt = new GDALFloat64( "easting" );
-        ar = new GDALArray( "easting", 0, filename, iBand+1, eBufType );
+        ar = new GDALArray( "easting", 0, filename, eBufType, iBand+1 );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterXSize( hDS ), "easting" );
 
@@ -203,7 +203,7 @@ void read_data_array(GDALArray *array, GDALRasterBandH hBand) {
 	/* -------------------------------------------------------------------- */
 	/*      Allocate buffer.                                                */
 	/* -------------------------------------------------------------------- */
-	int nPixelSize = GDALGetDataTypeSize(array->get_gdal_buf_type()) / 8; //GDALGetDataTypeSize(eBufType) / 8;
+	int nPixelSize = GDALGetDataTypeSize(array->get_gdal_buf_type()) / 8;
 	vector<char> pData(nBufXSize * nBufYSize * nPixelSize);
 
 	/* -------------------------------------------------------------------- */

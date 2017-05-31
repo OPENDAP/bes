@@ -16,3 +16,4 @@ git diff truncated with the changes highlighted:
 You can see which tests use the pattern by looking in the testsuite.at file
 and looking for the macro AT_BESCMD_REPEAT_RESPONSE_PATTERN_TEST.
 
+jhrg

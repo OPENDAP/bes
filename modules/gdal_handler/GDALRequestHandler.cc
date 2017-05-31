@@ -32,6 +32,8 @@
 #include <string>
 #include <sstream>
 
+#include <gdal.h>
+
 #include <DMR.h>
 #include <mime_util.h>
 #include <D4BaseTypeFactory.h>
@@ -62,8 +64,9 @@
 #include <TheBESKeys.h>
 #if 0
 #include "GDAL_DDS.h"
-#endif
+
 #include "GDAL_DMR.h"
+#endif
 #include "GDALRequestHandler.h"
 
 #define GDAL_NAME "gdal"
@@ -328,14 +331,14 @@ bool GDALRequestHandler::gdal_build_dmr(BESDataHandlerInterface &dhi)
 	D4BaseTypeFactory d4_factory;
 	dmr->set_factory(&d4_factory);
 	dmr->build_using_dds(dds);
-
+#if 0
 	GDALDMR *gdal_dmr = new GDALDMR(dmr);
 	gdal_dmr->setGDALDataset(hDS);
 	gdal_dmr->set_factory(0);
 
 	delete dmr;	// The call below will make 'dmr' unreachable; delete it now to avoid a leak.
 	bes_dmr.set_dmr(gdal_dmr); // BESDMRResponse will delete gdal_dmr
-
+#endif
 	// Instead of fiddling with the internal storage of the DHI object,
 	// (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
 	// methods to set the constraints. But, why? Ans: from Patrick is that

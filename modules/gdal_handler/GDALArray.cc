@@ -44,9 +44,11 @@ void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 void GDALArray::m_duplicate(const GDALArray &a)
 {
 	filename = a.filename;
+#if 0
 	hBand = a.hBand;
-	iBandNum = a.iBandNum;
+#endif
 	eBufType = a.eBufType;
+    iBandNum = a.iBandNum;
 }
 
 BaseType *
@@ -55,20 +57,20 @@ GDALArray::ptr_duplicate()
     return new GDALArray(*this);
 }
 
-GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), hBand(0), iBandNum(0), eBufType(GDT_Unknown)
+GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), eBufType(GDT_Unknown), iBandNum(0)
 {
     BESDEBUG("gdal", " Called GDALArray::GDALArray() 1" << endl);
 }
-
+#if 0
 // FIXME Replace hBandIn with an index; mirror the fix in GDALGrid
 GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn) :
 		Array(name, proto), filename(filenameIn), hBand(hBandIn), iBandNum(0), eBufType(eBufTypeIn)
 {
 	BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
 }
-
-GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, int iBandNumIn, GDALDataType eBufTypeIn) :
-        Array(name, proto), filename(filenameIn), hBand(0), iBandNum(iBandNumIn), eBufType(eBufTypeIn)
+#endif
+GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALDataType eBufTypeIn,int iBandNumIn) :
+        Array(name, proto), filename(filenameIn), eBufType(eBufTypeIn), iBandNum(iBandNumIn)
 {
     BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
 }
@@ -94,9 +96,9 @@ GDALArray::read()
 
     try {
         if (name() == "northing" || name() == "easting")
-            read_map_array(this, hBand, hDS);
+            read_map_array(this, GDALGetRasterBand(hDS, get_gdal_band_num()), hDS);
         else
-            read_data_array(this, hBand);
+            read_data_array(this, GDALGetRasterBand(hDS, get_gdal_band_num()));
 
         set_read_p(true);
     }
