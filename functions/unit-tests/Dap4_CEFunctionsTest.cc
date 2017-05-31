@@ -81,8 +81,7 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-class Dap4_CEFunctionsTest: public TestFixture
-{
+class Dap4_CEFunctionsTest: public TestFixture {
 private:
     DMR *two_arrays_dmr;
     D4ParserSax2 *d4_parser;
@@ -90,7 +89,7 @@ private:
     ConstraintEvaluator ce;
 public:
     Dap4_CEFunctionsTest() :
-            two_arrays_dmr(0), d4_parser(0), d4_btf(0)
+        two_arrays_dmr(0), d4_parser(0), d4_btf(0)
     {
     }
     ~Dap4_CEFunctionsTest()
@@ -407,9 +406,9 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
             Array *resultArray = dynamic_cast<Array*>(result);
             DBG(
-                    cerr
-                            << "make_array_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
-                                    + " dimensions " << endl);
+                cerr
+                    << "make_array_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
+                        + " dimensions " << endl);
 
             CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
 
@@ -418,8 +417,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
             while (p != resultArray->dim_end()) {
                 CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
                 DBG(
-                        cerr << "make_array_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
-                                << endl);
+                    cerr << "make_array_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
+                        << endl);
                 ++p;
                 i++;
             }
@@ -451,15 +450,15 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
         try {
             DBG(
-                    cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with too few parameters"
-                            << endl);
+                cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with too few parameters"
+                    << endl);
             BaseType *result = function_make_dap4_array(&params, *two_arrays_dmr);
             CPPUNIT_ASSERT(!result);
         }
         catch (Error &e) {
             DBG(
-                    cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
-                            << endl);
+                cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
+                    << endl);
             CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
         }
 
@@ -470,15 +469,15 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
         try {
             DBG(
-                    cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with too many parameters"
-                            << endl);
+                cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with too many parameters"
+                    << endl);
             BaseType *result = function_make_dap4_array(&params, *two_arrays_dmr);
             CPPUNIT_ASSERT(!result);
         }
         catch (Error &e) {
             DBG(
-                    cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
-                            << endl);
+                cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
+                    << endl);
             CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
         }
 
@@ -496,16 +495,16 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
         try {
             DBG(
-                    cerr
-                            << "make_array_test_bad_params() - Calling function_make_dap4_array() with type mismatched parameters"
-                            << endl);
+                cerr
+                    << "make_array_test_bad_params() - Calling function_make_dap4_array() with type mismatched parameters"
+                    << endl);
             BaseType *result = function_make_dap4_array(&badTypeParams, *two_arrays_dmr);
             CPPUNIT_ASSERT(!result);
         }
         catch (Error &e) {
             DBG(
-                    cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
-                            << endl);
+                cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
+                    << endl);
             CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
         }
 
@@ -549,9 +548,9 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
             Array *resultArray = dynamic_cast<Array*>(result);
             DBG(
-                    cerr
-                            << "bind_shape_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
-                                    + " dimensions " << endl);
+                cerr
+                    << "bind_shape_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
+                        + " dimensions " << endl);
 
             CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
 
@@ -561,8 +560,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
             while (p != resultArray->dim_end()) {
                 CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
                 DBG(
-                        cerr << "bind_shape_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
-                                << endl);
+                    cerr << "bind_shape_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
+                        << endl);
                 ++p;
                 i++;
             }
@@ -628,12 +627,12 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
             (void) function_bind_shape_dap4(&params, *two_arrays_dmr);
             CPPUNIT_ASSERT(
-                    !"[ERROR] bind_shape_test_bad_shape() - Mismatched dimensions should have thrown an Exception");
+                !"[ERROR] bind_shape_test_bad_shape() - Mismatched dimensions should have thrown an Exception");
         }
         catch (Error &e) {
             DBG(
-                    cerr << "bind_shape_test_bad_shape() - Caught expected exception. Message: "
-                            << e.get_error_message() << endl);
+                cerr << "bind_shape_test_bad_shape() - Caught expected exception. Message: " << e.get_error_message()
+                    << endl);
             CPPUNIT_ASSERT(true);
         }
 
@@ -664,8 +663,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
             BaseType *result = function_bind_shape_dap4(&params, *two_arrays_dmr);
             DBG(
-                    cerr << "bind_shape_test_no_data() - function_bind_shape_dap4() returned an " << result->type_name()
-                            << endl);
+                cerr << "bind_shape_test_no_data() - function_bind_shape_dap4() returned an " << result->type_name()
+                    << endl);
 
             CPPUNIT_ASSERT(!"bind_shape_test_no_data() - Worked unexpectedly with an empty array.");
 
@@ -685,8 +684,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
             BaseType &sourceVar = dynamic_cast<BaseType &>(*two_arrays_dmr->root()->var("a"));
 
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap4() source variable: " << sourceVar.type_name()
-                            << " " << sourceVar.name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap4() source variable: " << sourceVar.type_name() << " "
+                    << sourceVar.name() << endl);
 
             string name = "new_name_for_you_buddy";
 
@@ -698,8 +697,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
             BaseType *result = function_bind_name_dap4(&params, *two_arrays_dmr);
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap4() returned " << result->type_name() << " "
-                            << result->name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap4() returned " << result->type_name() << " "
+                    << result->name() << endl);
             CPPUNIT_ASSERT(result->name() == name);
 
             Float64 myVar("myVar");
@@ -708,8 +707,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
             myVar.set_send_p(true);
 
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap4() source variable: " << myVar.type_name() << " "
-                            << myVar.name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap4() source variable: " << myVar.type_name() << " "
+                    << myVar.name() << endl);
 
             name = "new_name_for_myVar";
 
@@ -721,8 +720,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
             result = function_bind_name_dap4(&params2, *two_arrays_dmr);
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap4() returned " << result->type_name() << " "
-                            << result->name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap4() returned " << result->type_name() << " "
+                    << result->name() << endl);
             CPPUNIT_ASSERT(result->name() == name);
 
         }
@@ -737,7 +736,8 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Dap4_CEFunctionsTest);
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
     char option_char;

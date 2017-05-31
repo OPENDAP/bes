@@ -34,7 +34,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <fstream>
@@ -42,13 +42,13 @@ using namespace CppUnit ;
 #include <map>
 #include <string>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ifstream ;
-using std::map ;
-using std::string ;
-using std::make_pair ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::map;
+using std::string;
+using std::make_pair;
 
 #include "test_config.h"
 #include "BESFSDir.h"
@@ -62,124 +62,128 @@ static bool debug = false;
 
 class fsT: public TestFixture {
 private:
-    map<string,string> fileList ;
+    map<string, string> fileList;
 
 public:
-    fsT() {}
-    ~fsT() {}
+    fsT()
+    {
+    }
+    ~fsT()
+    {
+    }
 
     void setUp()
     {
-	fileList.insert( make_pair( "agglistT.cc", "agglistT.cc" ) ) ;
-	fileList.insert( make_pair( "bz2T.cc", "bz2T.cc" ) ) ;
-	fileList.insert( make_pair( "cacheT.cc", "cacheT.cc" ) ) ;
-	fileList.insert( make_pair( "catT.cc", "catT.cc" ) ) ;
-	fileList.insert( make_pair( "checkT.cc", "checkT.cc" ) ) ;
-	fileList.insert( make_pair( "constraintT.cc", "constraintT.cc" ) ) ;
-	fileList.insert( make_pair( "containerT.cc", "containerT.cc" ) ) ;
-	fileList.insert( make_pair( "debugT.cc", "debugT.cc" ) ) ;
-	fileList.insert( make_pair( "defT.cc", "defT.cc" ) ) ;
-	fileList.insert( make_pair( "encodeT.cc", "encodeT.cc" ) ) ;
-	fileList.insert( make_pair( "fsT.cc", "fsT.cc" ) ) ;
-	fileList.insert( make_pair( "gzT.cc", "gzT.cc" ) ) ;
-	fileList.insert( make_pair( "infoT.cc", "infoT.cc" ) ) ;
-	fileList.insert( make_pair( "initT.cc", "initT.cc" ) ) ;
-	fileList.insert( make_pair( "keysT.cc", "keysT.cc" ) ) ;
-	fileList.insert( make_pair( "lockT.cc", "lockT.cc" ) ) ;
-	fileList.insert( make_pair( "pfileT.cc", "pfileT.cc" ) ) ;
-	fileList.insert( make_pair( "plistT.cc", "plistT.cc" ) ) ;
-	fileList.insert( make_pair( "pvolT.cc", "pvolT.cc" ) ) ;
-	fileList.insert( make_pair( "regexT.cc", "regexT.cc" ) ) ;
-	fileList.insert( make_pair( "replistT.cc", "replistT.cc" ) ) ;
-	fileList.insert( make_pair( "reqhandlerT.cc", "reqhandlerT.cc" ) ) ;
-	fileList.insert( make_pair( "reqlistT.cc", "reqlistT.cc" ) ) ;
-	fileList.insert( make_pair( "resplistT.cc", "resplistT.cc" ) ) ;
-	fileList.insert( make_pair( "scrubT.cc", "scrubT.cc" ) ) ;
-	fileList.insert( make_pair( "servicesT.cc", "servicesT.cc" ) ) ;
-	fileList.insert( make_pair( "uncompressT.cc", "uncompressT.cc" ) ) ;
-	fileList.insert( make_pair( "urlT.cc", "urlT.cc" ) ) ;
-	fileList.insert( make_pair( "utilT.cc", "utilT.cc" ) ) ;
-	fileList.insert( make_pair( "zT.cc", "zT.cc" ) ) ;
-    } 
+        fileList.insert(make_pair("agglistT.cc", "agglistT.cc"));
+        fileList.insert(make_pair("bz2T.cc", "bz2T.cc"));
+        fileList.insert(make_pair("cacheT.cc", "cacheT.cc"));
+        fileList.insert(make_pair("catT.cc", "catT.cc"));
+        fileList.insert(make_pair("checkT.cc", "checkT.cc"));
+        fileList.insert(make_pair("constraintT.cc", "constraintT.cc"));
+        fileList.insert(make_pair("containerT.cc", "containerT.cc"));
+        fileList.insert(make_pair("debugT.cc", "debugT.cc"));
+        fileList.insert(make_pair("defT.cc", "defT.cc"));
+        fileList.insert(make_pair("encodeT.cc", "encodeT.cc"));
+        fileList.insert(make_pair("fsT.cc", "fsT.cc"));
+        fileList.insert(make_pair("gzT.cc", "gzT.cc"));
+        fileList.insert(make_pair("infoT.cc", "infoT.cc"));
+        fileList.insert(make_pair("initT.cc", "initT.cc"));
+        fileList.insert(make_pair("keysT.cc", "keysT.cc"));
+        fileList.insert(make_pair("lockT.cc", "lockT.cc"));
+        fileList.insert(make_pair("pfileT.cc", "pfileT.cc"));
+        fileList.insert(make_pair("plistT.cc", "plistT.cc"));
+        fileList.insert(make_pair("pvolT.cc", "pvolT.cc"));
+        fileList.insert(make_pair("regexT.cc", "regexT.cc"));
+        fileList.insert(make_pair("replistT.cc", "replistT.cc"));
+        fileList.insert(make_pair("reqhandlerT.cc", "reqhandlerT.cc"));
+        fileList.insert(make_pair("reqlistT.cc", "reqlistT.cc"));
+        fileList.insert(make_pair("resplistT.cc", "resplistT.cc"));
+        fileList.insert(make_pair("scrubT.cc", "scrubT.cc"));
+        fileList.insert(make_pair("servicesT.cc", "servicesT.cc"));
+        fileList.insert(make_pair("uncompressT.cc", "uncompressT.cc"));
+        fileList.insert(make_pair("urlT.cc", "urlT.cc"));
+        fileList.insert(make_pair("utilT.cc", "utilT.cc"));
+        fileList.insert(make_pair("zT.cc", "zT.cc"));
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( fsT ) ;
+CPPUNIT_TEST_SUITE( fsT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered fsT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered fsT::run" << endl;
 
-	BESFSDir fsd( "./", ".*T.cc$" ) ;
-	BESFSDir::fileIterator i = fsd.beginOfFileList() ;
-	BESFSDir::fileIterator e = fsd.endOfFileList() ;
-	for( ; i != e; i++ )
-	{
-	    map<string,string>::iterator f =
-		fileList.find( (*i).getFileName() ) ;
-	    CPPUNIT_ASSERT( f != fileList.end() ) ;
-	    CPPUNIT_ASSERT( (*i).getDirName() == "./" ) ;
-	}
+        BESFSDir fsd("./", ".*T.cc$");
+        BESFSDir::fileIterator i = fsd.beginOfFileList();
+        BESFSDir::fileIterator e = fsd.endOfFileList();
+        for (; i != e; i++) {
+            map<string, string>::iterator f = fileList.find((*i).getFileName());
+            CPPUNIT_ASSERT( f != fileList.end() );
+            CPPUNIT_ASSERT( (*i).getDirName() == "./" );
+        }
 
-	{
-	    BESFSFile fsf( "/some/path/to/a/file/with/extension/fnoc1.nc" ) ;
-	    CPPUNIT_ASSERT( fsf.getFullPath() == "/some/path/to/a/file/with/extension/fnoc1.nc" ) ;
-	    CPPUNIT_ASSERT( fsf.getDirName() == "/some/path/to/a/file/with/extension" ) ;
-	    CPPUNIT_ASSERT( fsf.getBaseName() == "fnoc1" ) ;
-	    CPPUNIT_ASSERT( fsf.getFileName() == "fnoc1.nc" ) ;
-	    CPPUNIT_ASSERT( fsf.getExtension() == "nc" ) ;
-	    string reason ;
-	    CPPUNIT_ASSERT( fsf.exists( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.isReadable( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.isWritable( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.isExecutable( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.hasDotDot() == false ) ;
-	}
+        {
+            BESFSFile fsf("/some/path/to/a/file/with/extension/fnoc1.nc");
+            CPPUNIT_ASSERT( fsf.getFullPath() == "/some/path/to/a/file/with/extension/fnoc1.nc" );
+            CPPUNIT_ASSERT( fsf.getDirName() == "/some/path/to/a/file/with/extension" );
+            CPPUNIT_ASSERT( fsf.getBaseName() == "fnoc1" );
+            CPPUNIT_ASSERT( fsf.getFileName() == "fnoc1.nc" );
+            CPPUNIT_ASSERT( fsf.getExtension() == "nc" );
+            string reason;
+            CPPUNIT_ASSERT( fsf.exists( reason ) == false );
+            CPPUNIT_ASSERT( fsf.isReadable( reason ) == false );
+            CPPUNIT_ASSERT( fsf.isWritable( reason ) == false );
+            CPPUNIT_ASSERT( fsf.isExecutable( reason ) == false );
+            CPPUNIT_ASSERT( fsf.hasDotDot() == false );
+        }
 
-	{
-	    BESFSFile fsf( "./fsT" ) ;
-	    CPPUNIT_ASSERT( fsf.getFullPath() == "./fsT" ) ;
-	    CPPUNIT_ASSERT( fsf.getDirName() == "." ) ;
-	    CPPUNIT_ASSERT( fsf.getBaseName() == "fsT" ) ;
-	    CPPUNIT_ASSERT( fsf.getExtension().empty() ) ;
-	    string reason ;
-	    CPPUNIT_ASSERT( fsf.exists( reason ) == true ) ;
-	    CPPUNIT_ASSERT( fsf.isReadable( reason ) == true ) ;
-	    CPPUNIT_ASSERT( fsf.isWritable( reason ) == true ) ;
-	    CPPUNIT_ASSERT( fsf.isExecutable( reason ) == true ) ;
-	    CPPUNIT_ASSERT( fsf.hasDotDot() == false ) ;
-	}
+        {
+            BESFSFile fsf("./fsT");
+            CPPUNIT_ASSERT( fsf.getFullPath() == "./fsT" );
+            CPPUNIT_ASSERT( fsf.getDirName() == "." );
+            CPPUNIT_ASSERT( fsf.getBaseName() == "fsT" );
+            CPPUNIT_ASSERT( fsf.getExtension().empty() );
+            string reason;
+            CPPUNIT_ASSERT( fsf.exists( reason ) == true );
+            CPPUNIT_ASSERT( fsf.isReadable( reason ) == true );
+            CPPUNIT_ASSERT( fsf.isWritable( reason ) == true );
+            CPPUNIT_ASSERT( fsf.isExecutable( reason ) == true );
+            CPPUNIT_ASSERT( fsf.hasDotDot() == false );
+        }
 
-	{
-	    BESFSFile fsf( "/some/dir/../parent/dir/fnoc1.nc" ) ;
-	    CPPUNIT_ASSERT( fsf.getFullPath() == "/some/dir/../parent/dir/fnoc1.nc" ) ;
-	    CPPUNIT_ASSERT( fsf.getDirName() == "/some/dir/../parent/dir" ) ;
-	    CPPUNIT_ASSERT( fsf.getBaseName() == "fnoc1" ) ;
-	    CPPUNIT_ASSERT( fsf.getFileName() == "fnoc1.nc" ) ;
-	    CPPUNIT_ASSERT( fsf.getExtension() == "nc" ) ;
-	    string reason ;
-	    CPPUNIT_ASSERT( fsf.exists( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.isReadable( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.isWritable( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.isExecutable( reason ) == false ) ;
-	    CPPUNIT_ASSERT( fsf.hasDotDot() == true ) ;
-	}
+        {
+            BESFSFile fsf("/some/dir/../parent/dir/fnoc1.nc");
+            CPPUNIT_ASSERT( fsf.getFullPath() == "/some/dir/../parent/dir/fnoc1.nc" );
+            CPPUNIT_ASSERT( fsf.getDirName() == "/some/dir/../parent/dir" );
+            CPPUNIT_ASSERT( fsf.getBaseName() == "fnoc1" );
+            CPPUNIT_ASSERT( fsf.getFileName() == "fnoc1.nc" );
+            CPPUNIT_ASSERT( fsf.getExtension() == "nc" );
+            string reason;
+            CPPUNIT_ASSERT( fsf.exists( reason ) == false );
+            CPPUNIT_ASSERT( fsf.isReadable( reason ) == false );
+            CPPUNIT_ASSERT( fsf.isWritable( reason ) == false );
+            CPPUNIT_ASSERT( fsf.isExecutable( reason ) == false );
+            CPPUNIT_ASSERT( fsf.hasDotDot() == true );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from fsT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from fsT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( fsT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( fsT );
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
     char option_char;

@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -69,11 +68,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
-class MakeMaskFunctionTest:public TestFixture
-{
+class MakeMaskFunctionTest: public TestFixture {
 private:
     TestTypeFactory btf;
     D4TestTypeFactory d4_ttf;
@@ -81,13 +78,17 @@ private:
     Array *dim0, *dim1;
 
 public:
-    MakeMaskFunctionTest() : dim0(0), dim1(0)
-    { }
+    MakeMaskFunctionTest() :
+        dim0(0), dim1(0)
+    {
+    }
 
     ~MakeMaskFunctionTest()
-    {}
+    {
+    }
 
-    void setUp() {
+    void setUp()
+    {
         try {
             // Set up the arrays
             const int dim_10 = 10;
@@ -96,7 +97,7 @@ public:
 
             vector<dods_float32> values;
             for (int i = 0; i < dim_10; ++i) {
-                values.push_back(dim_10 * sin(i * 180/dim_10));
+                values.push_back(dim_10 * sin(i * 180 / dim_10));
             }
             DBG2(cerr << "Initial one D Array data values: ");
             DBG2(copy(values.begin(), values.end(), ostream_iterator<dods_float32>(cerr, " ")));
@@ -110,7 +111,7 @@ public:
 
             values.clear();
             for (int i = 0; i < dim_4; ++i) {
-                values.push_back(dim_4 * sin(i * 180/dim_4));
+                values.push_back(dim_4 * sin(i * 180 / dim_4));
             }
             DBG2(cerr << "Initial one D Array data values: ");
             DBG2(copy(values.begin(), values.end(), ostream_iterator<dods_float32>(cerr, " ")));
@@ -124,8 +125,8 @@ public:
 
             vector<dods_int32> values2(50);
             for (int i = 0; i < 10; ++i)
-                for (int j = 0; j < 5; ++j)
-                    values2[j*10 + i] = 10 * sin(i * 18);
+            for (int j = 0; j < 5; ++j)
+            values2[j*10 + i] = 10 * sin(i * 18);
             DBG2(cerr << "Initial two D Array data values: ");
             DBG2(copy(values2.begin(), values2.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG2(cerr << endl);
@@ -137,8 +138,8 @@ public:
 
             vector<dods_float32> values3(50);
             for (int i = 0; i < 10; ++i)
-                for (int j = 0; j < 5; ++j)
-                    values3[j*10 + i] = sin(i * 18);
+            for (int j = 0; j < 5; ++j)
+            values3[j*10 + i] = sin(i * 18);
             DBG2(cerr << "Initial two D Array data values: ");
             DBG2(copy(values3.begin(), values3.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
             DBG2(cerr << endl);
@@ -163,14 +164,17 @@ public:
         }
     }
 
-    void tearDown() { }
+    void tearDown()
+    {
+    }
 
-    void no_arg_test() {
+    void no_arg_test()
+    {
         DBG(cerr << "In no_arg_test..." << endl);
 
         BaseType *result = 0;
         try {
-            BaseType *argv[] = { };
+            BaseType *argv[] = {};
             DDS *dds = new DDS(&btf, "empty");
             function_dap2_make_mask(0, argv, *dds /* DDS & */, &result);
             CPPUNIT_ASSERT(result->type() == dods_str_c);
@@ -185,11 +189,12 @@ public:
         DBG(cerr << "Out no_arg_test" << endl);
     }
 
-    void find_value_index_test() {
+    void find_value_index_test()
+    {
         // I googled for this way to init std::vector<>.
         // See http://www.cplusplus.com/reference/vector/vector/vector/
-        double init_values[] = {1,2,3,4,5,6,7,8,9,10};
-        vector<double> data (init_values, init_values + sizeof(init_values) / sizeof(double) );
+        double init_values[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        vector<double> data(init_values, init_values + sizeof(init_values) / sizeof(double));
         DBG2(cerr << "data values: ");
         DBG2(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
         DBG2(cerr << endl);
@@ -199,20 +204,21 @@ public:
         CPPUNIT_ASSERT(find_value_index(11.0, data) == -1);
     }
 
-    void find_value_indices_test() {
-        double init_values[] = {1,2,3,4,5,6,7,8,9,10};
-        vector<double> row (init_values, init_values + sizeof(init_values) / sizeof(double) );
+    void find_value_indices_test()
+    {
+        double init_values[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        vector<double> row(init_values, init_values + sizeof(init_values) / sizeof(double));
         DBG2(cerr << "row values: ");
         DBG2(copy(row.begin(), row.end(), ostream_iterator<double>(cerr, " ")));
         DBG2(cerr << endl);
 
-        double init_values2[] = {10,20,30,40,50,60,70,80,90,100};
-        vector<double> col (init_values2, init_values2 + sizeof(init_values2) / sizeof(double) );
+        double init_values2[] = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+        vector<double> col(init_values2, init_values2 + sizeof(init_values2) / sizeof(double));
         DBG2(cerr << "col values: ");
         DBG2(copy(col.begin(), col.end(), ostream_iterator<double>(cerr, " ")));
         DBG2(cerr << endl);
 
-        vector< vector<double> > maps;
+        vector<vector<double> > maps;
         maps.push_back(row);
         maps.push_back(col);
 
@@ -233,7 +239,8 @@ public:
         CPPUNIT_ASSERT(ind.at(1) == -1);
     }
 
-    void all_indices_valid_test() {
+    void all_indices_valid_test()
+    {
         vector<int> i1;
         i1.push_back(3);
         i1.push_back(7);
@@ -247,7 +254,8 @@ public:
         CPPUNIT_ASSERT(!all_indices_valid(i2));
     }
 
-    void make_mask_helper_test_1() {
+    void make_mask_helper_test_1()
+    {
         vector<dods_byte> mask(10);     // Caller must make a big enough mask
 
         vector<Array*> dims;
@@ -255,10 +263,10 @@ public:
 
         Array *tuples = new Array("mask", new Float32("mask"));
         vector<dods_float32> tuples_values;
-        tuples_values.push_back(10*sin(2*18));
-        tuples_values.push_back(10*sin(3*18));
-        tuples_values.push_back(10*sin(4*18));
-        tuples_values.push_back(10*sin(5*18));
+        tuples_values.push_back(10 * sin(2 * 18));
+        tuples_values.push_back(10 * sin(3 * 18));
+        tuples_values.push_back(10 * sin(4 * 18));
+        tuples_values.push_back(10 * sin(5 * 18));
         tuples->set_value(tuples_values, tuples_values.size());
 
         DBG(cerr << "Tuples: ");
@@ -283,7 +291,8 @@ public:
         CPPUNIT_ASSERT(mask.at(9) == 0);
     }
 
-    void make_mask_helper_test_2() {
+    void make_mask_helper_test_2()
+    {
         vector<dods_byte> mask(100);     // Caller must make a big enough mask
 
         vector<Array*> dims;
@@ -292,14 +301,14 @@ public:
 
         Array *tuples = new Array("mask", new Float32("mask"));
         vector<dods_float32> tuples_values;
-        tuples_values.push_back(10*sin(2*18));
-        tuples_values.push_back(10*sin(2*18));
-        tuples_values.push_back(10*sin(3*18));
-        tuples_values.push_back(10*sin(3*18));
-        tuples_values.push_back(10*sin(4*18));
-        tuples_values.push_back(10*sin(4*18));
-        tuples_values.push_back(10*sin(5*18));
-        tuples_values.push_back(10*sin(5*18));
+        tuples_values.push_back(10 * sin(2 * 18));
+        tuples_values.push_back(10 * sin(2 * 18));
+        tuples_values.push_back(10 * sin(3 * 18));
+        tuples_values.push_back(10 * sin(3 * 18));
+        tuples_values.push_back(10 * sin(4 * 18));
+        tuples_values.push_back(10 * sin(4 * 18));
+        tuples_values.push_back(10 * sin(5 * 18));
+        tuples_values.push_back(10 * sin(5 * 18));
         tuples->set_value(tuples_values, tuples_values.size());
 
         DBG(cerr << "Tuples: ");
@@ -324,7 +333,8 @@ public:
         CPPUNIT_ASSERT(mask.at(99) == 0);
     }
 
-    void make_mask_helper_test_3() {
+    void make_mask_helper_test_3()
+    {
         vector<dods_byte> mask(160);     // Caller must make a big enough mask
 
         vector<Array*> dims;
@@ -334,17 +344,17 @@ public:
 
         Array *tuples = new Array("mask", new Float32("mask"));
         vector<dods_float32> tuples_values;
-        tuples_values.push_back(10*sin(0*18));
-        tuples_values.push_back(4*sin(0*45));
-        tuples_values.push_back(4*sin(0*45));
+        tuples_values.push_back(10 * sin(0 * 18));
+        tuples_values.push_back(4 * sin(0 * 45));
+        tuples_values.push_back(4 * sin(0 * 45));
 
-        tuples_values.push_back(10*sin(2*18));
-        tuples_values.push_back(4*sin(2*45));
-        tuples_values.push_back(4*sin(2*45));
+        tuples_values.push_back(10 * sin(2 * 18));
+        tuples_values.push_back(4 * sin(2 * 45));
+        tuples_values.push_back(4 * sin(2 * 45));
 
-        tuples_values.push_back(10*sin(3*18));
-        tuples_values.push_back(4*sin(3*45));
-        tuples_values.push_back(4*sin(3*45));
+        tuples_values.push_back(10 * sin(3 * 18));
+        tuples_values.push_back(4 * sin(3 * 45));
+        tuples_values.push_back(4 * sin(3 * 45));
 
         tuples->set_value(tuples_values, tuples_values.size());
 
@@ -369,9 +379,9 @@ public:
         CPPUNIT_ASSERT(mask.at(63) == 1);
         CPPUNIT_ASSERT(mask.at(64) == 0);
         CPPUNIT_ASSERT(mask.at(159) == 0);
-     }
+    }
 
-    CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
+CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(find_value_index_test);
@@ -381,14 +391,16 @@ public:
     CPPUNIT_TEST(make_mask_helper_test_2);
     CPPUNIT_TEST(make_mask_helper_test_3);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MakeMaskFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dDh");
     char option_char;
@@ -419,7 +431,7 @@ int main(int argc, char*argv[]) {
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }

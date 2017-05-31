@@ -68,8 +68,7 @@ static const string c_cache_name = "/dap2_result_cache";
 
 using namespace libdap;
 
-class StoredDap2ResultTest: public TestFixture
-{
+class StoredDap2ResultTest: public TestFixture {
 private:
     TestTypeFactory ttf;
     DDS *test_05_dds;
@@ -84,8 +83,8 @@ private:
 
 public:
     StoredDap2ResultTest() :
-            test_05_dds(0), dp(&ttf), d_data_root_dir(string(TEST_SRC_DIR)), d_stored_result_subdir(c_cache_name), d_response_cache(
-                    string(TEST_SRC_DIR) + c_cache_name), cache(0)
+        test_05_dds(0), dp(&ttf), d_data_root_dir(string(TEST_SRC_DIR)), d_stored_result_subdir(c_cache_name), d_response_cache(
+            string(TEST_SRC_DIR) + c_cache_name), cache(0)
     {
     }
 
@@ -283,8 +282,8 @@ public:
 
             stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
             DBG(
-                    cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
-                            << baseline_local_id << endl);
+                cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
+                    << baseline_local_id << endl);
             CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 
             // Force read from the cache file
@@ -316,7 +315,7 @@ public:
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
             Regex regex(
-                    "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+                "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
             cache_dds = 0;
@@ -349,8 +348,8 @@ public:
 
             stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
             DBG(
-                    cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
-                            << baseline_local_id << endl);
+                cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
+                    << baseline_local_id << endl);
             CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 
             // DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
@@ -384,7 +383,7 @@ public:
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
             Regex regex(
-                    "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+                "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
             cache_dds = 0;
@@ -393,8 +392,8 @@ public:
             stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
 
             DBG(
-                    cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
-                            << baseline_local_id << endl);
+                cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
+                    << baseline_local_id << endl);
             CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 
             cache->delete_instance();
@@ -422,7 +421,7 @@ public:
         TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::PREFIX_KEY, "my_result_");
         TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "1100");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY,
-                "http://localhost:8080/opendap/xsl/asynResponse.xsl");
+            "http://localhost:8080/opendap/xsl/asynResponse.xsl");
 
         cache = BESStoredDapResultCache::get_instance();
 
@@ -434,14 +433,14 @@ public:
             //cache->unlock_and_close(stored_result_local_id);
 
             DBG(
-                    cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
-                            << baseline_local_id << endl);
+                cerr << "stored_result_local_id: " << stored_result_local_id << ", baseline_local_id: "
+                    << baseline_local_id << endl);
             CPPUNIT_ASSERT("/" + stored_result_local_id == baseline_local_id);
 
             // DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
             // Force read from the cache file
             DDS *cache_dds = cache->get_cached_dap2_data_ddx(d_data_root_dir + "/" + stored_result_local_id, &ttf,
-                    "test.05");
+                "test.05");
             // The code cannot unlock the file because get_cached_dap2_data_ddx()
             // does not lock the cached item.
             // cache->unlock_and_close(stored_result_local_id);
@@ -465,7 +464,7 @@ public:
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
             Regex regex(
-                    "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+                "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
             cache_dds = 0;

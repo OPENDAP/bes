@@ -92,9 +92,9 @@ CPPUNIT_TEST_SUITE( AbortFunctionTest );
     void abortFunctionTest()
     {
         DBG(cerr << endl << "abortFunctionTest() - BEGIN." << endl);
-      
+
         debug_function::AbortFunc abortFunc;
-        
+
         libdap::btp_func abort_function = abortFunc.get_btp_func();
 
         libdap::Int32 time("time");
@@ -102,20 +102,18 @@ CPPUNIT_TEST_SUITE( AbortFunctionTest );
         libdap::BaseType *argv[] = { &time };
         libdap::BaseType *result = 0;
         libdap::BaseType **btpp = &result;
-        
-        abort_function(0, argv, *testDDS, btpp);      
-        
-        if(debug){
-            (*btpp)->print_val(cerr,"",false);
+
+        abort_function(0, argv, *testDDS, btpp);
+
+        if (debug) {
+            (*btpp)->print_val(cerr, "", false);
             cerr << endl;
         }
-             
+
         CPPUNIT_ASSERT(true);
-        
+
         DBG(cerr << "abortFunctionTest() - END." << endl);
     }
-
-    
 
 };
 

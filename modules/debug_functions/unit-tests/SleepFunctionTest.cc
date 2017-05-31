@@ -92,26 +92,26 @@ CPPUNIT_TEST_SUITE( SleepFunctionTest );
     void sleepFunctionTest()
     {
         DBG(cerr << endl << "sleepFunctionTest() - BEGIN." << endl);
-     
+
         debug_function::SleepFunc sleepFunc;
-        
-        libdap::btp_func sleep_function=sleepFunc.get_btp_func();
-           
+
+        libdap::btp_func sleep_function = sleepFunc.get_btp_func();
+
         libdap::Int32 time("time");
         time.set_value(3000);
         libdap::BaseType *argv[] = { &time };
         libdap::BaseType *result = 0;
         libdap::BaseType **btpp = &result;
-        
-        sleep_function(1, argv, *testDDS, btpp);      
 
-        if(debug){
-            (*btpp)->print_val(cerr,"",false);
+        sleep_function(1, argv, *testDDS, btpp);
+
+        if (debug) {
+            (*btpp)->print_val(cerr, "", false);
             cerr << endl;
         }
 
         CPPUNIT_ASSERT(true);
-        
+
         DBG(cerr << "sleepFunctionTest() - END." << endl);
     }
 

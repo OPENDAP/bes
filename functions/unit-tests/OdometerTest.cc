@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -57,8 +56,7 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
 static double elapsed_time(const struct timeval &begin, const struct timeval &end)
 {
@@ -73,15 +71,16 @@ static double elapsed_time(const struct timeval &begin, const struct timeval &en
     return double(sec + (double(usec) / 1000000.0));
 }
 
-class OdometerTest: public TestFixture
-{
+class OdometerTest: public TestFixture {
 private:
 
 public:
-	OdometerTest()
-    {}
+    OdometerTest()
+    {
+    }
     ~OdometerTest()
-    {}
+    {
+    }
 
     void setUp()
     {
@@ -97,81 +96,84 @@ public:
     {
     }
 
-    void ctor_test() {
+    void ctor_test()
+    {
         Odometer::shape shape(3);
-    	shape.at(0) = 10;
-    	shape.at(1) = 20;
-    	shape.at(2) = 30;
-    	Odometer od(shape);
+        shape.at(0) = 10;
+        shape.at(1) = 20;
+        shape.at(2) = 30;
+        Odometer od(shape);
 
-    	CPPUNIT_ASSERT(od.offset() == 0);
-    	CPPUNIT_ASSERT(od.end() == 10 * 20 *30);
-    	Odometer::shape indices;
-    	od.indices(indices);
-    	CPPUNIT_ASSERT(indices.size() == 3);
-    	CPPUNIT_ASSERT(indices.at(0) == 0);
-    	CPPUNIT_ASSERT(indices.at(1) == 0);
-    	CPPUNIT_ASSERT(indices.at(2) == 0);
-    }
-
-    void next_test() {
-        Odometer::shape shape(3);
-    	shape.at(0) = 10;
-    	shape.at(1) = 20;
-    	shape.at(2) = 30;
-    	Odometer od(shape);
-
-    	for (int i = 0; i < 29; ++i )
-    		od.next();
-
-    	CPPUNIT_ASSERT(od.offset() != od.end());
-    	CPPUNIT_ASSERT(od.offset() == 29);
+        CPPUNIT_ASSERT(od.offset() == 0);
+        CPPUNIT_ASSERT(od.end() == 10 * 20 * 30);
         Odometer::shape indices;
         od.indices(indices);
-    	CPPUNIT_ASSERT(indices.size() == 3);
-    	CPPUNIT_ASSERT(indices.at(0) == 0);
-    	CPPUNIT_ASSERT(indices.at(1) == 0);
-    	CPPUNIT_ASSERT(indices.at(2) == 29);
-
-    	od.next();
-
-    	CPPUNIT_ASSERT(od.offset() != od.end());
-    	CPPUNIT_ASSERT(od.offset() == 30);
-    	od.indices(indices);
-    	CPPUNIT_ASSERT(indices.size() == 3);
-    	CPPUNIT_ASSERT(indices.at(0) == 0);
-    	CPPUNIT_ASSERT(indices.at(1) == 1);
-    	CPPUNIT_ASSERT(indices.at(2) == 0);
-
-    	for (int i = 0; i < 600 - 30; ++i )
-    		od.next();
-
-    	CPPUNIT_ASSERT(od.offset() != od.end());
-    	CPPUNIT_ASSERT(od.offset() == 600);
-    	od.indices(indices);
-    	CPPUNIT_ASSERT(indices.size() == 3);
-    	CPPUNIT_ASSERT(indices.at(0) == 1);
-    	CPPUNIT_ASSERT(indices.at(1) == 0);
-    	CPPUNIT_ASSERT(indices.at(2) == 0);
-
-    	// 6000 is the size of the array
-    	for (int i = 0; i < 5999 - 600; ++i )
-    		od.next();
-
-    	CPPUNIT_ASSERT(od.offset() != od.end());
-    	CPPUNIT_ASSERT(od.offset() == 5999);
-    	od.indices(indices);
-    	CPPUNIT_ASSERT(indices.size() == 3);
-    	CPPUNIT_ASSERT(indices.at(0) == 9);
-    	CPPUNIT_ASSERT(indices.at(1) == 19);
-    	CPPUNIT_ASSERT(indices.at(2) == 29);
-
-    	od.next();
-
-    	CPPUNIT_ASSERT(od.offset() == od.end());
+        CPPUNIT_ASSERT(indices.size() == 3);
+        CPPUNIT_ASSERT(indices.at(0) == 0);
+        CPPUNIT_ASSERT(indices.at(1) == 0);
+        CPPUNIT_ASSERT(indices.at(2) == 0);
     }
 
-    void set_indices_test() {
+    void next_test()
+    {
+        Odometer::shape shape(3);
+        shape.at(0) = 10;
+        shape.at(1) = 20;
+        shape.at(2) = 30;
+        Odometer od(shape);
+
+        for (int i = 0; i < 29; ++i)
+            od.next();
+
+        CPPUNIT_ASSERT(od.offset() != od.end());
+        CPPUNIT_ASSERT(od.offset() == 29);
+        Odometer::shape indices;
+        od.indices(indices);
+        CPPUNIT_ASSERT(indices.size() == 3);
+        CPPUNIT_ASSERT(indices.at(0) == 0);
+        CPPUNIT_ASSERT(indices.at(1) == 0);
+        CPPUNIT_ASSERT(indices.at(2) == 29);
+
+        od.next();
+
+        CPPUNIT_ASSERT(od.offset() != od.end());
+        CPPUNIT_ASSERT(od.offset() == 30);
+        od.indices(indices);
+        CPPUNIT_ASSERT(indices.size() == 3);
+        CPPUNIT_ASSERT(indices.at(0) == 0);
+        CPPUNIT_ASSERT(indices.at(1) == 1);
+        CPPUNIT_ASSERT(indices.at(2) == 0);
+
+        for (int i = 0; i < 600 - 30; ++i)
+            od.next();
+
+        CPPUNIT_ASSERT(od.offset() != od.end());
+        CPPUNIT_ASSERT(od.offset() == 600);
+        od.indices(indices);
+        CPPUNIT_ASSERT(indices.size() == 3);
+        CPPUNIT_ASSERT(indices.at(0) == 1);
+        CPPUNIT_ASSERT(indices.at(1) == 0);
+        CPPUNIT_ASSERT(indices.at(2) == 0);
+
+        // 6000 is the size of the array
+        for (int i = 0; i < 5999 - 600; ++i)
+            od.next();
+
+        CPPUNIT_ASSERT(od.offset() != od.end());
+        CPPUNIT_ASSERT(od.offset() == 5999);
+        od.indices(indices);
+        CPPUNIT_ASSERT(indices.size() == 3);
+        CPPUNIT_ASSERT(indices.at(0) == 9);
+        CPPUNIT_ASSERT(indices.at(1) == 19);
+        CPPUNIT_ASSERT(indices.at(2) == 29);
+
+        od.next();
+
+        CPPUNIT_ASSERT(od.offset() == od.end());
+    }
+
+    void set_indices_test()
+    {
         Odometer::shape shape(3);
         shape.at(0) = 10;
         shape.at(1) = 20;
@@ -198,7 +200,8 @@ public:
 
     // This tests the Odometer::set_indices() method that takes a vector of ints,
     // not unsigned ints (which is how Odometer::shape is defined)
-    void set_indices_test2() {
+    void set_indices_test2()
+    {
         Odometer::shape shape(3);
         shape.at(0) = 10;
         shape.at(1) = 20;
@@ -223,28 +226,29 @@ public:
         CPPUNIT_ASSERT(od.offset() == 5999);
     }
 
-     // This test always passes, but how long does it take?
+    // This test always passes, but how long does it take?
     // We can try different versions of next() and see if there's
     // much difference.
-    void time_test_1() {
-    	Odometer::shape shape(3);
-    	shape.at(0) = 1000;
-    	shape.at(1) = 1000;
-    	shape.at(2) = 1000;
-    	Odometer od(shape);
+    void time_test_1()
+    {
+        Odometer::shape shape(3);
+        shape.at(0) = 1000;
+        shape.at(1) = 1000;
+        shape.at(2) = 1000;
+        Odometer od(shape);
 
-    	struct timeval begin, end;
-    	gettimeofday(&begin, 0);
+        struct timeval begin, end;
+        gettimeofday(&begin, 0);
 
-    	unsigned int len = 1000 * 1000 * 1000;
-    	for (unsigned int i = 0; i < len; ++i)
-    		od.next();
+        unsigned int len = 1000 * 1000 * 1000;
+        for (unsigned int i = 0; i < len; ++i)
+            od.next();
 
         gettimeofday(&end, 0);
         double elapsed = elapsed_time(begin, end);
         DBG(cerr << " Time to run next(): " << elapsed << endl);
 
-    	CPPUNIT_ASSERT(od.offset() == od.end());
+        CPPUNIT_ASSERT(od.offset() == od.end());
     }
 
 #if 0
@@ -260,7 +264,7 @@ public:
 
         unsigned int len = 1000 * 1000 * 1000;
         for (int i = 0; i < len; ++i)
-                od.next_2();
+        od.next_2();
 
         gettimeofday(&end, 0);
         double elapsed = elapsed_time(begin, end);
@@ -271,7 +275,7 @@ public:
     }
 #endif
 
-    CPPUNIT_TEST_SUITE( OdometerTest );
+CPPUNIT_TEST_SUITE( OdometerTest );
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(next_test);
@@ -282,14 +286,16 @@ public:
     // CPPUNIT_TEST(time_test_1);
     // CPPUNIT_TEST(time_test_2);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OdometerTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dDh");
     char option_char;
@@ -320,7 +326,7 @@ int main(int argc, char*argv[]) {
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }

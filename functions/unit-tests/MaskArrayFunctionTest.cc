@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -69,11 +68,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
-class MaskArrayFunctionTest:public TestFixture
-{
+class MaskArrayFunctionTest: public TestFixture {
 private:
     TestTypeFactory btf;
     D4TestTypeFactory d4_ttf;
@@ -86,19 +83,20 @@ private:
     vector<dods_byte> d_mask, d_mask2;
 
 public:
-    MaskArrayFunctionTest(): one_d_array(0), two_d_array(0), float_2d_array(0),
-        one_d_mask(0), two_d_mask(0), d_mask(10), d_mask2(50)
+    MaskArrayFunctionTest() :
+        one_d_array(0), two_d_array(0), float_2d_array(0), one_d_mask(0), two_d_mask(0), d_mask(10), d_mask2(50)
     {
         for (int i = 0; i < 10; ++i)
-            d_mask.at(i) = (i < 5) ? 1: 0;
+            d_mask.at(i) = (i < 5) ? 1 : 0;
 
         for (int i = 0; i < 10; ++i)
             for (int j = 0; j < 5; ++j)
-                d_mask2.at(j*10 + i) = (i < 5) ? 1: 0;
+                d_mask2.at(j * 10 + i) = (i < 5) ? 1 : 0;
     }
 
     ~MaskArrayFunctionTest()
-    {}
+    {
+    }
 
     void setUp()
     {
@@ -123,7 +121,7 @@ public:
             vector<dods_int32> values2(50);
             for (int i = 0; i < 10; ++i)
                 for (int j = 0; j < 5; ++j)
-                    values2[j*10 + i] = 10 * sin(i * 18);
+                    values2[j * 10 + i] = 10 * sin(i * 18);
             DBG2(cerr << "Initial two D Array data values: ");
             DBG2(copy(values2.begin(), values2.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG2(cerr << endl);
@@ -136,7 +134,7 @@ public:
             vector<dods_float32> values3(50);
             for (int i = 0; i < 10; ++i)
                 for (int j = 0; j < 5; ++j)
-                    values3[j*10 + i] = sin(i * 18);
+                    values3[j * 10 + i] = sin(i * 18);
             DBG2(cerr << "Initial two D Array data values: ");
             DBG2(copy(values3.begin(), values3.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
             DBG2(cerr << endl);
@@ -162,19 +160,24 @@ public:
 
     void tearDown()
     {
-        delete one_d_array; one_d_array = 0;
-        delete two_d_array; two_d_array = 0;
+        delete one_d_array;
+        one_d_array = 0;
+        delete two_d_array;
+        two_d_array = 0;
 
-        delete one_d_mask; one_d_mask = 0;
-        delete two_d_mask; two_d_mask = 0;
+        delete one_d_mask;
+        one_d_mask = 0;
+        delete two_d_mask;
+        two_d_mask = 0;
     }
 
-    void no_arg_test() {
+    void no_arg_test()
+    {
         DBG(cerr << "In no_arg_test..." << endl);
 
         BaseType *result = 0;
         try {
-            BaseType *argv[] = { };
+            BaseType *argv[] = {};
             DDS *dds = new DDS(&btf, "empty");
             function_mask_dap2_array(0, argv, *dds /* DDS & */, &result);
             CPPUNIT_ASSERT(result->type() == dods_str_c);
@@ -263,7 +266,8 @@ public:
         DBG(cerr << "Out mask_array_helper_float_2d_test" << endl);
     }
 
-    void float32_2d_mask_array_test() {
+    void float32_2d_mask_array_test()
+    {
         DBG(cerr << "In float32_2d_mask_array_test..." << endl);
 
         BaseType *result = 0;
@@ -287,7 +291,8 @@ public:
 
         DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_mask_array.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_array_c);
@@ -308,7 +313,8 @@ public:
         DBG(cerr << "Out float32_2d_mask_array_test" << endl);
     }
 
-    void general_mask_array_test() {
+    void general_mask_array_test()
+    {
         DBG(cerr << "In general_mask_array_test..." << endl);
 
         BaseType *result = 0;
@@ -332,14 +338,15 @@ public:
 
         DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_structure_c);
         Structure *result_struct = static_cast<Structure*>(result);
         CPPUNIT_ASSERT(result_struct->var_begin() != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+1 != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+2 == result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin() + 1 != result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin() + 2 == result_struct->var_end());
 
         Array *array_1 = static_cast<Array*>(*(result_struct->var_begin()));
 
@@ -370,7 +377,8 @@ public:
         DBG(cerr << "Out general_mask_array_test" << endl);
     }
 
-    void dap4_general_mask_array_test() {
+    void dap4_general_mask_array_test()
+    {
         DBG(cerr << "In dap4_general_mask_array_test..." << endl);
 
         BaseType *result = 0;
@@ -400,14 +408,15 @@ public:
 
         DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_structure_c);
         Structure *result_struct = static_cast<Structure*>(result);
         CPPUNIT_ASSERT(result_struct->var_begin() != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+1 != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+2 == result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin() + 1 != result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin() + 2 == result_struct->var_end());
 
         Array *array_1 = static_cast<Array*>(*(result_struct->var_begin()));
 
@@ -438,7 +447,7 @@ public:
         DBG(cerr << "Out dap4_general_mask_array_test" << endl);
     }
 
-    CPPUNIT_TEST_SUITE( MaskArrayFunctionTest );
+CPPUNIT_TEST_SUITE( MaskArrayFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(mask_array_helper_one_d_test);
@@ -449,14 +458,16 @@ public:
     CPPUNIT_TEST(general_mask_array_test);
     CPPUNIT_TEST(dap4_general_mask_array_test);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MaskArrayFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dDh");
     char option_char;
@@ -487,7 +498,7 @@ int main(int argc, char*argv[]) {
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }

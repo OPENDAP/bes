@@ -34,17 +34,17 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <string>
 #include <iostream>
 #include <sstream>
 
-using std::cout ;
+using std::cout;
 using std::cerr;
-using std::endl ;
-using std::string ;
-using std::ostringstream ;
+using std::endl;
+using std::string;
+using std::ostringstream;
 
 #include "BuildTInterface.h"
 #include "BuildTCmd1.h"
@@ -55,60 +55,61 @@ using std::ostringstream ;
 
 #include "test_config.h"
 
-int what_test = 0 ;
+int what_test = 0;
 
 static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-
 class buildT: public TestFixture {
 private:
 
 public:
-    buildT() {}
-    ~buildT() {}
+    buildT()
+    {
+    }
+    ~buildT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( buildT ) ;
+CPPUNIT_TEST_SUITE( buildT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-    	TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/bes.conf";
+        TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/bes.conf";
 
-	cout << endl << "*****************************************" << endl;
-	cout << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl;
-	cout << "Entered buildT::run" << endl;
+        cout << endl << "*****************************************" << endl;
+        cout << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl;
+        cout << "Entered buildT::run" << endl;
 
-	try
-	{
-	    BESXMLCommand::add_command( "cmd1.1", BuildTCmd1::Cmd1Builder ) ;
-	    BESXMLCommand::add_command( "cmd2.1", BuildTCmd2::Cmd2Builder ) ;
-	    BESXMLCommand::add_command( "cmd1.2", BuildTCmd1::Cmd1Builder ) ;
-	    BESXMLCommand::add_command( "cmd2.2", BuildTCmd2::Cmd2Builder ) ;
-	}
-	catch( BESError &e )
-	{
-	    cout << "failed to add commands" << endl << e.get_message()
-		 << endl ;
-	    CPPUNIT_ASSERT( false ) ;
-	}
+        try {
+            BESXMLCommand::add_command("cmd1.1", BuildTCmd1::Cmd1Builder);
+            BESXMLCommand::add_command("cmd2.1", BuildTCmd2::Cmd2Builder);
+            BESXMLCommand::add_command("cmd1.2", BuildTCmd1::Cmd1Builder);
+            BESXMLCommand::add_command("cmd2.2", BuildTCmd2::Cmd2Builder);
+        }
+        catch (BESError &e) {
+            cout << "failed to add commands" << endl << e.get_message() << endl;
+            CPPUNIT_ASSERT( false );
+        }
 
-	try
-	{
-	    string myDoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
+        try {
+            string myDoc =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
 <request reqID =\"some_unique_value\" > \
    <cmd1.1 prop1=\"prop1val\"> \
 	<element1>element1val</element1> \
@@ -122,70 +123,69 @@ public:
 	    element4val \
 	</element4> \
     </cmd2.1> \
-</request>" ; 
-	    BuildTInterface bti ;
-	    bti.run( myDoc ) ;
-	    CPPUNIT_ASSERT( what_test == 2 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cout << "failed with exception" << endl << e.get_message()
-		 << endl ;
-	    CPPUNIT_ASSERT( false ) ;
-	}
+</request>";
+            BuildTInterface bti;
+            bti.run(myDoc);
+            CPPUNIT_ASSERT( what_test == 2 );
+        }
+        catch (BESError &e) {
+            cout << "failed with exception" << endl << e.get_message() << endl;
+            CPPUNIT_ASSERT( false );
+        }
 
-	cout << endl << "*****************************************" << endl;
-	cout << "Leaving buildT::run" << endl;
+        cout << endl << "*****************************************" << endl;
+        cout << "Leaving buildT::run" << endl;
     }
 
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( buildT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( buildT );
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
 
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
+    string env_var = (string) "BES_CONF=" + TEST_SRC_DIR + "/bes.conf";
+    putenv((char *) env_var.c_str());
 
-        char option_char;
-        while ((option_char = getopt()) != EOF)
-            switch (option_char) {
-            case 'd':
-                debug = 1;  // debug is a static global
-                break;
-            case 'h': {     // help - show test names
-                cerr << "Usage: buildT has the following tests:" << endl;
-                const std::vector<Test*> &tests = buildT::suite()->getTests();
-                unsigned int prefix_len = buildT::suite()->getName().append("::").length();
-                for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
-                }
-                break;
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: buildT has the following tests:" << endl;
+            const std::vector<Test*> &tests = buildT::suite()->getTests();
+            unsigned int prefix_len = buildT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
-            default:
-                break;
-            }
-
-        CppUnit::TextTestRunner runner;
-        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-        bool wasSuccessful = true;
-        string test = "";
-        int i = getopt.optind;
-        if (i == argc) {
-            // run them all
-            wasSuccessful = runner.run("");
+            break;
         }
-        else {
-            while (i < argc) {
-                if (debug) cerr << "Running " << argv[i] << endl;
-                test = buildT::suite()->getName().append("::").append(argv[i]);
-                wasSuccessful = wasSuccessful && runner.run(test);
-            }
+        default:
+            break;
         }
 
-        return wasSuccessful ? 0 : 1;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = buildT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

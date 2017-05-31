@@ -95,7 +95,8 @@ private:
 public:
 
     // Called once before everything gets tested
-    FoJsonTest() : d_tmpDir(string(TEST_SRC_DIR) + "/tmp")
+    FoJsonTest() :
+        d_tmpDir(string(TEST_SRC_DIR) + "/tmp")
     {
         DBG(cerr << "FoJsonTest - Constructor" << endl);
     }
@@ -116,14 +117,15 @@ public:
     {
     }
 
-    CPPUNIT_TEST_SUITE( FoJsonTest );
+CPPUNIT_TEST_SUITE( FoJsonTest );
 
     CPPUNIT_TEST(test_abstract_object_metadata_representation);
     CPPUNIT_TEST(test_abstract_object_data_representation);
     CPPUNIT_TEST(test_instance_object_metadata_representation);
     CPPUNIT_TEST(test_instance_object_data_representation);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void test_abstract_object_metadata_representation()
     {

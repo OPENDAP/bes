@@ -58,8 +58,7 @@ static int str_to_file_cmp(const string &s, const string &f)
 {
     ifstream ifs;
     ifs.open(f.c_str());
-    if (!ifs)
-        throw InternalErr(__FILE__, __LINE__, "Could not open file");
+    if (!ifs) throw InternalErr(__FILE__, __LINE__, "Could not open file");
     string line, doc;
     while (!ifs.eof()) {
         getline(ifs, line);
@@ -189,9 +188,9 @@ public:
 
 CPPUNIT_TEST_SUITE( XDArrayTest );
 #if 0
-        CPPUNIT_TEST(test_get_nth_dim_size);
-        CPPUNIT_TEST(test_get_shape_vector);
-        CPPUNIT_TEST(test_get_index);
+    CPPUNIT_TEST(test_get_nth_dim_size);
+    CPPUNIT_TEST(test_get_shape_vector);
+    CPPUNIT_TEST(test_get_index);
 #endif
 
     CPPUNIT_TEST(test_print_xml_data_a);
@@ -202,7 +201,8 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
     CPPUNIT_TEST(test_print_xml_data_e);
 #endif
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void test_get_nth_dim_size()
     {
@@ -321,7 +321,7 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
             d_state[1] = 2;
             d_state[2] = 0;
             d_state[3] = 2;
-            CPPUNIT_ASSERT(d->m_get_index(d_state) == 1*(4*5*6) + 2*(5*6) + 0*(6) + 2);
+            CPPUNIT_ASSERT(d->m_get_index(d_state) == 1 * (4 * 5 * 6) + 2 * (5 * 6) + 0 * (6) + 2);
         }
         catch (Error &e) {
             cerr << "Error: " << e.get_error_message() << endl;
@@ -339,7 +339,7 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
             DBG2(cerr << writer.get_doc() << endl);
 #if 0
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_a.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_a.xml") == 0);
 #endif
         }
         catch (InternalErr &e) {
@@ -357,7 +357,7 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
             DBG2(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_b.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_b.xml") == 0);
 
         }
         catch (InternalErr &e) {
@@ -375,7 +375,7 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
             DBG2(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_c.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_c.xml") == 0);
 
         }
         catch (InternalErr &e) {
@@ -393,7 +393,7 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
             DBG2(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_d.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_d.xml") == 0);
 
         }
         catch (InternalErr &e) {
@@ -411,7 +411,7 @@ CPPUNIT_TEST_SUITE( XDArrayTest );
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_e.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdarraytest_e.xml") == 0);
 
         }
         catch (InternalErr &e) {

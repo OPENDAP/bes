@@ -62,9 +62,8 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-
-static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR,"cache");
-static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR,"template.txt");
+static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template.txt");
 static const string CACHE_PREFIX("container_test");
 
 int clean_dir(const string &cache_dir, const string &cache_prefix)
@@ -79,17 +78,17 @@ int clean_dir(const string &cache_dir, const string &cache_prefix)
 }
 
 #if 0 // replaced with shell based version above. concurrency. woot. ndp-05/3017
-int clean_dir(string dirname, string prefix){
+int clean_dir(string dirname, string prefix) {
     DIR *dp;
     struct dirent *dirp;
-    if((dp  = opendir(dirname.c_str())) == NULL) {
+    if((dp = opendir(dirname.c_str())) == NULL) {
         DBG( cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
         return errno;
     }
 
     while ((dirp = readdir(dp)) != NULL) {
         string name(dirp->d_name);
-        if (name.find(prefix) == 0){
+        if (name.find(prefix) == 0) {
             string abs_name = BESUtil::assemblePath(dirname, name, true);
             DBG( cerr << __func__ << "() - Purging file: " << abs_name << endl);
             remove(abs_name.c_str());
@@ -116,169 +115,166 @@ public:
     {
         string bes_conf = (string) TEST_SRC_DIR + "/empty.ini";
         TheBESKeys::ConfigFile = bes_conf;
-        if (bes_debug){
+        if (bes_debug) {
             BESDebug::SetUp("cerr,cache,cache2");
-            DBG( cerr << __func__ << "() - setup() - BESDEBUG Enabled " << endl);
+            DBG(cerr << __func__ << "() - setup() - BESDEBUG Enabled " << endl);
         }
-   }
+    }
 
     void tearDown()
     {
-        clean_dir(CACHE_DIR,CACHE_PREFIX);
+        clean_dir(CACHE_DIR, CACHE_PREFIX);
     }
 
-    void test_default_cannot_find(){
-       DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
-       try {
+    void test_default_cannot_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        try {
             string key = (string) "BES.Container.Persistence.File.TheFile=" +
             TEST_SRC_DIR + "/container01.file";
             TheBESKeys::TheKeys()->set_key(key);
             BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageFile("TheFile"));
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Failed to add storage persistence" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to add storage persistence");
         }
 
-        DBG( cerr << __func__ << "() - try to find symbolic name that doesn't exist, default" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, default" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
             if (c) {
-                DBG( cerr << __func__ << "() - container is valid, should not be" << endl);
-                DBG( cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
-                DBG( cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
-                DBG( cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
-                DBG( cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
+                DBG(cerr << __func__ << "() - container is valid, should not be" << endl);
+                DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
+                DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
+                DBG(cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
+                DBG(cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
             }
-            CPPUNIT_ASSERT( !"Found nosym, shouldn't have" );
+            CPPUNIT_ASSERT(!"Found nosym, shouldn't have");
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - caught exception, didn't find nosym, That's good!" << endl);
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
+            DBG(cerr << __func__ << "() - caught exception, didn't find nosym, That's good!" << endl);
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
         }
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    void test_default_can_find(){
-        DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
-        DBG( cerr << __func__ << "() - try to find symbolic name that does exist, default" << endl);
+    void test_default_can_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that does exist, default" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
-            CPPUNIT_ASSERT( c );
-            CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" );
-            CPPUNIT_ASSERT( c->get_real_name() == "real1" );
-            CPPUNIT_ASSERT( c->get_container_type() == "type1" );
+            CPPUNIT_ASSERT(c);
+            CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
+            CPPUNIT_ASSERT(c->get_real_name() == "real1");
+            CPPUNIT_ASSERT(c->get_container_type() == "type1");
             delete c;
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Failed to find container sym1" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to find container sym1");
         }
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
-    void test_strict_cannot_find(){
-        DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
-        DBG( cerr << __func__ << "() - set to strict" << endl);
+    void test_strict_cannot_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - set to strict" << endl);
         TheBESKeys::TheKeys()->set_key("BES.Container.Persistence=strict");
 
-        DBG( cerr << __func__ << "() - try to find symbolic name that doesn't exist, strict" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, strict" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
             if (c) {
-                DBG( cerr << __func__ << "() - Found nosym, shouldn't have" << endl);
-                DBG( cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
-                DBG( cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
-                DBG( cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
-                DBG( cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
-                CPPUNIT_ASSERT( !"Found nosym, shouldn't have" );
+                DBG(cerr << __func__ << "() - Found nosym, shouldn't have" << endl);
+                DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
+                DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
+                DBG(cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
+                DBG(cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
+                CPPUNIT_ASSERT(!"Found nosym, shouldn't have");
             }
             else {
                 CPPUNIT_ASSERT(!"look_for returned null, should have thrown");
             }
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - caught exception, didn't find nosym, good" << endl);
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
+            DBG(cerr << __func__ << "() - caught exception, didn't find nosym, good" << endl);
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
         }
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    void test_strict_can_find(){
-        DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
-        DBG( cerr << __func__ << "() - try to find symbolic name that does exist, strict" << endl);
+    void test_strict_can_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that does exist, strict" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
-            CPPUNIT_ASSERT( c );
-            CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" );
-            CPPUNIT_ASSERT( c->get_real_name() == "real1" );
-            CPPUNIT_ASSERT( c->get_container_type() == "type1" );
+            CPPUNIT_ASSERT(c);
+            CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
+            CPPUNIT_ASSERT(c->get_real_name() == "real1");
+            CPPUNIT_ASSERT(c->get_container_type() == "type1");
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Failed to find container sym1" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to find container sym1");
         }
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
-
-
-    void test_nice_cannot_find(){
-        DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
-        DBG( cerr << __func__ << "() - set to nice" << endl);
+    void test_nice_cannot_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - set to nice" << endl);
         TheBESKeys::TheKeys()->set_key("BES.Container.Persistence=nice");
 
-        DBG( cerr << __func__ << "() - try to find symbolic name that doesn't exist, nice" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, nice" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
             if (c) {
-                DBG( cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
-                DBG( cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
-                DBG( cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
-                DBG( cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
-                CPPUNIT_ASSERT( !"Found nosym, shouldn't have" );
+                DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
+                DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
+                DBG(cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
+                DBG(cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
+                CPPUNIT_ASSERT(!"Found nosym, shouldn't have");
             }
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Exception thrown in nice mode" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Exception thrown in nice mode");
         }
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
-    void test_nice_can_find(){
-        DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
-        DBG( cerr << __func__ << "() - set to nice" << endl);
+    void test_nice_can_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - set to nice" << endl);
         TheBESKeys::TheKeys()->set_key("BES.Container.Persistence=nice");
 
-
-        DBG( cerr << __func__ << "() - try to find symbolic name that does exist, nice" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that does exist, nice" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
-            CPPUNIT_ASSERT( c );
-            CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" );
-            CPPUNIT_ASSERT( c->get_real_name() == "real1" );
-            CPPUNIT_ASSERT( c->get_container_type() == "type1" );
+            CPPUNIT_ASSERT(c);
+            CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
+            CPPUNIT_ASSERT(c->get_real_name() == "real1");
+            CPPUNIT_ASSERT(c->get_container_type() == "type1");
         }
         catch (BESError &e) {
-            DBG( cerr << __func__ << "() - Caught BESError, message: "
-                <<  e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Failed to find container sym1" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to find container sym1");
         }
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    void test_forbidden_path_components(){
+    void test_forbidden_path_components()
+    {
 
     }
 
     void test_compressed()
     {
-        DBG( cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
 
         /* Because of the nature of the build system sometimes the cache
          * directory will contain ../, which is not allowed for a containers
@@ -299,18 +295,17 @@ public:
         string chmod = (string) "chmod a+w " + CACHE_DIR;
         system(chmod.c_str());
 
-        DBG( cerr << __func__ << "() - access a non compressed file" << endl);
+        DBG(cerr << __func__ << "() - access a non compressed file" << endl);
         if (!isdotdot) {
             try {
                 BESFileContainer c("sym", src_file, "txt");
 
                 string result = c.access();
-                CPPUNIT_ASSERT( result == src_file );
+                CPPUNIT_ASSERT(result == src_file);
             }
             catch (BESError &e) {
-                DBG( cerr << __func__ << "() - Caught BESError, message: "
-                    <<  e.get_message() << endl);
-                CPPUNIT_ASSERT( !"Failed to access non compressed file" );
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+                CPPUNIT_ASSERT(!"Failed to access non compressed file");
             }
         }
         else {
@@ -318,41 +313,39 @@ public:
                 BESFileContainer c("sym", src_file, "txt");
 
                 string result = c.access();
-                CPPUNIT_ASSERT( result != src_file );
+                CPPUNIT_ASSERT(result != src_file);
             }
             catch (BESError &e) {
-                DBG( cerr << __func__ << "() - Failed to access file with ../ in name. That's Good!" << endl);
-                DBG( cerr << __func__ << "() - Caught BESError, message: "
-                    <<  e.get_message() << endl);
+                DBG(cerr << __func__ << "() - Failed to access file with ../ in name. That's Good!" << endl);
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
             }
         }
 
-        DBG( cerr << __func__ << "() - access a compressed file" << endl);
+        DBG(cerr << __func__ << "() - access a compressed file" << endl);
         if (!isdotdot) {
             try {
                 BESUncompressCache *cache = BESUncompressCache::get_instance(CACHE_DIR, CACHE_DIR, CACHE_PREFIX, 1);
 
                 string cache_file_name = cache->get_cache_file_name(com_file);
                 ifstream f(cache_file_name.c_str());
-                if(f.good()){
+                if (f.good()) {
                     cache->purge_file(cache_file_name);
                 }
 
                 BESFileContainer c("sym", com_file, "txt");
 
                 string result = c.access();
-                DBG( cerr << __func__ << "() - result file name =         " << result << endl);
-                DBG( cerr << __func__ << "() - expected cache_file_name = " << cache_file_name << endl);
-                CPPUNIT_ASSERT( result == cache_file_name );
+                DBG(cerr << __func__ << "() - result file name =         " << result << endl);
+                DBG(cerr << __func__ << "() - expected cache_file_name = " << cache_file_name << endl);
+                CPPUNIT_ASSERT(result == cache_file_name);
 
                 int fd;
 
-                CPPUNIT_ASSERT( cache->get_read_lock(cache_file_name,fd) );
+                CPPUNIT_ASSERT(cache->get_read_lock(cache_file_name, fd));
             }
             catch (BESError &e) {
-                DBG( cerr << __func__ << "() - Caught BESError, message: "
-                    <<  e.get_message() << endl);
-                CPPUNIT_ASSERT( !"Failed to access compressed file" );
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+                CPPUNIT_ASSERT(!"Failed to access compressed file");
             }
         }
         else {
@@ -361,47 +354,44 @@ public:
 
                 string cache_file_name = cache->get_cache_file_name(com_file);
                 ifstream f(cache_file_name.c_str());
-                if(f.good()){
+                if (f.good()) {
                     cache->purge_file(cache_file_name);
                 }
 
                 BESFileContainer c("sym", com_file, "txt");
 
                 string result = c.access();
-                CPPUNIT_ASSERT( result != cache_file_name );
+                CPPUNIT_ASSERT(result != cache_file_name);
             }
             catch (BESError &e) {
-                DBG( cerr << __func__ << "() - Failed to access file with ../ in name, That's Good!" << endl);
-                DBG( cerr << __func__ << "() - Caught BESError, message: "
-                    <<  e.get_message() << endl);
+                DBG(cerr << __func__ << "() - Failed to access file with ../ in name, That's Good!" << endl);
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
             }
         }
 
-        DBG( cerr << __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    CPPUNIT_TEST_SUITE( containerT );
+CPPUNIT_TEST_SUITE( containerT );
 
-    CPPUNIT_TEST( test_default_cannot_find );
-    CPPUNIT_TEST( test_default_can_find );
-    CPPUNIT_TEST( test_strict_cannot_find );
-    CPPUNIT_TEST( test_strict_can_find );
-    CPPUNIT_TEST( test_nice_cannot_find );
-    CPPUNIT_TEST( test_nice_can_find );
-    CPPUNIT_TEST( test_compressed );
+    CPPUNIT_TEST(test_default_cannot_find);
+    CPPUNIT_TEST(test_default_can_find);
+    CPPUNIT_TEST(test_strict_cannot_find);
+    CPPUNIT_TEST(test_strict_can_find);
+    CPPUNIT_TEST(test_nice_cannot_find);
+    CPPUNIT_TEST(test_nice_can_find);
+    CPPUNIT_TEST(test_compressed);
 
-    CPPUNIT_TEST_SUITE_END();
-
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( containerT );
-
-
+CPPUNIT_TEST_SUITE_REGISTRATION(containerT);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "db6");
+    GetOpt getopt(argc, argv, "dbh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -432,10 +422,8 @@ int main(int argc, char*argv[])
 
     // init_cache(TEST_CACHE_DIR);
 
-
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
 
     bool wasSuccessful = true;
     string test = "";
@@ -446,8 +434,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("lockT::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = containerT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

@@ -57,12 +57,15 @@ private:
     AsciiOutputFactory *aof;
 
 public:
-    AsciiOutputTest() {
+    AsciiOutputTest()
+    {
     }
-    ~AsciiOutputTest() {
+    ~AsciiOutputTest()
+    {
     }
 
-    void setUp() {
+    void setUp()
+    {
         try {
             DBG2(ddsdebug = 1);
             aof = new AsciiOutputFactory;
@@ -70,27 +73,31 @@ public:
             string parsefile = (string) TEST_SRC_DIR + "/testsuite/AsciiOutputTest1.dds";
             DBG2(cerr << "parsefile: " << parsefile << endl);
             dds->parse(parsefile);
-        } catch (Error &e) {
+        }
+        catch (Error &e) {
             cerr << "Error: " << e.get_error_message() << endl;
         }
     }
 
-    void tearDown() {
+    void tearDown()
+    {
         delete aof;
         aof = 0;
         delete dds;
         dds = 0;
     }
 
-    CPPUNIT_TEST_SUITE(AsciiOutputTest);
+CPPUNIT_TEST_SUITE(AsciiOutputTest);
 
     CPPUNIT_TEST(test_get_full_name);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
-    void test_get_full_name() {
+    void test_get_full_name()
+    {
         CPPUNIT_ASSERT(dynamic_cast<AsciiOutput*>(dds->var("a"))->get_full_name() == "a");
-        DBG(cerr << "full name: " << dynamic_cast<AsciiOutput*> (dds->var("e.c"))->get_full_name() << endl);
+        DBG(cerr << "full name: " << dynamic_cast<AsciiOutput*>(dds->var("e.c"))->get_full_name() << endl);
 
         CPPUNIT_ASSERT(dynamic_cast<AsciiOutput*>(dds->var("e.c"))->get_full_name() == "e.c");
         CPPUNIT_ASSERT(dynamic_cast<AsciiOutput*>(dds->var("f.c"))->get_full_name() == "f.c");
@@ -101,7 +108,8 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AsciiOutputTest);
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
     char option_char;

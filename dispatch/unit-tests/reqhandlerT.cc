@@ -34,13 +34,13 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #include "TestRequestHandler.h"
 #include <GetOpt.h>
@@ -54,39 +54,45 @@ class reqhandlerT: public TestFixture {
 private:
 
 public:
-    reqhandlerT() {}
-    ~reqhandlerT() {}
+    reqhandlerT()
+    {
+    }
+    ~reqhandlerT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( reqhandlerT ) ;
+CPPUNIT_TEST_SUITE( reqhandlerT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered reqhandlerT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered reqhandlerT::run" << endl;
 
-	TestRequestHandler trh( "test" ) ;
-	int retVal = trh.test() ;
+        TestRequestHandler trh("test");
+        int retVal = trh.test();
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from reqhandlerT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from reqhandlerT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( reqhandlerT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( reqhandlerT );
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
     char option_char;

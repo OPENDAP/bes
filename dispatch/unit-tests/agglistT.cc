@@ -34,14 +34,14 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <cstdlib>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #include "BESAggFactory.h"
 #include "BESTextInfo.h"
@@ -60,125 +60,123 @@ class agglistT: public TestFixture {
 private:
 
 public:
-    agglistT() {}
-    ~agglistT() {}
-
-    static BESAggregationServer *
-    h1( const string &name )
+    agglistT()
     {
-	return new TestAggServer( name ) ;
+    }
+    ~agglistT()
+    {
     }
 
     static BESAggregationServer *
-    h2( const string &name )
+    h1(const string &name)
     {
-	return new TestAggServer( name ) ;
+        return new TestAggServer(name);
     }
 
     static BESAggregationServer *
-    h3( const string &name )
+    h2(const string &name)
     {
-	return new TestAggServer( name ) ;
+        return new TestAggServer(name);
+    }
+
+    static BESAggregationServer *
+    h3(const string &name)
+    {
+        return new TestAggServer(name);
     }
 
     void setUp()
     {
-	string bes_conf = (string)TEST_SRC_DIR + "/empty.ini" ;
-	TheBESKeys::ConfigFile = bes_conf ;
+        string bes_conf = (string) TEST_SRC_DIR + "/empty.ini";
+        TheBESKeys::ConfigFile = bes_conf;
     }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( agglistT ) ;
+CPPUNIT_TEST_SUITE( agglistT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered agglistT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered agglistT::run" << endl;
 
-	cout << "*****************************************" << endl;
-	cout << "Adding three handlers to the list" << endl ;
-	try
-	{
-	    CPPUNIT_ASSERT( BESAggFactory::TheFactory()->add_handler( "h1", agglistT::h1 ) ) ;
-	    CPPUNIT_ASSERT( BESAggFactory::TheFactory()->add_handler( "h2", agglistT::h2 ) ) ;
-	    CPPUNIT_ASSERT( BESAggFactory::TheFactory()->add_handler( "h3", agglistT::h3 ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to add aggregation servers to list" ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Adding three handlers to the list" << endl;
+        try {
+            CPPUNIT_ASSERT( BESAggFactory::TheFactory()->add_handler( "h1", agglistT::h1 ) );
+            CPPUNIT_ASSERT( BESAggFactory::TheFactory()->add_handler( "h2", agglistT::h2 ) );
+            CPPUNIT_ASSERT( BESAggFactory::TheFactory()->add_handler( "h3", agglistT::h3 ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to add aggregation servers to list" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Find the three handlers" << endl ;
-	try
-	{
-	    BESAggregationServer *s = 0 ;
-	    s = BESAggFactory::TheFactory()->find_handler( "h1" ) ;
-	    CPPUNIT_ASSERT( s ) ;
-	    s = BESAggFactory::TheFactory()->find_handler( "h2" ) ;
-	    CPPUNIT_ASSERT( s ) ;
-	    s = BESAggFactory::TheFactory()->find_handler( "h3" ) ;
-	    CPPUNIT_ASSERT( s ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to find aggregation servers" ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Find the three handlers" << endl;
+        try {
+            BESAggregationServer *s = 0;
+            s = BESAggFactory::TheFactory()->find_handler("h1");
+            CPPUNIT_ASSERT( s );
+            s = BESAggFactory::TheFactory()->find_handler("h2");
+            CPPUNIT_ASSERT( s );
+            s = BESAggFactory::TheFactory()->find_handler("h3");
+            CPPUNIT_ASSERT( s );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to find aggregation servers" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Remove handler h2" << endl ;
-	try
-	{
-	    bool removed = BESAggFactory::TheFactory()->remove_handler( "h2" ) ;
-	    CPPUNIT_ASSERT( removed ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to remove aggregation server h2" ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Remove handler h2" << endl;
+        try {
+            bool removed = BESAggFactory::TheFactory()->remove_handler("h2");
+            CPPUNIT_ASSERT( removed );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to remove aggregation server h2" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Find the two handlers" << endl ;
-	try
-	{
-	    BESAggregationServer *s = 0 ;
-	    s = BESAggFactory::TheFactory()->find_handler( "h1" ) ;
-	    CPPUNIT_ASSERT( s ) ;
-	    s = BESAggFactory::TheFactory()->find_handler( "h2" ) ;
-	    CPPUNIT_ASSERT( !s ) ;
-	    s = BESAggFactory::TheFactory()->find_handler( "h3" ) ;
-	    CPPUNIT_ASSERT( s ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << "Failed to find aggregation servers" << endl ;
-	    cerr << e.get_message() << endl ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Find the two handlers" << endl;
+        try {
+            BESAggregationServer *s = 0;
+            s = BESAggFactory::TheFactory()->find_handler("h1");
+            CPPUNIT_ASSERT( s );
+            s = BESAggFactory::TheFactory()->find_handler("h2");
+            CPPUNIT_ASSERT( !s );
+            s = BESAggFactory::TheFactory()->find_handler("h3");
+            CPPUNIT_ASSERT( s );
+        }
+        catch (BESError &e) {
+            cerr << "Failed to find aggregation servers" << endl;
+            cerr << e.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Show handler names registered" << endl;
-	string registered = BESAggFactory::TheFactory()->get_handler_names() ;
-	string expected = "h1, h3" ;
-	CPPUNIT_ASSERT( registered == expected ) ;
+        cout << "*****************************************" << endl;
+        cout << "Show handler names registered" << endl;
+        string registered = BESAggFactory::TheFactory()->get_handler_names();
+        string expected = "h1, h3";
+        CPPUNIT_ASSERT( registered == expected );
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from agglistT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from agglistT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( agglistT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( agglistT );
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
     char option_char;

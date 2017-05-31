@@ -34,8 +34,8 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
-using namespace std ;
+using namespace CppUnit;
+using namespace std;
 
 #include "config.h"
 #ifdef HAVE_UNISTD_H
@@ -48,10 +48,10 @@ using namespace std ;
 #include <iostream>
 #include <sstream>
 
-using std::cout ;
-using std::endl ;
-using std::string ;
-using std::ostringstream ;
+using std::cout;
+using std::endl;
+using std::string;
+using std::ostringstream;
 
 #include "PPTStreamBuf.h"
 #include "PPTProtocol.h"
@@ -62,71 +62,80 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-string result = (string)"00001f4" + "d" + "<1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567" + "0000070" + "d" + "890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890>" + "0000000" + "d" ;
+string result =
+    (string) "00001f4" + "d"
+        + "<1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567"
+        + "0000070" + "d"
+        + "890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890><1234567890>"
+        + "0000000" + "d";
 
 class sbT: public TestFixture {
 private:
 
 public:
-    sbT() {}
-    ~sbT() {}
+    sbT()
+    {
+    }
+    ~sbT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( sbT ) ;
+CPPUNIT_TEST_SUITE( sbT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << endl << "*****************************************" << endl;
-	cout << "Entered sbT::run" << endl;
+        cout << endl << "*****************************************" << endl;
+        cout << "Entered sbT::run" << endl;
 
-	int fd = open( "./sbT.out", O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH ) ;
-	PPTStreamBuf fds( fd, 500 ) ;
-	std::streambuf *holder ;
-	holder = cout.rdbuf() ;
-	cout.rdbuf( &fds ) ;
-	for( int u=0; u< 51; u++ )
-	{
-	    cout << "<1234567890>" ;
-	}
-	fds.finish() ;
-	cout.rdbuf( holder ) ;
-	close( fd ) ;
+        int fd = open("./sbT.out", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        PPTStreamBuf fds(fd, 500);
+        std::streambuf *holder;
+        holder = cout.rdbuf();
+        cout.rdbuf(&fds);
+        for (int u = 0; u < 51; u++) {
+            cout << "<1234567890>";
+        }
+        fds.finish();
+        cout.rdbuf(holder);
+        close(fd);
 
-	string str ;
-	int bytesRead = 0 ;
-	fd = open( "./sbT.out", O_RDONLY, S_IRUSR ) ;
-	char buffer[4096] ;
-	while( ( bytesRead = read( fd, (char *)buffer, 4096 ) ) > 0 )
-	{
-	    buffer[bytesRead] = '\0' ;
-	    str += string(buffer) ;
-	}
-	close( fd ) ;
-	cout << "****" << endl << str << endl << "****" << endl ;
-	CPPUNIT_ASSERT( str == result ) ;
+        string str;
+        int bytesRead = 0;
+        fd = open("./sbT.out", O_RDONLY, S_IRUSR);
+        char buffer[4096];
+        while ((bytesRead = read(fd, (char *) buffer, 4096)) > 0) {
+            buffer[bytesRead] = '\0';
+            str += string(buffer);
+        }
+        close(fd);
+        cout << "****" << endl << str << endl << "****" << endl;
+        CPPUNIT_ASSERT( str == result );
 
-	CPPUNIT_ASSERT( true ) ;
+        CPPUNIT_ASSERT( true );
 
-	cout << endl << "*****************************************" << endl;
-	cout << "Leaving sbT::run" << endl;
+        cout << endl << "*****************************************" << endl;
+        cout << "Leaving sbT::run" << endl;
     }
 
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( sbT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( sbT );
 
-int main(int argc, char*argv[]) {
+int main(int argc, char*argv[])
+{
 
     GetOpt getopt(argc, argv, "dh");
     char option_char;

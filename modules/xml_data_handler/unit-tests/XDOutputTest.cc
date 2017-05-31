@@ -61,8 +61,7 @@ static int str_to_file_cmp(const string &s, const string &f)
 {
     ifstream ifs;
     ifs.open(f.c_str());
-    if (!ifs)
-        throw InternalErr(__FILE__, __LINE__, "Could not open file");
+    if (!ifs) throw InternalErr(__FILE__, __LINE__, "Could not open file");
     string line, doc;
     while (!ifs.eof()) {
         getline(ifs, line);
@@ -135,13 +134,14 @@ public:
         dds = 0;
     }
 
-    CPPUNIT_TEST_SUITE(XDOutputTest);
+CPPUNIT_TEST_SUITE(XDOutputTest);
 
-        CPPUNIT_TEST(test_print_xml_data);
-        CPPUNIT_TEST(test_print_xml_data_structure);
-        CPPUNIT_TEST(test_print_xml_data_grid);
+    CPPUNIT_TEST(test_print_xml_data);
+    CPPUNIT_TEST(test_print_xml_data_structure);
+    CPPUNIT_TEST(test_print_xml_data_grid);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void test_print_xml_data()
     {
@@ -155,7 +155,7 @@ public:
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_a.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_a.xml") == 0);
         }
         catch (InternalErr &e) {
             cerr << "Caught an InternalErr: " << e.get_error_message() << endl;
@@ -174,7 +174,7 @@ public:
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_e.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_e.xml") == 0);
         }
         catch (InternalErr &e) {
             cerr << "Caught an InternalErr: " << e.get_error_message() << endl;
@@ -193,7 +193,7 @@ public:
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_g.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_g.xml") == 0);
         }
         catch (InternalErr &e) {
             cerr << "Caught an InternalErr: " << e.get_error_message() << endl;
