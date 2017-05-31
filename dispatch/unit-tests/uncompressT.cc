@@ -75,6 +75,18 @@ public:
     {
     }
 
+    int clean_dir(const string &cache_dir, const string &cache_prefix)
+    {
+        DBG(cerr << __func__ << "() - BEGIN " << endl);
+        std::ostringstream s;
+        s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
+        DBG(cerr << __func__ << "() - cmd: " << s.str() << endl);
+        int status = system(s.str().c_str());
+        DBG(cerr << __func__ << "() - END " << endl);
+        return status;
+    }
+
+#if 0 // replaced with shell based version above. concurrency. woot. ndp-05/3017
     int clean_dir(string dirname, string prefix)
     {
         DIR *dp;
@@ -97,6 +109,8 @@ public:
         closedir(dp);
         return 0;
     }
+#endif
+
 
     void setUp()
     {
