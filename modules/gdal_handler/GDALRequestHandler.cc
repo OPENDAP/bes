@@ -60,8 +60,9 @@
 
 #include <BESDebug.h>
 #include <TheBESKeys.h>
-
+#if 0
 #include "GDAL_DDS.h"
+#endif
 #include "GDAL_DMR.h"
 #include "GDALRequestHandler.h"
 
