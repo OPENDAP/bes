@@ -29,7 +29,7 @@
 
 using namespace std;
 using namespace libdap;
-
+#if 0
 /************************************************************************/
 /* ==================================================================== */
 /*                               GDALByte                               */
@@ -178,7 +178,7 @@ bool GDALFloat64::read()
 {
 	throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
-
+#endif
 // $Log: GDALTypes.cc,v $
 // Revision 1.1  2004/10/19 20:38:28  warmerda
 // New

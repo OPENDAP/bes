@@ -30,8 +30,17 @@
 
 #include <gdal.h>
 
+#include <Byte.h>
+#include <UInt16.h>
+#include <Int16.h>
+#include <UInt32.h>
+#include <Int32.h>
+#include <Float32.h>
+#include <Float64.h>
+
 #include <DDS.h>
 #include <DAS.h>
+#include <BaseTypeFactory.h>
 #include <debug.h>
 
 #include "GDALTypes.h"
@@ -44,6 +53,8 @@ using namespace libdap;
 
 void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &filename)
 {
+    BaseTypeFactory factory;    // Use this to build new scalar variables
+
 /* -------------------------------------------------------------------- */
 /*      Create the basic matrix for each band.                          */
 /* -------------------------------------------------------------------- */
@@ -64,31 +75,31 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
         switch( GDALGetRasterDataType( hBand ) )
         {
           case GDT_Byte:
-            bt = new Byte( oss.str() );
+            bt = factory.NewByte( oss.str() );
             break;
 
           case GDT_UInt16:
-            bt = new UInt16( oss.str() );
+            bt = factory.NewUInt16( oss.str() );
             break;
 
           case GDT_Int16:
-            bt = new Int16( oss.str() );
+            bt = factory.NewInt16( oss.str() );
             break;
 
           case GDT_UInt32:
-            bt = new UInt32( oss.str() );
+            bt = factory.NewUInt32( oss.str() );
             break;
 
           case GDT_Int32:
-            bt = new Int32( oss.str() );
+            bt = factory.NewInt32( oss.str() );
             break;
 
           case GDT_Float32:
-            bt = new Float32( oss.str() );
+            bt = factory.NewFloat32( oss.str() );
             break;
 
           case GDT_Float64:
-            bt = new Float64( oss.str() );
+            bt = factory.NewFloat64( oss.str() );
             break;
 
           case GDT_CFloat32:
@@ -97,7 +108,7 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
           case GDT_CInt32:
           default:
             // TODO eventually we need to preserve complex info
-            bt = new Float64( oss.str() );
+            bt = factory.NewFloat64( oss.str() );
             eBufType = GDT_Float64;
             break;
         }
@@ -126,14 +137,16 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
 /* -------------------------------------------------------------------- */
 /*      Add the dimension map arrays.                                   */
 /* -------------------------------------------------------------------- */
-        bt = new GDALFloat64( "northing" );
+        //bt = new GDALFloat64( "northing" );
+        bt = factory.NewFloat64( "northing" );
         ar = new GDALArray( "northing", 0, filename, eBufType, iBand+1 );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterYSize( hDS ), "northing" );
 
         grid->add_var_nocopy( ar, maps );
 
-        bt = new GDALFloat64( "easting" );
+        //bt = new GDALFloat64( "easting" );
+        bt = factory.NewFloat64( "easting" );
         ar = new GDALArray( "easting", 0, filename, eBufType, iBand+1 );
         ar->add_var_nocopy( bt );
         ar->append_dim( GDALGetRasterXSize( hDS ), "easting" );
