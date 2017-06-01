@@ -97,10 +97,9 @@ bool GDALGrid::read()
     GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
     try {
-        // Change: Instead of using the binary hBand (GDALRasterBandH), open the
-        // file and then the Raster Band here. Assume each part of the Grid is in
-        // the same file.
-
+        // This specialization of Grid::read() is a bit more efficient than using Array::read()
+        // since it only opens the file using GDAL once. Calling Array::read() would open the
+        // file three times. jhrg 5/31/17
         GDALArray *array = static_cast<GDALArray*>(array_var());
 
         read_data_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()));

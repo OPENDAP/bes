@@ -30,51 +30,41 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
 
 #include <gdal.h>
 
 #include <DMR.h>
-#include <mime_util.h>
+#include <mime_util.h>  // name_path
 #include <D4BaseTypeFactory.h>
 #include <InternalErr.h>
 #include <Ancillary.h>
-#include <debug.h>
 
 #include <BESResponseHandler.h>
+#include <BESServiceRegistry.h>
+
 #include <BESResponseNames.h>
 #include <BESDapNames.h>
+
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>
 #include <BESDataDDSResponse.h>
 #include <BESDMRResponse.h>
 #include <BESVersionInfo.h>
-#include <InternalErr.h>
+
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>
-#include <BESDataNames.h>
-#include <TheBESKeys.h>
 #include <BESUtil.h>
-#include <Ancillary.h>
-#include <BESServiceRegistry.h>
-#include <BESUtil.h>
-#include <BESContextManager.h>
 
-#include <BESDebug.h>
-#include <TheBESKeys.h>
-#if 0
-#include "GDAL_DDS.h"
+//#include <BESDebug.h>
 
-#include "GDAL_DMR.h"
-#endif
 #include "GDALRequestHandler.h"
 
 #define GDAL_NAME "gdal"
 
 using namespace libdap;
 
-extern void gdal_read_dataset_attributes(DAS & das, GDALDatasetH &hDS/*const string & filename*/);
-extern void /*GDALDatasetH*/ gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &filename);
+extern void gdal_read_dataset_attributes(DAS & das, GDALDatasetH &hDS);
+extern void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &filename);
 
 GDALRequestHandler::GDALRequestHandler(const string &name) :
     BESRequestHandler(name)
@@ -145,8 +135,6 @@ bool GDALRequestHandler::gdal_build_das(BESDataHandlerInterface & dhi)
 
 bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
 {
-    DBG(cerr << "In GDALRequestHandler::gdal_build_dds" << endl);
-
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
     if (!bdds)
@@ -205,8 +193,6 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
 
 bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
 {
-    DBG(cerr << "In GDALRequestHandler::gdal_build_data" << endl);
-
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
     if (!bdds)
