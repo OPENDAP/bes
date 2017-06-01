@@ -1,7 +1,7 @@
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign subdir-objects
+AUTOMAKE_OPTIONS = foreign
 
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
@@ -26,25 +26,17 @@ noinst_HEADERS = test_config.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT			\
-		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
-		infoT agglistT 		\
-		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest \
-		uncompressT cacheT containerT
-
-# encodeT. Moved to apache/unit-tests. jhrg 4/25/12
-# lockT. Removed jhrg 4/26/17 
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
+reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
+scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
+uncompressT cacheT 
 
 if LIBDAP
 TESTS += catT
 endif
 
-if BZ2UNCOMPRESS
-# TESTS += bz2T
-endif
-
 else
+
 TESTS =
 
 check-local:
@@ -69,7 +61,7 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-	cache_test.ini bes.conf
+    bes.conf
 
 DISTCLEANFILES = test_config.h
 

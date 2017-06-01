@@ -1,3 +1,29 @@
+News for version 3.18.0
+
+Bug Fixes:
+
+- Patched a number of problems with production rules for RPM builds.
+
+- Fixed BESFileLockingCache tests.
+
+- Repaired (at least some of) the broken BES error logging.
+
+- Repaired a number if timeout issues in the BES.
+
+
+Features:
+
+- hdf5_handler adds support for sinusodial projections.
+
+- ncml_handler adds support for the aggregation and metadata 
+  manipulation of remotely located datasets. This new capanbility
+  utilizes the exisiting gateway_handler and allows the ncml_handler
+  to aggregate anything the gateway_handler can read.
+
+- Restructured the BES to a significant degree in order to streamline
+  release and development issues.
+
+
 News for version 3.17.4
 
 Bug fixes:

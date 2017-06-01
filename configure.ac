@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.17.4, support@opendap.org)
+AC_INIT(bes, 3.18.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -49,9 +49,9 @@ AC_ARG_ENABLE([developer],
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=14
-LIB_DIS_AGE=6
-LIB_DIS_REVISION=1
+LIB_DIS_CURRENT=15
+LIB_DIS_AGE=0
+LIB_DIS_REVISION=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
 AC_SUBST(LIB_DIS_REVISION)
@@ -721,8 +721,11 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
-		 functions/geo-functions/Makefile
-		 functions/geo-functions/unit-tests/Makefile])
+		 ])
+dnl These need to be moved into the AC_CONFIG_FILES above 
+dnl when geo-functions is reenabled.
+dnl		 functions/geo-functions/Makefile
+dnl		 functions/geo-functions/unit-tests/Makefile
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
@@ -826,8 +829,8 @@ AM_COND_IF([DAP_MODULES],
     modules/ncml_module/tests/atlocal 
 
     modules/ugrid_functions/Makefile 
-	modules/ugrid_functions/unit-tests/Makefile
-	modules/ugrid_functions/unit-tests/test_config.h
+    modules/ugrid_functions/unit-tests/Makefile
+    modules/ugrid_functions/unit-tests/test_config.h
 	modules/ugrid_functions/tests/Makefile 
 	modules/ugrid_functions/tests/atlocal
         

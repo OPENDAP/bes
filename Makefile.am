@@ -1,4 +1,3 @@
-
 # Build the Back End Server.
 #
 # jhrg 9/2/05
@@ -31,7 +30,7 @@ SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates
 DIST_SUBDIRS = $(SUBDIRS)
 
 if LIBDAP
-SUBDIRS += dap dapreader functions
+SUBDIRS += functions dap dapreader 
 endif
 if DAP_MODULES
 SUBDIRS += modules
@@ -56,19 +55,24 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = apache hello_world doxy.conf.in bes.spec \
-OSX_Resources bes-config-pkgconfig besd.logrotate
+OSX_Resources bes-config-pkgconfig besd.logrotate README.md
 
 server-tests:
 	cd cmdln && make server-tests
 
-.PHONY: docs
-docs: doxy.conf
-	doxygen doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
+HTML_DOCS=html
+DOXYGEN_CONF=doxy.conf
 
-# Not needed. jhrg 1/4/16
-# doxy.conf: doxy.conf.in config.status
-# 	./config.status --file=doxy.conf
+# This target only builds the documents, it does not move them to
+# github. Use the 'gh-docs' target below for that.
+.PHONY: docs
+docs: ${DOXYGEN_CONF}
+	doxygen ${DOXYGEN_CONF}
+
+# GitHub.io docs 
+.PHONY: gh-docs 
+gh-docs:
+	./build-gh-docs.sh
 
 # cccc computes metrics like Lines of code and McCabe. It'a available
 # on the web...

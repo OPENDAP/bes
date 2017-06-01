@@ -5,7 +5,10 @@
 #       Key entries for OPeNDAP BES run time behavior                   #
 #                                                                       #
 #-----------------------------------------------------------------------#
-  
+#
+# template: bes.conf.in
+#
+#  
 #-----------------------------------------------------------------------#
 # Who is the administrator for this OPeNDAP back-end server             #
 # Please replace this with the email address to use that gets displayed #

@@ -12,7 +12,7 @@ SUBDIRS = . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_gdal
-M_VER=0.10.1
+M_VER=0.10.2
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(GDAL_CFLAGS) $(DAP_CFLAGS)
@@ -38,7 +38,7 @@ FONG_SRC = GeoTiffTransmitter.cc JPEG2000Transmitter.cc FONgRequestHandler.cc	\
 FONG_HDR = GeoTiffTransmitter.h JPEG2000Transmitter.h FONgRequestHandler.h	\
 	FONgModule.h FONgTransform.h FONgBaseType.h FONgGrid.h
 
-EXTRA_DIST = data COPYING fong.conf.in doxy.conf
+EXTRA_DIST = data COPYING fong.conf.in
 
 if !DAP_MODULES
 EXTRA_DIST += fileout_gdal.spec 
@@ -58,11 +58,6 @@ uninstall-local:
 
 fong.conf: fong.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fong.conf
-
-.PHONY: docs
-docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
 
 C4_DIR=./cccc
 .PHONY: cccc

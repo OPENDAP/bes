@@ -402,7 +402,7 @@ CPPUNIT_TEST_SUITE( catT );
             string str = strm.str();
             str = remove_ptr(str);
             str = remove_stuff(str);
-            //cerr << "Catalog list str: " << str << endl;
+            cerr << "Catalog list str: " << str << endl;
             CPPUNIT_ASSERT( str == one_response );
         }
         catch (BESError &e) {

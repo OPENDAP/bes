@@ -91,6 +91,12 @@ static bool bes_debug = false;
  *
  * @param cache_dir Directory that holds the cached files.
  */
+void run_sys(const string cmd){
+    int status;
+    DBG(cerr << __func__ <<" command: '" << cmd );
+    status = system(cmd.c_str());
+    DBG(cerr << "' status: " << status  << endl );
+}
 void init_cache(const string &cache_dir)
 {
     DBG(cerr << __func__ << "() - BEGIN " << endl);
@@ -102,17 +108,17 @@ void init_cache(const string &cache_dir)
 
         string cmd = "";
         cmd.append("cp -f ").append(t_file).append(" ").append(s.str());
-        system(cmd.c_str());
+        run_sys(cmd);
 
         cmd = "";
         cmd.append("chmod a+w ").append(s.str());
-        system(cmd.c_str());
+        run_sys(cmd);
 
         // DBG(cerr << __func__ << "() - sleeping for 1 second..." << endl);
         //sleep(1);
         cmd = "";
         cmd.append( "cat ").append(s.str()).append(" > /dev/null");
-        system(cmd.c_str());
+        run_sys(cmd);
     }
 
     DBG(cerr << __func__ << "() - END " << endl);

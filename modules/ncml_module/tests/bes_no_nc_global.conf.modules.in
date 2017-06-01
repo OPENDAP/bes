@@ -1,3 +1,7 @@
+#
+# template: bes_no_nc_global.conf.modules.in
+#
+#
 
 BES.ServerAdministrator=admin.email.address@your.domain.name
 

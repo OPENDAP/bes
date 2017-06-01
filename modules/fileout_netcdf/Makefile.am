@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_netcdf
-M_VER=1.4.3
+M_VER=1.4.4
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
@@ -47,7 +47,7 @@ FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h
 
-EXTRA_DIST = data COPYRIGHT COPYING fonc.conf.in doxy.conf
+EXTRA_DIST = data COPYRIGHT COPYING fonc.conf.in
 
 if !DAP_MODULES
 EXTRA_DIST += fileout_netcdf.spec
@@ -67,11 +67,6 @@ uninstall-local:
 
 fonc.conf: fonc.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fonc.conf
-
-.PHONY: docs
-docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
 
 C4_DIR=./cccc
 .PHONY: cccc

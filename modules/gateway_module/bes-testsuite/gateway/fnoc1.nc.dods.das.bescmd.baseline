@@ -7,7 +7,7 @@ Attributes {
         String DODS_Name "UWind";
         Byte b 128;
         Int32 i 32000;
-        String WOA01 "\"http://localhost/junk\"";
+        Url WOA01 "http://localhost/junk";
     }
     v {
         String units "meter per second";
@@ -28,7 +28,8 @@ Attributes {
     NC_GLOBAL {
         String base_time "88- 10-00:00:00";
         String title " FNOC UV wind components from 1988- 10 to 1988- 13.";
-        String DODS_EXTRA.Unlimited_Dimension "time_a";
-        String history "removed date-time http://test.opendap.org:8080/opendap/data/nc/fnoc1.nc.nc?";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "time_a";
     }
 }

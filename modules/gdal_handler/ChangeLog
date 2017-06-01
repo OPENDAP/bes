@@ -1,3 +1,621 @@
+2017-05-30  ndp-opendap  <ndp@opendap.org>
+
+	Hyrax-1.13.5 versioning commit
+
+2017-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #64 from OPENDAP/hdf5-build-fix
+	Hdf5 build fix
+
+	hdf5 handler on its master branch now work with distcheck
+
+	Removed the hdf5 handler gctp include dir Makefile.
+
+2017-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hdf5 build (libGctp and its headers are no longer installed)
+	Also, removed an unused rpm spec file that confused builders.
+
+2017-05-23  ndp-opendap  <ndp@opendap.org>
+
+	Added README.md to EXTRA_DIST files
+
+	Added new README.md to bes.*.spec files
+
+2017-05-23  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #63 from OPENDAP/distcheck-fix
+	Distcheck fix
+
+2017-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the rest of the subdir-objects options from unit-test Makfile.am files
+
+	Added distcheck back into the CI build run by Travis.
+
+	Edits to double check that subdir-option was the issue
+	Using subdir-option seems to be the cause of the rm -rf ../.deps
+	bug with our distcheck target.
+
+	Modified the ncml handler/tests/Makefile.am so that distclean removes files from cache
+
+2017-05-22  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - on the way to fixing distcheck
+
+2017-05-18  ndp-opendap  <ndp@opendap.org>
+
+	updated hdf5_handler
+
+	Sync
+
+2017-05-17  ndp-opendap  <ndp@opendap.org>
+
+	Dropping geo-functions from configure.ac because it is not being built.
+
+	Dropping references to missing files.
+
+	Dropped reference to missing file.
+
+	Dropped reference to missing file.
+
+	Dropper reference to missing file.
+
+	build trigger
+
+2017-05-15  ndp-opendap  <ndp@opendap.org>
+
+	updated hdf5
+
+	hdf updates
+
+	Added test.opendap.org:80 to the gateway config for ncml_handler tests.
+
+	PAtched ncml_handler gateway data files to use port 80 on test.o.o
+
+2017-05-12  ndp-opendap  <ndp@opendap.org>
+
+	Added null value checking on dynamic_cast usage
+
+	Merge branch 'master' into coverity_scan
+
+	Patching bad include (someone used import)
+
+	Merge branch 'master' into coverity_scan
+
+2017-05-12  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #54 from OPENDAP/ncml_gateway
+	Ncml gateway
+
+2017-05-12  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into ncml_gateway
+
+2017-05-11  ndp-opendap  <ndp@opendap.org>
+
+	Fixed production rules (configure.ac) for hdf5_handler/gctp and related.
+
+	Dropping lockT_SOURCES from Makefile.am
+
+2017-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #60 from OPENDAP/dmr2dds
+	Dmr2dds
+
+2017-05-11  ndp-opendap  <ndp@opendap.org>
+
+	Changed return value of transform_to_dap4() to void.
+
+2017-05-10  ndp-opendap  <ndp@opendap.org>
+
+	Updated baselines reflect FQN values for Map names.
+
+	First cut at migrating transform_to_dap4() to it refactored form. Next step, return void.
+
+2017-05-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Fixed comment
+	modified:   functions/RoiFunction.cc
+
+2017-05-03  Kent Yang  <myang6@hdfgroup.org>
+
+	This version adds the sinusodial projection support.
+
+2017-05-01  James Gallagher  <jgallagher@opendap.org>
+
+	New HDF5 handler version
+
+2017-04-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #59 from OPENDAP/cache_fix
+	Cache fix
+
+	Clean up residual cache code. Add a note about fcntl(2) versus flock(2)
+	Both fcntl(2) and flock(2) can be used for advisory locking. The
+	BESFileLockingCache uses fcntl() and that impacts testing since
+	all of our testing is single-process. Not a huge deal, but if we
+	want more complete testing we'll need to change how we implement
+	the locks or use multi-process testing.
+
+	Modest fixes to the test code in cacheT
+
+	Merge remote-tracking branch 'origin/cacheT_fix' into cache_fix
+
+	This code now builds and passes the tests we have...
+	But we might ned or want to write more/better tests for the cache.
+
+	Checkpoint - looking at BESFileLockingCache testing issues.
+
+	Merge pull request #58 from OPENDAP/BESFSDir_h
+	Clean the header
+
+2017-04-25  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - seg fault in check_cache of cacheT
+
+	Started on a fix for cacheT - checkpoint
+
+2017-04-24  James Gallagher  <jgallagher@opendap.org>
+
+	Clean the header  Changes to be committed: 	modified:   dispatch/BESFSDir.h
+
+2017-04-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #57 from OPENDAP/bes_basic_tranmitter_removal
+	Removed BESBasicTransmitter and BESBasicInterface
+
+	Removed BESBasicTransmitter and BESBasicInterface
+
+	Merge pull request #56 from OPENDAP/command_timing
+	Fixed a bug in BESDebug.h and reformatted BESStopWatch.cc
+
+	Fixed a bug in BESDebug.h and reformatted BESStopWatch.cc
+
+	Merge pull request #55 from OPENDAP/refactor
+	Refactor branch merged to master
+
+	Merge branch 'master' into refactor
+
+2017-04-19  ndp-opendap  <ndp@opendap.org>
+
+	Added expected fail to test that ran into the history attribute added by FoNC. We really need to figure out how to write tests that match everything but some text/regex.
+
+	Updated all tests to use test.opendap.org
+
+	New tests and renamed tests for gateway_handler. Tests demonstrate places where software is incomplete
+
+	Fixed xfail pattern in test code.
+
+2017-04-18  ndp-opendap  <ndp@opendap.org>
+
+	dropping unused file
+
+	Added another test, gateway is able to modifiy metadata and aggregate remote datasets
+
+	TEsts targets baselines etc
+
+	Tagged bes_conf.in files
+
+	TEsts for gateway capability in ncml_handler .
+
+2017-04-18  James Gallagher  <jgallagher@opendap.org>
+
+	More refactoring for BESBeasicTransmitter refactor/removal
+
+2017-04-18  ndp-opendap  <ndp@opendap.org>
+
+	Gateway and Ncml_handler just had a luv child.
+
+2017-04-18  James Gallagher  <jgallagher@opendap.org>
+
+	Initial refactor removing BESBasicTransmitter
+
+2017-04-18  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #53 from OPENDAP/error_logs
+	Error logs
+
+2017-04-18  ndp-opendap  <ndp@opendap.org>
+
+	Added filter to errors written to log. Internal, InternalFatal, and Forbidden errors are always written to the log. SyntaxUseer and Not Found errors are only writtent when the log is set to verbose mode.
+
+	Added filter to errors written to log. Internal, InternalFatal, and Forbidden errors are always written to the log. SyntaxUseer and Not Found errors are only writtent when the log is set to verbose mode.
+
+2017-04-17  ndp-opendap  <ndp@opendap.org>
+
+	Getting errors into the BESLog.
+
+	Merge branch 'master' into error_logs
+
+	Restored -k option to TravisCI build
+
+	Merge branch 'master' into error_logs
+
+2017-04-17  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #52 from OPENDAP/cache_lifecycle
+	Cache lifecycle
+
+2017-04-17  ndp-opendap  <ndp@opendap.org>
+
+	TravisCI tweaks
+
+	TravisCI tweaks
+
+	Debugging travis
+
+2017-04-15  ndp-opendap  <ndp@opendap.org>
+
+	Trying to sort Travis build, saw a small counting problem in a makefile test.
+
+2017-04-14  ndp-opendap  <ndp@opendap.org>
+
+	More test refinement
+
+	Dap4 function tests
+
+	error log added to BESExceptionManager
+
+	missed an add
+
+	small edits
+
+	Updated get_instance() pattern in AggMemberDatasetDimensionCache. TEsts pass
+
+	Fix get_instance() pattern in GatewayCache.cc
+
+	Fixed containerT.cc
+
+	Fixed containerT.cc
+
+	Got lockT.cc working. Maybe be pointless test though...
+
+	Replace bes.conf file that i should not ave renamed.
+
+2017-04-13  ndp-opendap  <ndp@opendap.org>
+
+	Fixed uncompressT test so that it cleans up after itself.
+
+	Rewrote cacheT as a unit test for BESFileLockingCache
+
+	sync
+
+2017-04-12  ndp-opendap  <ndp@opendap.org>
+
+	String BESFileLockingCache unit tests
+
+	oops
+
+	Added disabled cache check
+
+	Fixed uncompressT unit-test.
+
+	Updated BESStoredDapResultCache cache with new pattern
+
+2017-04-11  ndp-opendap  <ndp@opendap.org>
+
+	New pattern to stop repeatedly trying to create an unconfigured cache
+
+2017-04-11  James Gallagher  <jgallagher@opendap.org>
+
+	Ignore W10nTest
+
+	Merge branch 'master' of https://github.com/opendap/bes.git
+
+	Spelling in comment for FONCTransmitter.cc
+
+2017-04-11  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #49 from OPENDAP/roi_subset_unwrap
+	Roi subset unwrap
+
+2017-04-10  ndp-opendap  <ndp@opendap.org>
+
+	Fixed unit test baselines for roi_subset
+
+	Replaced inadvertently corrupted test commands
+
+	baseline update for unwrap
+
+	Changed name of roi_subset to roi_subset_unwrap
+
+2017-04-06  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #48 from OPENDAP/hyrax-91
+	Hyrax 91
+
+2017-04-06  ndp-opendap  <ndp@opendap.org>
+
+	First pass at fixing ticket Hyrax-91. The output is now correct, but a test is failing and it is hard to know it that is related.
+
+	First pass at fixing ticket Hyrax-91. The output is now correct, but a test is failing and it is hard to know it that is related.
+
+2017-04-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #47 from OPENDAP/clear_alarms
+	Moved clear timeout code to BESUtil, added call to BESCatalogDirectory
+
+2017-04-03  ndp-opendap  <ndp@opendap.org>
+
+	Moved clear timeout code to BESUtil, added call to BESCatalogDirectory
+
+2017-03-31  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #43 from OPENDAP/clear_alarms
+	Clear alarms
+
+2017-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #44 from OPENDAP/fsdir_fix
+	Fsdir fix
+
+2017-03-31  ndp-opendap  <ndp@opendap.org>
+
+	Moved the clear alarm action to just prior to intern_data() activity.
+
+2017-03-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fix to BESFSDir for the opendir/readdir race condition.
+	When two processes are using the same directory and one process makes
+	and deletes files in the directory at the same time as the other
+	process uses opendir/readdir to iterate over the files in the
+	directory, it's possible for file names to show up in entries returned
+	by readdir that no longer exist (i.e., stat(2) returns -1). It's better
+	to ignore this than signal an error (IMHO).
+
+2017-03-30  ndp-opendap  <ndp@opendap.org>
+
+	PAtched timout issues for alternative encoding activities
+
+	Adding alarm awareness to BESBasicTransmitter
+
+2017-03-29  James Gallagher  <jgallagher@opendap.org>
+
+	Start of fs dir fix
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Small change to functions/scale_util.cc (count is now undigned)
+
+	Added ScaleUtilTest back into the build
+
+	Merge branch 'master' of github.com:/opendap/bes
+
+	Removed errant tab in Makefile.am
+
+	Fixed an error in both scale_util.cc and its test code (ScaleUtilTest.cc)
+	In scale_util.cc:get_gcp_data() the code samples the data and uses
+	both integer division and 'increment by sample factor' and those
+	were producing an off by one error in some cases.
+
+	Removed ScaleUtilTest from bes/functions for now.
+
+	Fixed BesDebug --> BESDebug and removed some generated files.
+
+	Ugh. Still recovering from geo-functions merge mess - removed generatged files
+	... From gateway bes-testsuite
+
+	Added bes-testsuite for w10n handler
+
+	Added the bes-testsuite dir back in for the gateway handler
+
+2017-03-28  James Gallagher  <jgallagher@opendap.org>
+
+	Removed all the unused lines from the pvolT BES keys file
+
+	Patched the pvolT test so that it writes temp files to ./cache
+	This keeps those temp files from conflicting with the BESKeys use of
+	a regex in the BES.Include line in one of it's test files. This is not
+	a real fix for the problem, which will take a bit more time - and an
+	understanding of the BES File and Dir classes...
+
+	Fixed the various badness of my previous merge of geo-functions.
+
+	OK. Added the gateway and w10n handlers back in.
+
+	Merge branch 'geo-functions'
+
+	Merge branch 'master' into geo-functions
+	Conflicts:
+	functions/geo-functions/unit-tests/.gitignore
+	functions/unit-tests/.gitignore
+	modules/gateway_module
+	modules/w10n_handler
+
+2017-03-27  James Gallagher  <jgallagher@opendap.org>
+
+	Added comment to ContainerStorageVolatile about needing BESKeys file
+
+	pvolT now uses separate tests.
+	I'm not sure this really addresses the underlying issue with the pvolT
+	and keysT conflict, but is makes the test cleaner and might help debug
+	the issue.
+
+	Added options to unit-tests keysT and pvolT
+
+2017-03-26  James Gallagher  <jgallagher@opendap.org>
+
+	Unit tests in dispatch fail when run in parallel. This is a fix.
+	The setup() code in pvolT seems to conflict with the code in keysT
+	when keysT starts and then pvolT starts and finishes before keysT
+	finishes. I have no idea why, but the text in the pvolT's setup()
+	shows up in keysT. It turns out that the setup() code is not needed,
+	and removing it seems to fix the problem. Seems to...
+
+2017-03-17  James Gallagher  <jgallagher@opendap.org>
+
+	Removed 'git_backups'
+
+	FreeForm API changes
+
+	Added gitignore files
+
+2017-02-09  James Gallagher  <jgallagher@opendap.org>
+
+	More README edits [ci skip]
+
+	More README hacks
+
+	README edits
+
+	Changed the name of the README file & added travis badge link [ci skip]
+
+2017-02-07  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for compiler warnings.
+
+2017-02-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into coverity_scan
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2017-02-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2017-01-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to the list of things to do in README.new_new_build
+
+	Merge pull request #34 from OPENDAP/new_new_build
+	New new build
+
+	Merge pull request #35 from OPENDAP/branch2
+	Branch2
+
+	One change made to branch2 that should fix the build/check problem
+
+2017-01-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+	Merge branch 'new_new_build' of https://github.com/opendap/bes into new_new_build
+
+	Added missing code from bes-testsuite dirs
+
+	Modifed for the new_new_build branch
+
+2017-01-30  James Eichert  <jeichert@mbp-jeichert.edn.ecs.nasa.gov>
+
+	Moved BESBasicInterface up into BESInterface.
+
+	Merge branch 'master' of https://github.com/opendap/bes into branch2
+	Move BESBasicInterface up into BESInerface.
+
+2017-01-29  James Gallagher  <jgallagher@opendap.org>
+
+	Added various files to gitignore; the result of moving files and changing pathnames
+
+	Corrected 'dap-server' related errors.
+	In some cases the 'dap-server' directory appeared in files and that
+	had to be removed. In other cases the name 'dap-server' was wrong
+	(since I changed it to 'usage'). I also added notes about the changes
+	to the build.
+
+	Changed the name of dap-server to usage.
+
+2017-01-28  James Gallagher  <jgallagher@opendap.org>
+
+	Added a note about dap-server changes
+
+	Moved (removed) asciival and www-interface from dap-server to 'modules'
+
+	Modified configure.ac and module/Makefile.am because I moved asciival and www-interface
+
+	Moved teh asciival and www-interface modules out of dap-server.
+	This organization was the last vestage of the old 'server3' code.
+
+	new new build checkpoint
+
+	Saved off old code when the modules were their own projects/repos
+
+2017-01-27  James Eichert  <jeichert@mbp-jeichert.edn.ecs.nasa.gov>
+
+	Moved BESBasicInterface class up into BESInterface.
+
+2017-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	removed all but the hdf4/5 submodules
+
+	remove xml_data_handler submodule
+
+	remove w10n_handler submodule
+
+	remove ugrid_functions submodule
+
+	remove netcdf_handler/ submodule
+
+	remove ncml_module submodule
+
+	remove gdal_handler submodule
+
+	remove gateway_module submodule
+
+	remove freeform_handler/ submodule
+
+	remove fits_handler/ submodule
+
+	remove fileout_netcdf submodule
+
+	remove fileout_json submodule
+
+	remove fileout_gdal/ submodule
+
+	removed debug_functions submodule
+
+	remove dap-server submodule
+
+	remove csv_handler submodule
+
+	remove csv_handler submodule
+
+2017-01-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #31 from OPENDAP/refactor_1
+	Refactor 1
+
+	Submodules committed: Changes for BESDebug changes
+
+	Submodules commited: changes matching BESDebug changes
+
+	Hacked BESDebug.h so that BESISDEBUG() --> False when NDEBUG is 1
+
+	Refactor
+	Removed unused variables in PPTConnection, TcpSocket
+	Removed unused code in PPTStreamBuf
+	Fixed warning in BESUncompress3Z
+	Repaired BESDebug.h (.h include unused header; had 'using' stmts)
+
+	Merge pull request #29 from OPENDAP/timeout_bug
+	Timeout bug
+
+	BES exceptions are now logged with more detail. Other formatting edits.
+
+2017-01-24  Nathan Potter  <ndp@opendap.org>
+
+	merged master
+
+2017-01-24  James Gallagher  <jgallagher@opendap.org>
+
+	timeout bug work - it's hard to separate transmission from computation
+	... because the two ideas are interwoven in the BES _except_ for
+	simple file transfers. For this version of thefix I reverted to the
+	old behavior for all responses _except_ the straight file transfers.
+
+	Candidate fix for the timeout bug.
+	See https://opendap.atlassian.net/browse/SUP-32
+
+2017-01-09  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edit to travis.yml (now uses dev1.www.o.o for test log uploads).
+
+	added ScaleUtilTest to gitignore
+
+	Hyrax 1.13.3
 2017-01-09  James Gallagher  <jgallagher@opendap.org>
 
 	Minor edits to ChangeLog

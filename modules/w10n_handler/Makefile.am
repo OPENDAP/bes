@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=w10n_handler
-M_VER=1.0.6
+M_VER=1.0.7
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
@@ -37,7 +37,7 @@ W10N_SRC = w10n_utils.cc W10NModule.cc ShowPathInfoResponseHandler.cc ShowPathIn
 W10N_HDR = w10n_utils.h  W10NModule.h  ShowPathInfoResponseHandler.h  ShowPathInfoCommand.h \
 	W10nJsonTransform.h W10nJsonTransmitter.h W10nJsonRequestHandler.h W10NNames.h
 
-EXTRA_DIST = data COPYING w10n.conf.in doxy.conf
+EXTRA_DIST = data COPYING w10n.conf.in
 
 if !DAP_MODULES
 EXTRA_DIST += w10n_handler.spec
@@ -63,12 +63,6 @@ w10n.conf: w10n.conf.in $(top_srcdir)/config.status
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
 
-# docs
-
-.PHONY: docs
-docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
 
 C4_DIR=./cccc
 .PHONY: cccc

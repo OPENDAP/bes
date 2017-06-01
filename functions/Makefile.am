@@ -6,7 +6,7 @@
 
 AM_CXXFLAGS = 
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign
 
 if DAP_MODULES
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
@@ -40,7 +40,7 @@ SUBDIRS = . unit-tests tests
 # We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
 # However, since we use it we must list all of the subdirs we want; without
 # it, automake will automatically distribute all the stuff in SUBDIRS.
-DIST_SUBDIRS = unit-tests tests
+# DIST_SUBDIRS = unit-tests tests
 # geo-functions
 
 if BUILD_GDAL
