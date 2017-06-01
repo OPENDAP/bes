@@ -20,20 +20,16 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
-//#define DODS_DEBUG 1
 
 #include <string>
 
 #include <BESDebug.h>
 
 #include "GDALTypes.h"
+#include "gdal_utils.h"
 
 using namespace std;
-using namespace libdap ;
-
-// From gdal_dds.cc
-void read_data_array(GDALArray *array, GDALRasterBandH hBand);
-void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
+using namespace libdap;
 
 /************************************************************************/
 /* ==================================================================== */
@@ -44,9 +40,6 @@ void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 void GDALArray::m_duplicate(const GDALArray &a)
 {
 	filename = a.filename;
-#if 0
-	hBand = a.hBand;
-#endif
 	eBufType = a.eBufType;
     iBandNum = a.iBandNum;
 }
@@ -61,14 +54,7 @@ GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), 
 {
     BESDEBUG("gdal", " Called GDALArray::GDALArray() 1" << endl);
 }
-#if 0
-// FIXME Replace hBandIn with an index; mirror the fix in GDALGrid
-GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn) :
-		Array(name, proto), filename(filenameIn), hBand(hBandIn), iBandNum(0), eBufType(eBufTypeIn)
-{
-	BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
-}
-#endif
+
 GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALDataType eBufTypeIn,int iBandNumIn) :
         Array(name, proto), filename(filenameIn), eBufType(eBufTypeIn), iBandNum(iBandNumIn)
 {
@@ -84,7 +70,6 @@ GDALArray::~GDALArray()
 {
 }
 
-// FIXME TEST THIS!
 bool
 GDALArray::read()
 {

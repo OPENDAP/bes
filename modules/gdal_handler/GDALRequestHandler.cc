@@ -58,14 +58,15 @@
 //#include <BESDebug.h>
 
 #include "GDALRequestHandler.h"
+#include "gdal_utils.h"
 
 #define GDAL_NAME "gdal"
 
 using namespace libdap;
-
-extern void gdal_read_dataset_attributes(DAS & das, GDALDatasetH &hDS);
+#if 0
+extern void gdal_read_dataset_attributes(DAS & das, const GDALDatasetH &hDS);
 extern void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &filename);
-
+#endif
 GDALRequestHandler::GDALRequestHandler(const string &name) :
     BESRequestHandler(name)
 {

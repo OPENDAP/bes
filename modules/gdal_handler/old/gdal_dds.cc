@@ -47,10 +47,12 @@
 
 using namespace libdap;
 
-/************************************************************************/
-/*                          read_descriptors()                          */
-/************************************************************************/
-
+/**
+ * Build the DDS object for this dataset.
+ * @param dds
+ * @param hDS
+ * @param filename
+ */
 void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &filename)
 {
     BaseTypeFactory factory;    // Use this to build new scalar variables
@@ -173,7 +175,7 @@ void gdal_read_dataset_variables(DDS *dds, GDALDatasetH &hDS, const string &file
  *
  * @param array
  */
-void read_data_array(GDALArray *array, GDALRasterBandH hBand) {
+void read_data_array(GDALArray *array, const GDALRasterBandH &hBand) {
 	/* -------------------------------------------------------------------- */
 	/*      Collect the x and y sampling values from the constraint.        */
 	/* -------------------------------------------------------------------- */

@@ -20,7 +20,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
-//#define DODS_DEBUG 1
 
 #include <string>
 
@@ -30,13 +29,10 @@
 #include <BESDebug.h>
 
 #include "GDALTypes.h"
+#include "gdal_utils.h"
 
 using namespace std;
 using namespace libdap;
-
-// From gdal_dds.cc
-void read_data_array(GDALArray *array, GDALRasterBandH hBand);
-void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 
 /************************************************************************/
 /* ==================================================================== */
@@ -47,11 +43,6 @@ void read_map_array(Array *map, GDALRasterBandH hBand, GDALDatasetH hDS);
 void GDALGrid::m_duplicate(const GDALGrid &g)
 {
 	filename = g.filename;
-#if 0
-	hBand = g.hBand;
-	eBufType = g.eBufType;
-#endif
-
 }
 
 // protected
