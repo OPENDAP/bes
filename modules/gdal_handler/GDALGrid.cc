@@ -86,6 +86,8 @@ bool GDALGrid::read()
 		return true;
 
     GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+    if (hDS == NULL)
+        throw Error(string(CPLGetLastErrorMsg()));
 
     try {
         // This specialization of Grid::read() is a bit more efficient than using Array::read()

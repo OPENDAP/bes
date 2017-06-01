@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of nc_handler, a data handler for the OPeNDAP data
@@ -25,7 +24,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
- 
 // CDFRequestHandler.h
 
 #ifndef I_GDALRequestHandler_H
@@ -33,32 +31,19 @@
 
 #include <BESRequestHandler.h>
 
-class GDALRequestHandler : public BESRequestHandler {
+class GDALRequestHandler: public BESRequestHandler {
 private:
-#if 0
-    static bool		_show_shared_dims ;
-    static bool		_show_shared_dims_set ;
-
-    static bool     _ignore_unknown_types ;
-    static bool     _ignore_unknown_types_set ;
-#endif
 public:
-	GDALRequestHandler( const string &name ) ;
-    virtual	~GDALRequestHandler( void ) ;
+    GDALRequestHandler(const string &name);
+    virtual ~GDALRequestHandler(void);
 
-    static bool	gdal_build_das( BESDataHandlerInterface &dhi ) ;
-    static bool	gdal_build_dds( BESDataHandlerInterface &dhi ) ;
-    static bool	gdal_build_data( BESDataHandlerInterface &dhi ) ;
+    static bool gdal_build_das(BESDataHandlerInterface &dhi);
+    static bool gdal_build_dds(BESDataHandlerInterface &dhi);
+    static bool gdal_build_data(BESDataHandlerInterface &dhi);
     static bool gdal_build_dmr(BESDataHandlerInterface &dhi);
-    static bool	gdal_build_help( BESDataHandlerInterface &dhi ) ;
-    static bool	gdal_build_version( BESDataHandlerInterface &dhi ) ;
-
-#if 0
-    // These examples show how to set these kinds of BESKey params up
-    // but these examples are not used by the code. jhrg 9/24/12
-    static bool get_show_shared_dims() { return _show_shared_dims; }
-    static bool get_ignore_unknown_types() { return _ignore_unknown_types; }
-#endif
+    static bool gdal_new_build_dmr(BESDataHandlerInterface &dhi);
+    static bool gdal_build_help(BESDataHandlerInterface &dhi);
+    static bool gdal_build_version(BESDataHandlerInterface &dhi);
 };
 
 #endif

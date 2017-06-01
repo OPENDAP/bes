@@ -23,125 +23,16 @@
 #define _GDALTypes_h 1
 
 #include <gdal.h>
-#if 0
-#include <Byte.h>
-#include <UInt16.h>
-#include <Int16.h>
-#include <UInt32.h>
-#include <Int32.h>
-#include <Float32.h>
-#include <Float64.h>
-#endif
+
 #include <Array.h>
 #include <Grid.h>
-#if 0
-/************************************************************************/
-/*                               GDALByte                               */
-/************************************************************************/
 
-class GDALByte: public libdap::Byte {
-public:
-    GDALByte(const string &n = "");
-    virtual ~GDALByte() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-
-/************************************************************************/
-/*                              GDALUInt16                              */
-/************************************************************************/
-
-class GDALUInt16: public libdap::UInt16 {
-public:
-    GDALUInt16(const string &n = "");
-    virtual ~GDALUInt16() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-
-/************************************************************************/
-/*                              GDALInt16                               */
-/************************************************************************/
-
-class GDALInt16: public libdap::Int16 {
-public:
-    GDALInt16(const string &n = "");
-    virtual ~GDALInt16() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-
-/************************************************************************/
-/*                              GDALUInt32                               */
-/************************************************************************/
-
-class GDALUInt32: public libdap::UInt32 {
-public:
-    GDALUInt32(const string &n = "");
-    virtual ~GDALUInt32() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-
-/************************************************************************/
-/*                              GDALInt32                               */
-/************************************************************************/
-
-class GDALInt32: public libdap::Int32 {
-public:
-    GDALInt32(const string &n = "");
-    virtual ~GDALInt32() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-
-/************************************************************************/
-/*                             GDALFloat32                              */
-/************************************************************************/
-
-class GDALFloat32: public libdap::Float32 {
-public:
-    GDALFloat32(const string &n = "");
-    virtual ~GDALFloat32() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-
-/************************************************************************/
-/*                             GDALFloat64                              */
-/************************************************************************/
-
-class GDALFloat64: public libdap::Float64 {
-public:
-    GDALFloat64(const string &n = "");
-    virtual ~GDALFloat64() {}
-
-    virtual BaseType *ptr_duplicate();
-
-    virtual bool read();
-};
-#endif
 /************************************************************************/
 /*                              GDALArray                               */
 /************************************************************************/
 
 class GDALArray: public libdap::Array {
     string filename;
-#if 0
-    GDALRasterBandH hBand;
-#endif
     GDALDataType eBufType;
     int iBandNum;
 
@@ -149,10 +40,6 @@ class GDALArray: public libdap::Array {
 
 public:
     GDALArray(const string &n = "", BaseType *v = 0);
-#if 0
-    // Added for DAP4 support. jhrg 8/26/14
-    GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn);
-#endif
     GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALDataType eBufTypeIn, int iBandNumIn);
     GDALArray(const GDALArray &src);
     virtual ~GDALArray();
@@ -170,13 +57,7 @@ public:
 /************************************************************************/
 
 class GDALGrid: public libdap::Grid {
-#if 0
-    GDALRasterBandH hBand;
-#endif
     string filename;
-#if 0
-    GDALDataType eBufType;
-#endif
     void m_duplicate(const GDALGrid &g);
 
 public:

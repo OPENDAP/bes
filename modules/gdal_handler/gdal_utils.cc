@@ -41,6 +41,13 @@
 #include <DDS.h>
 #include <DAS.h>
 #include <BaseTypeFactory.h>
+
+#include <DMR.h>
+#include <D4Group.h>
+#include <D4Dimensions.h>
+#include <D4Maps.h>
+#include <D4Attributes.h>
+#include <D4BaseTypeFactory.h>
 #include <debug.h>
 
 #include "GDALTypes.h"
@@ -91,6 +98,12 @@ static void translate_metadata(char **md, AttrTable *parent_table)
     }
 }
 
+/**
+ * @brief Build the global attributes for this data set.
+ *
+ * @param hDS
+ * @param attr_table A value-result parameter
+ */
 static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_table)
 {
     /* -------------------------------------------------------------------- */
@@ -144,6 +157,13 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
     if (pszWKT != NULL && strlen(pszWKT) > 0) attach_str_attr_item(attr_table, "spatial_ref", pszWKT);
 }
 
+/**
+ * @brief Build the attributes for a given band/variable.
+ *
+ * @param hDS
+ * @param band_attr a value-result parameter
+ * @param iBand
+ */
 static void build_variable_attributes(const GDALDatasetH &hDS, AttrTable *band_attr, const int iBand)
 {
     /* -------------------------------------------------------------------- */
@@ -260,121 +280,26 @@ void gdal_read_dataset_attributes(DAS &das, const GDALDatasetH &hDS)
         band_attr = das.add_table(string(szName), new AttrTable);
 
         build_variable_attributes(hDS, band_attr, iBand);
-#if 0
-        /* -------------------------------------------------------------------- */
-        /*      Offset.                                                         */
-        /* -------------------------------------------------------------------- */
-        int bSuccess;
-        double dfValue;
-        char szValue[128];
-        GDALRasterBandH hBand = GDALGetRasterBand( hDS, iBand+1 );
-
-        dfValue = GDALGetRasterOffset( hBand, &bSuccess );
-        if( bSuccess )
-        {
-            snprintf( szValue, 128, "%.16g", dfValue );
-            band_attr->append_attr( "add_offset", "Float64", szValue );
-        }
-
-        /* -------------------------------------------------------------------- */
-        /*      Scale                                                           */
-        /* -------------------------------------------------------------------- */
-        dfValue = GDALGetRasterScale( hBand, &bSuccess );
-        if( bSuccess )
-        {
-            snprintf( szValue, 128, "%.16g", dfValue );
-            band_attr->append_attr( "scale_factor", "Float64", szValue );
-        }
-
-        /* -------------------------------------------------------------------- */
-        /*      nodata/missing_value                                            */
-        /* -------------------------------------------------------------------- */
-        dfValue = GDALGetRasterNoDataValue( hBand, &bSuccess );
-        if( bSuccess )
-        {
-            snprintf( szValue, 128, "%.16g", dfValue );
-            band_attr->append_attr( "missing_value", "Float64", szValue );
-        }
-
-        /* -------------------------------------------------------------------- */
-        /*      Description.                                                    */
-        /* -------------------------------------------------------------------- */
-        if( GDALGetDescription( hBand ) != NULL
-            && strlen(GDALGetDescription( hBand )) > 0 )
-        {
-            attach_str_attr_item( band_attr,
-                "Description",
-                GDALGetDescription( hBand ) );
-        }
-
-        /* -------------------------------------------------------------------- */
-        /*      PhotometricInterpretation.                                      */
-        /* -------------------------------------------------------------------- */
-        if( GDALGetRasterColorInterpretation( hBand ) != GCI_Undefined )
-        {
-            attach_str_attr_item(
-                band_attr, "PhotometricInterpretation",
-                GDALGetColorInterpretationName(
-                    GDALGetRasterColorInterpretation(hBand) ) );
-        }
-
-        /* -------------------------------------------------------------------- */
-        /*      Band Metadata.                                                  */
-        /* -------------------------------------------------------------------- */
-        char **md = GDALGetMetadata( hBand, NULL );
-        if( md != NULL )
-        translate_metadata( md, band_attr );
-
-        /* -------------------------------------------------------------------- */
-        /*      Colormap.                                                       */
-        /* -------------------------------------------------------------------- */
-        GDALColorTableH hCT;
-
-        hCT = GDALGetRasterColorTable( hBand );
-        if( hCT != NULL )
-        {
-            AttrTable *ct_attr;
-            int iColor, nColorCount = GDALGetColorEntryCount( hCT );
-
-            ct_attr = band_attr->append_container( string( "Colormap" ) );
-
-            for( iColor = 0; iColor < nColorCount; iColor++ )
-            {
-                GDALColorEntry sRGB;
-                AttrTable *color_attr;
-
-                color_attr = ct_attr->append_container(
-                    string( CPLSPrintf( "color_%d", iColor ) ) );
-
-                GDALGetColorEntryAsRGB( hCT, iColor, &sRGB );
-
-                color_attr->append_attr( "red", "byte",
-                    CPLSPrintf( "%d", sRGB.c1 ) );
-                color_attr->append_attr( "green", "byte",
-                    CPLSPrintf( "%d", sRGB.c2 ) );
-                color_attr->append_attr( "blue", "byte",
-                    CPLSPrintf( "%d", sRGB.c3 ) );
-                color_attr->append_attr( "alpha", "byte",
-                    CPLSPrintf( "%d", sRGB.c4 ) );
-            }
-        }
-#endif
     }
 }
 
 /**
  * Build the DDS object for this dataset.
- * @param dds
+ *
+ * @param dds A value-result parameter
  * @param hDS
  * @param filename
  */
 void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string &filename)
 {
-    BaseTypeFactory factory;    // Use this to build new scalar variables
+    // Load in to global attributes
+    AttrTable *global_attr = dds->get_attr_table().append_container("GLOBAL");
+    build_global_attributes(hDS, global_attr);
 
     /* -------------------------------------------------------------------- */
     /*      Create the basic matrix for each band.                          */
     /* -------------------------------------------------------------------- */
+    BaseTypeFactory factory;    // Use this to build new scalar variables
     GDALDataType eBufType;
 
     for (int iBand = 0; iBand < GDALGetRasterCount(hDS); iBand++) {
@@ -454,7 +379,7 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
         /* -------------------------------------------------------------------- */
         //bt = new GDALFloat64( "northing" );
         bt = factory.NewFloat64("northing");
-        ar = new GDALArray("northing", 0, filename, eBufType, iBand + 1);
+        ar = new GDALArray("northing", 0, filename, GDT_Float64/* eBufType */, iBand + 1);
         ar->add_var_nocopy(bt);
         ar->append_dim(GDALGetRasterYSize(hDS), "northing");
 
@@ -462,7 +387,7 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
 
         //bt = new GDALFloat64( "easting" );
         bt = factory.NewFloat64("easting");
-        ar = new GDALArray("easting", 0, filename, eBufType, iBand + 1);
+        ar = new GDALArray("easting", 0, filename, GDT_Float64/* eBufType */, iBand + 1);
         ar->add_var_nocopy(bt);
         ar->append_dim(GDALGetRasterXSize(hDS), "easting");
 
@@ -470,7 +395,149 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
 
         DBG(cerr << "Type of grid: " << typeid(grid).name() << endl);
 
+        // Add attributes to the Grid
+
+        AttrTable &band_attr = grid->get_attr_table();
+        build_variable_attributes(hDS, &band_attr, iBand);
+
         dds->add_var_nocopy(grid);
+    }
+}
+
+/**
+ * @brief Build the DMR
+ *
+ * This function builds the DMR without first building a DDS. It does use
+ * the AttrTable object, though, to cut down on duplication of code in the
+ * functions that build attributes.
+ *
+ * @param dmr A value-result parameter
+ * @param hDS
+ * @param filename
+ */
+void gdal_read_dataset_variables(DMR *dmr, const GDALDatasetH &hDS, const string &filename)
+{
+    // Load in global attributes. Hack, use DAP2 attributes and transform.
+    // This is easier than writing new D4Attributes code and not a heuristic
+    // routine like the variable transforms or attribute to DDS merge. New
+    // code for the D4Attributes would duplicate the AttrTable code.
+    //
+    // An extra AttrTable is needed because of oddities of its API but that
+    // comes in handy since D4Attributes::transform_to_dap4() throws away
+    // the top most AttrTable
+
+    AttrTable *attr = new AttrTable();
+    AttrTable *global_attr = attr->append_container("GLOBAL");
+
+    build_global_attributes(hDS, global_attr);
+
+    dmr->root()->attributes()->transform_to_dap4(*attr);
+    delete attr; attr = 0;
+
+    /* -------------------------------------------------------------------- */
+    /*      Create the basic matrix for each band.                          */
+    /* -------------------------------------------------------------------- */
+    D4BaseTypeFactory factory;    // Use this to build new scalar variables
+    GDALDataType eBufType;
+
+    for (int iBand = 0; iBand < GDALGetRasterCount(hDS); iBand++) {
+        DBG(cerr << "In dgal_dds.cc  iBand" << endl);
+
+        GDALRasterBandH hBand = GDALGetRasterBand(hDS, iBand + 1);
+
+        ostringstream oss;
+        oss << "band_" << iBand + 1;
+
+        eBufType = GDALGetRasterDataType(hBand);
+
+        BaseType *bt;
+        switch (GDALGetRasterDataType(hBand)) {
+        case GDT_Byte:
+            bt = factory.NewByte(oss.str());
+            break;
+
+        case GDT_UInt16:
+            bt = factory.NewUInt16(oss.str());
+            break;
+
+        case GDT_Int16:
+            bt = factory.NewInt16(oss.str());
+            break;
+
+        case GDT_UInt32:
+            bt = factory.NewUInt32(oss.str());
+            break;
+
+        case GDT_Int32:
+            bt = factory.NewInt32(oss.str());
+            break;
+
+        case GDT_Float32:
+            bt = factory.NewFloat32(oss.str());
+            break;
+
+        case GDT_Float64:
+            bt = factory.NewFloat64(oss.str());
+            break;
+
+        case GDT_CFloat32:
+        case GDT_CFloat64:
+        case GDT_CInt16:
+        case GDT_CInt32:
+        default:
+            // TODO eventually we need to preserve complex info
+            // Replace this with an attribute about a missing/elided variable?
+            bt = factory.NewFloat64(oss.str());
+            eBufType = GDT_Float64;
+            break;
+        }
+
+        // Make the array for this band and then associate the dimensions/maps
+        // once they are made;
+        Array *ar = new GDALArray(oss.str(), 0, filename, eBufType, iBand + 1);
+        ar->add_var_nocopy(bt); // bt is from the above switch
+
+        /* -------------------------------------------------------------------- */
+        /*      Add the dimension map arrays.                                   */
+        /* -------------------------------------------------------------------- */
+
+        // TODO D4 dimension names should be fully qualified. jhrg 6/1/17
+        // TODO Should there be just one 'northing' and 'easting' map/dimension
+        // pairs and not one for each band?
+
+        oss.str("");
+        oss << "northing_" << iBand + 1;
+
+        dmr->root()->dims()->add_dim_nocopy(new D4Dimension(oss.str(), GDALGetRasterYSize(hDS)));
+        ar->append_dim(GDALGetRasterYSize(hDS), oss.str());
+
+        Array *map = new GDALArray(oss.str(), 0, filename, GDT_Float64, iBand + 1);
+        map->add_var_nocopy(factory.NewFloat64(oss.str()));
+        map->append_dim(GDALGetRasterYSize(hDS), oss.str());
+
+        dmr->root()->add_var_nocopy(map);   // Add the map array to the DMR/D4Group
+        ar->maps()->add_map(new D4Map(oss.str(), map, ar));      // Bind the map to the 'main' array
+
+        oss.str("");
+        oss << "easting_" << iBand + 1;
+
+        dmr->root()->dims()->add_dim_nocopy(new D4Dimension(oss.str(), GDALGetRasterYSize(hDS)));
+        ar->append_dim(GDALGetRasterXSize(hDS), oss.str());
+
+        map = new GDALArray(oss.str(), 0, filename, GDT_Float64, iBand + 1);
+        map->add_var_nocopy(factory.NewFloat64(oss.str()));
+        map->append_dim(GDALGetRasterXSize(hDS), oss.str());
+
+        dmr->root()->add_var_nocopy(map);
+        ar->maps()->add_map(new D4Map(oss.str(), map, ar));      // Bind the map to the 'main' array
+
+        // Add attributes, using the same hack as for the global attributes;
+        // build the DAP2 AttrTable object and then transform to DAP4.
+        AttrTable &band_attr = ar->get_attr_table();
+        build_variable_attributes(hDS, &band_attr, iBand);
+        ar->attributes()->transform_to_dap4(band_attr);
+
+        dmr->root()->add_var_nocopy(ar);
     }
 }
 
@@ -486,7 +553,7 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
  *
  * @see read_map_array()
  *
- * @param array
+ * @param array Data are loaded into this GDALArray instance
  */
 void read_data_array(GDALArray *array, const GDALRasterBandH &hBand)
 {
@@ -549,7 +616,7 @@ void read_data_array(GDALArray *array, const GDALRasterBandH &hBand)
  * Read one of the Map arrays. This uses the kludge that the DDS/DMR calls these
  * two arrays 'northing' and 'easting'.
  *
- * @param map
+ * @param map Data are loaded into this libdap::Array instance.
  * @param hBand
  * @param filename
  */

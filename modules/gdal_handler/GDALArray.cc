@@ -78,6 +78,8 @@ GDALArray::read()
     if (read_p()) return true;
 
     GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+    if (hDS == NULL)
+        throw Error(string(CPLGetLastErrorMsg()));
 
     try {
         if (name() == "northing" || name() == "easting")
