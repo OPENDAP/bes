@@ -59,6 +59,4 @@ tests/testsuite
 tests/testsuite.dir
 tests/work_on_failing_tests
 
-
-
-
+tests/cache
