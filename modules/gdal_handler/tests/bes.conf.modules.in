@@ -16,7 +16,7 @@ BES.module.gd=@abs_top_builddir@/modules/gdal_handler/.libs/libgdal_module.so
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/gdal_handler
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=gd:.*.(tif|TIF)(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch=gd:.*.(tif|TIF|grb|jp2|jpg)(.bz2|.gz|.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;

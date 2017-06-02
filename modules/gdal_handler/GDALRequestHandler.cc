@@ -251,14 +251,18 @@ bool GDALRequestHandler::gdal_build_dmr(BESDataHandlerInterface &dhi)
 		gdal_read_dataset_variables(&dds, hDS, filename);
 
 		GDALClose(hDS);
+		hDS = 0;
 	}
 	catch (InternalErr &e) {
+	    if (hDS) GDALClose(hDS);
 		throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (Error &e) {
+	    if (hDS) GDALClose(hDS);
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
+	    if (hDS) GDALClose(hDS);
 		throw BESDapError("Caught unknown error building GDAL DMR response", true, unknown_error, __FILE__, __LINE__);
 	}
 
@@ -307,6 +311,7 @@ bool GDALRequestHandler::gdal_new_build_dmr(BESDataHandlerInterface &dhi)
         gdal_read_dataset_variables(dmr, hDS, filename);
 
         GDALClose(hDS);
+        hDS = 0;
     }
     catch (InternalErr &e) {
         if (hDS) GDALClose(hDS);

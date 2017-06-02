@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SP27GTIF.TIF">
+    <Dimension name="northing" size="929"/>
+    <Dimension name="easting" size="699"/>
+    <Float64 name="northing">
+        <Dim name="/northing"/>
+    </Float64>
+    <Float64 name="easting">
+        <Dim name="/easting"/>
+    </Float64>
+    <Byte name="band_1">
+        <Dim name="/northing"/>
+        <Dim name="/easting"/>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="PhotometricInterpretation" type="String">
+            <Value>Gray</Value>
+        </Attribute>
+        <Map name="/northing"/>
+        <Map name="/easting"/>
+    </Byte>
+    <Attribute name="GLOBAL" type="Container">
+        <Attribute name="Northernmost_Northing" type="Float64">
+            <Value>1913050</Value>
+        </Attribute>
+        <Attribute name="Southernmost_Northing" type="Float64">
+            <Value>1882578.8</Value>
+        </Attribute>
+        <Attribute name="Easternmost_Easting" type="Float64">
+            <Value>704407.2</Value>
+        </Attribute>
+        <Attribute name="Westernmost_Northing" type="Float64">
+            <Value>681480</Value>
+        </Attribute>
+        <Attribute name="GeoTransform" type="String">
+            <Value>681480 32.8 0 1913050 0 -32.8</Value>
+        </Attribute>
+        <Attribute name="Metadata" type="Container">
+            <Attribute name="AREA_OR_POINT" type="String">
+                <Value>Area</Value>
+            </Attribute>
+            <Attribute name="TIFFTAG_RESOLUTIONUNIT" type="String">
+                <Value>1 (unitless)</Value>
+            </Attribute>
+            <Attribute name="TIFFTAG_XRESOLUTION" type="String">
+                <Value>72</Value>
+            </Attribute>
+            <Attribute name="TIFFTAG_YRESOLUTION" type="String">
+                <Value>72</Value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="spatial_ref" type="String">
+            <Value>PROJCS[\&quot;NAD27 / Illinois East\&quot;,GEOGCS[\&quot;NAD27\&quot;,DATUM[\&quot;North_American_Datum_1927\&quot;,SPHEROID[\&quot;Clarke 1866\&quot;,6378206.4,294.9786982138982,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7008\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6267\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0,AUTHORITY[\&quot;EPSG\&quot;,\&quot;8901\&quot;]],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4267\&quot;]],PROJECTION[\&quot;Transverse_Mercator\&quot;],PARAMETER[\&quot;latitude_of_origin\&quot;,36.66666666666666],PARAMETER[\&quot;central_meridian\&quot;,-88.33333333333333],PARAMETER[\&quot;scale_factor\&quot;,0.999975],PARAMETER[\&quot;false_easting\&quot;,500000],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;US survey foot\&quot;,0.3048006096012192,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9003\&quot;]],AXIS[\&quot;X\&quot;,EAST],AXIS[\&quot;Y\&quot;,NORTH],AUTHORITY[\&quot;EPSG\&quot;,\&quot;26771\&quot;]]</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
