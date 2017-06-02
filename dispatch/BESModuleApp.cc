@@ -48,7 +48,7 @@ using std::endl;
  * object
  */
 BESModuleApp::BESModuleApp(void) :
-        BESBaseApp()
+        BESApp()
 {
 }
 
@@ -69,7 +69,7 @@ BESModuleApp::~BESModuleApp(void)
  */
 int BESModuleApp::initialize(int argC, char **argV)
 {
-    int retVal = BESBaseApp::initialize(argC, argV);
+    int retVal = BESApp::initialize(argC, argV);
     if (!retVal) {
         try {
             retVal = loadModules();
@@ -229,7 +229,7 @@ int BESModuleApp::terminate(int sig)
         cerr << "Caught unknown exception during terminate" << endl;
     }
 
-    return BESBaseApp::terminate(sig);
+    return BESApp::terminate(sig);
 }
 
 /** @brief dumps information about this object

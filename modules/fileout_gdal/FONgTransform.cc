@@ -42,7 +42,7 @@
 
 #include "FONgTransform.h"
 
-#include "FONgBaseType.h"
+#include "../../old/FONgBaseType.h"
 #include "FONgGrid.h"
 
 using namespace std;
@@ -73,8 +73,8 @@ FONgTransform::FONgTransform(DDS *dds, ConstraintEvaluator &/*evaluator*/, const
  */
 FONgTransform::~FONgTransform()
 {
-    vector<FONgBaseType *>::iterator i = d_fong_vars.begin();
-    vector<FONgBaseType *>::iterator e = d_fong_vars.end();
+    vector<FONgGrid *>::iterator i = d_fong_vars.begin();
+    vector<FONgGrid *>::iterator e = d_fong_vars.end();
     while (i != e) {
         delete (*i++);
     }
@@ -103,7 +103,7 @@ is_convertable_type(const BaseType *b)
  * @returns The FONg object created via the DAP object
  * @throws BESInternalError if the DAP object is not an expected type
  */
-static FONgBaseType *convert(BaseType *v)
+static FONgGrid *convert(BaseType *v)
 {
     switch (v->type()) {
     case dods_grid_c:
@@ -126,7 +126,7 @@ static FONgBaseType *convert(BaseType *v)
  * than (or less than) the no data value.
  *
  * @note The initial no data value is determined be looking at attributes and
- * is done by FONgBaseType::extract_coordinates().
+ * is done by FONgGrid::extract_coordinates().
  * @note It's an error to call this if no_data_type() is 'none'.
  *
  * @param data The data values to fiddle
@@ -225,7 +225,7 @@ double *FONgTransform::geo_transform()
  *
  * @return True if this is a 2D array, false otherwise.
  */
-bool FONgTransform::effectively_two_D(FONgBaseType *fbtp)
+bool FONgTransform::effectively_two_D(FONgGrid *fbtp)
 {
     if (fbtp->type() == dods_grid_c) {
         Grid *g = static_cast<FONgGrid*>(fbtp)->grid();
@@ -253,10 +253,10 @@ static void build_delegate(BaseType *btp, FONgTransform &t)
         BESDEBUG( "fong3", "converting " << btp->name() << endl);
 
         // Build the delegate
-        FONgBaseType *fb = convert(btp);
+        FONgGrid *fb = convert(btp);
 
         // Get the information needed for the transform.
-        // Note that FONgBaseType::extract_coordinates() also pushes the
+        // Note that FONgGrid::extract_coordinates() also pushes the
         // new FONgBaseType instance onto the FONgTransform's vector of
         // delagate variable objects.
         fb->extract_coordinates(t);
@@ -281,7 +281,7 @@ static void find_vars_helper(Structure *s, FONgTransform &t)
 }
 
 // Helper function to scan the DDS top-level for Grids, ...
-// Note that FONgBaseType::extract_coordinates() sets a bunch of
+// Note that FONgGrid::extract_coordinates() sets a bunch of
 // values in the FONgBaseType instance _and_ this instance of
 // FONgTransform. One of these is 'num_bands()'. For GeoTiff,
 // num_bands() must be 1. This is tested in transform().
@@ -350,7 +350,7 @@ void FONgTransform::transform_to_geotiff()
     bool projection_set = false;
     string wkt = "";
     for (int i = 0; i < num_bands(); ++i) {
-        FONgBaseType *fbtp = var(i);
+        FONgGrid *fbtp = var(i);
 
         if (!projection_set) {
             wkt = fbtp->get_projection(d_dds);
@@ -447,7 +447,7 @@ void FONgTransform::transform_to_jpeg2000()
     bool projection_set = false;
     string wkt = "";
     for (int i = 0; i < num_bands(); ++i) {
-        FONgBaseType *fbtp = var(i);
+        FONgGrid *fbtp = var(i);
 
         if (!projection_set) {
             wkt = fbtp->get_projection(d_dds);

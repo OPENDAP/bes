@@ -77,12 +77,11 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( connT );
+    CPPUNIT_TEST_SUITE( connT );
 
     CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void do_test()
     {

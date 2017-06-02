@@ -1,4 +1,4 @@
-// BESBaseApp.C
+// BESApp.C
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -32,33 +32,13 @@
 
 #include <iostream>
 
-using std::cerr ;
-using std::endl ;
+using std::cerr;
+using std::endl;
 
-#include "BESBaseApp.h"
+#include "BESApp.h"
 #include "BESInternalError.h"
 
 BESApp *BESApp::_theApplication = 0;
-
-/** @brief Default constructor
- *
- * Initialized the static _the Application to point to this application
- * object
- */
-BESBaseApp::BESBaseApp(void)
-{
-    BESApp::_theApplication = this;
-}
-
-/** @brief Default destructor
- *
- * sets the static _theApplicaiton to null. Does not call terminate. It is up
- * to the main method to call the terminate method.
- */
-BESBaseApp::~BESBaseApp(void)
-{
-    BESApp::_theApplication = 0;
-}
 
 /** @brief main method of the BES application
  *
@@ -70,17 +50,15 @@ BESBaseApp::~BESBaseApp(void)
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int
-BESBaseApp::main(int argC, char **argV)
+int BESApp::main(int argC, char **argV)
 {
-    _appName = argV[0] ;
-    int retVal = initialize( argC, argV ) ;
-    if( retVal == 0 )
-    {
-	retVal = run() ;
-	retVal = terminate( retVal ) ;
+    _appName = argV[0];
+    int retVal = initialize(argC, argV);
+    if (retVal == 0) {
+        retVal = run();
+        retVal = terminate(retVal);
     }
-    return retVal ;
+    return retVal;
 }
 
 /** @brief initialize the BES application
@@ -90,11 +68,10 @@ BESBaseApp::main(int argC, char **argV)
  * @param argV argv value passed to the main function
  * @throws BESError if any exceptions or errors are encountered
  */
-int
-BESBaseApp::initialize(int /*argC*/, char **/*argV*/)
+int BESApp::initialize(int /*argC*/, char **/*argV*/)
 {
-    _isInitialized = true ;
-    return 0 ;
+    _isInitialized = true;
+    return 0;
 }
 
 /** @brief the applications functionality is implemented in the run method
@@ -105,11 +82,10 @@ BESBaseApp::initialize(int /*argC*/, char **/*argV*/)
  * @throws BESError if the derived class does not implement this
  * method
  */
-int
-BESBaseApp::run(void)
+int BESApp::run(void)
 {
-    throw BESInternalError( "BESBaseApp::run - run method not implemented",
-                            __FILE__, __LINE__ ) ;
+    throw BESInternalError("BESApp::run - run method not implemented",
+    __FILE__, __LINE__);
     return 0;
 }
 
@@ -122,11 +98,10 @@ BESBaseApp::run(void)
  * is passed.
  * @see BESGlobalIQ
  */
-int
-BESBaseApp::terminate( int sig )
+int BESApp::terminate(int sig)
 {
-    _isInitialized = false ;
-    return sig ;
+    _isInitialized = false;
+    return sig;
 }
 
 /** @brief dumps information about this object
@@ -136,13 +111,12 @@ BESBaseApp::terminate( int sig )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESBaseApp::dump( ostream &strm ) const
+void BESApp::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESBaseApp::dump - (" << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "appName: " << appName() << endl ;
-    strm << BESIndent::LMarg << "is initialized: " << _isInitialized << endl ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESApp::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "appName: " << appName() << endl;
+    strm << BESIndent::LMarg << "is initialized: " << _isInitialized << endl;
+    BESIndent::UnIndent();
 }
 

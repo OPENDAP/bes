@@ -22,6 +22,8 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
+#include "../../old/FONgBaseType.h"
+
 #include "config.h"
 
 #include <BaseType.h>
@@ -29,4 +31,3 @@
 #include <BESObj.h>
 #include <BESDebug.h>
 
-#include "FONgBaseType.h"

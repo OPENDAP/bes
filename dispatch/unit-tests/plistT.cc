@@ -78,12 +78,11 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( plistT );
+    CPPUNIT_TEST_SUITE( plistT );
 
     CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void do_test()
     {

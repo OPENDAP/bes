@@ -44,10 +44,9 @@
 #include "BESDebug.h"
 #include "BESForbiddenError.h"
 #include "BESInternalError.h"
-#include "BESKeys.h"
+#include "TheBESKeys.h"
 #include "BESNotFoundError.h"
 #include "BESUtil.h"
-#include "TheBESKeys.h"
 
 using std::string;
 using std::vector;
