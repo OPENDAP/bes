@@ -86,7 +86,7 @@ public:
 
     void do_test()
     {
-        BESKeys *keys = TheBESKeys::TheKeys();
+        TheBESKeys *keys = TheBESKeys::TheKeys();
         keys->set_key((string) "BES.Container.Persistence.File.File1=" + TEST_SRC_DIR + "/persistence_file1.txt");
         keys->set_key((string) "BES.Container.Persistence.File.File2=" + TEST_SRC_DIR + "/persistence_file2.txt");
 

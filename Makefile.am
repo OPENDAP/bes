@@ -27,7 +27,7 @@ AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
-DIST_SUBDIRS = $(SUBDIRS)
+# DIST_SUBDIRS = $(SUBDIRS)
 
 if LIBDAP
 SUBDIRS += functions dap dapreader 

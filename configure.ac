@@ -788,11 +788,7 @@ AM_COND_IF([DAP_MODULES],
 	modules/netcdf_handler/bes-testsuite/Makefile 
 	modules/netcdf_handler/bes-testsuite/atlocal 
 	
-	modules/fileout_netcdf/Makefile 
-	modules/fileout_netcdf/unit-tests/Makefile 
-	modules/fileout_netcdf/unit-tests/test_config.h 
-	modules/fileout_netcdf/unit-tests/atlocal
-	
+	modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 

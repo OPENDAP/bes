@@ -51,6 +51,7 @@ using std::ostringstream;
 #include "BuildTCmd2.h"
 #include "BESError.h"
 #include "TheBESKeys.h"
+
 #include <GetOpt.h>
 
 #include "test_config.h"
@@ -81,12 +82,11 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( buildT );
+    CPPUNIT_TEST_SUITE( buildT );
 
     CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void do_test()
     {
