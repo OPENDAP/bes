@@ -39,7 +39,7 @@
 #include <unistd.h>
 #endif
 
-#include "BESKeys.h"
+#include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESFSDir.h"
 #include "BESFSFile.h"
@@ -48,7 +48,7 @@
 
 #define BES_INCLUDE_KEY "BES.Include"
 
-vector<string> BESKeys::KeyList;
+std::vector<string> TheBESKeys::KeyList;
 
 /** @brief default constructor that reads loads key/value pairs from the
  * specified file.
@@ -66,14 +66,14 @@ vector<string> BESKeys::KeyList;
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-BESKeys::BESKeys(const string &keys_file_name) :
+TheBESKeys::TheBESKeys(const string &keys_file_name) :
     _keys_file(0), _keys_file_name(keys_file_name), _the_keys(0), _own_keys(true)
 {
     _the_keys = new map<string, vector<string> >;
     initialize_keys();
 }
 
-BESKeys::BESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
+TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
     _keys_file(0), _keys_file_name(keys_file_name), _the_keys(keys), _own_keys(false)
 {
     initialize_keys();
@@ -81,12 +81,12 @@ BESKeys::BESKeys(const string &keys_file_name, map<string, vector<string> > *key
 
 /** @brief cleans up the key/value pair mapping
  */
-BESKeys::~BESKeys()
+TheBESKeys::~TheBESKeys()
 {
     clean();
 }
 
-void BESKeys::initialize_keys()
+void TheBESKeys::initialize_keys()
 {
     _keys_file = new ifstream(_keys_file_name.c_str());
 
@@ -121,7 +121,7 @@ void BESKeys::initialize_keys()
     }
 }
 
-void BESKeys::clean()
+void TheBESKeys::clean()
 {
     if (_keys_file) {
         _keys_file->close();
@@ -140,10 +140,10 @@ void BESKeys::clean()
  *
  * @returns true if already started to load, false otherwise
  */
-bool BESKeys::LoadedKeys(const string &key_file)
+bool TheBESKeys::LoadedKeys(const string &key_file)
 {
-    vector<string>::const_iterator i = BESKeys::KeyList.begin();
-    vector<string>::const_iterator e = BESKeys::KeyList.end();
+    vector<string>::const_iterator i = TheBESKeys::KeyList.begin();
+    vector<string>::const_iterator e = TheBESKeys::KeyList.end();
     for (; i != e; i++) {
         if ((*i) == key_file) {
             return true;
@@ -153,7 +153,7 @@ bool BESKeys::LoadedKeys(const string &key_file)
     return false;
 }
 
-void BESKeys::load_keys()
+void TheBESKeys::load_keys()
 {
     string key, value, line;
     while (!_keys_file->eof()) {
@@ -182,7 +182,7 @@ void BESKeys::load_keys()
 //
 // It used to be that we would validate the key=value line. Instead,
 // anything after the equal sign is considered the value of the key.
-inline bool BESKeys::break_pair(const char* b, string& key, string &value, bool &addto)
+inline bool TheBESKeys::break_pair(const char* b, string& key, string &value, bool &addto)
 {
     addto = false;
     // Ignore comments and lines with only spaces
@@ -243,7 +243,7 @@ inline bool BESKeys::break_pair(const char* b, string& key, string &value, bool 
  * @param files string representing a file or a regular expression
  * patter for 1 or more files
  */
-void BESKeys::load_include_files(const string &files)
+void TheBESKeys::load_include_files(const string &files)
 {
     string newdir;
     BESFSFile allfiles(files);
@@ -290,18 +290,18 @@ void BESKeys::load_include_files(const string &files)
  *
  * @param file name of the configuration file to load
  */
-void BESKeys::load_include_file(const string &file)
+void TheBESKeys::load_include_file(const string &file)
 {
     // make sure the file exists and is readable
     // throws exception if unable to read
     // not loaded if has already be started to be loaded
-    if (!BESKeys::LoadedKeys(file)) {
-        BESKeys::KeyList.push_back(file);
-        BESKeys tmp(file, _the_keys);
+    if (!TheBESKeys::LoadedKeys(file)) {
+        TheBESKeys::KeyList.push_back(file);
+        TheBESKeys tmp(file, _the_keys);
     }
 }
 
-bool BESKeys::only_blanks(const char *line)
+bool TheBESKeys::only_blanks(const char *line)
 {
     string my_line = line;
     if (my_line.find_first_not_of(" ") != string::npos)
@@ -326,7 +326,7 @@ bool BESKeys::only_blanks(const char *line)
  * @param addto Specifies whether to add the value to the key or set the
  * value. Default is to set, not add to
  */
-void BESKeys::set_key(const string &key, const string &val, bool addto)
+void TheBESKeys::set_key(const string &key, const string &val, bool addto)
 {
     map<string, vector<string> >::iterator i;
     i = _the_keys->find(key);
@@ -351,7 +351,7 @@ void BESKeys::set_key(const string &key, const string &val, bool addto)
  *
  * @param pair the key/value pair passed as key=value
  */
-void BESKeys::set_key(const string &pair)
+void TheBESKeys::set_key(const string &pair)
 {
     string key;
     string val;
@@ -374,7 +374,7 @@ void BESKeys::set_key(const string &pair)
  * @throws BESSyntaxUserError if multiple values are available for the
  * specified key
  */
-void BESKeys::get_value(const string& s, string &val, bool &found)
+void TheBESKeys::get_value(const string& s, string &val, bool &found)
 {
     found = false;
     map<string, vector<string> >::iterator i;
@@ -405,7 +405,7 @@ void BESKeys::get_value(const string& s, string &val, bool &found)
  * The value of a key can be set to the empty string, which is why this
  * boolean is provided.
  */
-void BESKeys::get_values(const string& s, vector<string> &vals, bool &found)
+void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
 {
     found = false;
     map<string, vector<string> >::iterator i;
@@ -422,7 +422,7 @@ void BESKeys::get_values(const string& s, vector<string> &vals, bool &found)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESKeys::dump(ostream &strm) const
+void TheBESKeys::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();

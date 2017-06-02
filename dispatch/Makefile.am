@@ -60,7 +60,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 # Sources and Headers
 
 SRCS = BESInterface.cc \
-	BESLog.cc BESKeys.cc TheBESKeys.cc BESStatus.cc			\
+	BESLog.cc TheBESKeys.cc BESStatus.cc			\
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
@@ -90,7 +90,7 @@ SRCS = BESInterface.cc \
 	BESReturnManager.cc						\
 	BESError.cc BESExceptionManager.cc				\
 	BESDataHandlerInterface.cc					\
-	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
+	BESIndent.cc BESApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
 	BESFileLockingCache.cc \
 	BESUncompressCache.cc \
@@ -108,7 +108,7 @@ SRCS = BESInterface.cc \
 #	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc 
 
 HDRS = BESInterface.h BESLog.h 			\
-	BESKeys.h TheBESKeys.h BESStatus.h 				\
+	TheBESKeys.h BESStatus.h 				\
 	BESNames.h \
 	BESContainer.h BESFileContainer.h BESContainerStorage.h 	\
 	BESContainerStorageFile.h BESContainerStorageList.h 		\
@@ -144,7 +144,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESServerSystemResources.h 					\
 	BESAggFactory.h BESAggregationServer.h 				\
 	BESReturnManager.h 						\
-	BESDataNames.h BESApp.h BESObj.h BESIndent.h BESBaseApp.h 	\
+	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
 	BESDefaultModule.h BESTransmitterNames.h 			\
 	BESExceptionManager.h 						\
