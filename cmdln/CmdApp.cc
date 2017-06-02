@@ -63,7 +63,7 @@ using std::ofstream;
 #define DEFAULT_HOST "localhost"
 
 CmdApp::CmdApp() :
-    BESBaseApp(), _client(0), _hostStr(DEFAULT_HOST), _unixStr(""), _portVal(DEFAULT_PORT), _outputStrm(0), _inputStrm(
+    BESApp(), _client(0), _hostStr(DEFAULT_HOST), _unixStr(""), _portVal(DEFAULT_PORT), _outputStrm(0), _inputStrm(
         0), _createdInputStrm(false), _timeout(0), _repeat(0)
 {
 }
@@ -196,7 +196,7 @@ void CmdApp::registerSignals()
 
 int CmdApp::initialize(int argc, char **argv)
 {
-    int retVal = BESBaseApp::initialize(argc, argv);
+    int retVal = BESApp::initialize(argc, argv);
     if (retVal != 0) return retVal;
 
     CmdTranslation::initialize(argc, argv);
@@ -433,7 +433,7 @@ void CmdApp::dump(ostream &strm) const
     strm << BESIndent::LMarg << "input stream: " << (void *) _inputStrm << endl;
     strm << BESIndent::LMarg << "created input stream? " << _createdInputStrm << endl;
     strm << BESIndent::LMarg << "timeout: " << _timeout << endl;
-    BESBaseApp::dump(strm);
+    BESApp::dump(strm);
     BESIndent::UnIndent();
 }
 

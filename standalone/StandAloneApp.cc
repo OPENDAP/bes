@@ -331,7 +331,7 @@ void StandAloneApp::dump(ostream &strm) const
     strm << BESIndent::LMarg << "output stream: " << (void *) _outputStrm << endl;
     strm << BESIndent::LMarg << "input stream: " << (void *) _inputStrm << endl;
     strm << BESIndent::LMarg << "created input stream? " << _createdInputStrm << endl;
-    BESBaseApp::dump(strm);
+    BESApp::dump(strm);
     BESIndent::UnIndent();
 }
 

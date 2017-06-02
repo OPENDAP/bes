@@ -38,7 +38,6 @@
 
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
-#include "FONgBaseType.h"
 #include "FONgGrid.h"
 
 using namespace libdap;
@@ -47,7 +46,8 @@ using namespace libdap;
  *
  * @param g A DAP BaseType that should be a grid
  */
-FONgGrid::FONgGrid(Grid *g) : FONgBaseType(), d_grid(g), d_lat(0), d_lon(0)
+FONgGrid::FONgGrid(Grid *g): d_grid(g), d_lat(0), d_lon(0)
+
 {
     d_type = dods_grid_c;
 
@@ -86,16 +86,17 @@ FONgGrid::~FONgGrid()
 }
 
 /** This is used with find_if(). The GeoConstraint class holds a set of strings
-    which are prefixes for variable names. Using the regular find() locates
-    only the exact matches, using find_if() with this functor makes is easy
-    to treat those set<string> objects as collections of prefixes. */
-class is_prefix
-{
+ which are prefixes for variable names. Using the regular find() locates
+ only the exact matches, using find_if() with this functor makes is easy
+ to treat those set<string> objects as collections of prefixes. */
+class is_prefix {
 private:
     string s;
 public:
-    is_prefix(const string & in): s(in)
-    {}
+    is_prefix(const string & in) :
+        s(in)
+    {
+    }
 
     bool operator()(const string & prefix)
     {
@@ -113,39 +114,33 @@ public:
  * @return true if there's a match, otherwise false
  * @see m_lon_unit_or_name_match()
  */
-bool
-FONgGrid::m_lat_unit_or_name_match(const string &var_units, const string &var_name,
-                                   const string &long_name)
+bool FONgGrid::m_lat_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name)
 {
-    return (long_name == "latitude"
-            || d_coards_lat_units.find(var_units) != d_coards_lat_units.end()
-            || find_if(d_lat_names.begin(), d_lat_names.end(), is_prefix(var_name)) != d_lat_names.end());
+    return (long_name == "latitude" || d_coards_lat_units.find(var_units) != d_coards_lat_units.end()
+        || find_if(d_lat_names.begin(), d_lat_names.end(), is_prefix(var_name)) != d_lat_names.end());
 }
 
-bool
-FONgGrid::m_lon_unit_or_name_match(const string &var_units, const string &var_name,
-                                   const string &long_name)
+bool FONgGrid::m_lon_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name)
 {
-    return (long_name == "longitude"
-            || d_coards_lon_units.find(var_units) != d_coards_lon_units.end()
-            || find_if(d_lon_names.begin(), d_lon_names.end(), is_prefix(var_name)) != d_lon_names.end());
+    return (long_name == "longitude" || d_coards_lon_units.find(var_units) != d_coards_lon_units.end()
+        || find_if(d_lon_names.begin(), d_lon_names.end(), is_prefix(var_name)) != d_lon_names.end());
 }
 
 /** A private method called by the constructor that searches for latitude
-    and longitude map vectors. This method returns false if either map
-    cannot be found. It assumes that the d_grid and d_dds fields are set.
+ and longitude map vectors. This method returns false if either map
+ cannot be found. It assumes that the d_grid and d_dds fields are set.
 
-    The d_longitude, d_lon, d_lon_length and d_lon_grid_dim (and matching
-    lat) fields are modified.
+ The d_longitude, d_lon, d_lon_length and d_lon_grid_dim (and matching
+ lat) fields are modified.
 
-    @note Rules used to find Maps:<ul>
-    <li>Latitude: If the Map has a units attribute of "degrees_north",
-    "degree_north", "degree_N", or "degrees_N"</li>
-    <li>Longitude: If the map has a units attribute of "degrees_east"
-    (eastward positive), "degree_east", "degree_E", or "degrees_E"</li>
-    </ul>
+ @note Rules used to find Maps:<ul>
+ <li>Latitude: If the Map has a units attribute of "degrees_north",
+ "degree_north", "degree_N", or "degrees_N"</li>
+ <li>Longitude: If the map has a units attribute of "degrees_east"
+ (eastward positive), "degree_east", "degree_E", or "degrees_E"</li>
+ </ul>
 
-    @return True if the maps are found, otherwise False */
+ @return True if the maps are found, otherwise False */
 bool FONgGrid::find_lat_lon_maps()
 {
     Grid::Map_iter m = d_grid->map_begin();
@@ -177,21 +172,17 @@ bool FONgGrid::find_lat_lon_maps()
             // when constraining the grid. Also, record the grid variable's
             // dimension iterator so that it's easier to set the Grid's Array
             // (which also has to be constrained).
-            d_lat = dynamic_cast < Array * >(*m);
-            if (!d_lat)
-                throw InternalErr(__FILE__, __LINE__, "Expected an array.");
+            d_lat = dynamic_cast<Array *>(*m);
+            if (!d_lat) throw InternalErr(__FILE__, __LINE__, "Expected an array.");
 
-            if (!d_lat->read_p())
-                d_lat->read();
+            if (!d_lat->read_p()) d_lat->read();
         }
 
         if (!d_lon && m_lon_unit_or_name_match(units_value, map_name, long_name)) {
-            d_lon = dynamic_cast < Array * >(*m);
-            if (!d_lon)
-                throw InternalErr(__FILE__, __LINE__, "Expected an array.");
+            d_lon = dynamic_cast<Array *>(*m);
+            if (!d_lon) throw InternalErr(__FILE__, __LINE__, "Expected an array.");
 
-            if (!d_lon->read_p())
-                d_lon->read();
+            if (!d_lon->read_p()) d_lon->read();
         }
 
         ++m;
@@ -229,16 +220,13 @@ void FONgGrid::extract_coordinates(FONgTransform &t)
         t.set_top(lat[0]);
         t.set_left(lon[0]);
         t.set_bottom(lat[t.height() - 1]);
-        t.set_right(lon[t.width() -1]);
+        t.set_right(lon[t.width() - 1]);
 
         // Read this from the 'missing_value' or '_FillValue' attributes
         string missing_value = d_grid->get_attr_table().get_attr("missing_value");
-        if (missing_value.empty())
-            missing_value = d_grid->get_array()->get_attr_table().get_attr("missing_value");
-        if (missing_value.empty())
-            missing_value = d_grid->get_attr_table().get_attr("_FillValue");
-        if (missing_value.empty())
-            missing_value = d_grid->get_array()->get_attr_table().get_attr("_FillValue");
+        if (missing_value.empty()) missing_value = d_grid->get_array()->get_attr_table().get_attr("missing_value");
+        if (missing_value.empty()) missing_value = d_grid->get_attr_table().get_attr("_FillValue");
+        if (missing_value.empty()) missing_value = d_grid->get_array()->get_attr_table().get_attr("_FillValue");
 
         BESDEBUG("fong3", "missing_value attribute: " << missing_value << endl);
 
@@ -267,13 +255,12 @@ void FONgGrid::extract_coordinates(FONgTransform &t)
     }
 }
 
-
 /** Use CF to determine if this is a 'Spherical Earth' datum */
 static bool is_spherical(BaseType *btp)
 {
     /* crs:grid_mapping_name = "latitude_longitude"
-    crs:semi_major_axis = 6371000.0 ;
-    crs:inverse_flattening = 0 ; */
+     crs:semi_major_axis = 6371000.0 ;
+     crs:inverse_flattening = 0 ; */
 
     bool gmn = btp->get_attr_table().get_attr("grid_mapping_name") == "latitude_longitude";
     bool sma = btp->get_attr_table().get_attr("semi_major_axis") == "6371000.0";
@@ -286,9 +273,9 @@ static bool is_spherical(BaseType *btp)
 static bool is_wgs84(BaseType *btp)
 {
     /*crs:grid_mapping_name = "latitude_longitude";
-    crs:longitude_of_prime_meridian = 0.0 ;
-    crs:semi_major_axis = 6378137.0 ;
-    crs:inverse_flattening = 298.257223563 ; */
+     crs:longitude_of_prime_meridian = 0.0 ;
+     crs:semi_major_axis = 6378137.0 ;
+     crs:inverse_flattening = 298.257223563 ; */
 
     bool gmn = btp->get_attr_table().get_attr("grid_mapping_name") == "latitude_longitude";
     bool lpm = btp->get_attr_table().get_attr("longitude_of_prime_meridian") == "0.0";
@@ -313,8 +300,7 @@ string FONgGrid::get_projection(DDS *dds)
     // with be the name of a variable in the dataset, so get that
     // variable. Now, look at the attributes of that variable.
     string mapping_info = d_grid->get_attr_table().get_attr("grid_mapping");
-    if (mapping_info.empty())
-        mapping_info = d_grid->get_array()->get_attr_table().get_attr("grid_mapping");
+    if (mapping_info.empty()) mapping_info = d_grid->get_array()->get_attr_table().get_attr("grid_mapping");
 
     string WK_GCS = GeoTiffTransmitter::default_gcs;
 
@@ -330,8 +316,7 @@ string FONgGrid::get_projection(DDS *dds)
         if (btp->name() == "crs") {
             if (is_wgs84(btp))
                 WK_GCS = "WGS84";
-            else if (is_spherical(btp))
-                WK_GCS = "EPSG:4047";
+            else if (is_spherical(btp)) WK_GCS = "EPSG:4047";
         }
     }
 
@@ -349,8 +334,7 @@ string FONgGrid::get_projection(DDS *dds)
 
 double *FONgGrid::get_data()
 {
-    if (!d_grid->get_array()->read_p())
-        d_grid->get_array()->read();
+    if (!d_grid->get_array()->read_p()) d_grid->get_array()->read();
 
     // This code assumes read() has been called.
     return extract_double_array(d_grid->get_array());
