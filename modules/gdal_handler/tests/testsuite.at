@@ -25,3 +25,10 @@ AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/SP27GTIF.TIF.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gdal/SP27GTIF.TIF.dods.bescmd], [pass])
 AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/SP27GTIF.TIF.dmr.bescmd], [pass])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/SP27GTIF.TIF.dap.bescmd], [pass])
+
+AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/Atlantic.wind.grb.das.bescmd], [pass])
+AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/Atlantic.wind.grb.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([gdal/Atlantic.wind.grb.dods.bescmd], [pass])
+AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/Atlantic.wind.grb.dmr.bescmd], [pass])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/Atlantic.wind.grb.dap.bescmd], [pass])
+
