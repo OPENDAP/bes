@@ -21,7 +21,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/cea.tif.dap.bescmd], [pass])
 
 # More files, Grib and JPG2k - no 'pattern' tests below this point. 
 # the older tests baselines were built using a older version of gdal
-# that output slightly different flosting point values for the spacial
+# that output slightly different floating point values for the spatial
 # ref info. The 'PATTERN' macro handles that case. jhrg 6/2/17
 
 AT_BESCMD_RESPONSE_TEST([gdal/SP27GTIF.TIF.das.bescmd], [pass])
