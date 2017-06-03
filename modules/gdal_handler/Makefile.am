@@ -69,9 +69,7 @@ sample_data_DATA = data/README \
     data/DIGEST_Example_2.20120926112517.tif \
     data/SP27GTIF.TIF \
     data/SP27GTIF.lgo \
-    data/DIGEST_Example_2.20120926112501.jp2 \
-    data/goldenears_gray.jpg \
-    data/goldenears.jpg
+    data/DIGEST_Example_2.20120926112501.jp2
 
 install-data-local: gdal.conf
 	@currdate=`date +"%y%m%d%H%M"`; \

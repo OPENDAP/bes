@@ -40,8 +40,8 @@ public:
     static bool gdal_build_das(BESDataHandlerInterface &dhi);
     static bool gdal_build_dds(BESDataHandlerInterface &dhi);
     static bool gdal_build_data(BESDataHandlerInterface &dhi);
+    static bool gdal_build_dmr_using_dds(BESDataHandlerInterface &dhi);
     static bool gdal_build_dmr(BESDataHandlerInterface &dhi);
-    static bool gdal_new_build_dmr(BESDataHandlerInterface &dhi);
     static bool gdal_build_help(BESDataHandlerInterface &dhi);
     static bool gdal_build_version(BESDataHandlerInterface &dhi);
 };

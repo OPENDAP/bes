@@ -145,7 +145,7 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
 
         string filename = dhi.container->access();
         dds->filename(filename);
-        dds->set_dataset_name(filename.substr(filename.find_last_of('/') + 1));
+        dds->set_dataset_name(name_path(filename)/*filename.substr(filename.find_last_of('/') + 1)*/);
 
         hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
@@ -192,18 +192,18 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
     GDALDatasetH hDS = 0;
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
-        DDS *gdds = bdds->get_dds();
+        DDS *dds = bdds->get_dds();
 
         string filename = dhi.container->access();
-        gdds->filename(filename);
-        gdds->set_dataset_name(filename.substr(filename.find_last_of('/') + 1));
+        dds->filename(filename);
+        dds->set_dataset_name(name_path(filename)/*filename.substr(filename.find_last_of('/') + 1)*/);
 
         hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
 
-        gdal_read_dataset_variables(gdds, hDS, filename);
+        gdal_read_dataset_variables(dds, hDS, filename);
 
         GDALClose(hDS);
         hDS = 0;
@@ -231,7 +231,12 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
     return true;
 }
 
-bool GDALRequestHandler::gdal_build_dmr(BESDataHandlerInterface &dhi)
+/**
+ * @brief Unused
+ *
+ * @deprecated
+ */
+bool GDALRequestHandler::gdal_build_dmr_using_dds(BESDataHandlerInterface &dhi)
 {
 	// Because this code does not yet know how to build a DMR directly, use
 	// the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
@@ -287,7 +292,7 @@ bool GDALRequestHandler::gdal_build_dmr(BESDataHandlerInterface &dhi)
 	return true;
 }
 
-bool GDALRequestHandler::gdal_new_build_dmr(BESDataHandlerInterface &dhi)
+bool GDALRequestHandler::gdal_build_dmr(BESDataHandlerInterface &dhi)
 {
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -300,7 +305,7 @@ bool GDALRequestHandler::gdal_new_build_dmr(BESDataHandlerInterface &dhi)
     D4BaseTypeFactory d4_factory;
     dmr->set_factory(&d4_factory);
     dmr->set_filename(filename);
-    dmr->set_name(filename.substr(filename.find_last_of('/') + 1));
+    dmr->set_name(name_path(filename)/*filename.substr(filename.find_last_of('/') + 1)*/);
 
     GDALDatasetH hDS = 0;
 

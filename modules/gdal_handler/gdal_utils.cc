@@ -286,6 +286,8 @@ void gdal_read_dataset_attributes(DAS &das, const GDALDatasetH &hDS)
 /**
  * Build the DDS object for this dataset.
  *
+ * @note The GDAL data model doc: http://www.gdal.org/gdal_datamodel.html
+ *
  * @param dds A value-result parameter
  * @param hDS
  * @param filename
@@ -411,6 +413,8 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
  * the AttrTable object, though, to cut down on duplication of code in the
  * functions that build attributes.
  *
+ * @note The GDAL data model doc: http://www.gdal.org/gdal_datamodel.html
+ *
  * @param dmr A value-result parameter
  * @param hDS
  * @param filename
@@ -434,10 +438,53 @@ void gdal_read_dataset_variables(DMR *dmr, const GDALDatasetH &hDS, const string
     dmr->root()->attributes()->transform_to_dap4(*attr);
     delete attr; attr = 0;
 
+    D4BaseTypeFactory factory;    // Use this to build new variables
+
+    // Make the northing and easting shared dims for this gdal dataset.
+    // For bands that have a different size than the overall Raster{X,Y}Size,
+    // assume they are lower resolution bands. For these I'm going to simply
+    // not include the shared dimensions for them. If this is a problem,
+    // we can expand the set of dimensions later.
+    //
+    // See the GDAL data model doc (http://www.gdal.org/gdal_datamodel.html)
+    // for info on why this seems correct. jhrg 6/2/17
+
+    // Find the first band that is the same size as the whole raster dataset (i.e.,
+    // the first band that is not at a reduced resolution). In the larger loop
+    // below we only bind sdims to bands that match the overall raster size and
+    // leave bands that are at a reduce resolution w/o shared dims.
+    int sdim_band_num = 1;
+    for (; sdim_band_num <= GDALGetRasterCount(hDS); ++sdim_band_num) {
+        if (GDALGetRasterBandYSize(GDALGetRasterBand(hDS, sdim_band_num)) == GDALGetRasterYSize(hDS)
+            && GDALGetRasterBandXSize(GDALGetRasterBand(hDS, sdim_band_num)) == GDALGetRasterXSize(hDS)) {
+            break;
+        }
+    }
+
+    // Make the two shared dims that will have the geo-referencing info
+    const string northing = "northing";
+    // Add the shared dim
+    D4Dimension *northing_dim = new D4Dimension(northing, GDALGetRasterYSize(hDS));
+    dmr->root()->dims()->add_dim_nocopy(northing_dim);
+    // use the shared dim for the map
+    Array *northing_map = new GDALArray(northing, 0, filename, GDT_Float64, sdim_band_num);
+    northing_map->add_var_nocopy(factory.NewFloat64(northing));
+    northing_map->append_dim(northing_dim);
+    // add the map
+    dmr->root()->add_var_nocopy(northing_map);   // Add the map array to the DMR/D4Group
+
+    const string easting = "easting";
+    D4Dimension *easting_dim = new D4Dimension(easting, GDALGetRasterXSize(hDS));
+    dmr->root()->dims()->add_dim_nocopy(easting_dim);
+    Array *easting_map = new GDALArray(easting, 0, filename, GDT_Float64, sdim_band_num);
+    easting_map->add_var_nocopy(factory.NewFloat64(easting));
+    easting_map->append_dim(easting_dim);
+    dmr->root()->add_var_nocopy(easting_map);   // Add the map array to the DMR/D4Group
+
     /* -------------------------------------------------------------------- */
     /*      Create the basic matrix for each band.                          */
     /* -------------------------------------------------------------------- */
-    D4BaseTypeFactory factory;    // Use this to build new scalar variables
+
     GDALDataType eBufType;
 
     for (int iBand = 0; iBand < GDALGetRasterCount(hDS); iBand++) {
@@ -501,35 +548,21 @@ void gdal_read_dataset_variables(DMR *dmr, const GDALDatasetH &hDS, const string
         /*      Add the dimension map arrays.                                   */
         /* -------------------------------------------------------------------- */
 
-        // TODO D4 dimension names should be fully qualified. jhrg 6/1/17
-        // TODO Should there be just one 'northing' and 'easting' map/dimension
-        // pairs and not one for each band?
+        if (GDALGetRasterBandYSize(hBand) == GDALGetRasterYSize(hDS)
+            && GDALGetRasterBandXSize(hBand) == GDALGetRasterXSize(hDS)) {
+            // Use the shared dimensions
+            ar->append_dim(northing_dim);
+            ar->append_dim(easting_dim);
 
-        oss.str("");
-        oss << "northing_" << iBand + 1;
-
-        dmr->root()->dims()->add_dim_nocopy(new D4Dimension(oss.str(), GDALGetRasterYSize(hDS)));
-        ar->append_dim(GDALGetRasterYSize(hDS), oss.str());
-
-        Array *map = new GDALArray(oss.str(), 0, filename, GDT_Float64, iBand + 1);
-        map->add_var_nocopy(factory.NewFloat64(oss.str()));
-        map->append_dim(GDALGetRasterYSize(hDS), oss.str());
-
-        dmr->root()->add_var_nocopy(map);   // Add the map array to the DMR/D4Group
-        ar->maps()->add_map(new D4Map(oss.str(), map, ar));      // Bind the map to the 'main' array
-
-        oss.str("");
-        oss << "easting_" << iBand + 1;
-
-        dmr->root()->dims()->add_dim_nocopy(new D4Dimension(oss.str(), GDALGetRasterYSize(hDS)));
-        ar->append_dim(GDALGetRasterXSize(hDS), oss.str());
-
-        map = new GDALArray(oss.str(), 0, filename, GDT_Float64, iBand + 1);
-        map->add_var_nocopy(factory.NewFloat64(oss.str()));
-        map->append_dim(GDALGetRasterXSize(hDS), oss.str());
-
-        dmr->root()->add_var_nocopy(map);
-        ar->maps()->add_map(new D4Map(oss.str(), map, ar));      // Bind the map to the 'main' array
+            // Bind the map to the array; FQNs for the maps (shared dims)
+            ar->maps()->add_map(new D4Map(string("/") + northing, northing_map, ar));
+            ar->maps()->add_map(new D4Map(string("/") + easting, easting_map, ar));
+        }
+        else {
+            // Don't use the shared dims
+            ar->append_dim(GDALGetRasterBandYSize(hBand), northing);
+            ar->append_dim(GDALGetRasterBandXSize(hBand), easting);
+        }
 
         // Add attributes, using the same hack as for the global attributes;
         // build the DAP2 AttrTable object and then transform to DAP4.
@@ -537,7 +570,7 @@ void gdal_read_dataset_variables(DMR *dmr, const GDALDatasetH &hDS, const string
         build_variable_attributes(hDS, &band_attr, iBand);
         ar->attributes()->transform_to_dap4(band_attr);
 
-        dmr->root()->add_var_nocopy(ar);
+        dmr->root()->add_var_nocopy(ar);        // Add the array to the DMR
     }
 }
 
@@ -546,6 +579,9 @@ void gdal_read_dataset_variables(DMR *dmr, const GDALDatasetH &hDS, const string
  * (for a DAP2 response) and GDALArray::read() when we're building a DAP4
  * data response. The result is that the Array object holds data that can then
  * be serialized.
+ *
+ * @note This function reads data from the dataset (file). Its companion does
+ * not.
  *
  * @note I split up the original GDALGrid::read() code that Frank Warmerdam
  * wrote into two functions because I needed to be able to read the data when
@@ -615,6 +651,16 @@ void read_data_array(GDALArray *array, const GDALRasterBandH &hBand)
 /**
  * Read one of the Map arrays. This uses the kludge that the DDS/DMR calls these
  * two arrays 'northing' and 'easting'.
+ *
+ * @note This function computes values for the DAP2 Maps or DAP4 shared dimensions;
+ * it does not read the values from the dataset. And, it uses the band number,
+ * even though for the current (6/1/17) version, there is only one set of Maps/SDims
+ * and they are always the same size as the whole Raster. In the future this code
+ * might support several sets of Maps/SDims that match not only the whole Raster by
+ * any bands with reduced resolution. So I'm keeping the GDALGetRasterBandYSize(hBand),
+ * etc., calls in the code.
+ *
+ * @see read_data_array()
  *
  * @param map Data are loaded into this libdap::Array instance.
  * @param hBand

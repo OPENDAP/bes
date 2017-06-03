@@ -19,16 +19,25 @@ AT_BESCMD_REPEAT_RESPONSE_PATTERN_TEST([gdal/cea.tif.r2.bescmd], [pass])
 AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/cea.tif.dmr.bescmd], [pass])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/cea.tif.dap.bescmd], [pass])
 
-# More files, Grib and JPG2k
-AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/SP27GTIF.TIF.das.bescmd], [pass])
-AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/SP27GTIF.TIF.dds.bescmd], [pass])
+# More files, Grib and JPG2k - no 'pattern' tests below this point. 
+# the older tests baselines were built using a older version of gdal
+# that output slightly different flosting point values for the spacial
+# ref info. The 'PATTERN' macro handles that case. jhrg 6/2/17
+
+AT_BESCMD_RESPONSE_TEST([gdal/SP27GTIF.TIF.das.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/SP27GTIF.TIF.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gdal/SP27GTIF.TIF.dods.bescmd], [pass])
-AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/SP27GTIF.TIF.dmr.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/SP27GTIF.TIF.dmr.bescmd], [pass])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/SP27GTIF.TIF.dap.bescmd], [pass])
 
-AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/Atlantic.wind.grb.das.bescmd], [pass])
-AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/Atlantic.wind.grb.dds.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/Atlantic.wind.grb.das.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/Atlantic.wind.grb.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gdal/Atlantic.wind.grb.dods.bescmd], [pass])
-AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/Atlantic.wind.grb.dmr.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/Atlantic.wind.grb.dmr.bescmd], [pass])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/Atlantic.wind.grb.dap.bescmd], [pass])
 
+AT_BESCMD_RESPONSE_TEST([gdal/DIGEST_Example_2.jp2.das.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/DIGEST_Example_2.jp2.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([gdal/DIGEST_Example_2.jp2.dods.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([gdal/DIGEST_Example_2.jp2.dmr.bescmd], [pass])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gdal/DIGEST_Example_2.jp2.dap.bescmd], [pass])
