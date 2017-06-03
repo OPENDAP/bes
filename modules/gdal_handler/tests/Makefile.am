@@ -4,8 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 TESTSUITE = $(srcdir)/testsuite
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4		\
-atlocal.in template.bescmd.in bes.conf.modules.in gdal \
-handler_tests_macros.m4
+atlocal.in bes.conf.modules.in gdal handler_tests_macros.m4
 
 noinst_DATA = bes.conf
 

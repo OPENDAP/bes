@@ -53,7 +53,7 @@ libgdal_module_la_LIBADD = $(LIBADD)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYING gdal.conf.in data
+EXTRA_DIST = gdal.conf.in data
 
 CLEANFILES = *~ gdal.conf
 
