@@ -34,14 +34,14 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <cstdlib>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #include "BESContainerStorageFile.h"
 #include "BESContainer.h"
@@ -49,147 +49,179 @@ using std::endl ;
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
+#include <GetOpt.h>
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class connT: public TestFixture {
 private:
 
 public:
-    connT() {}
-    ~connT() {}
+    connT()
+    {
+    }
+    ~connT()
+    {
+    }
 
     void setUp()
     {
-	string bes_conf = (string)TEST_SRC_DIR + "/persistence_file_test.ini" ;
-	TheBESKeys::ConfigFile = bes_conf ;
-    } 
+        string bes_conf = (string) TEST_SRC_DIR + "/persistence_file_test.ini";
+        TheBESKeys::ConfigFile = bes_conf;
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( connT ) ;
+    CPPUNIT_TEST_SUITE( connT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END();
 
     void do_test()
     {
-	TheBESKeys *keys = TheBESKeys::TheKeys() ;
-	keys->set_key( (string)"BES.Container.Persistence.File.FileNot=" + TEST_SRC_DIR + "/persistence_filenot.txt" ) ;
-	keys->set_key( (string)"BES.Container.Persistence.File.FileTooMany=" + TEST_SRC_DIR + "/persistence_file3.txt" ) ;
-	keys->set_key( (string)"BES.Container.Persistence.File.FileTooFew=" + TEST_SRC_DIR + "/persistence_file4.txt" ) ;
-	keys->set_key( (string)"BES.Container.Persistence.File.File1=" + TEST_SRC_DIR + "/persistence_file1.txt" ) ;
-	keys->set_key( (string)"BES.Container.Persistence.File.File2=" + TEST_SRC_DIR + "/persistence_file2.txt" ) ;
+        TheBESKeys *keys = TheBESKeys::TheKeys();
+        keys->set_key((string) "BES.Container.Persistence.File.FileNot=" + TEST_SRC_DIR + "/persistence_filenot.txt");
+        keys->set_key((string) "BES.Container.Persistence.File.FileTooMany=" + TEST_SRC_DIR + "/persistence_file3.txt");
+        keys->set_key((string) "BES.Container.Persistence.File.FileTooFew=" + TEST_SRC_DIR + "/persistence_file4.txt");
+        keys->set_key((string) "BES.Container.Persistence.File.File1=" + TEST_SRC_DIR + "/persistence_file1.txt");
+        keys->set_key((string) "BES.Container.Persistence.File.File2=" + TEST_SRC_DIR + "/persistence_file2.txt");
 
-	cout << "*****************************************" << endl;
-	cout << "Entered pfileT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered pfileT::run" << endl;
 
-	cout << "*****************************************" << endl;
-	cout << "Open File, incomplete key information" << endl;
-	try
-	{
-	    BESContainerStorageFile cpf( "File" ) ;
-	    CPPUNIT_ASSERT( !"opened file File, shouldn't have" ) ;
-	}
-	catch( BESError &ex )
-	{
-	    cout << "couldn't get File, good, because" << endl ;
-	    cout << ex.get_message() << endl ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Open File, incomplete key information" << endl;
+        try {
+            BESContainerStorageFile cpf("File");
+            CPPUNIT_ASSERT( !"opened file File, shouldn't have" );
+        }
+        catch (BESError &ex) {
+            cout << "couldn't get File, good, because" << endl;
+            cout << ex.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Open FileNot, doesn't exist" << endl;
-	try
-	{
-	    BESContainerStorageFile cpf( "FileNot" ) ;
-	    CPPUNIT_ASSERT( !"opened file FileNot, shouldn't have" ) ;
-	}
-	catch( BESError &ex )
-	{
-	    cout << "couldn't get FileNot, good, because" << endl ;
-	    cout << ex.get_message() << endl ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Open FileNot, doesn't exist" << endl;
+        try {
+            BESContainerStorageFile cpf("FileNot");
+            CPPUNIT_ASSERT( !"opened file FileNot, shouldn't have" );
+        }
+        catch (BESError &ex) {
+            cout << "couldn't get FileNot, good, because" << endl;
+            cout << ex.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Open FileTooMany, too many values on line" << endl;
-	try
-	{
-	    BESContainerStorageFile cpf( "FileTooMany" ) ;
-	    CPPUNIT_ASSERT( ! "opened file FileTooMany, shouldn't have" ) ;
-	}
-	catch( BESError &ex )
-	{
-	    cout << "couldn't get FileTooMany, good, because" << endl ;
-	    cout << ex.get_message() << endl ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Open FileTooMany, too many values on line" << endl;
+        try {
+            BESContainerStorageFile cpf("FileTooMany");
+            CPPUNIT_ASSERT( ! "opened file FileTooMany, shouldn't have" );
+        }
+        catch (BESError &ex) {
+            cout << "couldn't get FileTooMany, good, because" << endl;
+            cout << ex.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Open FileTooFew, too few values on line" << endl;
-	try
-	{
-	    BESContainerStorageFile cpf( "FileTooFew" ) ;
-	    CPPUNIT_ASSERT( !"opened file FileTooFew, shouldn't have"  ) ;
-	}
-	catch( BESError &ex )
-	{
-	    cout << "couldn't get FileTooFew, good, because" << endl ;
-	    cout << ex.get_message() << endl ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Open FileTooFew, too few values on line" << endl;
+        try {
+            BESContainerStorageFile cpf("FileTooFew");
+            CPPUNIT_ASSERT( !"opened file FileTooFew, shouldn't have" );
+        }
+        catch (BESError &ex) {
+            cout << "couldn't get FileTooFew, good, because" << endl;
+            cout << ex.get_message() << endl;
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Open File1" << endl;
-	try
-	{
-	    BESContainerStorageFile cpf( "File1" ) ;
-	}
-	catch( BESError &ex )
-	{
-	    cerr << ex.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"couldn't open File1" ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "Open File1" << endl;
+        try {
+            BESContainerStorageFile cpf("File1");
+        }
+        catch (BESError &ex) {
+            cerr << ex.get_message() << endl;
+            CPPUNIT_ASSERT( !"couldn't open File1" );
+        }
 
-	BESContainerStorageFile cpf( "File1" ) ;
-	char s[10] ;
-	char r[10] ;
-	char c[10] ;
-	for( int i = 1; i < 6; i++ )
-	{
-	    sprintf( s, "sym%d", i ) ;
-	    sprintf( r, "real%d", i ) ;
-	    sprintf( c, "type%d", i ) ;
-	    cout << "    looking for " << s << endl;
-	    BESContainer *d = cpf.look_for( s ) ;
-	    CPPUNIT_ASSERT( d ) ;
-	    CPPUNIT_ASSERT( d->get_real_name() == r ) ;
-	    CPPUNIT_ASSERT( d->get_container_type() == c ) ;
-	}
+        BESContainerStorageFile cpf("File1");
+        char s[10];
+        char r[10];
+        char c[10];
+        for (int i = 1; i < 6; i++) {
+            sprintf(s, "sym%d", i);
+            sprintf(r, "real%d", i);
+            sprintf(c, "type%d", i);
+            cout << "    looking for " << s << endl;
+            BESContainer *d = cpf.look_for(s);
+            CPPUNIT_ASSERT( d );
+            CPPUNIT_ASSERT( d->get_real_name() == r );
+            CPPUNIT_ASSERT( d->get_container_type() == c );
+        }
 
-	cout << "    looking for notthere" << endl;
-	BESContainer *d = cpf.look_for( "notthere" ) ;
-	CPPUNIT_ASSERT( !d ) ;
+        cout << "    looking for notthere" << endl;
+        BESContainer *d = cpf.look_for("notthere");
+        CPPUNIT_ASSERT( !d );
 
-	cout << "*****************************************" << endl;
-	cout << "show containers" << endl;
-	BESTextInfo info ;
-	cpf.show_containers( info ) ;
-	info.print( cout ) ;
+        cout << "*****************************************" << endl;
+        cout << "show containers" << endl;
+        BESTextInfo info;
+        cpf.show_containers(info);
+        info.print(cout);
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from pfileT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from pfileT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( connT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( connT );
 
-int 
-main( int, char** )
+int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: connT has the following tests:" << endl;
+            const std::vector<Test*> &tests = connT::suite()->getTests();
+            unsigned int prefix_len = connT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = connT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

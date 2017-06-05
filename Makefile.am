@@ -17,17 +17,17 @@ AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
+AM_DISTCHECK_CONFIGURE_FLAGS=
+
 if WITH_DEPENDENCIES
-# I think this will enable distcheck to pickup the --with-dependencies
-# flag on OSX but not use it on Linux (where we should be getting all
-# the dependencies from RPMs). jhrg 3/18/15
-#
-# Not always true - some deps come from here, even on linux jhrg 4/5/15
+# With automake 1.14 setting AM_DISTCHECK... means that the user variable
+# DISTCHECK_CONFIGURE_FLAGS no longer needs to be used. Earlier versions
+# of automake don't support this. jhrg 6/5/17
 AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
-DIST_SUBDIRS = $(SUBDIRS)
+# DIST_SUBDIRS = $(SUBDIRS)
 
 if LIBDAP
 SUBDIRS += functions dap dapreader 
@@ -54,7 +54,7 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = apache hello_world doxy.conf.in bes.spec \
+EXTRA_DIST = hello_world doxy.conf.in bes.spec \
 OSX_Resources bes-config-pkgconfig besd.logrotate README.md
 
 server-tests:

@@ -788,11 +788,7 @@ AM_COND_IF([DAP_MODULES],
 	modules/netcdf_handler/bes-testsuite/Makefile 
 	modules/netcdf_handler/bes-testsuite/atlocal 
 	
-	modules/fileout_netcdf/Makefile 
-	modules/fileout_netcdf/unit-tests/Makefile 
-	modules/fileout_netcdf/unit-tests/test_config.h 
-	modules/fileout_netcdf/unit-tests/atlocal
-	
+	modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 
@@ -866,7 +862,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    dnl AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])

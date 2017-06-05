@@ -34,151 +34,181 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <cstring>
 #include <limits.h>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #include "BESScrub.h"
 #include "BESError.h"
+#include <GetOpt.h>
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class connT: public TestFixture {
 private:
 
 public:
-    connT() {}
-    ~connT() {}
+    connT()
+    {
+    }
+    ~connT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( connT ) ;
+CPPUNIT_TEST_SUITE( connT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered scrubT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered scrubT::run" << endl;
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test command line length over 255 characters" << endl;
-	    char arg[512] ;
-	    memset( arg, 'a', 300 ) ;
-	    arg[300] = '\0' ;
-	    CPPUNIT_ASSERT( !BESScrub::command_line_arg_ok( arg ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test command line length over 255 characters" << endl;
+            char arg[512];
+            memset(arg, 'a', 300);
+            arg[300] = '\0';
+            CPPUNIT_ASSERT( !BESScrub::command_line_arg_ok( arg ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test command line length ok" << endl;
-	    string arg = "anarg" ;
-	    CPPUNIT_ASSERT( BESScrub::command_line_arg_ok( arg ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test command line length ok" << endl;
+            string arg = "anarg";
+            CPPUNIT_ASSERT( BESScrub::command_line_arg_ok( arg ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test path name length over 255 characters" << endl;
-	    char path_name[512] ;
-	    memset( path_name, 'a', 300 ) ;
-	    path_name[300] = '\0' ;
-	    CPPUNIT_ASSERT( !BESScrub::pathname_ok( path_name, true ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test path name length over 255 characters" << endl;
+            char path_name[512];
+            memset(path_name, 'a', 300);
+            path_name[300] = '\0';
+            CPPUNIT_ASSERT( !BESScrub::pathname_ok( path_name, true ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test path name good" << endl;
-	    CPPUNIT_ASSERT( BESScrub::pathname_ok( "/usr/local/something_goes_here-and-is-ok.txt", true ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test path name good" << endl;
+            CPPUNIT_ASSERT( BESScrub::pathname_ok( "/usr/local/something_goes_here-and-is-ok.txt", true ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test path name bad characters strict" << endl;
-	    CPPUNIT_ASSERT( !BESScrub::pathname_ok( "*$^&;@/user/local/bin/ls", true ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test path name bad characters strict" << endl;
+            CPPUNIT_ASSERT( !BESScrub::pathname_ok( "*$^&;@/user/local/bin/ls", true ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test array size too big" << endl;
-	    CPPUNIT_ASSERT( !BESScrub::size_ok( 4, UINT_MAX ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test array size too big" << endl;
+            CPPUNIT_ASSERT( !BESScrub::size_ok( 4, UINT_MAX ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Test array size ok" << endl;
-	    CPPUNIT_ASSERT( BESScrub::size_ok( 4, 32 ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"scrub failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Test array size ok" << endl;
+            CPPUNIT_ASSERT( BESScrub::size_ok( 4, 32 ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"scrub failed" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from scrubT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from scrubT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( connT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( connT );
 
-int 
-main( int, char** )
+int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: connT has the following tests:" << endl;
+            const std::vector<Test*> &tests = connT::suite()->getTests();
+            unsigned int prefix_len = connT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = connT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

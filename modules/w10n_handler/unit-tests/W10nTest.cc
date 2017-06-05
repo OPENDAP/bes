@@ -216,7 +216,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(W10nTest);
 int main(int argc, char*argv[])
 {
 
-    GetOpt getopt(argc, argv, "db");
+    GetOpt getopt(argc, argv, "dbh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -228,6 +228,15 @@ int main(int argc, char*argv[])
             bes_debug = true;  // bes_debug is a static global
             cerr << "##### BES DEBUG is ON" << endl;
             break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: W10nTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = W10nTest::suite()->getTests();
+            unsigned int prefix_len = W10nTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
         default:
             cerr << "##### DEBUG is OFF" << endl;
             break;
@@ -245,8 +254,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("W10nTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = W10nTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

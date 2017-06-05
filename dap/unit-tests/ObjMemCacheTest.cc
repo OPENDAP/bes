@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -54,11 +53,17 @@ private:
     DDS *dds;
 
 public:
-    DDSMemCacheTest(): dds_cache(0), dds(0) { }
+    DDSMemCacheTest() :
+        dds_cache(0), dds(0)
+    {
+    }
 
-    ~DDSMemCacheTest() { }
+    ~DDSMemCacheTest()
+    {
+    }
 
-    void setUp() {
+    void setUp()
+    {
         DBG2(cerr << "setUp() - BEGIN" << endl);
 
         dds_cache = new ObjMemCache;
@@ -82,12 +87,14 @@ public:
         DBG2(cerr << "setUp() - END" << endl);
     }
 
-    void tearDown() {
+    void tearDown()
+    {
         delete dds_cache;
         delete dds;
     }
 
-    void ctor_test() {
+    void ctor_test()
+    {
         ObjMemCache empty_cache;
         DBG2(empty_cache.dump(cerr));
 
@@ -103,7 +110,8 @@ public:
         delete empty_cache_ptr;
     }
 
-    void add_one_test() {
+    void add_one_test()
+    {
         ObjMemCache *cache = new ObjMemCache;
 
         const string name = "first DDS";
@@ -120,7 +128,8 @@ public:
         delete cache;
     }
 
-    void add_two_test() {
+    void add_two_test()
+    {
         ObjMemCache *cache = new ObjMemCache;
 
         BaseTypeFactory factory;
@@ -140,7 +149,8 @@ public:
         delete cache;
     }
 
-    void purge_test() {
+    void purge_test()
+    {
         CPPUNIT_ASSERT(dds_cache->cache.size() == 10);
         CPPUNIT_ASSERT(dds_cache->index.size() == 10);
 
@@ -152,7 +162,8 @@ public:
         CPPUNIT_ASSERT(dds_cache->index.size() == 8);
     }
 
-    void test_get_obj() {
+    void test_get_obj()
+    {
         string name = "0_DDS";
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 1);
 
@@ -164,7 +175,8 @@ public:
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 11);
     }
 
-    void remove_test() {
+    void remove_test()
+    {
         CPPUNIT_ASSERT(dds_cache->cache.size() == 10);
         CPPUNIT_ASSERT(dds_cache->index.size() == 10);
 
@@ -180,7 +192,7 @@ public:
         CPPUNIT_ASSERT(dds_cache->index.size() == 7);
     }
 
-    CPPUNIT_TEST_SUITE( DDSMemCacheTest );
+CPPUNIT_TEST_SUITE( DDSMemCacheTest );
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(add_one_test);
@@ -189,17 +201,16 @@ public:
     CPPUNIT_TEST(test_get_obj);
     CPPUNIT_TEST(remove_test);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DDSMemCacheTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -209,9 +220,21 @@ int main(int argc, char*argv[])
         case 'D':
             debug_2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: DDSMemCacheTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = DDSMemCacheTest::suite()->getTests();
+            unsigned int prefix_len = DDSMemCacheTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -222,13 +245,12 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("DDSMemCacheTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = DDSMemCacheTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
 
     return wasSuccessful ? 0 : 1;
 }
-
 

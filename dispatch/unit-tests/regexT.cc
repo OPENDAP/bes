@@ -34,164 +34,194 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #include "BESRegex.h"
 #include "BESError.h"
+#include <GetOpt.h>
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class regexT: public TestFixture {
 private:
 
 public:
-    regexT() {}
-    ~regexT() {}
+    regexT()
+    {
+    }
+    ~regexT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( regexT ) ;
+CPPUNIT_TEST_SUITE( regexT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered regexT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered regexT::run" << endl;
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex 123456 against string 01234567" << endl;
-	    BESRegex reg_expr( "123456" ) ;
-	    string inQuestion = "01234567" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == 6 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex 123456 against string 01234567" << endl;
+            BESRegex reg_expr("123456");
+            string inQuestion = "01234567";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == 6 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex ^123456$ against string 01234567" << endl;
-	    BESRegex reg_expr( "^123456$" ) ;
-	    string inQuestion = "01234567" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == -1 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex ^123456$ against string 01234567" << endl;
+            BESRegex reg_expr("^123456$");
+            string inQuestion = "01234567";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == -1 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex ^123456$ against string 123456" << endl;
-	cout << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl ;
-	    BESRegex reg_expr( "^123456$" ) ;
-	    string inQuestion = "123456" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == 6 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex ^123456$ against string 123456" << endl;
+            cout << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl;
+            BESRegex reg_expr("^123456$");
+            string inQuestion = "123456";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == 6 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex \".*\\.nc$;\" against string fnoc1.nc" << endl;
-	    BESRegex reg_expr( ".*\\.nc$" ) ;
-	    string inQuestion = "fnoc1.nc" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == 8 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex \".*\\.nc$;\" against string fnoc1.nc" << endl;
+            BESRegex reg_expr(".*\\.nc$");
+            string inQuestion = "fnoc1.nc";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == 8 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex \".*\\.nc$;\" against string fnoc1.ncd" << endl;
-	    BESRegex reg_expr( ".*\\.nc$" ) ;
-	    string inQuestion = "fnoc1.ncd" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == -1 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex \".*\\.nc$;\" against string fnoc1.ncd" << endl;
+            BESRegex reg_expr(".*\\.nc$");
+            string inQuestion = "fnoc1.ncd";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == -1 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc" << endl;
-	    BESRegex reg_expr( ".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$" ) ;
-	    string inQuestion = "fnoc1.nc" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == 8 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc" << endl;
+            BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
+            string inQuestion = "fnoc1.nc";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == 8 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc.gz" << endl;
-	    BESRegex reg_expr( ".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$" ) ;
-	    string inQuestion = "fnoc1.nc.gz" ;
-	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	    CPPUNIT_ASSERT( result == 11 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"Failed to match" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc.gz" << endl;
+            BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
+            string inQuestion = "fnoc1.nc.gz";
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            CPPUNIT_ASSERT( result == 11 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"Failed to match" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from regexT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from regexT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( regexT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( regexT );
 
-int 
-main( int, char** )
+int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: regexT has the following tests:" << endl;
+            const std::vector<Test*> &tests = regexT::suite()->getTests();
+            unsigned int prefix_len = regexT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = regexT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -49,6 +48,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -60,11 +60,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false)
 
-namespace functions
-{
+namespace functions {
 
-class GridGeoConstraintTest:public TestFixture
-{
+class GridGeoConstraintTest: public TestFixture {
 private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
@@ -74,184 +72,147 @@ private:
     DDS *geo_dds_coads_lon;
 
 public:
-    GridGeoConstraintTest() : geo_dds(0), geo_dds_3d(0), geo_dds_coads_lon(0)
-    {}
+    GridGeoConstraintTest() :
+        geo_dds(0), geo_dds_3d(0), geo_dds_coads_lon(0)
+    {
+    }
     ~GridGeoConstraintTest()
-    {}
+    {
+    }
 
     void setUp()
     {
         // geo grid test data
         try {
             geo_dds = new DDS(&btf);
-            geo_dds->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid.dds");
+            geo_dds->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid.dds");
             DAS das;
-            das.parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid.das");
+            das.parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid.das");
             geo_dds->transfer_attributes(&das);
 
             DBG2(geo_dds->print_xml(stderr, false, "No blob"));
 
             // Load values into the grid variables
-            Grid & sst1 = dynamic_cast < Grid & >(*geo_dds->var("SST1"));
+            Grid & sst1 = dynamic_cast<Grid &>(*geo_dds->var("SST1"));
 
-            Array & lon1 = dynamic_cast < Array & >(**sst1.map_begin());
-            dods_float64 tmp_lon1[10] =
-                { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+            Array & lon1 = dynamic_cast<Array &>(**sst1.map_begin());
+            dods_float64 tmp_lon1[10] = { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
             lon1.val2buf(tmp_lon1);
             lon1.set_read_p(true);
 
-            Array & lat1 = dynamic_cast < Array & >(**(sst1.map_begin() + 1));
-            dods_float64 tmp_lat1[10] =
-                { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
+            Array & lat1 = dynamic_cast<Array &>(**(sst1.map_begin() + 1));
+            dods_float64 tmp_lat1[10] = { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
             lat1.val2buf(tmp_lat1);
             lat1.set_read_p(true);
 
-             dods_byte tmp_data[10][10] =
-                { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                  { 10,11,12,13,14,15,16,17,18,19},
-                  { 20,21,22,23,24,25,26,27,28,29},
-                  { 30,31,32,33,34,35,36,37,38,39},
-                  { 40,41,42,43,44,45,46,47,48,49},
-                  { 50,51,52,53,54,55,56,57,58,59},
-                  { 60,61,62,63,64,65,66,67,68,69},
-                  { 70,71,72,73,74,75,76,77,78,79},
-                  { 80,81,82,83,84,85,86,87,88,89},
-                  { 90,91,92,93,94,95,96,97,98,99} };
-            sst1.get_array()->val2buf((void*)tmp_data);
+            dods_byte tmp_data[10][10] = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 },
+                { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 }, { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 }, { 40, 41, 42,
+                    43, 44, 45, 46, 47, 48, 49 }, { 50, 51, 52, 53, 54, 55, 56, 57, 58, 59 }, { 60, 61, 62, 63, 64, 65,
+                    66, 67, 68, 69 }, { 70, 71, 72, 73, 74, 75, 76, 77, 78, 79 }, { 80, 81, 82, 83, 84, 85, 86, 87, 88,
+                    89 }, { 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 } };
+            sst1.get_array()->val2buf((void*) tmp_data);
             sst1.get_array()->set_read_p(true);
 
             // Load values into the grid variables
-            Grid & sst1_1 = dynamic_cast < Grid & >(*geo_dds->var("SST1_1"));
+            Grid & sst1_1 = dynamic_cast<Grid &>(*geo_dds->var("SST1_1"));
 
-            Array & lat1_1 = dynamic_cast < Array & >(**sst1_1.map_begin());
-            dods_float64 tmp_lat1_1[10] =
-                { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
+            Array & lat1_1 = dynamic_cast<Array &>(**sst1_1.map_begin());
+            dods_float64 tmp_lat1_1[10] = { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
             lat1_1.val2buf(tmp_lat1_1);
             lat1_1.set_read_p(true);
 
-            Array & lon1_1 = dynamic_cast < Array & >(**(sst1_1.map_begin() + 1));
-            dods_float64 tmp_lon1_1[10] =
-                { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+            Array & lon1_1 = dynamic_cast<Array &>(**(sst1_1.map_begin() + 1));
+            dods_float64 tmp_lon1_1[10] = { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
             lon1_1.val2buf(tmp_lon1_1);
             lon1_1.set_read_p(true);
 
-            sst1_1.get_array()->val2buf((void*)tmp_data);
+            sst1_1.get_array()->val2buf((void*) tmp_data);
             sst1_1.get_array()->set_read_p(true);
 
             // Load values into the grid variables
-            Grid & sst2 = dynamic_cast < Grid & >(*geo_dds->var("SST2"));
+            Grid & sst2 = dynamic_cast<Grid &>(*geo_dds->var("SST2"));
 
-            Array & lon2 = dynamic_cast < Array & >(**sst2.map_begin());
-            dods_float64 tmp_lon2[10] = { 0, 40, 80, 120, 160, -160, -120, -80, -40, -1};
+            Array & lon2 = dynamic_cast<Array &>(**sst2.map_begin());
+            dods_float64 tmp_lon2[10] = { 0, 40, 80, 120, 160, -160, -120, -80, -40, -1 };
             //    { -180, -120, -80, -40, 0, 40, 80, 120, 160, 179 };
             lon2.val2buf(tmp_lon2);
             lon2.set_read_p(true);
             DBG2(cerr << "lon2[0]: " << dynamic_cast<Float64*>(lon2.var(0))->value() << endl);
 
-            Array & lat2 = dynamic_cast < Array & >(**(sst2.map_begin() + 1));
-            dods_float64 tmp_lat2[10] =
-                { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
+            Array & lat2 = dynamic_cast<Array &>(**(sst2.map_begin() + 1));
+            dods_float64 tmp_lat2[10] = { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
             lat2.val2buf(tmp_lat2);
             lat2.set_read_p(true);
 
-            sst2.get_array()->val2buf((void*)tmp_data);
+            sst2.get_array()->val2buf((void*) tmp_data);
             sst2.get_array()->set_read_p(true);
 
             // Load values into the grid variables
-            Grid & sst3 = dynamic_cast < Grid & >(*geo_dds->var("SST3"));
+            Grid & sst3 = dynamic_cast<Grid &>(*geo_dds->var("SST3"));
 
-            Array & lat3 = dynamic_cast < Array & >(**sst3.map_begin());
-            dods_float64 tmp_lat3[10] =
-                { -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
+            Array & lat3 = dynamic_cast<Array &>(**sst3.map_begin());
+            dods_float64 tmp_lat3[10] = { -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
             lat3.val2buf(tmp_lat3);
             lat3.set_read_p(true);
 
-            Array & lon3 = dynamic_cast < Array & >(**(sst3.map_begin() + 1));
-            dods_float64 tmp_lon3[10] =
-                { 20, 60, 100, 140, 180, 220, 260, 300, 340, 379 };
+            Array & lon3 = dynamic_cast<Array &>(**(sst3.map_begin() + 1));
+            dods_float64 tmp_lon3[10] = { 20, 60, 100, 140, 180, 220, 260, 300, 340, 379 };
             lon3.val2buf(tmp_lon3);
             lon3.set_read_p(true);
 
-            sst3.get_array()->val2buf((void*)tmp_data);
+            sst3.get_array()->val2buf((void*) tmp_data);
             sst3.get_array()->set_read_p(true);
-
-
 
             // Build the three dimensional grid
             geo_dds_3d = new DDS(&btf);
-            geo_dds_3d->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid_3d.dds");
+            geo_dds_3d->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid_3d.dds");
             // Load values into the grid variables
-            Grid & sst4 = dynamic_cast < Grid & >(*geo_dds_3d->var("SST4"));
+            Grid & sst4 = dynamic_cast<Grid &>(*geo_dds_3d->var("SST4"));
 
             Array & time = dynamic_cast<Array&>(**sst4.map_begin());
             dods_int32 tmp_time[3] = { 0, 1, 2 };
             time.val2buf(tmp_time);
             time.set_read_p(true);
 
-            Array & lon4 = dynamic_cast < Array & >(**(sst4.map_begin()+1));
+            Array & lon4 = dynamic_cast<Array &>(**(sst4.map_begin() + 1));
             dods_float64 tmp_lon4[5] = { 160, 200, 240, 280, 320 };
             lon4.val2buf(tmp_lon4);
             lon4.set_read_p(true);
 
-            Array & lat4 = dynamic_cast < Array & >(**(sst4.map_begin()+2));
+            Array & lat4 = dynamic_cast<Array &>(**(sst4.map_begin() + 2));
             dods_float64 tmp_lat4[5] = { 40, 30, 20, 10, 0 };
             lat4.val2buf(tmp_lat4);
             lat4.set_read_p(true);
 
-            dods_byte tmp_data4[3][5][5] =
-                {
-                    { { 0, 1, 2, 3, 4},
-                      { 10,11,12,13,14},
-                      { 20,21,22,23,24},
-                      { 30,31,32,33,34},
-                      { 40,41,42,43,44}  },
-                    { { 100, 101, 102, 103, 104},
-                      { 110, 111, 112, 113, 114},
-                      { 120, 121, 122, 123, 124},
-                      { 130, 131, 132, 133, 134},
-                      { 140, 141, 142, 143, 144}  },
-                    { { 200, 201, 202, 203, 204},
-                      { 210, 211, 212, 213, 214},
-                      { 220, 221, 222, 223, 224},
-                      { 230, 231, 232, 233, 234},
-                      { 240, 241, 242, 243, 244}  }
-                };
-            sst4.get_array()->val2buf((void*)tmp_data4);
+            dods_byte tmp_data4[3][5][5] = { { { 0, 1, 2, 3, 4 }, { 10, 11, 12, 13, 14 }, { 20, 21, 22, 23, 24 }, { 30,
+                31, 32, 33, 34 }, { 40, 41, 42, 43, 44 } }, { { 100, 101, 102, 103, 104 }, { 110, 111, 112, 113, 114 },
+                { 120, 121, 122, 123, 124 }, { 130, 131, 132, 133, 134 }, { 140, 141, 142, 143, 144 } }, { { 200, 201,
+                202, 203, 204 }, { 210, 211, 212, 213, 214 }, { 220, 221, 222, 223, 224 }, { 230, 231, 232, 233, 234 },
+                { 240, 241, 242, 243, 244 } } };
+            sst4.get_array()->val2buf((void*) tmp_data4);
             sst4.get_array()->set_read_p(true);
 
             DBG2(sst4.print_val(stderr));
 
             geo_dds_coads_lon = new DDS(&btf);
-            geo_dds_coads_lon->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid_coads_lon.dds");
-            Grid & sst5 = dynamic_cast < Grid & >(*geo_dds_coads_lon->var("SST5"));
-            Array & lon5 = dynamic_cast < Array & >(**sst5.map_begin());
-            dods_float64 tmp_lon5[15] =
-                { 41, 81, 121, 161, 201, 241, 281, 321, 361, 365, 370, 375, 380, 385, 390 };
+            geo_dds_coads_lon->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/geo_grid_coads_lon.dds");
+            Grid & sst5 = dynamic_cast<Grid &>(*geo_dds_coads_lon->var("SST5"));
+            Array & lon5 = dynamic_cast<Array &>(**sst5.map_begin());
+            dods_float64 tmp_lon5[15] = { 41, 81, 121, 161, 201, 241, 281, 321, 361, 365, 370, 375, 380, 385, 390 };
             lon5.val2buf(tmp_lon5);
             lon5.set_read_p(true);
 
-            Array & lat5 = dynamic_cast < Array & >(**(sst5.map_begin() + 1));
+            Array & lat5 = dynamic_cast<Array &>(**(sst5.map_begin() + 1));
             dods_float64 tmp_lat5[5] = { 20, 10, 0, -10, -20 };
             lat5.val2buf(tmp_lat5);
             lat5.set_read_p(true);
 
-            dods_byte tmp_data5[15][5] =
-                { { 0, 1, 2, 3, 4},
-                  { 10,11,12,13,14},
-                  { 20,21,22,23,24},
-                  { 30,31,32,33,34},
-                  { 40,41,42,43,44},
-                  { 100, 101, 102, 103, 104},
-                  { 110, 111, 112, 113, 114},
-                  { 120, 121, 122, 123, 124},
-                  { 130, 131, 132, 133, 134},
-                  { 140, 141, 142, 143, 144},
-                  { 200, 201, 202, 203, 204},
-                  { 210, 211, 212, 213, 214},
-                  { 220, 221, 222, 223, 224},
-                  { 230, 231, 232, 233, 234},
-                  { 240, 241, 242, 243, 244}  } ;
-            sst5.get_array()->val2buf((void*)tmp_data5);
+            dods_byte tmp_data5[15][5] = { { 0, 1, 2, 3, 4 }, { 10, 11, 12, 13, 14 }, { 20, 21, 22, 23, 24 }, { 30, 31,
+                32, 33, 34 }, { 40, 41, 42, 43, 44 }, { 100, 101, 102, 103, 104 }, { 110, 111, 112, 113, 114 }, { 120,
+                121, 122, 123, 124 }, { 130, 131, 132, 133, 134 }, { 140, 141, 142, 143, 144 }, { 200, 201, 202, 203,
+                204 }, { 210, 211, 212, 213, 214 }, { 220, 221, 222, 223, 224 }, { 230, 231, 232, 233, 234 }, { 240,
+                241, 242, 243, 244 } };
+            sst5.get_array()->val2buf((void*) tmp_data5);
             sst5.get_array()->set_read_p(true);
             DBG2(sst5.print_val(stderr));
         }
@@ -265,12 +226,12 @@ public:
     void tearDown()
     {
         delete geo_dds;
-    delete geo_dds_3d;
-    delete geo_dds_coads_lon;
+        delete geo_dds_3d;
+        delete geo_dds_coads_lon;
 
     }
 
-    CPPUNIT_TEST_SUITE( GridGeoConstraintTest );
+CPPUNIT_TEST_SUITE( GridGeoConstraintTest );
 
 #if 1
     CPPUNIT_TEST(geoconstraint_build_lat_lon_maps_test);
@@ -300,7 +261,8 @@ public:
     CPPUNIT_TEST(apply_constriant_to_data_test3_three_arg);
     CPPUNIT_TEST(apply_constriant_to_data_test4_three_arg);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void geoconstraint_build_lat_lon_maps_test()
     {
@@ -317,7 +279,7 @@ public:
             GridGeoConstraint gc2(g);
             CPPUNIT_ASSERT(gc2.build_lat_lon_maps());
 
-			DBG(cerr << "geoconstraint_build_lat_lon_maps_test midpoint" << endl);
+            DBG(cerr << "geoconstraint_build_lat_lon_maps_test midpoint" << endl);
 
             g = dynamic_cast<Grid*>(geo_dds->var("SST3"));
             CPPUNIT_ASSERT(g);
@@ -328,8 +290,8 @@ public:
             CPPUNIT_ASSERT(g);
             GridGeoConstraint gc4(g);
             CPPUNIT_ASSERT(gc4.build_lat_lon_maps());
-            CPPUNIT_ASSERT(gc4.d_latitude == *(g->map_begin()+2));
-            CPPUNIT_ASSERT(gc4.d_longitude == *(g->map_begin()+1));
+            CPPUNIT_ASSERT(gc4.d_latitude == *(g->map_begin() + 2));
+            CPPUNIT_ASSERT(gc4.d_longitude == *(g->map_begin() + 1));
         }
         catch (Error &e) {
             DBG(cerr << "Error: " << e.get_error_message() << endl);
@@ -369,17 +331,17 @@ public:
             CPPUNIT_ASSERT(gc2.build_lat_lon_maps());
 
             CPPUNIT_ASSERT(gc2.d_lon[0] == 0);
-            CPPUNIT_ASSERT(gc2.d_lon[gc2.d_lon_length-1] == -1);
+            CPPUNIT_ASSERT(gc2.d_lon[gc2.d_lon_length - 1] == -1);
 
-            GeoConstraint::Notation map_notation
-            = gc2.categorize_notation(gc2.d_lon[0], gc2.d_lon[gc2.d_lon_length-1]);
+            GeoConstraint::Notation map_notation = gc2.categorize_notation(gc2.d_lon[0],
+                gc2.d_lon[gc2.d_lon_length - 1]);
             CPPUNIT_ASSERT(map_notation == GeoConstraint::neg_pos);
 
             gc2.transform_longitude_to_pos_notation();
             DBG(cerr << "gc2.d_lon[0]: " << gc2.d_lon[0] << endl);
             CPPUNIT_ASSERT(gc2.d_lon[0] == 0);
-            DBG(cerr << "gc2.d_lon[gc2.d_lon_length-1]: " << gc2.d_lon[gc2.d_lon_length-1] << endl);
-            CPPUNIT_ASSERT(gc2.d_lon[gc2.d_lon_length-1] == 359);
+            DBG(cerr << "gc2.d_lon[gc2.d_lon_length-1]: " << gc2.d_lon[gc2.d_lon_length - 1] << endl);
+            CPPUNIT_ASSERT(gc2.d_lon[gc2.d_lon_length - 1] == 359);
 
         }
         catch (Error &e) {
@@ -390,69 +352,69 @@ public:
 
     void find_longitude_indeces_test()
     {
-	try {
-	    //  { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
-        Grid *g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
-        CPPUNIT_ASSERT(g);
-        GridGeoConstraint gc1(g);
+        try {
+            //  { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+            Grid *g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
+            CPPUNIT_ASSERT(g);
+            GridGeoConstraint gc1(g);
 
-        int left_i, right_i;
-        gc1.find_longitude_indeces(40.0, 200.0, left_i, right_i);
-        CPPUNIT_ASSERT(left_i == 1);
-        CPPUNIT_ASSERT(right_i == 5);
+            int left_i, right_i;
+            gc1.find_longitude_indeces(40.0, 200.0, left_i, right_i);
+            CPPUNIT_ASSERT(left_i == 1);
+            CPPUNIT_ASSERT(right_i == 5);
 
-        g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
-        CPPUNIT_ASSERT(g);
-        GridGeoConstraint gc2(g);
+            g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
+            CPPUNIT_ASSERT(g);
+            GridGeoConstraint gc2(g);
 
-        gc2.find_longitude_indeces(200, 40.0, left_i, right_i);
-        CPPUNIT_ASSERT(left_i == 5);
-        CPPUNIT_ASSERT(right_i == 1);
+            gc2.find_longitude_indeces(200, 40.0, left_i, right_i);
+            CPPUNIT_ASSERT(left_i == 5);
+            CPPUNIT_ASSERT(right_i == 1);
 
-        g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
-        CPPUNIT_ASSERT(g);
-        GridGeoConstraint gc3(g);
+            g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
+            CPPUNIT_ASSERT(g);
+            GridGeoConstraint gc3(g);
 
-        gc3.find_longitude_indeces(5.0, 81.0, left_i, right_i);
-        DBG(cerr << "left_i: " << left_i << endl);
-        DBG(cerr << "right_i: " << right_i << endl);
-        CPPUNIT_ASSERT(left_i == 0);
-        CPPUNIT_ASSERT(right_i == 3);
+            gc3.find_longitude_indeces(5.0, 81.0, left_i, right_i);
+            DBG(cerr << "left_i: " << left_i << endl);
+            DBG(cerr << "right_i: " << right_i << endl);
+            CPPUNIT_ASSERT(left_i == 0);
+            CPPUNIT_ASSERT(right_i == 3);
 
-        g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
-        CPPUNIT_ASSERT(g);
-        GridGeoConstraint gc4(g);
+            g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
+            CPPUNIT_ASSERT(g);
+            GridGeoConstraint gc4(g);
 
-        gc4.find_longitude_indeces(81.0, 5.0, left_i, right_i);
-        DBG(cerr << "left_i: " << left_i << endl);
-        DBG(cerr << "right_i: " << right_i << endl);
-        CPPUNIT_ASSERT(left_i == 2);
-        CPPUNIT_ASSERT(right_i == 1);
+            gc4.find_longitude_indeces(81.0, 5.0, left_i, right_i);
+            DBG(cerr << "left_i: " << left_i << endl);
+            DBG(cerr << "right_i: " << right_i << endl);
+            CPPUNIT_ASSERT(left_i == 2);
+            CPPUNIT_ASSERT(right_i == 1);
 
-	    // lon: { 41, 81, 121, 161, 201, 241, 281, 321, 361, 365, 370, 375, 380, 385, 390 };
-        g = dynamic_cast<Grid*>(geo_dds_coads_lon->var("SST5"));
-        CPPUNIT_ASSERT(g);
-        GridGeoConstraint gc5(g);
+            // lon: { 41, 81, 121, 161, 201, 241, 281, 321, 361, 365, 370, 375, 380, 385, 390 };
+            g = dynamic_cast<Grid*>(geo_dds_coads_lon->var("SST5"));
+            CPPUNIT_ASSERT(g);
+            GridGeoConstraint gc5(g);
 
-        gc5.find_longitude_indeces(5.0, 81.0, left_i, right_i);
-        DBG(cerr << "left_i: " << left_i << endl);
-        DBG(cerr << "right_i: " << right_i << endl);
-        CPPUNIT_ASSERT(left_i == 9);
-        CPPUNIT_ASSERT(right_i == 1);
+            gc5.find_longitude_indeces(5.0, 81.0, left_i, right_i);
+            DBG(cerr << "left_i: " << left_i << endl);
+            DBG(cerr << "right_i: " << right_i << endl);
+            CPPUNIT_ASSERT(left_i == 9);
+            CPPUNIT_ASSERT(right_i == 1);
 
-        g = dynamic_cast<Grid*>(geo_dds_coads_lon->var("SST5"));
-        CPPUNIT_ASSERT(g);
-        GridGeoConstraint gc6(g);
+            g = dynamic_cast<Grid*>(geo_dds_coads_lon->var("SST5"));
+            CPPUNIT_ASSERT(g);
+            GridGeoConstraint gc6(g);
 
-        gc6.find_longitude_indeces(81.0, 5.0, left_i, right_i);
-        DBG(cerr << "left_i: " << left_i << endl);
-        DBG(cerr << "right_i: " << right_i << endl);
-        CPPUNIT_ASSERT(left_i == 1);
-        CPPUNIT_ASSERT(right_i == 9);
-	}
-	catch (Error &e) {
-	    CPPUNIT_FAIL(e.get_error_message());
-	}
+            gc6.find_longitude_indeces(81.0, 5.0, left_i, right_i);
+            DBG(cerr << "left_i: " << left_i << endl);
+            DBG(cerr << "right_i: " << right_i << endl);
+            CPPUNIT_ASSERT(left_i == 1);
+            CPPUNIT_ASSERT(right_i == 9);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
     }
 
     void categorize_latitude_test()
@@ -542,7 +504,7 @@ public:
         try {
             Grid *g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
             Array *lon = dynamic_cast<Array*>(*g->map_begin());
-            double ten_values[10] = {-1,1,2,3,4,5,6,7,8,9};
+            double ten_values[10] = { -1, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             set_array_using_double(lon, ten_values, 10);
             CPPUNIT_ASSERT(extract_double_value(lon->var(0)) == ten_values[0]);
             CPPUNIT_ASSERT(extract_double_value(lon->var(9)) == ten_values[9]);
@@ -550,8 +512,8 @@ public:
             Int32 *i = new Int32("");
             Array *a = new Array("", i);
             a->append_dim(10);
-            int dummy_values[10] = {10,11,12,13,14,15,16,17,18,19};
-            a->val2buf((void*)dummy_values);
+            int dummy_values[10] = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+            a->val2buf((void*) dummy_values);
             a->set_read_p(true);
             CPPUNIT_ASSERT(extract_double_value(a->var(0)) == 10.0);
             CPPUNIT_ASSERT(extract_double_value(a->var(9)) == 19.0);
@@ -592,17 +554,17 @@ public:
             CPPUNIT_ASSERT(g);
             GridGeoConstraint gc1(g);
             /* Data values for Grid SST1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
             gc1.d_longitude_index_left = 5;
             gc1.d_longitude_index_right = 1;
 
@@ -788,20 +750,20 @@ public:
             gc2.set_bounding_box(30, 40, 10, 120);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
-               lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+             lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
 
-               Data values for Grid SST1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             Data values for Grid SST1:
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
 
             gc2.apply_constraint_to_data();
 
@@ -810,13 +772,13 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc2.d_latitude->buf2val((void**)lats_ptr);
+            gc2.d_latitude->buf2val((void**) lats_ptr);
             CPPUNIT_ASSERT(lats[0] == 30.0);
             CPPUNIT_ASSERT(lats[2] == 10.0);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc2.d_longitude->buf2val((void**)lons_ptr);
+            gc2.d_longitude->buf2val((void**) lons_ptr);
             CPPUNIT_ASSERT(lons[0] == 40.0);
             CPPUNIT_ASSERT(lons[2] == 120.0);
 
@@ -850,20 +812,20 @@ public:
             gc2.set_bounding_box(30, 40, 10, 120);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
-               lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+             lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
 
-               Data values for Grid SST1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             Data values for Grid SST1:
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
 
             gc2.apply_constraint_to_data();
 
@@ -872,13 +834,13 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc2.d_latitude->buf2val((void**)lats_ptr);
+            gc2.d_latitude->buf2val((void**) lats_ptr);
             CPPUNIT_ASSERT(lats[0] == 30.0);
             CPPUNIT_ASSERT(lats[2] == 10.0);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc2.d_longitude->buf2val((void**)lons_ptr);
+            gc2.d_longitude->buf2val((void**) lons_ptr);
             CPPUNIT_ASSERT(lons[0] == 40.0);
             CPPUNIT_ASSERT(lons[2] == 120.0);
 
@@ -903,27 +865,27 @@ public:
             gc.set_bounding_box(30.0, 200.0, 20.0, 280.0);
 
             /* time[3] = { 0, 1, 2 };
-               lon4[5] = { 160, 200, 240, 280, 320 };
-               lat4[5] = { 40, 30, 20, 10, 0 };
-                dods_byte tmp_data4[3][5][5] =
-                    {
-                      { { 0, 1, 2, 3, 4},
-                        { 10,11,12,13,14},
-                        { 20,21,22,23,24},
-                        { 30,31,32,33,34},
-                        { 40,41,42,43,44}  },
-                      { { 100, 101, 102, 103, 104},
-                        { 110, 111, 112, 113, 114},
-                        { 120, 121, 122, 123, 124},
-                        { 130, 131, 132, 133, 134},
-                        { 140, 141, 142, 143, 144}  },
-                      { { 200, 201, 202, 203, 204},
-                        { 210, 211, 212, 213, 214},
-                        { 220, 221, 222, 223, 224},
-                        { 230, 231, 232, 233, 234},
-                        { 240, 241, 242, 243, 244}  }
-                    };
-            */
+             lon4[5] = { 160, 200, 240, 280, 320 };
+             lat4[5] = { 40, 30, 20, 10, 0 };
+             dods_byte tmp_data4[3][5][5] =
+             {
+             { { 0, 1, 2, 3, 4},
+             { 10,11,12,13,14},
+             { 20,21,22,23,24},
+             { 30,31,32,33,34},
+             { 40,41,42,43,44}  },
+             { { 100, 101, 102, 103, 104},
+             { 110, 111, 112, 113, 114},
+             { 120, 121, 122, 123, 124},
+             { 130, 131, 132, 133, 134},
+             { 140, 141, 142, 143, 144}  },
+             { { 200, 201, 202, 203, 204},
+             { 210, 211, 212, 213, 214},
+             { 220, 221, 222, 223, 224},
+             { 230, 231, 232, 233, 234},
+             { 240, 241, 242, 243, 244}  }
+             };
+             */
 
             gc.apply_constraint_to_data();
 
@@ -932,13 +894,13 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc.d_latitude->buf2val((void**)lats_ptr);
+            gc.d_latitude->buf2val((void**) lats_ptr);
             CPPUNIT_ASSERT(lats[0] == 30.0);
             CPPUNIT_ASSERT(lats[1] == 20.0);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc.d_longitude->buf2val((void**)lons_ptr);
+            gc.d_longitude->buf2val((void**) lons_ptr);
             CPPUNIT_ASSERT(lons[0] == 200.0);
             CPPUNIT_ASSERT(lons[2] == 280.0);
 
@@ -969,27 +931,27 @@ public:
             gc.set_bounding_box(30.0, 200.0, 20.0, 280.0);
 
             /* time[3] = { 0, 1, 2 };
-               lon4[5] = { 160, 200, 240, 280, 320 };
-               lat4[5] = { 40, 30, 20, 10, 0 };
-                dods_byte tmp_data4[3][5][5] =
-                    {
-                      { { 0, 1, 2, 3, 4},
-                        { 10,11,12,13,14},
-                        { 20,21,22,23,24},
-                        { 30,31,32,33,34},
-                        { 40,41,42,43,44}  },
-                      { { 100, 101, 102, 103, 104},
-                        { 110, 111, 112, 113, 114},
-                        { 120, 121, 122, 123, 124},
-                        { 130, 131, 132, 133, 134},
-                        { 140, 141, 142, 143, 144}  },
-                      { { 200, 201, 202, 203, 204},
-                        { 210, 211, 212, 213, 214},
-                        { 220, 221, 222, 223, 224},
-                        { 230, 231, 232, 233, 234},
-                        { 240, 241, 242, 243, 244}  }
-                    };
-            */
+             lon4[5] = { 160, 200, 240, 280, 320 };
+             lat4[5] = { 40, 30, 20, 10, 0 };
+             dods_byte tmp_data4[3][5][5] =
+             {
+             { { 0, 1, 2, 3, 4},
+             { 10,11,12,13,14},
+             { 20,21,22,23,24},
+             { 30,31,32,33,34},
+             { 40,41,42,43,44}  },
+             { { 100, 101, 102, 103, 104},
+             { 110, 111, 112, 113, 114},
+             { 120, 121, 122, 123, 124},
+             { 130, 131, 132, 133, 134},
+             { 140, 141, 142, 143, 144}  },
+             { { 200, 201, 202, 203, 204},
+             { 210, 211, 212, 213, 214},
+             { 220, 221, 222, 223, 224},
+             { 230, 231, 232, 233, 234},
+             { 240, 241, 242, 243, 244}  }
+             };
+             */
 
             gc.apply_constraint_to_data();
 
@@ -998,13 +960,13 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc.d_latitude->buf2val((void**)lats_ptr);
+            gc.d_latitude->buf2val((void**) lats_ptr);
             CPPUNIT_ASSERT(lats[0] == 30.0);
             CPPUNIT_ASSERT(lats[1] == 20.0);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc.d_longitude->buf2val((void**)lons_ptr);
+            gc.d_longitude->buf2val((void**) lons_ptr);
             CPPUNIT_ASSERT(lons[0] == 200.0);
             CPPUNIT_ASSERT(lons[2] == 280.0);
 
@@ -1031,20 +993,20 @@ public:
             gc2.set_bounding_box(30, 300, 30, 60);
 
             /* lat:  { -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
-               lon: { 20, 60, 100, 140, 180, 220, 260, 300, 340, 379 };
+             lon: { 20, 60, 100, 140, 180, 220, 260, 300, 340, 379 };
 
-               Data values for Grid SST1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             Data values for Grid SST1:
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
 
             gc2.apply_constraint_to_data();
 
@@ -1053,14 +1015,14 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc2.d_latitude->buf2val((void**)lats_ptr);
+            gc2.d_latitude->buf2val((void**) lats_ptr);
             DBG(cerr << "lats[0]: " << lats[0] << endl);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc2.d_longitude->buf2val((void**)lons_ptr);
+            gc2.d_longitude->buf2val((void**) lons_ptr);
             DBG(cerr << "lons[0]: " << lons[0] << endl);
-            DBG(cerr << "lons[gc2.d_longitude->length()-1]: " << lons[gc2.d_longitude->length()-1] << endl);
+            DBG(cerr << "lons[gc2.d_longitude->length()-1]: " << lons[gc2.d_longitude->length() - 1] << endl);
             //CPPUNIT_ASSERT(lons[0] == 260.0);
             //CPPUNIT_ASSERT(lons[4] == 20.0);
 
@@ -1099,20 +1061,20 @@ public:
             gc2.set_bounding_box(30, 300, 30, 60);
 
             /* lat:  { -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
-               lon: { 20, 60, 100, 140, 180, 220, 260, 300, 340, 379 };
+             lon: { 20, 60, 100, 140, 180, 220, 260, 300, 340, 379 };
 
-               Data values for Grid SST1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             Data values for Grid SST1:
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
 
             gc2.apply_constraint_to_data();
 
@@ -1121,14 +1083,14 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc2.d_latitude->buf2val((void**)lats_ptr);
+            gc2.d_latitude->buf2val((void**) lats_ptr);
             DBG(cerr << "lats[0]: " << lats[0] << endl);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc2.d_longitude->buf2val((void**)lons_ptr);
+            gc2.d_longitude->buf2val((void**) lons_ptr);
             DBG(cerr << "lons[0]: " << lons[0] << endl);
-            DBG(cerr << "lons[gc2.d_longitude->length()-1]: " << lons[gc2.d_longitude->length()-1] << endl);
+            DBG(cerr << "lons[gc2.d_longitude->length()-1]: " << lons[gc2.d_longitude->length() - 1] << endl);
             //CPPUNIT_ASSERT(lons[0] == 260.0);
             //CPPUNIT_ASSERT(lons[4] == 20.0);
 
@@ -1161,19 +1123,19 @@ public:
             gc2.set_bounding_box(30, 280, 30, 40);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
-	       lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
-               Data values for Grid SST1_1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+             Data values for Grid SST1_1:
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
 
             gc2.apply_constraint_to_data();
 
@@ -1182,13 +1144,13 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc2.d_latitude->buf2val((void**)lats_ptr);
+            gc2.d_latitude->buf2val((void**) lats_ptr);
             DBG(cerr << "lats[0]: " << lats[0] << endl);
             //CPPUNIT_ASSERT(lats[3] == -40.0);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc2.d_longitude->buf2val((void**)lons_ptr);
+            gc2.d_longitude->buf2val((void**) lons_ptr);
             DBG(cerr << "lons[0]: " << lons[0] << endl);
             DBG(cerr << "lons[3]: " << lons[4] << endl);
             //CPPUNIT_ASSERT(lons[0] == 260.0);
@@ -1229,19 +1191,19 @@ public:
             gc2.set_bounding_box(30, 280, 30, 40);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
-	       lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
-               Data values for Grid SST1_1:
-                    { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                      { 10,11,12,13,14,15,16,17,18,19},
-                      { 20,21,22,23,24,25,26,27,28,29},
-                      { 30,31,32,33,34,35,36,37,38,39},
-                      { 40,41,42,43,44,45,46,47,48,49},
-                      { 50,51,52,53,54,55,56,57,58,59},
-                      { 60,61,62,63,64,65,66,67,68,69},
-                      { 70,71,72,73,74,75,76,77,78,79},
-                      { 80,81,82,83,84,85,86,87,88,89},
-                      { 90,91,92,93,94,95,96,97,98,99} };
-            */
+             lon: { 0, 40, 80, 120, 160, 200, 240, 280, 320, 359 };
+             Data values for Grid SST1_1:
+             { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+             { 10,11,12,13,14,15,16,17,18,19},
+             { 20,21,22,23,24,25,26,27,28,29},
+             { 30,31,32,33,34,35,36,37,38,39},
+             { 40,41,42,43,44,45,46,47,48,49},
+             { 50,51,52,53,54,55,56,57,58,59},
+             { 60,61,62,63,64,65,66,67,68,69},
+             { 70,71,72,73,74,75,76,77,78,79},
+             { 80,81,82,83,84,85,86,87,88,89},
+             { 90,91,92,93,94,95,96,97,98,99} };
+             */
 
             gc2.apply_constraint_to_data();
 
@@ -1250,13 +1212,13 @@ public:
 
             double *lats = 0;
             double **lats_ptr = &lats;
-            gc2.d_latitude->buf2val((void**)lats_ptr);
+            gc2.d_latitude->buf2val((void**) lats_ptr);
             DBG(cerr << "lats[0]: " << lats[0] << endl);
             //CPPUNIT_ASSERT(lats[3] == -40.0);
 
             double *lons = 0;
             double **lons_ptr = &lons;
-            gc2.d_longitude->buf2val((void**)lons_ptr);
+            gc2.d_longitude->buf2val((void**) lons_ptr);
             DBG(cerr << "lons[0]: " << lons[0] << endl);
             DBG(cerr << "lons[3]: " << lons[4] << endl);
             //CPPUNIT_ASSERT(lons[0] == 260.0);
@@ -1286,13 +1248,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(GridGeoConstraintTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[])
+{
 
-    GetOpt getopt(argc, argv, "dD");
-    int option_char;
-    while ((option_char = getopt()) != -1)
+    GetOpt getopt(argc, argv, "dDh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -1300,21 +1261,33 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: GridGeoConstraintTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = GridGeoConstraintTest::suite()->getTests();
+            unsigned int prefix_len = GridGeoConstraintTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("functions::GridGeoConstraintTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = GridGeoConstraintTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

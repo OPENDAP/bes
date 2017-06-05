@@ -238,14 +238,6 @@ public:
         das = new DAS;
         das->add_table("a", cont_a);
 
-        // This AttrTable looks like:
-        //      Attributes {
-        //          a {
-        //              Int32 size 7;
-        //              String type cars;
-        //          }
-        //      }
-
         ttf = new TestTypeFactory;
         dds = new DDS(ttf, "test");
         TestByte *a = new TestByte("a");
@@ -277,7 +269,8 @@ public:
         d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
         DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, (string) TEST_SRC_DIR + "/response_cache");
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY,
+            (string) TEST_SRC_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, "dap_response");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "100");
 
@@ -388,8 +381,6 @@ public:
             DBG(cerr << "DDX: " << oss.str() << endl);
 
             CPPUNIT_ASSERT(re_match(r1, baseline));
-            //CPPUNIT_ASSERT(re_match(r1, oss.str()));
-            //oss.str("");
         }
         catch (Error &e) {
             CPPUNIT_FAIL("Error: " + e.get_error_message());
@@ -419,7 +410,7 @@ public:
 
         DBG(
             cerr << "store_dap2_result_test() - Checking stored result request where async_accpeted is NOT set."
-                << endl);
+            << endl);
 
         string baseline = readTestBaseline(
             (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
@@ -442,8 +433,8 @@ public:
 
         DBG(
             cerr
-                << "store_dap2_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."
-                << endl);
+            << "store_dap2_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."
+            << endl);
         // Make the async_accpeted string be the string "0" to indicate that client doesn't care how long it takes...
         drb->set_async_accepted("0");
         DBG(cerr << "store_dap2_result_test() - async_accepted is set to: " << drb->get_async_accepted() << endl);
@@ -764,7 +755,7 @@ public:
             CPPUNIT_FAIL("Caught libdap::Error!! Message: " + e.get_error_message());
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError!! Message: " + e.get_message() + " (" + e.get_file() +")");
+            CPPUNIT_FAIL("Caught BESError!! Message: " + e.get_message() + " (" + e.get_file() + ")");
         }
 
         DBG(cerr << "invoke_server_side_function_test() - END" << endl);
@@ -785,17 +776,15 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(store_dap2_result_test);
     CPPUNIT_TEST(store_dap4_result_test);
 #endif
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ResponseBuilderTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -805,11 +794,23 @@ int main(int argc, char*argv[])
         case 'D':
             debug_2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: ResponseBuilderTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = ResponseBuilderTest::suite()->getTests();
+            unsigned int prefix_len = ResponseBuilderTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
     // clean out the response_cache dir
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -820,13 +821,11 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("ResponseBuilderTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = ResponseBuilderTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
-
-    // clean out the response_cache dir
 
     return wasSuccessful ? 0 : 1;
 }

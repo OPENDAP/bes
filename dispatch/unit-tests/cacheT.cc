@@ -91,11 +91,12 @@ static bool bes_debug = false;
  *
  * @param cache_dir Directory that holds the cached files.
  */
-void run_sys(const string cmd){
+void run_sys(const string cmd)
+{
     int status;
-    DBG(cerr << __func__ <<" command: '" << cmd );
+    DBG(cerr << __func__ << " command: '" << cmd);
     status = system(cmd.c_str());
-    DBG(cerr << "' status: " << status  << endl );
+    DBG(cerr << "' status: " << status << endl);
 }
 void init_cache(const string &cache_dir)
 {
@@ -117,7 +118,7 @@ void init_cache(const string &cache_dir)
         // DBG(cerr << __func__ << "() - sleeping for 1 second..." << endl);
         //sleep(1);
         cmd = "";
-        cmd.append( "cat ").append(s.str()).append(" > /dev/null");
+        cmd.append("cat ").append(s.str()).append(" > /dev/null");
         run_sys(cmd);
     }
 
@@ -136,7 +137,7 @@ void check_cache(const string &cache_dir, const string &should_be, unsigned int 
     map<string, string> contents;
     string match_prefix = MATCH_PREFIX;
     DIR *dip = opendir(cache_dir.c_str());
-    CPPUNIT_ASSERT( dip );
+    CPPUNIT_ASSERT(dip);
     struct dirent *dit;
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
@@ -145,7 +146,7 @@ void check_cache(const string &cache_dir, const string &should_be, unsigned int 
 
     closedir(dip);
 
-    CPPUNIT_ASSERT( num_files == contents.size() );
+    CPPUNIT_ASSERT(num_files == contents.size());
 
     bool found = false;
     for (map<string, string>::const_iterator ci = contents.begin(), ce = contents.end(); ci != ce; ci++) {
@@ -156,7 +157,7 @@ void check_cache(const string &cache_dir, const string &should_be, unsigned int 
         }
     }
 
-    CPPUNIT_ASSERT( found );
+    CPPUNIT_ASSERT(found);
 
     DBG(cerr << __func__ << "() - END " << endl);
 }
@@ -176,7 +177,7 @@ string show_cache(const string cache_dir, const string match_prefix)
     map<string, string> contents;
     ostringstream oss;
     DIR *dip = opendir(cache_dir.c_str());
-    CPPUNIT_ASSERT( dip );
+    CPPUNIT_ASSERT(dip);
     struct dirent *dit;
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
@@ -329,7 +330,7 @@ public:
             // Should return a disabled cache if the dir is "";
             BESFileLockingCache cache("", CACHE_PREFIX, 0);
             DBG(cerr << __func__ << "() - Cache is " << (cache.cache_enabled() ? "en" : "dis") << "abled." << endl);
-            CPPUNIT_ASSERT( !cache.cache_enabled() );
+            CPPUNIT_ASSERT(!cache.cache_enabled());
 
         }
         catch (BESError &e) {
@@ -345,7 +346,7 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0);
-            CPPUNIT_ASSERT( !"Created cache with non-existent dir" );
+            CPPUNIT_ASSERT(!"Created cache with non-existent dir");
         }
         catch (BESError &e) {
             DBG(
@@ -360,7 +361,7 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, "", 1);
-            CPPUNIT_ASSERT( !"Created cache with empty prefix" );
+            CPPUNIT_ASSERT(!"Created cache with empty prefix");
         }
         catch (BESError &e) {
             DBG(
@@ -375,7 +376,7 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 0);
-            CPPUNIT_ASSERT( !"Created cache with 0 size" );
+            CPPUNIT_ASSERT(!"Created cache with 0 size");
         }
         catch (BESError &e) {
             DBG(
@@ -391,12 +392,12 @@ public:
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             DBG(cerr << __func__ << "() - Cache is " << (cache.cache_enabled() ? "en" : "dis") << "abled." << endl);
-            CPPUNIT_ASSERT( cache.cache_enabled() );
+            CPPUNIT_ASSERT(cache.cache_enabled());
 
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - FAILED to create cache! msg: " << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Failed to create cache" );
+            CPPUNIT_ASSERT(!"Failed to create cache");
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
@@ -417,11 +418,11 @@ public:
                     "Releasing lock and closing file before we ASSERT... " << endl);
                 cache.unlock_and_close(no_such_file);
             }
-            CPPUNIT_ASSERT( !success );
+            CPPUNIT_ASSERT(!success);
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - FAILED checking if non-exist file cached! msg: " << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Error checking if non-exist file cached" );
+            CPPUNIT_ASSERT(!"Error checking if non-exist file cached");
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
@@ -437,14 +438,14 @@ public:
 
             bool is_it = cache.get_read_lock(cache_file_name, fd);
             DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (is_it ? "true" : "false") << endl);
-            CPPUNIT_ASSERT( is_it );
+            CPPUNIT_ASSERT(is_it);
             if (is_it) {
                 cache.unlock_and_close(cache_file_name);
             }
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - FAILED checking for cached file! msg: " << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Error checking if expected file is cached" );
+            CPPUNIT_ASSERT(!"Error checking if expected file is cached");
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
@@ -455,7 +456,8 @@ public:
 
         string latest_file = "/usr/local/data/template01.txt";
 
-        DBG(cerr << __func__ << "() - Cache Before update_and_purge():" << endl
+        DBG(
+            cerr << __func__ << "() - Cache Before update_and_purge():" << endl
                 << show_cache(TEST_CACHE_DIR, CACHE_PREFIX));
 
         try {
@@ -470,7 +472,7 @@ public:
             check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt"/*latest_cache_file*/, 4);
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL( "purge failed: " + e.get_message() );
+            CPPUNIT_FAIL("purge failed: " + e.get_message());
         }
 
         DBG(cerr << __func__ << "() - Test purge (should not remove any files)" << endl);
@@ -482,7 +484,7 @@ public:
             check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt"/*latest_cache_file*/, 4);
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL( "purge failed: " + e.get_message() );
+            CPPUNIT_FAIL("purge failed: " + e.get_message());
         }
 
         DBG(cerr << __func__ << "() - END " << endl);
@@ -504,27 +506,28 @@ public:
 
     }
 
-    CPPUNIT_TEST_SUITE( cacheT );
+CPPUNIT_TEST_SUITE( cacheT );
 
-    CPPUNIT_TEST( test_empty_cache_dir_name_cache_creation );
-    CPPUNIT_TEST( test_missing_cache_dir_cache_creation );
-    CPPUNIT_TEST( test_size_zero_cache_creation );
-    CPPUNIT_TEST( test_good_cache_creation );
-    CPPUNIT_TEST( test_check_cache_for_non_existent_compressed_file );
-    CPPUNIT_TEST( test_find_exisiting_cached_file );
-    CPPUNIT_TEST( test_cache_purge );
-    CPPUNIT_TEST( test_64_bit_cache_sizes );
+    CPPUNIT_TEST(test_empty_cache_dir_name_cache_creation);
+    CPPUNIT_TEST(test_missing_cache_dir_cache_creation);
+    CPPUNIT_TEST(test_size_zero_cache_creation);
+    CPPUNIT_TEST(test_good_cache_creation);
+    CPPUNIT_TEST(test_check_cache_for_non_existent_compressed_file);
+    CPPUNIT_TEST(test_find_exisiting_cached_file);
+    CPPUNIT_TEST(test_cache_purge);
+    CPPUNIT_TEST(test_64_bit_cache_sizes);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 // test fixture class
 
-CPPUNIT_TEST_SUITE_REGISTRATION( cacheT );
+CPPUNIT_TEST_SUITE_REGISTRATION(cacheT);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "db6p");
+    GetOpt getopt(argc, argv, "db6ph");
     int option_char;
     bool purge = true;    // the default
     while ((option_char = getopt()) != -1)
@@ -539,12 +542,23 @@ int main(int argc, char*argv[])
 
         case '6':
             RUN_64_BIT_CACHE_TEST = true;  // RUN_64_BIT_CACHE_TEST is a static global
-            DBG(cerr << __func__ << "() - 64 Bit Cache Tests Enabled." << endl);
+            DBG(cerr << __func__ << "() - 64 Bit Cache Tests Enabled." << endl)
+            ;
             break;
 
         case 'p':
             purge = false;
             break;
+
+        case 'h': {     // help - show test names
+            cerr << "Usage: cacheT has the following tests:" << endl;
+            const std::vector<Test*> &tests = cacheT::suite()->getTests();
+            unsigned int prefix_len = cacheT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
 
         default:
             break;
@@ -567,14 +581,13 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("cacheT::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = cacheT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
 
-    if (purge)
-        purge_cache(TEST_CACHE_DIR, CACHE_PREFIX);
+    if (purge) purge_cache(TEST_CACHE_DIR, CACHE_PREFIX);
 
     return wasSuccessful ? 0 : 1;
 }

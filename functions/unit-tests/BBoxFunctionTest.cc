@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -55,6 +54,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -66,11 +66,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
-class BBoxFunctionTest:public TestFixture
-{
+class BBoxFunctionTest: public TestFixture {
 private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
@@ -78,20 +76,23 @@ private:
     DDS *float32_array, *float32_2d_array;
 
 public:
-    BBoxFunctionTest(): float32_array(0), float32_2d_array(0)
-    {}
+    BBoxFunctionTest() :
+        float32_array(0), float32_2d_array(0)
+    {
+    }
     ~BBoxFunctionTest()
-    {}
+    {
+    }
 
     void setUp()
     {
         try {
             float32_array = new DDS(&btf);
-            float32_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_array.dds");
+            float32_array->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_array.dds");
             DBG2(float32_array->print_xml(stderr, false, "No blob"));
 
             float32_2d_array = new DDS(&btf);
-            float32_2d_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
+            float32_2d_array->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
             DBG2(float32_2d_array->print_xml(stderr, false, "No blob"));
         }
         catch (Error & e) {
@@ -106,10 +107,11 @@ public:
         delete float32_2d_array;
     }
 
-    void no_arg_test() {
+    void no_arg_test()
+    {
         BaseType *result = 0;
         try {
-            BaseType *argv[] = { };
+            BaseType *argv[] = {};
             function_dap2_bbox(0, argv, *float32_array /* DDS & */, &result);
             CPPUNIT_FAIL("bbox() Should throw an exception when called with no arguments");
         }
@@ -121,7 +123,8 @@ public:
         }
     }
 
-    void string_arg_test() {
+    void string_arg_test()
+    {
         BaseType *result = 0;
         try {
             Array a("values", new Str("values"));
@@ -147,7 +150,8 @@ public:
         }
     }
 
-    void float32_array_test() {
+    void float32_array_test()
+    {
         BaseType *btp = *(float32_array->var_begin());
 
         // It's an array
@@ -185,7 +189,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -210,7 +215,7 @@ public:
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "start");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 8);    // values are hardwired in the initial version of this function
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 8); // values are hardwired in the initial version of this function
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());
@@ -225,7 +230,8 @@ public:
         CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "a_values");
     }
 
-    void float32_2d_array_test() {
+    void float32_2d_array_test()
+    {
         BaseType *btp = *(float32_2d_array->var_begin());
 
         // It's an array
@@ -268,7 +274,8 @@ public:
 
         DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_bbox.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_array_c);
@@ -325,7 +332,8 @@ public:
     }
 
     // Do we get an exceptin when there's an empty box?
-    void float32_2d_array_test_error() {
+    void float32_2d_array_test_error()
+    {
         BaseType *btp = *(float32_2d_array->var_begin());
 
         // It's an array
@@ -369,7 +377,7 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE( BBoxFunctionTest );
+CPPUNIT_TEST_SUITE( BBoxFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(string_arg_test);
@@ -377,18 +385,18 @@ public:
     CPPUNIT_TEST(float32_2d_array_test);
     CPPUNIT_TEST(float32_2d_array_test_error);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BBoxFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[])
+{
 
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -398,21 +406,33 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: BBoxFunctionTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = BBoxFunctionTest::suite()->getTests();
+            unsigned int prefix_len = BBoxFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("functions::BBoxFunctionTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = BBoxFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

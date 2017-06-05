@@ -34,16 +34,16 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::stringstream ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::stringstream;
 
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorageVolatile.h"
@@ -51,134 +51,181 @@ using std::stringstream ;
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
+#include <GetOpt.h>
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class defT: public TestFixture {
 private:
 
 public:
-    defT() {}
-    ~defT() {}
+    defT()
+    {
+    }
+    ~defT()
+    {
+    }
 
     void setUp()
     {
-	string bes_conf = (string)TEST_SRC_DIR + "/defT.ini" ;
-	TheBESKeys::ConfigFile = bes_conf ;
-    } 
+        string bes_conf = (string) TEST_SRC_DIR + "/defT.ini";
+        TheBESKeys::ConfigFile = bes_conf;
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( defT ) ;
+CPPUNIT_TEST_SUITE( defT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered defT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered defT::run" << endl;
 
-	BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
-	BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE ) ;
+        BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE));
+        BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE);
 
-	cout << "*****************************************" << endl;
-	cout << "add d1, d2, d3, d4, d5" << endl;
-	for( unsigned int i = 1; i < 6; i++ )
-	{
-	    stringstream name ; name << "d" << i ;
-	    stringstream agg ; agg << "d" << i << "agg" ;
-	    BESDefine *dd = new BESDefine ;
-	    dd->set_agg_cmd( agg.str() ) ;
-	    cout << "    adding " << name.str() << endl ;
-	    CPPUNIT_ASSERT( store->add_definition( name.str(), dd ) ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "add d1, d2, d3, d4, d5" << endl;
+        for (unsigned int i = 1; i < 6; i++) {
+            stringstream name;
+            name << "d" << i;
+            stringstream agg;
+            agg << "d" << i << "agg";
+            BESDefine *dd = new BESDefine;
+            dd->set_agg_cmd(agg.str());
+            cout << "    adding " << name.str() << endl;
+            CPPUNIT_ASSERT( store->add_definition( name.str(), dd ) );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "find d1, d2, d3, d4, d5" << endl;
-	for( unsigned int i = 1; i < 6; i++ )
-	{
-	    stringstream name ; name << "d" << i ;
-	    stringstream agg ; agg << "d" << i << "agg" ;
-	    cout << "    looking for " << name.str() << endl ;
-	    BESDefine *dd = store->look_for( name.str() ) ;
-	    CPPUNIT_ASSERT( dd ) ;
-	    CPPUNIT_ASSERT( dd->get_agg_cmd() == agg.str() ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "find d1, d2, d3, d4, d5" << endl;
+        for (unsigned int i = 1; i < 6; i++) {
+            stringstream name;
+            name << "d" << i;
+            stringstream agg;
+            agg << "d" << i << "agg";
+            cout << "    looking for " << name.str() << endl;
+            BESDefine *dd = store->look_for(name.str());
+            CPPUNIT_ASSERT( dd );
+            CPPUNIT_ASSERT( dd->get_agg_cmd() == agg.str() );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "show definitions" << endl;
-	{
-	    BESTextInfo info ;
-	    store->show_definitions( info ) ;
-	    info.print( cout ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "show definitions" << endl;
+        {
+            BESTextInfo info;
+            store->show_definitions(info);
+            info.print(cout);
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "delete d3" << endl;
-	{
-	    CPPUNIT_ASSERT( store->del_definition( "d3" ) ) ;
-	    BESDefine *dd = store->look_for( "d3" ) ;
-	    CPPUNIT_ASSERT( !dd ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "delete d3" << endl;
+        {
+            CPPUNIT_ASSERT( store->del_definition( "d3" ) );
+            BESDefine *dd = store->look_for("d3");
+            CPPUNIT_ASSERT( !dd );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "delete d1" << endl;
-	{
-	    CPPUNIT_ASSERT( store->del_definition( "d1" ) ) ;
-	    BESDefine *dd = store->look_for( "d1" ) ;
-	    CPPUNIT_ASSERT( !dd ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "delete d1" << endl;
+        {
+            CPPUNIT_ASSERT( store->del_definition( "d1" ) );
+            BESDefine *dd = store->look_for("d1");
+            CPPUNIT_ASSERT( !dd );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "delete d5" << endl;
-	{
-	    CPPUNIT_ASSERT( store->del_definition( "d5" ) ) ;
-	    BESDefine *dd = store->look_for( "d5" ) ;
-	    CPPUNIT_ASSERT( !dd ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "delete d5" << endl;
+        {
+            CPPUNIT_ASSERT( store->del_definition( "d5" ) );
+            BESDefine *dd = store->look_for("d5");
+            CPPUNIT_ASSERT( !dd );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "find d2 and d4" << endl;
-	{
-	    BESDefine *dd = store->look_for( "d2" ) ;
-	    CPPUNIT_ASSERT( dd ) ;
+        cout << "*****************************************" << endl;
+        cout << "find d2 and d4" << endl;
+        {
+            BESDefine *dd = store->look_for("d2");
+            CPPUNIT_ASSERT( dd );
 
-	    dd = store->look_for( "d4" ) ;
-	    CPPUNIT_ASSERT( dd ) ;
-	}
+            dd = store->look_for("d4");
+            CPPUNIT_ASSERT( dd );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "delete all definitions" << endl;
-	store->del_definitions() ;
+        cout << "*****************************************" << endl;
+        cout << "delete all definitions" << endl;
+        store->del_definitions();
 
-	cout << "*****************************************" << endl;
-	cout << "find definitions d1, d2, d3, d4, d5" << endl;
-	for( unsigned int i = 1; i < 6; i++ )
-	{
-	    stringstream name ; name << "d" << i ;
-	    stringstream agg ; agg << "d" << i << "agg" ;
-	    cout << "    looking for " << name.str() << endl ;
-	    BESDefine *dd = store->look_for( name.str() ) ;
-	    CPPUNIT_ASSERT( !dd ) ;
-	}
+        cout << "*****************************************" << endl;
+        cout << "find definitions d1, d2, d3, d4, d5" << endl;
+        for (unsigned int i = 1; i < 6; i++) {
+            stringstream name;
+            name << "d" << i;
+            stringstream agg;
+            agg << "d" << i << "agg";
+            cout << "    looking for " << name.str() << endl;
+            BESDefine *dd = store->look_for(name.str());
+            CPPUNIT_ASSERT( !dd );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from defT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from defT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( defT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( defT );
 
-int 
-main( int, char** )
+int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: defT has the following tests:" << endl;
+            const std::vector<Test*> &tests = defT::suite()->getTests();
+            unsigned int prefix_len = defT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = defT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

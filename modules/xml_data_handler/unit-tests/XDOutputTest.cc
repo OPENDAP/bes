@@ -42,6 +42,7 @@
 #include "XDArray.h"
 
 #include "test_config.h"
+#include "GetOpt.h"
 
 // These globals are defined in ascii_val.cc and are needed by the XD*
 // classes. This code has to be linked with those so that the XD*
@@ -50,6 +51,7 @@
 // addition to its regular lineage. This test code depends on being able to
 // cast each variable to an XDOutput object. 01/24/03 jhrg
 bool translate = false;
+static bool debug = false;
 
 using namespace CppUnit;
 using namespace std;
@@ -59,8 +61,7 @@ static int str_to_file_cmp(const string &s, const string &f)
 {
     ifstream ifs;
     ifs.open(f.c_str());
-    if (!ifs)
-        throw InternalErr(__FILE__, __LINE__, "Could not open file");
+    if (!ifs) throw InternalErr(__FILE__, __LINE__, "Could not open file");
     string line, doc;
     while (!ifs.eof()) {
         getline(ifs, line);
@@ -133,13 +134,14 @@ public:
         dds = 0;
     }
 
-    CPPUNIT_TEST_SUITE(XDOutputTest);
+CPPUNIT_TEST_SUITE(XDOutputTest);
 
-        CPPUNIT_TEST(test_print_xml_data);
-        CPPUNIT_TEST(test_print_xml_data_structure);
-        CPPUNIT_TEST(test_print_xml_data_grid);
+    CPPUNIT_TEST(test_print_xml_data);
+    CPPUNIT_TEST(test_print_xml_data_structure);
+    CPPUNIT_TEST(test_print_xml_data_grid);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void test_print_xml_data()
     {
@@ -153,7 +155,7 @@ public:
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_a.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_a.xml") == 0);
         }
         catch (InternalErr &e) {
             cerr << "Caught an InternalErr: " << e.get_error_message() << endl;
@@ -172,7 +174,7 @@ public:
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_e.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_e.xml") == 0);
         }
         catch (InternalErr &e) {
             cerr << "Caught an InternalErr: " << e.get_error_message() << endl;
@@ -191,7 +193,7 @@ public:
             DBG(cerr << writer.get_doc() << endl);
 
             CPPUNIT_ASSERT(
-                    str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_g.xml") == 0);
+                str_to_file_cmp(writer.get_doc(), (string)TEST_SRC_DIR + "/testsuite/xdoutputtest_g.xml") == 0);
         }
         catch (InternalErr &e) {
             cerr << "Caught an InternalErr: " << e.get_error_message() << endl;
@@ -203,12 +205,46 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XDOutputTest);
 
-int main(int /*argc*/, char* /*argv*/[])
+int main(int argc, char*argv[])
 {
+
+    GetOpt getopt(argc, argv, "dh");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = true;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: XDOutputTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = XDOutputTest::suite()->getTests();
+            unsigned int prefix_len = XDOutputTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run("", false);
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = XDOutputTest::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
 
     return wasSuccessful ? 0 : 1;
 }
