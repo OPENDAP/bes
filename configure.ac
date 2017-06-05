@@ -862,7 +862,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    dnl AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
