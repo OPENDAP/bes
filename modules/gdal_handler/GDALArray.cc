@@ -20,20 +20,16 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
-//#define DODS_DEBUG 1
 
 #include <string>
 
 #include <BESDebug.h>
 
 #include "GDALTypes.h"
+#include "gdal_utils.h"
 
 using namespace std;
-using namespace libdap ;
-
-// From gdal_dds.cc
-void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufType);
-void read_map_array(Array *map, GDALRasterBandH hBand, string filename);
+using namespace libdap;
 
 /************************************************************************/
 /* ==================================================================== */
@@ -44,8 +40,8 @@ void read_map_array(Array *map, GDALRasterBandH hBand, string filename);
 void GDALArray::m_duplicate(const GDALArray &a)
 {
 	filename = a.filename;
-	hBand = a.hBand;
 	eBufType = a.eBufType;
+    iBandNum = a.iBandNum;
 }
 
 BaseType *
@@ -54,15 +50,15 @@ GDALArray::ptr_duplicate()
     return new GDALArray(*this);
 }
 
-GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), hBand(0), eBufType(GDT_Unknown)
+GDALArray::GDALArray(const string &n, BaseType *v) : Array(n, v), filename(""), eBufType(GDT_Unknown), iBandNum(0)
 {
     BESDEBUG("gdal", " Called GDALArray::GDALArray() 1" << endl);
 }
 
-GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn) :
-		Array(name, proto), filename(filenameIn), hBand(hBandIn), eBufType(eBufTypeIn)
+GDALArray::GDALArray(const string &name, BaseType *proto, const string &filenameIn, GDALDataType eBufTypeIn,int iBandNumIn) :
+        Array(name, proto), filename(filenameIn), eBufType(eBufTypeIn), iBandNum(iBandNumIn)
 {
-	BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
+    BESDEBUG("gdal", " Called GDALArray::GDALArray() 2" << endl);
 }
 
 GDALArray::GDALArray(const GDALArray &src) : Array(src)
@@ -79,15 +75,26 @@ GDALArray::read()
 {
 	BESDEBUG("gdal", "Entering GDALArray::read()" << endl);
 
-    if (read_p())
-        return true;
+    if (read_p()) return true;
 
-    if (name() == "northing" || name() == "easting")
-    	read_map_array(this, hBand, filename);
-    else
-    	read_data_array(this, hBand, eBufType);
+    GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+    if (hDS == NULL)
+        throw Error(string(CPLGetLastErrorMsg()));
 
-    set_read_p(true);
+    try {
+        if (name() == "northing" || name() == "easting")
+            read_map_array(this, GDALGetRasterBand(hDS, get_gdal_band_num()), hDS);
+        else
+            read_data_array(this, GDALGetRasterBand(hDS, get_gdal_band_num()));
+
+        set_read_p(true);
+    }
+    catch (...) {
+        GDALClose(hDS);
+        throw;
+    }
+
+    GDALClose(hDS);
 
     return true;
 }

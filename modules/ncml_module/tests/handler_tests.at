@@ -1,0 +1,6 @@
+
+dnl Tests of specific handlers that have had bug reports WRT NCML
+
+AT_BANNER([------------------  Handler Tests -----------------------])
+
+AT_CHECK_ALL_DAP_RESPONSES([gdal/joinNew_geotiff.ncml])

@@ -20,7 +20,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
-//#define DODS_DEBUG 1
 
 #include <string>
 
@@ -30,13 +29,10 @@
 #include <BESDebug.h>
 
 #include "GDALTypes.h"
+#include "gdal_utils.h"
 
 using namespace std;
 using namespace libdap;
-
-// From gdal_dds.cc
-void read_data_array(GDALArray *array, GDALRasterBandH hBand, GDALDataType eBufType);
-void read_map_array(Array *map, GDALRasterBandH hBand, string filename);
 
 /************************************************************************/
 /* ==================================================================== */
@@ -47,8 +43,6 @@ void read_map_array(Array *map, GDALRasterBandH hBand, string filename);
 void GDALGrid::m_duplicate(const GDALGrid &g)
 {
 	filename = g.filename;
-	hBand = g.hBand;
-	eBufType = g.eBufType;
 }
 
 // protected
@@ -61,12 +55,9 @@ GDALGrid::ptr_duplicate()
 
 // public
 
-GDALGrid::GDALGrid(const string &filenameIn, const string &name, GDALRasterBandH hBandIn, GDALDataType eBufTypeIn) :
-		Grid(name)
+GDALGrid::GDALGrid(const string &filenameIn, const string &name) :
+        Grid(name), filename(filenameIn)
 {
-	filename = filenameIn;	// This is used to open the file in the read() method for GDALGrid
-	hBand = hBandIn;
-	eBufType = eBufTypeIn;
 }
 
 GDALGrid::GDALGrid(const GDALGrid &rhs) : Grid(rhs)
@@ -94,22 +85,35 @@ bool GDALGrid::read()
 	if (read_p()) // nothing to do
 		return true;
 
-	/* -------------------------------------------------------------------- */
-	/*      Collect the x and y sampling values from the constraint.        */
-	/* -------------------------------------------------------------------- */
-	GDALArray *array = static_cast<GDALArray*>(array_var());
-	read_data_array(array, hBand, eBufType);
-	array->set_read_p(true);
+    GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+    if (hDS == NULL)
+        throw Error(string(CPLGetLastErrorMsg()));
 
-	Map_iter miter = map_begin();
-	array = static_cast<GDALArray*>((*miter));
-	read_map_array(array, hBand, filename);
-	array->set_read_p(true);
+    try {
+        // This specialization of Grid::read() is a bit more efficient than using Array::read()
+        // since it only opens the file using GDAL once. Calling Array::read() would open the
+        // file three times. jhrg 5/31/17
+        GDALArray *array = static_cast<GDALArray*>(array_var());
 
-	++miter;
-	array = static_cast<GDALArray*>(*miter);
-	read_map_array(array, hBand, filename);
-	array->set_read_p(true);
+        read_data_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()));
+        array->set_read_p(true);
+
+        Map_iter miter = map_begin();
+        array = static_cast<GDALArray*>((*miter));
+        read_map_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()), hDS);
+        array->set_read_p(true);
+
+        ++miter;
+        array = static_cast<GDALArray*>(*miter);
+        read_map_array(array, GDALGetRasterBand(hDS, array->get_gdal_band_num()), hDS);
+        array->set_read_p(true);
+    }
+    catch (...) {
+        GDALClose(hDS);
+        throw;
+    }
+
+    GDALClose(hDS);
 
 	return true;
 }

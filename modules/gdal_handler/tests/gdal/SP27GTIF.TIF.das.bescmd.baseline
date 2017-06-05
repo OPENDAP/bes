@@ -1,0 +1,21 @@
+Attributes {
+    GLOBAL {
+        Float64 Northernmost_Northing 1913050;
+        Float64 Southernmost_Northing 1882578.8;
+        Float64 Easternmost_Easting 704407.2;
+        Float64 Westernmost_Northing 681480;
+        String GeoTransform "681480 32.8 0 1913050 0 -32.8";
+        Metadata {
+            String AREA_OR_POINT "Area";
+            String TIFFTAG_RESOLUTIONUNIT "1 (unitless)";
+            String TIFFTAG_XRESOLUTION "72";
+            String TIFFTAG_YRESOLUTION "72";
+        }
+        String spatial_ref "PROJCS[\"NAD27 / Illinois East\",GEOGCS[\"NAD27\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke 1866\",6378206.4,294.9786982138982,AUTHORITY[\"EPSG\",\"7008\"]],AUTHORITY[\"EPSG\",\"6267\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4267\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",36.66666666666666],PARAMETER[\"central_meridian\",-88.33333333333333],PARAMETER[\"scale_factor\",0.999975],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"US survey foot\",0.3048006096012192,AUTHORITY[\"EPSG\",\"9003\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"26771\"]]";
+    }
+    band_1 {
+        Float64 add_offset 0;
+        Float64 scale_factor 1;
+        String PhotometricInterpretation "Gray";
+    }
+}
