@@ -17,12 +17,12 @@ AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
+AM_DISTCHECK_CONFIGURE_FLAGS=
+
 if WITH_DEPENDENCIES
-# I think this will enable distcheck to pickup the --with-dependencies
-# flag on OSX but not use it on Linux (where we should be getting all
-# the dependencies from RPMs). jhrg 3/18/15
-#
-# Not always true - some deps come from here, even on linux jhrg 4/5/15
+# With automake 1.14 setting AM_DISTCHECK... means that the user variable
+# DISTCHECK_CONFIGURE_FLAGS no longer needs to be used. Earlier versions
+# of automake don't support this. jhrg 6/5/17
 AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
 endif
 

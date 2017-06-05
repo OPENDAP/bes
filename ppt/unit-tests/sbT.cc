@@ -55,7 +55,7 @@ using std::ostringstream;
 
 #include "PPTStreamBuf.h"
 #include "PPTProtocol.h"
-#include <getopt.h>
+#include <GetOpt.h>
 
 static bool debug = false;
 
