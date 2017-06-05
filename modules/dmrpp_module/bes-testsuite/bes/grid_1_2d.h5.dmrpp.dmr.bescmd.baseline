@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="data/dmrpp/grid_1_2d.h5" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.h5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="GeoGrid">
+                <Group name="Data Fields">
+                    <Float32 name="temperature">
+                        <Dim size="4"/>
+                        <Dim size="8"/>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS INFORMATION">
+        <String name="StructMetadata.0"/>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+    </Group>
+</Dataset>

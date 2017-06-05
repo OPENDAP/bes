@@ -52,7 +52,7 @@ class BESDapError: public BESError {
 private:
     libdap::ErrorCode _error_code;
 protected:
-    BESDapError()
+    BESDapError() : _error_code(unknown_error)
     {
     }
 public:

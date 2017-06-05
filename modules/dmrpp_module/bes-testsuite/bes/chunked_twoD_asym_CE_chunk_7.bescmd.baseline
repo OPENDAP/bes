@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="data/dmrpp/chunked_twoD_asymmetric.h5" dapVersion="4.0" dmrVersion="1.0" name="chunked_twoD_asymmetric.h5">
+    <Float32 name="d_8_chunks">
+        <Dim size="3"/>
+        <Dim size="7"/>
+        <Attribute name="origname" type="String">
+            <Value>d_8_chunks</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d_8_chunks</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>f5cbf4bf</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 d_8_chunks[3][7] = {{10756, 10761, 10766, 10771, 10776, 10781, 10786},{11756, 11761, 11766, 11771, 11776, 11781, 11786},{12756, 12761, 12766, 12771, 12776, 12781, 12786}};
+
