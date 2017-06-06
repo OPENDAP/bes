@@ -5,8 +5,8 @@ This is a maintenance release. No new features are added and no outstanding bugs
 *****************************************************
 ********Special note about the version number********
 *****************************************************
-Since Hyrax 1.13.2, Hyrax just treats each handler as a module. So We stop assigning a individual version
-for the HDF4 handler.
+Since Hyrax 1.13.2, Hyrax just treats each handler as a module. 
+So We stop assigning an individual version number for the HDF4 handler.
 
 Updated for version 3.12.2(November 16 2016, Hyrax 1.13.2)
   1) Minor code re-arrangement by removing the DAP4 macro and other misc. minor code updates. 
