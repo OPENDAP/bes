@@ -59,8 +59,9 @@ For the HDF-EOS5 sinusoidal projection, the latitude and longitude are calculate
 *****************************************************
 ********Special note about the version number********
 *****************************************************
-Since Hyrax 1.13.2, Hyrax just treats each handler as a module. So We stop assigning a individual version 
-for the HDF5 handler.
+Since Hyrax 1.13.2, Hyrax just treats each handler as a module. 
+So We stop assigning an individual version number for the HDF5 handler.
+
 What's new for version 2.3.3(Released with Hyrax 1.13.2)
 ----------------------------
 
