@@ -40,21 +40,25 @@ What's new for Hyrax 1.13.4
 ----------------------------
 
 CF option: 
-1. Add the disk cache support for raw data and DAS. This support aims to improve the performance to access HDF5 data via Hyrax.
-Since this support may vary from case to case, by default we turn it off. 
-(1) Users, who want to use the disk cache for raw data,should read the description of 
-the following BES keys at h5.conf under /etc/bes/modules and change the BES key values to fit for your own use cases.
-H5.DiskCacheComp=false
-H5.DiskCacheFloatOnlyComp=true
-H5.DiskCacheCompThreshold=2.0
-H5.DiskCacheCompVarSize=100
+1. Add the disk cache support for raw data and DAS. 
+   This support aims to improve the performance to access HDF5 data via Hyrax.
+   Since this support may vary from case to case, by default we turn it off. 
+   (1) Users, who want to use the disk cache for raw data, should read the description of the following 
+       BES keys at h5.conf under /etc/bes/modules and change the BES key values to fit for your own use 
+       cases.
 
-(2) Users, who want to use the disk cache for DAS, should also go to the h5.conf file and change the BES key 
-H5.EnableDiskMetaDataCache to true 
-and set appropriate path that stores the DAS cache file with the BES key H5.DiskMetaDataCachePath
+       H5.DiskCacheComp=false
+       H5.DiskCacheFloatOnlyComp=true
+       H5.DiskCacheCompThreshold=2.0
+       H5.DiskCacheCompVarSize=100
 
-2. Add the HDF-EOS5 sinussoidal projection support 
-For the HDF-EOS5 sinusoidal projection, the latitude and longitude are calculated and CF grid projection information is added.
+   (2) Users, who want to use the disk cache for DAS, should also go to the h5.conf file and change the 
+       BES key H5.EnableDiskMetaDataCache to true. The appropriate path that stores the DAS cache file
+       should also be set with the BES key H5.DiskMetaDataCachePath.
+
+2. Add the HDF-EOS5 sinussoidal projection support. 
+   For the HDF-EOS5 sinusoidal projection, the latitude and longitude are calculated and CF grid projection 
+   information is added.
 
 *****************************************************
 ********Special note about the version number********
@@ -72,51 +76,56 @@ What's new for version 2.3.3(Released with Hyrax 1.13.2)
 CF option:
 
 - Add the memory cache support to store  data values of coordinate variables and specific data variables.
-- Updated the support of the fillvalue and the addition of new coordinate variables in the new GPM products.
-- Fixed a bug to identify variables latitude and longitude for SMAP-like products.
+- Update the support of the fillvalue and the addition of new coordinate variables in the new GPM products.
+- Fix a bug to identify variables latitude and longitude for SMAP-like products.
 
 Default option:
 - Add the mapping of root attributes to DAP4. 
 
 Note: 
 
-1) The description of memory cache feature can be found in h5.conf.in under https://github.com/OPENDAP/hdf5_handler.
+1) The description of memory cache feature can be found in h5.conf.in under 
+   https://github.com/OPENDAP/hdf5_handler.
 2) Since Hyrax 1.13.2 is an emergency release, the handler version is not bumped. 
 
 What's new for version 2.3.3(Released with Hyrax 1.13.1)
 ----------------------------
 CF option:
 - HDF5 Scalar dataset reading
-  All atomic HDF5 scalar dataset are supported. In previous versions, only string scalar dataset is supported. 
+  HDF5 scalar datasets with all atomic datatypes are supported. In previous versions, only string scalar 
+  dataset is supported. 
 - Unlimited dimension  
   Now the client that understands the unlimited dimension can correctly retrieve this information. 
 - 0-size attribute 
   0-size attribute will be ignored. This case was not considered in the previous versions.
 - empty array reading
-  Update the way to check if the array index is valid. This will assure that the empty array reading doesn't fail. 
+  Update the way to check if the array index is valid. This will ensure that the empty array reading 
+  doesn't fail. 
 - _FillValue checking
   Both _FillValue range and datatype are checked. 
-  Sometimes the data producers will provide the wrong value and the wrong datatype. In the previous versions,
+  Sometimes the data producers will provide the wrong value and the wrong datatype. 
+  In the previous versions,
   the handler only corrects the datatype if the _FillValue type is not the same as the variable type. 
-
 
 
 What's new for version 2.3.2(Released with Hyrax 1.13.0)
 ----------------------------
 CF option:
 - By default, the leading underscore of a variable path is removed for all files. Although not recommended,
-  Users can change the BES key H5.KeepVarLeadingUnderscore at h5.conf.in to be true for backward compatibility if necessary.
+  Users can change the BES key H5.KeepVarLeadingUnderscore at h5.conf.in to be true for 
+  backward compatibility if necessary.
 
-- Significantly improve the support of generic HDF5 files that have 2-D lat/lon. This improvement makes some SMAP level 1, level 3
-  and level 4 products plot-able by CF tools such as Panoply.
+- Significantly improve the support of generic HDF5 files that have 2-D lat/lon. This improvement makes 
+  some SMAP level 1, level 3 and level 4 products plot-able by CF tools such as Panoply.
 
-- Add the general support of netCDF-4-like HDF5 files that have 2-D lat/lon. This improvement makes TOMS MEaSURES product plot-able
-  by CF tools such as Panoply. It will also support future potential products that follow netCDF generic data model.
+- Add the general support of netCDF-4-like HDF5 files that have 2-D lat/lon. This improvement makes TOMS 
+  MEaSURES product plot-able by CF tools such as Panoply. It will also support future potential products
+  that follow netCDF generic data model.
 
 What's new for version 2.3.1(Released with Hyrax 1.12.2)
 ----------------------------
-There are no new features added in this release. We improved the code quality by fixing
-a potential resource leaking issue and other misc. issues.
+There are no new features added in this release. We improve the code quality by fixing a potential resource
+leaking issue and other misc. issues.
 
 
 What's new for version 2.3.0(Released with Hyrax 1.12.1)
@@ -125,34 +134,44 @@ Default option:
  -  Add the pure DAP4 support.
     a) HDF5 group is mapped to DAP4 group.
     b) HDF5 dimensions that follow netCDF-4 data model are mapped to DAP4 dimensions.
-    c) HDF5 signed 8-bit integer, signed and unsigned 64-bit integers are mapped to correspondng DAP4 datatypes.
+    c) HDF5 signed 8-bit integer, signed and unsigned 64-bit integers are mapped to correspondng DAP4 
+       datatypes.
+
 
  -  Re-implement the data access of DAP structure mapped from an HDF5 compound datatype dataset.
-    a) The nested compound datatype(array or scalar) and the array type inside a compound datatype are supported.
-    b) The base datatype inside an HDF5 compound datatype can contain compound, array datatype and integer,float and string(including variable length string) datatypes. Other HDF5 datatypes are not supported. 
-    c) The base datatype of an array datatype inside an HDF5 compound datatype can be compound datatype and integer, float and string(including variable length string).
+    a) The nested compound datatype(array or scalar) and the array type inside a compound datatype are 
+       supported.
+    b) The base datatype inside an HDF5 compound datatype can contain compound, array datatype and integer,
+       float and string(including variable length string)datatypes. Other HDF5 datatypes are not supported. 
+    c) The base datatype of an array datatype inside an HDF5 compound datatype can be compound datatype 
+       and integer, float and string(including variable length string).
   
- -  Re-implment the data access of a DAP string(array or scalar)  mapped from an HDF5 variable length string dataset.
+ -  Re-implment the data access of a DAP string(array or scalar)mapped from an HDF5 variable length string 
+    dataset.
  -  New enforced limitations
     these limitations were not clearly stated in the previous versions. 
-    a) We don't support the mapping of HDF5 array datatype to DAP except when the array datatype is used inside an HDF5 compound datatype.
-    b) We don't support the mapping of HDF5 compound datatype to DAP when an attribute datatype is an HDF5 compound. Such an HDF5 attribute is ignored in the DAP DAS.
+    a) We don't support the mapping of HDF5 array datatype to DAP except when the array datatype is used 
+       inside an HDF5 compound datatype.
+    b) We don't support the mapping of HDF5 compound datatype to DAP when an attribute datatype is an HDF5 
+       compound. Such an HDF5 attribute is ignored in the DAP DAS.
 CF option: 
  -  Add an option to generate ignored object information from HDF5 to DAP2 mapping.
  -  Add the support of new GPM level 3 products. 
  -  Add the support of OCO-2 products.
- -  Add the support of netCDF-4 classic-like HDF5 files that have 2-D lat/lon. This effectively supports the ASF SeaSat product.
- -  Add the support of generic HDF5 files that have 1-D or 2-D lat/lon. This also generally supports the LP DAAC ASTER GED product.
- -  Fix a few bugs related to _FillValue and duplicate coordiate variables discovered when testing with OMI,GPM and Aquarius products.
-
+ -  Add the support of netCDF-4 classic-like HDF5 files that have 2-D lat/lon. This effectively supports 
+    the ASF SeaSat product.
+ -  Add the support of generic HDF5 files that have 1-D or 2-D lat/lon. This also generally supports the 
+    LP DAAC ASTER GED product.
+ -  Fix a few bugs related to _FillValue and duplicate coordiate variables discovered when testing with 
+    OMI,GPM and Aquarius products.
 
 [Known Issues]
 
   - We found that the file netCDF module still fails to generate a netCDF-4 file when a DAP string array
-  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF4 handler
-  or libdap and BES.
-  The detailed description of this issue can be found in OPeNDAP's trac ticket
-  http://scm.opendap.org/trac/ticket/2189 .
+    is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF5
+    handler or libdap and BES.
+    The detailed description of this issue can be found in OPeNDAP's trac ticket
+    https://opendap.atlassian.net/browse/TRAC-2185.
 
   - We also found that "Get as NetCDF 4" function may not work with hdf5_handler especially when
     you download the entire data on big HDF5 files without subsetting. One reason is that
@@ -177,10 +196,10 @@ For the CF option:
 [Known Issues]
 
   - We found that the file netCDF module still fails to generate a netCDF-4 file when a DAP string array
-  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF4 handler
-  or libdap and BES.
-  The detailed description of this issue can be found in OPeNDAP's trac ticket
-  http://scm.opendap.org/trac/ticket/2189 .
+    is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF5 
+    handler or libdap or BES.
+    The detailed description of this issue can be found in OPeNDAP's trac ticket
+    https://opendap.atlassian.net/browse/TRAC-2185
 
   - We also found that "Get as NetCDF 4" function may not work with hdf5_handler especially when
     you download the entire data on big HDF5 files without subsetting. One reason is that
@@ -191,10 +210,8 @@ For the CF option:
 What's new for version 2.2.2(Hyrax 1.9.7)
 ----------------------------
 For the CF option: 
- -  Improve file I/O by reducing the number of HDF5 file open/close 
-requests. 
- -  Error handling is greatly improved: resources are released properly when 
-errors occur.
+ -  Improve file I/O by reducing the number of HDF5 file open/close requests. 
+ -  Error handling is greatly improved: resources are released properly when errors occur.
 
 For both CF and default options:
  - Some memory leaks detected by valgrind are fixed.
