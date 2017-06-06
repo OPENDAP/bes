@@ -24,6 +24,8 @@
 
 // Tests for the AISResources class.
 
+#include "config.h"
+
 #include <iostream>
 #include <sstream>
 #include <iterator>
@@ -57,6 +59,7 @@
 #include "ScaleGrid.h"
 
 #include "test_config.h"
+#include "test_utils.h"
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -96,65 +99,8 @@ private:
         return fabs(a - b) <= numeric_limits<float>::epsilon();
     }
 
-    /**
-     * @brief Read data from a text file
-     *
-     * Read data from a text file where those values are listed on one or more
-     * lines. Each value is separated by a space, comma, or something that C++'s
-     * istringstream won't confuse with a character that's part of the value.
-     *
-     * Assume the text file starts with a line that should be ignored.
-     *
-     * @param file Name of the input file
-     * @param size Number of values to read
-     * @param dest Chunk of memory with sizeof(T) * size bytes
-     */
-    template<typename T>
-    void read_data_from_file(const string &file, unsigned int size, T *dest)
-    {
-        fstream input(file.c_str(), fstream::in);
-        if (input.eof() || input.fail()) throw Error(string(__FUNCTION__) + ": Could not open data (" + file + ").");
-
-        // Read a line of text to get to the start of the data.
-        string line;
-        getline(input, line);
-        if (input.eof() || input.fail()) throw Error(string(__FUNCTION__) + ": Could not read data.");
-
-        // Get data line by line and load it into 'dest.' Assume that the last line
-        // might not have as many values as the others.
-        getline(input, line);
-        if (input.eof() || input.fail()) throw Error(string(__FUNCTION__) + ": Could not read data.");
-
-        while (!(input.eof() || input.fail())) {
-            DBG(cerr << "line: " << line << endl);
-            istringstream iss(line);
-            while (!iss.eof()) {
-                iss >> (*dest++);
-
-                if (!size--) throw Error(string(__FUNCTION__) + ": Too many values in the data file.");
-            }
-
-            getline(input, line);
-            if (input.bad())   // in the loop we only care about I/O failures, not logical errors like reading EOF.
-                throw Error(string(__FUNCTION__) + ": Could not read data.");
-        }
-    }
-
-    template<typename T>
-    void load_var(Array *var, const string &file, vector<T> &buf)
-    {
-        if (!var) throw Error(string(__FUNCTION__) + ": The Array variable was null.");
-        string data_file = src_dir + "/" + file;
-        read_data_from_file(data_file, buf.size(), &buf[0]);
-        if (!var) throw Error(string(__FUNCTION__) + ": Could not find '" + var->name() + "'.");
-        if (!var->set_value(buf, buf.size()))
-            throw Error(string(__FUNCTION__) + ": Could not set '" + var->name() + "'.");
-        var->set_read_p(true);
-    }
-
 public:
-    ScaleUtilTest() :
-        small_dds(0), src_dir(TEST_SRC_DIR)
+    ScaleUtilTest() : small_dds(0), src_dir(TEST_SRC_DIR)
     {
         src_dir.append("/scale");
         GDALAllRegister();
@@ -162,6 +108,7 @@ public:
 
         orig_err_handler = CPLSetErrorHandler(CPLQuietErrorHandler);
     }
+
     ~ScaleUtilTest()
     {
     }
@@ -175,13 +122,13 @@ public:
             small_dds->parse(dds_file);
 
             vector<dods_float32> lat(x_size);
-            load_var(dynamic_cast<Array*>(small_dds->var("lat")), "small_lat.txt", lat);
+            load_var(dynamic_cast<Array*>(small_dds->var("lat")), src_dir + "/" + "small_lat.txt", lat);
             vector<dods_float32> lon(y_size);
-            load_var(dynamic_cast<Array*>(small_dds->var("lon")), "small_lon.txt", lon);
+            load_var(dynamic_cast<Array*>(small_dds->var("lon")), src_dir + "/" + "small_lon.txt", lon);
 
             vector<dods_float32> data(x_size * y_size);
             Array *a = dynamic_cast<Array*>(small_dds->var("data"));
-            load_var(a, "small_data.txt", data);
+            load_var(a, src_dir + "/" + "small_data.txt", data);
 
             a->get_attr_table().append_attr("missing_value", "String", "-99");
 
@@ -675,7 +622,7 @@ public:
         CPPUNIT_ASSERT(buf_lat == orig_lat);
     }
 
-CPPUNIT_TEST_SUITE( ScaleUtilTest );
+    CPPUNIT_TEST_SUITE( ScaleUtilTest );
 
     CPPUNIT_TEST(test_reading_data);
     CPPUNIT_TEST(test_get_size_box);
@@ -689,8 +636,7 @@ CPPUNIT_TEST_SUITE( ScaleUtilTest );
 
     CPPUNIT_TEST(test_get_gcp_data);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ScaleUtilTest);
