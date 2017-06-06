@@ -1,0 +1,21 @@
+
+$Id$
+
+Updated for version 3.5.1 of the dap server
+
+The www_int (WWW Interface) program is a simple HTML form interface for the
+OPeNDAP server.
+
+History: The original version of www_int was written in Perl by George
+Milkowski. Qi Zhang worked out certain problems with complex datasets. The
+current C++ version was implemented by James Gallagher. Both www_int and the
+`directory hack' were integrated into the basic OPeNDAP servers in the Spring
+of 1999.
+
+COPYRIGHT INFORMATION
+
+  The OPeNDAP www_int software is copyrighted using the GNU GPL. See the
+  file COPYING or contact the Free Software Foundation, Inc., at 59 Temple
+  Place, Suite 330, Boston, MA 02111-1307 USA. Older versions of the software
+  were copyrighted by the University of Rhode Island and Massachusetts
+  Institute of Technology; see the file COPYRIGHT_URI.

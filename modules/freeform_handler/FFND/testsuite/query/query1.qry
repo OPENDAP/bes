@@ -1,0 +1,2 @@
+(([ucvar] % 5) = 0)
+This query excludes all records where ucvar is not evenly divisible by 5.

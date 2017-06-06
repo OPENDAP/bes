@@ -1,0 +1,18 @@
+
+#-----------------------------------------------------------------------#
+# OPeNDAP UgridFunctions Configuration file                                 #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=ugrid_functions
+
+BES.module.ugrid_functions=@bes_modules_dir@/libugrid_functions.so
+

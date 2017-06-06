@@ -1,0 +1,7 @@
+Dataset {
+    Float64 X[nodes = 6];
+    Float64 Y[nodes = 6];
+    Int32 fnca[three = 3][faces = 4];
+    Int32 fvcom_mesh;
+    Float32 twoDnodedata[time = 1][nodes = 6];
+} function_result_ugrid_test_01.nc;

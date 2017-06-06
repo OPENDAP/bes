@@ -1,0 +1,173 @@
+News for version 3.9.7
+
+Updates since 2016-11-02, see the ChangeLog
+
+News for version 3.9.6
+
+Updates since 2016-09-27, see the ChangeLog
+
+News for version 3.9.5
+
+Updates since 2016-05-10, see the ChangeLog
+
+News for version 3.9.4
+
+Updates since 2016-01-26, see the ChangeLog
+
+News for version 3.9.3
+
+Minor updates, see the ChangeLog
+
+News for version 3.9.2
+
+Minor updates, see the ChangeLog
+
+News for version 3.9.1
+
+Minor updates, see the ChangeLog
+
+Version 3.8.8
+
+Minor Updates
+
+Version 3.8.7
+
+Fixed the behavior of BaseType::read() to match libdap 3.12.1
+
+Fixed some of the date() server functions WRT the clang 5 compiler on OSX.
+
+Version 3.8.6
+
+Build fixes.
+
+Version 3.8.5
+
+Test updates.
+
+Version 3.8.3
+
+Build fixes
+
+Version 3.8.2 (14 Sept 2010)
+
+Build fix for the freeform tools.
+
+Version 3.8.1 (5 May 2010)
+
+The handler now implements its own transfer_attributes code to merge
+attributes from its DAS response into the DDS.
+
+There are also handful of build improvements.
+
+version 3.8.0 (2 Feb 2010)
+
+Removed Dejagnu tests and added autotest tests. 
+Made changes to allow for a Shrew build project and added 'cccc' targets
+so that a metric snapshot can be taken.
+ 
+version 3.7.12 (9 June 2009)
+
+Minor fix - fixed broken dejagnu tests, soon to be replaced with autotest
+tests. 
+
+Version 3.7.11 (16 March 2009)
+
+Constraint fixes.
+
+Support for the service interface.
+
+version 3.7.10 (29 Jan 2009)
+
+Bug fixes and updates for the new libdap and bes code.
+
+Version 3.7.9 (26 June 2008)
+
+Minor enhancements and configuration upgrades
+
+Version 3.7.8 (29 Feb 2008)
+
+Updates for bes 3.6.0.
+
+Configuration updates for pkg and rpm builds, libdap and bes checking, and
+pkg configuration.
+
+Version 3.7.7 (14 Nov 2007)
+
+pkg and rpm build fixes
+
+Version 3.7.6 (14 Nov 2007)
+
+Don't edit bes.conf during make install, but document the bes-ff-data.sh
+script and the bes-conf make target in README.
+
+Version 3.7.5 (13 March 2007)
+
+Added automatic configuration of the handler using 'make install.' Now the
+handler is automatically configured in the bes.conf file in the default
+location. Test data are also installed, so after installing this handler
+Hyrax will have data to serve providing an easy way to test your new install
+and to see how the a working bes.conf should look. To use this, make sure
+that you first install the bes, and that dap-server gets intalled too.
+Finally, every time you install or reinstall handlers, make sure to restart
+the BES and OLFS.
+
+Version 3.7.4
+
+Improved error handling.
+
+Comes bundled with test data.
+
+Build fixes.
+
+Version 3.7.3
+
+Updates for the 1.4 release of Server 4. Also included are bug fixes, memory
+leak fixes, and performance enhencements.
+
+Version 3.7.2
+
+Now builds as a libtool module.
+
+The module name is no longer hardcoded.
+
+Version 3.7.1
+
+Fixed a bug (#435) where functions in different handlers with the same names
+clashed when the handlers were loaded as shared object libraries. 
+
+Patrick fixed a problem with the help text.
+
+Version 3.7.0
+
+This version of the FreeForm handler includes an executable for use with
+Server3 and a shared-object library (aka module) for use with Server4. This
+is a source release to support the Server4 1.2 beta release and has not been
+tested with Server3, although there should be no problems.
+
+Version 3.6.1
+
+Fixes for Mac OS/X:
+
+1. A compile-time issue was resolved. With Tiger, configure did not set the
+compile-time symbol FREEFORM to the correct value. This caused the compile to
+fail.
+
+2. Since the Mac is a big-endian machine (well, excpet for the new intel
+macs...) some of the binary data tests failed. I've marked those as expected
+to fail so that the whole suite does not fail beacuse of this.
+
+Note that we are not making binary packages for OS/X, so this will be a source-
+only release. These changes will not affect the Linux distributions. The test
+changes may affect the Solaris dist, but not in an operational way.
+
+Version 3.6.0
+
+Updated rpm spec file using a patch from Patrice Dumas.
+
+Updated the code so that it compiles with libdap 3.6.0.
+
+Version 3.5.0
+
+This version of the FreeForm format handler is essentially the same as the
+previous version (3.4) with the exception that it now builds like the other
+handlers and works with the dap-server 3.5 base software.

@@ -40,194 +40,159 @@
 
 #include "BESFSFile.h"
 
-BESFSFile::BESFSFile(const string &fullPath)
-        : _dirName(""),
-        _fileName(""),
-        _baseName(""),
-        _extension("")
+BESFSFile::BESFSFile(const string &fullPath) :
+    _dirName(""), _fileName(""), _baseName(""), _extension("")
 {
-    breakApart(fullPath) ;
+    breakApart(fullPath);
 }
 
-BESFSFile::BESFSFile(const string &dirName, const string &fileName)
-        : _dirName(dirName),
-        _fileName(fileName),
-        _baseName(""),
-        _extension("")
+BESFSFile::BESFSFile(const string &dirName, const string &fileName) :
+    _dirName(dirName), _fileName(fileName), _baseName(""), _extension("")
 {
-    breakExtension() ;
+    breakExtension();
 }
 
-BESFSFile::BESFSFile(const BESFSFile &copyFrom)
-        : _dirName(copyFrom._dirName),
-        _fileName(copyFrom._fileName),
-        _baseName(copyFrom._baseName),
-        _extension(copyFrom._extension)
-{}
+BESFSFile::BESFSFile(const BESFSFile &copyFrom) :
+    _dirName(copyFrom._dirName), _fileName(copyFrom._fileName), _baseName(copyFrom._baseName), _extension(
+        copyFrom._extension)
+{
+}
 
 BESFSFile::~BESFSFile()
-{}
-
-string
-BESFSFile::getDirName()
 {
-    return _dirName ;
 }
 
-string
-BESFSFile::getFileName()
+string BESFSFile::getDirName()
 {
-    return _fileName ;
+    return _dirName;
 }
 
-string
-BESFSFile::getBaseName()
+string BESFSFile::getFileName()
 {
-    return _baseName ;
+    return _fileName;
 }
 
-string
-BESFSFile::getExtension()
+string BESFSFile::getBaseName()
 {
-    return _extension ;
+    return _baseName;
 }
 
-string
-BESFSFile::getFullPath()
+string BESFSFile::getExtension()
 {
-    return _dirName + "/" + _fileName ;
+    return _extension;
 }
 
-void
-BESFSFile::breakApart(const string &fullPath)
+string BESFSFile::getFullPath()
 {
-    string::size_type pos = fullPath.rfind("/") ;
+    return _dirName + "/" + _fileName;
+}
+
+void BESFSFile::breakApart(const string &fullPath)
+{
+    string::size_type pos = fullPath.rfind("/");
     if (pos != string::npos) {
-        _dirName = fullPath.substr(0, pos) ;
-        _fileName = fullPath.substr(pos + 1, fullPath.length() - pos) ;
+        _dirName = fullPath.substr(0, pos);
+        _fileName = fullPath.substr(pos + 1, fullPath.length() - pos);
     }
     else {
-        _dirName = "./" ;
-        _fileName = fullPath ;
+        _dirName = "./";
+        _fileName = fullPath;
     }
 
-    breakExtension() ;
+    breakExtension();
 }
 
-void
-BESFSFile::breakExtension()
+void BESFSFile::breakExtension()
 {
-    string::size_type pos = _fileName.rfind(".") ;
+    string::size_type pos = _fileName.rfind(".");
     if (pos != string::npos) {
-        _baseName = _fileName.substr(0, pos) ;
-        _extension = _fileName.substr(pos + 1, _fileName.length() - pos) ;
+        _baseName = _fileName.substr(0, pos);
+        _extension = _fileName.substr(pos + 1, _fileName.length() - pos);
     }
     else {
-        _baseName = _fileName ;
+        _baseName = _fileName;
     }
 }
 
-bool
-BESFSFile::exists( string &reason )
+bool BESFSFile::exists(string &reason)
 {
-    bool ret = false ;
-    if( !access( getFullPath().c_str(), F_OK ) )
-    {
-	ret = true ;
+    bool ret = false;
+    if (!access(getFullPath().c_str(), F_OK)) {
+        ret = true;
     }
-    else
-    {
-	char *err = strerror( errno ) ;
-	if( err )
-	{
-	    reason += err ;
-	}
-	else
-	{
-	    reason += "Unknown error" ;
-	}
+    else {
+        char *err = strerror(errno);
+        if (err) {
+            reason += err;
+        }
+        else {
+            reason += "Unknown error";
+        }
     }
-    return ret ;
+    return ret;
 }
 
-bool
-BESFSFile::isReadable( string &reason )
+bool BESFSFile::isReadable(string &reason)
 {
-    bool ret = false ;
-    if( !access( getFullPath().c_str(), R_OK ) )
-    {
-	ret = true ;
+    bool ret = false;
+    if (!access(getFullPath().c_str(), R_OK)) {
+        ret = true;
     }
-    else
-    {
-	char *err = strerror( errno ) ;
-	if( err )
-	{
-	    reason += err ;
-	}
-	else
-	{
-	    reason += "Unknown error" ;
-	}
+    else {
+        char *err = strerror(errno);
+        if (err) {
+            reason += err;
+        }
+        else {
+            reason += "Unknown error";
+        }
     }
-    return ret ;
+    return ret;
 }
 
-bool
-BESFSFile::isWritable( string &reason )
+bool BESFSFile::isWritable(string &reason)
 {
-    bool ret = false ;
-    if( !access( getFullPath().c_str(), W_OK ) )
-    {
-	ret = true ;
+    bool ret = false;
+    if (!access(getFullPath().c_str(), W_OK)) {
+        ret = true;
     }
-    else
-    {
-	char *err = strerror( errno ) ;
-	if( err )
-	{
-	    reason += err ;
-	}
-	else
-	{
-	    reason += "Unknown error" ;
-	}
+    else {
+        char *err = strerror(errno);
+        if (err) {
+            reason += err;
+        }
+        else {
+            reason += "Unknown error";
+        }
     }
-    return ret ;
+    return ret;
 }
 
-bool
-BESFSFile::isExecutable( string &reason )
+bool BESFSFile::isExecutable(string &reason)
 {
-    bool ret = false ;
-    if( !access( getFullPath().c_str(), X_OK ) )
-    {
-	ret = true ;
+    bool ret = false;
+    if (!access(getFullPath().c_str(), X_OK)) {
+        ret = true;
     }
-    else
-    {
-	char *err = strerror( errno ) ;
-	if( err )
-	{
-	    reason += err ;
-	}
-	else
-	{
-	    reason += "Unknown error" ;
-	}
+    else {
+        char *err = strerror(errno);
+        if (err) {
+            reason += err;
+        }
+        else {
+            reason += "Unknown error";
+        }
     }
-    return ret ;
+    return ret;
 }
 
-bool
-BESFSFile::hasDotDot()
+bool BESFSFile::hasDotDot()
 {
-    bool ret = false ;
-    string fp = getFullPath() ;
-    if( fp.find( ".." ) != string::npos )
-    {
-	ret = true ;
+    bool ret = false;
+    string fp = getFullPath();
+    if (fp.find("..") != string::npos) {
+        ret = true;
     }
-    return ret ;
+    return ret;
 }
 

@@ -1,0 +1,16 @@
+The data:
+Structure {
+    Byte byte;
+    UInt16 ui16;
+    Float64 f64;
+    Structure {
+        Int16 i16;
+        UInt32 ui32a[ui32a_dim1 = 2][ui32a_dim2 = 5];
+        String str;
+        Structure {
+            Int32 i32;
+            Float32 f32;
+        } s3;
+    } s2;
+} s1 = { 28, 2048, 10245.1234, { -2048, {{10532, 25524, 40516, 55508, 70500},{85492, 100484, 115476, 130468, 145460}}, "This is a String Value", { -105467, 5.7866 } } };
+

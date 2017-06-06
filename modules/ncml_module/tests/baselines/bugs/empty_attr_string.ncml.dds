@@ -1,0 +1,3 @@
+Dataset {
+    String EmptyVar;
+} empty_attr_string.ncml;

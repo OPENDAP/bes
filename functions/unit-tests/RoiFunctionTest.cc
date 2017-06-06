@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -55,6 +54,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -66,11 +66,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
-class RoiFunctionTest:public TestFixture
-{
+class RoiFunctionTest: public TestFixture {
 private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
@@ -78,24 +76,27 @@ private:
     DDS *float32_array, *float32_2d_array, *float32_array2;
 
 public:
-    RoiFunctionTest(): float32_array(0), float32_2d_array(0), float32_array2(0)
-    {}
+    RoiFunctionTest() :
+        float32_array(0), float32_2d_array(0), float32_array2(0)
+    {
+    }
     ~RoiFunctionTest()
-    {}
+    {
+    }
 
     void setUp()
     {
         try {
             float32_array = new DDS(&btf);
-            float32_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_array.dds");
+            float32_array->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_array.dds");
             DBG2(float32_array->print_xml(stderr, false, "No blob"));
 
             float32_2d_array = new DDS(&btf);
-            float32_2d_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
+            float32_2d_array->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
             DBG2(float32_2d_array->print_xml(stderr, false, "No blob"));
 
             float32_array2 = new DDS(&btf);
-            float32_array2->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_array2.dds");
+            float32_array2->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_array2.dds");
             DBG2(float32_array2->print_xml(stderr, false, "No blob"));
         }
         catch (Error & e) {
@@ -111,7 +112,8 @@ public:
         delete float32_array2;
     }
 
-    void float32_array_test() {
+    void float32_array_test()
+    {
         BaseType *btp = *(float32_array->var_begin());
 
         // It's an array
@@ -137,7 +139,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -165,7 +168,8 @@ public:
         Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
         CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
 
-        oss.str(""); oss.clear();
+        oss.str("");
+        oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
         baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
@@ -173,7 +177,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void float32_2d_array_test() {
+    void float32_2d_array_test()
+    {
         BaseType *btp = *(float32_2d_array->var_begin());
 
         // It's an array
@@ -200,7 +205,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -228,7 +234,8 @@ public:
         Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
         CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
 
-        oss.str(""); oss.clear();
+        oss.str("");
+        oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
         baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline");
@@ -236,7 +243,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void float32_array2_test() {
+    void float32_array2_test()
+    {
         BaseType *btp = *float32_array2->var_begin();
         // It's an array
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
@@ -244,7 +252,7 @@ public:
         Array *a = static_cast<Array*>(btp);
         CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
 
-        btp = *(float32_array2->var_begin()+1);
+        btp = *(float32_array2->var_begin() + 1);
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
         // ... and it's an Float32 array
         Array *b = static_cast<Array*>(btp);
@@ -263,7 +271,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -307,7 +316,8 @@ public:
         CPPUNIT_ASSERT(i == result_struct->var_end());
 
         // Now look at the values of structure that holds the results
-        oss.str(""); oss.clear();
+        oss.str("");
+        oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
         baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline");
@@ -315,26 +325,26 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    CPPUNIT_TEST_SUITE( RoiFunctionTest );
+CPPUNIT_TEST_SUITE( RoiFunctionTest );
 
     CPPUNIT_TEST(float32_array_test);
     CPPUNIT_TEST(float32_2d_array_test);
     CPPUNIT_TEST(float32_array2_test);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RoiFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[])
+{
 
-    GetOpt getopt(argc, argv, "dD");
-    int option_char;
-    while ((option_char = getopt()) != -1)
+    GetOpt getopt(argc, argv, "dDh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -342,21 +352,33 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: RoiFunctionTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = RoiFunctionTest::suite()->getTests();
+            unsigned int prefix_len = RoiFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("functions::RoiFunctionTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = RoiFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

@@ -72,7 +72,7 @@ using std::endl ;
 
 #include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
-#include "BESBasicTransmitter.h"
+#include "BESTransmitter.h"
 
 #include "BESDebug.h"
 
@@ -150,7 +150,7 @@ BESDefaultModule::initialize(int, char**)
     BESResponseHandlerList::TheList()->add_handler( SHOW_ERROR, BESShowErrorResponseHandler::ResponseBuilder ) ;
 
     BESDEBUG( "bes", "    adding " << BASIC_TRANSMITTER << " transmitter" << endl ) ;
-    BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESBasicTransmitter ) ;
+    BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESTransmitter ) ;
 
     BESDEBUG( "bes", "    adding " << BES_TEXT_INFO << " info builder" << endl ) ;
     BESInfoList::TheList()->add_info_builder( BES_TEXT_INFO,

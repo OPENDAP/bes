@@ -34,210 +34,223 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <unistd.h>  // for access
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ostringstream ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostringstream;
 
 #include "BESDebug.h"
 #include "BESError.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
+#include "GetOpt.h"
 
-string DebugArgs ;
+string DebugArgs;
+static bool debug = false;
 
 class debugT: public TestFixture {
 private:
 
 public:
-    debugT() {}
-    ~debugT() {}
+    debugT()
+    {
+    }
+    ~debugT()
+    {
+    }
 
     void setUp()
     {
-	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
-	TheBESKeys::ConfigFile = bes_conf ;
-    } 
+        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+        TheBESKeys::ConfigFile = bes_conf;
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( debugT ) ;
+CPPUNIT_TEST_SUITE( debugT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
-    void compare_debug( string result, string expected )
+    void compare_debug(string result, string expected)
     {
-	if( !expected.empty() )
-	{
-	    string::size_type lb = result.find( "[" ) ;
-	    CPPUNIT_ASSERT( lb != string::npos ) ;
-	    string::size_type rb = result.rfind( "]" ) ;
-	    CPPUNIT_ASSERT( rb != string::npos ) ;
-	    result = result.substr( rb+2 ) ;
-	}
-	CPPUNIT_ASSERT( result == expected ) ;
+        if (!expected.empty()) {
+            string::size_type lb = result.find("[");
+            CPPUNIT_ASSERT(lb != string::npos);
+            string::size_type rb = result.rfind("]");
+            CPPUNIT_ASSERT(rb != string::npos);
+            result = result.substr(rb + 2);
+        }
+        CPPUNIT_ASSERT(result == expected);
     }
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered debugT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered debugT::run" << endl;
 
-	char mypid[12] ;
-	BESUtil::fastpidconverter( mypid, 10 ) ;
+        char mypid[12];
+        BESUtil::fastpidconverter(mypid, 10);
 
-	if( !DebugArgs.empty() )
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "trying " << DebugArgs << endl;
-	    try
-	    {
-		BESDebug::SetUp( DebugArgs ) ;
-	    }
-	    catch( BESError &e )
-	    {
-		cerr << e.get_message() << endl ;
-		CPPUNIT_ASSERT( !"Failed to set up Debug" ) ;
-	    }
-	}
-	else
-	{
-	    try
-	    {
-		cout << "*****************************************" << endl;
-		cout << "Setting up with bad file name /bad/dir/debug" << endl;
-		BESDebug::SetUp( "/bad/dir/debug,nc" ) ;
-		CPPUNIT_ASSERT( !"Successfully set up with bad file" ) ;
-	    }
-	    catch( BESError &e )
-	    {
-		cout << "Unable to set up debug ... good" << endl ;
-		cout << e.get_message() << endl ;
-	    }
+        if (!DebugArgs.empty()) {
+            cout << "*****************************************" << endl;
+            cout << "trying " << DebugArgs << endl;
+            try {
+                BESDebug::SetUp(DebugArgs);
+            }
+            catch (BESError &e) {
+                cerr << e.get_message() << endl;
+                CPPUNIT_ASSERT(!"Failed to set up Debug");
+            }
+        }
+        else {
+            try {
+                cout << "*****************************************" << endl;
+                cout << "Setting up with bad file name /bad/dir/debug" << endl;
+                BESDebug::SetUp("/bad/dir/debug,nc");
+                CPPUNIT_ASSERT(!"Successfully set up with bad file");
+            }
+            catch (BESError &e) {
+                cout << "Unable to set up debug ... good" << endl;
+                cout << e.get_message() << endl;
+            }
 
-	    try
-	    {
-		cout << "*****************************************" << endl;
-		cout << "Setting up myfile.debug,nc,cdf,hdf4" << endl;
-		BESDebug::SetUp( "myfile.debug,nc,cdf,hdf4" ) ;
-		int result = access( "myfile.debug", W_OK|R_OK ) ;
-		CPPUNIT_ASSERT( result != -1 ) ;
-		CPPUNIT_ASSERT( BESDebug::IsSet( "nc" ) ) ;
-		CPPUNIT_ASSERT( BESDebug::IsSet( "cdf" ) ) ;
-		CPPUNIT_ASSERT( BESDebug::IsSet( "hdf4" ) ) ;
+            try {
+                cout << "*****************************************" << endl;
+                cout << "Setting up myfile.debug,nc,cdf,hdf4" << endl;
+                BESDebug::SetUp("myfile.debug,nc,cdf,hdf4");
+                int result = access("myfile.debug", W_OK | R_OK);
+                CPPUNIT_ASSERT(result != -1);
+                CPPUNIT_ASSERT(BESDebug::IsSet("nc"));
+                CPPUNIT_ASSERT(BESDebug::IsSet("cdf"));
+                CPPUNIT_ASSERT(BESDebug::IsSet("hdf4"));
 
-		BESDebug::SetStrm( 0, false ) ;
-		result = remove( "myfile.debug" ) ;
-		CPPUNIT_ASSERT( result != -1 ) ;
-	    }
-	    catch( BESError &e )
-	    {
-		CPPUNIT_ASSERT( !"Unable to set up debug" ) ;
-	    }
+                BESDebug::SetStrm(0, false);
+                result = remove("myfile.debug");
+                CPPUNIT_ASSERT(result != -1);
+            }
+            catch (BESError &e) {
+                CPPUNIT_ASSERT(!"Unable to set up debug");
+            }
 
-	    try
-	    {
-		cout << "*****************************************" << endl;
-		cout << "Setting up cerr,ff,-cdf" << endl;
-		BESDebug::SetUp( "cerr,ff,-cdf" ) ;
-		CPPUNIT_ASSERT( BESDebug::IsSet( "ff" ) ) ;
-		CPPUNIT_ASSERT( !BESDebug::IsSet( "cdf" ) ) ;
-	    }
-	    catch( BESError &e )
-	    {
-		CPPUNIT_ASSERT( !"Unable to set up debug" ) ;
-	    }
+            try {
+                cout << "*****************************************" << endl;
+                cout << "Setting up cerr,ff,-cdf" << endl;
+                BESDebug::SetUp("cerr,ff,-cdf");
+                CPPUNIT_ASSERT(BESDebug::IsSet("ff"));
+                CPPUNIT_ASSERT(!BESDebug::IsSet("cdf"));
+            }
+            catch (BESError &e) {
+                CPPUNIT_ASSERT(!"Unable to set up debug");
+            }
 
-	    cout << "*****************************************" << endl;
-	    cout << "try debugging to nc" << endl;
-	    ostringstream nc ;
-	    BESDebug::SetStrm( &nc, false ) ;
-	    string debug_str = "Testing nc debug" ;
-	    BESDEBUG( "nc", debug_str ) ;
-	    compare_debug( nc.str(), debug_str ) ;
+            cout << "*****************************************" << endl;
+            cout << "try debugging to nc" << endl;
+            ostringstream nc;
+            BESDebug::SetStrm(&nc, false);
+            string debug_str = "Testing nc debug";
+            BESDEBUG("nc", debug_str);
+            compare_debug(nc.str(), debug_str);
 
-	    cout << "*****************************************" << endl;
-	    cout << "try debugging to hdf4" << endl;
-	    ostringstream hdf4 ;
-	    BESDebug::SetStrm( &hdf4, false ) ;
-	    debug_str = "Testing hdf4 debug" ;
-	    BESDEBUG( "hdf4", debug_str ) ;
-	    compare_debug( hdf4.str(), debug_str ) ;
+            cout << "*****************************************" << endl;
+            cout << "try debugging to hdf4" << endl;
+            ostringstream hdf4;
+            BESDebug::SetStrm(&hdf4, false);
+            debug_str = "Testing hdf4 debug";
+            BESDEBUG("hdf4", debug_str);
+            compare_debug(hdf4.str(), debug_str);
 
-	    cout << "*****************************************" << endl;
-	    cout << "try debugging to ff" << endl;
-	    ostringstream ff ;
-	    BESDebug::SetStrm( &ff, false ) ;
-	    debug_str = "Testing ff debug" ;
-	    BESDEBUG( "ff", debug_str ) ;
-	    compare_debug( ff.str(), debug_str ) ;
+            cout << "*****************************************" << endl;
+            cout << "try debugging to ff" << endl;
+            ostringstream ff;
+            BESDebug::SetStrm(&ff, false);
+            debug_str = "Testing ff debug";
+            BESDEBUG("ff", debug_str);
+            compare_debug(ff.str(), debug_str);
 
-	    cout << "*****************************************" << endl;
-	    cout << "turn off ff and try debugging to ff again" << endl;
-	    BESDebug::Set( "ff", false ) ;
-	    CPPUNIT_ASSERT( !BESDebug::IsSet( "ff" ) ) ;
-	    ostringstream ff2 ;
-	    BESDebug::SetStrm( &ff2, false ) ;
-	    debug_str = "" ;
-	    BESDEBUG( "ff", debug_str ) ;
-	    compare_debug( ff2.str(), debug_str ) ;
+            cout << "*****************************************" << endl;
+            cout << "turn off ff and try debugging to ff again" << endl;
+            BESDebug::Set("ff", false);
+            CPPUNIT_ASSERT(!BESDebug::IsSet("ff"));
+            ostringstream ff2;
+            BESDebug::SetStrm(&ff2, false);
+            debug_str = "";
+            BESDEBUG("ff", debug_str);
+            compare_debug(ff2.str(), debug_str);
 
-	    cout << "*****************************************" << endl;
-	    cout << "try debugging to cdf" << endl;
-	    ostringstream cdf ;
-	    BESDebug::SetStrm( &cdf, false ) ;
-	    debug_str = "" ;
-	    BESDEBUG( "cdf", debug_str ) ;
-	    compare_debug( cdf.str(), debug_str ) ;
-	}
+            cout << "*****************************************" << endl;
+            cout << "try debugging to cdf" << endl;
+            ostringstream cdf;
+            BESDebug::SetStrm(&cdf, false);
+            debug_str = "";
+            BESDEBUG("cdf", debug_str);
+            compare_debug(cdf.str(), debug_str);
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "display debug help" << endl;
-	BESDebug::Help( cout ) ;
+        cout << "*****************************************" << endl;
+        cout << "display debug help" << endl;
+        BESDebug::Help(cout);
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from debugT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from debugT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( debugT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION(debugT);
 
-int 
-main( int argC, char **argV )
+int main(int argc, char*argv[])
 {
-    int c = 0 ;
-    while( ( c = getopt( argC, argV, "d:" ) ) != -1 )
-    {
-	switch( c )
-	{
-	    case 'd':
-		DebugArgs = optarg ;
-		break ;
-	    default:
-		cerr << "bad option to debugT" << endl ;
-		cerr << "debugT -d string" << endl ;
-		return 1 ;
-		break ;
-	}
+
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: debugT has the following tests:" << endl;
+            const std::vector<Test*> &tests = debugT::suite()->getTests();
+            unsigned int prefix_len = debugT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = debugT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
     }
 
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
-
-    bool wasSuccessful = runner.run( "", false )  ;
-
-    return wasSuccessful ? 0 : 1 ;
+    return wasSuccessful ? 0 : 1;
 }
 

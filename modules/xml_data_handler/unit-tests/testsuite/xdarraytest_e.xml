@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Array name="e">
+    <Structure name="e">
+        <Int32 name="a"/>
+        <Int32 name="z"/>
+        <Array name="b">
+            <Int32 name="b"/>
+            <dimension size="3"/>
+        </Array>
+        <Array name="c">
+            <Int32 name="c"/>
+            <dimension size="2"/>
+            <dimension size="3"/>
+        </Array>
+    </Structure>
+    <dimension size="4"/>
+    <Structure name="elem">
+        <Int32 name="e_a">
+            <value>17</value>
+        </Int32>
+        <Int32 name="e_z">
+            <value>42</value>
+        </Int32>
+        <Array name="e_b">
+            <Int32 name="e_b"/>
+            <dimension name="e_b_values" size="3"/>
+            <value>0</value>
+            <value>-512</value>
+            <value>-1024</value>
+        </Array>
+        <Array name="e_c">
+            <Int32 name="e_c"/>
+            <dimension name="e_c_1_values" size="2"/>
+            <dimension name="e_c_2_values" size="3"/>
+            <dim number="0" index="0">
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+            </dim>
+            <dim number="0" index="1">
+                <value>0</value>
+                <value>2</value>
+                <value>4</value>
+            </dim>
+        </Array>
+    </Structure>
+    <Structure name="elem">
+        <Int32 name="e_a">
+            <value>17</value>
+        </Int32>
+        <Int32 name="e_z">
+            <value>42</value>
+        </Int32>
+        <Array name="e_b">
+            <Int32 name="e_b"/>
+            <dimension name="e_b_values" size="3"/>
+            <value>0</value>
+            <value>-512</value>
+            <value>-1024</value>
+        </Array>
+        <Array name="e_c">
+            <Int32 name="e_c"/>
+            <dimension name="e_c_1_values" size="2"/>
+            <dimension name="e_c_2_values" size="3"/>
+            <dim number="0" index="0">
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+            </dim>
+            <dim number="0" index="1">
+                <value>0</value>
+                <value>2</value>
+                <value>4</value>
+            </dim>
+        </Array>
+    </Structure>
+    <Structure name="elem">
+        <Int32 name="e_a">
+            <value>17</value>
+        </Int32>
+        <Int32 name="e_z">
+            <value>42</value>
+        </Int32>
+        <Array name="e_b">
+            <Int32 name="e_b"/>
+            <dimension name="e_b_values" size="3"/>
+            <value>0</value>
+            <value>-512</value>
+            <value>-1024</value>
+        </Array>
+        <Array name="e_c">
+            <Int32 name="e_c"/>
+            <dimension name="e_c_1_values" size="2"/>
+            <dimension name="e_c_2_values" size="3"/>
+            <dim number="0" index="0">
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+            </dim>
+            <dim number="0" index="1">
+                <value>0</value>
+                <value>2</value>
+                <value>4</value>
+            </dim>
+        </Array>
+    </Structure>
+    <Structure name="elem">
+        <Int32 name="e_a">
+            <value>17</value>
+        </Int32>
+        <Int32 name="e_z">
+            <value>42</value>
+        </Int32>
+        <Array name="e_b">
+            <Int32 name="e_b"/>
+            <dimension name="e_b_values" size="3"/>
+            <value>0</value>
+            <value>-512</value>
+            <value>-1024</value>
+        </Array>
+        <Array name="e_c">
+            <Int32 name="e_c"/>
+            <dimension name="e_c_1_values" size="2"/>
+            <dimension name="e_c_2_values" size="3"/>
+            <dim number="0" index="0">
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+            </dim>
+            <dim number="0" index="1">
+                <value>0</value>
+                <value>2</value>
+                <value>4</value>
+            </dim>
+        </Array>
+    </Structure>
+</Array>

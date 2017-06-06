@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Structure name="roi_subset">
+<Structure name="roi_subset_unwrap">
     <Array name="a">
         <Float32/>
         <dimension name="a_values" size="30"/>

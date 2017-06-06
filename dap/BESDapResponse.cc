@@ -38,22 +38,21 @@
 
 /** @brief Extract the dap protocol from the setConext information
 
-    This method checks three contexts: dap_explicit_containers, dap_format and
-    xdap_accept.
+ This method checks three contexts: dap_explicit_containers, dap_format and
+ xdap_accept.
 
-    If given, the boolean value of dap_explicit_containers is used. If that's
-    not given then look for dap_format and if that's not given default to
-    true. The OLFS should always send this to make Hyrax work the way DAP
-    clients expect.
+ If given, the boolean value of dap_explicit_containers is used. If that's
+ not given then look for dap_format and if that's not given default to
+ true. The OLFS should always send this to make Hyrax work the way DAP
+ clients expect.
 
-    xdap_accept is the value of the DAP that clients can grok. It defaults to
-    "2.0"
+ xdap_accept is the value of the DAP that clients can grok. It defaults to
+ "2.0"
 
-    @note This value will be passed on to the DDS so that it can correctly
-    build versions of the DDX which are specified by DAP 3.x and 4.x
+ @note This value will be passed on to the DDS so that it can correctly
+ build versions of the DDX which are specified by DAP 3.x and 4.x
  */
-void
-BESDapResponse::read_contexts()
+void BESDapResponse::read_contexts()
 {
     bool found = false;
 
@@ -66,7 +65,7 @@ BESDapResponse::read_contexts()
             d_explicit_containers = false;
         else
             throw BESError("dap_explicit_containers must be yes or no",
-                    BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
+            BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     if (!found) {
@@ -80,34 +79,45 @@ BESDapResponse::read_contexts()
     }
 
     context = BESContextManager::TheManager()->get_context("xdap_accept", found);
-    if (found)
-        d_dap_client_protocol = context;
+    if (found) d_dap_client_protocol = context;
 
     context = BESContextManager::TheManager()->get_context("xml:base", found);
-    if (found)
-        d_request_xml_base = context;
+    if (found) d_request_xml_base = context;
 
 }
 
 /** @brief See get_explicit_containers()
 
-    @see get_explicit_containers()
-    @see get_dap_client_protocol()
-    @deprecated
-    @return true if dap2 format, false otherwise
+ @see get_explicit_containers()
+ @see get_dap_client_protocol()
+ @deprecated
+ @return true if dap2 format, false otherwise
  */
 bool BESDapResponse::is_dap2()
 {
     return !d_explicit_containers;
-#if 0
-    bool found = false;
-    string context = BESContextManager::TheManager()->get_context(
-            "dap_format", found);
-    if (found && (context == "dap2" || context == "2.0")) {
-        return true;
+}
+
+/** @brief set the constraint depending on the context
+ *
+ * If the context is dap2 then the constraint will be the constraint of
+ * the current container. If not dap2 and we have multiple containers
+ * then the constraint of the current container must be added to the
+ * current post constraint
+ *
+ * @param dhi The BESDataHandlerInterface of the request. THis holds the
+ * current container and the current post constraint
+ */
+void BESDapResponse::set_constraint(BESDataHandlerInterface &dhi)
+{
+    if (dhi.container) {
+        if (is_dap2()) {
+            dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+        }
+        else {
+            BESConstraintFuncs::post_append(dhi);
+        }
     }
-    return false;
-#endif
 }
 
 /** @brief set the constraint depending on the context
@@ -120,20 +130,11 @@ bool BESDapResponse::is_dap2()
  * @param dhi The BESDataHandlerInterface of the request. THis holds the
  * current container and the current post constraint
  */
-void
-BESDapResponse::set_constraint( BESDataHandlerInterface &dhi )
+void BESDapResponse::set_dap4_constraint(BESDataHandlerInterface &dhi)
 {
-	if( dhi.container )
-	{
-		if( is_dap2() )
-		{
-			dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint() ;
-		}
-		else
-		{
-			BESConstraintFuncs::post_append( dhi ) ;
-		}
-	}
+    if (dhi.container) {
+        dhi.data[DAP4_CONSTRAINT] = dhi.container->get_dap4_constraint();
+    }
 }
 
 /** @brief set the constraint depending on the context
@@ -146,32 +147,11 @@ BESDapResponse::set_constraint( BESDataHandlerInterface &dhi )
  * @param dhi The BESDataHandlerInterface of the request. THis holds the
  * current container and the current post constraint
  */
-void
-BESDapResponse::set_dap4_constraint( BESDataHandlerInterface &dhi )
+void BESDapResponse::set_dap4_function(BESDataHandlerInterface &dhi)
 {
-	if( dhi.container )
-	{
-        dhi.data[DAP4_CONSTRAINT] = dhi.container->get_dap4_constraint() ;
-	}
-}
-
-/** @brief set the constraint depending on the context
- *
- * If the context is dap2 then the constraint will be the constraint of
- * the current container. If not dap2 and we have multiple containers
- * then the constraint of the current container must be added to the
- * current post constraint
- *
- * @param dhi The BESDataHandlerInterface of the request. THis holds the
- * current container and the current post constraint
- */
-void
-BESDapResponse::set_dap4_function( BESDataHandlerInterface &dhi )
-{
-	if( dhi.container )
-	{
-        dhi.data[DAP4_FUNCTION] = dhi.container->get_dap4_function() ;
-	}
+    if (dhi.container) {
+        dhi.data[DAP4_FUNCTION] = dhi.container->get_dap4_function();
+    }
 }
 
 /** @brief dumps information about this object
@@ -181,11 +161,9 @@ BESDapResponse::set_dap4_function( BESDataHandlerInterface &dhi )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDapResponse::dump( ostream &strm ) const
+void BESDapResponse::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDapResponse::dump - ("
-			     << (void *)this << ")" << endl ;
+    strm << BESIndent::LMarg << "BESDapResponse::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "d_explicit_containers: " << d_explicit_containers << endl;
     strm << BESIndent::LMarg << "d_dap_client_protocol: " << d_dap_client_protocol << endl;

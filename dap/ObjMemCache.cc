@@ -50,7 +50,8 @@ ObjMemCache::~ObjMemCache()
 }
 
 /**
- * @brief Added a DDS to the cache and associate it with a key
+ * @brief Add an object to the cache and associate it with a key
+ *
  * Add the pointer to the cache, purging the cache of the least
  * recently used items if the cache was initialized with a specific
  * threshold value. If not, the caller must take care of calling
@@ -61,16 +62,20 @@ ObjMemCache::~ObjMemCache()
  */
 void ObjMemCache::add(DapObj *obj, const string &key)
 {
-    ++d_count;
+    ++d_age;
 
     // if d_entries_threshold is zero, the caller handles calling
     // purge.
-    if (d_entries_threshold && (d_count > d_entries_threshold))
+    //
+    // Bug fix: was using 'd_age > d_entries_threshold' which didn't
+    // work so I switched to the cache.size(). This is a fix for Hyrax-270.
+    // jhrg 10/21/16
+    if (d_entries_threshold && (cache.size() > d_entries_threshold))
         purge(d_purge_threshold);
 
-    index.insert(index_pair_t(key, d_count));
+    index.insert(index_pair_t(key, d_age));
 
-    cache.insert(cache_pair_t(d_count, new Entry(obj, key)));
+    cache.insert(cache_pair_t(d_age, new Entry(obj, key)));
 }
 
 /**
@@ -115,7 +120,7 @@ DapObj *ObjMemCache::get(const string &key)
 
             // now erase & reinsert the pair
             cache.erase(c);
-            cache.insert(cache_pair_t(++d_count, e));
+            cache.insert(cache_pair_t(++d_age, e));
         }
         else {
             // I'm leaving the test and this exception in because getting
@@ -127,7 +132,7 @@ DapObj *ObjMemCache::get(const string &key)
 
         // update the index
         index.erase(i);
-        index.insert(index_pair_t(key, d_count));
+        index.insert(index_pair_t(key, d_age));
     }
 
     return cached_obj;

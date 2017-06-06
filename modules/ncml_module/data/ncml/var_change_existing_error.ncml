@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  
+  <!-- Trying to change values to existing variable is currently a parse error (unimplemented)-->
+  <variable name="u" shape="5">
+    <values>0 1 2 4 5</values>
+  </variable>
+		  
+</netcdf>

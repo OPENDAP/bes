@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Test that non empty dimension@isVariableLength is an error -->
+  <dimension name="time" length="10" isVariableLength="true"/>
+    
+  <!-- here's the error in shape... -->
+  <variable name="MyFloatArray" type="float" shape="time">
+    <attribute name="Description" type="string">Testing dimension@isVariableLength specification is error</attribute>
+    <values>0.0 1.1 2.22 3.333 4.4444 5.55555 6.666666 7.7777777 8.88888888 9.999999999</values>
+  </variable>
+</netcdf>

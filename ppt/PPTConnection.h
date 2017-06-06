@@ -45,10 +45,11 @@ private:
 	int _timeout;
 	char * _inBuff;
 	int _inBuff_len;
+#if 0
 	int _bytesRead;
+#endif
 
-	PPTConnection() :
-			_timeout(0), _inBuff(0), _inBuff_len(0), _bytesRead(0)
+	PPTConnection() : _timeout(0), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
 	{
 	}
 
@@ -58,8 +59,7 @@ private:
 	virtual void receive(ostream &strm, const /*unsigned*/int len);
 
 protected:
-	PPTConnection(int timeout) :
-			_timeout(timeout), _inBuff(0), _inBuff_len(0), _bytesRead(0)
+	PPTConnection(int timeout) : _timeout(timeout), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
 	{
 	}
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="data/ncml/3B42.001003.5.HDF">
+  <!-- Remove "relError", one of the nested arrays -->
+  <variable name="DATA_GRANULE" type="Structure">
+    <variable name="PlanetaryGrid" type="Structure">
+      <remove name="relError" type="variable"/>
+    </variable>
+  </variable>
+</netcdf>
+

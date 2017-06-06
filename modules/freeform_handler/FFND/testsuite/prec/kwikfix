@@ -1,0 +1,24 @@
+
+newform testprec.in -if prec_l1.afm -of prec_l3.bfm -o asc1bin3.mao
+newform testprec.in -if prec_l1.afm -of prec_l5.bfm -o asc1bin5.mao
+newform testprec.in -if prec_l3.afm -of prec_l1.bfm -o asc3bin1.mao
+newform testprec.in -if prec_l3.afm -of prec_l5.bfm -o asc3bin5.mao
+newform testprec.in -if prec_l5.afm -of prec_l1.bfm -o asc5bin1.mao
+newform testprec.in -if prec_l5.afm -of prec_l3.bfm -o asc5bin3.mao
+newform testprec.in -if prec_l1.afm -of prec_l1.bfm -o sameprec.mao
+
+readfile asc1bin3.mao < readfile.in > asc1bin3.sav
+readfile asc1bin5.mao < readfile.in > asc1bin5.sav
+readfile asc3bin1.mao < readfile.in > asc3bin1.sav
+readfile asc3bin5.mao < readfile.in > asc3bin5.sav
+readfile asc5bin1.mao < readfile.in > asc5bin1.sav
+readfile asc5bin3.mao < readfile.in > asc5bin3.sav
+readfile sameprec.mao < readfile.in > sameprec.sav
+
+diff asc1bin3.sav asc1bin3.sav.old
+diff asc1bin5.sav asc1bin5.sav.old
+diff asc3bin1.sav asc3bin1.sav.old
+diff asc3bin5.sav asc3bin5.sav.old
+diff asc5bin1.sav asc5bin1.sav.old
+diff asc5bin3.sav asc5bin3.sav.old
+diff sameprec.sav sameprec.sav.old

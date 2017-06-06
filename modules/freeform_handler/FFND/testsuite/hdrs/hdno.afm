@@ -1,0 +1,11 @@
+fvar1 1 10 float 2
+fvar2 11 19 float 4
+svar1 25 30 short 0
+svar2 33 38 short 2
+usvar1 43 47 ushort 1
+usvar2 52 56 ushort 3
+lvar1 58 68 long 0
+lvar2 70 80 long 3
+ulvar1 83 92 ulong 4
+ulvar2 95 104 ulong 2
+alpha 106 107 char 0

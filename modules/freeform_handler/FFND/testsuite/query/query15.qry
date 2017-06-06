@@ -1,0 +1,4 @@
+([lvar1] < 0) xor ([lvar2] < 0)
+This query should pull out records where lvar1 is negative or lvar2 is 
+negative, but not both.  This is a test of the exclusive or ("xor" or "x|")
+logical operator.

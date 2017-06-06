@@ -1,0 +1,28 @@
+dbase_input_data	"Made from test.dfm"
+fvar1    1  10  float32 2
+fvar2   11  19  float32 4
+svar1   25  30    int16 0
+svar2   33  38    int16 2
+usvar1  43  47   uint16 1
+usvar2  52  56   uint16 3
+lvar1   58  68    int32 0
+lvar2   70  80    int32 3
+ulvar1  83  92   uint32 4
+ulvar2  95 104   uint32 2
+alpha  106 107     text 0
+EOL    108 109 constant 0
+
+dbase_output_data	"Made from test.dfm"
+fvar1    1  10  float32 2
+fvar2   11  19  float32 4
+svar1   25  30    int16 0
+svar2   33  38    int16 2
+usvar1  43  47   uint16 1
+usvar2  52  56   uint16 3
+lvar1   58  68    int32 0
+lvar2   70  80    int32 3
+ulvar1  83  92   uint32 4
+ulvar2  95 104   uint32 2
+alpha  106 107     text 0
+EOL    108 109 constant 0
+

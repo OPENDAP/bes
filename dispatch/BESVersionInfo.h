@@ -36,10 +36,10 @@
 #include "BESInfo.h"
 
 /** brief represents simple text information in a response object, such as
- * version and help inforamtion.
+ * version and help information.
  *
  * Uses the default add_data and print methods, where the print method, if the
- * response is going to a browser, sets the mime type to text.
+ * response is going to a browser, sets the MIME type to text.
  *
  * @see BESXMLInfo
  * @see BESResponseObject

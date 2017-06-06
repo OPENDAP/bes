@@ -1,0 +1,43 @@
+{
+   GDAL1
+   Memcheck:Leak
+   ...
+   fun:GDALAllRegister
+   ...
+}
+{
+   BES1
+   Memcheck:Leak
+   ...
+   fun:_ZN21BESUncompressManager3C1Ev
+   ...
+}
+{
+   BES2
+   Memcheck:Leak
+   ...
+   fun:_ZN7BESUtil7explodeEcRKSsRSt4listISsSaISsEE
+   ...
+}
+{
+   BES3
+   Memcheck:Leak
+   ...
+   fun:_ZN16BESDefaultModule10initializeEiPPc
+   fun:_ZN13StandAloneApp10initializeEiPPc
+   ...
+}
+{
+   BES4
+   Memcheck:Leak
+   ...
+   fun:_ZN7BESUtil30removeLeadingAndTrailingBlanksERSs
+   ...
+}
+{
+   BES5
+   Memcheck:Leak
+   ...
+   fun:_ZN7BESUtil12assemblePathERKSsS1_b
+   ...
+}

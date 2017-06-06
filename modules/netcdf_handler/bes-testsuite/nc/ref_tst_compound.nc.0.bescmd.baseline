@@ -1,0 +1,9 @@
+Attributes {
+    obs {
+        Byte day 157;
+        Int16 elev -99;
+        Int32 count -99;
+        Float32 relhum -99.0000000;
+        Float64 time -99.00000000000000;
+    }
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_opaque_data.nc">
+    <Dimension name="time" size="5"/>
+    <Byte name="raw_obs">
+        <Dim name="/time"/>
+        <Dim size="11"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>202</Value>
+            <Value>254</Value>
+            <Value>186</Value>
+            <Value>190</Value>
+            <Value>202</Value>
+            <Value>254</Value>
+            <Value>186</Value>
+            <Value>190</Value>
+            <Value>202</Value>
+            <Value>254</Value>
+            <Value>186</Value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFBaseType" type="String">
+            <Value>NC_OPAQUE</Value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFTypeName" type="String">
+            <Value>raw_obs_t</Value>
+        </Attribute>
+    </Byte>
+</Dataset>

@@ -58,7 +58,7 @@ echo pull_status: $pull_status
 if test "$newClone" = "true" -o ! $pull_status = "up-to-date"  -o ! -x "$HOME/deps/bin/bison" 
 then
     echo "(Re)Building hyrax-dependencies (stdout > /dev/null)"
-    (cd $HOME/hyrax-dependencies && make for-travis -j7) > /dev/null
+    (cd $HOME/hyrax-dependencies && make clean && make for-travis -j7) > /dev/null
     echo "Completed hyrax-dependencies build - stdout to /dev/null to save space"
 else
     echo "Using cached hyrax-dependencies."
@@ -72,10 +72,10 @@ fi
 #
 newClone=false
 
-if test ! -f "$HOME/libdap4/Makefile.am"
+if true # test ! -f "$HOME/libdap4/Makefile.am"
 then
     echo "Cloning libdap4..."
-    (cd $HOME && git clone https://github.com/opendap/libdap4)
+    (cd $HOME; rm -rf libdap4; git clone https://github.com/opendap/libdap4)
     echo "Cloned libdap4"
     newClone=true  
 fi     

@@ -1,0 +1,122 @@
+# this file is for testing the "test" files of freeform on the sun 
+date >&trash
+cat trash 
+$TSBIN_DIR/newform >&trash
+cat trash 
+echo ""
+echo "*******************************************************************"
+echo "TESTING TEST DATA: MULTIPLE VARIABLE TYPES ASCII TO BINARY TO ASCII"
+echo "*******************************************************************"
+echo ""
+# Test the test data file ASCII to BINARY to ASCII
+rm testbin.tst
+echo "($TSBIN_DIR/newform test.dat -f test1.fmt -o testbin.tst) "
+($TSBIN_DIR/newform test.dat -f test1.fmt -o testbin.tst) 
+rm testasc.tst
+echo "($TSBIN_DIR/newform testbin.tst -f test2.fmt -o testasc.tst) "
+($TSBIN_DIR/newform testbin.tst -f test2.fmt -o testasc.tst) 
+# differ from test.dat because 0's appear from binary to ascii
+diff testasc.sav testasc.tst > trash
+$TSBAT_DIR/chktrash || exit 3
+echo ""
+echo "*******************************************************************"
+echo "TESTING TEST DATA: MULTIPLE VARIABLE TYPES -- ASCII TO REALIGNED "
+echo "BINARY TO VAR1s BINARY (long and ulong changed to floats) TO"
+echo "REALIGNED VAR1's ASCII (floats converted back to long and ulong)"
+echo "*******************************************************************"
+echo ""
+rm testalgn.bin
+echo "($TSBIN_DIR/newform test.dat -f test3.fmt -o testalgn.bin) "
+($TSBIN_DIR/newform test.dat -f test3.fmt -o testalgn.bin) 
+rm testvar1.bin
+echo "($TSBIN_DIR/newform testalgn.bin -f test4.fmt -o testvar1.bin) "
+($TSBIN_DIR/newform testalgn.bin -f test4.fmt -o testvar1.bin) 
+rm testvar1.dat
+echo "($TSBIN_DIR/newform testvar1.bin -f test5.fmt -o testvar1.dat) "
+($TSBIN_DIR/newform testvar1.bin -f test5.fmt -o testvar1.dat) 
+diff testvar1.dat testvar1.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+rm -f testalgn.bin testvar1.bin testvar1.dat
+echo ""
+echo "*******************************************************************"
+echo "TESTING TEST DATA: HEAD and TAIL"
+echo "*******************************************************************"
+echo ""
+rm head5.tst
+echo "($TSBIN_DIR/newform test.dat -f test6.fmt -c 5 -o head5.tst) "
+($TSBIN_DIR/newform test.dat -f test6.fmt -c 5 -o head5.tst) 
+diff head5.tst head5.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+rm tail5.tst
+echo "($TSBIN_DIR/newform test.dat -f test7.fmt -c -5 -o tail5.tst) "
+($TSBIN_DIR/newform test.dat -f test7.fmt -c -5 -o tail5.tst) 
+diff tail5.tst tail5.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo ""
+echo "*******************************************************************"
+echo "GRATUITOUS HEADER TESTS"
+echo "*******************************************************************"
+echo ""
+rm aeromag.bin
+echo "($TSBIN_DIR/newform aeromag.sav -f aeromaga.fmt -b 1 -o aeromag.bin) "
+($TSBIN_DIR/newform aeromag.sav -f aeromaga.fmt -b 1 -o aeromag.bin) 
+rm aeromag.dat
+echo "($TSBIN_DIR/newform aeromag.bin -f aeromagb.fmt -b 1 -o aeromag.dat) "
+($TSBIN_DIR/newform aeromag.bin -f aeromagb.fmt -b 1 -o aeromag.dat) 
+diff aeromag.dat aeromag.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+rm aeromag.tst
+echo "($TSBIN_DIR/newform aeromag.dat -f aeromaga.fmt -b 1 -o aeromag.tst) "
+($TSBIN_DIR/newform aeromag.dat -f aeromaga.fmt -b 1 -o aeromag.tst) 
+diff aeromag.bin aeromag.tst > trash
+$TSBAT_DIR/chktrash || exit 3
+echo ""
+echo "*******************************************************************"
+echo "EMBEDDED FILE AND RECORD HEADER"
+echo "*******************************************************************"
+echo ""
+rm aeromag.bin
+echo "($TSBIN_DIR/newform aeromag.sav -f aeromaga.fmt -b 1 -o aeromag.bin) "
+($TSBIN_DIR/newform aeromag.sav -f aeromaga.fmt -b 1 -o aeromag.bin) 
+rm aeromag.dat
+echo "($TSBIN_DIR/newform aeromag.bin -f aeromagb.fmt -b 1 -o aeromag.dat) "
+($TSBIN_DIR/newform aeromag.bin -f aeromagb.fmt -b 1 -o aeromag.dat) 
+diff aeromag.dat aeromag.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+rm aeromag.tst
+echo "($TSBIN_DIR/newform aeromag.dat -f aeromaga.fmt -b 1 -o aeromag.tst) "
+($TSBIN_DIR/newform aeromag.dat -f aeromaga.fmt -b 1 -o aeromag.tst) 
+diff aeromag.bin aeromag.tst > trash
+$TSBAT_DIR/chktrash || exit 3
+echo ""
+echo "*******************************************************************"
+echo "SEPARATE FILE AND EMBEDDED RECORD HEADER"
+echo "*******************************************************************"
+echo ""
+rm aeromag1.bin
+echo "($TSBIN_DIR/newform aeromag1.sav -f aeromg1a.fmt -b 1 -o aeromag1.bin) "
+($TSBIN_DIR/newform aeromag1.sav -f aeromg1a.fmt -b 1 -o aeromag1.bin) 
+diff aeromag1.bin aeromag.bin > trash
+$TSBAT_DIR/chktrash || exit 3
+rm aeromag1.dat
+echo "($TSBIN_DIR/newform aeromag1.bin -f aeromagb.fmt -b 1 -o aeromag1.dat) "
+($TSBIN_DIR/newform aeromag1.bin -f aeromagb.fmt -b 1 -o aeromag1.dat) 
+diff aeromag1.dat aeromag.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+echo ""
+echo "*******************************************************************"
+echo "EMBEDDED FILE AND RECORD HEADER TO SEPARATE FILE AND RECORD HEADER"
+echo "*******************************************************************"
+echo ""
+rm temp.bin
+rm septest.hdr
+echo "($TSBIN_DIR/newform aeromag.sav -f aeromags.fmt -b 1 -o temp.bin)"
+$TSBIN_DIR/newform aeromag.sav -f aeromags.fmt -b 1 -o temp.bin
+diff temp.bin sepbin.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+diff septest.hdr sephdr.sav > trash
+$TSBAT_DIR/chktrash || exit 3
+
+echo ""
+echo "***** TEST FILE ASCII TO BINARY TO ASCII WORKED LIKE A CHARM *****"
+echo ""

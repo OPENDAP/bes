@@ -1,0 +1,24 @@
+afm2bfm.o: afm2bfm.c
+avlins.o: avlins.c
+avlfree.o: avlfree.c
+cv_units.o: cv_units.c
+dbevents.o: dbevents.c
+dl_lists.o: dl_lists.c
+eqn_util.o: eqn_util.c
+error.o: error.c
+eval_eqn.o: eval_eqn.c
+ff_utils.o: ff_utils.c
+file2buf.o: file2buf.c
+formlist.o: formlist.c
+freeform.o: freeform.c
+makedbin.o: makedbin.c
+makeform.o: makeform.c
+name_tab.o: name_tab.c
+ndarray.o: ndarray.c
+os_utils.o: os_utils.c
+proclist.o: proclist.c
+setdbin.o: setdbin.c
+showdbin.o: showdbin.c
+newform.o: newform.c
+readfile.o: readfile.c freeform.h
+chkform.o: chkform.c

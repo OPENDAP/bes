@@ -1,0 +1,1 @@
+Message: libdap exception building response: error_code = 1001: Failed to transform data to GeoTiff: GeoTiff responses can consist of two-dimensional variables only; use constraints to reduce the size of Grids as needed.

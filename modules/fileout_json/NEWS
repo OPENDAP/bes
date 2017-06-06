@@ -1,0 +1,40 @@
+News for version 1.0.7
+
+Updates since 2016-11-02, see the ChangeLog
+
+News for version 1.0.6
+
+Updates since 2016-09-08, see the ChangeLog
+
+News for version 1.0.5
+
+Updates since 2016-03-22, see the ChangeLog
+
+News for version 1.0.4
+
+Updates since 2015-12-28, see the ChangeLog
+
+News for version 1.0.3
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.2
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.1
+
+Minor updates, see the ChangeLog
+
+Version 0.9.1
+
+Bug fix
+
+Version 0.9.0
+
+This is the initial version of the handler. It will make to kinds of
+JSON output.
+
+One representation corresponds to the w10n specification developed by
+JPL and one to a representation developed at CSIRO. See the README for
+more information.

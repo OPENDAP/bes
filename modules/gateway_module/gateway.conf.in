@@ -1,0 +1,69 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP Gateway Module Configuration file             		#
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=gateway
+BES.module.gateway=@bes_modules_dir@/libgateway_module.so
+
+#-----------------------------------------------------------------------#
+# Setting the data information
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Gateway module specific parameters
+#-----------------------------------------------------------------------#
+# Gateway.Whitelist - provides a list of URL of the form
+#       protocol://host.domain:port
+# that are allowed to be passed through the gateway module. If none
+# specified, then an error will be thrown during BES initialization. One
+# URL per line, as in the example below.
+#
+# example:
+# Gateway.Whitelist=http://test.opendap.org/opendap
+# Gateway.Whitelist+=http://opendap.rpi.edu/opendap
+#
+Gateway.Whitelist=http://localhost
+
+# Gateway.MimeTypes - provides a list of mappings from data handler
+# module to returned mime types. These are the default types. Please do
+# not erase. One per line, as in these default values.
+#
+# datatype:mimetype
+#
+Gateway.MimeTypes=nc:application/x-netcdf
+Gateway.MimeTypes+=h4:application/x-hdf
+Gateway.MimeTypes+=h5:application/x-hdf5
+
+# Gateway.ProxyProtocol, Gateway.ProxyHost and Gateway.ProxyPort -
+# provides a way to define a proxy server that must be used to make the
+# remote request, and the port to use.
+
+
+#Gateway.ProxyHost=warsaw.wonderproxy.com
+#Gateway.ProxyPort=8080
+#Gateway.ProxyUser=username
+#Gateway.ProxyPassword=password
+#Gateway.ProxyUserPW=username:password
+#Gateway.ProxyAuthType=basic
+
+# Gateway.Cache.dir - defines which directory to use for caching web 
+# resources retrieved by the gateway_module
+
+# Gateway.Cache.prefix - defines the prefix for cache files so that 
+# they will be easily identifiable.
+
+# Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
+
+Gateway.Cache.dir=/tmp
+Gateway.Cache.prefix=gateway_cache
+Gateway.Cache.size=500
+

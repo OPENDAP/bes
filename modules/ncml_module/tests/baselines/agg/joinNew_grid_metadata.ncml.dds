@@ -1,0 +1,11 @@
+Dataset {
+    Grid {
+      Array:
+        UInt32 dsp_band_1[filename = 1][lat = 1024][lon = 1024];
+      Maps:
+        String filename[filename = 1];
+        Float64 lat[1024];
+        Float64 lon[1024];
+    } dsp_band_1;
+    String filename[filename = 1];
+} joinNew_grid_metadata.ncml;

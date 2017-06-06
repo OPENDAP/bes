@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <!-- Autogenerate the array using a negative increment -->
+  <dimension name="time" length="10"/>
+  <variable name="MyAutoDoubleArray" type="double" shape="time">
+    <attribute name="Description" type="string">Testing autogeneration of values with start and increment</attribute>
+    <values start="10.0" increment="-0.2"/>
+  </variable>
+</netcdf>

@@ -26,7 +26,12 @@
 
 #include <iostream>
 
+#include <gdal.h>   // needed for scale_{grid,array}
+
 #include <ServerFunctionsList.h>
+
+#include <BESRequestHandlerList.h>
+
 #include <BESDebug.h>
 
 #include "GeoGridFunction.h"
@@ -45,13 +50,21 @@
 #include "DilateArrayFunction.h"
 #include "RangeFunction.h"
 
+#include "DapFunctionsRequestHandler.h"
+
 #include "DapFunctions.h"
+#include "ScaleGrid.h"
 
 namespace functions {
 
-void DapFunctions::initialize(const string &)
+void DapFunctions::initialize(const string &modname)
 {
     BESDEBUG( "dap_functions", "Initializing DAP Functions:" << endl );
+
+    // Add this module to the Request Handler List so that it can respond
+    // to version and help requests. Note the matching code to remove the
+    // handler from the list in the terminate() method.
+    BESRequestHandlerList::TheList()->add_handler(modname, new DapFunctionsRequestHandler(modname));
 
     libdap::ServerFunctionsList::TheList()->add_function(new GridFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new GeoGridFunction());
@@ -74,12 +87,25 @@ void DapFunctions::initialize(const string &)
 
     libdap::ServerFunctionsList::TheList()->add_function(new RangeFunction());
 
+    libdap::ServerFunctionsList::TheList()->add_function(new ScaleArray());
+    libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
+
+    GDALAllRegister();
+    OGRRegisterAll();
+
+    // What to do with the orig error handler? Pitch it for now. jhrg 10/17/16
+    CPLErrorHandler orig_err_handler = CPLSetErrorHandler(CPLQuietErrorHandler);
+
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
 
-void DapFunctions::terminate(const string &)
+void DapFunctions::terminate(const string &modname)
 {
-    BESDEBUG( "dap_functions", "Removing DAP Functions (this does nothing)." << endl );
+    BESDEBUG( "dap_functions", "Removing DAP Functions." << endl );
+
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
+    if (rh) delete rh;
+
 }
 
 /** @brief dumps information about this object

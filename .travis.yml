@@ -86,7 +86,6 @@ install:
 # removed CPPFLAGS=-I$HOME/deps/include added --with-hdf5... jhrg 9/3/15
 
 before_script:
-  - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
   - export PATH=$HOME/deps/bin:$PATH
   - ./configure --prefix=$HOME/build --with-dependencies=$HOME/deps
@@ -96,10 +95,10 @@ before_script:
 # so we don't want to repeat that here.
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 -k; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7 DISTCHECK_CONFIGURE_FLAGS="--prefix=$HOME/build --with-dependencies=$HOME/deps"; fi
 
-after_failure:
-  - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
-  - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
-  - ls -lh /tmp/${LOG_FILE_TGZ}
-  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
+# after_failure:
+#   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+#   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
+#   - ls -lh /tmp/${LOG_FILE_TGZ}
+#   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@dev1.www.opendap.org:${LOG_FILE_TGZ}

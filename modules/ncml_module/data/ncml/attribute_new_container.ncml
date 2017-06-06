@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf>
+  <attribute name="NewContainer" type="Structure">
+    <attribute name="NewAttr" type="string" value="I am a new attribute in a new container!"/>
+  </attribute>
+</netcdf>

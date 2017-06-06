@@ -1,0 +1,35 @@
+input_eqv
+begin name_equiv
+end name_equiv
+begin constant
+	header_file_name text septest
+end constant
+
+ASCII_input_file_header_separate	"AOFH"
+file_title  1 19 text 0
+
+ASCII_input_record_header_separate	"DORHF"
+flight_line_number                                      1   5 int32 0
+count                                                   6  13 int32 0
+fiducial_number_corresponding_to_first_logical_record  14  22 int32 0
+date_MMDDYY_or_julian_day                              23  30 int32 0
+flight_number                                          31  38 int32 0
+utm_easting_of_first_record                            39  48 float32 0
+utm_northing_of_first_record                           49  58 float32 0
+utm_easting_of_last_record                             59  68 float32 0
+utm_northing_of_last_record                            69  78 float32 0
+blank_padding                                          79 104 text 0
+
+binary_input_data	"BODF"
+flight_line_number            1  4 int32 0
+fiducial_number               5  8 int32 0
+utm_easting_meters            9 12 int32 0
+utm_northing_meters          13 16 int32 0
+mag_total_field_intensity_nT 17 20 int32 0
+mag_residual_field_nT        21 24 int32 0
+alt_radar_meters             25 28 int32 0
+alt_barometric_meters        29 32 int32 0
+blank                        33 37 text 0
+latitude                     38 41 int32 6
+longitude                    42 45 int32 6
+

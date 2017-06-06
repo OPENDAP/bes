@@ -1,0 +1,11 @@
+ASCII_input_data "dt2in"
+inger1   1   3 ARRAY["j" 1 to 5] of int32 0
+inger2  18  20 ARRAY["j" 1 to 5] of int32 0
+reel1   34  42 ARRAY["i" 1 to 4]["j" 1 to 5] of float32 0
+inger3 217 219 ARRAY["j" 1 to 5] of int32 0
+
+ASCII_output_data "dt2out"
+inger1 1   6   ARRAY["j" 1 to 5] of int32  0
+inger2 1   6   ARRAY["j" 1 to 5] of int32  0
+reel1  1   6   ARRAY["i" 1 to 4]["j" 1 to 5] of float32 0
+inger3 1   6   ARRAY["j" 1 to 5] of int32 0

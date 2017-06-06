@@ -1,0 +1,29 @@
+
+// -*- C++ -*-
+// The structure of the input_data section is:
+// variable name, starting column, ending column (ones-based, inclusive),
+// datatype, scaling factor (10^x; Data values are automatically divided by
+// 10^x).
+
+ASCII_input_data "URI_Avhrr"
+year     1 4    int32 0
+month    6 7    int32 0
+day	 9 10   int32 0
+hours    12 13  int32 0
+minutes  15 16  int32 0
+seconds  18 19  int32 0
+DODS_URL 21 93  text  0
+
+// The output_data part of the file is not used by DODS.
+// However, tools like newform use it. 8/13/98 jhrg
+ASCII_output_data	"ASCII_data"
+year     1 4    int32 0
+month    6 7    int32 0
+day	 9 10   int32 0
+hours    12 13  int32 0
+minutes  15 16  int32 0
+seconds  18 19  int32 0
+DODS_URL 21 93  text  0
+
+
+

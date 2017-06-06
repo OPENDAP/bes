@@ -43,6 +43,7 @@
 using std::stringstream;
 using std::endl;
 
+#include "BESUtil.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogUtils.h"
 #include "BESCatalogEntry.h"
@@ -130,6 +131,10 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
                 string error = "You do not have permission to view the node " + use_node;
                 throw BESForbiddenError(error, __FILE__, __LINE__);
             }
+
+            // Now that we are ready to start building the response data we
+            // cancel any pending timeout alarm according to the configuration.
+            BESUtil::conditional_timeout_cancel();
 
             bool dirs_only = false;
             _utils->get_entries(dip, fullnode, use_node, coi, myentry, dirs_only);

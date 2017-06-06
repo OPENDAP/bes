@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A test for a joinNew aggregation on HDF5 data  -->
+
+<netcdf title="Sample joinNew Aggregation on HDF5 Datasets">
+  
+  <aggregation type="joinNew" dimName="file">
+    <variableAgg name="/TestArray"/>
+    <netcdf title="Sample Slice 1" location="data/ncml/agg/float_array_1.h5"/>
+    <netcdf title="Sample Slice 2" location="data/ncml/agg/float_array_2.h5"/>
+  </aggregation>
+  
+</netcdf>

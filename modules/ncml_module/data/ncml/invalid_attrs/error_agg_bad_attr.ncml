@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for attributes in aggregation that aren't in schema -->
+<netcdf>
+  
+<!-- Make sure we catch misspellings and invalid attributes and parse error rather than fail silently later -->
+ <aggregation typee="union" dimensionName="I_am_supposed_to_be_dimName" checkEvery="10" name="I_should_not_be_here" orgName="Nor_I">
+   <netcdf/>
+   <netcdf/>   
+ </aggregation>
+
+</netcdf>

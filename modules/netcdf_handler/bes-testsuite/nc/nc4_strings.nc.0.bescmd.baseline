@@ -1,0 +1,19 @@
+Attributes {
+    lat {
+    }
+    lon {
+    }
+    station {
+        String who "james";
+        String names "site_1", "site_2", "site_3";
+    }
+    scan_line {
+    }
+    codec_name {
+    }
+    NC_GLOBAL {
+        String title "Hyrax/netcdf handler test file 2";
+        Float64 version 1.000000000000000;
+        String description "This file has all of the new netcdf 4 unsigned data types.";
+    }
+}

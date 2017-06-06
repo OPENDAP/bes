@@ -1,0 +1,18 @@
+
+// -*- C++ -*-
+//
+// Test these format and data files using:
+//
+//     ../FFND/newform test0.dat
+//
+// There should be no warnings.
+
+ASCII_file_header "header"
+count 1 2 short 0
+description 4 24 char 0
+
+ASCII_input_data "data"
+value 1 2 short 0
+
+ASCII_output_data "ascii"
+value 1 2 short 0

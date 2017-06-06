@@ -66,6 +66,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -75,15 +76,14 @@ static bool debug = false;
 
 namespace functions {
 
-class CEFunctionsTest: public TestFixture
-{
+class CEFunctionsTest: public TestFixture {
 private:
     DDS *dds;
     TestTypeFactory btf;
     ConstraintEvaluator ce;
 public:
     CEFunctionsTest() :
-            dds(0)
+        dds(0)
     {
     }
     ~CEFunctionsTest()
@@ -553,8 +553,8 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             string new_name = "new_name_for_you_buddy";
             BaseType *sourceVar = dds->var("a");
             DBG(
-                    cerr << "bind_name_test() - Source variable: " << sourceVar->type_name() << " " << sourceVar->name()
-                            << endl);
+                cerr << "bind_name_test() - Source variable: " << sourceVar->type_name() << " " << sourceVar->name()
+                    << endl);
             BaseType *argv[2];
 
             Str *name = new Str("");
@@ -569,8 +569,8 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             function_bind_name_dap2(2, argv, *dds, &result);
 
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap2() returned " << result->type_name() << " "
-                            << result->name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap2() returned " << result->type_name() << " "
+                    << result->name() << endl);
             CPPUNIT_ASSERT(result->name() == new_name);
 
             delete name;
@@ -581,8 +581,8 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             myVar.set_send_p(true);
 
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap2() source variable: " << myVar.type_name() << " "
-                            << myVar.name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap2() source variable: " << myVar.type_name() << " "
+                    << myVar.name() << endl);
 
             new_name = "new_name_for_myVar";
             name = new Str("");
@@ -596,8 +596,8 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
 
             function_bind_name_dap2(2, argv, *dds, &result2);
             DBG(
-                    cerr << "bind_name_test() - function_bind_name_dap4() returned " << result2->type_name() << " "
-                            << result2->name() << endl);
+                cerr << "bind_name_test() - function_bind_name_dap4() returned " << result2->type_name() << " "
+                    << result2->name() << endl);
             CPPUNIT_ASSERT(result2->name() == new_name);
 
             delete name;
@@ -652,9 +652,9 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
 
             Array *resultArray = dynamic_cast<Array*>(result);
             DBG(
-                    cerr
-                            << "make_array_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
-                                    + " dimensions " << endl);
+                cerr
+                    << "make_array_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
+                        + " dimensions " << endl);
 
             CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
 
@@ -663,8 +663,8 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             while (p != resultArray->dim_end()) {
                 CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
                 DBG(
-                        cerr << "make_array_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
-                                << endl);
+                    cerr << "make_array_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
+                        << endl);
                 ++p;
                 i++;
             }
@@ -718,17 +718,17 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
 
             try {
                 DBG(
-                        cerr
-                                << "make_array_test_bad_params() - Calling function_make_dap2_array() with incorrectly typed parameters"
-                                << endl);
+                    cerr
+                        << "make_array_test_bad_params() - Calling function_make_dap2_array() with incorrectly typed parameters"
+                        << endl);
                 BaseType *result = 0;
                 function_make_dap2_array(argc, argv, *dds, &result);
                 CPPUNIT_ASSERT(!result);
             }
             catch (Error &e) {
                 DBG(
-                        cerr << "make_array_test_bad_params() - Caught Expected Error. Message: "
-                                << e.get_error_message() << endl);
+                    cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message()
+                        << endl);
                 CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
             }
 
@@ -807,19 +807,29 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CEFunctionsTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
-    int option_char;
-    while ((option_char = getopt()) != -1)
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: CEFunctionsTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = CEFunctionsTest::suite()->getTests();
+            unsigned int prefix_len = CEFunctionsTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -830,8 +840,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("functions::ugrid::BindTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = CEFunctionsTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

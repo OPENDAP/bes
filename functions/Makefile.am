@@ -6,7 +6,15 @@
 
 AM_CXXFLAGS = 
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign
+
+if DAP_MODULES
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS)
+else
+AM_CPPFLAGS = $(BES_CPPFLAGS) $(GDAL_CFLAGS)
+LIBADD = $(BES_DAP_LIBS) $(GDAL_LDFLAGS)
+endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -20,17 +28,25 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = . unit-tests tests
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=functions
+M_VER=1.1.0
 
-# We use DIST_SUBDIRS because we want swath2grid to be part of the dist.
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+SUBDIRS = . unit-tests tests 
+# geo-functions
+
+# We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
 # However, since we use it we must list all of the subdirs we want; without
 # it, automake will automatically distribute all the stuff in SUBDIRS.
-DIST_SUBDIRS = unit-tests tests swath2grid
+# DIST_SUBDIRS = unit-tests tests
+# geo-functions
 
 if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code
 # until it has tests and supports DAP4
-# SUBDIRS +=  swath2grid 
+# SUBDIRS +=  geo-functions 
 endif
 
 lib_besdir=$(libdir)/bes
@@ -45,7 +61,8 @@ MakeMaskFunction.cc DilateArrayFunction.cc \
 BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc \
 TabularSequence.cc BBoxFunction.cc RoiFunction.cc roi_util.cc \
 BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc \
-RangeFunction.cc functions_util.cc
+RangeFunction.cc functions_util.cc scale_util.cc ScaleGrid.cc \
+DapFunctionsRequestHandler.cc 
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
@@ -54,12 +71,13 @@ MakeMaskFunction.h DilateArrayFunction.h \
 BindNameFunction.h BindShapeFunction.h TabularFunction.h \
 TabularSequence.h BBoxFunction.h RoiFunction.h roi_util.h \
 BBoxUnionFunction.h Odometer.h MaskArrayFunction.h \
-RangeFunction.h functions_util.h
+RangeFunction.h functions_util.h DapFunctionsRequestHandler.h ScaleGrid.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
-libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+# libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 libfunctions_module_la_LDFLAGS = -avoid-version -module 
-libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+# libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libfunctions_module_la_LIBADD = $(LIBADD)
 
 # Don't install the headers for this kind of module.
 pkginclude_HEADERS = $(HDRS) 

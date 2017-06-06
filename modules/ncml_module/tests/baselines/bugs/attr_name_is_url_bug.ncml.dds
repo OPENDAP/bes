@@ -1,0 +1,5 @@
+Dataset {
+    Structure {
+        Int32 time[3];
+    } chlor;
+} attr_name_is_url_bug.ncml;

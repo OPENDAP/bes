@@ -1,0 +1,12 @@
+Dataset {
+    Structure {
+        Structure {
+            Int16 i;
+            Int32 j;
+        } cmp1;
+        Structure {
+            Float32 x;
+            Float64 y;
+        } cmp2;
+    } phony_compound_var;
+} ref_tst_compounds3.nc;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test8.dat">
+    <Sequence name="pathfinder">
+        <Int32 name="year"/>
+        <Int32 name="day"/>
+        <String name="time"/>
+        <String name="DODS_URL"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>000007c4</Value>
+        </Attribute>
+    </Sequence>
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Sequence {
+    Int32 year;
+    Int32 day;
+    String time;
+    String DODS_URL;
+} pathfinder = { 
+0: { 1985, 4, "a", "http://podadg_long" }, 
+1: { 1985, 4, "d", "http: //podfgf" }, 
+2: { 1985, 5, "a", "http://pofdgfst" }, 
+3: { 1995, 5, "d", "poddwr" } };
+

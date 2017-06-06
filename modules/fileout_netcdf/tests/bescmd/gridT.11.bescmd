@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/gridT.dods</setContainer>
+    <define name="d">
+	   <container name="c">
+	       <constraint>gstruct.shot.shot</constraint>
+	   </container>
+    </define>
+    <get type="dods" definition="d" returnAs="netcdf-4"/>
+</request>

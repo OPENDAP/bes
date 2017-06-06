@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_zero_length_array.nc">
+    <Dimension name="lat" size="6"/>
+    <Dimension name="lon" size="5"/>
+    <Dimension name="time" size="0"/>
+    <Int32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>535a6f2c</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>a793a1fc</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="z">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>0.000000000000000</Value>
+            <Value>5000.000000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>1.00000000</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>230409a7</Value>
+        </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Float32>
+    <Float32 name="t">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>85962e3b</Value>
+        </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Float32>
+    <Byte name="pixel">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>2af4c771</Value>
+        </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Byte>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>00000000</Value>
+        </Attribute>
+    </Int32>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <Value>Hyrax/netcdf handler test file 1</Value>
+        </Attribute>
+        <Attribute name="version" type="Float64">
+            <Value>1.000000000000000</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>This file has all of the NC_CLASSIC_MODEL data types.</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Int32 lat[lat = 6] = {0, 10, 20, 30, 40, 50};
+Int32 lon[lon = 5] = {-140, -118, -96, -84, -52};
+Float32 z[lat = 6][lon = 5] = {{10, 10, 10, 10, 10},{10, 10, 10, 10, 10},{10, 10, 10, 10, 10},{10, 10, 10, 10, 10},{10, 10, 10, 10, 10},{10, 10, 10, 10, 10}};
+Float32 t[lat = 6][lon = 5] = {{1, 1, 1, 1, 1},{1, 1, 1, 1, 1},{1, 1, 1, 1, 1},{1, 1, 1, 1, 1},{1, 1, 1, 1, 1},{1, 1, 1, 1, 1}};
+Byte pixel[lat = 6][lon = 5] = {{7, 7, 7, 7, 7},{7, 7, 7, 7, 7},{7, 7, 7, 7, 7},{7, 7, 7, 7, 7},{7, 7, 7, 7, 7},{7, 7, 7, 7, 7}};
+Int32 time[time = 0] = {};
+

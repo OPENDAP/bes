@@ -30,14 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DDS.h>
+
 #include "BESDDSResponseHandler.h"
 #include "BESDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
-//#include "BESDapTransmit.h"
 
 #include "BESDebug.h"
+
+using namespace libdap;
 
 BESDDSResponseHandler::BESDDSResponseHandler(const string &name) :
 		BESResponseHandler(name)
@@ -87,6 +90,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
 	}
 
 	_response = bdds;
+
 	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 

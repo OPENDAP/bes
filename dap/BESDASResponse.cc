@@ -30,35 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DAS.h>
+
 #include "BESDASResponse.h"
+
+using namespace libdap;
+using namespace std;
 
 BESDASResponse::~BESDASResponse()
 {
-    if( _das )
-	delete _das ;
+    if (_das) delete _das;
 }
 
 /** @brief set the container in the DAP response object
  *
  * @param cn name of the current container being operated on
  */
-void
-BESDASResponse::set_container( const string &cn )
+void BESDASResponse::set_container(const string &cn)
 {
-    if( _das && get_explicit_containers() )
-    {
-	_das->container_name( cn ) ;
+    if (_das && get_explicit_containers()) {
+        _das->container_name(cn);
     }
 }
 
 /** @brief clear the container in the DAP response object
  */
-void
-BESDASResponse::clear_container( )
+void BESDASResponse::clear_container()
 {
-    if( _das )
-    {
-	_das->container_name( "" ) ;
+    if (_das) {
+        _das->container_name("");
     }
 }
 
@@ -71,13 +71,12 @@ BESDASResponse::clear_container( )
  */
 void BESDASResponse::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDASResponse::dump - (" << (void *) this
-            << ")" << endl;
+    strm << BESIndent::LMarg << "BESDASResponse::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_das) {
         strm << BESIndent::LMarg << "DAS:" << endl;
         BESIndent::Indent();
-        DapIndent::SetIndent( BESIndent::GetIndent());
+        DapIndent::SetIndent(BESIndent::GetIndent());
         _das->dump(strm);
         DapIndent::Reset();
         BESIndent::UnIndent();

@@ -1,0 +1,11 @@
+Dataset {
+    Int32 x[x = 3];
+    Int32 time[time = 3];
+    Grid {
+      Array:
+        Float32 v[time = 3][x = 3];
+      Maps:
+        Int32 time[time = 3];
+        Int32 x[x = 3];
+    } v;
+} joinExist_scan_ncoords.ncml;

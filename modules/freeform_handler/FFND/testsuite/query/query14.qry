@@ -1,0 +1,4 @@
+not([ucvar] % 5) == 0
+This query excludes all records where ucvar is evenly divisible by 5.
+It should behave identically to query8.qry; this query is just testing the
+logical not ("!") function and the interchangability of "not" and "!".

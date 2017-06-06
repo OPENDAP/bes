@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+  <attribute name="Float64_Invalid" type="Float64"
+	     value="3.33.3e10"/>
+</netcdf>
+

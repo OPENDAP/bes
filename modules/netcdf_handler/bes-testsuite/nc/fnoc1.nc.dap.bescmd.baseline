@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="fnoc1.nc">
+    <Dimension name="lat" size="17"/>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degree North</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>7a46fda5</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="base_time" type="String">
+            <Value>88- 10-00:00:00</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value> FNOC UV wind components from 1988- 10 to 1988- 13.</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time_a</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Float32 lat[lat = 17] = {50, 47.5, 45, 42.5, 40, 37.5, 35, 32.5, 30, 27.5, 25, 22.5, 20, 17.5, 15, 12.5, 10};
+

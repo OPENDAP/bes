@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Rejection test for the case of a Array joinNew aggregation with the new outer dimension map vector explicitly
+ but with more data than datasets.
+-->
+
+<netcdf title="JoinNew on Array with Explicit Map">
+
+   
+  <!-- This is a coordinate variable (map vector), since it's of the form 
+       day(day) where day is the new dimension. 
+       Values are explicit so we can set the type.
+  -->
+  <!-- This is an error since the variable is specified prior to the aggregation
+  so the new dimension does not exist.  Technically this is allowed by NcML 2.2,
+  but we disallow it and require the explicit variables AFTER the aggregation.
+  Placeholders can come before or after, however. -->
+  <variable name="day" type="int" shape="day">
+    <!-- This metadata needs to be in all Grid map vectors if Grid was an aggvar. -->
+    <attribute name="units" type="string" value="days since 2000-1-01 00:00"/>
+    <values>1 30</values>
+  </variable>
+	     
+  <!-- joinNew and form new outer dimension "day" -->
+  <aggregation type="joinNew" dimName="day">
+    <variableAgg name="V"/>
+
+    <netcdf title="Slice 1">
+      <dimension name="sensors" length="3"/>
+      <variable name="V" type="int" shape="sensors">
+	<values>1 2 3</values>
+      </variable>
+    </netcdf>
+
+    <netcdf title="Slice 2">
+      <dimension name="sensors" length="3"/>
+      <variable name="V" type="int" shape="sensors">
+	<values>4 5 6</values>
+      </variable>
+    </netcdf>
+
+  </aggregation>
+
+ 
+</netcdf>

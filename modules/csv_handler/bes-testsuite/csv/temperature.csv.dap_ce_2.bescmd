@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID ="some_unique_value" >
+    <setContainer name="c" space="catalog">/data/temperature.csv</setContainer>
+    <define name="d">
+	<container name="c">
+	   <dap4constraint>Station;latitude</dap4constraint>
+	</container>
+    </define>
+    <get type="dap" definition="d" />
+</request>

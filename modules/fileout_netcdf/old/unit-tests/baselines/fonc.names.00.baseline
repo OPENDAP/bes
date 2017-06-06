@@ -1,0 +1,29 @@
+netcdf namesT {
+dimensions:
+	i_dim = 2 ;
+	j_dim = 3 ;
+variables:
+	int i_dim(i_dim) ;
+		i_dim:fonc_original_name = "i dim" ;
+	float j_dim(j_dim) ;
+		j_dim:fonc_original_name = "j!dim" ;
+	short _order_name__with_chars_(i_dim, j_dim) ;
+		_order_name__with_chars_:fonc_original_name = "/order name/#with^chars&" ;
+	int my_struct.ui_32_ ;
+		my_struct.ui_32_:fonc_original_name = "my&struct.ui(32)" ;
+	float my_struct.f_32_ ;
+		my_struct.f_32_:fonc_original_name = "my&struct.f[32]" ;
+data:
+
+ i_dim = 2, 4 ;
+
+ j_dim = 3.3, 6.6, 9.9 ;
+
+ _order_name__with_chars_ =
+  4, 8, 12,
+  5, 10, 15 ;
+
+ my_struct.ui_32_ = 105467 ;
+
+ my_struct.f_32_ = 5.7866 ;
+}

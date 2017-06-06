@@ -1,0 +1,181 @@
+News for version 1.4.5
+
+Updates since 2017-01-09, see the ChangeLog
+
+News for version 1.4.4
+
+Updates since 2016-09-27, see the ChangeLog
+
+News for version 1.4.3
+
+Updates since 2016-03-09, see the ChangeLog
+
+News for version 1.4.2
+
+Updates since 2015-12-30, see the ChangeLog
+
+News for version 1.4.1
+
+Minor updates, see the ChangeLog
+
+News for version 1.4.0
+
+More response-time reductions - the 1.3 release focused on JoinNew,
+this release introduces performance enhancements for JoinExisting. 
+Caching is employed to drop the response times for JoinExisting 
+aggregations once an initial request is made.
+
+Other fixes are included; The NCML is parser is better behaved.
+See the ChangeLog for a list of bug fixes.
+
+Version 1.3.0 (19 Sept 2015)
+
+This version specializes the serialization of values - normally
+handled by libdap - so that the results of large aggregations are
+streamed back to clients as soon as any data are available. This
+typically means as soon as the first 'granule' is read. This change
+drops response latency significantly, often to a fraction of a second.
+
+This version also frees memory for serialized data as soon as
+possible, dramatically lowering the memory footprint of the server for
+aggregations.
+
+Version 1.2.4 (22 April 2014)
+
+Bug fixes for clang vs gnu compilation 
+
+Version 1.2.3 (10 September 2013)
+
+Merged code with Hyrax 1.8 changes and repaired tests.
+
+Version 1.2.2
+
+Build fix for CentOS 6.
+
+Version 1.2.1
+
+Fixes for Grids so that their Map vectors now appear as top-level
+variables to mimic the 'shared dimensions' hack used to make older
+netcdf-based clients work.
+
+Added a new configuration parameter to address the question about just 
+what to do with top-level (global) attributes. The parameter is named
+NCML.GlobalAttributesContainerName and if present and set to a value, 
+a container of that name will be used to hold all of the top-level attributes.
+
+Version 1.2.0
+
+A know bug exists for attributes defined at the top-level (i.e., right
+after the <netcdf> element) for JoinExisting and Union aggregations.
+Since we don't know if they should be included in the NC_GLOBAL
+container or not, they are currently elided from the aggregation. Also
+Note: Now global attributes appear in a NC_GLOBAL container, unless
+the client requests a DAP4 response. Because of this change 12 tests
+fail: 354 356 359 361 369 371 373 375 561 563 566 568
+
+-----------------------------------------------------------------------
+Version 1.1.0 (13 September 2010)
+  
+  * Initial implementation of joinExisting aggregation:
+
+    o Requires use of <netcdf> (or <scan>) "ncoords" attribute to
+      indicate granule join dimension cardinality since granule DDS is
+      not (yet) loaded from disk.
+
+    o Extends NcML 2.2 to allow <scan> element to contain ncoords
+      attribute that is implicitly inherited by every dataset granule
+      that matches the scan criteria.  Used to allow scan to be used
+      in joinExisting aggregation where all granules have the same
+      outer dimension size.
+
+-----------------------------------------------------------------------
+Version 1.0.3 (9 July 2010)
+  
+  * Optimization of joinNew aggregations on Array variables.
+
+  * Several new tests added to testsuite.
+
+-----------------------------------------------------------------------
+Version 1.0.2 (4 May 2010)
+ 
+  * Fixes for outdated test baselines after changes to hdf4_handler's
+    handling of shared dimension attributes.
+
+  * Changes to allow automatic RPM building and other minor configure
+    issues
+ 
+-----------------------------------------------------------------------
+Version 1.0.1 (8 Apr 2010)
+ 
+  * Removed International Components for Unicode sub-distribution.  It
+    is now an external dependency that the user must install from RPM
+    (Linux) or from source prior to building or installing the
+    ncml_module.
+
+  * Bug fix for attributes and variables of the same fully qualified
+    name being created, which is illegal in DAP2.  Now a parse error
+    not unknown exception if attempted.
+
+-----------------------------------------------------------------------
+Version 1.0.0 (5 Feb 2010)
+
+  * Aggregations: 
+    
+    * Added initial support for two NcML 2.2 aggregations: "union" and
+      "joinNew".  (Support for "joinExisting and "fmrc" aggregations
+      are planned to be added in future releases of the module).  This
+      includes the ability to scan directories for files in the
+      aggregation using suffixes, regular expressions, and also to
+      parse SimpleDateFormat patterns in a filename into ISO 8601 date
+      coordinates.
+
+    * A subproject dependency on International Components for Unicode
+     (ICU) version 4.2.1 was added to the module for allowing
+     SimpleDateFormat parses in the scan@dateFormatMark attribute.
+     This subproject will be installed in a "hyrax_icu" subdir of the
+     given configure prefix location for the install.  We do not
+     overwrite or use any existing ICU installations on the machine.
+
+  * OtherXML and XML Namespaces
+
+    * Added support for attributes of special DAP type "OtherXML" to
+      the module.  This extension to NcML 2.2 allows authors to
+      specify arbitrary XML trees as an attribute which will be
+      embedded into the DDX response.  This allows injection of
+      XML-based metadata to existing datasets for further processing.
+
+    * Added initial support for handling XML namespaces.
+      Additionally, "OtherXML" subtrees will now have any existing
+      namespaces defined within ancestor NcML elements added into
+      their root element to allow the subtree to be encapsulated with
+      all defined namespaces in scope.
+ 
+-----------------------------------------------------------------------
+Version 0.9.1 (20 Aug 2009)
+
+ * Added functionality to remove and rename variables in an existing
+   (wrapped) dataset using <remove> and variable@orgName in the proper
+   context.
+
+ * Added functionality to add new variables to an existing dataset or
+   to create a purely virtual dataset (no netcdf@location specified to
+   load).  New variables can be scalars of basic types, a Structure
+   consisting of other variables, or an array (N-dimensional) of basic
+   types.
+
+ * Added ability to use <dimension> element to specify named
+   dimensions in a variable@shape.  These are not shared, but simply
+   refer to the dimension@length for the specified dimension.
+
+ * New $srcdir/tests Autotest framework testbed.  Removed dependency
+   on DejaGNU.
+
+-----------------------------------------------------------------------
+Version 0.9.0 (27 Jul 2009)
+
+Initial internal alpha release.  Functionality for adding, changing, removing metadata (attributes).
+
+-----------------------------------------------------------------------
+Version 0.0.1 (01 Jan 2009)
+
+Initial example module creation.

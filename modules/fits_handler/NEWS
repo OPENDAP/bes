@@ -1,0 +1,96 @@
+News for version 1.0.19
+
+Updates since 2016-11-02, see the ChangeLog
+
+News for version 1.0.18
+
+Updates since 2016-09-27, see the ChangeLog
+
+News for version 1.0.17
+
+Updates since 2016-01-26, see the ChangeLog
+
+News for version 1.0.16
+
+Updates since 2015-12-28, see the ChangeLog
+
+News for version 1.0.15
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.14
+
+Minor updates, see the ChangeLog
+
+News for version 1.0.13
+
+Minor updates, see the ChangeLog
+
+version 1.0.11
+
+Bug fixes.
+
+version 1.0.10
+
+Bug fixes.
+
+Fixed a memory bug in the build of the DDS.
+
+version 1.0.9
+
+Added tests.
+
+Fixed a memory bug in the build of the DDS.
+
+Version 1.0.8
+
+Fixed tests and the way attributes are built.
+
+Version 1.0.7
+
+This is the first version of the handler that has been part of the
+standard Hyrax release set.
+
+Build fixes.
+
+Version 1.0.6
+
+Updates in line with libdap 3.11.x and bes 3.9.x
+
+Version 1.0.5
+
+Updates in line with libdap 3.10.x and bes 3.8.x
+
+Version 1.0.4
+
+Updates in line with libdap 3.9.x and bes 3.7.x
+
+Version 1.0.3
+
+Updates in line with libdap 3.8.0 and bes 3.6.0
+
+New pkg build for OSX that is automated using PackageMaker and DropDMG.
+
+testsuite added for make check to test the installation.
+
+Version 1.0.2
+
+Updates in line with libdap 3.7.10 and bes 3.5.3
+
+Version 1.0.1
+
+Updates in line with libdap 3.7.4 and bes 3.3.1
+
+Version 1.0.0
+
+This version of the Fits handler includes an executable for use with
+Server3 and a shared-object library (aka module) for use with Server4. This
+is a source release to support the Server4 1.2 beta release and has not been
+tested with Server3, although there should be no problems.
+
+This version also builds an executable for use with Server3 using Server4
+BES code. This executable is not installed.
+
+This software has been built using gcc 3.2.3 and gcc 4.0.1. It requires the
+user of autoconf 2.59 or newer and was built using automake 1.9.6.
+

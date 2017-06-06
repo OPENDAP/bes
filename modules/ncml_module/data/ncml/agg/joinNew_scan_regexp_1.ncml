@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="Test example of joinNew Grid aggregation using the scan element with a regexp">
+  
+  <aggregation type="joinNew" dimName="filename">
+    <variableAgg name="dsp_band_1"/> 
+    <!-- Scan from the top for files in a grids subdir and ending in .hdf
+      This should match the same set as before to simplify tests. 
+      We are matching on a path that ends in grids and has a suffix of hdf. -->
+    <scan 
+       location="data/" 
+       subdirs="true" 
+       regExp="^.*/grids/.+\.hdf$"
+       />
+    <!-- The scan should effectively return the following list -->
+    <!-- 
+    <netcdf location="data/ncml/agg/grids/f97182070958.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97182183448.hdf"/> 
+    <netcdf location="data/ncml/agg/grids/f97183065853.hdf"/>  
+    <netcdf location="data/ncml/agg/grids/f97183182355.hdf"/> 
+    -->
+  </aggregation> 
+  
+</netcdf>

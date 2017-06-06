@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -53,6 +52,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -64,11 +64,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
-class TabularFunctionTest:public TestFixture
-{
+class TabularFunctionTest: public TestFixture {
 private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
@@ -78,32 +76,35 @@ private:
     DDS *four_var_mixed;
 
 public:
-    TabularFunctionTest(): one_var_dds(0), one_var_2_dds(0), four_var_dds(0), four_var_2_dds(0), four_var_mixed(0)
-    {}
+    TabularFunctionTest() :
+        one_var_dds(0), one_var_2_dds(0), four_var_dds(0), four_var_2_dds(0), four_var_mixed(0)
+    {
+    }
     ~TabularFunctionTest()
-    {}
+    {
+    }
 
     void setUp()
     {
         try {
             one_var_dds = new DDS(&btf);
-            one_var_dds->parse((string)TEST_SRC_DIR + "/tabular/one_var.dds");
+            one_var_dds->parse((string) TEST_SRC_DIR + "/tabular/one_var.dds");
             DBG2(one_var_dds->print_xml(stderr, false, "No blob"));
 
             one_var_2_dds = new DDS(&btf);
-            one_var_2_dds->parse((string)TEST_SRC_DIR + "/tabular/one_var_2.dds");
+            one_var_2_dds->parse((string) TEST_SRC_DIR + "/tabular/one_var_2.dds");
             DBG2(one_var_2_dds->print_xml(stderr, false, "No blob"));
 
             four_var_dds = new DDS(&btf);
-            four_var_dds->parse((string)TEST_SRC_DIR + "/tabular/four_var.dds");
+            four_var_dds->parse((string) TEST_SRC_DIR + "/tabular/four_var.dds");
             DBG2(four_var_dds->print_xml(stderr, false, "No blob"));
 
             four_var_2_dds = new DDS(&btf);
-            four_var_2_dds->parse((string)TEST_SRC_DIR + "/tabular/four_var_2.dds");
+            four_var_2_dds->parse((string) TEST_SRC_DIR + "/tabular/four_var_2.dds");
             DBG2(four_var_2_dds->print_xml(stderr, false, "No blob"));
 
             four_var_mixed = new DDS(&btf);
-            four_var_mixed->parse((string)TEST_SRC_DIR + "/tabular/four_var_mixed.dds");
+            four_var_mixed->parse((string) TEST_SRC_DIR + "/tabular/four_var_mixed.dds");
             DBG2(four_var_mixed->print_xml(stderr, false, "No blob"));
         }
 
@@ -121,7 +122,8 @@ public:
         delete four_var_2_dds;
     }
 
-    void one_var_test() {
+    void one_var_test()
+    {
         // we know there's just one variable
         BaseType *btp = *(one_var_dds->var_begin());
 
@@ -160,7 +162,8 @@ public:
         }
     }
 
-    void one_var_2_test() {
+    void one_var_2_test()
+    {
         // we know there's just one variable
         BaseType *btp = *(one_var_2_dds->var_begin());
 
@@ -199,22 +202,24 @@ public:
         }
     }
 
-    void compute_array_shape_test() {
+    void compute_array_shape_test()
+    {
         BaseType *btp = *(four_var_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
+        vector<unsigned long> shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 1);
         CPPUNIT_ASSERT(shape[0] == 4);
     }
 
-    void compute_array_shape_test_2() {
+    void compute_array_shape_test_2()
+    {
         BaseType *btp = *(four_var_2_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
+        vector<unsigned long> shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 2);
@@ -222,12 +227,13 @@ public:
         CPPUNIT_ASSERT(shape[1] == 2);
     }
 
-    void array_shape_matches_test() {
+    void array_shape_matches_test()
+    {
         //(Array *a, vector<unsigned long> shape)
         BaseType *btp = *(four_var_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
+        vector<unsigned long> shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 1);
@@ -241,12 +247,13 @@ public:
         CPPUNIT_ASSERT(TabularFunction::shape_matches(static_cast<Array*>(btp), shape));
     }
 
-    void array_shape_matches_test_2() {
+    void array_shape_matches_test_2()
+    {
         //(Array *a, vector<unsigned long> shape)
         BaseType *btp = *(four_var_2_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
+        vector<unsigned long> shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 2);
@@ -261,7 +268,8 @@ public:
         CPPUNIT_ASSERT(TabularFunction::shape_matches(static_cast<Array*>(btp), shape));
     }
 
-    void build_sequence_values_test() {
+    void build_sequence_values_test()
+    {
         DBG(cerr << "Starting build_sequence_values_test..." << endl);
 
         vector<Array*> arrays;
@@ -306,22 +314,22 @@ public:
                 switch (row->at(j)->type()) {
                 case dods_byte_c: {
                     dods_byte v = static_cast<Byte*>(row->at(j))->value();
-                    DBG(cerr << "b("<<i<<","<<j<<"): " << v << endl);
+                    DBG(cerr << "b(" << i << "," << j << "): " << v << endl);
                     break;
                 }
                 case dods_int32_c: {
                     dods_int32 v = static_cast<Int32*>(row->at(j))->value();
-                    DBG(cerr << "i("<<i<<","<<j<<"): " << v << endl);
-                   break;
+                    DBG(cerr << "i(" << i << "," << j << "): " << v << endl);
+                    break;
                 }
                 case dods_float32_c: {
                     dods_float32 f = static_cast<Float32*>(row->at(j))->value();
-                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    DBG(cerr << "f(" << i << "," << j << "): " << f << endl);
                     break;
                 }
                 case dods_float64_c: {
                     dods_float64 f = static_cast<Float64*>(row->at(j))->value();
-                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    DBG(cerr << "f(" << i << "," << j << "): " << f << endl);
                     break;
                 }
                 default:
@@ -345,7 +353,8 @@ public:
     // Test the simple case where the shape of the indep and dep vars are the same.
     // Normally the function is not used in that case, but we're testing it for
     // completeness' sake.
-    void combine_sequence_values_test_1() {
+    void combine_sequence_values_test_1()
+    {
         DBG(cerr << "Starting combine_sequence_values_test_1 ..." << endl);
 
         vector<Array*> arrays;
@@ -395,22 +404,22 @@ public:
                 switch (row->at(j)->type()) {
                 case dods_byte_c: {
                     dods_byte v = static_cast<Byte*>(row->at(j))->value();
-                    DBG(cerr << "b("<<i<<","<<j<<"): " << v << endl);
+                    DBG(cerr << "b(" << i << "," << j << "): " << v << endl);
                     break;
                 }
                 case dods_int32_c: {
                     dods_int32 v = static_cast<Int32*>(row->at(j))->value();
-                    DBG(cerr << "i("<<i<<","<<j<<"): " << v << endl);
-                   break;
+                    DBG(cerr << "i(" << i << "," << j << "): " << v << endl);
+                    break;
                 }
                 case dods_float32_c: {
                     dods_float32 f = static_cast<Float32*>(row->at(j))->value();
-                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    DBG(cerr << "f(" << i << "," << j << "): " << f << endl);
                     break;
                 }
                 case dods_float64_c: {
                     dods_float64 f = static_cast<Float64*>(row->at(j))->value();
-                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    DBG(cerr << "f(" << i << "," << j << "): " << f << endl);
                     break;
                 }
                 default:
@@ -429,7 +438,8 @@ public:
         }
     }
 
-    void combine_sequence_values_test_2() {
+    void combine_sequence_values_test_2()
+    {
         DBG(cerr << "Starting combine_sequence_values_test_2 ..." << endl);
 
         vector<Array*> arrays;
@@ -479,22 +489,22 @@ public:
                 switch (row->at(j)->type()) {
                 case dods_byte_c: {
                     dods_byte v = static_cast<Byte*>(row->at(j))->value();
-                    DBG(cerr << "b("<<i<<","<<j<<"): " << v << endl);
+                    DBG(cerr << "b(" << i << "," << j << "): " << v << endl);
                     break;
                 }
                 case dods_int32_c: {
                     dods_int32 v = static_cast<Int32*>(row->at(j))->value();
-                    DBG(cerr << "i("<<i<<","<<j<<"): " << v << endl);
-                   break;
+                    DBG(cerr << "i(" << i << "," << j << "): " << v << endl);
+                    break;
                 }
                 case dods_float32_c: {
                     dods_float32 f = static_cast<Float32*>(row->at(j))->value();
-                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    DBG(cerr << "f(" << i << "," << j << "): " << f << endl);
                     break;
                 }
                 case dods_float64_c: {
                     dods_float64 f = static_cast<Float64*>(row->at(j))->value();
-                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    DBG(cerr << "f(" << i << "," << j << "): " << f << endl);
                     break;
                 }
                 default:
@@ -514,7 +524,8 @@ public:
         }
     }
 
-    void add_index_columns_test() {
+    void add_index_columns_test()
+    {
         DBG(cerr << "Starting add_index_columns_test ..." << endl);
 
         vector<Array*> arrays;
@@ -560,7 +571,8 @@ public:
         CPPUNIT_ASSERT(synth.at(7) == 3);
     }
 
-    void four_var_test() {
+    void four_var_test()
+    {
         // There are four arrays of varying types, each with four elements
         vector<BaseType*> arrays;
         for (DDS::Vars_iter i = four_var_dds->var_begin(), e = four_var_dds->var_end(); i != e; ++i) {
@@ -585,7 +597,7 @@ public:
         Sequence *s = static_cast<Sequence*>(result);
 
         // Number of columns is the number of arrays
-        CPPUNIT_ASSERT((vector<BaseType*>::size_type)distance(s->var_begin(), s->var_end()) == arrays.size());
+        CPPUNIT_ASSERT((vector<BaseType*>::size_type )distance(s->var_begin(), s->var_end()) == arrays.size());
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
@@ -598,22 +610,26 @@ public:
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {
                 case dods_byte_c:
-                    DBG(cerr << ": " << (int)static_cast<Byte&>(*btp).value());
+                    DBG(cerr << ": " << (int )static_cast<Byte&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Byte&>(*btp).value() == 255);
 
                     break;
                 case dods_int32_c:
-                    DBG(cerr << ": " << static_cast<Int32&>(*btp).value());
+                    DBG(cerr << ": " << static_cast<Int32&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Int32&>(*btp).value() == 123456789);
 
                     break;
                 case dods_float32_c:
-                    DBG(cerr << ": " << static_cast<Float32&>(*btp).value());
-                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float)99.999);
+                    DBG(cerr << ": " << static_cast<Float32&>(*btp).value())
+                    ;
+                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float )99.999);
 
                     break;
                 case dods_float64_c:
-                    DBG(cerr << ": " << static_cast<Float64&>(*btp).value());
+                    DBG(cerr << ": " << static_cast<Float64&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Float64&>(*btp).value() == 99.999);
 
                     break;
@@ -625,7 +641,8 @@ public:
         }
     }
 
-    void four_var_2_test() {
+    void four_var_2_test()
+    {
         // There are four arrays of varying types, each with four elements
         vector<BaseType*> arrays;
         for (DDS::Vars_iter i = four_var_2_dds->var_begin(), e = four_var_2_dds->var_end(); i != e; ++i) {
@@ -650,7 +667,7 @@ public:
         Sequence *s = static_cast<Sequence*>(result);
 
         // Number of columns is the number of arrays; just being pedantic with the cast..
-        CPPUNIT_ASSERT((vector<BaseType*>::size_type)distance(s->var_begin(), s->var_end()) == arrays.size());
+        CPPUNIT_ASSERT((vector<BaseType*>::size_type )distance(s->var_begin(), s->var_end()) == arrays.size());
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
@@ -663,22 +680,26 @@ public:
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {
                 case dods_byte_c:
-                    DBG(cerr << ": " << (int)static_cast<Byte&>(*btp).value());
+                    DBG(cerr << ": " << (int )static_cast<Byte&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Byte&>(*btp).value() == 255);
 
                     break;
                 case dods_int32_c:
-                    DBG(cerr << ": " << static_cast<Int32&>(*btp).value());
+                    DBG(cerr << ": " << static_cast<Int32&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Int32&>(*btp).value() == 123456789);
 
                     break;
                 case dods_float32_c:
-                    DBG(cerr << ": " << static_cast<Float32&>(*btp).value());
-                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float)99.999);
+                    DBG(cerr << ": " << static_cast<Float32&>(*btp).value())
+                    ;
+                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float )99.999);
 
                     break;
                 case dods_float64_c:
-                    DBG(cerr << ": " << static_cast<Float64&>(*btp).value());
+                    DBG(cerr << ": " << static_cast<Float64&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Float64&>(*btp).value() == 99.999);
 
                     break;
@@ -691,7 +712,8 @@ public:
     }
 
     // This test uses the four_var_mixed DDS, but it only passes the first three vars to the tabular() function
-    void four_var_mixed_test_1() {
+    void four_var_mixed_test_1()
+    {
         DBG(cerr << "Starting four_var_mixed_test ..." << endl);
 
         vector<BaseType*> arrays;
@@ -715,7 +737,7 @@ public:
         // Number of columns is the number of arrays; just being pedantic with the cast..
         // Note that because the single dep var is one dimension bigger than the independent
         // variables, an extra column has been added to the result.
-        CPPUNIT_ASSERT((vector<BaseType*>::size_type)distance(s->var_begin(), s->var_end()) == arrays.size() + 1);
+        CPPUNIT_ASSERT((vector<BaseType*>::size_type )distance(s->var_begin(), s->var_end()) == arrays.size() + 1);
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
@@ -728,27 +750,32 @@ public:
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {
                 case dods_byte_c:
-                    DBG(cerr << " b: " << (int)static_cast<Byte&>(*btp).value());
+                    DBG(cerr << " b: " << (int )static_cast<Byte&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Byte&>(*btp).value() == 255);
                     break;
 
                 case dods_int32_c:
-                    DBG(cerr << " i: " << static_cast<Int32&>(*btp).value());
+                    DBG(cerr << " i: " << static_cast<Int32&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Int32&>(*btp).value() == 123456789);
                     break;
 
                 case dods_uint32_c:
-                    DBG(cerr << " ui: " << static_cast<UInt32&>(*btp).value());
+                    DBG(cerr << " ui: " << static_cast<UInt32&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<UInt32&>(*btp).value() < 8);
                     break;
 
                 case dods_float32_c:
-                    DBG(cerr << " f: " << static_cast<Float32&>(*btp).value());
-                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float)99.999);
+                    DBG(cerr << " f: " << static_cast<Float32&>(*btp).value())
+                    ;
+                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float )99.999);
                     break;
 
                 default:
-                    DBG(cerr << "Error: Found unexpected " << btp->name() << ", " << btp->type_name() << endl);
+                    DBG(cerr << "Error: Found unexpected " << btp->name() << ", " << btp->type_name() << endl)
+                    ;
                     CPPUNIT_FAIL("Did not find the correct type in response Sequence");
                 }
             }
@@ -765,7 +792,8 @@ public:
         }
     }
 
-    void one_var_2_print_val_test() {
+    void one_var_2_print_val_test()
+    {
         // we know there's just one variable
         BaseType *btp = *(one_var_2_dds->var_begin());
 
@@ -782,7 +810,6 @@ public:
         BaseType *result = 0;
         TabularFunction::function_dap2_tabular(1, argv, *one_var_dds, &result);
 
-
         CPPUNIT_ASSERT(result->type() == dods_sequence_c);
         Sequence *s = static_cast<Sequence*>(result);
 
@@ -794,7 +821,7 @@ public:
         // compare it to a baseline file
     }
 
-    CPPUNIT_TEST_SUITE( TabularFunctionTest );
+CPPUNIT_TEST_SUITE( TabularFunctionTest );
 
     CPPUNIT_TEST(one_var_test);
     CPPUNIT_TEST(one_var_2_test);
@@ -814,20 +841,20 @@ public:
     CPPUNIT_TEST(four_var_2_test);
     CPPUNIT_TEST(four_var_mixed_test_1);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TabularFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[])
+{
 
-    GetOpt getopt(argc, argv, "dD");
-    int option_char;
-    while ((option_char = getopt()) != -1)
+    GetOpt getopt(argc, argv, "dDh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -835,21 +862,33 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: TabularFunctionTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = TabularFunctionTest::suite()->getTests();
+            unsigned int prefix_len = TabularFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("functions::TabularFunctionTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = TabularFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

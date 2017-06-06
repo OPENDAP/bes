@@ -1,0 +1,9 @@
+Dataset {
+    Sequence {
+        Float64 t;
+        Float64 Bx;
+        Float64 By;
+        Float64 Bz;
+        Float64 Bx2;
+    } ISEE3;
+} test4.dat;

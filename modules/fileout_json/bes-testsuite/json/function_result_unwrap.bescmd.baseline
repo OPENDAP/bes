@@ -1,0 +1,13 @@
+{
+  "name": "function_result_coads_climatology.nc",
+  "attributes": [],
+  "leaves": [
+    {
+      "name": "promoted_message",
+      "type": "String",
+      "attributes": [],
+      "shape": [1],
+      "data": ["This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type."]
+  ],
+  "nodes": []
+}

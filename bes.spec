@@ -10,7 +10,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.17.1
+Version:        3.18.0
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -21,7 +21,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.18.0
+Requires:       libdap >= 3.19.0
 Requires:       readline bzip2 zlib
 Requires:	netcdf >= 4.1
 Requires:	libicu >= 3.6
@@ -145,26 +145,16 @@ exit 0
 
 %files
 %defattr(-,root,root,-)
-%doc ChangeLog NEWS README
+%doc ChangeLog NEWS README.md
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/csv.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/dap-server.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/dapreader.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/ff.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/fojson.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/fonc.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/gateway.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/h4.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/nc.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/ncml.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/w10n.conf
-# %config(noreplace) %{_sysconfdir}/bes/modules/xml_data_handler.conf
+
+# Added 10/25/16 jhrg. See below for the installation of the logrotate file.
+# %dir %{_sysconfdir}/logrotate.d
+# %config(noreplace) %{_sysconfdir}/logrotate.d/besd.logrotate
 
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html

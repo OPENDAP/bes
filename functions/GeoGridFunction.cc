@@ -44,7 +44,7 @@ using namespace libdap;
 
 namespace functions {
 
-/** The geogrid function returns the part of a Grid which includes a
+/** The geogrid function returns the part of a Grid that includes a
  geographically specified rectangle. The arguments to the function are the
  name of a Grid, the left-top and right-bottom points of the rectangle and
  zero or more relational expressions of the sort that the grid function

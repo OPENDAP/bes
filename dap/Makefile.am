@@ -50,13 +50,15 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapErrorInfo.cc \
 	BESDapService.cc \
 	BESDapResponseBuilder.cc \
-	BESDapResponseCache.cc \
+	BESDapFunctionResponseCache.cc \
 	BESStoredDapResultCache.cc \
 	BESDapNullAggregationServer.cc \
 	DapFunctionUtils.cc \
+	CachedSequence.cc \
+	CacheTypeFactory.cc \
+	BESHandlerUtil.cc \
+	CacheMarshaller.cc CacheUnMarshaller.cc \
 	ObjMemCache.cc
-	
-# Unused: BESDapSequenceAggregationServer.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -78,14 +80,15 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapErrorInfo.h \
 	BESDapService.h \
 	BESDapResponseBuilder.h \
-	BESDapResponseCache.h \
+	BESDapFunctionResponseCache.h \
 	BESStoredDapResultCache.h \
 	BESDapNullAggregationServer.h \
 	DapFunctionUtils.h \
+	CachedSequence.h \
+	CacheTypeFactory.h \
+	BESHandlerUtil.h \
+	CacheMarshaller.h CacheUnMarshaller.h \
 	ObjMemCache.h
-	
-	
-# Unused: BESDapSequenceAggregationServer.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
@@ -98,7 +101,7 @@ pkgdata_DATA = dap_help.html dap_help.txt dap_help.xml
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dap.conf.in dap_help.html dap_help.txt dap_help.xml
+EXTRA_DIST = data dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 

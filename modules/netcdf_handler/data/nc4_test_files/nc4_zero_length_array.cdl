@@ -1,0 +1,60 @@
+// nc4_nc_classic_no_comp.ncgen
+
+// Created on: Apr 28, 2011
+//     Author: jimg
+//
+// Made the netcdf 4 file using: ncgen -k4 nc4_nc_classic_no_comp.ncgen
+// This builds a netcdf file that contains only variables that can be in a 
+// netcdf 3 file. Then we write it using the netcdf 4 library. The same file
+// can be used with ncgen to make source code that can write the variables
+// using chunking and compression.
+
+netcdf nc4_nc_classic_no_comp {
+     
+     dimensions:
+     lat = 6, lon = 5, time = unlimited;
+     
+     variables:
+       int     lat(lat), lon(lon), time(time);
+       
+       float   z(lat,lon), t(lat,lon);
+     
+       byte    pixel(lat,lon);
+       
+       lat:units = "degrees_north";
+       lon:units = "degrees_east";
+       time:units = "seconds";
+       z:units = "meters";
+       z:valid_range = 0., 5000.;
+       z:_FillValue = 1.f;
+              
+       :title = "Hyrax/netcdf handler test file 1";
+       :version = 1.;
+       :description = "This file has all of the NC_CLASSIC_MODEL data types.";
+            
+     data:
+       lat   = 0, 10, 20, 30, 40, 50;
+       lon   = -140, -118, -96, -84, -52;
+        
+       z = 10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10,
+           10, 10, 10, 10, 10;
+           
+       t = 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1;
+   
+       pixel = 7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7,
+           7, 7, 7, 7, 7;
+}
+

@@ -1,0 +1,254 @@
+m4_include([package.m4])
+
+# The template file used to create the input files for besstandalone
+m4_define([bescmd_template],[$abs_srcdir/template.bescmd.in])
+m4_define([bes_conf_path],[$abs_builddir/bes.conf])
+m4_define([alt_bes_conf_path],[$abs_builddir/bes_no_nc_global.conf])
+m4_define([datadir], [/data/ncml])
+m4_define([baselines_path],[${abs_srcdir}/baselines])
+m4_define([full_data_path],[${abs_srcdir}/../data/ncml])
+
+AT_INIT([ncml autotest testsuite])
+
+dnl $1 == ncml_filename
+dnl $2 == {das | dds | dods | ddx }
+m4_define([AT_MAKE_BESCMD_FILE_NO_CONSTRAINT],
+[
+sed -e "s:%ncml_filename%:datadir/$1:" -e "s:%response_type%:$2:" -e "s|%constraint_expr%||" < bescmd_template > test.bescmd
+])
+
+dnl $1 == ncml_filename
+dnl $2 == {das | dds | dods | ddx }
+dnl $3 == "constraint_expr"
+m4_define([AT_MAKE_BESCMD_FILE_WITH_CONSTRAINT],
+[
+sed -e "s:%ncml_filename%:datadir/$1:" -e "s:%response_type%:$2:" -e "s|%constraint_expr%|<constraint>$3</constraint>|" < bescmd_template > test.bescmd
+])
+
+dnl $1 == ncml_filename
+dnl $2 == {das | dds | dods | ddx }
+dnl $3 == "constraint_expr" (can be [] if none)
+m4_define([AT_MAKE_BESCMD_FILE],
+[
+m4_if([$3], [], [AT_MAKE_BESCMD_FILE_NO_CONSTRAINT([$1], [$2])], [AT_MAKE_BESCMD_FILE_WITH_CONSTRAINT([$1], [$2], [$3])]) 
+])
+
+dnl Run the besstandlone on the filename for the response type
+dnl and compare stdout to the baseline for the response.
+dnl ncml_filename is expected to be the basename as the datadir is added.
+dnl $1 == { true | xfail } (Expected fail flag, xfail if it is expected to fail)
+dnl $2 == ncml_filename
+dnl $3 == {das | dds | dods | ddx }
+dnl $4 == baseline_filename (with path prefix but not response suffix!)
+dnl $5 == (optional) constraint_expression
+m4_define([AT_RUN_BES_AND_CONDITIONAL_COMPARE],
+[
+AT_SETUP([Comparing $3 response for $2 to baseline baselines_path/$4 ])
+AT_KEYWORDS([$3])
+AT_MAKE_BESCMD_FILE([$2], [$3], [$5])
+AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
+AT_CHECK([diff -w -b -B baselines_path/$4.$3 stdout], [], [ignore], [], [])
+AT_XFAIL_IF([test "$1" = "xfail"])
+AT_CLEANUP
+])
+
+
+dnl Run the besstandlone on the filename for the response type
+dnl and compare stdout to the baseline for the response.
+dnl ncml_filename is expected to be the basename as the datadir is added.
+dnl $1 == ncml_filename
+dnl $2 == {das | dds | dods | ddx }
+dnl $3 == baseline_filename (with path prefix but not response suffix!)
+dnl $4 == (optional) constraint_expression
+dnl $5 == (optional) xfail/pass (default pass)
+m4_define([AT_RUN_BES_AND_COMPARE],
+[
+AT_SETUP([Comparing $2 response for $1 to baseline baselines_path/$3])
+AT_KEYWORDS([$2])
+AT_MAKE_BESCMD_FILE([$1], [$2], [$4])
+AT_XFAIL_IF(test "$5" = "xfail")
+AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
+AT_CHECK([diff -w -b -B baselines_path/$3.$2 stdout], [], [ignore], [], [])
+AT_CLEANUP
+])
+
+m4_define([AT_RUN_BES_AND_COMPARE_ALT_CONF],
+[
+AT_SETUP([Comparing $2 response for $1 to baseline baselines_path/$3])
+AT_KEYWORDS([$2])
+AT_MAKE_BESCMD_FILE([$1], [$2], [$4])
+AT_CHECK([besstandalone -c alt_bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
+AT_CHECK([diff -w -b -B baselines_path/$3.$2 stdout], [], [ignore], [], [])
+AT_CLEANUP
+])
+
+dnl Run the besstandlone on the filename for the response type
+dnl and compare stdout to the baseline of name filename.{dds,ddx,dods,das}.
+dnl ncml_filename is expected to be the basename as the datadir is added.
+dnl $1 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+dnl $2 == ncml_filename
+dnl $3 == {das | dds | dods | ddx }
+m4_define([AT_RUN_BES_AND_COMPARE_BASELINE],
+[
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([$1], [$2], [$3], [$2])
+])
+
+m4_define([AT_RUN_BES_AND_COMPARE_BASELINE_ALT_CONF],
+[
+AT_RUN_BES_AND_CONDITIONAL_COMPARE_ALT_CONF([$1], [$2], [$3], [$2])
+])
+
+dnl Run the besstandlone on the filename for the response type
+dnl rhen run getdap on stdout and compare the result to the baseline for the response.
+dnl ncml_filename is expected to be the basename as the datadir is added
+dnl The baseline will have ".dods.getdap" appended to it for ascii comparison!  .dods is binary compare.
+dnl $1 == ncml_filename
+dnl $2 == baseline_filename (with path prefix but not response suffix!)
+dnl $3 == (optional) constraint_expression
+m4_define([AT_RUN_BES_AND_COMPARE_DODS_GETDAP],
+[
+AT_SETUP([Comparing dods response for $1 to getdap (ascii) baseline baselines_path/$2])
+AT_KEYWORDS([dods])
+AT_MAKE_BESCMD_FILE([$1], [dods], [$3])
+AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
+AT_CHECK([getdap stdout > stdout.getdap], [], [ignore], [ignore])
+AT_CHECK([diff -w -b -B baselines_path/$2.dods.getdap stdout.getdap], [], [ignore], [], [])
+AT_CLEANUP
+])
+
+dnl Run the besstandalone for the response type and log to stdout,
+dnl then do a string match on stdout to $3 to find a pattern.
+dnl Useful for checking for Parse Errors, etc.
+dnl $1 == ncml_filename
+dnl $2 ==  {das | dds | dods | ddx }
+dnl $3 == "pattern"
+dnl $4 == (optional) constraint_expression
+dnl $5 == (optional) expected besstandalone return status
+m4_define([AT_RUN_BES_AND_MATCH],
+[
+AT_SETUP([$2 response for $1: seeking match to $3])
+AT_KEYWORDS([$2])
+AT_MAKE_BESCMD_FILE([$1], [$2], [$4])
+AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [$5], [stdout], [ignore])
+AT_CHECK([grep $3 stdout], [], [ignore], [], [])
+AT_CLEANUP
+])
+
+dnl Syntactic sugar for each response
+
+dnl $1 == ncml_input_basename
+dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+m4_define([AT_CHECK_DAS],
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [das])
+])
+
+dnl $1 == ncml_input_basename
+dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+m4_define([AT_CHECK_DDS],
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [dds])
+])
+
+dnl $1 == ncml_input_basename
+dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+m4_define([AT_CHECK_DDX],
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [ddx])
+])
+
+m4_define([AT_CHECK_DDX_ALT_CONF],
+[AT_RUN_BES_AND_COMPARE_BASELINE_ALT_CONF([$2], [$1], [ddx])
+])
+
+dnl $1 == ncml_input_basename
+dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+m4_define([AT_CHECK_DATADDS],
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [dods])
+])
+
+dnl Run AT_RUN_BES_AND_COMPARE_DODS_GETDAP on the input and compare
+dnl to baselines/$1.dods.getdap ascii version of the $1.dods baseline
+dnl piped through getdap.  Good for checking by hand as well as the
+dnl standard binary .dods test.
+dnl $1 == ncml_input_basename
+m4_define([AT_CHECK_DATADDS_GETDAP],
+[
+AT_RUN_BES_AND_COMPARE_DODS_GETDAP([$1], [$1], [])
+])
+
+
+dnl $1 == ncml_input_basename
+m4_define([AT_CHECK_ALL_DAP_RESPONSES],
+[AT_BANNER([Testing DAP responses for: $1])
+AT_CHECK_DAS($1)
+AT_CHECK_DDS($1)
+AT_CHECK_DDX($1)
+AT_CHECK_DATADDS($1)
+])
+
+dnl Syntactic sugar for constraints
+dnl $1 == datafile
+dnl $2 == constraint_expr
+dnl $3 == baseline_prefix
+dnl $4 == pass/xfail
+m4_define([AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT],
+[AT_BANNER([Testing DAP responses for: $1 with constraint="$2" against baseline prefix=$3 ($4)])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[das],[$3],[$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[dds],[$3],[$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[ddx],[$3],[$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([$4],[$1],[dods],[$3],[$2])
+])
+
+dnl tests that the response is a parse error when asking for DDX.
+dnl $1 is ncml_filename
+dnl $2 == [optional] constraint
+m4_define([AT_ASSERT_PARSE_ERROR],
+[AT_BANNER([Testing that $1 contains a ParseError...])
+AT_RUN_BES_AND_MATCH([$1],["ddx"],[".*ParseError.*"],[$2])
+])
+
+dnl tests that the response is a parse error when 
+dnl asking for data response (DODS)
+dnl $1 is ncml_filename
+dnl $2 == [optional] constraint
+m4_define([AT_ASSERT_PARSE_ERROR_FOR_DODS],
+[AT_BANNER([Testing that $1 contains a ParseError...])
+AT_RUN_BES_AND_MATCH([$1],["dods"],[".*ParseError.*"],[$2])
+])
+
+dnl -----------------------------------------------------------------
+dnl The actual tests!
+dnl -----------------------------------------------------------------
+
+dnl A known test copied from bes-testsuite to make sure this Autotest file works.
+dnl AT_CHECK_ALL_DAP_RESPONSES([fnoc1_explicit.ncml])
+
+dnl An example of testing for a parse error.
+dnl AT_RUN_BES_AND_MATCH([fnoc1_explicit.ncml], [das], ["ParseError"])
+
+AT_BANNER([---------------------------------------------------------------])
+m4_include([attribute_tests.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_rename.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_new_scalars.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_new_structures.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_remove.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_new_arrays.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_new_multi_arrays.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([variable_misc.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([parse_error_misc.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([aggregations.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([gateway_tests.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([handler_tests.at])
+AT_BANNER([---------------------------------------------------------------])
+
+
+

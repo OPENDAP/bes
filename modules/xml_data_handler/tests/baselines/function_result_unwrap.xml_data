@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/dap/3.3#">
+    <String name="promoted_message">
+        <value>This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type.</value>
+    </String>
+</Dataset>

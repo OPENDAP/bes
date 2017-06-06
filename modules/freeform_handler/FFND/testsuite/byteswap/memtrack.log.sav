@@ -1,0 +1,215 @@
+F 9a344 2097152 make_standard_dbin /home/devel/FreeForm/src/mkstdbin.c 844 std_args->local_buffer
+F 29a354 112 db_make /home/devel/FreeForm/src/makedbin.c 45 dbin
+
+M db_make /home/devel/FreeForm/src/makedbin.c 57 Duplicating untracked string (dbin->title)
+F 29a3d4 13 db_make /home/devel/FreeForm/src/makedbin.c 57 dbin->title
+
+M db_set /home/devel/FreeForm/src/setdbin.c 2049 Duplicating untracked string (DBIN_FILE_NAME: dbin->file_name)
+F 29a3f4 13 db_set /home/devel/FreeForm/src/setdbin.c 2049 DBIN_FILE_NAME: dbin->file_name
+F 29a414 260 db_set /home/devel/FreeForm/src/setdbin.c 3620 file_name
+F 29a414 8 db_find_format_files /home/devel/FreeForm/src/findfile.c 264 *targets
+A 29a444 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+A 29a464 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29a484 256 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+A 29a594 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+A 29a70c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+A 29a83c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29a864 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+
+M check_file_exists /home/devel/FreeForm/src/findfile.c 455 Duplicating untracked string (trial_fname)
+F 29a88c 13 check_file_exists /home/devel/FreeForm/src/findfile.c 455 trial_fname
+F 29a8ac 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29aa24 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29aa4c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29ab7c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29aba4 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29acd4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29acfc 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29ae2c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29ae54 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29af84 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29afac 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b0dc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b104 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b234 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b25c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b38c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b3b4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b3dc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b404 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29b57c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b5a4 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b6d4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b6fc 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b82c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b854 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b984 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b9ac 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29badc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29bb04 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29bc34 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29bc5c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29bd8c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29bdb4 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29bee4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29bf0c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29bf34 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+F 29bf54 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29bf74 256 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+F 29c084 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29c1fc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c224 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29c354 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c37c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c3a4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b3dc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29a414 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29bf0c 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+A 29a88c 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29a8ac 256 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+A 29a9bc 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+A 29ab34 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+A 29ac64 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29ac8c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29acb4 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+F 29acd4 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29acf4 255 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+F 29ae04 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29af7c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29afa4 14 ff_make_middle_format /home/devel/FreeForm/src/proclist.c 332 copy_buffer
+F 29afc4 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b0f4 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29b0f4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+
+M err_push /home/devel/FreeForm/src/error.c 303 Duplicating untracked string (p_routine)
+F 29b11c 22 err_push /home/devel/FreeForm/src/error.c 303 p_routine
+
+M err_push /home/devel/FreeForm/src/error.c 308 Duplicating untracked string (p_str)
+F 29b144 32 err_push /home/devel/FreeForm/src/error.c 308 p_str
+
+M err_push /home/devel/FreeForm/src/error.c 303 Duplicating untracked string (p_routine)
+F 29b174 28 err_push /home/devel/FreeForm/src/error.c 303 p_routine
+
+M err_push /home/devel/FreeForm/src/error.c 308 Duplicating untracked string (p_str)
+F 29b1a4 29 err_push /home/devel/FreeForm/src/error.c 308 p_str
+F 29acb4 8 db_find_format_files /home/devel/FreeForm/src/findfile.c 264 *targets
+A 29ace4 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+A 29ad04 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29ad24 256 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+A 29ae34 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+A 29afac 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+A 29b0dc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29b104 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b12c 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+F 29b14c 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29b16c 255 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+F 29c3cc 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29b27c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b2a4 14 ff_make_middle_format /home/devel/FreeForm/src/proclist.c 332 copy_buffer
+F 29c544 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b2c4 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29b2c4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+
+M err_push /home/devel/FreeForm/src/error.c 303 Duplicating untracked string (p_routine)
+F 29b2ec 22 err_push /home/devel/FreeForm/src/error.c 303 p_routine
+
+M err_push /home/devel/FreeForm/src/error.c 308 Duplicating untracked string (p_str)
+F 29b314 32 err_push /home/devel/FreeForm/src/error.c 308 p_str
+
+M err_push /home/devel/FreeForm/src/error.c 303 Duplicating untracked string (p_routine)
+F 29b344 28 err_push /home/devel/FreeForm/src/error.c 303 p_routine
+
+M err_push /home/devel/FreeForm/src/error.c 308 Duplicating untracked string (p_str)
+F 29b374 29 err_push /home/devel/FreeForm/src/error.c 308 p_str
+
+M check_file_exists /home/devel/FreeForm/src/findfile.c 455 Duplicating untracked string (trial_fname)
+F 29b12c 13 check_file_exists /home/devel/FreeForm/src/findfile.c 455 trial_fname
+F 29b14c 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29b2c4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c3cc 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b2ec 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c4fc 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b314 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c62c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b33c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c75c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b364 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c88c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b38c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29c9bc 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29b3b4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29caec 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29cc1c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29cc44 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29cc6c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29cc94 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29ce0c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29ce34 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29cf64 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29cf8c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d0bc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d0e4 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d214 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d23c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d36c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d394 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d4c4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d4ec 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d61c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d644 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d774 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d79c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d7c4 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+F 29d7e4 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29d804 256 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+F 29d914 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29da8c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29dab4 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29dbe4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29dc0c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29acb4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29b12c 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29dc34 2097144 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+A 29cc44 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+A 29cc64 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29cc84 256 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+A 29cd94 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+A 29cf0c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+A 29d03c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29d064 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d08c 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+F 29d0ac 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29d0cc 255 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+F 29d1dc 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+F 29d354 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d37c 14 ff_make_middle_format /home/devel/FreeForm/src/proclist.c 332 copy_buffer
+F 29d39c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d4cc 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+F 29d4cc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29d08c 12 fd_create_format_data /home/devel/FreeForm/src/freeform.c 1120 format_data
+A 29d0ac 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d0cc 57 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 360 bufsize->buffer
+A 29d11c 360 ff_create_format /home/devel/FreeForm/src/freeform.c 128 format
+A 29d294 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+F 29d2bc 25 ff_make_middle_format /home/devel/FreeForm/src/proclist.c 332 copy_buffer
+A 29d2ec 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d41c 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d41c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29d444 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d574 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d574 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 29d59c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d6cc 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d6cc 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 49dc3c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d6f4 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d6f4 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 49dd6c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d71c 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d71c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 49de9c 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d744 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d744 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node
+A 49dfcc 284 ff_create_variable /home/devel/FreeForm/src/freeform.c 237 variable
+F 29d76c 12 ff_create_bufsize /home/devel/FreeForm/src/freeform.c 353 bufsize
+A 29d76c 20 dll_init_contiguous /home/devel/FreeForm/src/dl_lists.c 427 List Node

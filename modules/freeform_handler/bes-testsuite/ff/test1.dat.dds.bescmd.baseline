@@ -1,0 +1,9 @@
+Dataset {
+    Sequence {
+        Int32 fvar1;
+        Int16 svar1;
+        UInt16 usvar1;
+        Int32 lvar1;
+        UInt32 ulvar1;
+    } ASCII_data;
+} test1.dat;

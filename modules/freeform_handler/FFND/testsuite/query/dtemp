@@ -1,0 +1,3 @@
+#restore
+#debug /home/mao/newdevel/bin/newform
+stop at "eval_eqn.c":1441

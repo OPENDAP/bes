@@ -1,0 +1,27 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP File Out GDAL (FONg) BES Module Configuration file          #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=fong
+BES.module.fong=@bes_modules_dir@/libfong_module.so
+
+# File Out GDAL (FONg) module specific parameters
+
+# Directory to store temporary files during transformation
+FONg.Tempdir=/tmp
+
+# URL to the FONg Reference Page at docs.opendap.org"
+FONg.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_GDAL
+
+# Use this Geographic coordinate system as a fallback when the metadata 
+# provides no guidance.
+FONg.default_gcs=WGS84

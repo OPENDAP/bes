@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Parse error test for aggregation in wrong location -->
+<netcdf>
+
+  <variable name="Aggy" type="float" shape="1 2 3">
+    <aggregation type="joinNew">
+    </aggregation>
+  </variable>
+  
+ </netcdf>
+  

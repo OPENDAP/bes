@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value"><getDODS><BESError><Type>3</Type><Message>libdap exception building response: error_code = 1005: libdap error transmitting DataDDS: You asked me to insert the synthesized variable in 
+something that did not exist or was not a constructor 
+type (e.g., a structure, sequence, ...).</Message><Administrator>admin.email.address@your.domain.name</Administrator>*</BESError></getDODS></response>

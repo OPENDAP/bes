@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -67,11 +66,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace libdap
-{
+namespace libdap {
 
-class Dap4_TabularFunctionTest: public TestFixture
-{
+class Dap4_TabularFunctionTest: public TestFixture {
 private:
     TestTypeFactory ttf;
     D4TestTypeFactory d4btf;
@@ -81,23 +78,26 @@ private:
     DMR *four_var_2_dmr;
 
 public:
-    Dap4_TabularFunctionTest(): one_var_dmr(0), four_var_2_dmr(0)
-    {}
+    Dap4_TabularFunctionTest() :
+        one_var_dmr(0), four_var_2_dmr(0)
+    {
+    }
     ~Dap4_TabularFunctionTest()
-    {}
+    {
+    }
 
     void setUp()
     {
         XMLWriter xml;
         try {
             DDS one_var(&ttf);
-            one_var.parse((string)TEST_SRC_DIR + "/tabular/one_var.dds");
+            one_var.parse((string) TEST_SRC_DIR + "/tabular/one_var.dds");
             one_var_dmr = new DMR(&d4btf, one_var);
             one_var_dmr->print_dap4(xml, false);
             DBG2(cerr << xml.get_doc() << endl);
 
             DDS four_var(&ttf);
-            four_var.parse((string)TEST_SRC_DIR + "/tabular/four_var_2.dds");
+            four_var.parse((string) TEST_SRC_DIR + "/tabular/four_var_2.dds");
             four_var_2_dmr = new DMR(&d4btf, four_var);
             four_var_2_dmr->print_dap4(xml, false);
             DBG2(cerr << xml.get_doc() << endl);
@@ -118,7 +118,8 @@ public:
     // A limited set of unit tests because the dap2 and dap4 versions
     // are so similar.
 
-    void one_var_test() {
+    void one_var_test()
+    {
         // we know there's just one variable
         BaseType *btp = *(one_var_dmr->root()->var_begin());
 
@@ -158,10 +159,12 @@ public:
         }
     }
 
-    void four_var_2_test() {
+    void four_var_2_test()
+    {
         // There are four arrays of varying types, each with four elements
         vector<BaseType*> arrays;
-        for (DDS::Vars_iter i = four_var_2_dmr->root()->var_begin(), e = four_var_2_dmr->root()->var_end(); i != e; ++i) {
+        for (DDS::Vars_iter i = four_var_2_dmr->root()->var_begin(), e = four_var_2_dmr->root()->var_end(); i != e;
+            ++i) {
             CPPUNIT_ASSERT((*i)->type() == dods_array_c);
             CPPUNIT_ASSERT(static_cast<Array&>(**i).length() == 8);
 
@@ -169,7 +172,7 @@ public:
         }
 
         // and it has four elements
-        D4RValue rv_0(arrays[0]), rv_1(arrays[1]), rv_2(arrays[2]), rv_3(arrays[3]) ;
+        D4RValue rv_0(arrays[0]), rv_1(arrays[1]), rv_2(arrays[2]), rv_3(arrays[3]);
         D4RValueList *args = new D4RValueList;
         args->add_rvalue(&rv_0);
         args->add_rvalue(&rv_1);
@@ -196,7 +199,7 @@ public:
         DBG(cerr << "The d4 sequence print rep: " << oss.str() << endl);
 
         // Number of columns is the number of arrays
-        CPPUNIT_ASSERT((vector<D4Sequence>::size_type)(s->var_end() - s->var_begin()) == arrays.size());
+        CPPUNIT_ASSERT((vector<D4Sequence>::size_type )(s->var_end() - s->var_begin()) == arrays.size());
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
@@ -209,22 +212,26 @@ public:
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {
                 case dods_byte_c:
-                    DBG(cerr << ": " << (int)static_cast<Byte&>(*btp).value());
+                    DBG(cerr << ": " << (int )static_cast<Byte&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Byte&>(*btp).value() == 255);
 
                     break;
                 case dods_int32_c:
-                    DBG(cerr << ": " << static_cast<Int32&>(*btp).value());
+                    DBG(cerr << ": " << static_cast<Int32&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Int32&>(*btp).value() == 123456789);
 
                     break;
                 case dods_float32_c:
-                    DBG(cerr << ": " << static_cast<Float32&>(*btp).value());
-                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float)99.999);
+                    DBG(cerr << ": " << static_cast<Float32&>(*btp).value())
+                    ;
+                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float )99.999);
 
                     break;
                 case dods_float64_c:
-                    DBG(cerr << ": " << static_cast<Float64&>(*btp).value());
+                    DBG(cerr << ": " << static_cast<Float64&>(*btp).value())
+                    ;
                     CPPUNIT_ASSERT(static_cast<Float64&>(*btp).value() == 99.999);
 
                     break;
@@ -236,23 +243,23 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE( Dap4_TabularFunctionTest );
+CPPUNIT_TEST_SUITE( Dap4_TabularFunctionTest );
 
     CPPUNIT_TEST(one_var_test);
     CPPUNIT_TEST(four_var_2_test);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Dap4_TabularFunctionTest);
 
 } // namespace libdap
 
-int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[])
+{
 
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
@@ -262,21 +269,33 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: Dap4_TabularFunctionTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = Dap4_TabularFunctionTest::suite()->getTests();
+            unsigned int prefix_len = Dap4_TabularFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("libdap::Dap4_TabularFunctionTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = Dap4_TabularFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

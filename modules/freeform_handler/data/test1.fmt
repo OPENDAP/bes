@@ -1,0 +1,21 @@
+
+// -*- C++ -*-
+// The structure of the input_data section is:
+// variable name, starting column, ending column (ones-based, inclusive),
+// datatype, scaling factor (10^x; Data values are automatically divided by
+// 10^x).
+
+ASCII_input_data "ASCII_data"
+fvar1   1 10  int32 0
+svar1  13 18  int16 0
+usvar1 21 26 uint16 0
+lvar1  29 39  int32 0
+ulvar1 42 52 uint32 0
+
+// The output_data part of the file is not used by DODS.
+// However, tools like newform use it. 8/13/98 jhrg
+ASCII_output_data	"ASCII_data"
+fvar1   3  8 float32 2
+
+
+

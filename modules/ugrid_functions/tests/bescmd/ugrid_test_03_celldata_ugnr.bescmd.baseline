@@ -1,0 +1,7 @@
+The data:
+Float64 X[nodes = 6] = {0, 1, 1.5, 1, 0, 0};
+Float64 Y[nodes = 6] = {1.5, 1, 0, -1, -1.5, 0};
+Int32 fnca[three = 3][faces = 4] = {{1, 2, 3, 4},{2, 3, 4, 5},{6, 6, 6, 6}};
+Int32 fvcom_mesh[one = 1] = {-2147483647};
+Float32 celldata[faces = 4] = {0.2, 0.3, 0.4, 0.5};
+

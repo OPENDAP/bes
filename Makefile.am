@@ -1,4 +1,3 @@
-
 # Build the Back End Server.
 #
 # jhrg 9/2/05
@@ -18,20 +17,20 @@ AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
+AM_DISTCHECK_CONFIGURE_FLAGS=
+
 if WITH_DEPENDENCIES
-# I think this will enable distcheck to pickup the --with-dependencies
-# flag on OSX but not use it on Linux (where we should be getting all
-# the dependencies from RPMs). jhrg 3/18/15
-#
-# Not always true - some deps come from here, even on linux jhrg 4/5/15
+# With automake 1.14 setting AM_DISTCHECK... means that the user variable
+# DISTCHECK_CONFIGURE_FLAGS no longer needs to be used. Earlier versions
+# of automake don't support this. jhrg 6/5/17
 AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
-DIST_SUBDIRS = $(SUBDIRS)
+# DIST_SUBDIRS = $(SUBDIRS)
 
 if LIBDAP
-SUBDIRS += dap dapreader functions
+SUBDIRS += functions dap dapreader 
 endif
 if DAP_MODULES
 SUBDIRS += modules
@@ -43,6 +42,10 @@ bin_SCRIPTS = bes-config bes-config-pkgconfig
 # with-out a second underscore.
 init_ddir = $(sysconfdir)/rc.d/init.d
 init_d_SCRIPTS = besd
+
+logrotate_ddir = $(sysconfdir)/logrotate.d
+logrotate_d_DATA = besd.logrotate
+
 CLEANFILES = $(init_d_SCRIPTS)
 
 pkgconfigdir=$(libdir)/pkgconfig
@@ -51,20 +54,25 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = apache hello_world doxy.conf.in bes.spec \
-OSX_Resources bes-config-pkgconfig
+EXTRA_DIST = hello_world doxy.conf.in bes.spec \
+OSX_Resources bes-config-pkgconfig besd.logrotate README.md
 
 server-tests:
 	cd cmdln && make server-tests
 
-.PHONY: docs
-docs: doxy.conf
-	doxygen doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
+HTML_DOCS=html
+DOXYGEN_CONF=doxy.conf
 
-# Not needed. jhrg 1/4/16
-# doxy.conf: doxy.conf.in config.status
-# 	./config.status --file=doxy.conf
+# This target only builds the documents, it does not move them to
+# github. Use the 'gh-docs' target below for that.
+.PHONY: docs
+docs: ${DOXYGEN_CONF}
+	doxygen ${DOXYGEN_CONF}
+
+# GitHub.io docs 
+.PHONY: gh-docs 
+gh-docs:
+	./build-gh-docs.sh
 
 # cccc computes metrics like Lines of code and McCabe. It'a available
 # on the web...

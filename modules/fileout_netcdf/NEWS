@@ -1,0 +1,140 @@
+News for version 1.4.4
+
+Updates since 2016-11-04, see the ChangeLog
+
+News for version 1.4.3
+
+Updates since 2016-09-27, see the ChangeLog
+
+News for version 1.4.2
+
+Updates since 2016-06-03, see the ChangeLog
+
+News for version 1.4.1
+
+Updates since 2016-01-26, see the ChangeLog
+
+Added support for the CF History attribute so that netCDf files built
+by this code contain information about the source of their data.
+
+News for version 1.4.0
+
+New configuration parameters added to control compression and chunking.
+See README for more information.
+
+A bug where HDF5 files with string data triggered a bug in the handler.
+Now the handler returns a valid netCDF3 or 4 classic model file where
+an array of strings is a two-dimensional array of NC_CHAR (or a rank M
+array of strings is a rank M+1 array of NC_CHAR.
+
+Minor updates, see the ChangeLog
+
+News for version 1.3.2
+
+Added a fix for the _FillValue attribute from Abdul @ NASA
+
+Minor updates, see the ChangeLog
+
+News for version 1.3.1
+
+Minor updates, see the ChangeLog
+
+Version 1.2.4
+
+Fix for the fix...
+
+Version 1.2.3
+
+Memory leak fixes for CE functions.
+
+Version 1.2.2
+
+Updated tests
+
+Version 1.2.1
+
+Fixed the behavior of BaseType::read()
+
+Version 1.2.0
+
+Updated to create netcdf4 files when transmitter selected is netcdf-4. 
+Fixed UNIT16 mappings. 
+Improvements to tests and production rules
+Repaired an "on exit" memory leak.
+
+Version 1.1.3
+
+Fixes the issue that caused error with hdf4/hdf5 handlers.
+
+Version 1.1.2
+
+Build and test fixes.
+
+Version 1.1.1
+
+Build fixes.
+
+Version 1.1.0 (14 Sept 2010)
+
+Added support for Sequences.
+
+Support for HDF4 files (and others) where arrays with the same base
+names appear in seveal places. The code now handles DAP's lexical
+scoping correctly.
+
+Version 1.0.1 (04 May 2010)
+
+This release includes a complete rewrite of the code, but with the same
+functionaility.
+
+A bug was fixed for shared dimensions. It was that a dimension could be
+shared if it had the same name, the same size, and belonged to an array
+of the same dimensionality. The last requirements was removed. A
+dimension can be shared if it has the same name and size as another now.
+
+Version 1.0.0 (02 February 2010)
+
+This release is a bug fix release, with memory leaks cleaned up, fortify
+security issues resolved, and shared dimensions cleaned up.
+
+From the TODO list below:
+1.  FONc.Tempdir=/tmp parameter added to the fileout_netcdf configuration. And the filename used for the temporary file is randomly generated.
+2. debug statements added using the BESDebug method, using the context
+fonc. For debugging fileout_netcdf, use -d "bes.dbg,fonc"
+3. Correct exceptions generated and returned to the client as with any
+of the other modules.
+4. Writing of attributes is done as part of creating the variables,
+instead of a separate pass, as was done before.
+5. bes-testsuite created to use besstandalone application for running
+and testing fileout_netcdf capabilities. Also added unit tests.
+
+Still left TODO:
+1. Handling of sequence data
+2. Further cleanup of shared dimensions.
+
+Version 0.9.3 (09 June 2009)
+
+Fix for ticket 1300 - some Grids from HDF4 files were not represented
+correctly. This is an important update because the handler was returning
+incorrect data values and variable sizes.
+
+Version 0.9.2 (08 April 2009)
+
+Many new capabilities. The handler does not process Sequences, but it can
+process a response that contains them - an attribute will be added that
+indicates that a sequence was found and left out (elided) from the netCDF
+file.
+
+Among the many new tweaks, the resulting file contains names compatible with
+netCDF 3.6.2.
+
+Version 0.9.0
+
+It's brand new. Still to do: Seqences. This contains no explicit support CF,
+although that's slated for a future version.
+
+TODO:
+- Create a testsuite that is stand alone, not requiring any other modules
+  except the dap modules.
+- Need to be able to write out Sequence data.
+

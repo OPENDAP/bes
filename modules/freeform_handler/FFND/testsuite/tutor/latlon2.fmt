@@ -1,0 +1,12 @@
+binary_input_data	"Made from latlon.bfm"
+latitude  1 4 int32 6
+longitude 5 8 int32 6
+
+ASCII_output_data	"Made from d_m_s.afm"
+latitude_deg   1  7 int16 0
+latitude_min  13 15 int16 0
+latitude_sec  21 23 int16 0
+longitude_deg 28 31 int16 0
+longitude_min 33 37 int16 0
+longitude_sec 41 47 int16 0
+

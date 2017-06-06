@@ -1,0 +1,227 @@
+News for version 3.11.6
+
+Updates since 2016-09-22, see the ChangeLog
+
+News for version 3.11.5
+
+Updates since 2016-05-31, see the ChangeLog
+
+News for version 3.11.4
+
+Updates since 2016-01-26, see the ChangeLog
+
+News for version 3.11.3
+
+Minor updates, see the ChangeLog
+
+News for version 3.11.2
+
+Minor updates, see the ChangeLog
+
+News for version 3.11.1
+
+Minor updates, see the ChangeLog
+
+Version 3.10.4 (23 April 2014)
+
+Changed default behavior for handelr so that it is explicitly set
+to ShowSharedDimensions=true
+
+Version 3.10.3 (10 September 2013)
+
+Minor organizational changes.
+
+Version 3.10.2
+
+Merged to trunk; tagged.
+
+Version 3.10.1
+
+Fixes for netcdf 4.1.1, which is the version in RHEL6's RPM
+package. These include _not_ using NC_FIRSTUSERTYPEID and the old
+nctypelen(). Those work with netcdf 4.1.2, but not 4.1.1 and they are
+probably not that gereat an idea anyway.
+
+Version 3.10.0
+
+This version introduces some major improvements to the handler. 
+Now the handler reads netcdf 4 files and externalizes all but 
+a very small number of its native data types (64-bit ints, vlens 
+and groups are yet to be supported). This means that most netcdf 
+4 files work, not just the 'classic netcdf' files.
+
+Also added to the handler are several configuration parameters. Briefly, they are:
+* IgnoreUnknowTypes
+* ShowSharedDimensions
+* PromoteByteToShort
+
+See http://docs.opendap.org/index.php/BES_-_Modules_-_The_NetCDF_Handler for the full story.
+
+Version 3.9.3
+
+Build fixes.
+
+Version 3.9.2 (14 Sept 2010)
+
+The default option is now (re)set to include those extra map/Arrays.
+
+Version 3.9.1 (5 May 2010)
+
+The handler now implements its own transfer_attributes code to merge
+attributes from its DAS response into the DDS.
+
+The handler now builds with netcdf 4.1
+
+Version 3.9.0 (3 Feb 2010)
+
+Removed dejagnu tests and added autotool tests.
+RPM to use nc.conf instead of bes-nc-data.sh.
+API changes to BESKeys. 
+Added some Shrew build changes for the shrew hyrax project. 
+Minor libdap changes.
+Removed server 3 code.
+Added comd file that gets the DataDDX.
+Made a few DAP macro changes.
+Added info about the shared dimension special option.
+
+Version 3.8.3 (9 June 2009)
+
+Fixes the dejagnu tests.
+
+Version 3.8.2 (16 March 2009)
+
+Constraint fixes and support for the service responses.
+
+version 3.8.1 (5 Feb 2009)
+
+Fixed a problem with the new code to represent arrays of NC_CHAR as DAP
+String variables.
+
+version 3.8.0 (29 Jan 2009)
+
+Cleaned up error handling so that wehn installed as a BES handler there's no
+spurious output to stderr.
+
+The handler no longer packages NC_CHAR arrays as arrays of DAP Strings - an
+array of char is now a string and a rank N array of char is a rank N-1 array
+of string. The DAP String variables have an new attribute called
+'string_length' which gives a hint to code that needs to know how much memory
+allocate for the string. Inthe rank N case the 'string_length' is te size of
+the Nth dimension.
+
+The code has been updated to work with the new libdap and bes.
+
+The handler now has standalone tests using the besstandalone test driver.
+
+Version 3.7.9 (04 Mar 2008)
+
+pkg and dmg build fixes using PackageMaker and DropDMG. General
+configuration upgrades.
+
+libdap namespace addition
+
+BES exception upgrade
+
+Version 3.7.8 (03 Dec 2007)
+
+pkg and dmg build fixes
+
+Version 3.7.7 (14 Nov 2007)
+
+Support for pkg-config added.
+
+Don't edit bes.conf during make install, but document the bes-nc-dap.sh
+script and the bes-conf make target in README.
+
+Various bug fixes.
+
+Version 3.7.6 (13 March 2007)
+
+Default data and bes.conf with make install, same as the other handlers in
+this release.
+
+Version 3.7.5
+
+Better error handling.
+
+Build fixes.
+
+Version 3.7.4
+
+Updates for the 1.4 release of Server 4. Also included are bug fixes, memory
+leak fixes, and performance enhencements.
+
+Version 3.7.3
+
+The handler now builds DDS objects that contain attributes and will thus work
+with server-side functions that use attributes.
+
+Added support for compressed data.
+
+Added new module build options. Now modules use the libtool -module and 
+-no-version options.
+
+The module name is now set by the bes configuration file, not in this code.
+
+Version 3.7.2
+
+Fix for ticket 488. Embedded double quotes in string attributes were not
+escaped. The server was modified so that String attributes are now passed
+through the libdap function escattr(). There may be differences for some
+String attributes in some clients as a result. Note that this version of the
+handler requires libdap 3.7.0 or greater.
+
+Version 3.7.1
+
+This version includes a fix for bug 435. There are serveral data handlers
+that use the same names for externally visible functions. That's fine when
+the handlers are executables, but not so when they are shared object
+libraries. The function named have been changed.
+
+Version 3.7.0
+
+This version of the netCDF handler includes an executable for use with
+Server3 and a shared-object library (aka module) for use with Server4. This
+is a source release to support the Server4 1.2 beta release and has not been
+tested with Server3, although there should be no problems.
+
+Version 3.6.0
+
+This version of the netcdf handler builds with libdap 3.6.0.
+
+Patrice Dumas has contributed improvements to the spec file used to build the
+RPM packages.
+
+Misc. fixes for the handler when used with Server4 (which is in development).
+
+Version 3.5.2
+
+Fix for ticket 281: int variable break on 64 bit machines. The fix involved
+using nc_var_get_int() in place of nc_var_get_long in NCArray::read() and
+using NC_INT in place of NC_LONG in read's switch statement.
+
+Version 3.5.1
+
+Bug fix: The handler did not process arrays of bytes correctly.
+
+--------------------------------------------------------------------------
+
+The handler now works with the new dap server configuration.
+
+Removed the libnc-dods software. The OPeNDAP-netCDF client library is now
+in a separate CVS module named libnc-dap. 
+
+This software now uses automake and a modern autoconf. 
+
+---------------------------------------------------------------------------
+
+01/27/03 jhrg
+
+This code now builds with gcc 3.2 in addition to VC++ and gcc 2.95.3.
+
+The software has been changed to work with DAP 3.3.
+
+The configure script requires autoconf 2.13, even though the rest of the
+DODS/NVODS software using autocond 2.53. This is because the UD macros from
+Unidata don't work with the newer autoconf. I understand that they will soon
+enough...

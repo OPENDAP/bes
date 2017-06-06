@@ -1,0 +1,13 @@
+binary_input_data	"Made from test.bfm"
+fvar1   1  4 int32 2
+fvar2   5  8 int32 4
+svar1   9 10 int16 0
+svar2  11 12 int16 2
+usvar1 13 14 uint16 1
+usvar2 15 16 uint16 3
+lvar1  17 20 int32 0
+lvar2  21 24 int32 3
+ulvar1 25 28 uint32 4
+ulvar2 29 32 uint32 2
+alpha  33 34 text 0
+

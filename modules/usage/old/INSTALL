@@ -1,0 +1,75 @@
+
+Updated for version 4.1.6 of the dap-server package
+
+Building and Installing the OPeNDAP Server Base. See README for information
+about server configuration.
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+REQUIREMENTS
+NOTES
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+
+  To build the OPeNDAP Server Base Software, follow these steps:
+
+  0. Please skim REQUIREMENTS and NOTES sections of this file
+     before reporting problems. Thanks. If you're build this as part of Hyrax
+     (aka the OPeNDAP 4 Data Server) then make usre you have first built and
+     installed the appropriate version of the BES. If you have installed the
+     bes in a 'special' place sure that <prefix>/bin is on your PATH 
+     environment variable _before_ running configure. That will ensure that
+     configure find the bes and builds the plugins need for Hyrax.
+
+  1. Type `./configure' at the system prompt. On some systems you may have
+     to type `sh configure'.
+
+  2. Type `make' to build the software, `make check' to test the
+     software. You must have the GNU automated testing software
+     'autotest' (part of autoconf 2.63) and the CppUnit library to run
+     all the tests. If you have neither, then the tests won't yield
+     useful results.
+
+  3. Type `make install' to install the software. This will move the handlers
+     to the $prefix/lib/bes directory where the BES will find them. It will
+     also install a bes configuration file in to the bes configuration
+     directory and install some sample data in 
+  
+  4. See the file README for important information about configuration of the
+     server. Without those extra steps, the server will not work!
+
+REQUIREMENTS
+
+  o The Server Base Software uses libdap 3.13.0 or greater. You must install
+    that software. See http://www.opendap.org/download/.
+    
+  o To build this as part of Hyrax, you need the bes, version 3.13.0
+  and a modern version of Perl (the software no longer uses Perl at
+  runtime, but we still use it for building the HTML form software).
+
+  o You should have gcc/g++ 2.95.x or greater. You'll also need to get
+    the stdc++ library that matches the compiler (whatever version).
+    In most cases it's part of the compiler. NB: gcc 2.8.x and earlier
+    *won't* build the software. We're working on modifying the
+    software so that it will build with a variety of compilers. As of
+    02/27/06 we have built the code using Microsoft's Visual C++ 6.0
+    and GNU gcc/++ 3.2.1, 3.3, 3.4, 4.1, ..., 4.4 and  Apple
+    LLVM version 5.1 (clang-503.0.40) (based on LLVM 3.4svn) that
+    comes with OSX 10.9.
+
+  o If you're building from SVN or need/want to hack the configure.ac,
+    acinclude.m4, et c., files, you will need the GNU auto tools 
+    (autoconf 2.63 and its associated programs) . Use autoreconf to rebuild
+    configure; if you call autoconf directly the aclocal.m4 file won't get
+    built from acinclude.m4 correctly.
+
+NOTES
+
+  o If you are building on a new platform (one for which we don't supply
+    binaries), please run the tests and tell us about any failures. To do a
+    really complete job of this you'll need to get the GNU test system called
+    DejaGNU and CppUnit. It is very simple to install these and we're very
+    willing to help, so don't be shy! 

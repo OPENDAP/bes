@@ -1,0 +1,4 @@
+
+These tests are no longer used. They should be removed once we
+read over them and make sure we're not loosing anything not
+tested in the 'tests' directory's tests.

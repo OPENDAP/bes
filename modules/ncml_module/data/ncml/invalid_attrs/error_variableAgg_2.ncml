@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parse error test for  mislocated variableAgg element.  -->
+
+<netcdf>
+  <!-- Next line is error -->
+  <variableAgg name="T"/>
+  <aggregation type="joinNew">
+    <netcdf/>
+    <netcdf/>
+  </aggregation>
+</netcdf>

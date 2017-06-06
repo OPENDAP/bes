@@ -40,14 +40,6 @@
 #include <map>
 #include <string>
 
-using std::cerr ;
-using std::endl ;
-using std::ostream ;
-using std::map ;
-using std::string ;
-
-#include "BESUtil.h"
-
 #ifdef NDEBUG
 #define BESDEBUG( x, y )
 #else
@@ -67,6 +59,9 @@ using std::string ;
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< x << "] " << y ; } while( 0 )
 #endif
 
+#ifdef NDEBUG
+#define BESISDEBUG( x ) (false)
+#else
 /** @brief macro used to determine if the specified debug context is set
  *
  * If there is a lot of debugging information, use this macro to determine if
@@ -88,14 +83,15 @@ using std::string ;
  * @param x bes debug to check
  */
 #define BESISDEBUG( x ) BESDebug::IsSet( x )
+#endif
 
 class BESDebug
 {
 private:
-    typedef map<string,bool> DebugMap;
+    typedef std::map<std::string,bool> DebugMap;
 
     static DebugMap _debug_map ;
-    static ostream *_debug_strm ;
+    static std::ostream *_debug_strm ;
     static bool	_debug_strm_created ;
 
     typedef DebugMap::iterator _debug_iter ;
@@ -118,7 +114,7 @@ public:
      * @param flagName debug context flag to set to the given value
      * @param value set the debug context to this value
      */
-    static void Set(const string &flagName, bool value)
+    static void Set(const std::string &flagName, bool value)
     {
         if (flagName == "all" && value)
         {
@@ -142,7 +138,7 @@ public:
      *
      * @param flagName debug context to register
      */
-    static void Register(const string &flagName)
+    static void Register(const std::string &flagName)
     {
         debug_citer a = _debug_map.find("all");
         debug_citer i = _debug_map.find(flagName);
@@ -164,7 +160,7 @@ public:
      * @param flagName debug context to check if set
      * @return whether the specified flagName is set or not
      */
-    static bool IsSet(const string &flagName)
+    static bool IsSet(const std::string &flagName)
     {
         debug_citer i = _debug_map.find(flagName);
         if (i != _debug_map.end())
@@ -183,18 +179,18 @@ public:
      *
      * @return the current debug stream
      */
-    static ostream * GetStrm()
+    static std::ostream * GetStrm()
     {
         return _debug_strm;
     }
 
-    static string GetPidStr();
+    static std::string GetPidStr();
 
     /** @brief set the debug output stream to the specified stream
      *
-     * Static method that sets the debug output stream to the specified ostream.
+     * Static method that sets the debug output stream to the specified std::ostream.
      *
-     * If the ostream was created (not set to cerr), then the created flag
+     * If the std::ostream was created (not set to cerr), then the created flag
      * should be set to true.
      *
      * If the current debug stream is set and the _debug_strm_created flag is
@@ -205,7 +201,7 @@ public:
      * @param strm set the current debug stream to strm
      * @param created whether the passed debug stream was created
      */
-    static void SetStrm(ostream *strm, bool created)
+    static void SetStrm(std::ostream *strm, bool created)
     {
         if (_debug_strm_created && _debug_strm)
         {
@@ -219,7 +215,7 @@ public:
         }
         if (!strm)
         {
-            _debug_strm = &cerr;
+            _debug_strm = &std::cerr;
             _debug_strm_created = false;
         }
         else
@@ -229,29 +225,10 @@ public:
         }
     }
 
-    static void			SetUp( const string &values ) ;
-    static void			Help( ostream &strm ) ;
-    static bool         IsContextName( const string &name ) ;
-    static string       GetOptionsString() ;
+    static void			SetUp( const std::string &values ) ;
+    static void			Help( std::ostream &strm ) ;
+    static bool         IsContextName( const std::string &name ) ;
+    static std::string       GetOptionsString() ;
 } ;
 
 #endif // I_BESDebug_h
-
-/*
-int
-main( int argc, char **argv )
-{
-    int some_number = 1 ;
-    BESDEBUG( "something", "Shouldn't be seeing this part 1: "
-                           << some_number++ << endl ) ;
-    BESDebug::Set( "something", false ) ;
-    BESDEBUG( "something", "Shouldn't be seeing this part 2: "
-                           << some_number++ << endl ) ;
-    BESDebug::Set( "something", true ) ;
-    BESDEBUG( "something", "Should be seeing this: "
-                           << some_number++ << endl ) ;
-
-    return 0 ;
-}
-*/
-

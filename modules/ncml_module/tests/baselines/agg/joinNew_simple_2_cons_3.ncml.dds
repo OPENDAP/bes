@@ -1,0 +1,3 @@
+Dataset {
+    Int32 V[day = 4][station = 1];
+} joinNew_simple_2.ncml;
