@@ -54,7 +54,7 @@ H5.EnableDiskMetaDataCache to true
 and set appropriate path that stores the DAS cache file with the BES key H5.DiskMetaDataCachePath
 
 2. Add the HDF-EOS5 sinussoidal projection support 
-For the HDF-EOS5 sinusoidal projection, the latitude and longitude are calculated and CF grid projection information are added.
+For the HDF-EOS5 sinusoidal projection, the latitude and longitude are calculated and CF grid projection information is added.
 
 *****************************************************
 ********Special note about the version number********
