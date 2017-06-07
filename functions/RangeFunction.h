@@ -8,7 +8,10 @@
 #ifndef FUNCTIONS_RANGEFUNCTION_H_
 #define FUNCTIONS_RANGEFUNCTION_H_
 
+#include <iostream>
+
 #include <ServerFunction.h>
+#include <dods-limits.h>
 
 namespace libdap {
 class BaseType;
@@ -16,6 +19,23 @@ class DDS;
 }
 
 namespace functions {
+
+struct min_max_t {
+    double max_val;
+    double min_val;
+
+    min_max_t() : max_val(-DODS_DBL_MAX), min_val(DODS_DBL_MAX) { }
+
+    friend std::ostream& operator<< (std::ostream& stream, const min_max_t& v) {
+        stream << "min: " << v.min_val << ", max: " << v.max_val;
+        return stream;
+    }
+};
+
+// These are declared here so they can be tested by RangeFunctionTest.cc in unit-tests.
+// jhrg 6/7/17
+min_max_t find_min_max(double* data, int length, bool use_missing, double missing);
+libdap::BaseType *range_worker(libdap::BaseType *bt, double missing, bool use_missing);
 
 /**
  * The function_dap2_range() function determines the range of the passed variable and returns it in a DAP2 array of size two

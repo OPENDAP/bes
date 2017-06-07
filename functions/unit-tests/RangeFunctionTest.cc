@@ -48,7 +48,9 @@
 
 #include <BaseType.h>
 #include <Float32.h>
+#include <Float64.h>
 #include <Array.h>
+#include <Structure.h>
 #include <Grid.h>
 
 #include <test/TestTypeFactory.h>
@@ -68,6 +70,8 @@ static bool bes_debug = false;
 #define DBG(x) do { if (debug) (x); } while(false);
 
 const string small_dds_file = "small.dds";
+const string small_float64_dds_file = "small_float64.dds";
+const string grid_float64_dds_file = "grid_float64.dds";
 
 using namespace CppUnit;
 using namespace libdap;
@@ -78,10 +82,9 @@ int test_variable_sleep_interval = 0;
 
 class RangeFunctionTest: public TestFixture {
 private:
-    DDS *small_dds;
+    DDS *small_float64_dds;
+    DDS *grid_float64_dds;
     TestTypeFactory btf;
-
-    //CPLErrorHandler orig_err_handler;
 
     string src_dir;
     const static int x_size = 9, y_size = 11;
@@ -101,7 +104,7 @@ private:
 
 
 public:
-    RangeFunctionTest() : small_dds(0), src_dir(TEST_SRC_DIR)
+    RangeFunctionTest() : small_float64_dds(0), grid_float64_dds(0), src_dir(TEST_SRC_DIR)
     {
         src_dir.append("/scale");   // The test data for scale is just fine...
     }
@@ -114,21 +117,37 @@ public:
     {
         DBG(cerr << "setUp() - BEGIN" << endl);
         try {
-            small_dds = new DDS(&btf);
-            string dds_file = src_dir + "/" + small_dds_file;
-            small_dds->parse(dds_file);
+            small_float64_dds = new DDS(&btf);
+            small_float64_dds->parse(src_dir + "/" + small_float64_dds_file);
 
-            vector<dods_float32> lat(x_size);
-            load_var(dynamic_cast<Array*>(small_dds->var("lat")), src_dir + "/" + "small_lat.txt", lat);
-            vector<dods_float32> lon(y_size);
-            load_var(dynamic_cast<Array*>(small_dds->var("lon")), src_dir + "/" + "small_lon.txt", lon);
+            vector<dods_float64> lat(x_size);
+            load_var(dynamic_cast<Array*>(small_float64_dds->var("lat")), src_dir + "/" + "small_lat.txt", lat);
+            vector<dods_float64> lon(y_size);
+            load_var(dynamic_cast<Array*>(small_float64_dds->var("lon")), src_dir + "/" + "small_lon.txt", lon);
 
-            vector<dods_float32> data(x_size * y_size);
-            Array *a = dynamic_cast<Array*>(small_dds->var("data"));
+            vector<dods_float64> data(x_size * y_size);
+            Array *a = dynamic_cast<Array*>(small_float64_dds->var("data"));
             load_var(a, src_dir + "/" + "small_data.txt", data);
 
             a->get_attr_table().append_attr("missing_value", "String", "-99");
 
+            grid_float64_dds = new DDS(&btf);
+            grid_float64_dds->parse(src_dir + "/" + grid_float64_dds_file);
+            Grid *g = dynamic_cast<Grid*>(grid_float64_dds->var("data"));
+            if (!g) throw InternalErr(__FILE__, __LINE__, " Could not find grid 'data'");
+
+            // Cheat
+            if (!dynamic_cast<Array*>(g->var("lat")))
+                throw InternalErr(__FILE__, __LINE__, " Could not find 'lat' in 'data'");
+            dynamic_cast<Array*>(g->var("lat"))->set_value(lat, lat.size());
+
+            if (!dynamic_cast<Array*>(g->var("lon")))
+                throw InternalErr(__FILE__, __LINE__, " Could not find 'lon' in 'data'");
+            dynamic_cast<Array*>(g->var("lon"))->set_value(lon, lon.size());
+
+            if (!dynamic_cast<Array*>(g->var("data")))
+                throw InternalErr(__FILE__, __LINE__, " Could not find 'arraydata' in 'grid data'");
+            dynamic_cast<Array*>(g->var("data"))->set_value(data, data.size());
         }
         catch (Error & e) {
             cerr << "SetUp (Error): " << e.get_error_message() << endl;
@@ -144,14 +163,14 @@ public:
 
     void tearDown()
     {
-        delete small_dds;
-        small_dds = 0;
+        delete small_float64_dds;
+        small_float64_dds = 0;
     }
 
     void test_reading_data()
     {
-        vector<dods_float32> lat_buf(x_size);
-        Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
+        vector<dods_float64> lat_buf(x_size);
+        Array *lat = dynamic_cast<Array*>(small_float64_dds->var("lat"));
         lat->value(&lat_buf[0]);
         DBG(cerr << "lat: ");
         DBG(copy(lat_buf.begin(), lat_buf.end(), ostream_iterator<double>(cerr, " ")));
@@ -160,8 +179,8 @@ public:
         CPPUNIT_ASSERT(lat_buf[0] == 4);
         CPPUNIT_ASSERT(lat_buf[x_size - 1] == -4);
 
-        vector<dods_float32> lon_buf(y_size);
-        Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
+        vector<dods_float64> lon_buf(y_size);
+        Array *lon = dynamic_cast<Array*>(small_float64_dds->var("lon"));
         lon->value(&lon_buf[0]);
         DBG(cerr << "lon: ");
         DBG(copy(lon_buf.begin(), lon_buf.end(), ostream_iterator<double>(cerr, " ")));
@@ -170,9 +189,9 @@ public:
         CPPUNIT_ASSERT(lon_buf[0] == -0.5);
         CPPUNIT_ASSERT(lon_buf[y_size - 1] == 0.5);
 
-        Array *d = dynamic_cast<Array*>(small_dds->var("data"));
+        Array *d = dynamic_cast<Array*>(small_float64_dds->var("data"));
         const int data_size = x_size * y_size;
-        vector<dods_float32> data(data_size);
+        vector<dods_float64> data(data_size);
         d->value(&data[0]);
         DBG(cerr << "data: ");
         DBG(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
@@ -186,9 +205,141 @@ public:
         CPPUNIT_ASSERT(data[4 * x_size + 4] == 3.5);
     }
 
+    void test_find_min_max_1()
+    {
+        // Test the initial state of the little response structure
+        min_max_t v;
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val == DODS_DBL_MAX);
+        CPPUNIT_ASSERT(v.max_val == -DODS_DBL_MAX);
+    }
+
+    void test_find_min_max_2()
+    {
+        // Test one and two element vectors
+        vector<double> data;
+        data.push_back(-100);
+
+        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val == -100);
+        CPPUNIT_ASSERT(v.max_val == -100);
+
+        data.push_back(100);
+
+        v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val == -100);
+        CPPUNIT_ASSERT(v.max_val == 100);
+    }
+
+    void test_find_min_max_3()
+    {
+        // Test one and two element vectors
+        vector<double> data;
+        data.push_back(-100);
+        data.push_back(100);
+        data.push_back(-50);
+        data.push_back(50);
+        data.push_back(-101);
+        data.push_back(101);
+        data.push_back(-9999);
+
+        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val == -9999);
+        CPPUNIT_ASSERT(v.max_val == 101);
+
+        v = find_min_max(&data[0], data.size(), true, -9999);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val == -101);
+        CPPUNIT_ASSERT(v.max_val == 101);
+    }
+
+    // Test arrays - two tests
+    void test_range_worker_1()
+    {
+        Structure *result = dynamic_cast<Structure*>(range_worker(small_float64_dds->var("data"), -99, true));
+        CPPUNIT_ASSERT(result);
+        CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
+
+        Float64 *min = dynamic_cast<Float64*>(result->var("min"));
+        CPPUNIT_ASSERT(min);
+        DBG(cerr << "min: " << min->value() << endl);
+        CPPUNIT_ASSERT(min->value() == 1);
+
+        Float64 *max = dynamic_cast<Float64*>(result->var("max"));
+        CPPUNIT_ASSERT(max);
+        DBG(cerr << "max: " << max->value() << endl);
+        CPPUNIT_ASSERT(max->value() == 6.9);
+    }
+
+    void test_range_worker_2()
+    {
+        Structure *result = dynamic_cast<Structure*>(range_worker(small_float64_dds->var("data"), 0, false));
+        CPPUNIT_ASSERT(result);
+        CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
+
+        Float64 *min = dynamic_cast<Float64*>(result->var("min"));
+        CPPUNIT_ASSERT(min);
+        DBG(cerr << "min: " << min->value() << endl);
+        CPPUNIT_ASSERT(min->value() == -99);
+
+        Float64 *max = dynamic_cast<Float64*>(result->var("max"));
+        CPPUNIT_ASSERT(max);
+        DBG(cerr << "max: " << max->value() << endl);
+        CPPUNIT_ASSERT(max->value() == 6.9);
+    }
+
+    // Test grids - two tests
+    void test_range_worker_3()
+    {
+        // grid_float64_dds; previous two tests use small_float64_dds and that's
+        // the only difference.
+        Structure *result = dynamic_cast<Structure*>(range_worker(grid_float64_dds->var("data"), -99, true));
+        CPPUNIT_ASSERT(result);
+        CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
+
+        Float64 *min = dynamic_cast<Float64*>(result->var("min"));
+        CPPUNIT_ASSERT(min);
+        DBG(cerr << "min: " << min->value() << endl);
+        CPPUNIT_ASSERT(min->value() == 1);
+
+        Float64 *max = dynamic_cast<Float64*>(result->var("max"));
+        CPPUNIT_ASSERT(max);
+        DBG(cerr << "max: " << max->value() << endl);
+        CPPUNIT_ASSERT(max->value() == 6.9);
+    }
+
+    void test_range_worker_4()
+    {
+        Structure *result = dynamic_cast<Structure*>(range_worker(grid_float64_dds->var("data"), 0, false));
+        CPPUNIT_ASSERT(result);
+        CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
+
+        Float64 *min = dynamic_cast<Float64*>(result->var("min"));
+        CPPUNIT_ASSERT(min);
+        DBG(cerr << "min: " << min->value() << endl);
+        CPPUNIT_ASSERT(min->value() == -99);
+
+        Float64 *max = dynamic_cast<Float64*>(result->var("max"));
+        CPPUNIT_ASSERT(max);
+        DBG(cerr << "max: " << max->value() << endl);
+        CPPUNIT_ASSERT(max->value() == 6.9);
+    }
+
+
     CPPUNIT_TEST_SUITE( RangeFunctionTest );
 
     CPPUNIT_TEST(test_reading_data);
+    CPPUNIT_TEST(test_find_min_max_1);
+    CPPUNIT_TEST(test_find_min_max_2);
+    CPPUNIT_TEST(test_find_min_max_3);
+
+    CPPUNIT_TEST(test_range_worker_1);
+    CPPUNIT_TEST(test_range_worker_2);
+    CPPUNIT_TEST(test_range_worker_3);
+    CPPUNIT_TEST(test_range_worker_4);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -235,7 +386,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = RangeFunctionTest::suite()->getName().append("::").append(argv[i]);
+            test = RangeFunctionTest::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

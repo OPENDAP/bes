@@ -680,7 +680,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = ScaleUtilTest::suite()->getName().append("::").append(argv[i]);
+            test = ScaleUtilTest::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

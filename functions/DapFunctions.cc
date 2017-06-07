@@ -94,7 +94,7 @@ void DapFunctions::initialize(const string &modname)
     OGRRegisterAll();
 
     // What to do with the orig error handler? Pitch it for now. jhrg 10/17/16
-    CPLErrorHandler orig_err_handler = CPLSetErrorHandler(CPLQuietErrorHandler);
+    /*CPLErrorHandler orig_err_handler =*/ (void) CPLSetErrorHandler(CPLQuietErrorHandler);
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

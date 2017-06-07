@@ -122,3 +122,4 @@ void load_var(Array *var, const string &data_file, vector<T> &buf)
 
 // Explicit declaration to force code generation
 template void load_var(Array *var, const string &data_file, vector<dods_float32> &buf);
+template void load_var(Array *var, const string &data_file, vector<dods_float64> &buf);

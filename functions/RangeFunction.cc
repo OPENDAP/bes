@@ -38,7 +38,7 @@
 #include <Error.h>
 #include <DDS.h>
 
-#include <dods-limits.h>
+//#include <dods-limits.h>
 #include <debug.h>
 #include <util.h>
 
@@ -59,6 +59,11 @@ string range_info =
 // general interface for COARDS/CF someday. Assume each BaseType comes bundled
 // with an attribute table.
 
+/**
+ * @brief Return the attribute value in a double
+ * @param val Attribute value as text
+ * @return The attribute value in a double
+ */
 static double string_to_double(const char *val)
 {
     istringstream iss(val);
@@ -73,6 +78,9 @@ static double string_to_double(const char *val)
 }
 
 #if 0
+
+Not Used
+
 /** Look for any one of a series of attribute values in the attribute table
  for \e var. This function treats the list of attributes as if they are ordered
  from most to least likely/important. It stops when the first of the vector of
@@ -111,6 +119,18 @@ static double get_attribute_double_value(BaseType *var, vector<string> &attribut
 }
 #endif
 
+/**
+ * @brief Return the value for an attribute.
+ *
+ * This function looks up the attribute in the table bound to var. If that
+ * fails it assumes the variable is a Grid and looks in the Grid's Array. If the
+ * first attempt - looking in the attribute table of var - fails and var is not
+ * a Grid, this code throws an exception.
+ *
+ * @param var Look in this variable's attribute table
+ * @param attribute The name of the attribute
+ * @return The attribute value in a double
+ */
 static double get_attribute_double_value(BaseType *var, const string &attribute)
 {
     AttrTable &attr = var->get_attr_table();
@@ -135,13 +155,57 @@ static double get_missing_value(BaseType *var)
     return get_attribute_double_value(var, "missing_value");
 }
 
+/**
+ * @brief Scan the data and find the max and min values.
+ *
+ * @param data Pointer to the data (a vector of doubles)
+ * @param length Number of elements in data
+ * @param use_missing True if the data values matching missing should be excluded
+ * @param missing Value to exclude (a double)
+ * @return An instance of min_max_t that holds the min and max values
+ */
+min_max_t find_min_max(double* data, int length, bool use_missing, double missing)
+{
+    min_max_t v;
+
+    if (use_missing) {
+        for (int i = 0; i < length; ++i) {
+            if (!double_eq(data[i], missing)) {
+                v.max_val = max(v.max_val, data[i]);
+                v.min_val = min(v.min_val, data[i]);
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < length; ++i) {
+            v.max_val = max(v.max_val, data[i]);
+            v.min_val = min(v.min_val, data[i]);
+        }
+    }
+
+    return v;
+}
+
+// TODO Modify this to include information about monotonicity of vectors.
+// That will be useful for geo operations when we use this to look at lat
+// and lon extent.
+
+/**
+ * @brief Find the min and max values of a DAP variable
+ * @param bt Scan the data in this variable
+ * @param missing Exclude this value when/if found in data
+ * @param use_missing True if the missing value should be excluded from the results
+ * @return A DAP Structure with two Float64 variables 'min' and 'max'. This structure
+ * is named such that it will be flattened by the BES framework function evaluator
+ * code.
+ */
 BaseType *range_worker(BaseType *bt, double missing, bool use_missing)
 {
     // Read the data, determine range and return the result. Must replace the new data
     // in a constructor (i.e., Array part of a Grid).
 
-    dods_float64 max_val = DODS_DBL_MIN, min_val = DODS_DBL_MAX;
-    // double *data;
+    min_max_t v;
+
     if (bt->type() == dods_grid_c) {
         // Grab the whole Grid; note that the scaling is done only on the array part
         Grid &source = dynamic_cast<Grid&>(*bt);
@@ -157,46 +221,12 @@ BaseType *range_worker(BaseType *bt, double missing, bool use_missing)
         // Get the Array part and read the values
         Array *a = source.get_array();
         double *data = extract_double_array(a);
-#if 0
-        // NB: Code below should do the same as this but factors the tests out of
-        // the loop to the extent possible and drops the use of 'first' by using
-        // the min and max double values for max_val and min_val, resp. jhrg 6/6/17
-        //
-        // Now determine the range.
-        int length = a->length();
-        bool first = true;
-        for (int i = 0; i < length; ++i) {
-            if (!use_missing || !double_eq(data[i], missing)) {
-                if (first) {
-                    max_val = min_val = data[i];
-                 }
-                else {
-                    max_val = max_val < data[i] ? data[i] : max_val;
-                    min_val = min_val > data[i] ? data[i] : min_val;
-                }
-                first = false;
-            }
-        }
-#else
+
         // Now determine the range.
         int length = a->length();
 
-        if (use_missing) {
-            for (int i = 0; i < length; ++i) {
-                if (!double_eq(data[i], missing)) {
-                    max_val = max(max_val, data[i]);
-                    min_val = min(min_val, data[i]);
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < length; ++i) {
-                max_val = max(max_val, data[i]);
-                min_val = min(min_val, data[i]);
+        v = find_min_max(data, length, use_missing, missing);
 
-            }
-        }
-#endif
         delete[] data;
     }
     else if (bt->is_vector_type()) {
@@ -215,28 +245,14 @@ BaseType *range_worker(BaseType *bt, double missing, bool use_missing)
         // Now determine the range.
         int length = source.length();
 
-        if (use_missing) {
-            for (int i = 0; i < length; ++i) {
-                if (!double_eq(data[i], missing)) {
-                    max_val = max(max_val, data[i]);
-                    min_val = min(min_val, data[i]);
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < length; ++i) {
-                max_val = max(max_val, data[i]);
-                min_val = min(min_val, data[i]);
-
-            }
-        }
+        v = find_min_max(data, length, use_missing, missing);
 
         delete[] data;
     }
     else if (bt->is_simple_type() && !(bt->type() == dods_str_c || bt->type() == dods_url_c)) {
         double data = extract_double_value(bt);
-        max_val = data;
-        min_val = data;
+        v.max_val = data;
+        v.min_val = data;
     }
     else {
         throw Error(malformed_expr, "The range_worker() function works only for numeric Grids, Arrays and scalars.");
@@ -246,11 +262,11 @@ BaseType *range_worker(BaseType *bt, double missing, bool use_missing)
     Structure *rangeResult = new Structure("range_result_unwrap");
 
     Float64 *rangeMin = new Float64("min");
-    rangeMin->set_value(min_val);
+    rangeMin->set_value(v.min_val);
     rangeResult->add_var_nocopy(rangeMin);
 
     Float64 *rangeMax = new Float64("max");
-    rangeMax->set_value(max_val);
+    rangeMax->set_value(v.max_val);
     rangeResult->add_var_nocopy(rangeMax);
 
     return rangeResult;
