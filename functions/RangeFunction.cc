@@ -181,10 +181,10 @@ min_max_t find_min_max(double* data, int length, bool use_missing, double missin
                     }
                 }
                 previously_increasing = increasing;
+                previous_value = data[i];
             }
             v.max_val = max(v.max_val, data[i]);
             v.min_val = min(v.min_val, data[i]);
-            previous_value = data[i];
         }
     }
     return v;
