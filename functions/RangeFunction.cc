@@ -171,6 +171,7 @@ min_max_t find_min_max(double* data, int length, bool use_missing, double missin
     bool increasing, previously_increasing;
 
     v.monotonic = true;
+    previous_value = data[0];
     for (int i = 0; i < length; ++i) {
         if (!use_missing || !double_eq(data[i], missing)) {
             if(v.monotonic && i>0){
