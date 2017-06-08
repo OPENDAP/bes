@@ -29,6 +29,7 @@
 
 #include <BaseType.h>
 #include <Float64.h>
+#include <Byte.h>
 #include <Str.h>
 #include <Structure.h>
 #include <Array.h>
@@ -172,6 +173,42 @@ min_max_t find_min_max(double* data, int length, bool use_missing, double missin
 
     v.monotonic = true;
     previous_value = data[0];
+    if (use_missing) {
+        for (int i = 0; i < length; ++i) {
+            if (!double_eq(data[i], missing)) {
+                if(v.monotonic && i>0){
+                    increasing = (data[i] - previous_value) > 0.0;
+                    if(i>1){
+                        if(previously_increasing!=increasing){
+                            v.monotonic = false;
+                        }
+                    }
+                    previously_increasing = increasing;
+                    previous_value = data[i];
+                }
+                v.max_val = max(v.max_val, data[i]);
+                v.min_val = min(v.min_val, data[i]);
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < length; ++i) {
+            if(v.monotonic && i>0){
+                increasing = (data[i] - previous_value) > 0.0;
+                if(i>1){
+                    if(previously_increasing!=increasing){
+                        v.monotonic = false;
+                    }
+                }
+                previously_increasing = increasing;
+                previous_value = data[i];
+            }
+            v.max_val = max(v.max_val, data[i]);
+            v.min_val = min(v.min_val, data[i]);
+        }
+    }
+
+#if 0
     for (int i = 0; i < length; ++i) {
         if (!use_missing || !double_eq(data[i], missing)) {
             if(v.monotonic && i>0){
@@ -188,6 +225,7 @@ min_max_t find_min_max(double* data, int length, bool use_missing, double missin
             v.min_val = min(v.min_val, data[i]);
         }
     }
+#endif
     return v;
 }
 
@@ -273,6 +311,10 @@ BaseType *range_worker(BaseType *bt, double missing, bool use_missing)
     Float64 *rangeMax = new Float64("max");
     rangeMax->set_value(v.max_val);
     rangeResult->add_var_nocopy(rangeMax);
+
+    Byte *is_monotonic = new Byte("is_monotonic");
+    is_monotonic->set_value(v.monotonic);
+    rangeResult->add_var_nocopy(is_monotonic);
 
     return rangeResult;
 }
