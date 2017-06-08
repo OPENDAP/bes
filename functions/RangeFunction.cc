@@ -167,22 +167,26 @@ static double get_missing_value(BaseType *var)
 min_max_t find_min_max(double* data, int length, bool use_missing, double missing)
 {
     min_max_t v;
+    double previous_value;
+    bool increasing, previously_increasing;
 
-    if (use_missing) {
-        for (int i = 0; i < length; ++i) {
-            if (!double_eq(data[i], missing)) {
-                v.max_val = max(v.max_val, data[i]);
-                v.min_val = min(v.min_val, data[i]);
+    v.monotonic = true;
+    for (int i = 0; i < length; ++i) {
+        if (!use_missing || !double_eq(data[i], missing)) {
+            if(v.monotonic && i>0){
+                increasing = (data[i] - previous_value) > 0.0;
+                if(i>1){
+                    if(previously_increasing!=increasing){
+                        v.monotonic = false;
+                    }
+                }
+                previously_increasing = increasing;
             }
-        }
-    }
-    else {
-        for (int i = 0; i < length; ++i) {
             v.max_val = max(v.max_val, data[i]);
             v.min_val = min(v.min_val, data[i]);
+            previous_value = data[i];
         }
     }
-
     return v;
 }
 

@@ -212,6 +212,7 @@ public:
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == DODS_DBL_MAX);
         CPPUNIT_ASSERT(v.max_val == -DODS_DBL_MAX);
+        CPPUNIT_ASSERT(v.monotonic == true);
     }
 
     void test_find_min_max_2()
@@ -224,6 +225,7 @@ public:
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -100);
         CPPUNIT_ASSERT(v.max_val == -100);
+        CPPUNIT_ASSERT(v.monotonic == true);
 
         data.push_back(100);
 
@@ -231,6 +233,7 @@ public:
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -100);
         CPPUNIT_ASSERT(v.max_val == 100);
+        CPPUNIT_ASSERT(v.monotonic == true);
     }
 
     void test_find_min_max_3()
@@ -249,11 +252,13 @@ public:
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -9999);
         CPPUNIT_ASSERT(v.max_val == 101);
+        CPPUNIT_ASSERT(v.monotonic == false);
 
         v = find_min_max(&data[0], data.size(), true, -9999);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -101);
         CPPUNIT_ASSERT(v.max_val == 101);
+        CPPUNIT_ASSERT(v.monotonic == false);
     }
 
     // Test arrays - two tests

@@ -23,11 +23,14 @@ namespace functions {
 struct min_max_t {
     double max_val;
     double min_val;
+    bool monotonic;
 
-    min_max_t() : max_val(-DODS_DBL_MAX), min_val(DODS_DBL_MAX) { }
+    min_max_t() : max_val(-DODS_DBL_MAX), min_val(DODS_DBL_MAX), monotonic(true) { }
 
     friend std::ostream& operator<< (std::ostream& stream, const min_max_t& v) {
-        stream << "min: " << v.min_val << ", max: " << v.max_val;
+        stream << "min: " << v.min_val <<
+            ", max: " << v.max_val <<
+            ", monotonic: " <<  (v.monotonic?"true":"false") ;
         return stream;
     }
 };
