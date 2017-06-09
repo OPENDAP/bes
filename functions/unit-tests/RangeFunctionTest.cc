@@ -115,7 +115,7 @@ public:
 
     void setUp()
     {
-        DBG(cerr << "setUp() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
         try {
             small_float64_dds = new DDS(&btf);
             small_float64_dds->parse(src_dir + "/" + small_float64_dds_file);
@@ -158,7 +158,7 @@ public:
             throw;
         }
 
-        DBG(cerr << "setUp() - END" << endl);
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     void tearDown()
@@ -169,6 +169,8 @@ public:
 
     void test_reading_data()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         vector<dods_float64> lat_buf(x_size);
         Array *lat = dynamic_cast<Array*>(small_float64_dds->var("lat"));
         lat->value(&lat_buf[0]);
@@ -203,20 +205,28 @@ public:
         DBG(cerr << "data[" << 4 * x_size + 4 << "]: " << data[4 * x_size + 4] << endl);
         CPPUNIT_ASSERT(same_as(data[4 * x_size + 0], -99)); // accounts for rounding error
         CPPUNIT_ASSERT(data[4 * x_size + 4] == 3.5);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     void test_find_min_max_1()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         // Test the initial state of the little response structure
         min_max_t v;
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == DODS_DBL_MAX);
         CPPUNIT_ASSERT(v.max_val == -DODS_DBL_MAX);
         CPPUNIT_ASSERT(v.monotonic == true);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     void test_find_min_max_2()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         // Test one and two element vectors
         vector<double> data;
         data.push_back(-100);
@@ -234,10 +244,14 @@ public:
         CPPUNIT_ASSERT(v.min_val == -100);
         CPPUNIT_ASSERT(v.max_val == 100);
         CPPUNIT_ASSERT(v.monotonic == true);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     void test_find_min_max_3()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         // Test one and two element vectors
         vector<double> data;
         data.push_back(-100);
@@ -259,11 +273,52 @@ public:
         CPPUNIT_ASSERT(v.min_val == -101);
         CPPUNIT_ASSERT(v.max_val == 101);
         CPPUNIT_ASSERT(v.monotonic == false);
+
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
+
+    void test_monotonicity_edge_case_1()
+    {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
+        vector<double> data;
+        data.push_back(100);
+        data.push_back(10);
+        data.push_back(20);
+        data.push_back(30);
+        data.push_back(40);
+        data.push_back(50);
+
+        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val ==  10);
+        CPPUNIT_ASSERT(v.max_val == 100);
+        CPPUNIT_ASSERT(v.monotonic == false);
+
+        data[0] = 1;
+        data.push_back(-9999);
+
+        v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val ==  -9999);
+        CPPUNIT_ASSERT(v.max_val == 50);
+        CPPUNIT_ASSERT(v.monotonic == false);
+
+
+        v = find_min_max(&data[0], data.size(), true, -9999);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val == 1);
+        CPPUNIT_ASSERT(v.max_val == 50);
+        CPPUNIT_ASSERT(v.monotonic == true);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     // Test arrays - two tests
     void test_range_worker_1()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         Structure *result = dynamic_cast<Structure*>(range_worker(small_float64_dds->var("data"), -99, true));
         CPPUNIT_ASSERT(result);
         CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
@@ -277,10 +332,14 @@ public:
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
         CPPUNIT_ASSERT(max->value() == 6.9);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     void test_range_worker_2()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         Structure *result = dynamic_cast<Structure*>(range_worker(small_float64_dds->var("data"), 0, false));
         CPPUNIT_ASSERT(result);
         CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
@@ -294,11 +353,14 @@ public:
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
         CPPUNIT_ASSERT(max->value() == 6.9);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     // Test grids - two tests
     void test_range_worker_3()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
         // grid_float64_dds; previous two tests use small_float64_dds and that's
         // the only difference.
         Structure *result = dynamic_cast<Structure*>(range_worker(grid_float64_dds->var("data"), -99, true));
@@ -314,10 +376,14 @@ public:
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
         CPPUNIT_ASSERT(max->value() == 6.9);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
     void test_range_worker_4()
     {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+
         Structure *result = dynamic_cast<Structure*>(range_worker(grid_float64_dds->var("data"), 0, false));
         CPPUNIT_ASSERT(result);
         CPPUNIT_ASSERT(result->name() == "range_result_unwrap");
@@ -331,6 +397,8 @@ public:
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
         CPPUNIT_ASSERT(max->value() == 6.9);
+
+        DBG(cerr << __func__ << "() - END" << endl);
     }
 
 
@@ -340,6 +408,8 @@ public:
     CPPUNIT_TEST(test_find_min_max_1);
     CPPUNIT_TEST(test_find_min_max_2);
     CPPUNIT_TEST(test_find_min_max_3);
+    CPPUNIT_TEST(test_monotonicity_edge_case_1);
+
 
     CPPUNIT_TEST(test_range_worker_1);
     CPPUNIT_TEST(test_range_worker_2);
