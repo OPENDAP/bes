@@ -277,27 +277,45 @@ public:
         DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    void test_monotonicity_edge_case_1()
+    void test_monotonicity_edge_cases()
     {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
 
         vector<double> data;
         data.push_back(100);
+
+        // One value
+        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val ==  100);
+        CPPUNIT_ASSERT(v.max_val == 100);
+        CPPUNIT_ASSERT(v.monotonic == true);
+
         data.push_back(10);
+
+        // Two value
+        v = find_min_max(&data[0], data.size(), false, 0);
+        DBG(cerr << "v: " << v << endl);
+        CPPUNIT_ASSERT(v.min_val ==  10);
+        CPPUNIT_ASSERT(v.max_val == 100);
+        CPPUNIT_ASSERT(v.monotonic == true);
+
         data.push_back(20);
         data.push_back(30);
         data.push_back(40);
         data.push_back(50);
 
-        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        // Third value directtion change
+        v = find_min_max(&data[0], data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val ==  10);
         CPPUNIT_ASSERT(v.max_val == 100);
         CPPUNIT_ASSERT(v.monotonic == false);
 
+
+        // Last value direction change.
         data[0] = 1;
         data.push_back(-9999);
-
         v = find_min_max(&data[0], data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val ==  -9999);
@@ -408,7 +426,7 @@ public:
     CPPUNIT_TEST(test_find_min_max_1);
     CPPUNIT_TEST(test_find_min_max_2);
     CPPUNIT_TEST(test_find_min_max_3);
-    CPPUNIT_TEST(test_monotonicity_edge_case_1);
+    CPPUNIT_TEST(test_monotonicity_edge_cases);
 
 
     CPPUNIT_TEST(test_range_worker_1);
