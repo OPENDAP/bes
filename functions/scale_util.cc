@@ -61,6 +61,9 @@ using namespace libdap;
 
 namespace functions {
 
+#if 0
+
+Not Used
 
 inline static int is_valid_lat(const double lat)
 {
@@ -71,6 +74,7 @@ inline static int is_valid_lon(const double lon)
 {
     return (lon >= -180 && lon <= 180);
 }
+#endif
 
 /**
  * @brief return a SizeBox circumscribing the two DAP Arrays
@@ -221,7 +225,7 @@ vector<GDAL_GCP> get_gcp_data(Array *x, Array *y, int sample_x, int sample_y)
 
     unsigned long count = 0;
     for (int i = 0; i < size.x_size; i += sample_x) {
-        // The test for count < n_gcps corrects for discrepencies between integer
+        // The test for count < n_gcps corrects for discrepancies between integer
         // division and the simple increment used by the loops. 3/29/17 jhrg
         for (int j = 0; count < n_gcps && j < size.y_size; j += sample_y) {
             gcp_list[count].dfGCPLine = j;
@@ -704,8 +708,8 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
  * @param crs The CRS to use for the result (default is to use the CRS of 'src')
  * @return An auto_ptr to the result (a new GDALDataset instance)
  */
-auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size,
-    const string &crs /*""*/, const string &interp /*nearest*/)
+auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size, const string &crs /*""*/,
+    const string &interp /*nearest*/)
 {
     char **argv = NULL;
     argv = CSLAddString(argv, "-of");       // output format
@@ -715,7 +719,8 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
     ostringstream oss;
     oss << size.x_size;
     argv = CSLAddString(argv, oss.str().c_str());    // size x
-    oss.str(""); oss << size.y_size;
+    oss.str("");
+    oss << size.y_size;
     argv = CSLAddString(argv, oss.str().c_str());    // size y
 
     argv = CSLAddString(argv, "-b");    // band number
@@ -729,9 +734,7 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
         argv = CSLAddString(argv, crs.c_str());
     }
 
-
-
-    if(BESISDEBUG(DEBUG_KEY)){
+    if (BESISDEBUG(DEBUG_KEY)) {
         char **local = argv;
         while (*local) {
             BESDEBUG(DEBUG_KEY, "argv: " << *local++ << endl);
@@ -753,9 +756,9 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
         GDALClose(dst_handle);
         GDALTranslateOptionsFree(options);
         string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
-		BESDEBUG(DEBUG_KEY,"ERROR scale_dataset(): " << msg << endl);
-        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
- }
+        BESDEBUG(DEBUG_KEY, "ERROR scale_dataset(): " << msg << endl);
+        throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
 
     auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
 

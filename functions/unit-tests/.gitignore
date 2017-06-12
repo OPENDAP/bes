@@ -9,3 +9,4 @@ MaskArrayFunctionTest
 MakeMaskFunctionTest
 MakeNormalizedMaskFunctionTest
 ScaleUtilTest
+RangeFunctionTest

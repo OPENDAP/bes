@@ -1,0 +1,6 @@
+
+Dataset {
+    Float64 data[lat=9][lon=11];
+    Float64 lat[9];
+    Float64 lon[11];
+} small;

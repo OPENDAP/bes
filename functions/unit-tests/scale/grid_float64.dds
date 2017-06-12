@@ -1,0 +1,10 @@
+
+Dataset {
+    Grid {
+        Array:
+            Float64 data[lat=9][lon=11];
+        Maps:
+            Float64 lat[9];
+            Float64 lon[11];
+    } data;
+} small;
