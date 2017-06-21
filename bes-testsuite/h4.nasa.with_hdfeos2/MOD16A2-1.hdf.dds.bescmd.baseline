@@ -1,0 +1,12 @@
+Dataset {
+    Int16 ET_500m[YDim = 2400][XDim = 2400];
+    Int16 LE_500m[YDim = 2400][XDim = 2400];
+    Int16 PET_500m[YDim = 2400][XDim = 2400];
+    Int16 PLE_500m[YDim = 2400][XDim = 2400];
+    Byte ET_QC_500m[YDim = 2400][XDim = 2400];
+    Float64 Latitude[YDim = 2400][XDim = 2400];
+    Float64 Longitude[YDim = 2400][XDim = 2400];
+    Float64 YDim[YDim = 2400];
+    Float64 XDim[XDim = 2400];
+    Byte MOD_Grid_MOD16A2_eos_cf_projection;
+} MOD16A2.A2017145.h10v04.006.2017160232658.hdf;

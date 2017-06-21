@@ -19,6 +19,8 @@ $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.
 
 $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD021KM.A2010277.1710.005.2010278082807.hdf
 $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MYD09Q1.A2007001.h00v09.005.2007085230839.hdf
+$GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MOD16A2.A2017145.h10v04.006.2017160232658.hdf
+
 $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/MOD29.A2013196.1250.005.2013196195940.hdf
 $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/MOD29E1D.A2009340.005.2009341094922.hdf
 
