@@ -1112,11 +1112,11 @@
         <Attribute name="calibrated_nt" type="Int32">
             <value>5</value>
         </Attribute>
-        <Attribute name="scale_factor" type="Float32">
+        <Attribute name="scale_factor" type="Float64">
             <value>0.00010000000000000000</value>
         </Attribute>
-        <Attribute name="add_offset" type="Float32">
-            <value>0.000000000</value>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
         </Attribute>
         <Attribute name="grid_mapping" type="String">
             <value>MOD_Grid_250m_Surface_Reflectance_eos_cf_projection</value>
@@ -1151,11 +1151,11 @@
         <Attribute name="calibrated_nt" type="Int32">
             <value>5</value>
         </Attribute>
-        <Attribute name="scale_factor" type="Float32">
+        <Attribute name="scale_factor" type="Float64">
             <value>0.00010000000000000000</value>
         </Attribute>
-        <Attribute name="add_offset" type="Float32">
-            <value>0.000000000</value>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
         </Attribute>
         <Attribute name="grid_mapping" type="String">
             <value>MOD_Grid_250m_Surface_Reflectance_eos_cf_projection</value>

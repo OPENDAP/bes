@@ -1352,7 +1352,6 @@ cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
 
     if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
         if (scale > 1) {
-
             bool need_change_scale = true;           
             if(gridname!="") {
               
@@ -1367,6 +1366,12 @@ cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
                     if ((fieldname.size() >5) && fieldname.compare(0,5,"Range") == 0)
                         need_change_scale = false;
                 }
+                // MOD16A2
+                else if((temp_filename.size() >7)&&
+                        ((temp_filename.compare(0,7,"MOD16A2") == 0)|| (temp_filename.compare(0,7,"MYD16A2")==0))) 
+                        need_change_scale = false;
+                
+ 
             }
             if(true == need_change_scale) { 
                 sotype = MODIS_DIV_SCALE;

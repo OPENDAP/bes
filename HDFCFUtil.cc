@@ -338,6 +338,9 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
             bool is_a_fin = isfinite(attr_val);
             gp.fp = (float *) vals;
             rep << showpoint;
+            // setprecision seeme to cause the one-bit error when 
+            // converting from float to string. Watch whether this
+            // is an isue.
             rep << setprecision(10);
             rep << *(gp.fp+loc);
             string tmp_rep_str = rep.str();
@@ -916,6 +919,57 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
     return modis_dimmap_nonll_field;
 }
 
+void HDFCFUtil::add_scale_offset_attrs(AttrTable*at,const std::string& s_type, float svalue_f, double svalue_d, bool add_offset_found,
+                                       const std::string& o_type, float ovalue_f, double ovalue_d) {
+    at->del_attr("scale_factor");
+    string print_rep;
+    if(s_type!="Float64") {
+        print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&svalue_f));
+        at->append_attr("scale_factor", "Float32", print_rep);
+    }
+    else { 
+        print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&svalue_d));
+        at->append_attr("scale_factor", "Float64", print_rep);
+    }
+               
+    if (true == add_offset_found) {
+        at->del_attr("add_offset");
+        string print_rep;
+        if(o_type!="Float64") {
+            //float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
+            print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&ovalue_f));
+            at->append_attr("add_offset", "Float32", print_rep);
+        }
+        else {
+            print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&ovalue_d));
+            at->append_attr("add_offset", "Float64", print_rep);
+        }
+    }
+}
+
+void HDFCFUtil::add_scale_str_offset_attrs(AttrTable*at,const std::string& s_type, const std::string& s_value_str, bool add_offset_found,
+                                       const std::string& o_type, float ovalue_f, double ovalue_d) {
+    at->del_attr("scale_factor");
+    string print_rep;
+    if(s_type!="Float64") 
+        at->append_attr("scale_factor", "Float32", s_value_str);
+    else 
+        at->append_attr("scale_factor", "Float64", s_value_str);
+               
+    if (true == add_offset_found) {
+        at->del_attr("add_offset");
+        string print_rep;
+        if(o_type!="Float64") {
+            //float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
+            print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&ovalue_f));
+            at->append_attr("add_offset", "Float32", print_rep);
+        }
+        else {
+            print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&ovalue_d));
+            at->append_attr("add_offset", "Float64", print_rep);
+        }
+    }
+}
 /// Add comments.
 void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, 
                                                               const string &filename, 
@@ -929,9 +983,11 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
 
     // Scale and offset values
     string scale_factor_value=""; 
-    float  orig_scale_value = 1;
+    float  orig_scale_value_float = 1;
+    float  orig_scale_value_double = 1;
     string add_offset_value="0"; 
-    float  orig_offset_value = 0;
+    float  orig_offset_value_float = 0;
+    float  orig_offset_value_double = 0;
     bool add_offset_found = false;
 
 
@@ -943,15 +999,22 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
         if(at->get_name(it)=="scale_factor")
         {
             scale_factor_value = (*at->get_attr_vector(it)->begin());
-            orig_scale_value = atof(scale_factor_value.c_str());
             scale_factor_type = at->get_type(it);
+            if(scale_factor_type =="Float64")
+                orig_scale_value_double=atof(scale_factor_value.c_str());
+            else 
+                orig_scale_value_float = atof(scale_factor_value.c_str());
         }
 
         if(at->get_name(it)=="add_offset")
         {
             add_offset_value = (*at->get_attr_vector(it)->begin());
-            orig_offset_value = atof(add_offset_value.c_str());
             add_offset_type = at->get_type(it);
+
+            if(add_offset_type == "Float64") 
+                orig_offset_value_double = atof(add_offset_value.c_str());
+            else 
+                orig_offset_value_float = atof(add_offset_value.c_str());
             add_offset_found = true;
         }
 
@@ -980,7 +1043,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
     
     if(scale_factor_value.length()!=0) {
         if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
-            if (orig_scale_value > 1) {
+            if (orig_scale_value_float > 1 || orig_scale_value_double >1) {
 
                 bool need_change_scale = true;
                 if(true == is_grid) {
@@ -988,6 +1051,8 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                         if ((newfname.size() >5) && newfname.find("Range") != string::npos)
                             need_change_scale = false;
                     }
+                    else if((filename.size() >7)&&((filename.compare(0,7,"MOD16A2") == 0)|| (filename.compare(0,7,"MYD16A2")==0))) 
+                        need_change_scale = false;
                 }
                 if(true == need_change_scale)  {
                     sotype = MODIS_DIV_SCALE;
@@ -999,7 +1064,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
         }
 
         if (MODIS_DIV_SCALE == sotype) {
-            if (orig_scale_value < 1) {
+            if (orig_scale_value_float < 1 || orig_scale_value_double<1) {
                 sotype = MODIS_MUL_SCALE;
                 (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
                                    << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
@@ -1010,39 +1075,52 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
 
         if ((MODIS_MUL_SCALE == sotype) &&(true == add_offset_found)) {
 
-            //string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&orig_scale_value));
-            at->del_attr("scale_factor");
-            //at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-            // Since scale_factor should always be smaller than 1, so this is fine. We just need to
-            // change the type.
-            at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), scale_factor_value);
-            
-            if (true == add_offset_found) {
-                float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
-                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_offset_value));
-                at->del_attr("add_offset");
-                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-            }
+            float new_offset_value_float=0;
+            double new_offset_value_double=0;
+            if(add_offset_type!="Float64")
+                new_offset_value_float = (orig_offset_value_float ==0)?0:(-1 * orig_offset_value_float *orig_scale_value_float);
+            else 
+                new_offset_value_double = (orig_offset_value_double ==0)?0:(-1 * orig_offset_value_double *orig_scale_value_double);
+
+            // May need to use another function to avoid the rounding error by atof.
+            add_scale_str_offset_attrs(at,scale_factor_type,scale_factor_value,add_offset_found,
+                                   add_offset_type,new_offset_value_float,new_offset_value_double);
+      
         }    
 
         if ((MODIS_DIV_SCALE == sotype)) {
 
-            float new_scale_value = 1.0/orig_scale_value;
-            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale_value));
-            at->del_attr("scale_factor");
-            //at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-            // Since scale_factor should always be smaller than 1, so this is fine. We just need to
-            // change the type.
-            at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-            
-            if (true == add_offset_found) {
-                float new_offset_value = (orig_offset_value==0)?0:(-1 * orig_offset_value *new_scale_value); 
-                string print_rep2 = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_offset_value));
-                at->del_attr("add_offset");
-                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep2);
+            float new_scale_value_float=1;
+            double new_scale_value_double=1;
+            float new_offset_value_float=0;
+            double new_offset_value_double=0;
+ 
+
+            if(scale_factor_type !="Float64") {
+                new_scale_value_float = 1.0/orig_scale_value_float;
+                if (true == add_offset_found) {
+                    if(add_offset_type !="Float64") 
+                        new_offset_value_float = (orig_offset_value_float==0)?0:(-1 * orig_offset_value_float *new_scale_value_float); 
+                    else 
+                        new_offset_value_double = (orig_offset_value_double==0)?0:(-1 * orig_offset_value_double *new_scale_value_float); 
+                }
             }
 
+            else {
+                new_scale_value_double = 1.0/orig_scale_value_double;
+                if (true == add_offset_found) {
+                    if(add_offset_type !="Float64") 
+                        new_offset_value_float = (orig_offset_value_float==0)?0:(-1 * orig_offset_value_float *new_scale_value_double); 
+                    else 
+                        new_offset_value_double = (orig_offset_value_double==0)?0:(-1 * orig_offset_value_double *new_scale_value_double); 
+                }
+            }
+
+            add_scale_offset_attrs(at,scale_factor_type,new_scale_value_float,new_scale_value_double,add_offset_found,
+                                   add_offset_type,new_offset_value_float,new_offset_value_double);
+ 
         }
+
     }
 
 }
@@ -1373,6 +1451,9 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                             if ((newfname.size() >5) && newfname.find("Range") != string::npos)
                                 need_change_scale = false;
                         }
+
+                        else if((filename.size() >7)&&((filename.compare(0,7,"MOD16A2") == 0)|| (filename.compare(0,7,"MYD16A2")==0)))
+                            need_change_scale = false;
                     }
                     if(true == need_change_scale) {
                         sotype = MODIS_DIV_SCALE;

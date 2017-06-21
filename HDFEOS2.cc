@@ -3070,6 +3070,7 @@ void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
     modis_multi_scale_type.push_back("South");
     modis_multi_scale_type.push_back("MOD_Swath_Sea_Ice");
     modis_multi_scale_type.push_back("MOD_Grid_MOD15A2");
+    modis_multi_scale_type.push_back("MOD_Grid_MOD16A2");
     modis_multi_scale_type.push_back("MODIS_NACP_LAI");
         
     vector<string> modis_div_scale_type;

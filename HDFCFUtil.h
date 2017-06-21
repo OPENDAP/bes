@@ -166,9 +166,19 @@ struct HDFCFUtil
     /// Obtain the MODIS swath dimension map info.
     static void obtain_dimmap_info(const std::string& filename, HDFEOS2::Dataset*dataset,std::vector<struct dimmap_entry>& dimmaps, std::string & modis_geofilename,bool &geofile_nas_dimmap);
 
+    ///Helper function to provide new scale and offset attributes given the values and types. The output types will only be float and double. 
+    //Scale and offset values with other types will be converted to float and their input values must also be in float.
+    //If the add_offset_found is false, the add_offset attribute will not be added. add_offset information will not be used.
+    static void add_scale_offset_attrs(libdap::AttrTable* at, const std::string& s_type, float svalue_f, double svalue_d, bool add_offset_found, 
+                                       const std::string& o_type, float ovalue_f, double ovalue_d);
+
+    static void add_scale_str_offset_attrs(libdap::AttrTable* at, const std::string& s_type, const std::string& s_value_str, bool add_offset_found, 
+                                       const std::string& o_type, float ovalue_f, double ovalue_d);
+
+
+
     /// Temp adding the handling of MODIS special attribute routines when disabling the scale computation
     static void handle_modis_special_attrs_disable_scale_comp(libdap::AttrTable *at,const string &filename, bool is_grid, const std::string &newfname, SOType scaletype);
-
 
     /// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
     /// For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed

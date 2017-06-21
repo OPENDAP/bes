@@ -8,8 +8,8 @@ Attributes {
         Float64 scale_factor_err 0.0000000000000000;
         Float64 add_offset_err 0.0000000000000000;
         Int32 calibrated_nt 5;
-        Float32 scale_factor 0.00010000000000000000;
-        Float32 add_offset 0.000000000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
         String grid_mapping "MOD_Grid_250m_Surface_Reflectance_eos_cf_projection";
     }
     sur_refl_b02 {
@@ -21,8 +21,8 @@ Attributes {
         Float64 scale_factor_err 0.0000000000000000;
         Float64 add_offset_err 0.0000000000000000;
         Int32 calibrated_nt 5;
-        Float32 scale_factor 0.00010000000000000000;
-        Float32 add_offset 0.000000000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
         String grid_mapping "MOD_Grid_250m_Surface_Reflectance_eos_cf_projection";
     }
     sur_refl_qc_250m {
