@@ -313,7 +313,7 @@ string FONgGrid::get_projection(DDS *dds)
 
         // The mapping info is actually stored as attributes of an Int32 variable.
         BaseType *btp = dds->var(mapping_info);
-        if (btp->name() == "crs") {
+        if (btp && btp->name() == "crs") {
             if (is_wgs84(btp))
                 WK_GCS = "WGS84";
             else if (is_spherical(btp)) WK_GCS = "EPSG:4047";
