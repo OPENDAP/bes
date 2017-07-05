@@ -56,7 +56,7 @@ bool HDF5GMSPCFArray::read()
     return true;
 }
 
-void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
+void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf*/) {
 
     BESDEBUG("h5","Coming to HDF5GMSPCFArray: read_data_NOT_from_mem_cache "<<endl);
 

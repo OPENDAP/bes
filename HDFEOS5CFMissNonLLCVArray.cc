@@ -64,7 +64,7 @@ bool HDFEOS5CFMissNonLLCVArray::read()
     return true;
 }
 
-void HDFEOS5CFMissNonLLCVArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) 
+void HDFEOS5CFMissNonLLCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, void* /*buf*/)
 {
     BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray: read_data_NOT_from_mem_cache "<<endl);
     write_nature_number_buffer(rank,tnumelm);

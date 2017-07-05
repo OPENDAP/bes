@@ -61,12 +61,12 @@ class HDF5CFArray:public HDF5BaseArray {
                     fileid(h5_file_id),
                     filename(h5_filename),
                     dtype(h5_dtype),
-                    dimsizes(h5_dimsizes),
                     total_elems(h5_total_elems),
+                    dimsizes(h5_dimsizes),
                     cvtype(h5_cvtype),
                     islatlon(h5_islatlon),
-                    comp_ratio(h5_comp_ratio),
-                    varname(varfullpath) 
+                    varname(varfullpath),
+                    comp_ratio(h5_comp_ratio)
         {
         }
         

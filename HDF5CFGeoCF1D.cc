@@ -61,7 +61,7 @@ bool HDF5CFGeoCF1D::read()
 }
 
 
-void HDF5CFGeoCF1D::read_data_NOT_from_mem_cache(bool add_cache,void *buf){
+void HDF5CFGeoCF1D::read_data_NOT_from_mem_cache(bool /*add_cache*/,void */*buf*/){
     //Not implement yet/
     return;
 

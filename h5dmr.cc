@@ -1080,26 +1080,25 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
     string softlink_value_name ="LINKTARGET";
    
     // Get the link target information. We always return the link value in a string format.
-    D4Attribute *softlink_tgt;
+    D4Attribute *softlink_tgt = 0;
 
     try {
         vector<char> buf;
         buf.resize(val_size + 1);
 
-	// get link target name
-	if (H5Lget_val(h5obj_id, oname.c_str(), (void*) &buf[0],val_size + 1, H5P_DEFAULT)
-	    < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "unable to get link value");
-	}
-        softlink_tgt = new D4Attribute(softlink_value_name,attr_str_c);
-        string link_target_name = string(buf.begin(),buf.end());
+        // get link target name
+        if (H5Lget_val(h5obj_id, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "unable to get link value");
+        }
+        softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
+        string link_target_name = string(buf.begin(), buf.end());
         softlink_tgt->add_value(link_target_name);
 
         d4_slinfo->attributes()->add_attribute_nocopy(softlink_tgt);
     }
     catch (...) {
-	delete softlink_tgt;
-	throw;
+        delete softlink_tgt;
+        throw;
     }
 
     par_grp->attributes()->add_attribute_nocopy(d4_slinfo);

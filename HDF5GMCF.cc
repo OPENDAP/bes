@@ -1512,7 +1512,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
     if(true == ll_flag) {
 
         bool latlon_size_match = true;
-        for (int size_index = 0; size_index <lat_size.size();size_index++) {
+        for (unsigned int size_index = 0; size_index <lat_size.size();size_index++) {
             if(lat_size[size_index] != lon_size[size_index]){
                 latlon_size_match = false;
                 break;
@@ -2062,8 +2062,8 @@ void GMFile::Build_unique_latlon_candidate() {
 
     BESDEBUG("h5", "Coming to Build_unique_latlon_candidate()"<<endl);
     set<int> duplicate_index;
-    for(int i= 0; i<latloncv_candidate_pairs.size();i++) {
-        for(int j=i+1;j<latloncv_candidate_pairs.size();j++) {
+    for(unsigned int i= 0; i<latloncv_candidate_pairs.size();i++) {
+        for(unsigned int j=i+1;j<latloncv_candidate_pairs.size();j++) {
             if(latloncv_candidate_pairs[i].name2 == latloncv_candidate_pairs[j].name2) {
                 duplicate_index.insert(i);
                 duplicate_index.insert(j);
@@ -2260,14 +2260,14 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
         int lat_dim1_index = 0;
         bool has_lat_dims_size = false;
 
-        for (int dim_index = 0; dim_index <(*irv)->dims.size(); dim_index++) {
+        for (unsigned int dim_index = 0; dim_index <(*irv)->dims.size(); dim_index++) {
 
             // Find if having the first dimension size of lat
             if(((*irv)->dims[dim_index])->size == latdimsize0) {
 
                 // Find if having the second dimension size of lat
                 lat_dim0_index = dim_index;
-                for(int dim_index2 = dim_index+1;dim_index2 < (*irv)->dims.size();dim_index2++) {
+                for(unsigned int dim_index2 = dim_index+1;dim_index2 < (*irv)->dims.size();dim_index2++) {
                     if(((*irv)->dims[dim_index2])->size == latdimsize1) {
                         lat_dim1_index = dim_index2;
                         has_lat_dims_size = true;
@@ -2308,7 +2308,7 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
     set<string>finaldimnamelist;
     string finaldimname_base = "FakeDim";
 
-    for(int i = 0; i<tempdimnamelist.size();i++) {
+    for(unsigned int i = 0; i<tempdimnamelist.size();i++) {
         stringstream sfakedimindex;
         sfakedimindex  << i;
         string finaldimname = finaldimname_base + sfakedimindex.str();
@@ -3749,13 +3749,13 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
     BESDEBUG("h5", "Coming to Obtain_unique_2dCV()"<<endl);
     vector<bool> var_share_dims(var_ll.size(),false);
     
-    for( int i = 0; i <var_ll.size();i++) {
+    for(unsigned int i = 0; i <var_ll.size();i++) {
 
         // obtain the path of var_ll
         string var_ll_i_path = HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath);
         
         // Check if two vars share the same dims.
-	for(int j = i+1; j<var_ll.size();j++)   {
+	for(unsigned int j = i+1; j<var_ll.size();j++)   {
             if((var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[0]->name)
               ||(var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[1]->name)
               ||(var_ll[i]->getDimensions()[1]->name == var_ll[j]->getDimensions()[0]->name)
@@ -3841,7 +3841,7 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
     // We find it is typical for swath files that have many many general variables but only have very few lat/lon CVs.
     // To reduce the looping through all variables and comparing the fullpath(string), we use index and remember
     // the position of 2-D CVs in the iterator. In this way, only a few operations are needed.
-    for (int i = 0; i <var2d_index.size();i++) {
+    for (unsigned int i = 0; i <var2d_index.size();i++) {
        if ( i == 0)
            advance(it,var2d_index[i]);
        else
