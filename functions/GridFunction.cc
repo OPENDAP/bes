@@ -173,7 +173,7 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 bool GridFunction::canOperateOn(DDS &dds) {
 	//vector<Grid *> *grids = new vector<Grid *>();
 	vector<Grid *> grids;
-	getGrids(dds, &grids);
+	get_grids(dds, &grids);
 
 	return !grids.empty();
 }

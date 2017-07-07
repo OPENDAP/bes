@@ -53,7 +53,7 @@ namespace functions {
  * @param bt The BaseType to evaluate
  * @param grids A vector into which to place a pointer to every Grid.
  */
-void getGrids(BaseType *bt, vector<Grid *> *grids)
+void get_grids(BaseType *bt, vector<Grid *> *grids)
 {
 	switch (bt->type()) {
 
@@ -68,7 +68,7 @@ void getGrids(BaseType *bt, vector<Grid *> *grids)
 		Structure &s = static_cast<Structure&>(*bt);
 		for (Structure::Vars_iter i = s.var_begin(); i != s.var_begin(); i++) {
 			//BaseType *sbt = *i;
-			getGrids(*i, grids);
+			get_grids(*i, grids);
 		}
 		break;
 	}
@@ -86,11 +86,11 @@ void getGrids(BaseType *bt, vector<Grid *> *grids)
  * @param dds The dds to search
  * @param grids A vector into which to place a pointer to every Grid in the DDS.
  */
-void getGrids(DDS &dds, vector<Grid *> *grids)
+void get_grids(DDS &dds, vector<Grid *> *grids)
 {
 	for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
 		//BaseType *bt = *i;
-		getGrids(*i, grids);
+		get_grids(*i, grids);
 	}
 }
 
@@ -103,7 +103,7 @@ void getGrids(DDS &dds, vector<Grid *> *grids)
  * @param grid the Grid to evaluate.
  * @return True if the grid will work with the GeoGrid function, otherwise false.
  */
-bool isGeoGrid(Grid *grid)
+bool is_geo_grid(Grid *grid)
 {
 	try {
 		GridGeoConstraint gc(grid);
