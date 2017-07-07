@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This test returns data, but I don't think it's correct. See the comment
+     for Hyrax-309 (https://opendap.atlassian.net/browse/HYRAX-309). 
+     
+     Run this by adding the netcdf_handler to the bes.conf in bes/functions/tests
+     and then using besstandalone -c bes.conf -i real_data/<name> > some_file.dods
+     Then look at the output using 'getdap -M some_file.dods' Compare the values
+     from scale_array and the values from a simple subset. -->
+     
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="catalogContainer" space="catalog">/modules/data/nc/Global_0p25deg_best_hs002.nc</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <!--  u-component_of_wind_isobaric is a time 112 , isobaric 31, lat 361 lon 720  grid-->
+      <bes:constraint>scale_array(u-component_of_wind_isobaric.u-component_of_wind_isobaric[0][0][*][*],u-component_of_wind_isobaric.lat,u-component_of_wind_isobaric.lon,19,36)</bes:constraint>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dods" definition="d1" />
+  
+</bes:request>

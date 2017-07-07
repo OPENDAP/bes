@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This test returns the correct value -->
+     
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="catalogContainer" space="catalog">/modules/data/nc/Global_0p25deg_best_hs002.nc</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <!--  u-component_of_wind_isobaric is a time 112 , isobaric 31, lat 361 lon 720  grid-->
+      <bes:constraint>grid(u-component_of_wind_isobaric,"lat=90","lon=0","0.0&lt;=isobaric&lt;=500.0")</bes:constraint>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dods" definition="d1" />
+  
+</bes:request>
