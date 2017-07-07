@@ -59,7 +59,6 @@ void get_grids(BaseType *bt, vector<Grid *> *grids)
 
 	case dods_grid_c: {
 		// Yay! It's a Grid!
-		//Grid &grid = static_cast<Grid&>(*bt);
 		grids->push_back(static_cast<Grid*>(bt));
 		break;
 	}
@@ -67,7 +66,6 @@ void get_grids(BaseType *bt, vector<Grid *> *grids)
 		// It's an Structure - but of what? Check each variable in the Structure.
 		Structure &s = static_cast<Structure&>(*bt);
 		for (Structure::Vars_iter i = s.var_begin(); i != s.var_begin(); i++) {
-			//BaseType *sbt = *i;
 			get_grids(*i, grids);
 		}
 		break;
@@ -89,7 +87,6 @@ void get_grids(BaseType *bt, vector<Grid *> *grids)
 void get_grids(DDS &dds, vector<Grid *> *grids)
 {
 	for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
-		//BaseType *bt = *i;
 		get_grids(*i, grids);
 	}
 }
@@ -97,8 +94,8 @@ void get_grids(DDS &dds, vector<Grid *> *grids)
 /**
  * Evaluates a Grid to see if has suitable semantics for use with function_geogrid.
  *
- * @note Add an 'is' method to GeoGrid so that this code can its logic without
- * having it throw an exception.
+ * @note Add an 'is' method to GeoGrid so that this code stop relying on an exception
+ * thrown by GridGeoConstraint's ctor.
  *
  * @param grid the Grid to evaluate.
  * @return True if the grid will work with the GeoGrid function, otherwise false.
