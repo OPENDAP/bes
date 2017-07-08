@@ -217,9 +217,11 @@ void FONgGrid::extract_coordinates(FONgTransform &t)
         lat = extract_double_array(d_lat);
         lon = extract_double_array(d_lon);
 
-        t.set_top(lat[0]);
+        //max latidude
+        t.set_top(max (lat[0], lat[t.height()-1]));
         t.set_left(lon[0]);
-        t.set_bottom(lat[t.height() - 1]);
+        // min latitude
+        t.set_bottom(min (lat[0], lat[t.height()-1]));
         t.set_right(lon[t.width() - 1]);
 
         // Read this from the 'missing_value' or '_FillValue' attributes
