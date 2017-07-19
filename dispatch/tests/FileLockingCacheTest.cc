@@ -52,6 +52,8 @@ using std::ostringstream;
 #include <BESUtil.h>
 #include <BESFileLockingCache.h>
 
+#include "FileLockingCacheTest.h"
+
 #include <test_config.h>
 
 // Not run by default!
