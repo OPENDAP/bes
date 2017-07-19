@@ -692,6 +692,7 @@ AC_CONFIG_FILES([Makefile
 		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
+		 dispatch/tests/Makefile
 		 docs/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
