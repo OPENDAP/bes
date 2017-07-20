@@ -124,8 +124,8 @@ public:
 
         if(!locked){
             DBG(cerr << __func__ << "() - END - FAILED to get read lock on " << cache_file_name << endl);
-            //return;
-            throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
+            return;
+            //throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
         }
 
 
