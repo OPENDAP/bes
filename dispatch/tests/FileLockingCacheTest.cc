@@ -84,8 +84,9 @@ void purge_cache(const string &cache_dir, const string &cache_prefix)
     DBG(cerr << __func__ << "() - BEGIN " << endl);
     ostringstream s;
     s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
-    DBG(cerr << __func__ << "() - cmd: " << s.str() << endl);
-    system(s.str().c_str());
+    DBG(cerr << __func__ << "() - cmd: '" << s.str() << "' ");
+    int status = system(s.str().c_str());
+    DBG(cerr << "status: " << status << endl);
     DBG(cerr << __func__ << "() - END " << endl);
 }
 
@@ -106,14 +107,15 @@ public:
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
-            int fd;
+            int fd=0;
 
+            DBG(cerr << __func__ << "() - cache file name:" << cache_file_name << endl);
             time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
-
             DBG(cerr << __func__ << "() - Read lock REQUESTED @" << start << endl);
             bool locked = cache.get_read_lock(cache_file_name, fd);
             time_t stop = time(0);
-            DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "true" : "false") << endl);
+            DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE")
+                    << " (fd: " << fd  << ")"<< endl);
 
             if(!locked)
                 throw BESError("Failed to get read lock on "+cache_file_name,
