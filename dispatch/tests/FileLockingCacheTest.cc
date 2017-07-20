@@ -116,12 +116,12 @@ public:
         time_t stop = time(0);
         DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE")
                 << " (fd: " << fd  << ")"<< endl);
-
+#if 0
         DBG(cerr << __func__ << "() - cache file name: " << cache_file_name << endl);
         DBG(cerr << __func__ << "() - BES_INTERNAL_ERROR: " << BES_INTERNAL_ERROR << endl);
         DBG(cerr << __func__ << "() - __FILE__: " << __FILE__ << endl);
         DBG(cerr << __func__ << "() - __LINE__: " << __LINE__ << endl);
-
+#endif
         if(!locked){
             DBG(cerr << __func__ << "() - END - FAILED to get read lock on " << cache_file_name << endl);
             return;
