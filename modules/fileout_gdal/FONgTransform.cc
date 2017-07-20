@@ -63,6 +63,7 @@ FONgTransform::FONgTransform(DDS *dds, ConstraintEvaluator &/*evaluator*/, const
     d_geo_transform_set(false), d_width(0.0), d_height(0.0), d_top(0.0), d_left(0.0),
     d_bottom(0.0), d_right(0.0), d_no_data(0.0), d_no_data_type(none), d_num_bands(0)
 {
+    BESDEBUG("fong3", "dds numvars = " << dds->num_var() << endl);
     if (localfile.empty())
         throw BESInternalError("Empty local file name passed to constructor", __FILE__, __LINE__);
 }
@@ -196,7 +197,7 @@ double *FONgTransform::geo_transform()
     BESDEBUG("fong3", "width: " << d_width << ", height: " << d_height << endl);
 
     d_gt[0] = d_left; // The leftmost 'x' value, which is longitude
-    d_gt[3] = d_top;  // The topmost 'y' value, which is latitude
+    d_gt[3] = d_top;  // The topmost 'y' value, which is latitude should be max latitude
 
     // We assume data w/o any rotation (a north-up image)
     d_gt[2] = 0.0;
@@ -204,7 +205,7 @@ double *FONgTransform::geo_transform()
 
     // Compute the lower left values. Note that wehn GDAL builds the geotiff
     // output dataset, it correctly inverts the image when the source data has
-    // inverted latitude values.
+    // inverted latitude values.?
     d_gt[1] = (d_right - d_left) / d_width; // width in pixels; top and bottom in lat
     d_gt[5] = (d_bottom - d_top) / d_height;
 
@@ -373,9 +374,10 @@ void FONgTransform::transform_to_geotiff()
         if (!band)
             throw Error("Could not get the " + long_to_string(i+1) + "th band: " + string(CPLGetLastErrorMsg()));
 
+        double *data = 0;
         try {
             // TODO We can read any of the basic DAP2 types and let RasterIO convert it to any other type.
-            double *data = fbtp->get_data();
+            data = fbtp->get_data();
 
             // hack the values; because the missing value used with many datasets
             // is often really small it'll skew the mapping of values to the grayscale
@@ -385,20 +387,37 @@ void FONgTransform::transform_to_geotiff()
             if (no_data_type() != none)
                 m_scale_data(data);
 
-            BESDEBUG("fong3", "calling band->RasterIO" << endl);
-            CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(),
-                                          data, width(), height(), GDT_Float64, 0, 0);
+            // If the latitude values are inverted, the 0th value will be less than
+            // the last value.
+            vector<double> local_lat;
+            extract_double_array(fbtp->d_lat, local_lat);
+
+            if (local_lat[0] < local_lat[local_lat.size() - 1]) {
+                BESDEBUG("fong3", "Writing reversed raster. Lat[0] = " << local_lat[0] << endl);
+                //---------- write reverse raster----------
+                for (int row = 0; row <= height()-1; ++row) {
+                    int offsety=height()-row-1;
+                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Float64, 0, 0);
+                    if (error_write != CPLE_None)
+                        throw Error("Could not write data for band: " + long_to_string(i + 1) + ": " + string(CPLGetLastErrorMsg()));
+                }
+            }
+            else {
+                BESDEBUG("fong3", "calling band->RasterIO" << endl);
+                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Float64, 0, 0);
+                if (error != CPLE_None)
+                     throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
+            }
+
             delete[] data;
 
-            if (error != CPLE_None)
-                throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
         }
         catch (...) {
+            delete[] data;
             GDALClose(d_dest);
             throw;
         }
     }
-
     GDALClose(d_dest);
 }
 
