@@ -203,17 +203,20 @@ int main(int argc, char*argv[])
             std::istringstream(getopt.optarg) >> time;
             cerr << "get_and_hold_read_lock for " << time << " seconds" << endl;
             flc_test.get_and_hold_read_lock(time);
+            cerr << "get_and_hold_read_lock DONE" << endl;
             break;
 
         case 'p':
             cerr << "purging cache dir: " << TEST_CACHE_DIR << " cache_prefix: "<< CACHE_PREFIX << endl;
             purge_cache(TEST_CACHE_DIR,CACHE_PREFIX);
+            cerr << "purge_cache DONE" << endl;
             break;
 
         case 'x':
             std::istringstream(getopt.optarg) >> time;
             cerr << "get_and_hold_exclusive_lock for " << time << " seconds." << endl;
             flc_test.get_and_hold_exclusive_lock(time);
+            cerr << "get_and_hold_exclusive_lock DONE" << endl;
             break;
 
         case 'h':
