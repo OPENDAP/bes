@@ -40,21 +40,22 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
-#include <GetOpt.h>
+
+#include <GetOpt.h> // I think this is an error
 
 using std::cerr;
 using std::endl;
 using std::ostringstream;
 
-#include <TheBESKeys.h>
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESFileLockingCache.h>
+#include "TheBESKeys.h"
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESFileLockingCache.h"
 
 #include "FileLockingCacheTest.h"
 
-#include <test_config.h>
+#include "test_config.h"
 
 // Not run by default!
 // Set from the command-line invocation of the main only
