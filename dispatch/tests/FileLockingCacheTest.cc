@@ -43,10 +43,6 @@
 
 #include <GetOpt.h> // I think this is an error
 
-using std::cerr;
-using std::endl;
-using std::ostringstream;
-
 #include "TheBESKeys.h"
 #include "BESError.h"
 #include "BESDebug.h"
@@ -56,6 +52,8 @@ using std::ostringstream;
 #include "FileLockingCacheTest.h"
 
 #include "test_config.h"
+
+using namespace std;
 
 // Not run by default!
 // Set from the command-line invocation of the main only
@@ -227,7 +225,7 @@ int main(int argc, char*argv[])
     int option_char;
     bool purge = true;    // the default
     long int read_lock_and_hold = -1;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt()) != -1) {
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -244,11 +242,10 @@ int main(int argc, char*argv[])
             cerr << "read_lock_and_hold: " << read_lock_and_hold << endl;
             break;
 
-        }
-
         default:
             break;
         }
+    }
 
     // Do this AFTER we process the command line so debugging in the test constructor
     // (which does a one time construction of the test cache) will work.

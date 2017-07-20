@@ -1,10 +1,12 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch  $(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch  $(XML2_CFLAGS)  $(DAP_CFLAGS)
 AM_CXXFLAGS =
+# I put DAP_LIBS here because the AM docs say that LDADD should not have linker flags
+# and DAP_LIBS has both libs and flags :-(
+AM_LDFLAGS = $(DAP_LIBS) -L$(top_builddir)/dispatch
+LDADD = -lbes_dispatch 
 
 noinst_PROGRAMS = FileLockingCacheTest
 
@@ -24,5 +26,5 @@ test_config.h: test_config.h.in
 FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc FileLockingCacheTest.h test_config.h
 # You don't need this because AM_CPPFLAGS is used by default
 # FileLockingCacheTest_CPPFLAGS = $(AM_CPPFLAGS)
-FileLockingCacheTest_LDADD = $(LDADD)
-
+# and LDADD
+# FileLockingCacheTest_LDADD = $(LDADD)
