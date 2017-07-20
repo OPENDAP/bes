@@ -106,9 +106,10 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
 
         BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
+        DBG(cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl);
+
         string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
         int fd=0;
-        DBG(cerr << __func__ << "() - cache.d_cache_info_fd: " << cache.d_cache_info_fd << endl);
 
         DBG(cerr << __func__ << "() - cache file name:" << cache_file_name << endl);
         time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
@@ -147,6 +148,7 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
+            DBG(cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl);
             int fd;
             string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
 
