@@ -110,7 +110,7 @@ public:
 
             time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
 
-            DBG(cerr << __func__ << "() - Read lock REQUESTED. time: " << start << endl);
+            DBG(cerr << __func__ << "() - Read lock REQUESTED @" << start << endl);
             bool locked = cache.get_read_lock(cache_file_name, fd);
             time_t stop = time(0);
             DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "true" : "false") << endl);
@@ -119,14 +119,12 @@ public:
                 throw BESError("Failed to get read lock on "+cache_file_name,
                     BES_INTERNAL_ERROR, __FILE__,__LINE__);
 
-            DBG(cerr << __func__ << "() - Read lock ACQUIRED.  time: " << stop << endl);
+            DBG(cerr << __func__ << "() - Read lock  ACQUIRED @" << stop << endl);
             DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
             DBG(cerr << __func__ << "() - Holding lock for " << nap_time << " seconds" << endl);
             sleep(nap_time);
-
-            if (locked) {
-                cache.unlock_and_close(cache_file_name);
-            }
+            cache.unlock_and_close(cache_file_name);
+            DBG(cerr << __func__ << "() - Lock Released" << endl);
 
 
         }
@@ -144,26 +142,23 @@ public:
             int fd;
             string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
 
-            time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
-
-            DBG(cerr << __func__ << "() - Exclusive lock REQUESTED time: " << start << endl);
+            time_t start = time(NULL);
+            DBG(cerr << __func__ << "() - Exclusive lock REQUESTED @" << start << endl);
             bool locked = cache.create_and_lock(cache_file_name,fd);
             time_t stop = time(0);
             DBG(cerr << __func__ << "() - cache.create_and_lock() returned " << (locked ? "true" : "false") << endl);
-
             if(!locked)
                 throw BESError("Failed to get exclusive lock on "+cache_file_name,
                     BES_INTERNAL_ERROR, __FILE__,__LINE__);
-
-            DBG(cerr << __func__ << "() - Exclusive lock ACQUIRED. time:" << stop << endl);
+            DBG(cerr << __func__ << "() - Exclusive lock  ACQUIRED @" << stop << endl);
             DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
             DBG(cerr << __func__ << "() - Holding lock for " << nap_time << " seconds" << endl);
-
             for(long int i=0; i<nap_time ;i++){
                 write(fd,".", 1);
                 sleep(1);
             }
             cache.unlock_and_close(cache_file_name);
+            DBG(cerr << __func__ << "() - Lock Released" << endl);
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - FAILED to create cache! msg: " << e.get_message() << endl);
