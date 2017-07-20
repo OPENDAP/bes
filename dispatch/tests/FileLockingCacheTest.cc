@@ -123,11 +123,11 @@ public:
             DBG(cerr << __func__ << "() - __LINE__: " << __LINE__ << endl);
 
             if(!locked){
-                cerr << __func__ << "() - FAILED to get read lock on " << cache_file_name << endl;
-                return;
+                //cerr << __func__ << "() - FAILED to get read lock on " << cache_file_name << endl;
+                //return;
+                throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
             }
 
-                // throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
 
             DBG(cerr << __func__ << "() - Read lock  ACQUIRED @" << stop << endl);
             DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
