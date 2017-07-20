@@ -108,6 +108,7 @@ public:
         BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
         string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
         int fd=0;
+        DBG(cerr << __func__ << "() - cache.d_cache_info_fd: " << cache.d_cache_info_fd << endl);
 
         DBG(cerr << __func__ << "() - cache file name:" << cache_file_name << endl);
         time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
@@ -122,6 +123,9 @@ public:
         DBG(cerr << __func__ << "() - __FILE__: " << __FILE__ << endl);
         DBG(cerr << __func__ << "() - __LINE__: " << __LINE__ << endl);
 #endif
+
+        DBG(cerr << __func__ << "() - cache.d_cache_info_fd: " << cache.d_cache_info_fd << endl);
+
         if(!locked){
             DBG(cerr << __func__ << "() - END - FAILED to get read lock on " << cache_file_name << endl);
             return;
