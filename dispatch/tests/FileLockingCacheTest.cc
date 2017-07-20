@@ -104,44 +104,38 @@ public:
     void get_and_hold_read_lock(long int nap_time)
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
-        try {
-            BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
-            string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
-            int fd=0;
 
-            DBG(cerr << __func__ << "() - cache file name:" << cache_file_name << endl);
-            time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
-            DBG(cerr << __func__ << "() - Read lock REQUESTED @" << start << endl);
-            bool locked = cache.get_read_lock(cache_file_name, fd);
-            time_t stop = time(0);
-            DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE")
-                    << " (fd: " << fd  << ")"<< endl);
+        BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
+        string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
+        int fd=0;
 
-            DBG(cerr << __func__ << "() - cache file name: " << cache_file_name << endl);
-            DBG(cerr << __func__ << "() - BES_INTERNAL_ERROR: " << BES_INTERNAL_ERROR << endl);
-            DBG(cerr << __func__ << "() - __FILE__: " << __FILE__ << endl);
-            DBG(cerr << __func__ << "() - __LINE__: " << __LINE__ << endl);
+        DBG(cerr << __func__ << "() - cache file name:" << cache_file_name << endl);
+        time_t start = time(NULL);  /* get current time; same as: timer = time(NULL)  */
+        DBG(cerr << __func__ << "() - Read lock REQUESTED @" << start << endl);
+        bool locked = cache.get_read_lock(cache_file_name, fd);
+        time_t stop = time(0);
+        DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE")
+                << " (fd: " << fd  << ")"<< endl);
 
-            if(!locked){
-                //cerr << __func__ << "() - FAILED to get read lock on " << cache_file_name << endl;
-                //return;
-                throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
-            }
+        DBG(cerr << __func__ << "() - cache file name: " << cache_file_name << endl);
+        DBG(cerr << __func__ << "() - BES_INTERNAL_ERROR: " << BES_INTERNAL_ERROR << endl);
+        DBG(cerr << __func__ << "() - __FILE__: " << __FILE__ << endl);
+        DBG(cerr << __func__ << "() - __LINE__: " << __LINE__ << endl);
 
-
-            DBG(cerr << __func__ << "() - Read lock  ACQUIRED @" << stop << endl);
-            DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
-            DBG(cerr << __func__ << "() - Holding lock for " << nap_time << " seconds" << endl);
-            sleep(nap_time);
-            cache.unlock_and_close(cache_file_name);
-            DBG(cerr << __func__ << "() - Lock Released" << endl);
-
-
+        if(!locked){
+            DBG(cerr << __func__ << "() - END - FAILED to get read lock on " << cache_file_name << endl);
+            //return;
+            throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
         }
-        catch (BESError &e) {
-            DBG(cerr << __func__ << "() - FAILED to create cache! msg: " << e.get_message() << endl);
-        }
-        DBG(cerr << __func__ << "() - END " << endl);
+
+
+        DBG(cerr << __func__ << "() - Read lock  ACQUIRED @" << stop << endl);
+        DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
+        DBG(cerr << __func__ << "() - Holding lock for " << nap_time << " seconds" << endl);
+        sleep(nap_time);
+        cache.unlock_and_close(cache_file_name);
+        DBG(cerr << __func__ << "() - Lock Released" << endl);
+        DBG(cerr << __func__ << "() - END - SUCCEEDED" << endl);
     }
 
     void get_and_hold_exclusive_lock(long int nap_time)
