@@ -188,7 +188,7 @@ public:
 
 int main(int argc, char*argv[]){
     BESFileLockingCache *cache = new BESFileLockingCache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
-    delete cache;
+    // delete cache;
     return 0;
 }
 
