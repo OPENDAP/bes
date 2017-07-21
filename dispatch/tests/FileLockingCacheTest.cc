@@ -101,13 +101,11 @@ public:
     {
     }
 
-    void smash_and_grab(){
-        DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
-
+    static void smash_and_grab(){
+        cerr << endl << __func__ << "() - BEGIN " << endl;
         BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
-        DBG(cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl);
-        DBG(cerr << __func__ << "() - END - SUCCEEDED" << endl);
-
+        cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl;
+        cerr << __func__ << "() - END" << endl;
     }
 
     void get_and_hold_read_lock(long int nap_time)
@@ -187,8 +185,12 @@ public:
 
 };
 
+int main(int argc, char*argv[]){
+    FileLockingCacheTest::smash_and_grab();
+}
+
 // test fixture class
-int main(int argc, char*argv[])
+int mainOLD(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
 
