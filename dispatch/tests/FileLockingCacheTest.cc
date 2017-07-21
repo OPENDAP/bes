@@ -96,6 +96,9 @@ private:
 public:
     FileLockingCacheTest()
     {
+        string bes_conf = (string) TEST_ABS_SRC_DIR + "/flct_bes.keys";
+        TheBESKeys::ConfigFile = bes_conf;
+
     }
     ~FileLockingCacheTest()
     {
