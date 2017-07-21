@@ -1,6 +1,5 @@
 
 AUTOMAKE_OPTIONS = foreign 
-
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch  $(XML2_CFLAGS)  $(DAP_CFLAGS)
 AM_CXXFLAGS =
 # I put DAP_LIBS here because the AM docs say that LDADD should not have linker flags
@@ -13,6 +12,15 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 
+###################################################################################
+# OLD BROKEN WAY
+#AM_CPPFLAGS = -I$(top_srcdir)/dispatch  $(XML2_CFLAGS)  $(DAP_CFLAGS)
+#AM_CXXFLAGS =
+## I put DAP_LIBS here because the AM docs say that LDADD should not have linker flags
+## and DAP_LIBS has both libs and flags :-(
+#AM_LDFLAGS = $(DAP_LIBS) -L$(top_builddir)/dispatch
+#LDADD = -lbes_dispatch 
+###################################################################################
 
 noinst_PROGRAMS = FileLockingCacheTest
 
