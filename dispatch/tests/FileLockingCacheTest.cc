@@ -189,13 +189,13 @@ public:
 };
 
 
-int main(int argc, char*argv[]){
+int main_OO(int argc, char*argv[]){
     BESFileLockingCache *cache = new BESFileLockingCache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
     delete cache;
     return 0;
 }
 
-int mainOLDJ(int argc, char*argv[]){
+int main(int argc, char*argv[]){
     FileLockingCacheTest::smash_and_grab();
     return 0;
 }
