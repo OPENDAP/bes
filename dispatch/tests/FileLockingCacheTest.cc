@@ -188,14 +188,18 @@ public:
 
 int main(int argc, char*argv[]){
     cerr << endl << __func__ << "() - BEGIN " << endl;
-    BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
+    BESFileLockingCache *cache = new BESFileLockingCache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
     // cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl;
+
+    delete cache;
+
     cerr << __func__ << "() - END" << endl;
     return 0;
 }
 
 int mainOLDJ(int argc, char*argv[]){
     FileLockingCacheTest::smash_and_grab();
+    return 0;
 }
 
 // test fixture class
