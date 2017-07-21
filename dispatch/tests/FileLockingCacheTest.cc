@@ -195,13 +195,13 @@ int main_OO(int argc, char*argv[]){
     return 0;
 }
 
-int main(int argc, char*argv[]){
+int main_01(int argc, char*argv[]){
     FileLockingCacheTest::smash_and_grab();
     return 0;
 }
 
 // test fixture class
-int mainOLD(int argc, char*argv[])
+int main(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
 
