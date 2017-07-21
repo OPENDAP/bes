@@ -96,19 +96,12 @@ private:
 public:
     FileLockingCacheTest()
     {
-        string bes_conf = (string) TEST_ABS_SRC_DIR + "/flct_bes.keys";
-        TheBESKeys::ConfigFile = bes_conf;
+        // string bes_conf = (string) TEST_ABS_SRC_DIR + "/flct_bes.keys";
+        // TheBESKeys::ConfigFile = bes_conf;
 
     }
     ~FileLockingCacheTest()
     {
-    }
-
-    static void smash_and_grab(){
-        cerr << endl << __func__ << "() - BEGIN " << endl;
-        BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
-        cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl;
-        cerr << __func__ << "() - END" << endl;
     }
 
     void get_and_hold_read_lock(long int nap_time)
@@ -189,16 +182,6 @@ public:
 };
 
 
-int main_OO(int argc, char*argv[]){
-    BESFileLockingCache *cache = new BESFileLockingCache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
-    delete cache;
-    return 0;
-}
-
-int main_01(int argc, char*argv[]){
-    FileLockingCacheTest::smash_and_grab();
-    return 0;
-}
 
 // test fixture class
 int main(int argc, char*argv[])
@@ -225,19 +208,12 @@ int main(int argc, char*argv[])
             std::istringstream(getopt.optarg) >> time;
             cerr << "get_and_hold_read_lock for " << time << " seconds" << endl;
             flc_test.get_and_hold_read_lock(time);
-            cerr << "get_and_hold_read_lock DONE" << endl;
             break;
 
         case 'p':
             cerr << "purging cache dir: " << TEST_CACHE_DIR << " cache_prefix: "<< CACHE_PREFIX << endl;
             purge_cache(TEST_CACHE_DIR,CACHE_PREFIX);
             cerr << "purge_cache DONE" << endl;
-            break;
-
-        case 's':
-            cerr << "SMASH AND GRAB - GO" << endl;
-            flc_test.smash_and_grab();
-            cerr << "SMASH AND GRAB - DONE" << endl;
             break;
 
         case 'x':
