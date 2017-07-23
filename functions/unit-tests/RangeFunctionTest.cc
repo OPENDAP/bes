@@ -87,7 +87,7 @@ private:
     TestTypeFactory btf;
 
     string src_dir;
-    const static int x_size = 9, y_size = 11;
+    const static int x_size = 11, y_size = 9;
 
     /**
      * @brief simple double equality test
@@ -120,9 +120,9 @@ public:
             small_float64_dds = new DDS(&btf);
             small_float64_dds->parse(src_dir + "/" + small_float64_dds_file);
 
-            vector<dods_float64> lat(x_size);
+            vector<dods_float64> lat(y_size);
             load_var(dynamic_cast<Array*>(small_float64_dds->var("lat")), src_dir + "/" + "small_lat.txt", lat);
-            vector<dods_float64> lon(y_size);
+            vector<dods_float64> lon(x_size);
             load_var(dynamic_cast<Array*>(small_float64_dds->var("lon")), src_dir + "/" + "small_lon.txt", lon);
 
             vector<dods_float64> data(x_size * y_size);
@@ -171,7 +171,7 @@ public:
     {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
 
-        vector<dods_float64> lat_buf(x_size);
+        vector<dods_float64> lat_buf(y_size);
         Array *lat = dynamic_cast<Array*>(small_float64_dds->var("lat"));
         lat->value(&lat_buf[0]);
         DBG(cerr << "lat: ");
@@ -179,9 +179,9 @@ public:
         DBG(cerr << endl);
 
         CPPUNIT_ASSERT(lat_buf[0] == 4);
-        CPPUNIT_ASSERT(lat_buf[x_size - 1] == -4);
+        CPPUNIT_ASSERT(lat_buf[y_size - 1] == -4);
 
-        vector<dods_float64> lon_buf(y_size);
+        vector<dods_float64> lon_buf(x_size);
         Array *lon = dynamic_cast<Array*>(small_float64_dds->var("lon"));
         lon->value(&lon_buf[0]);
         DBG(cerr << "lon: ");
@@ -189,7 +189,7 @@ public:
         DBG(cerr << endl);
 
         CPPUNIT_ASSERT(lon_buf[0] == -0.5);
-        CPPUNIT_ASSERT(lon_buf[y_size - 1] == 0.5);
+        CPPUNIT_ASSERT(lon_buf[x_size - 1] == 0.5);
 
         Array *d = dynamic_cast<Array*>(small_float64_dds->var("data"));
         const int data_size = x_size * y_size;
@@ -204,7 +204,7 @@ public:
         DBG(cerr << "data[" << 4 * x_size + 0 << "]: " << data[4 * x_size + 0] << endl);
         DBG(cerr << "data[" << 4 * x_size + 4 << "]: " << data[4 * x_size + 4] << endl);
         CPPUNIT_ASSERT(same_as(data[4 * x_size + 0], -99)); // accounts for rounding error
-        CPPUNIT_ASSERT(data[4 * x_size + 4] == 3.5);
+        CPPUNIT_ASSERT(data[4 * y_size + 4] == 3.5);
 
         DBG(cerr << __func__ << "() - END" << endl);
     }
