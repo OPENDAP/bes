@@ -56,10 +56,6 @@
 
 #define DEBUG_KEY "geo"
 
-static bool debug = true;
-#undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
-
 using namespace std;
 using namespace libdap;
 
@@ -215,8 +211,6 @@ vector<GDAL_GCP> get_gcp_data(Array *x, Array *y, int sample_x, int sample_y)
     vector<double> x_values(size.x_size);
     extract_double_array(x, x_values);
 
-    BESDEBUG(DEBUG_KEY,"==get_gcp_data==> x=" << x[0] << " y = " << y[0] << endl);
-
     // Build the GCP list.
 
     // Determine how many control points to use. Subset by a factor of M
@@ -326,12 +320,10 @@ Array *build_array_from_gdal_dataset(GDALDataset *source, const Array *dest)
     unsigned long x = band->GetXSize();
     unsigned long y = band->GetYSize();
 
-    BESDEBUG(DEBUG_KEY,"====> x size =" << x << " y size = " << y << endl);
-
     // Build a new DAP Array; use the dest Array's element type
     Array *result = new Array("result", const_cast<Array*>(dest)->var()->ptr_duplicate());
-    result->append_dim(x);
     result->append_dim(y);
+    result->append_dim(x);
 
     // get the data
     switch (result->var()->type()) {
@@ -406,7 +398,7 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
     unsigned long x = band->GetXSize(); // x_map_vals
 
     if (name_maps) {
-        x_map->append_dim(x, "Latitude");
+        x_map->append_dim(x, "Longitude");
     }
     else {
         x_map->append_dim(x);
@@ -435,8 +427,6 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
     else {
         y_map->append_dim(y);
     }
-
-    BESDEBUG(DEBUG_KEY,"====> x size=" << x << " y size = " << y << endl);
 
     // for each value, use the geo-transform data to compute a value and store it.
     vector<dods_float32> y_map_vals(y);
@@ -498,7 +488,6 @@ Array::Dim_iter get_x_dim(const libdap::Array *src)
         BESDEBUG(DEBUG_KEY, ss.str());
         throw BESError(ss.str(),BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
     }
-
     Array::Dim_iter start = a->dim_begin();
     Array::Dim_iter xDim = start + numDims - 1;
 
@@ -545,11 +534,10 @@ bool array_is_effectively_2D(const libdap::Array *src)
     int numDims = a->dimensions();
     if (numDims == 2) return true;
     if (numDims < 2) return false;
-    // numDims more than 2
-    Array::Dim_iter xDim = get_x_dim(a); //last dim should be x
+    // numDims more than 2. Last dim should be x
+    Array::Dim_iter xDim = get_x_dim(a);
     for (Array::Dim_iter thisDim = a->dim_begin(); thisDim < xDim; thisDim++) {
         unsigned long size = a->dimension_size(thisDim, true);
-        BESDEBUG(DEBUG_KEY,"dimName = " << a->dimension_name(thisDim) << " size = " << size << endl);
         if (size > 1) {
             return true;
         }
@@ -572,8 +560,6 @@ void read_band_data(const Array *src, GDALRasterBand* band)
 {
     Array *a = const_cast<Array*>(src);
 
-    BESDEBUG(DEBUG_KEY,"====read_band_data====> src = " << a[0] << endl);
-
     if (!array_is_effectively_2D(src)) {
     	stringstream ss;
     	ss << "Cannot perform geo-spatial operations on an Array (";
@@ -590,8 +576,6 @@ void read_band_data(const Array *src, GDALRasterBand* band)
 
     unsigned long x = a->dimension_size(get_x_dim(a), true);
     unsigned long y = a->dimension_size(get_y_dim(a), true);
-
-    BESDEBUG(DEBUG_KEY,"==Read==> x size =" << x << " y size = " << y << " numDims =" <<  a->dimensions() << endl);
 
     a->read();  // Should this code use intern_data()? jhrg 10/11/16
 
@@ -663,8 +647,6 @@ void add_band_data(const Array *src, GDALDataset* ds)
  */
 auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const string &srs)
 {
-    BESDEBUG(DEBUG_KEY,"=====> data dim(0) name = " << data->dimension_name(data->dim_begin()) << endl);
-    BESDEBUG(DEBUG_KEY,"==build_src_dataset1==> x=" << x[0] << " y = " << y[0] << endl);
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if(!driver){
     	string msg = string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg();
@@ -693,7 +675,6 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
 	// Set the no data value here; I'm not sure what the affect of using NaN will be... jhrg 10/11/16
 	double no_data = get_missing_data_value(data);
 	band->SetNoDataValue(no_data);
-	BESDEBUG(DEBUG_KEY,"==build_src_dataset2==> x size= " << band->GetXSize() << " y size = " << band->GetYSize() << endl);
 
 #if !ADD_BAND
 	read_band_data(data, band);
@@ -804,8 +785,6 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
 Grid *scale_dap_array(const Array *data, const Array *x, const Array *y, const SizeBox &size,
     const string &crs, const string &interp)
 {
-    BESDEBUG(DEBUG_KEY,"==1==> x=" << x[0] << " y = " << y[0] << endl);
-
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *d = const_cast<Array*>(data);
 
@@ -817,10 +796,10 @@ Grid *scale_dap_array(const Array *data, const Array *x, const Array *y, const S
     // Build a result Grid: extract the data, build the maps and assemble
     auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
 
-    auto_ptr<Array> built_lat(new Array(x->name(), new Float32(x->name())));
-    auto_ptr<Array> built_lon(new Array(y->name(), new Float32(y->name())));
+    auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
+    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
 
-    build_maps_from_gdal_dataset(dst.get(), built_lat.get(), built_lon.get());
+    build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
 
     auto_ptr<Grid> result(new Grid(d->name()));
     result->set_array(built_data.release());
@@ -853,14 +832,10 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
     if(!data){
         throw BESError(func+"Unable to obtain data array from Grid '"+g->name()+"'",BES_INTERNAL_ERROR,__FILE__,__LINE__);
     }
-
-    BESDEBUG(DEBUG_KEY," ========scale_dap_grid======> data = " << data[0] << endl);
-
-    Grid::Map_iter m = const_cast<Grid*>(g)->map_begin();
-    Array *y = dynamic_cast<Array*>(*++m);
-    Array *x = dynamic_cast<Array*>(*m++);
-
-    BESDEBUG(DEBUG_KEY, "===Grid===> x=" << x[0] << " y=" << y[0] << endl);
+	// return iteration
+    Grid::Map_riter ritr = const_cast<Grid*>(g)->map_rbegin();
+    Array *x = dynamic_cast<Array*>(*ritr);
+    Array *y = dynamic_cast<Array*>(*++ritr);
 
     if(!x || !y){
         throw BESError(func+"Unable to obtain 2 Map arrays from Grid '"+g->name()+"'",BES_INTERNAL_ERROR,__FILE__,__LINE__);
