@@ -104,7 +104,7 @@ public:
     {
     }
 
-    void get_and_hold_read_lock(long int nap_time)
+    int get_and_hold_read_lock(long int nap_time)
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
 
@@ -132,7 +132,7 @@ public:
 
         if(!locked){
             DBG(cerr << __func__ << "() - END - FAILED to get read lock on " << cache_file_name << endl);
-            return;
+            return 2;
             //throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
         }
 
@@ -144,9 +144,10 @@ public:
         cache.unlock_and_close(cache_file_name);
         DBG(cerr << __func__ << "() - Lock Released" << endl);
         DBG(cerr << __func__ << "() - END - SUCCEEDED" << endl);
+        return 0;
     }
 
-    void get_and_hold_exclusive_lock(long int nap_time)
+    int get_and_hold_exclusive_lock(long int nap_time)
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
@@ -160,9 +161,10 @@ public:
             bool locked = cache.create_and_lock(cache_file_name,fd);
             time_t stop = time(0);
             DBG(cerr << __func__ << "() - cache.create_and_lock() returned " << (locked ? "true" : "false") << endl);
-            if(!locked)
-                throw BESError("Failed to get exclusive lock on "+cache_file_name,
-                    BES_INTERNAL_ERROR, __FILE__,__LINE__);
+            if(!locked){
+                cerr << "Failed to get exclusive lock on " << cache_file_name << endl;
+                return 1;
+            }
             DBG(cerr << __func__ << "() - Exclusive lock  ACQUIRED @" << stop << endl);
             DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
             DBG(cerr << __func__ << "() - Holding lock for " << nap_time << " seconds" << endl);
@@ -176,6 +178,7 @@ public:
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - FAILED to create cache! msg: " << e.get_message() << endl);
         }
+        return 0;
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
@@ -191,7 +194,8 @@ int main(int argc, char*argv[])
     GetOpt getopt(argc, argv, "db:pr:sx:h");
     int option_char;
     long int time;
-    while ((option_char = getopt()) != EOF) {
+    int retVal=0;
+    while (!retVal && (option_char = getopt()) != EOF) {
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -207,7 +211,7 @@ int main(int argc, char*argv[])
         case 'r':
             std::istringstream(getopt.optarg) >> time;
             cerr << "get_and_hold_read_lock for " << time << " seconds" << endl;
-            flc_test.get_and_hold_read_lock(time);
+            retVal = flc_test.get_and_hold_read_lock(time);
             break;
 
         case 'p':
@@ -219,8 +223,7 @@ int main(int argc, char*argv[])
         case 'x':
             std::istringstream(getopt.optarg) >> time;
             cerr << "get_and_hold_exclusive_lock for " << time << " seconds." << endl;
-            flc_test.get_and_hold_exclusive_lock(time);
-            cerr << "get_and_hold_exclusive_lock DONE" << endl;
+            retVal = flc_test.get_and_hold_exclusive_lock(time);
             break;
 
         case 'h':
@@ -230,6 +233,6 @@ int main(int argc, char*argv[])
         }
     }
 
-    return 0;
+    return retVal;
 }
 
