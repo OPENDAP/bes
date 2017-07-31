@@ -40,6 +40,7 @@
 #include <BESDebug.h>
 
 #include "functions_util.h"
+#include "GridGeoConstraint.h"
 
 #define DEBUG_KEY "geo"
 
@@ -63,6 +64,7 @@ namespace functions {
  */
 void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
+    // scale_grid(argv[0], y, x)
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
     "<function name=\"scale_grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_grid\">\n" +
@@ -84,6 +86,11 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     if (!src)
         throw Error(malformed_expr,"The first argument to scale_grid() must be a Grid variable!");
 
+    GridGeoConstraint gc(src);
+    if(!gc.is_longitude_rightmost()){
+        throw Error(malformed_expr,"The last argument to scale_grid() must be a longitude variable!");
+    }
+
     BESDEBUG(DEBUG_KEY,"function_scale_grid() - Evaluating grid '"<< src->name() << "'" << endl);
     unsigned long y = extract_uint_value(argv[1]);
     unsigned long x = extract_uint_value(argv[2]);
@@ -100,7 +107,7 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     BESDEBUG(DEBUG_KEY,"function_scale_grid() - CRS '"<< crs << "'" << endl);
     BESDEBUG(DEBUG_KEY,"function_scale_grid() - Interpolation Method '"<< interp << "'" << endl);
 
-    SizeBox size(y, x);
+    SizeBox size(x, y);
     *btpp = scale_dap_grid(src, size, crs, interp);
 }
 
@@ -122,6 +129,7 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  */
 void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
+    // scale_array(argv[0], Y, X, y, x)
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
     "<function name=\"scale_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_array\">\n" +
@@ -142,15 +150,15 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     Array *data = dynamic_cast <Array *>(argv[0]);
     if (!data)
         throw Error(malformed_expr,"The first argument to scale_array() must be an Array variable!");
-    Array *x = dynamic_cast <Array *>(argv[1]);
+    Array *x = dynamic_cast <Array *>(argv[2]);
     if (!x)
         throw Error(malformed_expr,"The second argument to scale_array() must be an Array variable!");
-    Array *y = dynamic_cast <Array *>(argv[2]);
+    Array *y = dynamic_cast <Array *>(argv[1]);
     if (!y)
         throw Error(malformed_expr,"The third argument to scale_array() must be an Array variable!");
 
-    unsigned long new_x = extract_uint_value(argv[3]);
-    unsigned long new_y = extract_uint_value(argv[4]);
+    unsigned long new_x = extract_uint_value(argv[4]);
+    unsigned long new_y = extract_uint_value(argv[3]);
 
     string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
     string interp = "nearest";
