@@ -186,7 +186,7 @@ public:
         DBG(cerr << "data[" << 4 * x_size + 0 << "]: " << data[4 * x_size + 0] << endl);
         DBG(cerr << "data[" << 4 * x_size + 4 << "]: " << data[4 * x_size + 4] << endl);
         CPPUNIT_ASSERT(same_as(data[4 * x_size + 0], -99)); // accounts for rounding error
-        CPPUNIT_ASSERT(data[4 * y_size + 4] == 3.5);
+        CPPUNIT_ASSERT(double_eq(data[4 * x_size + 4],3.5));
     }
 
     void test_get_size_box()
@@ -327,13 +327,13 @@ public:
             error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
             DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
             CPPUNIT_ASSERT(same_as(min, -99));
-            CPPUNIT_ASSERT(same_as(max, 6.9));
+            CPPUNIT_ASSERT(double_eq(max, 8.9));
 
             band->SetNoDataValue(-99.0);
             band->ComputeStatistics(false, &min, &max, NULL/*mean*/, NULL/*stddev*/, NULL/*prog*/, NULL/*prog_arg*/);
             DBG(cerr << "min, max: " << min << ", " << max << endl);
             CPPUNIT_ASSERT(min = 1.0);
-            CPPUNIT_ASSERT(same_as(max, 6.9));
+            CPPUNIT_ASSERT(double_eq(max, 8.9));
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -381,13 +381,13 @@ public:
             CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
             DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
             CPPUNIT_ASSERT(same_as(min, -99));
-            CPPUNIT_ASSERT(same_as(max, 6.9));
+            CPPUNIT_ASSERT(double_eq(max, 8.9));
 
             band->SetNoDataValue(-99.0);
             band->ComputeStatistics(false, &min, &max, NULL/*mean*/, NULL/*stddev*/, NULL/*prog*/, NULL/*prog_arg*/);
             DBG(cerr << "min, max: " << min << ", " << max << endl);
             CPPUNIT_ASSERT(min = 1.0);
-            CPPUNIT_ASSERT(same_as(max, 6.9));
+            CPPUNIT_ASSERT(double_eq(max, 8.9));
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -422,7 +422,7 @@ public:
             CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
             DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
             CPPUNIT_ASSERT(same_as(min, 1.0));  // This is 1 and not -99 because the no data value is set.
-            CPPUNIT_ASSERT(same_as(max, 6.9));
+            CPPUNIT_ASSERT(double_eq(max, 8.9));
 
             vector<double> gt(6);
             ds->GetGeoTransform(&gt[0]);
@@ -477,7 +477,7 @@ public:
             CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
             DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
             CPPUNIT_ASSERT(same_as(min, 1.0));  // This is 1 and not -99 because the no data value is set.
-            CPPUNIT_ASSERT(same_as(max, 6.9));
+            CPPUNIT_ASSERT(double_eq(max, 8.9));
 
             vector<double> gt(6);
             dst->GetGeoTransform(&gt[0]);
@@ -513,8 +513,8 @@ public:
 
             CPPUNIT_ASSERT(buf[0 * dst_size + 4] == 2.0);
             CPPUNIT_ASSERT(buf[0 * dst_size + 6] == 3.0);
-            CPPUNIT_ASSERT(same_as(buf[0 * dst_size + 11], 4.1));
-            CPPUNIT_ASSERT(same_as(buf[6 * dst_size + 11], -99));
+            CPPUNIT_ASSERT(same_as(buf[0 * dst_size + 11], 4.9));
+            CPPUNIT_ASSERT(double_eq(buf[6 * dst_size + 11], 4.7));
 
             GDALClose(dst.release());
         }
@@ -550,7 +550,8 @@ public:
             DBG(cerr << "buf[" << 0 * x_size + 4 << "]: " << buf[0 * x_size + 4] << endl);
             DBG(cerr << "buf[" << 4 * x_size + 4 << "]: " << buf[4 * x_size + 4] << endl);
             CPPUNIT_ASSERT(same_as(buf[0 * x_size + 4], 3.1)); // accounts for rounding error
-            CPPUNIT_ASSERT(buf[4 * y_size + 4] == 3.5);
+            CPPUNIT_ASSERT(double_eq(buf[4 * x_size + 4],3.5));
+
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());

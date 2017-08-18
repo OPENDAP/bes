@@ -204,7 +204,7 @@ public:
         DBG(cerr << "data[" << 4 * x_size + 0 << "]: " << data[4 * x_size + 0] << endl);
         DBG(cerr << "data[" << 4 * x_size + 4 << "]: " << data[4 * x_size + 4] << endl);
         CPPUNIT_ASSERT(same_as(data[4 * x_size + 0], -99)); // accounts for rounding error
-        CPPUNIT_ASSERT(data[4 * y_size + 4] == 3.5);
+        CPPUNIT_ASSERT(data[4 * x_size + 4] == 3.5);
 
         DBG(cerr << __func__ << "() - END" << endl);
     }
@@ -349,7 +349,7 @@ public:
         Float64 *max = dynamic_cast<Float64*>(result->var("max"));
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
-        CPPUNIT_ASSERT(max->value() == 6.9);
+        CPPUNIT_ASSERT(max->value() == 8.9);
 
         DBG(cerr << __func__ << "() - END" << endl);
     }
@@ -370,7 +370,7 @@ public:
         Float64 *max = dynamic_cast<Float64*>(result->var("max"));
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
-        CPPUNIT_ASSERT(max->value() == 6.9);
+        CPPUNIT_ASSERT(max->value() == 8.9);
 
         DBG(cerr << __func__ << "() - END" << endl);
     }
@@ -393,7 +393,7 @@ public:
         Float64 *max = dynamic_cast<Float64*>(result->var("max"));
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
-        CPPUNIT_ASSERT(max->value() == 6.9);
+        CPPUNIT_ASSERT(max->value() == 8.9);
 
         DBG(cerr << __func__ << "() - END" << endl);
     }
@@ -414,7 +414,7 @@ public:
         Float64 *max = dynamic_cast<Float64*>(result->var("max"));
         CPPUNIT_ASSERT(max);
         DBG(cerr << "max: " << max->value() << endl);
-        CPPUNIT_ASSERT(max->value() == 6.9);
+        CPPUNIT_ASSERT(max->value() == 8.9);
 
         DBG(cerr << __func__ << "() - END" << endl);
     }
