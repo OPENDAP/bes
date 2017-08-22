@@ -3,11 +3,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+# Because cacheT and uncompressT don't work with distcheck and a
+# parallel build. :-( jhrg 8/22/17
+.NOTPARALLEL:
+
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
-#$(LIBS)
-# $(XML2_LIBS)
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
@@ -19,9 +22,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
-# noinst_PROGRAMS = BESCache3Test
 
-#nodist_include_HEADERS = test_config.h breaks make rpm jhrg
 noinst_HEADERS = test_config.h
 
 if CPPUNIT
@@ -139,7 +140,6 @@ regexT_SOURCES = regexT.cc
 scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
-
 
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
