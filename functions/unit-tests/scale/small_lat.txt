@@ -1,4 +1,2 @@
-# data for 'lat' in the small.dds
-4 3 2 1
-0
--1 -2 -3 -4
+# data for 'lat' [9] in the small.dds
+4 3 2 1 0 -1 -2 -3 -4
