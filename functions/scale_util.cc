@@ -162,7 +162,7 @@ vector<double> get_geotransform_data(Array *x, Array *y, bool test_maps /* defau
 	    string msg = "The grids maps/dimensions must be monotonic and uniform (" + x->name() + ").";
 		BESDEBUG(DEBUG_KEY,"ERROR get_geotransform_data(): " << msg << endl);
         throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
-}
+	}
     // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
     // Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
 
@@ -562,12 +562,12 @@ void read_band_data(const Array *src, GDALRasterBand* band)
     if (!array_is_effectively_2D(src)) {
     	stringstream ss;
     	ss << "Cannot perform geo-spatial operations on an Array (";
-    	ss << a->name() << ") with " << long_to_string(a->dimensions()) << " dimensions.";
+    	ss << a->name() << ") with " << a->dimensions() << " dimensions.";
     	ss << "Because the constrained shape of the array: ";
     	a->print_decl(ss,"",false,true,true);
-    	ss << " Fails to is not effectively just the last two dimensions (x,y)" << endl;
+    	ss << " is not a two-dimensional array." << endl;
     	BESDEBUG(DEBUG_KEY, ss.str());
-        throw BESError(ss.str(),BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+        throw BESError(ss.str(), BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
  //   unsigned long x = a->dimension_size(a->dim_begin(), true);
@@ -652,6 +652,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
     	BESDEBUG(DEBUG_KEY, "ERROR build_src_dataset(): " << msg << endl);
         throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
     }
+
     SizeBox array_size = get_size_box(x, y);
 
     // The MEM driver takes no creation options jhrg 10/6/16
@@ -664,11 +665,12 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
 
     // Get the one band for this dataset and load it with data
 	GDALRasterBand *band = ds->GetRasterBand(1);
-	if (!band){
+	if (!band) {
 		string msg = "Could not get the GDAL RasterBand for Array '" + data->name() + "': " + CPLGetLastErrorMsg();
 		BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset():  " << msg << endl);
         throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
 	}
+
 	// Set the no data value here; I'm not sure what the affect of using NaN will be... jhrg 10/11/16
 	double no_data = get_missing_data_value(data);
 	band->SetNoDataValue(no_data);
@@ -685,7 +687,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
     	string msg = "Could not set '" + srs + "' as the dataset native CRS.";
 		BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset(): " << msg << endl);
         throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
-}
+    }
     // I'm not sure what to do about the Projected Coordinate system. jhrg 10/6/16
     // native_srs.SetUTM( 11, TRUE );
 

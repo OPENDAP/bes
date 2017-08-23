@@ -24,6 +24,7 @@ branches:
   only:
     - master
     - coverity_scan
+    - new-distcheck-fix
     - /^*-[0-9]+\.[0-9]+\.[0-9]+/
 
 # Only use gcc for Coverity builds
@@ -95,10 +96,12 @@ before_script:
 # so we don't want to repeat that here.
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7 DISTCHECK_CONFIGURE_FLAGS="--prefix=$HOME/build --with-dependencies=$HOME/deps"; fi
+   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7; fi
+
+#  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
 
 # after_failure:
 #   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
 #   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
 #   - ls -lh /tmp/${LOG_FILE_TGZ}
-#   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@dev1.www.opendap.org:${LOG_FILE_TGZ}
+#   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@test.opendap.org:${LOG_FILE_TGZ}
