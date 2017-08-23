@@ -95,7 +95,7 @@ before_script:
 # so we don't want to repeat that here.
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
   
 # - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7; fi
 
