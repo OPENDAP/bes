@@ -1,0 +1,4 @@
+
+This directory holds files and a child dir that provide a stable environment
+for the catT test. Do not change the files/dirs here unless the catT test
+is also updated.

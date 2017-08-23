@@ -23,7 +23,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
 
-noinst_HEADERS = test_config.h
+noinst_HEADERS = test_config.h test_utils.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
@@ -148,7 +148,7 @@ fsT_SOURCES = fsT.cc
 
 if LIBDAP
 catT_OBJ = ../BESCatalogResponseHandler.o
-catT_SOURCES = catT.cc
+catT_SOURCES = test_utils.cc catT.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
