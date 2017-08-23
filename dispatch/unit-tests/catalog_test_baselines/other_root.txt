@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showCatalog>
+        <dataset catalog="other" count="3" lastModified="" name="other/" node="true" size="">
+            <dataset catalog="other" count="1" lastModified="" name="other/child_dir" node="true" size=""/>
+            <dataset catalog="other" lastModified="" name="other/file1" node="false" size=""/>
+            <dataset catalog="other" lastModified="" name="other/file2" node="false" size=""/>
+        </dataset>
+    </showCatalog>
+</response>
