@@ -105,6 +105,5 @@ else
     echo "Using cached libdap4."
 fi
 
-gridfields-config --cflags
 
 
