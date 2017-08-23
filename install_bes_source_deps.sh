@@ -3,7 +3,7 @@
 # Build the dependencies for the Travis-CI build of the BES and all of
 # its modules that are distributed with Hyrax.
 #
-# Two things about this script: 1. It builds both the dependencies for
+# Things about this script: 1. It builds both the dependencies for
 # a complete set of Hyrax modules and that is quite taxing for the Travis
 # system since Travis allows logs of 4MB or less. When the log hits the
 # 4MB size, Travis stops the build. To get around that limitation, I send
@@ -16,6 +16,10 @@
 # deps built here and get them from packages, but it's not enough to make
 # a big difference. Also, building this way mimics what we will do when it's
 # time to make the release RPMs.
+# 3. Travis will cache parts of a build. We cache the hyrax-dependencies and
+# libdap4 builds to save time. That's why there are tests for file in $HOME;
+# if there are files there, then Travis has pulled them from the cahce and 
+# this script should not rebuild them.
 
 set -e # enable exit on error
 
@@ -25,14 +29,14 @@ export PATH=$HOME/deps/bin:$PATH
 
 echo prefix: $prefix
 
-
-# Clean it 
+# Clean it - only do this if you want to override the Travis caching.
+#
 # rm -rf $HOME/deps $HOME/hyrax-dependencies $HOME/libdap4
 
 #------------------------------------------------------------------------------
 # Build hyrax-dependencies project
 #
-#
+
 newClone=false
 
 if test ! -f "$HOME/hyrax-dependencies/Makefile"
@@ -41,8 +45,9 @@ then
     (cd $HOME && git clone https://github.com/opendap/hyrax-dependencies)
     echo "Cloned hyrax-dependencies"
     newClone=true  
-fi     
-echo newClone: $newClone
+fi
+
+echo hyrax dependencies were cloned: $newClone
 
 echo "Using 'git pull' to update hyrax-dependencies..."
 set +e # disable  exit on error
@@ -53,7 +58,7 @@ if [ $? -ne 0 ]; then
 fi
 set -e # (re)enable exit on error
 
-echo pull_status: $pull_status 
+echo hyrax dependencies pull_status: $pull_status 
 
 if test "$newClone" = "true" -o ! $pull_status = "up-to-date"  -o ! -x "$HOME/deps/bin/bison" 
 then
@@ -64,22 +69,21 @@ else
     echo "Using cached hyrax-dependencies."
 fi
 
-# ls -l $HOME/deps/lib
-
 #------------------------------------------------------------------------------
 # Build libdap4 project
 #
-#
+
 newClone=false
 
-if true # test ! -f "$HOME/libdap4/Makefile.am"
+if test ! -f "$HOME/libdap4/Makefile.am"
 then
     echo "Cloning libdap4..."
     (cd $HOME; rm -rf libdap4; git clone https://github.com/opendap/libdap4)
     echo "Cloned libdap4"
     newClone=true  
-fi     
-echo newClone: $newClone
+fi
+   
+echo libdap4 was cloned: $newClone
 
 echo "Using 'git pull' to update libdap4..."
 pull_status="up-to-date"
@@ -90,7 +94,7 @@ if [ $? -ne 0 ]; then
 fi
 set -e # (re)enable exit on error
 
-echo pull_status: $pull_status 
+echo libdap4 pull_status: $pull_status 
 
 if test "$newClone" = "true" -o ! $pull_status = "up-to-date"  -o ! -x "$HOME/deps/bin/dap-config" 
 then
@@ -103,5 +107,4 @@ fi
 
 gridfields-config --cflags
 
-ls -lR $HOME/deps
 
