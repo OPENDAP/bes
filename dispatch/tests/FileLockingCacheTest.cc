@@ -191,7 +191,7 @@ int main(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
 
-    GetOpt getopt(argc, argv, "db:pr:sx:h");
+    GetOpt getopt(argc, argv, "db:pr:x:h");
     int option_char;
     long int time;
     int retVal=0;
@@ -228,7 +228,43 @@ int main(int argc, char*argv[])
 
         case 'h':
         default:
-            cerr << "A usage statement would be nice." << endl;
+            cerr << "" << endl;
+            cerr << "FileLockingCacheTest            (BES Dispatch)             FileLockingCacheTest" << endl;
+            cerr << "" << endl;
+            cerr << "Name" << endl;
+            cerr << "    FileLockingCacheTest -- Test a systems advisory file locking capability." << endl;
+            cerr << "" << endl;
+            cerr << "Description" << endl;
+            cerr << "    FileLockingCacheTest [-d][-b bes_debug_string][-p][-r time][-x time][-h]" << endl;
+            cerr << "    -x time -- Get and hold an exclusive write lock for 'time' seconds." << endl;
+            cerr << "    -r time -- Get and hold a shared read lock for 'time' seconds." << endl;
+            cerr << "    -p      -- Purge cache files." << endl;
+            cerr << "    -d      -- Enable test debugging output." << endl;
+            cerr << "    -b str  -- Configure BES debugging with the string 'str'." << endl;
+            cerr << "    -h      -- Show this message." << endl;
+            cerr << "" << endl;
+            cerr << "NOTE: The entire command line is evaluated and each item is executed" << endl;
+            cerr << "in the order that it appears on the command line." << endl;
+            cerr << "" << endl;
+            cerr << "Simple Use:" << endl;
+            cerr << "    # Get and hold an exclusive write lock for 10 seconds." << endl;
+            cerr << "       FileLockingCacheTest -x 10" << endl;
+            cerr << "    # Get and hold a shared read lock for 5 seconds." << endl;
+            cerr << "       FileLockingCacheTest -r 5" << endl;
+            cerr << "" << endl;
+            cerr << "Example:" << endl;
+            cerr << "    # Purge cache, Get and hold an exclusive write lock for 10 seconds," << endl;
+            cerr << "    # get and hold shared read lock for 5 seconds." << endl;
+            cerr << "       FileLockingCacheTest -p -x 10 -r 5" << endl;
+            cerr << "" << endl;
+            cerr << "Debugging Example:" << endl;
+            cerr << "    # Enable all debugging." << endl;
+            cerr << "    # Purge test files from cache." << endl;
+            cerr << "    # Get and hold an exclusive write lock for 10 seconds." << endl;
+            cerr << "       FileLockingCacheTest -d b \"cerr,all\" -p -x 10" << endl;
+            cerr << "" << endl;
+            cerr << "FileLockingCacheTest                 (END)                 FileLockingCacheTest" << endl;
+            cerr << "" << endl;
             break;
         }
     }
