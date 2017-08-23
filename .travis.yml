@@ -24,17 +24,17 @@ branches:
   only:
     - master
     - coverity_scan
-    - new-distcheck-fix
+    - travis
     - /^*-[0-9]+\.[0-9]+\.[0-9]+/
 
 # Only use gcc for Coverity builds
-matrix:
-  exclude:
-    - compiler: clang
-    - env: COVERITY_SCAN_BRANCH=1
+# matrix:
+#  exclude:
+#    - compiler: clang
+#    - env: COVERITY_SCAN_BRANCH=1
 
 addons:
-  ssh_known_hosts: www.opendap.org
+  # ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -49,7 +49,7 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
-      - sshpass
+     # - sshpass
 
 # The first 'secure' line is TRAVIS_AT_OO
 # Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
@@ -61,7 +61,7 @@ addons:
 
 env:
   global:
-  - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
+  #- secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
   - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
 
 # Use this to prepare the system to install prerequisites or
@@ -77,7 +77,7 @@ env:
 
 install:
   - bash ./install_bes_source_deps.sh
-  - ls -R $HOME/deps
+  # - ls -R $HOME/deps
 
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
