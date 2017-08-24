@@ -341,7 +341,7 @@ namespace HDFEOS2
             }
 
             /// Get the _Fillvalue" attribute value
-            const float getAddedFillValue () const
+            float getAddedFillValue () const
             {
                 return this->addedfv;
             }
@@ -357,7 +357,7 @@ namespace HDFEOS2
             }
 
             /// Have the added fillvaue?
-            const bool haveAddedFillValue () const
+            bool haveAddedFillValue () const
             {
                 return this->haveaddedfv;
             }
@@ -378,7 +378,7 @@ namespace HDFEOS2
             // 4 is an inserted natural number.
             // 5 is time.
 
-            const int getFieldType () const
+            int getFieldType () const
             {
                 return this->fieldtype;
             }
@@ -396,31 +396,31 @@ namespace HDFEOS2
             }
 
             /// Obtain the ydimmajor info.
-            const bool getYDimMajor () const
+            bool getYDimMajor () const
             {
                 return this->ydimmajor;
             }
 
             /// Obtain the speciallon info.
-            const bool getSpecialLon () const
+            bool getSpecialLon () const
             {
                 return this->speciallon;
             }
 
             /// Obtain the special lat/lon format info.
-            const int getSpecialLLFormat () const
+            int getSpecialLLFormat () const
             {
                 return this->specialformat;
             }
 
             /// Obtain if the dimension can be condensed.  
-            const bool getCondensedDim () const
+            bool getCondensedDim () const
             {
                 return this->condenseddim;
             }
 
             /// Have dimension map or not
-            const bool UseDimMap () const
+            bool UseDimMap () const
             {
                 return this->dmap;
             }
@@ -632,7 +632,7 @@ namespace HDFEOS2
             }
 
             /// Get the scale and offset type  
-            const SOType getScaleType () const
+            SOType getScaleType () const
             {
                 return this->scaletype;
             }
@@ -926,7 +926,7 @@ namespace HDFEOS2
                 }
 
                 /// Obtain the ownllflag  info.
-                const bool getLatLonFlag () const
+                bool getLatLonFlag () const
                 {
                     return this->ownllflag;
                 }
