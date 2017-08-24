@@ -73,21 +73,39 @@ function read_lock {
     return $ret;
 }
 
+##########################################################
+##########################################################
+#
+#
+# Clear the decks for the test.
 errno=0;
-
-
 purge_cache;
+
+#
+# In a background job, create and lock for writing
+# the cache test file. Hold this lock for 
+# write_lock_hold_time seconds.
 write_lock $write_lock_hold_time "true";
 v=$?
 echo "write_lock returned: $v"
+echo "write_lock_elapsed: $write_lock_elapsed"
+
+#
+# While the proevious lock is being held, make
+# a blocking call to get a read lock. This,
+# if Advisory File Locking is working should 
+# block until the write_lock job releases the lock.
 read_lock $read_lock_hold_time "false";
 v=$?
 echo "read_lock returned: $v"
-
-
-echo "write_lock_elapsed: $write_lock_elapsed"
 echo "read_lock_elapsed:  $read_lock_elapsed"
 
+
+#
+# If Advisory File Locking is working then we know that the
+# read_lock_elapsed time should be write_lock_hold_time + read_lock_hold_time
+# and if it's not working then we would expect the read_lock_elapsed time to be
+# closer to the read_lock_hold_time.
 if [ ${read_lock_elapsed} -lt ${minimum_expected_time} ] 
 then
     (>&2 echo "ERROR! It appears that Advisory File Locking is not working on this system.")
@@ -96,7 +114,7 @@ else
     (>&2 echo "Advisory File Locking appears to be working on this system.")
 fi
 
-# Another call to write_lock should fail.
+# Another call to write_lock should fail because the cache file exists.
 write_lock $write_lock_hold_time "false";
 status=$?
 if [ ${status} -ne 0 ] 
