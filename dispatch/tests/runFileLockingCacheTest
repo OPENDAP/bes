@@ -93,10 +93,12 @@ echo "write_lock returned: $v"
 echo "write_lock_elapsed: $write_lock_elapsed"
 
 #
-# While the proevious lock is being held, make
+# While the previous lock is being held, make
 # a blocking call to get a read lock. This,
-# if Advisory File Locking is working should 
-# block until the write_lock job releases the lock.
+# if Advisory File Locking is working, should 
+# block until the write_lock job releases the lock
+# and then hold its own lock for read_lock_hold_time
+# seconds.
 read_lock $read_lock_hold_time "false";
 v=$?
 echo "read_lock returned: $v"
@@ -135,14 +137,16 @@ fi
 # Test-03 Get multiple read locks.
 #
 # Multiple concurrent calls to read lock should work.
-# First call runs in background holds lot for 10 seconds.
+# First call runs in background and holds lock for 10 seconds.
 read_lock 10 "true";
 r1_status=$?
 echo "read_lock returned: $r2_status read_lock_elapsed: $read_lock_elapsed"
-# Second call runs in foreground an holds lock for one second 
+# Second call runs in foreground and holds lock for one second 
 read_lock 1 "false";
 r2_status=$?
 echo "read_lock returned: $r2_status read_lock_elapsed: $read_lock_elapsed"
+
+# A not so arbitrary value...
 max_time=5;
 
 if [ ${read_lock_elapsed} -gt ${max_time} ]
