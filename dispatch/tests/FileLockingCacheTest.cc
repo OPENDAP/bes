@@ -214,19 +214,19 @@ int main(int argc, char*argv[])
 
         case 'r':
             std::istringstream(getopt.optarg) >> time;
-            cerr << "get_and_hold_read_lock for " << time << " seconds" << endl;
+            DBG(cerr << __func__ << "() - get_and_hold_read_lock for " << time << " seconds" << endl);
             retVal = flc_test.get_and_hold_read_lock(time);
             break;
 
         case 'p':
-            cerr << "purging cache dir: " << TEST_CACHE_DIR << " cache_prefix: "<< CACHE_PREFIX << endl;
+            DBG(cerr << __func__ << "() - purging cache dir: " << TEST_CACHE_DIR << " cache_prefix: "<< CACHE_PREFIX << endl);
             purge_cache(TEST_CACHE_DIR,CACHE_PREFIX);
             cerr << "purge_cache DONE" << endl;
             break;
 
         case 'x':
             std::istringstream(getopt.optarg) >> time;
-            cerr << "get_and_hold_exclusive_lock for " << time << " seconds." << endl;
+            DBG(cerr << __func__ << "() -  get_and_hold_exclusive_lock for " << time << " seconds." << endl);
             retVal = flc_test.get_and_hold_exclusive_lock(time);
             break;
 

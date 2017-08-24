@@ -21,23 +21,35 @@
 #
 #
 #
-
+# Exclusive Write Lock Configurqtion
 write_lock_hold_time=7;
 write_lock_elapsed=0;
-
+#
+# Shared Read Lock Configurqtion
 read_lock_hold_time=3;
 read_lock_elapsed=0;
-
+#
+# Time it should take if
 minimum_expected_time=`echo "$write_lock_hold_time+$read_lock_hold_time" | bc`
 
 
 function write_lock {
     write_lock_hold_time=$1;
+    write_lock_background=$2;
     # echo "write_lock() hold: $write_lock_hold_time seconds";
+    amper="&";
     write_lock_start_time=`date "+%s"`;
-    ./FileLockingCacheTest -x $write_lock_hold_time &
+    if [ ${write_lock_background} == "true" ]
+    then
+        ./FileLockingCacheTest -x $write_lock_hold_time &
+    else 
+        ./FileLockingCacheTest -x $write_lock_hold_time;    
+    fi
+    ret=$?;
+    echo "FileLockingCacheTest status: $ret"
     write_lock_end_time=`date "+%s"`;
     write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
+    return $ret;
 }
 
 function purge_cache {
@@ -46,19 +58,31 @@ function purge_cache {
 
 function read_lock {
     read_lock_hold_time=$1;
+    read_lock_background=$2;
     # echo "read_lock() hold: $read_lock_hold_time seconds";
     read_lock_start_time=`date "+%s"`;
-    ./FileLockingCacheTest -r $read_lock_hold_time;
+    if [ ${read_lock_background} == "true" ]
+    then
+        ./FileLockingCacheTest -r $read_lock_hold_time &
+    else 
+        ./FileLockingCacheTest -r $read_lock_hold_time;    
+    fi
+    ret=$?;
     read_lock_end_time=`date "+%s"`;
     read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
+    return $ret;
 }
 
-
+errno=0;
 
 
 purge_cache;
-write_lock $write_lock_hold_time;
-read_lock $read_lock_hold_time;
+write_lock $write_lock_hold_time "true";
+v=$?
+echo "write_lock returned: $v"
+read_lock $read_lock_hold_time "false";
+v=$?
+echo "read_lock returned: $v"
 
 
 echo "write_lock_elapsed: $write_lock_elapsed"
@@ -67,8 +91,49 @@ echo "read_lock_elapsed:  $read_lock_elapsed"
 if [ ${read_lock_elapsed} -lt ${minimum_expected_time} ] 
 then
     (>&2 echo "ERROR! It appears that Advisory File Locking is not working on this system.")
-    exit 1;
+    errno=1;
 else 
     (>&2 echo "Advisory File Locking appears to be working on this system.")
-    exit 0;
 fi
+
+# Another call to write_lock should fail.
+write_lock $write_lock_hold_time "false";
+status=$?
+if [ ${status} -ne 0 ] 
+then
+    echo "Expected Fail: Unable to get another exclusive write lock on the exisiting cache file. status: $status"
+else
+    echo "ERROR! Successfully create and acquired an exclusive 
+          write lock on the exisiting cache file. This should not be possible. status $status"
+    errno=$status;
+fi
+
+# Multiple concurrent calls to read lock should work.
+# First call runs in background holds lot for 10 seconds.
+read_lock 10 "true";
+r1_status=$?
+echo "read_lock returned: $r2_status read_lock_elapsed: $read_lock_elapsed"
+# Second call runs in foreground an holds lock for one second 
+read_lock 1 "false";
+r2_status=$?
+echo "read_lock returned: $r2_status read_lock_elapsed: $read_lock_elapsed"
+max_time=5;
+
+if [ ${read_lock_elapsed} -gt ${max_time} ]
+then
+    echo "ERROR! Unable to share read locks. read_lock_elapsed 
+          should be less than $max_time seconds. read_lock_elapsed: $read_lock_elapsed";
+    errno=1;
+else 
+    echo "Shared read lock acquired and released. read_lock_elapsed: $read_lock_elapsed"
+fi
+
+exit $errno;
+
+
+
+
+
+
+
+
