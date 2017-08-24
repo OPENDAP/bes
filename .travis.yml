@@ -1,6 +1,8 @@
 # -*- shell-script -*-
 #
 # Initial Travic-CI control file. 6.5.15 jhrg
+# Hacked quite a bit; added support for parallel autotest tests
+# and removed unused parts. jhrg 8.23.17
 
 # Use the docker container-based build systems
 
