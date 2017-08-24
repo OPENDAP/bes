@@ -4,6 +4,8 @@
 
 # Use the docker container-based build systems
 
+dist: trusty
+
 sudo: false
 
 language: cpp
