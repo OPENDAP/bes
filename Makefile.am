@@ -23,7 +23,7 @@ if WITH_DEPENDENCIES
 # With automake 1.14 setting AM_DISTCHECK... means that the user variable
 # DISTCHECK_CONFIGURE_FLAGS no longer needs to be used. Earlier versions
 # of automake don't support this. jhrg 6/5/17
-AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
+AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
