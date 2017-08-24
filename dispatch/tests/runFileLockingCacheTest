@@ -81,6 +81,8 @@ function read_lock {
 errno=0;
 purge_cache;
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Test-01 Init and test concurrent lock.
 #
 # In a background job, create and lock for writing
 # the cache test file. Hold this lock for 
@@ -114,6 +116,9 @@ else
     (>&2 echo "Advisory File Locking appears to be working on this system.")
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Test-02 Try bad call to write_lock.
+#
 # Another call to write_lock should fail because the cache file exists.
 write_lock $write_lock_hold_time "false";
 status=$?
@@ -126,6 +131,9 @@ else
     errno=$status;
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Test-03 Get multiple read locks.
+#
 # Multiple concurrent calls to read lock should work.
 # First call runs in background holds lot for 10 seconds.
 read_lock 10 "true";
