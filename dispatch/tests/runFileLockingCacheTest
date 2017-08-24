@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+# This test script checks to see if advisory file locking
+# works on a system.
+#
+# This is acheived by launching two processes. The first 
+# process is launched as a background job. It creates
+# and exclusively locks a cache file for a period of time.
+# The second process attempts to get a shared read lock on
+# the same cache file. Since the first process is still running
+# it still holds the exclusive lock. And the code that acquires
+# the read lock will block unitl one is available. So the total 
+# time for the "get and hold a read lock" activiy will take at 
+# least the sum of the time that the first process holds the write 
+# lock PLUS the time that the second process holds the read lock.
+# If, however, advisory file locking is not working, then the
+# second processes execution time should be nominally more than
+# the time it held the read lock, as it didn't wait for the first
+# process to release the exclusive write lock.
+#
+#
+#
+#
+
+write_lock_hold_time=7;
+write_lock_elapsed=0;
+
+read_lock_hold_time=3;
+read_lock_elapsed=0;
+
+minimum_expected_time=`echo "$write_lock_hold_time+$read_lock_hold_time" | bc`
+
+
+function write_lock {
+    write_lock_hold_time=$1;
+    echo "write_lock() hold: $write_lock_hold_time seconds";
+    write_lock_start_time=`date "+%s"`;
+    ./FileLockingCacheTest -x $write_lock_hold_time &
+    write_lock_end_time=`date "+%s"`;
+    write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
+}
+
+function purge_cache {
+    ./FileLockingCacheTest -p;
+}
+
+function read_lock {
+    read_lock_hold_time=$1;
+    echo "read_lock() hold: $read_lock_hold_time seconds";
+    read_lock_start_time=`date "+%s"`;
+    ./FileLockingCacheTest -r $read_lock_hold_time;
+    read_lock_end_time=`date "+%s"`;
+    read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
+}
+
+
+
+
+purge_cache;
+write_lock $write_lock_hold_time;
+read_lock $read_lock_hold_time;
+
+
+echo "write_lock_elapsed: $write_lock_elapsed"
+echo "read_lock_elapsed:  $read_lock_elapsed"
+
+if [ ${read_lock_elapsed} -lt ${minimum_expected_time} ] 
+then
+    exit 1;
+else 
+    exit 0;
+fi

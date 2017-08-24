@@ -185,8 +185,12 @@ public:
 };
 
 
-
-// test fixture class
+/**
+ * Performs each of the tasks indicated by the command line parameters.
+ * Tasks are performed in the order they are processed from the command line.
+ * If a task returns a non-zero value then the program exits.
+ *
+ */
 int main(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
