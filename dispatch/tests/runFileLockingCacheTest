@@ -66,7 +66,9 @@ echo "read_lock_elapsed:  $read_lock_elapsed"
 
 if [ ${read_lock_elapsed} -lt ${minimum_expected_time} ] 
 then
+    (>&2 echo "ERROR! It appears that Advisory File Locking is not working on this system.")
     exit 1;
 else 
+    (>&2 echo "Advisory File Locking appears to be working on this system.")
     exit 0;
 fi
