@@ -14,7 +14,7 @@
 # least the sum of the time that the first process holds the write 
 # lock PLUS the time that the second process holds the read lock.
 # If, however, advisory file locking is not working, then the
-# second processes execution time should be nominally more than
+# second processes execution time should be nominally the same as
 # the time it held the read lock, as it didn't wait for the first
 # process to release the exclusive write lock.
 #
@@ -33,7 +33,7 @@ minimum_expected_time=`echo "$write_lock_hold_time+$read_lock_hold_time" | bc`
 
 function write_lock {
     write_lock_hold_time=$1;
-    echo "write_lock() hold: $write_lock_hold_time seconds";
+    # echo "write_lock() hold: $write_lock_hold_time seconds";
     write_lock_start_time=`date "+%s"`;
     ./FileLockingCacheTest -x $write_lock_hold_time &
     write_lock_end_time=`date "+%s"`;
@@ -46,7 +46,7 @@ function purge_cache {
 
 function read_lock {
     read_lock_hold_time=$1;
-    echo "read_lock() hold: $read_lock_hold_time seconds";
+    # echo "read_lock() hold: $read_lock_hold_time seconds";
     read_lock_start_time=`date "+%s"`;
     ./FileLockingCacheTest -r $read_lock_hold_time;
     read_lock_end_time=`date "+%s"`;
