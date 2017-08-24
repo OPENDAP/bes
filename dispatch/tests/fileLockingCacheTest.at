@@ -1,0 +1,305 @@
+
+#
+
+AT_INIT([FileLockingCacheTest])
+# AT_COPYRIGHT([])
+
+AT_TESTED([./FileLockingCacheTest])
+
+# Exclusive Write Lock Configuration
+write_lock_hold_time=7;
+write_lock_elapsed=0;
+#
+# Shared Read Lock Configuration
+read_lock_hold_time=3;
+read_lock_elapsed=0;
+#
+# Time it should take if
+minimum_expected_time=`echo "$write_lock_hold_time+$read_lock_hold_time" | bc`
+
+# Get an (exclusive) write lock (create a file and lock it for writing).
+# $1 int Time to hold the write lock
+# $2 true/false Should this run in the background?
+function write_lock {
+    write_lock_hold_time=$1;
+    write_lock_background=$2;
+    # echo "write_lock() hold: $write_lock_hold_time seconds";
+    # amper="&";
+    write_lock_start_time=`date "+%s"`;
+    if [ ${write_lock_background} == "true" ]
+    then
+        ./FileLockingCacheTest -x $write_lock_hold_time &
+    else 
+        ./FileLockingCacheTest -x $write_lock_hold_time;    
+    fi
+    ret=$?;
+    echo "FileLockingCacheTest status: $ret"
+    write_lock_end_time=`date "+%s"`;
+    write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
+    return $ret;
+}
+
+# Purge the cache
+function purge_cache {
+    ./FileLockingCacheTest -p;
+}
+
+# Get a (shared) read lock on an existing file.
+# $1 int Time to hold the read lock
+# $2 true/false Should this run in the background?
+function read_lock {
+    read_lock_hold_time=$1;
+    read_lock_background=$2;
+    # echo "read_lock() hold: $read_lock_hold_time seconds";
+    read_lock_start_time=`date "+%s"`;
+    if [ ${read_lock_background} == "true" ]
+    then
+        ./FileLockingCacheTest -r $read_lock_hold_time &
+    else 
+        ./FileLockingCacheTest -r $read_lock_hold_time;    
+    fi
+    ret=$?;
+    read_lock_end_time=`date "+%s"`;
+    read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
+    return $ret;
+}
+     
+# Clear the decks for the test.
+errno=0;
+purge_cache;
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Test-01 Init and test concurrent lock.
+#
+# In a background job, create and lock for writing
+# the cache test file. Hold this lock for 
+# write_lock_hold_time seconds.
+write_lock $write_lock_hold_time "true";
+v=$?
+echo "write_lock returned: $v"
+echo "write_lock_elapsed: $write_lock_elapsed"
+
+# While the previous lock is being held, make
+# a blocking call to get a read lock. This,
+# if Advisory File Locking is working should 
+# block until the write_lock job releases the lock.
+read_lock $read_lock_hold_time "false";
+v=$?
+echo "read_lock returned: $v"
+echo "read_lock_elapsed:  $read_lock_elapsed"
+
+# If Advisory File Locking is working then we know that the
+# read_lock_elapsed time should be write_lock_hold_time + read_lock_hold_time
+# and if it's not working then we would expect the read_lock_elapsed time to be
+# closer to the read_lock_hold_time.
+if [ ${read_lock_elapsed} -lt ${minimum_expected_time} ] 
+then
+    (>&2 echo "ERROR! It appears that Advisory File Locking is not working on this system.")
+    errno=1;
+else 
+    (>&2 echo "Advisory File Locking appears to be working on this system.")
+fi
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass])
+
+m4_define([_AT_BESCMD_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_PATTERN_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([grep -f $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_ERROR_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_BINARYDATA_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+    
+m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([binary])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl AT_CHECK (commands, [status = `0'], [stdout = `'], [stderr = `'], [run-if-fail], [run-if-pass])
+
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of course, this
+dnl requires ncdump be accessible.
+
+m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([netcdf])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        
+        dnl first get the version number, then the header, then the data
+        AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
+        AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+        AT_CHECK([ncdump test.nc > $baseline.data.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        
+        AT_CHECK([ncdump -k test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.ver tmp])
+        
+        AT_CHECK([ncdump -h test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.header tmp])
+        
+        AT_CHECK([ncdump test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.data tmp])
+        
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+    
+m4_define([AT_BESCMD_RESPONSE_TEST],
+[_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
+])
+
+m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
+[_AT_BESCMD_PATTERN_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
+])
+
+m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
+[_AT_BESCMD_ERROR_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
+
+m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],
+[_AT_BESCMD_DAP4_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
+[_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
+
+# These tests do not use the SequenceAggregationServer
+
+AT_BESCMD_RESPONSE_TEST([bescmd/agg_array_dds_one_ce.bescmd],[aggregation])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggregation])
+
+# These tests include command files that use the SequenceAggregationServer.
+#
+# NB: I've removed the BESDapSequenceAggregationServer class from this
+# handler. It was based on a misunderstanding about when in the processing
+# chain the BES run the AggregationServer handlers. I'm leaving it in 
+# git because it might be useful if the BES is modified in the future.
+# jhrg 3/17/15
+
+# AT_BESCMD_RESPONSE_TEST([bescmd/agg_sequence_dds.bescmd],[aggregation])
+
+# This is a semi-broken test because it uses TestSequence and that class
+# does not know how to read from the d_values field, where the Sequence
+# AggregationServer puts the aggregated values. Instead, the result is 
+# TestSequence's stock 5 rows.
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_sequence_dods.bescmd],[aggregation])
+
+# Test the "_unwrap" Structure naming convention.
+AT_BESCMD_RESPONSE_TEST([bescmd/function_result_unwrap_dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/function_result_unwrap_dods.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/function_result_unwrap_dap.bescmd, xfail)
+
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/dap4_ce_function-01.bescmd, xfail)

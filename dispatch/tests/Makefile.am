@@ -32,3 +32,34 @@ FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc FileLockingCacheTest.h te
 # FileLockingCacheTest_CPPFLAGS = $(AM_CPPFLAGS)
 # and LDADD
 # FileLockingCacheTest_LDADD = $(LDADD)
+
+############## Autotest follows #####################
+
+AUTOM4TE = autom4te
+
+TESTSUITE = $(srcdir)/besDapModuleTest
+
+clean-local:
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+
+AUTOTEST = $(AUTOM4TE) --language=autotest
+
+# Switch back to building the package.m4 here in the makefile
+# since that gives better control over things like PACKAGE_NAME,
+# which will be handy in the handlers to keep their package names
+# from all being 'bes'.
+$(TESTSUITE): $(srcdir)/besDapModuleTest.at $(srcdir)/package.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+	mv $@.tmp $@
+
+# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac
+	:;{ \
+	echo '# Signature of the current package.' && \
+	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
+	echo 'm4_define([AT_PACKAGE_TARNAME],   [@PACKAGE_TARNAME@])' && \
+	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
+	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
+	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	} >'$(srcdir)/package.m4'
