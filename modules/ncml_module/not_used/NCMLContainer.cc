@@ -141,6 +141,12 @@ string NCMLContainer::access()
         // FIXME Don't close the stream 'ostrm' and instead store it in a field of the
         // object. see the class comment. jhrg 8/12/15
 
+        // FIXME! If we use this code, switch to the BESHandlerUtil.h/cc code that
+        // supports temp files. Or use the code in libdap that supports mkstemps() and
+        // does so in a way the avoids portability problems. THe libdap code (mkstemps)
+        // code supports temp files with extensions (not that big a deal, but it does).
+        // jhrg 8/25/17
+
         ofstream ostrm;
         string _tmp_file_name = libdap::open_temp_fstream(ostrm,
             NCMLContainerStorage::NCML_TempDir + "/ncml_module_XXXXXX", ".ncml");
