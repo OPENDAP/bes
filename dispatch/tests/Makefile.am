@@ -14,30 +14,28 @@ endif
 
 noinst_PROGRAMS = FileLockingCacheTest
 
+TESTS = testsuite
+
 # You need this because AM assumes that .h files don't need to be built
 BUILT_SOURCES = test_config.h
 
 noinst_DATA =
 CLEANFILES = 
-EXTRA_DIST = 
-# you don't need this because you/I have declared this as built 
-DISTCLEANFILES = test_config.h
+EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4
+
+DISTCLEANFILES = atconfig
 
 test_config.h: test_config.h.in
 	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
 FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc FileLockingCacheTest.h test_config.h
-# You don't need this because AM_CPPFLAGS is used by default
-# FileLockingCacheTest_CPPFLAGS = $(AM_CPPFLAGS)
-# and LDADD
-# FileLockingCacheTest_LDADD = $(LDADD)
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/besDapModuleTest
+TESTSUITE = $(srcdir)/testsuite
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -49,7 +47,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # since that gives better control over things like PACKAGE_NAME,
 # which will be handy in the handlers to keep their package names
 # from all being 'bes'.
-$(TESTSUITE): $(srcdir)/besDapModuleTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 

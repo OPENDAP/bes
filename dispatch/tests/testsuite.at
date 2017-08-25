@@ -1,0 +1,82 @@
+
+AT_INIT([FileLockingCacheTest])
+# AT_COPYRIGHT([])
+
+AT_TESTED([./FileLockingCacheTest])
+
+# Usage: AT_TEST_BLOCKING ["v"]
+# including "v" provides verbose output.
+
+m4_define([AT_TEST_BLOCKING], [dnl
+
+    AT_SETUP([BLOCKING])
+
+    # verbose is "v" xor any other value is false  
+    verbose=$1
+    
+    FileLockingCacheTest -p
+    
+    write_lock_hold_time=3
+    write_lock_start_time=`date "+%s"`
+    AT_CHECK([FileLockingCacheTest -x $write_lock_hold_time &], [0], [ignore], [ignore])
+    write_lock_end_time=`date "+%s"`
+    
+    write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
+    
+    AS_IF([test x$verbose = xv], [echo "write_lock_elapsed: $write_lock_elapsed"], [])
+    
+    read_lock_hold_time=1
+    read_lock_start_time=`date "+%s"`
+    AT_CHECK([FileLockingCacheTest -r $read_lock_hold_time], [0], [ignore], [ignore])
+    read_lock_end_time=`date "+%s"`
+    
+    read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
+    
+    minimum_expected_time=`echo "$write_lock_hold_time + $read_lock_hold_time" | bc`
+    
+    AS_IF([test x$verbose = xv], [echo "read_lock_elapsed:  $read_lock_elapsed"], [])
+    
+    AT_CHECK([test ${read_lock_elapsed} -ge ${minimum_expected_time} ], [0], [ignore], [ignore])
+    
+    AT_CLEANUP
+])
+
+m4_define([AT_TEST_EXCLUSIVE_WRITE_LOCK], [dnl
+
+    AT_SETUP([EXCLUSIVE_WRITE_LOCK])
+
+    FileLockingCacheTest -p
+    
+    # This makes the file and holds the lock for 1 second; it should work fine
+    AT_CHECK([FileLockingCacheTest -x 1], [0], [ignore], [ignore])
+    
+    # This attempts to make the same file again; it should fail (note the [1])
+    AT_CHECK([FileLockingCacheTest -x 1], [1], [ignore], [ignore])
+    
+    AT_CLEANUP
+])
+
+m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
+
+    AT_SETUP([MULTIPLE_READ_LOCKS])
+
+    FileLockingCacheTest -p
+    
+    # This makes the file and holds the lock for 1 second; it makes the file the read
+    # locks will attach to.
+    AT_CHECK([FileLockingCacheTest -x 1], [0], [ignore], [ignore])
+    
+    # Get four read locks in parallel. The last call waits for the three secs, just so
+    # test doesn't complete before the lock processes are done.
+    AT_CHECK([FileLockingCacheTest -r 2 &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -r 2 &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -r 2 &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -r 3], [0], [ignore], [ignore])
+    
+    AT_CLEANUP
+])
+
+
+AT_TEST_BLOCKING("v")
+AT_TEST_EXCLUSIVE_WRITE_LOCK()
+AT_TEST_MULTIPLE_READ_LOCKS()
