@@ -21,7 +21,8 @@ BUILT_SOURCES = test_config.h
 
 noinst_DATA =
 CLEANFILES = 
-EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4
+EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4 \
+test_config.h.in
 
 DISTCLEANFILES = atconfig
 
