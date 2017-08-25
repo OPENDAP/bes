@@ -1,10 +1,18 @@
 # -*- shell-script -*-
 #
 # Initial Travic-CI control file. 6.5.15 jhrg
+# Hacked quite a bit; added support for parallel autotest tests
+# and removed unused parts. jhrg 8.23.17
 
 # Use the docker container-based build systems
 
+dist: trusty
+
 sudo: false
+
+language: cpp
+
+compiler: gcc
 
 cache:
   directories:
@@ -12,29 +20,15 @@ cache:
   - $HOME/hyrax-dependencies
   - $HOME/libdap4
 
-language: cpp
-
-compiler:
-  - gcc
-
 # Whitelist; assume tags for releases use the familiar dot notation
-# Building a tag will trigger a deployment; see the 'deploy' section
-# down below
 branches:
   only:
     - master
     - coverity_scan
-    - new-distcheck-fix
+    - travis
     - /^*-[0-9]+\.[0-9]+\.[0-9]+/
 
-# Only use gcc for Coverity builds
-matrix:
-  exclude:
-    - compiler: clang
-    - env: COVERITY_SCAN_BRANCH=1
-
 addons:
-  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -49,43 +43,25 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
-      - sshpass
 
-# The first 'secure' line is TRAVIS_AT_OO
-# Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
-# where -r <...> is the name of the travis repo from our Travis landing page.
-# The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+# The 'secure' line is the encrypted COVERITY_SCAN_TOKEN, created
 # via the "travis encrypt" command using the project repo's public key
 # and copied from the Coverity web site where there's a how-to for setting
 # this stuff up.
-
+#
+# TESTSUITEFLAGS should run the autotest testsuites in parallel. 
 env:
   global:
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
-  - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
-
-# Use this to prepare the system to install prerequisites or
-# dependencies
-# before_install:
+  # $TRAVIS_AT_OO - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
+  - TESTSUITEFLAGS=-j7
   
 # Use this to install any prerequisites or dependencies necessary to
-# run your build. This script builds bison-3, libdap and hdf5 - these
-# are available via ubuntu apt-get, but we need newer versions than
-# Ubuntu 12 has.
-#
-# NB: Should add gdal here. 9/3/15
-
+# run your build.
 install:
   - bash ./install_bes_source_deps.sh
-  - ls -R $HOME/deps
 
-# Use this to prepare your build for testing e.g. copy database
-# configurations, environment variables, etc.
-#
-# We want the hdf5 handler build to find the hdf5 lib headers from the
-# source tarball we just built so run configure using CPPFLAGS=...
-# removed CPPFLAGS=-I$HOME/deps/include added --with-hdf5... jhrg 9/3/15
-
+# Use this to prepare your build for testing
 before_script:
   - autoreconf --force --install --verbose
   - export PATH=$HOME/deps/bin:$PATH
@@ -94,14 +70,22 @@ before_script:
 # All commands must exit with code 0 on success. Anything else is
 # considered failure. Note that the coverity scan addon runs make
 # so we don't want to repeat that here.
-
 script:
    - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7; fi
 
-#  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
+# This shows how to copy the results of running the tests to a know
+# host. We're not doing this now, but it might be useful. In addition
+# to these lines here, www.opendap.org must be a known_host. set this
+# in the 'addons' section above.
+#
+# Add sshpass using apt under addons.
+#
+# The env var $TRAVIS_AT_OO must be made using 
+# "travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes"
+# where -r <...> is the name of the travis repo from our Travis landing page
+# and the <secret> is the 'travis' user's password on www.opendap.org.
 
 # after_failure:
 #   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
 #   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
-#   - ls -lh /tmp/${LOG_FILE_TGZ}
-#   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@test.opendap.org:${LOG_FILE_TGZ}
+#   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
