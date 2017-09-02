@@ -85,6 +85,7 @@ typedef std::list<cache_entry> CacheFiles;
 class BESFileLockingCache: public BESObj {
 
     friend class cacheT;
+    friend class FileLockingCacheTest;
 
 private:
     static const char DAP_CACHE_CHAR = '#';
@@ -125,8 +126,8 @@ private:
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
-protected:
-
+//protected:
+public:
     BESFileLockingCache(): d_cache_enabled(true), d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0),
         d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) {};
 
