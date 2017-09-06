@@ -40,6 +40,7 @@
 #include <BESDebug.h>
 
 #include "functions_util.h"
+#include "GridGeoConstraint.h"
 
 #define DEBUG_KEY "geo"
 
@@ -84,6 +85,11 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     Grid *src = dynamic_cast < Grid * >(argv[0]);
     if (!src)
         throw Error(malformed_expr,"The first argument to scale_grid() must be a Grid variable!");
+
+    GridGeoConstraint gc(src);
+    if(!gc.is_longitude_rightmost()){
+        throw Error(malformed_expr,"The last argument to scale_grid() must be a longitude variable!");
+    }
 
     BESDEBUG(DEBUG_KEY,"function_scale_grid() - Evaluating grid '"<< src->name() << "'" << endl);
     unsigned long y = extract_uint_value(argv[1]);
