@@ -116,8 +116,8 @@ AC_CHECK_BES([3.9.0],
 [ AC_MSG_ERROR([Cannot find bes])
 ])
 
+
 AC_CONFIG_FILES([gctp/Makefile
-                 gctp/include/Makefile
                  gctp/src/Makefile])
 
 OPENDAP_DEBUG_OPTION
