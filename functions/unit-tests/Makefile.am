@@ -53,7 +53,7 @@ if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
 OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest \
-RangeFunctionTest
+ScaleUtilTest3D RangeFunctionTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -125,6 +125,10 @@ MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD)
 ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
 ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
 ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+
+ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc ../scale_util.cc $(TEST_SRC)
+ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ScaleUtilTest3D_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
 
 RangeFunctionTest_SOURCES = RangeFunctionTest.cc ../RangeFunction.cc $(TEST_SRC)
 RangeFunctionTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)

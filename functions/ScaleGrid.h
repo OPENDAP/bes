@@ -86,9 +86,12 @@ libdap::Grid *scale_dap_grid(const libdap::Grid *src, const SizeBox &size, const
     const std::string &interp);
 libdap::Grid *scale_dap_array(const libdap::Array *data, const libdap::Array *lon, const libdap::Array *lat,
     const SizeBox &size, const std::string &crs, const std::string &interp);
+libdap::Grid *scale_dap_array_3D(const libdap::Array *data, const libdap::Array *t, const libdap::Array *y, const libdap::Array *x, const SizeBox &size,
+    const std::string &crs, const std::string &interp);
 
 void function_scale_grid(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp);
 void function_scale_array(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp);
+void function_scale_array_3D(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp);
 
 class ScaleGrid: public libdap::ServerFunction {
 public:
@@ -121,6 +124,24 @@ public:
         setVersion("1.0");
     }
     virtual ~ScaleArray()
+    {
+    }
+
+};
+
+class Scale3DArray: public libdap::ServerFunction {
+public:
+    Scale3DArray()
+    {
+        setName("scale_3D_array");
+        setDescriptionString("Scale a DAP2 3D Array");
+        setUsageString("scale_3D_grid(Array data, Array time, Array lon, Array lat, Y size, X size, CRS, Interpolation method)");
+        setRole("http://services.opendap.org/dap4/server-side-function/scale_3D_array");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_3D_array");
+        setFunction(function_scale_array_3D);
+        setVersion("1.0");
+    }
+    virtual ~Scale3DArray()
     {
     }
 

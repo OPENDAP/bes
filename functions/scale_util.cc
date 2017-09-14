@@ -844,5 +844,125 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
     return scale_dap_array(data, x, y, size, crs, interp);
 }
 
+/**
+ * @brief Scale a 3D Grid; this version takes the data, time, lon and lat Arrays as separate arguments
+ *
+ * @param data
+ * @param t
+ * @param y
+ * @param x
+ * @param size
+ * @param crs
+ * @param interp
+ * @return The scaled Grid where the first map holds the longitude data and second
+ * holds the latitude data.
+ */
+Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *y, const Array *x, const SizeBox &size,
+    const string &crs, const string &interp)
+{
+
+
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - t: " << t[1] << endl);
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - y: " << y[1] << endl);
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - x: " << x[1] << endl);
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - crs: " << crs << endl);
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - interp: " <<interp << endl);
+
+    //Scale array for each time
+    Array *d = const_cast<Array*>(data);
+    int t_size = t->length();
+    int y_size = y->length();
+    int x_size = x->length();
+
+    int nBytes = d->prototype()->width();
+    int dst_size_x = size.x_size;
+    int dst_size_y = size.y_size;
+
+    stringstream ss;
+    ss << "3D data array: "<< endl;
+    d->print_val(ss, "", true);
+    BESDEBUG(DEBUG_KEY, ss.str());
+
+    vector<Grid *> *grids = new vector<Grid *>();
+    for (int i = 0; i < t->length(); i++) {
+        BESDEBUG(DEBUG_KEY,"============scale_dap_array_3D ============> i =  " << i << endl);
+        int data_size = x_size * y_size;
+        dods_float32 *target = new dods_float32[data_size];
+        unsigned int dsize = data_size * nBytes;
+        memcpy(target, d->get_buf() + i * dsize, dsize);
+        Array *arr = new Array(d->name(), new Float32(d->name()));
+        arr->set_value(target, data_size);
+        arr->append_dim(y_size, "lat");
+        arr->append_dim(x_size, "lon");
+
+        stringstream s2;
+        s2 << "2D input array: "<< endl;
+        arr->print_val(s2, "", true);
+        BESDEBUG(DEBUG_KEY, s2.str());
+
+        // Scale DAP array for one time
+        Grid *grd = scale_dap_array(arr, x, y, size, crs, interp);
+
+        stringstream s;
+        s << "Scaled array: "<< endl;
+        grd->array_var()->print_val(s, "", true);
+        BESDEBUG(DEBUG_KEY, s.str());
+
+        grids->push_back(grd);
+
+        // clean memory
+        delete[] target;
+        delete arr;
+    }
+    BESDEBUG(DEBUG_KEY,"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl);
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - grids size = " << grids->size() << endl);
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - grids[0] = " << grids->at(0)->name() << endl);
+
+    // Get data for output Grid [data] [time] [lat] [lon]
+    int new_data_size = t_size * dst_size_x * dst_size_y;
+    dods_float32 *out_data = new dods_float32[new_data_size];
+    int g_size = dst_size_x * dst_size_y * nBytes;
+    // Loop over grids to compile output data
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - out grid size: " << g_size << endl);
+    int j= 0;
+    vector<Grid *>::iterator git;
+    for (git = grids->begin(); git != grids->end(); git++) {
+        Grid *grid = *git;
+
+        BESDEBUG(DEBUG_KEY,"------------- j = " << j << endl);
+        BESDEBUG(DEBUG_KEY,"grid: = " << grid->name() << endl);
+
+        memcpy(out_data + j * dst_size_x * dst_size_y, grid->get_array()->get_buf(), g_size);
+        j++;
+    }//end loop
+
+
+
+        //Create output array
+    Array *a = new Array(d->name(), new Float32(d->name()));
+    a->set_value(out_data, new_data_size);
+    a->append_dim(t_size, "t");
+    a->append_dim(dst_size_y, "y");
+    a->append_dim(dst_size_x, "x");
+
+//    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - t: " << t[1] << endl);
+//    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - y: " << y[1] << endl);
+//    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - x: " << x[1] << endl);
+
+    auto_ptr<Array> built_lat(new Array(x->name(), new Float32(x->name())));
+    auto_ptr<Array> built_lon(new Array(y->name(), new Float32(y->name())));
+
+
+    auto_ptr<Grid> result(new Grid(d->name()));
+    result->set_array(a);
+    result->add_map(built_lat.release(), false);
+    result->add_map(built_lon.release(), false);
+    BESDEBUG(DEBUG_KEY, "outGrid = " << result.release()->get_array()->dimensions() << endl);
+    BESDEBUG(DEBUG_KEY, "scale_dap_array_3D done !" << endl);
+
+    return result.release();
+}
+
+
 }
  // namespace libdap
