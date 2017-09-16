@@ -43,6 +43,7 @@
 
 #include <Str.h>
 #include <Float32.h>
+#include <Int16.h>
 #include <Array.h>
 #include <Grid.h>
 
@@ -845,7 +846,7 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
 }
 
 /**
- * @brief Scale a 3D Grid; this version takes the data, time, lon and lat Arrays as separate arguments
+ * @brief Scale a 3D array; this version takes the data, time, lon and lat Arrays as separate arguments
  *
  * @param data
  * @param t
@@ -868,13 +869,14 @@ Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *y, cons
     BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - crs: " << crs << endl);
     BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - interp: " <<interp << endl);
 
-    //Scale array for each time
+
     Array *d = const_cast<Array*>(data);
+
     int t_size = t->length();
     int y_size = y->length();
     int x_size = x->length();
+    int data_size = x_size * y_size;
 
-    int nBytes = d->prototype()->width();
     int dst_size_x = size.x_size;
     int dst_size_y = size.y_size;
 
@@ -882,36 +884,54 @@ Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *y, cons
     ss << "3D data array: "<< endl;
     d->print_val(ss, "", true);
     BESDEBUG(DEBUG_KEY, ss.str());
+    ss.str("");
 
     vector<Grid *> *grids = new vector<Grid *>();
+    //dods_float32 *target = new dods_float32[data_size];
+
+
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - Data type = " << d->prototype()->type_name() << endl);
+    int nBytes = d->prototype()->width();
+    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - nBytes = " << nBytes << endl);
+    Type data_type = libdap::get_type(d->prototype()->type_name().c_str());
+    if (!is_simple_type(data_type))
+            throw Error(malformed_expr,
+                    "scale_dap_array_3D() can only use arrays of simple types (integers, floats and strings).");
+    BaseTypeFactory btf;
+    //TODO How to define target?
+    dods_int16 *target = new dods_int16[data_size];
+
+    unsigned int dsize = data_size * nBytes;
+
     for (int i = 0; i < t->length(); i++) {
         BESDEBUG(DEBUG_KEY,"============scale_dap_array_3D ============> i =  " << i << endl);
-        int data_size = x_size * y_size;
-        dods_float32 *target = new dods_float32[data_size];
-        unsigned int dsize = data_size * nBytes;
+
         memcpy(target, d->get_buf() + i * dsize, dsize);
-        Array *arr = new Array(d->name(), new Float32(d->name()));
+
+        //Array *arr = new Array(d->name(), new Int16(d->name()));
+        Array *arr = new Array(d->name(), 0);
+        arr->add_var_nocopy(btf.NewVariable(data_type));
+
         arr->set_value(target, data_size);
         arr->append_dim(y_size, "lat");
         arr->append_dim(x_size, "lon");
 
-        stringstream s2;
-        s2 << "2D input array: "<< endl;
-        arr->print_val(s2, "", true);
-        BESDEBUG(DEBUG_KEY, s2.str());
+        ss << "2D input array: "<< endl;
+        arr->print_val(ss, "", true);
+        BESDEBUG(DEBUG_KEY, ss.str());
+        ss.str("");
 
         // Scale DAP array for one time
         Grid *grd = scale_dap_array(arr, x, y, size, crs, interp);
 
-        stringstream s;
-        s << "Scaled array: "<< endl;
-        grd->array_var()->print_val(s, "", true);
-        BESDEBUG(DEBUG_KEY, s.str());
+        ss << "Scaled array: "<< endl;
+        grd->array_var()->print_val(ss, "", true);
+        BESDEBUG(DEBUG_KEY, ss.str());
+        ss.str("");
 
         grids->push_back(grd);
 
         // clean memory
-        delete[] target;
         delete arr;
     }
     BESDEBUG(DEBUG_KEY,"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl);
@@ -920,7 +940,10 @@ Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *y, cons
 
     // Get data for output Grid [data] [time] [lat] [lon]
     int new_data_size = t_size * dst_size_x * dst_size_y;
-    dods_float32 *out_data = new dods_float32[new_data_size];
+
+    //TODO define type of out_data
+    dods_int16 *out_data = new dods_int16[new_data_size];
+
     int g_size = dst_size_x * dst_size_y * nBytes;
     // Loop over grids to compile output data
     BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - out grid size: " << g_size << endl);
@@ -928,38 +951,41 @@ Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *y, cons
     vector<Grid *>::iterator git;
     for (git = grids->begin(); git != grids->end(); git++) {
         Grid *grid = *git;
-
-        BESDEBUG(DEBUG_KEY,"------------- j = " << j << endl);
-        BESDEBUG(DEBUG_KEY,"grid: = " << grid->name() << endl);
-
         memcpy(out_data + j * dst_size_x * dst_size_y, grid->get_array()->get_buf(), g_size);
         j++;
     }//end loop
 
+    //Create output array
+    //Array *a = new Array(d->name(), new Int16(d->name()));
+    Array *a = new Array(d->name(), 0);
+    a->add_var_nocopy(btf.NewVariable(data_type));
 
-
-        //Create output array
-    Array *a = new Array(d->name(), new Float32(d->name()));
     a->set_value(out_data, new_data_size);
     a->append_dim(t_size, "t");
     a->append_dim(dst_size_y, "y");
     a->append_dim(dst_size_x, "x");
 
-//    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - t: " << t[1] << endl);
-//    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - y: " << y[1] << endl);
-//    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - x: " << x[1] << endl);
-
-    auto_ptr<Array> built_lat(new Array(x->name(), new Float32(x->name())));
-    auto_ptr<Array> built_lon(new Array(y->name(), new Float32(y->name())));
+    auto_ptr<Array> built_time(new Array(t->name(), new Float32(t->name())));
+    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
+    auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
 
 
     auto_ptr<Grid> result(new Grid(d->name()));
     result->set_array(a);
+    result->add_map(built_time.release(), false);
     result->add_map(built_lat.release(), false);
     result->add_map(built_lon.release(), false);
-    BESDEBUG(DEBUG_KEY, "outGrid = " << result.release()->get_array()->dimensions() << endl);
-    BESDEBUG(DEBUG_KEY, "scale_dap_array_3D done !" << endl);
 
+//    ss << "Output array: "<< endl;
+//    result.release()->array_var()->print_val(ss, "", true);
+//    BESDEBUG(DEBUG_KEY, ss.str());
+//    ss.str("");
+
+    BESDEBUG(DEBUG_KEY, "scale_dap_array_3D done !!!!!!!!!!!!" << endl);
+
+    delete[] target;
+    delete a;
+    delete[] out_data;
     return result.release();
 }
 
