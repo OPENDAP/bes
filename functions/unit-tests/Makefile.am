@@ -1,7 +1,10 @@
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign subdir-objects
+AUTOMAKE_OPTIONS = foreign 
+
+# Removed jhrg 9.22.17 in an attempt to fix distcheck's build
+# subdir-objects
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
