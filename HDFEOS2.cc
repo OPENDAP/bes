@@ -362,6 +362,7 @@ void File::_find_latlonfield_names()
 
     const size_t gs = grids.size();
     const size_t ss = swaths.size();
+    // KY: converity structurally dead code i++ is never reached
     for(size_t i=0; ;i++)
     {
         Dataset *dataset = NULL;
