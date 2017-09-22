@@ -567,6 +567,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
         cerr << "ce edge: " << ce_iter->edge << endl << endl;
 #endif
 
+        // KY: coverity: dereference 
         _slab.set = ce_iter->start != 0 || ce_iter->edge != 0
             || ce_iter->stride != 0;
         _slab.reduce_rank = false;      // hard to reduce the rank of a vector...

@@ -355,6 +355,7 @@ void hdf_genvec::import(int32 nt, const vector < string > &sv)
     }
 
     this->import(nt, obuf, (int) sv.size());
+    delete[] obuf;
     return;
 }
 

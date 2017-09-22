@@ -2150,7 +2150,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
     if(status!=0) 
         throw InternalErr(__FILE__,__LINE__,"misr_init doesn't return the correct values");
 
-    long iflg = 0;
+    int iflg = 0;
     int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
     inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, NULL, NULL, (int*)&iflg, inv_trans);
     if(iflg) 
