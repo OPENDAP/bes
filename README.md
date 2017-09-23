@@ -1,5 +1,9 @@
 
-![status](https://travis-ci.org/OPENDAP/bes.svg?branch=master)
+![build](https://travis-ci.org/OPENDAP/bes.svg?branch=master)
+
+<a href="https://scan.coverity.com/projects/opendap-bes">
+  <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
+</a>
 
 README for the OPeNDAP BES 
 ==========================
