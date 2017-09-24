@@ -851,9 +851,10 @@ auto_ptr<GDALDataset> scale_dataset_3D(auto_ptr<GDALDataset> src, const SizeBox 
     // all bands in src
     int n_bands = src.get()->GetRasterCount();
     for(int i=0; i < n_bands; i++){
-        string i_str = std::to_string(i+1);
+        oss.str("");
+        oss << i+1;
         argv = CSLAddString(argv, "-b");
-        argv = CSLAddString(argv, i_str.c_str());
+        argv = CSLAddString(argv, oss.str().c_str());
     }
 
     argv = CSLAddString(argv, "-r");    // resampling
