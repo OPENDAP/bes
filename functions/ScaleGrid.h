@@ -75,12 +75,18 @@ void add_band_data(const libdap::Array *src, GDALDataset* ds);
 
 std::auto_ptr<GDALDataset> build_src_dataset(libdap::Array *data, libdap::Array *x, libdap::Array *y,
     const std::string &srs = "WGS84");
+std::auto_ptr<GDALDataset> build_src_dataset_3D(libdap::Array *data, libdap::Array *t,libdap::Array *x, libdap::Array *y,
+    const std::string &srs = "WGS84");
 
 std::auto_ptr<GDALDataset> scale_dataset(std::auto_ptr<GDALDataset> src, const SizeBox &size,
     const std::string &crs = "", const std::string &interp = "nearest");
 
+std::auto_ptr<GDALDataset> scale_dataset_3D(std::auto_ptr<GDALDataset> src, const SizeBox &size,
+    const std::string &crs = "", const std::string &interp = "nearest");
+
 libdap::Array *build_array_from_gdal_dataset(GDALDataset *dst, const libdap::Array *src);
 void build_maps_from_gdal_dataset(GDALDataset *dst, libdap::Array *x_map, libdap::Array *y_map, bool name_maps = false);
+void build_maps_from_gdal_dataset_3D(GDALDataset *dst, libdap::Array *t_map, libdap::Array *x_map, libdap::Array *y_map, bool name_maps = false);
 
 libdap::Grid *scale_dap_grid(const libdap::Grid *src, const SizeBox &size, const std::string &dest_crs,
     const std::string &interp);

@@ -40,6 +40,8 @@
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <gdal_utils.h>
+#include <ogr_spatialref.h>
+#include <gdalwarper.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -62,6 +64,12 @@
 
 #include "test_config.h"
 #include "test_utils.h"
+
+#include <util.h>
+#include <Error.h>
+#include <BESDebug.h>
+#include <BESError.h>
+#include <BESDapError.h>
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -192,7 +200,7 @@ public:
         DBG(cerr << endl);
         DBG(cerr << "data[0] = " << data[0] << endl);
         DBG(cerr << "data[data_size - 1] = " << data[data_size - 1] << endl);
-        CPPUNIT_ASSERT(double_eq(data[0], -0.6));
+        CPPUNIT_ASSERT(double_eq(data[0], -0.11));
         CPPUNIT_ASSERT(double_eq(data[data_size - 1], -0.9));
 
         DBG(cerr << "data[" << y_size * x_size + 0 << "]: " << data[y_size * x_size + 0] << endl);
@@ -216,6 +224,143 @@ public:
         CPPUNIT_ASSERT(sb.y_size == y_size);
     }
 
+    #define ADD_BAND 0
+
+    void test_build_src_dataset_3D()
+    {
+        try {
+            Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
+            Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
+            Array *x = dynamic_cast<Array*>(test3D_dds->var("lon"));
+            Array *y = dynamic_cast<Array*>(test3D_dds->var("lat"));
+            string srs = "WGS84";
+
+            DBG(cerr << "data: ");
+            DBG(data->print_val(cerr));
+            DBG(cerr << endl);
+            DBG(cerr << "t: ");
+            DBG(t->print_val(cerr));
+            DBG(cerr << endl);
+            DBG(cerr << "x: ");
+            DBG(x->print_val(cerr))
+            DBG(cerr << endl);
+            DBG(cerr << "y: ");
+            DBG(y->print_val(cerr))
+            DBG(cerr << endl);
+
+            auto_ptr<GDALDataset> ds = build_src_dataset_3D(data, t, x, y);
+           DBG(cerr << "RasterCount = " << ds.get()->GetRasterCount() << endl);
+
+#if 0
+            GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+            if (!driver) {
+                string msg = string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg();
+                DBG(cerr << "ERROR build_src_dataset(): " << msg << endl);
+                throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+            }
+
+            SizeBox array_size = get_size_box(x, y);
+            int nBands = data->dimension_size(data->dim_begin(), true);
+            DBG(cerr << "nBands = " << nBands << endl);
+            int nBytes = data->prototype()->width();
+
+            auto_ptr<GDALDataset> ds(
+                driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(data),
+                    NULL /* driver_options */));
+
+            DBG(cerr << "GetRasterCount = " << ds.get()->GetRasterCount() << endl);
+
+
+            const int data_size = x_size * y_size;
+            DBG(cerr << "data_size = " << data_size << endl);
+            unsigned int dsize = data_size * nBytes;
+            DBG(cerr << "dsize = " << dsize << endl);
+
+            data->read();
+            data->set_read_p(true);
+
+            // start band loop
+            for(int i=1; i<=nBands; i++){
+                GDALRasterBand *band = ds->GetRasterBand(i);
+                if (!band)
+                    throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+                DBG(cerr << "GDALRasterBand: " << band->GetBand() << endl);
+
+                //Get data for one band
+                #if !ADD_BAND
+                    CPLErr error = band->RasterIO(GF_Write, 0, 0, x_size, y_size, data->get_buf() + dsize*(i-1), x_size, y_size, get_array_type(data), 0, 0);
+                    if (error != CPLE_None)
+                                            throw Error("Could not write data for band: " + long_to_string(i) + ": " + string(CPLGetLastErrorMsg()));
+                #endif
+                DBG(cerr << "band  = " << band->GetBand() << endl);
+                DBG(cerr << "band x size = " << band->GetXSize() << endl);
+                DBG(cerr << "band y size = " << band->GetYSize() << endl);
+                DBG(cerr << "--------: " << endl);
+            } // end band loop
+
+            vector<double> geo_transform = get_geotransform_data(x, y);
+            ds->SetGeoTransform(&geo_transform[0]);
+
+            OGRSpatialReference native_srs;
+            if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){
+                string msg = "Could not set '" + srs + "' as the dataset native CRS.";
+                DBG(cerr << "ERROR build_src_dataset(): " << msg << endl);
+                throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+            }
+
+            // Connect the SRS/CRS to the GDAL Dataset
+            char *pszSRS_WKT = NULL;
+            native_srs.exportToWkt( &pszSRS_WKT );
+            ds->SetProjection( pszSRS_WKT );
+            CPLFree( pszSRS_WKT );
+
+            DBG(cerr << "ProjectionRef = " << ds.get()->GetProjectionRef() << endl);
+#endif
+            DBG(cerr << "---------------------------------------test" << endl);
+            int tBands = ds->GetRasterCount();
+            DBG(cerr << "tBands = " << tBands << endl);
+            for(int i=0; i<tBands; i++){
+                GDALRasterBand *band = ds->GetRasterBand(i+1);
+                if (!band)
+                    throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+                DBG(cerr << "GDALRasterBand: " << band->GetBand() << endl);
+                CPPUNIT_ASSERT(band->GetXSize() == x_size);
+                CPPUNIT_ASSERT(band->GetYSize() == y_size);
+                CPPUNIT_ASSERT(band->GetBand() == i+1);
+                CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
+
+                // This is just interesting...
+                int block_x, block_y;
+                band->GetBlockSize(&block_x, &block_y);
+                DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+
+                double min, max;
+                CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+                DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+
+                CPPUNIT_ASSERT(double_eq(min, -0.9));  // This is 1 and not -99 because the no data value is set.
+                CPPUNIT_ASSERT(double_eq(max, 1.0));
+
+                vector<double> gt(6);
+                ds->GetGeoTransform(&gt[0]);
+
+                DBG(cerr << "gt values: ");
+                DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+                DBG(cerr << endl);
+
+                CPPUNIT_ASSERT(gt[0] == 21);  // min lon
+                CPPUNIT_ASSERT(gt[1] == 2);   // resolution of lon; i.e., pixel width
+                CPPUNIT_ASSERT(gt[2] == 0);   // north-south parallel to y axis
+                CPPUNIT_ASSERT(gt[3] == -89);   // max lat
+                CPPUNIT_ASSERT(gt[4] == 0);   // 0 if east-west is parallel to x axis
+                CPPUNIT_ASSERT(gt[5] == 2);  // resolution of lat; neg for north up data
+            }
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+    }
+#if 0
     void test_scaling_with_gdal()
     {
         try {
@@ -250,10 +395,9 @@ public:
 
                 DBG(cerr << "dsize = " << dsize << endl);
 
-                memcpy(target, d->get_buf() + i * dsize , dsize);
+                memcpy(target, d->get_buf() + i * dsize, dsize);
 
                 string grd_name = "data_time";
-                grd_name += to_string(i);
 
                 Array *arr = new Array("time_data", new Float32(grd_name));
                 arr->set_value(target, data_size);
@@ -261,8 +405,7 @@ public:
                 arr->append_dim(x_size, "lon");
                 //-------------------------------------------------------------------
                 DBG(arr->print_val(cerr));
-                                DBG(cerr << endl);
-
+                DBG(cerr << endl);
 
                 auto_ptr<GDALDataset> src = build_src_dataset(arr, lon, lat);
 
@@ -345,151 +488,112 @@ public:
             CPPUNIT_FAIL(e.get_error_message());
         }
     }
+#endif
 
-    void test_scaling_3D()
-    {
-        try {
+    void test_scaling_with_gdal_3D()
+        {
+            try {
+                Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
+                Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
+                Array *lon = dynamic_cast<Array*>(test3D_dds->var("lon"));
+                Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
 
-            Array *d = dynamic_cast<Array*>(test3D_dds->var("data"));
-            Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
-            Array *lon = dynamic_cast<Array*>(test3D_dds->var("lon"));
-            Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
-
-            DBG(cerr << "############ Original arrays ###############" << endl);
-
-            DBG(cerr << "d: ");
-            DBG(d->print_val(cerr));
-            DBG(cerr << endl);
-            DBG(cerr << "t: ");
-            DBG(t->print_val(cerr));
-            DBG(cerr << endl);
-            DBG(cerr << "lat: ");
-            DBG(lat->print_val(cerr))
-            DBG(cerr << endl);
-            DBG(cerr << "lon: ");
-            DBG(lon->print_val(cerr))
-            DBG(cerr << endl);
-
-            const int dst_size_x = 20;
-            const int dst_size_y = 15;
-
-            int nBytes = d->prototype()->width();
-            vector<Grid *> *grids = new vector<Grid *>();
-
-            for (int i = 0; i < t->length(); i++) {
-                DBG(cerr << "========= i = " << i << endl);
-
-                //Get data for one time
-                const int data_size = x_size * y_size;
-
-                DBG(cerr << "data_size = " << data_size << endl);
-
-                dods_float32 *target = new dods_float32[data_size];
-                unsigned int dsize = data_size * nBytes;
-
-                DBG(cerr << "dsize = " << dsize << endl);
-
-                memcpy(target, d->get_buf() + i * dsize, dsize);
-
-                // Create Array for one time
-                Array *arr = new Array(d->name(), new Float32(d->name()));
-                arr->set_value(target, data_size);
-                arr->append_dim(y_size, "lat");
-                arr->append_dim(x_size, "lon");
-
-                DBG(arr->print_val(cerr));
-
-
-                // Scale DAP array for one time
-                SizeBox size(dst_size_x, dst_size_y);
-                string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
-                string interp = "nearest";
-
-                Grid *grd = scale_dap_array(arr, lon, lat, size, crs, interp);
-
-                DBG(cerr << "grd name = " << grd->name() << endl);
-
-                grids->push_back(grd);
-
-                // clean memory
-                delete[] target;
-                delete arr;
-            }   //end loop
-            DBG(cerr << "=========" << endl);
-            // Get data for output Grid [data] [time] [lat] [lon]
-            int new_data_size = t_size * dst_size_x * dst_size_y; //600
-
-            DBG(cerr << "new_data_size = " << new_data_size << endl);
-
-            dods_float32 *out_data = new dods_float32[new_data_size];
-            int g_size =  dst_size_x * dst_size_y * nBytes; //1200
-
-            DBG(cerr << "grid size = " << g_size << endl);
-
-            int j= 0;
-            vector<Grid *>::iterator git;
-            for (git = grids->begin(); git != grids->end(); git++) {
-                Grid *grid = *git;
-
-                DBG(cerr << "------------- j = " << j << endl);
-                DBG(cerr << "grid array size = " << grid->get_array()->length() << endl);
-                DBG(grid->get_array()->print_val(cerr));
+                DBG(cerr << "data: ");
+                DBG(data->print_val(cerr));
+                DBG(cerr << endl);
+                DBG(cerr << "t: ");
+                DBG(t->print_val(cerr));
+                DBG(cerr << endl);
+                DBG(cerr << "lat: ");
+                DBG(lat->print_val(cerr))
+                DBG(cerr << endl);
+                DBG(cerr << "lon: ");
+                DBG(lon->print_val(cerr))
                 DBG(cerr << endl);
 
-                memcpy(out_data + j * dst_size_x * dst_size_y, grid->get_array()->get_buf(), g_size);
-                j++;
-            }//end loop
+                auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
+                DBG(cerr << "src nBands = " << src->GetRasterCount() << endl);
 
-//            DBG(cerr << "############ New array ###############" << endl);
+                const int dst_size = 11;
+                SizeBox size(dst_size, dst_size);
 
-            //Create output array
-            Array *a = new Array(d->name(), new Float32(d->name()));
-            a->set_value(out_data, new_data_size);
-            a->append_dim(t_size, "time");
-            a->append_dim(dst_size_y, "lat");
-            a->append_dim(dst_size_x, "lon");
+                auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size);
+                int nBands = dst->GetRasterCount();
+                DBG(cerr << "scaled nBands = " << nBands << endl);
+                //start test loop
+                for(int i=0; i< nBands; i++){
+                    GDALRasterBand *band = dst->GetRasterBand(i+1);
 
-//            DBG(a->print_val(cerr));
-//            DBG(cerr << endl);
-//            DBG(cerr << "array size = " << a->length() << endl);
+                    if (!band)
+                        throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+                    DBG(cerr << "------------------Test band #" << band->GetBand() << endl);
+                    CPPUNIT_ASSERT(band->GetXSize() == dst_size);
+                    CPPUNIT_ASSERT(band->GetYSize() == dst_size);
 
-            DBG(cerr << "############ New grid ###############" << endl);
-            // Create output grid from arrays
-            Grid *g = new Grid(a->name());
-            g->add_var(a, Part::array);
-            g->add_var_nocopy(t, maps);
-            g->add_var_nocopy(lon, maps);
-            g->add_var_nocopy(lat, maps);
+                    CPPUNIT_ASSERT(band->GetBand() == i+1);
+                    CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
 
-            DBG(cerr << "grid: ");
-            DBG(g->var("data")->print_val(cerr));
-            DBG(cerr << endl);
-            DBG(cerr << "time: ");
-            DBG(g->var("time")->print_val(cerr))
-            DBG(cerr << endl);
-            DBG(cerr << "lat: ");
-            DBG(g->var("lat")->print_val(cerr))
-            DBG(cerr << endl);
-            DBG(cerr << "lon: ");
-            DBG(g->var("lon")->print_val(cerr))
-            DBG(cerr << endl);
+                    // This is just interesting...
+                    int block_x, block_y;
+                    band->GetBlockSize(&block_x, &block_y);
+                    DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
 
-            // clean memory
-            delete[] out_data;
-            delete a;
-            delete grids;
+                    double min, max;
+                    CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
+                    DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
+                    CPPUNIT_ASSERT(same_as(min, -0.9));  // This is 1 and not -99 because the no data value is set.
+                    CPPUNIT_ASSERT(double_eq(max, 1));
+
+                    vector<double> gt(6);
+                    dst->GetGeoTransform(&gt[0]);
+
+                    DBG(cerr << "gt values: ");
+                    DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
+                    DBG(cerr << endl);
+
+                    // gt values: 21 2.72727 0 -89 0 1.81818
+                    CPPUNIT_ASSERT(gt[0] == 21);  // min lon
+                    CPPUNIT_ASSERT(double_eq(gt[1], 2.72727));  // resolution of lon; i.e., pixel width
+                    CPPUNIT_ASSERT(gt[2] == 0.0);  // north-south parallel to y axis
+                    CPPUNIT_ASSERT(gt[3] == -89);  // max lat
+                    CPPUNIT_ASSERT(gt[4] == 0.0);  // 0 if east-west is parallel to x axis
+                    CPPUNIT_ASSERT(double_eq(gt[5], 1.81818));  // resolution of lat; neg for north up data
+
+                    // Extract the data now.
+                    vector<dods_float32> buf(dst_size * dst_size);
+                    error = band->RasterIO(GF_Read, 0, 0, dst_size, dst_size, &buf[0], dst_size, dst_size, get_array_type(data),
+                        0, 0);
+                    if (error != CPLE_None)
+                        throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
+
+                    if (debug) {
+                        cerr << "buf:" << endl;
+                        for (int y = 0; y < dst_size; ++y) {
+                            for (int x = 0; x < dst_size; ++x) {
+                                cerr << buf[y * dst_size + x] << " ";
+                            }
+                            cerr << endl;
+                        }
+                    }
+
+                    CPPUNIT_ASSERT(double_eq(buf[0 * dst_size + 4], -0.3));
+                    CPPUNIT_ASSERT(double_eq(buf[0 * dst_size + 6], -0.7));
+                    CPPUNIT_ASSERT(double_eq(buf[0 * dst_size + 11], -0.6));
+                    CPPUNIT_ASSERT(double_eq(buf[6 * dst_size + 10], -0.9));
+                }//end loop
+                GDALClose(dst.release());
+            }
+            catch (Error &e) {
+                CPPUNIT_FAIL(e.get_error_message());
+            }
         }
-        catch (Error &e) {
-            CPPUNIT_FAIL(e.get_error_message());
-        }
-    }
 
 CPPUNIT_TEST_SUITE( ScaleUtilTest3D );
 
     CPPUNIT_TEST(test_reading_data);
     CPPUNIT_TEST(test_get_size_box);
-    CPPUNIT_TEST(test_scaling_with_gdal);
-    CPPUNIT_TEST(test_scaling_3D);
+    CPPUNIT_TEST(test_scaling_with_gdal_3D);
+    CPPUNIT_TEST(test_build_src_dataset_3D);
 
     CPPUNIT_TEST_SUITE_END()
     ;

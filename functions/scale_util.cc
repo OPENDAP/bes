@@ -444,6 +444,67 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
     y_map->set_value(&y_map_vals[0], y);
 }
 
+void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t_map, Array *x_map, Array *y_map, bool name_maps /*default false */)
+{
+    // get the geo-transform data
+    vector<double> gt(6);
+    dst->GetGeoTransform(&gt[0]);
+    BESDEBUG(DEBUG_KEY,"build_maps_from_gdal_dataset_3D: Band number: " << dst->GetRasterCount() << endl);
+    //start loop
+    for(int j=1; j<=dst->GetRasterCount(); j++ ){
+        // Get the GDALDataset size
+        GDALRasterBand *band = dst->GetRasterBand(j);
+
+        // Build Lon map
+        unsigned long x = band->GetXSize(); // x_map_vals
+
+        if (name_maps) {
+            x_map->append_dim(x, "Longitude");
+        }
+        else {
+            x_map->append_dim(x);
+        }
+
+        // for each value, use the geo-transform data to compute a value and store it.
+        vector<dods_float32> x_map_vals(x);
+        dods_float32 *cur_x = &x_map_vals[0];
+        dods_float32 *prev_x = cur_x;
+        // x_map_vals[0] = gt[0];
+        *cur_x++ = gt[0];
+        for (unsigned long i = 1; i < x; ++i) {
+            // x_map_vals[i] = gt[0] + i * gt[1];
+            // x_map_vals[i] = x_map_vals[i-1] + gt[1];
+            *cur_x++ = *prev_x++ + gt[1];
+        }
+
+        x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+
+        // Build the Lat map
+        unsigned long y = band->GetYSize();
+
+        if (name_maps) {
+            y_map->append_dim(y, "Latitude");
+        }
+        else {
+            y_map->append_dim(y);
+        }
+
+        // for each value, use the geo-transform data to compute a value and store it.
+        vector<dods_float32> y_map_vals(y);
+        dods_float32 *cur_y = &y_map_vals[0];
+        dods_float32 *prev_y = cur_y;
+        // y_map_vals[0] = gt[3];
+        *cur_y++ = gt[3];
+        for (unsigned long i = 1; i < y; ++i) {
+            // y_map_vals[i] = gt[3] + i * gt[5];
+            // y_map_vals[i] = y_map_vals[i-1] + gt[5];
+            *cur_y++ = *prev_y++ + gt[5];
+        }
+
+        y_map->set_value(&y_map_vals[0], y);
+    }//end loop
+}
+
 /**
  * @brief Get the Array's 'no data' value
  *
@@ -606,7 +667,7 @@ void add_band_data(const Array *src, GDALDataset* ds)
 {
     Array *a = const_cast<Array*>(src);
 
-    assert(a->dimensions() == 2);
+    //assert(a->dimensions() == 2);
 
     a->read();
 
@@ -771,6 +832,71 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
     return dst;
 }
 
+
+auto_ptr<GDALDataset> scale_dataset_3D(auto_ptr<GDALDataset> src, const SizeBox &size, const string &crs /*""*/,
+    const string &interp /*nearest*/)
+{
+    char **argv = NULL;
+    argv = CSLAddString(argv, "-of");       // output format
+    argv = CSLAddString(argv, "MEM");
+
+    argv = CSLAddString(argv, "-outsize");  // output size
+    ostringstream oss;
+    oss << size.x_size;
+    argv = CSLAddString(argv, oss.str().c_str());    // size x
+    oss.str("");
+    oss << size.y_size;
+    argv = CSLAddString(argv, oss.str().c_str());    // size y
+
+    // all bands in src
+    int n_bands = src.get()->GetRasterCount();
+    for(int i=0; i < n_bands; i++){
+        string i_str = std::to_string(i+1);
+        argv = CSLAddString(argv, "-b");
+        argv = CSLAddString(argv, i_str.c_str());
+    }
+
+    argv = CSLAddString(argv, "-r");    // resampling
+    argv = CSLAddString(argv, interp.c_str());  // {nearest(default),bilinear,cubic,cubicspline,lanczos,average,mode}
+
+    if (!crs.empty()) {
+        argv = CSLAddString(argv, "-a_srs");   // dst SRS (WKT or "EPSG:n")
+        argv = CSLAddString(argv, crs.c_str());
+    }
+
+    if (BESISDEBUG(DEBUG_KEY)) {
+        char **local = argv;
+        while (*local) {
+            BESDEBUG(DEBUG_KEY, "argv: " << *local++ << endl);
+        }
+
+    }
+#if 0
+    char **local = argv;
+    while (*local) {
+        cerr << "argv: " << *local++ << endl;
+    }
+#endif
+
+    GDALTranslateOptions *options = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
+    int usage_error = CE_None;   // result
+    GDALDatasetH dst_handle = GDALTranslate("warped_dst", src.get(), options, &usage_error);
+    if (!dst_handle || usage_error != CE_None) {
+        GDALClose(dst_handle);
+        GDALTranslateOptionsFree(options);
+        string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
+        BESDEBUG(DEBUG_KEY, "ERROR scale_dataset(): " << msg << endl);
+        throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
+
+    GDALTranslateOptionsFree(options);
+
+    return dst;
+}
+
+
 /**
  * @brief Scale a Grid; this version takes the data, lon and lat Arrays as separate arguments
  *
@@ -845,150 +971,127 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
     return scale_dap_array(data, x, y, size, crs, interp);
 }
 
+#define ADD_BAND 0
+
 /**
- * @brief Scale a 3D array; this version takes the data, time, lon and lat Arrays as separate arguments
+ * @brief Build a GDAL Dataset object for this data/lon/lat combination
+ *
+ * @note Supported values for the srs parameter
+ * "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
+ * "WGS72": same as "EPSG:4322" but has no dependence on EPSG data files.
+ * "NAD27": same as "EPSG:4267" but has no dependence on EPSG data files.
+ * "NAD83": same as "EPSG:4269" but has no dependence on EPSG data files.
+ * "EPSG:n": same as doing an ImportFromEPSG(n).
  *
  * @param data
- * @param t
- * @param y
- * @param x
+ * @param lon
+ * @param lat
+ * @param srs The SRS/CRS of the data array; defaults to WGS84 which
+ * uses lat, lon axis order.
+ * @return An auto_ptr<GDALDataset>
+ */
+auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Array *y, const string &srs)
+{
+    Array *d = dynamic_cast<Array*>(data);
+
+    GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+    if(!driver){
+        string msg = string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg();
+        BESDEBUG(DEBUG_KEY, "ERROR build_src_dataset(): " << msg << endl);
+        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
+
+    SizeBox array_size = get_size_box(x, y);
+    int nBands = t->length();
+    BESDEBUG(DEBUG_KEY, "nBands = " << nBands << endl);
+    int nBytes = data->prototype()->width();
+    const int data_size = x->length() * y->length();
+    unsigned int dsize = data_size * nBytes;
+
+    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(d),
+            NULL /* driver_options */));
+    data->read();
+    // start band loop
+    for(int i=1; i<=nBands; i++){
+
+        GDALRasterBand *band = ds->GetRasterBand(i);
+        if (!band) {
+            string msg = "Could not get the GDAL RasterBand for Array '" + data->name() + "': " + CPLGetLastErrorMsg();
+            BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset():  " << msg << endl);
+            throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+        }
+
+        double no_data = get_missing_data_value(data);
+        band->SetNoDataValue(no_data);
+
+        #if !ADD_BAND
+        CPLErr error = band->RasterIO(GF_Write, 0, 0, x->length(), y->length(), data->get_buf() + dsize*(i-1), x->length(), y->length(), get_array_type(data), 0, 0);
+                            if (error != CPLE_None)
+                                                    throw Error("Could not write data for band: " + long_to_string(i) + ": " + string(CPLGetLastErrorMsg()));
+        #endif
+
+
+    } // end band loop
+    vector<double> geo_transform = get_geotransform_data(x, y);
+    ds->SetGeoTransform(&geo_transform[0]);
+
+    OGRSpatialReference native_srs;
+    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){
+        string msg = "Could not set '" + srs + "' as the dataset native CRS.";
+        BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+    }
+
+    // Connect the SRS/CRS to the GDAL Dataset
+    char *pszSRS_WKT = NULL;
+    native_srs.exportToWkt( &pszSRS_WKT );
+    ds->SetProjection( pszSRS_WKT );
+    CPLFree( pszSRS_WKT );
+
+    return ds;
+}
+
+/**
+ * @brief Scale a Grid; this version takes the data, lon and lat Arrays as separate arguments
+ *
+ * @param data
+ * @param time
+ * @param lon
+ * @param lat
  * @param size
  * @param crs
  * @param interp
  * @return The scaled Grid where the first map holds the longitude data and second
  * holds the latitude data.
  */
-Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *y, const Array *x, const SizeBox &size,
+Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *x, const Array *y, const SizeBox &size,
     const string &crs, const string &interp)
 {
-
-
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - t: " << t[1] << endl);
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - y: " << y[1] << endl);
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - x: " << x[1] << endl);
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - crs: " << crs << endl);
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D() - interp: " <<interp << endl);
-
-
+    // Build GDALDataset for Grid g with lon and lat maps as given
     Array *d = const_cast<Array*>(data);
 
-    int t_size = t->length();
-    int y_size = y->length();
-    int x_size = x->length();
-    int data_size = x_size * y_size;
+    auto_ptr<GDALDataset> src = build_src_dataset_3D(d, const_cast<Array*>(t), const_cast<Array*>(x), const_cast<Array*>(y));
 
-    int dst_size_x = size.x_size;
-    int dst_size_y = size.y_size;
+    // scale to the new size, using optional CRS and interpolation params
 
-    stringstream ss;
-    ss << "3D data array: "<< endl;
-    d->print_val(ss, "", true);
-    BESDEBUG(DEBUG_KEY, ss.str());
-    ss.str("");
+    auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size, crs, interp);
 
-    vector<Grid *> *grids = new vector<Grid *>();
-    //dods_float32 *target = new dods_float32[data_size];
-
-
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - Data type = " << d->prototype()->type_name() << endl);
-    int nBytes = d->prototype()->width();
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - nBytes = " << nBytes << endl);
-    Type data_type = libdap::get_type(d->prototype()->type_name().c_str());
-    if (!is_simple_type(data_type))
-            throw Error(malformed_expr,
-                    "scale_dap_array_3D() can only use arrays of simple types (integers, floats and strings).");
-    BaseTypeFactory btf;
-    //TODO How to define target?
-    dods_int16 *target = new dods_int16[data_size];
-
-    unsigned int dsize = data_size * nBytes;
-
-    for (int i = 0; i < t->length(); i++) {
-        BESDEBUG(DEBUG_KEY,"============scale_dap_array_3D ============> i =  " << i << endl);
-
-        memcpy(target, d->get_buf() + i * dsize, dsize);
-
-        //Array *arr = new Array(d->name(), new Int16(d->name()));
-        Array *arr = new Array(d->name(), 0);
-        arr->add_var_nocopy(btf.NewVariable(data_type));
-
-        arr->set_value(target, data_size);
-        arr->append_dim(y_size, "lat");
-        arr->append_dim(x_size, "lon");
-
-        ss << "2D input array: "<< endl;
-        arr->print_val(ss, "", true);
-        BESDEBUG(DEBUG_KEY, ss.str());
-        ss.str("");
-
-        // Scale DAP array for one time
-        Grid *grd = scale_dap_array(arr, x, y, size, crs, interp);
-
-        ss << "Scaled array: "<< endl;
-        grd->array_var()->print_val(ss, "", true);
-        BESDEBUG(DEBUG_KEY, ss.str());
-        ss.str("");
-
-        grids->push_back(grd);
-
-        // clean memory
-        delete arr;
-    }
-    BESDEBUG(DEBUG_KEY,"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl);
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - grids size = " << grids->size() << endl);
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - grids[0] = " << grids->at(0)->name() << endl);
-
-    // Get data for output Grid [data] [time] [lat] [lon]
-    int new_data_size = t_size * dst_size_x * dst_size_y;
-
-    //TODO define type of out_data
-    dods_int16 *out_data = new dods_int16[new_data_size];
-
-    int g_size = dst_size_x * dst_size_y * nBytes;
-    // Loop over grids to compile output data
-    BESDEBUG(DEBUG_KEY,"scale_dap_array_3D - out grid size: " << g_size << endl);
-    int j= 0;
-    vector<Grid *>::iterator git;
-    for (git = grids->begin(); git != grids->end(); git++) {
-        Grid *grid = *git;
-        memcpy(out_data + j * dst_size_x * dst_size_y, grid->get_array()->get_buf(), g_size);
-        j++;
-    }//end loop
-
-    //Create output array
-    //Array *a = new Array(d->name(), new Int16(d->name()));
-    Array *a = new Array(d->name(), 0);
-    a->add_var_nocopy(btf.NewVariable(data_type));
-
-    a->set_value(out_data, new_data_size);
-    a->append_dim(t_size, "t");
-    a->append_dim(dst_size_y, "y");
-    a->append_dim(dst_size_x, "x");
-
+    // Build a result Grid: extract the data, build the maps and assemble
+    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
     auto_ptr<Array> built_time(new Array(t->name(), new Float32(t->name())));
-    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
     auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
+    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
 
+    build_maps_from_gdal_dataset_3D(dst.get(), built_time.get(), built_lon.get(), built_lat.get());
 
     auto_ptr<Grid> result(new Grid(d->name()));
-    result->set_array(a);
+    result->set_array(built_data.release());
     result->add_map(built_time.release(), false);
     result->add_map(built_lat.release(), false);
     result->add_map(built_lon.release(), false);
-
-//    ss << "Output array: "<< endl;
-//    result.release()->array_var()->print_val(ss, "", true);
-//    BESDEBUG(DEBUG_KEY, ss.str());
-//    ss.str("");
-
-    BESDEBUG(DEBUG_KEY, "scale_dap_array_3D done !!!!!!!!!!!!" << endl);
-
-    delete[] target;
-    delete a;
-    delete[] out_data;
+    BESDEBUG(DEBUG_KEY,"result length: " << result.release()->get_array()->dimensions() << endl);
     return result.release();
 }
-
 
 }
  // namespace libdap
