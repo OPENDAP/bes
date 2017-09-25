@@ -89,6 +89,7 @@ void DapFunctions::initialize(const string &modname)
 
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleArray());
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
+    libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
 
     GDALAllRegister();
     OGRRegisterAll();

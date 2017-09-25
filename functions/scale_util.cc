@@ -43,6 +43,7 @@
 
 #include <Str.h>
 #include <Float32.h>
+#include <Int16.h>
 #include <Array.h>
 #include <Grid.h>
 
@@ -443,6 +444,67 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
     y_map->set_value(&y_map_vals[0], y);
 }
 
+void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t_map, Array *x_map, Array *y_map, bool name_maps /*default false */)
+{
+    // get the geo-transform data
+    vector<double> gt(6);
+    dst->GetGeoTransform(&gt[0]);
+    BESDEBUG(DEBUG_KEY,"build_maps_from_gdal_dataset_3D: Band number: " << dst->GetRasterCount() << endl);
+    //start loop
+    for(int j=1; j<=dst->GetRasterCount(); j++ ){
+        // Get the GDALDataset size
+        GDALRasterBand *band = dst->GetRasterBand(j);
+
+        // Build Lon map
+        unsigned long x = band->GetXSize(); // x_map_vals
+
+        if (name_maps) {
+            x_map->append_dim(x, "Longitude");
+        }
+        else {
+            x_map->append_dim(x);
+        }
+
+        // for each value, use the geo-transform data to compute a value and store it.
+        vector<dods_float32> x_map_vals(x);
+        dods_float32 *cur_x = &x_map_vals[0];
+        dods_float32 *prev_x = cur_x;
+        // x_map_vals[0] = gt[0];
+        *cur_x++ = gt[0];
+        for (unsigned long i = 1; i < x; ++i) {
+            // x_map_vals[i] = gt[0] + i * gt[1];
+            // x_map_vals[i] = x_map_vals[i-1] + gt[1];
+            *cur_x++ = *prev_x++ + gt[1];
+        }
+
+        x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+
+        // Build the Lat map
+        unsigned long y = band->GetYSize();
+
+        if (name_maps) {
+            y_map->append_dim(y, "Latitude");
+        }
+        else {
+            y_map->append_dim(y);
+        }
+
+        // for each value, use the geo-transform data to compute a value and store it.
+        vector<dods_float32> y_map_vals(y);
+        dods_float32 *cur_y = &y_map_vals[0];
+        dods_float32 *prev_y = cur_y;
+        // y_map_vals[0] = gt[3];
+        *cur_y++ = gt[3];
+        for (unsigned long i = 1; i < y; ++i) {
+            // y_map_vals[i] = gt[3] + i * gt[5];
+            // y_map_vals[i] = y_map_vals[i-1] + gt[5];
+            *cur_y++ = *prev_y++ + gt[5];
+        }
+
+        y_map->set_value(&y_map_vals[0], y);
+    }//end loop
+}
+
 /**
  * @brief Get the Array's 'no data' value
  *
@@ -605,7 +667,7 @@ void add_band_data(const Array *src, GDALDataset* ds)
 {
     Array *a = const_cast<Array*>(src);
 
-    assert(a->dimensions() == 2);
+    //assert(a->dimensions() == 2);
 
     a->read();
 
@@ -770,6 +832,72 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
     return dst;
 }
 
+
+auto_ptr<GDALDataset> scale_dataset_3D(auto_ptr<GDALDataset> src, const SizeBox &size, const string &crs /*""*/,
+    const string &interp /*nearest*/)
+{
+    char **argv = NULL;
+    argv = CSLAddString(argv, "-of");       // output format
+    argv = CSLAddString(argv, "MEM");
+
+    argv = CSLAddString(argv, "-outsize");  // output size
+    ostringstream oss;
+    oss << size.x_size;
+    argv = CSLAddString(argv, oss.str().c_str());    // size x
+    oss.str("");
+    oss << size.y_size;
+    argv = CSLAddString(argv, oss.str().c_str());    // size y
+
+    // all bands in src
+    int n_bands = src.get()->GetRasterCount();
+    for(int i=0; i < n_bands; i++){
+        oss.str("");
+        oss << i+1;
+        argv = CSLAddString(argv, "-b");
+        argv = CSLAddString(argv, oss.str().c_str());
+    }
+
+    argv = CSLAddString(argv, "-r");    // resampling
+    argv = CSLAddString(argv, interp.c_str());  // {nearest(default),bilinear,cubic,cubicspline,lanczos,average,mode}
+
+    if (!crs.empty()) {
+        argv = CSLAddString(argv, "-a_srs");   // dst SRS (WKT or "EPSG:n")
+        argv = CSLAddString(argv, crs.c_str());
+    }
+
+    if (BESISDEBUG(DEBUG_KEY)) {
+        char **local = argv;
+        while (*local) {
+            BESDEBUG(DEBUG_KEY, "argv: " << *local++ << endl);
+        }
+
+    }
+#if 0
+    char **local = argv;
+    while (*local) {
+        cerr << "argv: " << *local++ << endl;
+    }
+#endif
+
+    GDALTranslateOptions *options = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
+    int usage_error = CE_None;   // result
+    GDALDatasetH dst_handle = GDALTranslate("warped_dst", src.get(), options, &usage_error);
+    if (!dst_handle || usage_error != CE_None) {
+        GDALClose(dst_handle);
+        GDALTranslateOptionsFree(options);
+        string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
+        BESDEBUG(DEBUG_KEY, "ERROR scale_dataset(): " << msg << endl);
+        throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
+
+    GDALTranslateOptionsFree(options);
+
+    return dst;
+}
+
+
 /**
  * @brief Scale a Grid; this version takes the data, lon and lat Arrays as separate arguments
  *
@@ -842,6 +970,128 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
     }
 
     return scale_dap_array(data, x, y, size, crs, interp);
+}
+
+#define ADD_BAND 0
+
+/**
+ * @brief Build a GDAL Dataset object for this data/lon/lat combination
+ *
+ * @note Supported values for the srs parameter
+ * "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
+ * "WGS72": same as "EPSG:4322" but has no dependence on EPSG data files.
+ * "NAD27": same as "EPSG:4267" but has no dependence on EPSG data files.
+ * "NAD83": same as "EPSG:4269" but has no dependence on EPSG data files.
+ * "EPSG:n": same as doing an ImportFromEPSG(n).
+ *
+ * @param data
+ * @param lon
+ * @param lat
+ * @param srs The SRS/CRS of the data array; defaults to WGS84 which
+ * uses lat, lon axis order.
+ * @return An auto_ptr<GDALDataset>
+ */
+auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Array *y, const string &srs)
+{
+    Array *d = dynamic_cast<Array*>(data);
+
+    GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
+    if(!driver){
+        string msg = string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg();
+        BESDEBUG(DEBUG_KEY, "ERROR build_src_dataset(): " << msg << endl);
+        throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+    }
+
+    SizeBox array_size = get_size_box(x, y);
+    int nBands = t->length();
+    BESDEBUG(DEBUG_KEY, "nBands = " << nBands << endl);
+    int nBytes = data->prototype()->width();
+    const int data_size = x->length() * y->length();
+    unsigned int dsize = data_size * nBytes;
+
+    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(d),
+            NULL /* driver_options */));
+    data->read();
+    // start band loop
+    for(int i=1; i<=nBands; i++){
+
+        GDALRasterBand *band = ds->GetRasterBand(i);
+        if (!band) {
+            string msg = "Could not get the GDAL RasterBand for Array '" + data->name() + "': " + CPLGetLastErrorMsg();
+            BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset():  " << msg << endl);
+            throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
+        }
+
+        double no_data = get_missing_data_value(data);
+        band->SetNoDataValue(no_data);
+
+        #if !ADD_BAND
+        CPLErr error = band->RasterIO(GF_Write, 0, 0, x->length(), y->length(), data->get_buf() + dsize*(i-1), x->length(), y->length(), get_array_type(data), 0, 0);
+                            if (error != CPLE_None)
+                                                    throw Error("Could not write data for band: " + long_to_string(i) + ": " + string(CPLGetLastErrorMsg()));
+        #endif
+
+
+    } // end band loop
+    vector<double> geo_transform = get_geotransform_data(x, y);
+    ds->SetGeoTransform(&geo_transform[0]);
+
+    OGRSpatialReference native_srs;
+    if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){
+        string msg = "Could not set '" + srs + "' as the dataset native CRS.";
+        BESDEBUG(DEBUG_KEY,"ERROR build_src_dataset(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+    }
+
+    // Connect the SRS/CRS to the GDAL Dataset
+    char *pszSRS_WKT = NULL;
+    native_srs.exportToWkt( &pszSRS_WKT );
+    ds->SetProjection( pszSRS_WKT );
+    CPLFree( pszSRS_WKT );
+
+    return ds;
+}
+
+/**
+ * @brief Scale a Grid; this version takes the data, lon and lat Arrays as separate arguments
+ *
+ * @param data
+ * @param time
+ * @param lon
+ * @param lat
+ * @param size
+ * @param crs
+ * @param interp
+ * @return The scaled Grid where the first map holds the longitude data and second
+ * holds the latitude data.
+ */
+Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *x, const Array *y, const SizeBox &size,
+    const string &crs, const string &interp)
+{
+    // Build GDALDataset for Grid g with lon and lat maps as given
+    Array *d = const_cast<Array*>(data);
+
+    auto_ptr<GDALDataset> src = build_src_dataset_3D(d, const_cast<Array*>(t), const_cast<Array*>(x), const_cast<Array*>(y));
+
+    // scale to the new size, using optional CRS and interpolation params
+
+    auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size, crs, interp);
+
+    // Build a result Grid: extract the data, build the maps and assemble
+    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
+    auto_ptr<Array> built_time(new Array(t->name(), new Float32(t->name())));
+    auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
+    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
+
+    build_maps_from_gdal_dataset_3D(dst.get(), built_time.get(), built_lon.get(), built_lat.get());
+
+    auto_ptr<Grid> result(new Grid(d->name()));
+    result->set_array(built_data.release());
+    result->add_map(built_time.release(), false);
+    result->add_map(built_lat.release(), false);
+    result->add_map(built_lon.release(), false);
+    BESDEBUG(DEBUG_KEY,"result length: " << result.release()->get_array()->dimensions() << endl);
+    return result.release();
 }
 
 }
