@@ -453,7 +453,7 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
     }
         
 
-    for(int i = 0; i<slist.size();i++) {
+    for(unsigned int i = 0; i<slist.size();i++) {
 //cerr<<"fullpath is "<<fullpath <<endl;
 //cerr<<"slist[i] is "<<slist[i] <<endl;
 //cerr<<"fullpath - slist size"<<fullpath.size() -slist[i].size()<<endl;

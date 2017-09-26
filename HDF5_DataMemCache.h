@@ -30,7 +30,7 @@ public:
     //HDF5DataMemCache(const string &name) {varname = name; }
     //HDF5DataMemCache(const HDF5DataMemCache & h5datacache);
     //const string get_varname() {return varname;}
-    const size_t get_var_buf_size() {return databuf.size();}
+    size_t get_var_buf_size() {return databuf.size();}
     //void get_var_buf(vector<char>&var_buf) { var_buf = databuf;}
     void* get_var_buf() { return &databuf[0];}
     //void set_varname(const string& name) {varname = name; }

@@ -53,39 +53,40 @@ using namespace libdap;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class HDF5BaseArray:public Array {
-  public:
-    HDF5BaseArray(const string & n="",  BaseType * v = 0):
-        Array(n,v)
-        {
-    }
-        
-    virtual ~ HDF5BaseArray() {
+class HDF5BaseArray: public Array {
+public:
+    HDF5BaseArray(const string & n = "", BaseType * v = 0) :
+        Array(n, v)
+    {
     }
 
-   protected:
+    virtual ~ HDF5BaseArray()
+    {
+    }
+
+protected:
     //virtual BaseType *ptr_duplicate();
     //virtual bool read();
-    int format_constraint (int *cor, int *step, int *edg);
+    int format_constraint(int *cor, int *step, int *edg);
     void write_nature_number_buffer(int rank, int tnumelm);
-    void read_data_from_mem_cache(H5DataType h5type,const std::vector <size_t> &h5_dimsizes, void*buf);
-    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf) = 0;
+    void read_data_from_mem_cache(H5DataType h5type, const std::vector<size_t> &h5_dimsizes, void*buf);
+    virtual void read_data_NOT_from_mem_cache(bool add_cache, void*buf) = 0;
 
-    size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,const std::vector < size_t > &pos);
-    template<typename T>  int subset(
-                                                void* input,
-						int rank,
-                                                const std::vector<size_t> & dim,
-                                                int start[],
-                                                int stride[],
-                                                int edge[],
-                                                std::vector<T> *poutput,
-                                                std::vector<size_t>& pos,
-                                                int index);
-    std::string check_str_sect_in_list(const std::vector<string> &,const std::string &,char);
-    bool check_var_cache_files(const std::vector<string>&,const std::string &,const std::string &);
-    void  handle_data_with_mem_cache(H5DataType, size_t t_elems,const short cache_case, const std::string & key);
+    size_t INDEX_nD_TO_1D(const std::vector<size_t> &dims, const std::vector<size_t> &pos);
+
+    template<typename T> int subset(    void* input,
+						                int rank,
+                                        const std::vector<size_t> & dim,
+                                        int start[],
+                                        int stride[],
+                                        int edge[],
+                                        std::vector<T> *poutput,
+                                        std::vector<size_t>& pos,
+                                        int index);
     
+    std::string check_str_sect_in_list(const std::vector<string> &, const std::string &, char);
+    bool check_var_cache_files(const std::vector<string>&, const std::string &, const std::string &);
+    void handle_data_with_mem_cache(H5DataType, size_t t_elems, const short cache_case, const std::string & key);
 };
 
 #endif                          // _HDF5BASEARRAY_H

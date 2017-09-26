@@ -36,49 +36,44 @@
 #include <string>
 #include <vector>
 
-// DODS includes
 #include "HDF5CF.h"
-//#include <Array.h>
 #include "HDF5BaseArray.h"
 
 using namespace libdap;
 
-class HDF5GMCFSpecialCVArray:public HDF5BaseArray {
-    public:
-        HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const string &varfullpath, H5GCFProduct h5_product_type, const string & n="",  BaseType * v = 0):
-        HDF5BaseArray(n,v),
-        dtype(h5_dtype),
-        tnumelm(h5_tnumelm),
-        varname(varfullpath),
-        product_type(h5_product_type),
-        cvartype(CV_UNSUPPORTED)
+class HDF5GMCFSpecialCVArray: public HDF5BaseArray {
+public:
+    HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const string &varfullpath, H5GCFProduct h5_product_type,
+        const string & n = "", BaseType * v = 0) :
+        HDF5BaseArray(n, v), dtype(h5_dtype), tnumelm(h5_tnumelm), varname(varfullpath), product_type(h5_product_type), cvartype(
+            CV_UNSUPPORTED)
     {
     }
-        
-    virtual ~ HDF5GMCFSpecialCVArray() {
+
+    virtual ~ HDF5GMCFSpecialCVArray()
+    {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
     //int format_constraint (int *cor, int *step, int *edg);
-    
 
-    private:
-        H5DataType dtype;
-        int tnumelm;
-        string varname;
-        H5GCFProduct product_type;
-        CVType cvartype;    
-        
-        // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
-        void obtain_gpm_l3_layer(int, vector<int>&,vector<int>&,vector<int>&);
+private:
+    H5DataType dtype;
+    int tnumelm;
+    string varname;
+    H5GCFProduct product_type;
+    CVType cvartype;
 
-        // GPM version 4.0 nlayer values are from the document 
-        // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
-        void obtain_gpm_l3_layer2(int, vector<int>&,vector<int>&,vector<int>&);
-        
-        void obtain_gpm_l3_hgt(int, vector<int>&,vector<int>&,vector<int>&);
-        void obtain_gpm_l3_nalt(int, vector<int>&,vector<int>&,vector<int>&);
-        virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
+    void obtain_gpm_l3_layer(int, vector<int>&, vector<int>&, vector<int>& /*FIXME Not used ever? jhrg 7/5/17*/);
+
+    // GPM version 4.0 nlayer values are from the document
+    // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
+    void obtain_gpm_l3_layer2(int, vector<int>&, vector<int>&, vector<int>&);
+
+    void obtain_gpm_l3_hgt(int, vector<int>&, vector<int>&, vector<int>&);
+    void obtain_gpm_l3_nalt(int, vector<int>&, vector<int>&, vector<int>&);
+    virtual void read_data_NOT_from_mem_cache(bool add_cache, void*buf);
 
 };
 

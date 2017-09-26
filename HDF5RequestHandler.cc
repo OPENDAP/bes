@@ -1391,7 +1391,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                 // either "" or '' needs to be used to identify a var path
                 vector<int>dq_pos;
                 vector<int>sq_pos;
-                for(int i = 0; i<subline.size();i++){
+                for(unsigned int i = 0; i<subline.size();i++){
                     if(subline[i]=='"') {
                         dq_pos.push_back(i);
                     }
@@ -1401,23 +1401,23 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                 if(dq_pos.size()==0 && sq_pos.size()==0)
                     HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
                 else if((dq_pos.size()!=0) &&(dq_pos.size()%2==0)&& sq_pos.size()==0) {
-                    int  dq_index= 0;
+                    unsigned int dq_index= 0;
                     while(dq_index < dq_pos.size()){
                         if(dq_pos[dq_index+1]>(dq_pos[dq_index]+1)) {
                             temp_name_list.push_back
                             (subline.substr(dq_pos[dq_index]+1,dq_pos[dq_index+1]-dq_pos[dq_index]-1));
                         }
-                        dq_index=dq_index + 2;
+                        dq_index = dq_index + 2;
                     }
                 }
                 else if((sq_pos.size()!=0) &&(sq_pos.size()%2==0)&& dq_pos.size()==0) {
-                    int  sq_index= 0;
+                    unsigned int sq_index= 0;
                     while(sq_index < sq_pos.size()){
                         if(sq_pos[sq_index+1]>(sq_pos[sq_index]+1)) {
                             temp_name_list.push_back
                             (subline.substr(sq_pos[sq_index]+1,sq_pos[sq_index+1]-sq_pos[sq_index]-1));
                         }
-                        sq_index=sq_index+2;
+                        sq_index = sq_index+2;
                     }
                 }
 
@@ -1706,7 +1706,7 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
     unsigned int num_attr_elems = dtp->get_attr_num(attr_name);
     vector<string> attr_values;
     size_t total_attr_values_size = 0;
-    for (int i = 0; i <num_attr_elems;i++){
+    for (unsigned int i = 0; i <num_attr_elems;i++){
         attr_values.push_back((*(dtp->get_attr_vector(attr_name)))[i]);
         total_attr_values_size += attr_values[i].size();
     }
@@ -1737,7 +1737,7 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
     temp_attrp+=sizeof(unsigned int);
 
     // All attributes 
-    for (int i = 0; i <num_attr_elems;i++) 
+    for (unsigned int i = 0; i <num_attr_elems;i++)
         temp_attrp=copy_str(temp_attrp,(*(dtp->get_attr_vector(attr_name)))[i]);
 
     size_t bytes_to_be_written = fwrite((const void*)&attr_buf[0],1,bytes_to_write_attr,das_file);
@@ -1801,7 +1801,8 @@ cerr<<"after tdds "<<endl;
 }
 
 // Add DAS to DDS. 
-void HDF5RequestHandler::add_das_to_dds(DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc) {
+void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name*/, const string &filename,
+    const string &das_cache_fname, hid_t h5_fd, bool das_from_dc) {
 
     BESDEBUG(HDF5_NAME, "Coming to add_das_to_dds() "  << endl);
 
@@ -1939,10 +1940,10 @@ char* copy_str(char*temp_ptr,const string & str) {
 //  The attribute binary first stores the size of the string, then the string itself
 char* obtain_str(char*temp_ptr,string & str) {
 
-    size_t oname_size =*((size_t *)temp_ptr);
-    temp_ptr = temp_ptr +sizeof(size_t);
+    size_t oname_size = *((size_t *)temp_ptr);
+    temp_ptr = temp_ptr + sizeof(size_t);
     string oname;
-    for(int i =0;i<oname_size;i++){
+    for(int i =0; i<oname_size; i++){
         oname.push_back(*temp_ptr);
         ++temp_ptr;
     }
@@ -2005,7 +2006,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 
             vector <string> attr_values;
 
-            for(int i =0; i<num_values; i++) {
+            for(unsigned int i = 0; i<num_values; i++) {
                 string attr_value;
                 temp_pointer = obtain_str(temp_pointer,attr_value);
                 attr_values.push_back(attr_value);
@@ -2036,7 +2037,7 @@ void get_attr_contents(AttrTable*temp_table) {
                    cerr<<"Attribute type is "<<temp_table->get_type(top_it)<<endl;
                    unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
                    cerr<<"Attribute values are "<<endl;
-                   for (int i = 0; i <num_attrs;i++) 
+                   for (unsigned int i = 0; i <num_attrs;i++)
                         cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
                    cerr<<endl;
             }
