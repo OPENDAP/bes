@@ -1,0 +1,6 @@
+Dataset {
+        Float32 data[time = 2][lat = 10][lon = 15];
+        Float32 time[2];
+        Float32 lat[10];
+        Float32 lon[15];
+    } test3D;
