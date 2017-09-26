@@ -1443,7 +1443,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
                     temp_bp +=ty_size;
                 }
 
-                if (&temp_buf[0] != NULL) {
+                if ((&temp_buf[0]) != NULL) {
                     // Reclaim any VL memory if necessary.
                     if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,&temp_buf[0]) < 0) {
                         H5Sclose(aspace_id);

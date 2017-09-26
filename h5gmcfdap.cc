@@ -124,10 +124,6 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 	    f->Handle_Unsupported_Dspace(include_attr);
 
         }
-        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
-        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
-        //    f->Retrieve_H5_Supported_Attr_Values();
-
 
         // Need to handle the "coordinate" attributes when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
@@ -135,7 +131,6 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
             f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
 
         // Adjust object names(may remove redundant paths)
-
         f->Adjust_Obj_Name();
 
         // Flatten the object names
@@ -226,7 +221,6 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         // Need to add original variable name and path
         // and other special attributes
         // Can be turned on/off by using the check_path_attrs keys.
-        //f->Add_Supplement_Attrs(is_add_path_attrs);
         f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
         f->Adjust_Obj_Name();
         f->Flatten_Obj_Name(include_attr);
@@ -384,6 +378,8 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             update_GPM_special_attrs(das,*it_cv,true);
 
     }
+
+    // Currently the special variables are only limited to the ACOS/OCO2 64-bit integer variables
     for (it_spv = spvars.begin();
          it_spv != spvars.end(); ++it_spv) {
         if (false == ((*it_spv)->getAttributes().empty())) {
@@ -406,7 +402,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
         // Currently there is no way for DAP to present the unlimited dimension info.
         // when there are no dimension names. So don't create DODS_EXTRA even if
-        // there is a unlimited dimension in the file for now. KY 2016-02-18
+        // there is an unlimited dimension in the file. KY 2016-02-18
         if(cvars.size() >0){
             AttrTable* at = das.get_table("DODS_EXTRA");
             if (NULL == at)
@@ -494,6 +490,11 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
         const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(cvar->getRank());
+        for(int i = 0; i <cvar->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
+
 
         if(dims.size() == 0) 
             throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
@@ -514,10 +515,12 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                                     file_id,
                                     filename,
                                     cvar->getType(),
+                                    dimsizes,
                                     cvar->getFullPath(),
                                     cvar->getTotalElems(),
                                     CV_EXIST,
                                     is_latlon,
+                                    cvar->getCompRatio(),
                                     cvar->getNewName(),
                                     bt);
                 }

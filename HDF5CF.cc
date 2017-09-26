@@ -54,6 +54,7 @@ Var::Var(Var *var) {
     rank  = var->rank;
     total_elems = var->total_elems;
     dtype = var->dtype;
+    comp_ratio = var->comp_ratio;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_attr_dspace = var->unsupported_attr_dspace;
     unsupported_dspace = var->unsupported_dspace;
@@ -390,6 +391,8 @@ throw(Exception) {
                     if (!this->unsupported_var_dspace && temp_unsup_var_dspace)
                         this->unsupported_var_dspace = true;
 
+                    var->comp_ratio = Retrieve_H5_VarCompRatio(var,cdset);
+
                     // Retrieve the attribute info. if asked
                     if (true == include_attr) {
 
@@ -459,6 +462,41 @@ throw(Exception) {
 
 }
 
+// Retrieve HDF5 dataset datatype
+const float 
+File:: Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) throw(Exception)
+{
+
+    float comp_ratio = 1.0;
+    // Obtain the data type of the variable. 
+    hid_t dset_create_plist = H5Dget_create_plist(dset_id);
+    if(dset_create_plist <0) 
+        throw1("unable to obtain hdf5 dataset creation property list ");
+    H5D_layout_t dset_layout = H5Pget_layout(dset_create_plist);   
+    if(dset_layout <0) {
+        H5Pclose(dset_create_plist);
+        throw1("unable to obtain hdf5 dataset creation property list storage layout");
+    }
+    
+    if(dset_layout ==H5D_CHUNKED) {
+   
+        hsize_t dstorage_size = H5Dget_storage_size(dset_id);
+        if(dstorage_size >0 && var->total_elems>0) {
+hid_t ty_id = -1;
+
+     // Obtain the data type of the variable.
+      if ((ty_id = H5Dget_type(dset_id)) < 0)
+                 throw1("unable to obtain hdf5 datatype for the dataset ");
+size_t type_size = H5Tget_size(ty_id);
+            comp_ratio = ((float)(var->total_elems)*type_size)/dstorage_size;
+         H5Tclose(ty_id);
+        }
+
+    }
+    H5Pclose(dset_create_plist);
+    return comp_ratio;
+
+}
 // Retrieve HDF5 dataset datatype
 void
 File:: Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname,bool &unsup_var_dtype)
@@ -1733,7 +1771,7 @@ File:: Var_Has_Attr(Var*var,const string &attrname) {
 string
 File::Retrieve_Str_Attr_Value(Attribute *attr,const string var_path) {
 
-    if(attr !=NULL &&& var_path!=NULL) {
+    if(attr !=NULL && var_path!="") {
        Retrieve_H5_Attr_Value(attr,var_path);
        string orig_attr_value(attr->value.begin(),attr->value.end());
        return orig_attr_value;

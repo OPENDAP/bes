@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([hdf5_handler], [2.3.5], [opendap-tech@opendap.org])
+AC_INIT([hdf5_handler], [2.4.0], [opendap-tech@opendap.org])
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE([1.10 tar-pax])
@@ -116,8 +116,8 @@ AC_CHECK_BES([3.9.0],
 [ AC_MSG_ERROR([Cannot find bes])
 ])
 
+
 AC_CONFIG_FILES([gctp/Makefile
-                 gctp/include/Makefile
                  gctp/src/Makefile])
 
 OPENDAP_DEBUG_OPTION

@@ -34,7 +34,9 @@
 #include "HDF5RequestHandler.h"
 #include <set>
 #include <sstream>
+#include <algorithm>
 #include <stdlib.h>
+#include <unistd.h>
 #include <math.h>
 #include<InternalErr.h>
 
@@ -47,6 +49,7 @@
 #define HE5_HDFE_DMS_RAD      5
 
 using namespace libdap;
+// For using GCTP to calculate the lat/lon
 extern "C" {
 int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
 
@@ -163,6 +166,8 @@ bool HDF5CFUtil::use_lrdata_mem_cache(H5DataType h5type, CVType cvtype, bool isl
 }
 #endif
 
+// Check if we cna use data memory cache
+// TODO: This functio is not used, we will check it in the next release.
 bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const string &varpath) {
     if(h5type != H5CHAR && h5type !=H5UCHAR && h5type!=H5INT16 && h5type !=H5UINT16 &&
             h5type != H5INT32 && h5type !=H5UINT32 && h5type !=H5FLOAT32 && h5type!=H5FLOAT64 &&
@@ -185,6 +190,16 @@ bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
         || (H5INT64 == dtype)    ||(H5UINT64 == dtype))
+        return false;
+    else 
+        return true;
+}
+
+bool HDF5CFUtil::cf_dap2_support_numeric_type(H5DataType dtype) {
+    if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
+        || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
+        || (H5INT64 == dtype)    ||(H5UINT64 == dtype)
+        || (H5FSTRING == dtype)  ||(H5VSTRING == dtype))
         return false;
     else 
         return true;
@@ -499,6 +514,7 @@ void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
 
 }
 
+// This function is adapted from the HDF-EOS library.
 int GDij2ll(int projcode, int zonecode, double projparm[],
         int spherecode, int xdimsize, int ydimsize,
         double upleftpt[], double lowrightpt[],
@@ -640,7 +656,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 	    }
 	}
     }
-  else if (projcode == HE5_GCTP_BCEA)
+    else if (projcode == HE5_GCTP_BCEA)
     {
       /* BCEA projection */
       /* -------------- */
@@ -741,7 +757,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 	}
     }
 
-  else if (projcode == HE5_GCTP_GEO)
+    else if (projcode == HE5_GCTP_GEO)
     {
       /* GEO projection */
       /* -------------- */
@@ -805,6 +821,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 }
 
 
+// convert angle degree to radian.
 double 
 HE5_EHconvAng(double inAngle, int code)
 {
@@ -1003,6 +1020,34 @@ int HDF5CFUtil::subset(
 } // end of template<typename T> static int 
 #endif
 
+// Need to wrap a 'read buffer' from a pure file call here since read() is also a DAP function to read DAP data.
+ssize_t HDF5CFUtil::read_buffer_from_file(int fd,  void*buf, size_t total_read) {
+
+     ssize_t ret_val = read(fd,buf,total_read);
+     return ret_val;
+}
+
+// Obtain the cache name. The clashing is rare given that fname is unique.The "_" may cause clashing in theory.
+string HDF5CFUtil::obtain_cache_fname(const string & fprefix, const string &fname, const string &vname) {
+
+     string cache_fname = fprefix;
+
+     string correct_fname = fname;
+     std::replace(correct_fname.begin(),correct_fname.end(),'/','_');
+     
+     string correct_vname = vname;
+
+     // Replace the '/' to '_'
+     std::replace(correct_vname.begin(),correct_vname.end(),'/','_');
+
+     // Replace the ' ' to to '_" since space is not good for a file name
+     std::replace(correct_vname.begin(),correct_vname.end(),' ','_');
+
+
+     cache_fname = cache_fname +correct_fname +correct_vname;
+
+     return cache_fname;
+}
 size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                                  const std::vector < size_t > &pos){
     //

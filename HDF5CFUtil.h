@@ -31,11 +31,15 @@
 
 #ifndef _HDF5CFUtil_H
 #define _HDF5CFUtil_H
+#include <stdlib.h>
+#include <fcntl.h>
 #include <string.h>
 #include <set>
 #include <vector>
 #include <string>
 #include <iostream>
+#include <unistd.h>
+#include <cerrno>
 #include "hdf5.h"
 #include "HE5Grid.h"
 
@@ -84,6 +88,7 @@ struct HDF5CFUtil {
                static std::string obtain_string_after_lastslash(const std::string s);
                static std::string obtain_string_before_lastslash(const std::string & s);
                static bool cf_strict_support_type(H5DataType dtype); 
+               static bool cf_dap2_support_numeric_type(H5DataType dtype); 
 
                // Obtain the unique name for the clashed names and save it to set namelist.
                static void gen_unique_name(std::string &str, std::set<std::string>&namelist,int&clash_index);
@@ -106,13 +111,15 @@ struct HDF5CFUtil {
 
                static void close_fileid(hid_t,bool);
 
-#if 0
+               // wrap function of Unix read to a buffer. Memory for the buffer should be allocated.
+               static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
+               static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname);
+               
                static int GDij2ll(int projcode, int zonecode, double projparm[],
         int spherecode, int xdimsize, int ydimsize,
         double upleftpt[], double lowrightpt[],
         int npnts, int row[], int col[],
         double longitude[], double latitude[], int pixcen, int pixcnr);
-#endif
 
                //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                //                           const std::vector < size_t > &pos);
@@ -130,6 +137,26 @@ struct HDF5CFUtil {
                                                 int index);
 #endif
 } ;
+
+static inline struct flock *lock(int type) {
+    static struct flock lock;
+    lock.l_type = type;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_pid = getpid();
+
+    return &lock;
+}
+
+static inline string get_errno() {
+        char *s_err = strerror(errno);
+        if (s_err)
+                return s_err;
+        else
+                return "Unknown error.";
+}
+
 
 //size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
  //                                const std::vector < size_t > &pos);

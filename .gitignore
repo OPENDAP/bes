@@ -56,3 +56,6 @@ bes-testsuite/hdf5_handlerTest
 bes-testsuite/bes.conf
 bes-testsuite/package.m4
 bes-testsuite/bes.ignore.conf
+
+# GCTP Files
+gctp/src/libGctp.a

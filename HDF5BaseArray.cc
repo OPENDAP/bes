@@ -331,6 +331,9 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         } // case H5FLOAT64
             break;
 
+        default:
+           throw InternalErr(__FILE__,__LINE__,"Non-supported datatype");
+
     }
 }
 

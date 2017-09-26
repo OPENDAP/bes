@@ -1,18 +1,8 @@
 # GCTP source directory Makefile
 
-# Boilerplate definitions
-#include $(top_srcdir)/config/include.am
-
 # Library to build
-#lib_LTLIBRARIES = libGctp.la
-lib_LIBRARIES = libGctp.a
-
-## Normally DEFAULT_INCLUDES is supplied by Automake, but one of the
-## directories included by default is $(top_builddir)/include, which
-## contains several header files with the same names as files in the
-## gctp/include directories.
-## To work around this, override the DEFAULT_INCLUDES variable.
-DEFAULT_INCLUDES = -I. -I$(srcdir)
+# Added 'noinst' to suppress installation of this library. jhrg 5/25/17
+noinst_LIBRARIES = libGctp.a
 
 # Include the libGCTP include directory
 AM_CPPFLAGS=-fpic -I$(srcdir)/../include/

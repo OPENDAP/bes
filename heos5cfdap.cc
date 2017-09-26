@@ -134,11 +134,11 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         }
 
 // Just check 
-#if 0
+//#if 0
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
-#endif
+//#endif
        
         // HDF-EOS5 provides default pixel and origin values if they are not defined.
         c.set_grids_missing_pixreg_orig(&p);
@@ -322,11 +322,11 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
             throw InternalErr("The HDF-EOS5 is missing project code ");
         }
 //Just check 
-#if 0
+//#if 0
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
-#endif
+//#endif
         c.set_grids_missing_pixreg_orig(&p);
 
         // cerr<<"after unknown parameters "<<endl;
@@ -464,7 +464,7 @@ void  gen_dap_oneeos5cf_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar) {
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
 //for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d) 
 // cerr<<"dim name is"<<(*it_d)->getNewName() <<endl;
- add_cf_grid_cvs(dds,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
+    add_cf_grid_cvs(dds,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
 
 }
 
@@ -532,6 +532,11 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
         const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(cvar->getRank());
+        for(int i = 0; i <cvar->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
+
 
         if(dims.size() == 0)
             throw InternalErr(__FILE__,__LINE__,"the coordinate variables cannot be scalar.");
@@ -558,10 +563,12 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
                                           file_id,
                                           filename,
                                           cvar->getType(),
+                                          dimsizes,
                                           cvar->getFullPath(),
                                           cvar->getTotalElems(),
                                           CV_EXIST,
                                           is_latlon,
+                                          cvar->getCompRatio(),
                                           cvar->getNewName(),
                                           bt);
                 }

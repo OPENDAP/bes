@@ -1,4 +1,4 @@
-// This file is part of the hdf4 data handler for the OPeNDAP data server.
+// This file is part of the hdf5 data handler for the OPeNDAP data server.
 
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _HDF5CFGeoCFPROJ_H
