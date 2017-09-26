@@ -567,12 +567,17 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
         cerr << "ce edge: " << ce_iter->edge << endl << endl;
 #endif
 
-        _slab.set = ce_iter->start != 0 || ce_iter->edge != 0
-            || ce_iter->stride != 0;
-        _slab.reduce_rank = false;      // hard to reduce the rank of a vector...
-        _slab.start[_dim_index] = ce_iter->start;
-        _slab.edge[_dim_index] = ce_iter->edge;
-        _slab.stride[_dim_index] = ce_iter->stride;
+        // KY: coverity: may dereference ce.end(), which is not in the iterator
+        if(ce_iter!=ce.end()) {
+            _slab.set = ce_iter->start != 0 || ce_iter->edge != 0
+                || ce_iter->stride != 0;
+            _slab.reduce_rank = false;      // hard to reduce the rank of a vector...
+            _slab.start[_dim_index] = ce_iter->start;
+            _slab.edge[_dim_index] = ce_iter->edge;
+            _slab.stride[_dim_index] = ce_iter->stride;
+        }
+        else 
+           THROW(hcerr_sdsinfo);
     }
     // Catch any throws and reset _slab.
     try {

@@ -296,6 +296,9 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
             THROW(hcerr_vgroupread);
         switch (tag) {
         case DFTAG_VH:
+            // Somehow isInternalVdata causes memory leaking because
+            // of VSattach.
+            // However, after some checking, the  VSdetach is called.
             if (!vdin.isInternalVdata(ref)) {
                 hv.tags.push_back(tag);
                 hv.refs.push_back(ref);

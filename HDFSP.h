@@ -803,7 +803,7 @@ namespace HDFSP
 
         protected:
             File (const char *hdf4file_path)
-                : path (hdf4file_path), sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
+                : path (hdf4file_path), sd(NULL),sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
             {
             }
 

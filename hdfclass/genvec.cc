@@ -355,6 +355,7 @@ void hdf_genvec::import(int32 nt, const vector < string > &sv)
     }
 
     this->import(nt, obuf, (int) sv.size());
+    delete[] obuf;
     return;
 }
 
@@ -867,7 +868,7 @@ float64 hdf_genvec::elt_float64(int i) const
         return (float64) (*((float32 *) _data + i));
     else
         THROW(hcerr_dataexport);
-    return 0;
+    //return 0;
 }
 
 // export an hdf_genvec holding float32 or float64 data to a float64 vector

@@ -222,6 +222,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
             if (bt) {
                 str->add_var(bt);   // *st now manages *bt
                 delete bt;
+                bt = 0; // See if coverity scan can pass this.
                 nonempty = true;
             }
         }

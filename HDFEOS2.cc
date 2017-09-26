@@ -362,7 +362,10 @@ void File::_find_latlonfield_names()
 
     const size_t gs = grids.size();
     const size_t ss = swaths.size();
-    for(size_t i=0; ;i++)
+    // KY: converity structurally dead code i++ is never reached
+    // i++ is unreachable,so comment out this one
+    //for(size_t i=0; ;i++)
+    for(size_t i=0;i<1 ;i++)
     {
         Dataset *dataset = NULL;
         SwathDataset *sw = NULL;
@@ -399,7 +402,8 @@ void File::_find_latlonfield_names()
             }
         }
         // For performance, we're checking this for the first grid or swath
-        break;
+        // comment out to fix coverity issues
+        //break;
     }
     if(_latfield_name.empty())
         _latfield_name = _latfield_names[0];
