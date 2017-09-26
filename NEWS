@@ -1,4 +1,43 @@
-Force a build of master... Delete this before releasing
+
+News for version 3.19.0
+
+Handler fixes:
+HDF4 and 5 Handler fixes - summarized in those projects' NEWS file
+
+hyrax-263 GeoTiff response axis order is correct (fileout_gdal
+handler).
+
+Refactored the software used to serve GeoTiff files (gdal_handler) so
+it no longer keeps the GDALDataset handle open. This code was keeping
+the GDALDataset handle open across calls to the RequestHandler when
+returning data responses and this breaks the NCML handler.
+
+Server function fixes:
+hyrax-281: The scale_array() server function now works with 3D arrays.
+
+hyrax-294: scale_grid() works when the grids are subset to 2D.
+
+hyrax-417: Determine axis order for scale_grid() and scale_array()
+functions.
+
+Tests for the (new) range() function. range() returns information
+about the max and min values of variable - much more efficient than
+downloading the whole variable. This function also tests if a vector
+is monotonically increasing or decreasing.
+
+General fixes:
+There were several functions/methods that made temporary files
+(and used mkstemps, et c. to do so). These were refactored into
+just one function.
+
+Unit tests for the code were made more usable (hyrax-391)
+
+Tests for the 'file locking cache' sub-system were added.
+
+make distcheck now works without the cumbersome env var for configure
+on Centos 7 and ubuntu 14. Centos 6 is still in the dark ages.
+
+Removed unneeded classes in the BES framework (hyrax-378).
 
 News for version 3.18.0
 

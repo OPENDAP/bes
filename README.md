@@ -8,6 +8,16 @@
 README for the OPeNDAP BES 
 ==========================
 
+Updated for version 3.19.0
+
+New Server function: range() This function returns the min and max
+values of a variable and, for a vector, a boolean indicating that it
+is monotonic.
+
+GeoTiff file can now be aggregated.
+
+See NEWS for more information.
+
 Updated for version 3.18.0
 
 New features:
