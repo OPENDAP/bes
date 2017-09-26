@@ -131,7 +131,11 @@ bool VdataExists(const char *filename, const char *vdname)
     int32 file_id, ref;
     if ((file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
         return false;
-    Vstart(file_id);
+    // should return error if Vstart fails. here 
+    if(Vstart(file_id)<0) {
+        BESDEBUG("h4", "Vstart " << filename << " error" << endl);
+        return false;
+    }
     ref = VSfind(file_id, vdname);
     Vend(file_id);
     Hclose(file_id);
