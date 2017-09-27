@@ -10,3 +10,4 @@ MakeMaskFunctionTest
 MakeNormalizedMaskFunctionTest
 ScaleUtilTest
 RangeFunctionTest
+ScaleUtilTest3D
