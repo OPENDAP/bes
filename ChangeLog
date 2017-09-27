@@ -1,3 +1,33 @@
+2017-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #8 from OPENDAP/fix_warnings
+	Fixed a number of compiler warnings in the hdf5 handler.
+
+2017-09-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-535, update the ftp address that stores NASA HDF5 files.
+
+2017-09-07  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-228, Makefile.am was removed from gctp/include. configure.ac needs to be updated.
+
+2017-07-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a number of compiler warnings in the hdf5 handler.
+	There are 45 warnings remaining, some likely cannot be fixed since they
+	come from flex/bison template code.
+
+2017-06-06  Kent Yang  <myang6@hdfgroup.org>
+
+	Reformat the file for easy-reading at github.
+
+	Fix another typo.
+
+	Correct a typo.
+
+2017-05-30  ndp-opendap  <ndp@opendap.org>
+
+	Versioning for Hyrax-1.13.5 release
 2017-05-26  James Gallagher  <jgallagher@opendap.org>
 
 	More changes to the gctp Makefiles - this neatens up things a bit.
