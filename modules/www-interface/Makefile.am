@@ -58,18 +58,3 @@ javascript.h: www.js js2h.pl js2h.pl.in
 #get_html_form.cc: javascript.h
 
 CLEANFILES = *~ javascript.h
-
-###########################################################################
-
-# Fortify targets.
-
-.PHONY: fortify
-fortify: javascript.h
-	sourceanalyzer -b @PACKAGE@ $(MAKE) libwww_module.la
-	sourceanalyzer -b @PACKAGE@ -scan -f ../@PACKAGE@-@PACKAGE_VERSION@.fpr
-
-# Use this to clean the fortify project.
-.PHONY: fortifyclean
-fortifyclean:
-	sourceanalyzer -b @PACKAGE@ -clean
-
