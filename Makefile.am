@@ -26,7 +26,7 @@ if WITH_DEPENDENCIES
 AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
-SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
+SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 # DIST_SUBDIRS = $(SUBDIRS)
 
 if LIBDAP

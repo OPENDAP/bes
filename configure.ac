@@ -695,6 +695,10 @@ AC_CONFIG_FILES([Makefile
 		 dispatch/tests/Makefile
 		 dispatch/tests/atlocal
 		 
+		 hello_world/Makefile
+		 hello_world/tests/Makefile
+		 hello_world/tests/atlocal
+		  
 		 docs/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
@@ -741,6 +745,7 @@ dnl start at boot time. jhrg 9/27/17
 dnl AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
+AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,26 +35,25 @@
 
 #include <fstream>
 
-using std::ofstream ;
-using std::ios ;
-using std::endl ;
+using std::ofstream;
+using std::ios;
+using std::endl;
 
 #include "BESReporter.h"
 #include "BESDataHandlerInterface.h"
 
-class SayReporter : public BESReporter
-{
+class SayReporter: public BESReporter {
 private:
-    ofstream *		_file_buffer ;
-    string		_log_name ;
+    ofstream * _file_buffer;
+    string _log_name;
 public:
-			SayReporter() ;
-    virtual		~SayReporter() ;
+    SayReporter();
+    virtual ~SayReporter();
 
-    virtual void	report( BESDataHandlerInterface &dhi ) ;
+    virtual void report(BESDataHandlerInterface &dhi);
 
-    virtual void	dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // A_SayReporter_h
 
