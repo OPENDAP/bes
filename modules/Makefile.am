@@ -4,7 +4,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS = csv_handler usage asciival www-interface freeform_handler  dmrpp_module
+SUBDIRS = csv_handler usage asciival www-interface freeform_handler dmrpp_module
 
 if BES_DEVELOPER
 SUBDIRS += debug_functions

@@ -1,6 +1,4 @@
 
-SUBDIRS = 
-
 # Tests
 
 AUTOMAKE_OPTIONS = foreign
@@ -57,9 +55,8 @@ check-local:
 	@echo ""
 endif
 
-# The VPATH and SRCS are not used. We link with the library even though
-# that results in warnings that are annoying. jhrg 12/28/16
-VPATH = src:../
+# HDRS and SRCS are not used. They were used with VPATH, but that
+# broke the distcheck target.
 
 HDRS = DmrppArray.h DmrppByte.h DmrppD4Enum.h DmrppD4Group.h DmrppD4Opaque.h\
 DmrppD4Sequence.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
@@ -73,25 +70,26 @@ DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
 DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
 DmrppTypeFactory.cc DmrppCommon.cc H4ByteStream.cc $(HDRS)
 
-# Linking with the .so modules produces a warning, but lets ignore it.
-# The alternative is to link with objects in the parent dir _but_, we
-# still will get a warning rom linking with the bes dap module which
-# we have to link against since we're using BESDapError. jhrg 11/21/16
+OBJS = ../DmrppArray.o ../DmrppByte.o ../DmrppD4Enum.o ../DmrppD4Group.o ../DmrppD4Opaque.o\
+../DmrppD4Sequence.o ../DmrppFloat32.o ../DmrppFloat64.o ../DmrppInt16.o ../DmrppInt32.o \
+../DmrppInt64.o ../DmrppInt8.o ../DmrppParserSax2.o ../DmrppStr.o ../DmrppStructure.o \
+../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppUrl.o ../DmrppUtil.o \
+../DmrppTypeFactory.o ../DmrppCommon.o H4ByteStream.o 
 
-DmrppParserTest_SOURCES = DmrppParserTest.cc $(SRCS)
-DmrppParserTest_LDFLAGS =  $(LDADD) 
+DmrppParserTest_SOURCES = DmrppParserTest.cc
+DmrppParserTest_LDFLAGS =  $(OBJS) $(LDADD) 
 
 # -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc $(SRCS)
-DmrppTypeReadTest_LDFLAGS = $(LDADD)
+DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
+DmrppTypeReadTest_LDFLAGS = $(OBJS) $(LDADD)
 
-DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc $(SRCS)
-DmrppChunkedReadTest_LDFLAGS =  $(LDADD)
+DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
+DmrppChunkedReadTest_LDFLAGS = $(OBJS) $(LDADD)
 
-DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc $(SRCS)
-DmrppHttpReadTest_LDFLAGS =  $(LDADD)
+DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
+DmrppHttpReadTest_LDFLAGS = $(OBJS) $(LDADD)
 
-DmrppUtilTest_SOURCES = DmrppUtilTest.cc $(SRCS)
-DmrppUtilTest_LDFLAGS =  $(LDADD)
+DmrppUtilTest_SOURCES = DmrppUtilTest.cc
+DmrppUtilTest_LDFLAGS = $(OBJS) $(LDADD)
 
