@@ -51,12 +51,7 @@ BES_SOURCES = BESXDModule.cc BESXDResponseHandler.cc		   \
 	      BESXDModule.h BESXDResponseHandler.h		   \
 	      BESXDTransmit.h BESXDRequestHandler.h BESXDNames.h
 
-EXTRA_DIST = COPYING INSTALL NEWS README \
-	xml_data_handler.conf.in data
-
-if !DAP_MODULES
-EXTRA_DIST += xml_data_handler.spec
-endif
+EXTRA_DIST = xml_data_handler.conf.in data
 
 CLEANFILES = *~ *.log *.sum
 DISTCLEANFILES = xml_data_handler.conf

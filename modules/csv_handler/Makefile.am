@@ -41,11 +41,7 @@ libcsv_module_la_SOURCES = $(CSV_SRCS) $(CSV_HDRS)
 libcsv_module_la_LDFLAGS = -avoid-version -module 
 libcsv_module_la_LIBADD = $(LIBADD)
 
-EXTRA_DIST = data COPYING COPYRIGHT csv.conf.in 
-
-if !DAP_MODULES
-EXTRA_DIST += csv_handler.spec
-endif
+EXTRA_DIST = data csv.conf.in 
 
 CLEANFILES = *~ csv.conf
 

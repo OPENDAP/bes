@@ -155,11 +155,7 @@ libncml_module_la_LIBADD = $(LIBADD)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING ncml.conf.in data OSX_Resources
-
-if !DAP_MODULES
-EXTRA_DIST += ncml_module.spec
-endif
+EXTRA_DIST = ncml.conf.in data 
 
 CLEANFILES = *~ ncml.conf
 

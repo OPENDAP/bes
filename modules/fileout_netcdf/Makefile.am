@@ -47,11 +47,7 @@ FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h
 
-EXTRA_DIST = data COPYRIGHT COPYING fonc.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += fileout_netcdf.spec
-endif
+EXTRA_DIST = data fonc.conf.in
 
 CLEANFILES = *~ fonc.conf
 

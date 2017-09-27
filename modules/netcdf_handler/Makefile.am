@@ -46,12 +46,7 @@ SERVER_SRC = NCRequestHandler.cc NCModule.cc
 
 SERVER_HDR = NCRequestHandler.h NCModule.h
 
-EXTRA_DIST = data COPYRIGHT COPYING \
-    nc.conf.in OSX_Resources
-
-if !DAP_MODULES
-EXTRA_DIST += netcdf_handler.spec
-endif
+EXTRA_DIST = data nc.conf.in
 
 CLEANFILES = *~ nc.conf
 

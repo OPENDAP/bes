@@ -41,11 +41,7 @@ libdebug_functions_la_SOURCES = $(SRCS) $(HDRS)
 libdebug_functions_la_LDFLAGS = -avoid-version -module 
 libdebug_functions_la_LIBADD = $(LIBADD) 
 
-EXTRA_DIST = data COPYING debug_functions.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += debug_functions.spec
-endif
+EXTRA_DIST = data debug_functions.conf.in
 
 package_version=$(PACKAGE_MAJOR_VERSION).$(PACKAGE_MINOR_VERSION).$(PACKAGE_SUBMINOR_VERSION)
 

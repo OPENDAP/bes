@@ -49,11 +49,7 @@ libugrid_functions_la_SOURCES = $(SRCS) $(HDRS)
 libugrid_functions_la_LDFLAGS = -avoid-version -module 
 libugrid_functions_la_LIBADD = $(LIBADD) 
 
-EXTRA_DIST = data COPYING ugrid_functions.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += ugrid_functions.spec
-endif
+EXTRA_DIST = data ugrid_functions.conf.in
 
 package_version=$(PACKAGE_MAJOR_VERSION).$(PACKAGE_MINOR_VERSION).$(PACKAGE_SUBMINOR_VERSION)
 

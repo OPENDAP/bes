@@ -40,12 +40,7 @@ libusage_module_la_SOURCES = $(USAGE_SOURCES) $(BES_SOURCES)
 libusage_module_la_LDFLAGS = -avoid-version -module 
 libusage_module_la_LIBADD = $(LIBADD) # $(BES_DAP_LIBS)
 
-EXTRA_DIST = COPYING COPYRIGHT_URI README \
-	usage.conf.in 
-
-if !DAP_MODULES
-EXTRA_DIST += usage.spec
-endif
+EXTRA_DIST = usage.conf.in 
 
 DISTCLEANFILES = usage.conf
 

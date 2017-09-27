@@ -38,11 +38,7 @@ FONG_SRC = GeoTiffTransmitter.cc JPEG2000Transmitter.cc FONgRequestHandler.cc	\
 FONG_HDR = GeoTiffTransmitter.h JPEG2000Transmitter.h FONgRequestHandler.h	\
 	FONgModule.h FONgTransform.h FONgGrid.h
 
-EXTRA_DIST = data COPYING fong.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += fileout_gdal.spec 
-endif
+EXTRA_DIST = data fong.conf.in
 
 CLEANFILES = *~ fong.conf
 

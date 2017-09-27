@@ -42,12 +42,7 @@ libfits_module_la_SOURCES = $(FITSSRCS) $(FITSHDRS) $(BES_HANDLER_SRC)
 libfits_module_la_LDFLAGS = -avoid-version -module 
 libfits_module_la_LIBADD = $(LIBADD)
 
-EXTRA_DIST = data COPYRIGHT COPYING \
-	fits.conf.in OSX_Resources
-
-if !DAP_MODULES
-EXTRA_DIST += fits_handler.spec
-endif
+EXTRA_DIST = data fits.conf.in
 
 CLEANFILES = *~ fits.conf
 

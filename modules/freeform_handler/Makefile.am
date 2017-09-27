@@ -72,12 +72,7 @@ SERVER_SRC = FFRequestHandler.cc FFModule.cc
 
 SERVER_HDR = FFRequestHandler.h FFModule.h
 
-EXTRA_DIST = data COPYRIGHT COPYING \
-	OSX_Resources ff.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += freeform_handler.spec
-endif
+EXTRA_DIST = data ff.conf.in
 
 CLEANFILES = ff.conf
 

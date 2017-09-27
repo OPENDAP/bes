@@ -37,11 +37,7 @@ FOJSON_SRC = FoInstanceJsonTransform.cc FoInstanceJsonTransmitter.cc FoJsonReque
 FOJSON_HDR = FoInstanceJsonTransform.h FoInstanceJsonTransmitter.h FoJsonRequestHandler.h FoJsonModule.h \
 	FoDapJsonTransmitter.h FoDapJsonTransform.h StreamString.h fojson_utils.h
 
-EXTRA_DIST = data COPYING fojson.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += fileout_json.spec 
-endif
+EXTRA_DIST = data fojson.conf.in
 
 CLEANFILES = *~ fojson.conf
 
