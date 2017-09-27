@@ -702,8 +702,8 @@ AC_CONFIG_FILES([Makefile
 		 ppt/unit-tests/Makefile
 		 cmdln/Makefile
 		 cmdln/unit-tests/Makefile
-		 cmdln/testsuite/Makefile
-		 cmdln/testsuite/atlocal
+		 cmdln/tests/Makefile
+		 cmdln/tests/atlocal
 		 standalone/Makefile
 		 server/Makefile
 		 server/test/Makefile
@@ -730,17 +730,17 @@ dnl when geo-functions is reenabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
-AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
-	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
-AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh],
-	[chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
-
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 
-AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
-AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
+AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl])
 
-AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
+dnl A better way to control starting a stopping hyrax is needed.
+dnl For now, use besd (which can be run from startup scripts or
+dnl using besctl) and tomcat. both bes and tomcat can be set to
+dnl start at boot time. jhrg 9/27/17 
+dnl AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
+
+AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
