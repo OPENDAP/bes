@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf4_handler
-M_VER=3.13.0
+M_VER=3.13.1
 
 AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v

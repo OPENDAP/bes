@@ -1,3 +1,45 @@
+2017-09-26  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #5 from OPENDAP/coverity_scan_kent
+	Coverity scan kent
+
+2017-09-26  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-312, fix minor issues and add notes
+
+	HFRHANDLER-313, adding the valgrind shell scripts.
+
+	HDFHANDLER-312, Fixed an control flow issue identified by coverity.
+
+2017-09-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-312, trying to fix structurally dead code, past of the iterator issues in the old code
+
+2017-09-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-312, tried to fix a few issues discovered by coverity
+
+2017-08-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'header-fix'
+
+	Removed the const modifier on the bool return types on HDFEOS2.h and HDFSP.h
+
+2017-06-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-310, add MOD16A2 test to the testsuite.
+
+2017-06-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-310, make the MOD16A2 scale/offset behavior right. The scale_factor is 10000.0 and the rule is multiply. very unusual. Need to handle differently.Also keep the scale_factor and add_offset datatype if the datatype is double. One testsuite needs to be updated.
+
+2017-06-06  Kent Yang  <myang6@hdfgroup.org>
+
+	Correct a typo at README.
+
+2017-05-30  ndp-opendap  <ndp@opendap.org>
+
+	Versioning for Hyrax-1.13.5 release
 2017-05-17  Nathan Potter  <ndp@opendap.org>
 
 	Merge pull request #4 from OPENDAP/hyrax-399
