@@ -6,7 +6,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ugrid_functions
-M_VER=1.0.9
+M_VER=1.1.0
 
 if DAP_MODULES
 AM_CPPFLAGS = $(GF_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
