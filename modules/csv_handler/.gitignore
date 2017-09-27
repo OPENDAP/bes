@@ -49,9 +49,9 @@ atlocal
 ## libdap specific files
 gl/*.h
 
-bes-testsuite/bes.conf
-bes-testsuite/csv_handlerTest
-bes-testsuite/csv_handlerTest.dir
-bes-testsuite/package.m4
+tests/bes.conf
+tests/csv_handlerTest
+tests/csv_handlerTest.dir
+tests/package.m4
 
 
