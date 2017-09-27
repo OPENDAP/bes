@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,21 +36,20 @@
 #include <string>
 #include <iostream>
 
-using std::string ;
-using std::ostream ;
+using std::string;
+using std::ostream;
 
-class BESIndent
-{
+class BESIndent {
 private:
-    static string		_indent ;
+    static std::string _indent;
 public:
-    static void			Indent() ;
-    static void			UnIndent() ;
-    static void			Reset() ;
-    static const string &	GetIndent() ;
-    static void			SetIndent( const string &indent ) ;
-    static ostream &		LMarg( ostream &strm ) ;
-} ;
+    static void Indent();
+    static void UnIndent();
+    static void Reset();
+    static const std::string & GetIndent();
+    static void SetIndent(const std::string &indent);
+    static std::ostream & LMarg(std::ostream &strm);
+};
 
 #endif // I_BESIndent_h
 

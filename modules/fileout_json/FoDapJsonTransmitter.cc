@@ -46,6 +46,7 @@
 #include <escaping.h>
 #include <ConstraintEvaluator.h>
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <TheBESKeys.h>
@@ -78,7 +79,7 @@ string FoDapJsonTransmitter::temp_dir;
  * FoJson.Tempdir. If this variable is not found or is not set then it
  * defaults to the macro definition FO_JSON_TEMP_DIR.
  */
-FoDapJsonTransmitter::FoDapJsonTransmitter() : BESBasicTransmitter()
+FoDapJsonTransmitter::FoDapJsonTransmitter() : BESTransmitter()
 {
     add_method(DATA_SERVICE, FoDapJsonTransmitter::send_data);
     add_method(DDX_SERVICE,  FoDapJsonTransmitter::send_metadata);
@@ -124,7 +125,7 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
 
         // Now that we are ready to start reading the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         // The response object will manage loaded_dds
         // Use the DDS from the ResponseObject along with the parameters
@@ -190,7 +191,7 @@ void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerI
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         ft.transform(o_strm, false /* do not send data */);
     }

@@ -149,7 +149,7 @@ BESStopWatch::~BESStopWatch()
 		else
 		{
 			// get the difference between the _start_usage and the
-			// _stop_usage and save the difference.
+			// _stop_usage and save the difference in _result.
 			bool success = timeval_subtract() ;
 			if( !success )
 			{
@@ -170,65 +170,9 @@ BESStopWatch::~BESStopWatch()
     				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STOPPED][" << stoptime << "][ms][" << _timer_name << "][ELAPSED][" << elapsed << "][ms]" << endl;
 
 			}
-
-
 		}
 	}
-
 }
-
-
-#if 0
-bool
-BESStopWatch::stop()
-{
-	// if we have started, the we can stop. Otherwise just fall through.
-	if( _started )
-	{
-		// get timer for current usage
-		if( getrusage( RUSAGE_SELF, &_stop_usage ) != 0 )
-		{
-			int myerrno = errno ;
-			char *c_err = strerror( myerrno ) ;
-			string err = "getrusage failed in stop: " ;
-			if( c_err )
-			{
-				err += c_err ;
-			}
-			else
-			{
-				err += "unknown error" ;
-			}
-			BESDEBUG( _log_name, err << endl ) ;
-			_started = false ;
-			_stopped = false ;
-		}
-		else
-		{
-			// get the difference between the _start_usage and the
-			// _stop_usage and save the difference.
-			bool success = timeval_subtract() ;
-			if( !success )
-			{
-				BESDEBUG( _log_name, "failed to get timing" << endl ) ;
-				_started = false ;
-				_stopped = false ;
-			}
-			else
-			{
-				_stopped = true ;
-			}
-		}
-	}
-	else
-	{
-		BESDEBUG( _log_name, "timing not started" << endl ) ;
-	}
-
-	return _stopped ;
-}
-#endif
-
 
 bool
 BESStopWatch::timeval_subtract()

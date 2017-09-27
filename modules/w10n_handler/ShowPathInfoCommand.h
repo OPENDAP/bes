@@ -5,20 +5,23 @@
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
-class ShowPathInfoCommand : public BESXMLCommand
-{
+class ShowPathInfoCommand: public BESXMLCommand {
 public:
-	ShowPathInfoCommand( const BESDataHandlerInterface &base_dhi ) ;
-    virtual		       ~ShowPathInfoCommand() {}
+    ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi);
+    virtual ~ShowPathInfoCommand()
+    {
+    }
 
-    virtual void		parse_request( xmlNode *node ) ;
+    virtual void parse_request(xmlNode *node);
 
-    virtual bool		has_response() { return true ; }
+    virtual bool has_response()
+    {
+        return true;
+    }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESXMLCommand *	CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
-} ;
+    static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
+};
 
 #endif // A_W10NXMLCatalogCommand_h
-

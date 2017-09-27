@@ -34,22 +34,29 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <sstream>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ostringstream ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostringstream;
 
 #include "BESServiceRegistry.h"
 #include "BESError.h"
 #include "BESXMLInfo.h"
 #include "BESDataNames.h"
+#include <GetOpt.h>
 
-string dump1 = "BESServiceRegistry::dump - (X)\n\
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+
+string dump1 =
+    "BESServiceRegistry::dump - (X)\n\
     registered services\n\
         cedar\n\
             flat\n\
@@ -93,9 +100,10 @@ string dump1 = "BESServiceRegistry::dump - (X)\n\
     services provided by handler\n\
         cedar: cedar, dap\n\
         nc: dap\n\
-" ;
+";
 
-string dump2 = "BESServiceRegistry::dump - (X)\n\
+string dump2 =
+    "BESServiceRegistry::dump - (X)\n\
     registered services\n\
         cedar\n\
             flat\n\
@@ -113,9 +121,10 @@ string dump2 = "BESServiceRegistry::dump - (X)\n\
     services provided by handler\n\
         cedar: cedar\n\
         nc\n\
-" ;
+";
 
-string show1 = "<showServices>\n\
+string show1 =
+    "<showServices>\n\
         <serviceDescription name=\"cedar\">\n\
             <command name=\"flat\">\n\
                 <description>CEDAR flat format data response</description>\n\
@@ -159,9 +168,10 @@ string show1 = "<showServices>\n\
         </serviceDescription>\n\
     </showServices>\n\
 </response>\n\
-" ;
+";
 
-string show2 = "<showServices>\n\
+string show2 =
+    "<showServices>\n\
         <serviceDescription name=\"cedar\">\n\
             <command name=\"flat\">\n\
                 <description>CEDAR flat format data response</description>\n\
@@ -178,399 +188,386 @@ string show2 = "<showServices>\n\
         </serviceDescription>\n\
     </showServices>\n\
 </response>\n\
-" ;
+";
 
 class servicesT: public TestFixture {
 private:
 
 public:
-    servicesT() {}
-    ~servicesT() {}
+    servicesT()
+    {
+    }
+    ~servicesT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( servicesT ) ;
+CPPUNIT_TEST_SUITE( servicesT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered servicesT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered servicesT::run" << endl;
 
-	cout << "*****************************************" << endl;
-	cout << "create the registry" << endl;
-	BESServiceRegistry *registry = BESServiceRegistry::TheRegistry() ;
-	CPPUNIT_ASSERT( registry ) ;
+        cout << "*****************************************" << endl;
+        cout << "create the registry" << endl;
+        BESServiceRegistry *registry = BESServiceRegistry::TheRegistry();
+        CPPUNIT_ASSERT( registry );
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "add dap service with das, dds, dods" << endl;
-	    registry->add_service( "dap" ) ;
-	    map<string,string> cmds ;
-	    registry->add_to_service( "dap", "das",
-				      "OPeNDAP Data Attributes", "dap2" ) ;
-	    registry->add_to_service( "dap", "dds",
-				      "OPeNDAP Data Description", "dap2" ) ;
-	    registry->add_to_service( "dap", "dods",
-				      "OPeNDAP Data Object", "dap2" ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "dap" ) ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "dap", "das" ) ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "dap", "dds" ) ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "dap", "dods" ) ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to add service" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "add dap service with das, dds, dods" << endl;
+            registry->add_service("dap");
+            map<string, string> cmds;
+            registry->add_to_service("dap", "das", "OPeNDAP Data Attributes", "dap2");
+            registry->add_to_service("dap", "dds", "OPeNDAP Data Description", "dap2");
+            registry->add_to_service("dap", "dods", "OPeNDAP Data Object", "dap2");
+            CPPUNIT_ASSERT( registry->service_available( "dap" ) );
+            CPPUNIT_ASSERT( registry->service_available( "dap", "das" ) );
+            CPPUNIT_ASSERT( registry->service_available( "dap", "dds" ) );
+            CPPUNIT_ASSERT( registry->service_available( "dap", "dods" ) );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to add service" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "try to add duplicate dap service with das, dds, dods" << endl;
-	    registry->add_to_service( "dap", "das",
-				      "OPeNDAP Data Attributes", "dap2" ) ;
-	    CPPUNIT_ASSERT( !"succeeded, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "try to add duplicate dap service with das, dds, dods" << endl;
+            registry->add_to_service("dap", "das", "OPeNDAP Data Attributes", "dap2");
+            CPPUNIT_ASSERT( !"succeeded, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "add to the dap service" << endl;
-	    registry->add_to_service( "dap", "ascii",
-				      "OPeNDAP ASCII data", "dap2" ) ;
-	    registry->add_to_service( "dap", "info_page",
-				      "OPeNDAP Data Information", "dap2" ) ;
-	    registry->add_to_service( "dap", "html_form",
-				      "OPeNDAP Form for access", "dap2" ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "dap", "ascii" ) ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "dap", "info_page" ) );
-	    CPPUNIT_ASSERT( registry->service_available( "dap", "html_form" ) );
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to add to the dap service" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "add to the dap service" << endl;
+            registry->add_to_service("dap", "ascii", "OPeNDAP ASCII data", "dap2");
+            registry->add_to_service("dap", "info_page", "OPeNDAP Data Information", "dap2");
+            registry->add_to_service("dap", "html_form", "OPeNDAP Form for access", "dap2");
+            CPPUNIT_ASSERT( registry->service_available( "dap", "ascii" ) );
+            CPPUNIT_ASSERT(registry->service_available("dap", "info_page"));
+            CPPUNIT_ASSERT(registry->service_available("dap", "html_form"));
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to add to the dap service" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "try to add duplicate cmd to dap service" << endl;
-	    registry->add_to_service( "dap", "ascii",
-				      "OPeNDAP ASCII data", "dap2" ) ;
-	    CPPUNIT_ASSERT( !"succeeded, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "try to add duplicate cmd to dap service" << endl;
+            registry->add_to_service("dap", "ascii", "OPeNDAP ASCII data", "dap2");
+            CPPUNIT_ASSERT( !"succeeded, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "try to add cedar services" << endl;
-	    registry->add_service( "cedar" ) ;
-	    registry->add_to_service( "cedar", "flat",
-				      "CEDAR flat format data response",
-				      "cedar" ) ;
-	    registry->add_to_service( "cedar", "tab",
-				      "CEDAR tab separated data response",
-				      "cedar" ) ;
-	    registry->add_to_service( "cedar", "stream",
-				      "CEDAR stream .cbf data file",
-				      "cedar" ) ;
-	    CPPUNIT_ASSERT( registry->service_available( "cedar" ) );
-	    CPPUNIT_ASSERT( registry->service_available( "cedar", "flat" ) );
-	    CPPUNIT_ASSERT( registry->service_available( "cedar", "tab" ) );
-	    CPPUNIT_ASSERT( registry->service_available( "cedar", "stream" ) );
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to add cedar services" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "try to add cedar services" << endl;
+            registry->add_service("cedar");
+            registry->add_to_service("cedar", "flat", "CEDAR flat format data response", "cedar");
+            registry->add_to_service("cedar", "tab", "CEDAR tab separated data response", "cedar");
+            registry->add_to_service("cedar", "stream", "CEDAR stream .cbf data file", "cedar");
+            CPPUNIT_ASSERT(registry->service_available("cedar"));
+            CPPUNIT_ASSERT(registry->service_available("cedar", "flat"));
+            CPPUNIT_ASSERT(registry->service_available("cedar", "tab"));
+            CPPUNIT_ASSERT(registry->service_available("cedar", "stream"));
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to add cedar services" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "try to add a format to the dap data response" << endl;
-	    registry->add_format( "dap", "dods", "netcdf" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to add format" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "try to add a format to the dap data response" << endl;
+            registry->add_format("dap", "dods", "netcdf");
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to add format" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "try to re-add a format to the dap data response" << endl;
-	    registry->add_format( "dap", "dods", "netcdf" ) ;
-	    CPPUNIT_ASSERT( !"success, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "try to re-add a format to the dap data response" << endl;
+            registry->add_format("dap", "dods", "netcdf");
+            CPPUNIT_ASSERT( !"success, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "add format to non-existant service" << endl;
-	    registry->add_format( "nogood", "dods", "netcdf" ) ;
-	    CPPUNIT_ASSERT( !"success, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "add format to non-existant service" << endl;
+            registry->add_format("nogood", "dods", "netcdf");
+            CPPUNIT_ASSERT( !"success, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "add format to non-existant cmd" << endl;
-	    registry->add_format( "dap", "nocmd", "netcdf" ) ;
-	    CPPUNIT_ASSERT( !"success, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "add format to non-existant cmd" << endl;
+            registry->add_format("dap", "nocmd", "netcdf");
+            CPPUNIT_ASSERT( !"success, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	CPPUNIT_ASSERT( registry->service_available( "dap" ) ) ;
-	CPPUNIT_ASSERT( registry->service_available( "dap", "ascii" ) ) ;
-	CPPUNIT_ASSERT( !registry->service_available( "not" ) ) ;
-	CPPUNIT_ASSERT( !registry->service_available( "not", "ascii" ) ) ;
-	CPPUNIT_ASSERT( !registry->service_available( "not", "nono" ) ) ;
-	CPPUNIT_ASSERT( !registry->service_available( "dap", "nono" ) ) ;
+        CPPUNIT_ASSERT( registry->service_available( "dap" ) );
+        CPPUNIT_ASSERT( registry->service_available( "dap", "ascii" ) );
+        CPPUNIT_ASSERT( !registry->service_available( "not" ) );
+        CPPUNIT_ASSERT( !registry->service_available( "not", "ascii" ) );
+        CPPUNIT_ASSERT( !registry->service_available( "not", "nono" ) );
+        CPPUNIT_ASSERT( !registry->service_available( "dap", "nono" ) );
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "handler services" << endl;
-	    registry->handles_service( "nc", "dap" ) ;
-	    registry->handles_service( "cedar", "dap" ) ;
-	    registry->handles_service( "cedar", "cedar" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"handles_service calls failed" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "handler services" << endl;
+            registry->handles_service("nc", "dap");
+            registry->handles_service("cedar", "dap");
+            registry->handles_service("cedar", "cedar");
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"handles_service calls failed" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "dump the registry" << endl;
-	    ostringstream strm ;
-	    strm << *registry ;
-	    string res = strm.str() ;
-	    string::size_type spos = res.find( "(0x" ) ;
-	    string::size_type epos = res.find( ")", spos ) ;
-	    CPPUNIT_ASSERT( spos != string::npos ) ;
-	    CPPUNIT_ASSERT( epos != string::npos ) ;
-	    res.replace( spos+1, epos - spos - 1, "X" ) ;
-	    CPPUNIT_ASSERT( res == dump1 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to dump the registry" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "dump the registry" << endl;
+            ostringstream strm;
+            strm << *registry;
+            string res = strm.str();
+            string::size_type spos = res.find("(0x");
+            string::size_type epos = res.find(")", spos);
+            CPPUNIT_ASSERT( spos != string::npos );
+            CPPUNIT_ASSERT( epos != string::npos );
+            res.replace(spos + 1, epos - spos - 1, "X");
+            CPPUNIT_ASSERT( res == dump1 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to dump the registry" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "try to add command to service that doesn't exist" << endl;
-	    registry->add_to_service( "notexist", "something",
-				    "something description", "something format" ) ;
-	    CPPUNIT_ASSERT( !"success, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "try to add command to service that doesn't exist" << endl;
+            registry->add_to_service("notexist", "something", "something description", "something format");
+            CPPUNIT_ASSERT( !"success, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "handle service that does not exist" << endl;
-	    registry->handles_service( "csv", "noexist" ) ;
-	    CPPUNIT_ASSERT( !"success, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "handle service that does not exist" << endl;
+            registry->handles_service("csv", "noexist");
+            CPPUNIT_ASSERT( !"success, should have failed" );
+        }
+        catch (BESError &e) {
+        }
 
-	bool does_it = false ;
-	cout << "*****************************************" << endl;
-	cout << "does handle?" << endl;
-	CPPUNIT_ASSERT( registry->does_handle_service( "nc", "dap" ) ) ;
-	CPPUNIT_ASSERT( registry->does_handle_service( "cedar", "cedar" ) ) ;
-	CPPUNIT_ASSERT( !registry->does_handle_service( "nc", "ascii" ) ) ;
-	CPPUNIT_ASSERT( !registry->does_handle_service( "noexist", "dap" ) ) ;
-	CPPUNIT_ASSERT( !registry->does_handle_service( "nc", "noexist" ) ) ;
-	CPPUNIT_ASSERT( !registry->does_handle_service( "noexist", "noexist" ));
+        bool does_it = false;
+        cout << "*****************************************" << endl;
+        cout << "does handle?" << endl;
+        CPPUNIT_ASSERT( registry->does_handle_service( "nc", "dap" ) );
+        CPPUNIT_ASSERT( registry->does_handle_service( "cedar", "cedar" ) );
+        CPPUNIT_ASSERT( !registry->does_handle_service( "nc", "ascii" ) );
+        CPPUNIT_ASSERT( !registry->does_handle_service( "noexist", "dap" ) );
+        CPPUNIT_ASSERT( !registry->does_handle_service( "nc", "noexist" ) );
+        CPPUNIT_ASSERT(!registry->does_handle_service("noexist", "noexist"));
 
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "services handled by cedar" << endl;
-	    list<string> services ;
-	    registry->services_handled( "cedar", services ) ;
-	    map<string,string> baseline ;
-	    baseline["dap"] = "dap" ;
-	    baseline["cedar"] = "cedar" ;
-	    CPPUNIT_ASSERT( services.size() == baseline.size() ) ;
+        {
+            cout << "*****************************************" << endl;
+            cout << "services handled by cedar" << endl;
+            list<string> services;
+            registry->services_handled("cedar", services);
+            map<string, string> baseline;
+            baseline["dap"] = "dap";
+            baseline["cedar"] = "cedar";
+            CPPUNIT_ASSERT( services.size() == baseline.size() );
 
-	    list<string>::const_iterator si = services.begin() ;
-	    list<string>::const_iterator se = services.end() ;
-	    for( ; si != se; si++ )
-	    {
-		cout << "    " << (*si) << endl ;
-		map<string,string>::iterator fi = baseline.find( (*si) ) ;
-		CPPUNIT_ASSERT( fi != baseline.end() ) ;
-	    }
-	}
+            list<string>::const_iterator si = services.begin();
+            list<string>::const_iterator se = services.end();
+            for (; si != se; si++) {
+                cout << "    " << (*si) << endl;
+                map<string, string>::iterator fi = baseline.find((*si));
+                CPPUNIT_ASSERT( fi != baseline.end() );
+            }
+        }
 
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "services handled by nc" << endl;
-	    list<string> services ;
-	    registry->services_handled( "nc", services ) ;
-	    map<string,string> baseline ;
-	    baseline["dap"] = "dap" ;
-	    CPPUNIT_ASSERT( services.size() == baseline.size() ) ;
-	    list<string>::const_iterator si = services.begin() ;
-	    list<string>::const_iterator se = services.end() ;
-	    for( ; si != se; si++ )
-	    {
-		cout << "    " << (*si) << endl ;
-		map<string,string>::iterator fi = baseline.find( (*si) ) ;
-		CPPUNIT_ASSERT( fi != baseline.end() ) ;
-	    }
-	}
+        {
+            cout << "*****************************************" << endl;
+            cout << "services handled by nc" << endl;
+            list<string> services;
+            registry->services_handled("nc", services);
+            map<string, string> baseline;
+            baseline["dap"] = "dap";
+            CPPUNIT_ASSERT( services.size() == baseline.size() );
+            list<string>::const_iterator si = services.begin();
+            list<string>::const_iterator se = services.end();
+            for (; si != se; si++) {
+                cout << "    " << (*si) << endl;
+                map<string, string>::iterator fi = baseline.find((*si));
+                CPPUNIT_ASSERT( fi != baseline.end() );
+            }
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "show services" << endl;
-	    BESXMLInfo info ;
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[REQUEST_ID] = "123456789" ;
-	    info.begin_response( "showServices", dhi ) ;
-	    registry->show_services( info ) ;
-	    info.end_response( ) ;
-	    ostringstream strm ;
-	    info.print( strm ) ;
-	    string str = strm.str() ;
+        try {
+            cout << "*****************************************" << endl;
+            cout << "show services" << endl;
+            BESXMLInfo info;
+            BESDataHandlerInterface dhi;
+            dhi.data[REQUEST_ID] = "123456789";
+            info.begin_response("showServices", dhi);
+            registry->show_services(info);
+            info.end_response();
+            ostringstream strm;
+            info.print(strm);
+            string str = strm.str();
 
-	    // we need to remove the first part of the response because the
-	    // order of the attributes can be different between machines. So
-	    // drop the <!xml and <response tags
-	    string::size_type sd = str.find( "<showServices>" ) ;
-	    CPPUNIT_ASSERT( sd != string::npos ) ;
+            // we need to remove the first part of the response because the
+            // order of the attributes can be different between machines. So
+            // drop the <!xml and <response tags
+            string::size_type sd = str.find("<showServices>");
+            CPPUNIT_ASSERT( sd != string::npos );
 
-	    string cmp_str = str.substr( sd ) ;
-	    cout << "received = " << endl << cmp_str << endl ;
-	    cout << "expecting = " << endl << show1 << endl ;
+            string cmp_str = str.substr(sd);
+            cout << "received = " << endl << cmp_str << endl;
+            cout << "expecting = " << endl << show1 << endl;
 
-	    CPPUNIT_ASSERT( cmp_str == show1 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to show services" ) ;
-	}
+            CPPUNIT_ASSERT( cmp_str == show1 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to show services" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "remove service" << endl;
-	    registry->remove_service( "dap" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to remove the service" ) ;
-	}
+        try {
+            cout << "*****************************************" << endl;
+            cout << "remove service" << endl;
+            registry->remove_service("dap");
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to remove the service" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "show services" << endl;
-	    BESXMLInfo info ;
-	    BESDataHandlerInterface dhi ;
-	    dhi.data[REQUEST_ID] = "123456789" ;
-	    info.begin_response( "showServices", dhi ) ;
-	    registry->show_services( info ) ;
-	    info.end_response( ) ;
-	    ostringstream strm ;
-	    info.print( strm ) ;
-	    string str = strm.str() ;
-	    cout << "received = " << endl << str << endl ;
-	    cout << "expecting = " << endl << show2 << endl ;
+        try {
+            cout << "*****************************************" << endl;
+            cout << "show services" << endl;
+            BESXMLInfo info;
+            BESDataHandlerInterface dhi;
+            dhi.data[REQUEST_ID] = "123456789";
+            info.begin_response("showServices", dhi);
+            registry->show_services(info);
+            info.end_response();
+            ostringstream strm;
+            info.print(strm);
+            string str = strm.str();
+            cout << "received = " << endl << str << endl;
+            cout << "expecting = " << endl << show2 << endl;
 
-	    // we need to remove the first part of the response because the
-	    // order of the attributes can be different between machines. So
-	    // drop the <!xml and <response tags
-	    string::size_type sd = str.find( "<showServices>" ) ;
-	    CPPUNIT_ASSERT( sd != string::npos ) ;
-	    string cmp_str = str.substr( sd ) ;
+            // we need to remove the first part of the response because the
+            // order of the attributes can be different between machines. So
+            // drop the <!xml and <response tags
+            string::size_type sd = str.find("<showServices>");
+            CPPUNIT_ASSERT( sd != string::npos );
+            string cmp_str = str.substr(sd);
 
-	    CPPUNIT_ASSERT( cmp_str == show2 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to show services" ) ;
-	}
+            CPPUNIT_ASSERT( cmp_str == show2 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to show services" );
+        }
 
-	try
-	{
-	    cout << "*****************************************" << endl;
-	    cout << "dump the registry" << endl;
-	    ostringstream strm ;
-	    strm << *registry ;
-	    string res = strm.str() ;
-	    string::size_type spos = res.find( "(0x" ) ;
-	    string::size_type epos = res.find( ")", spos ) ;
-	    CPPUNIT_ASSERT( spos != string::npos ) ;
-	    CPPUNIT_ASSERT( epos != string::npos ) ;
+        try {
+            cout << "*****************************************" << endl;
+            cout << "dump the registry" << endl;
+            ostringstream strm;
+            strm << *registry;
+            string res = strm.str();
+            string::size_type spos = res.find("(0x");
+            string::size_type epos = res.find(")", spos);
+            CPPUNIT_ASSERT( spos != string::npos );
+            CPPUNIT_ASSERT( epos != string::npos );
 
-	    res.replace( spos+1, epos - spos - 1, "X" ) ;
-	    CPPUNIT_ASSERT( res == dump2 ) ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << e.get_message() << endl ;
-	    CPPUNIT_ASSERT( !"failed to dump the registry" ) ;
-	}
+            res.replace(spos + 1, epos - spos - 1, "X");
+            CPPUNIT_ASSERT( res == dump2 );
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT( !"failed to dump the registry" );
+        }
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from servicesT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from servicesT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( servicesT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( servicesT );
 
-int 
-main( int, char** )
+int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: servicesT has the following tests:" << endl;
+            const std::vector<Test*> &tests = servicesT::suite()->getTests();
+            unsigned int prefix_len = servicesT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = servicesT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

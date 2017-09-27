@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.17.4, support@opendap.org)
+AC_INIT(bes, 3.19.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -28,7 +28,7 @@ AM_INIT_AUTOMAKE([1.10 tar-pax])
 LT_INIT
 
 dnl flags for the compilers and linkers - set these before locating the
-dnl actual tools since some of the AC_PROG macros set these `flag variables'
+dnl actual tools since some of the AC_PROG macros set these 'flag variables'
 dnl to default values otherwise.
 AC_CANONICAL_HOST
 AC_SUBST(host)
@@ -49,8 +49,8 @@ AC_ARG_ENABLE([developer],
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=14
-LIB_DIS_AGE=6
+LIB_DIS_CURRENT=15
+LIB_DIS_AGE=0
 LIB_DIS_REVISION=1
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
@@ -60,7 +60,7 @@ AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=4
 LIB_PPT_AGE=0
-LIB_PPT_REVISION=9
+LIB_PPT_REVISION=10
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_AGE)
 AC_SUBST(LIB_PPT_REVISION)
@@ -69,7 +69,7 @@ AC_SUBST(LIBPPT_VERSION)
 
 LIB_XML_CMD_CURRENT=3
 LIB_XML_CMD_AGE=2
-LIB_XML_CMD_REVISION=2
+LIB_XML_CMD_REVISION=3
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_AGE)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -96,7 +96,7 @@ AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
-dnl Makefile will call bison -y which doesn't know how to make the parsers 
+dnl Makefile will call bison -y which does not know how to make the parsers 
 dnl we require. jhrg 6/15/05
 AC_CHECK_PROG(YACC,[bison],[bison])
 
@@ -251,7 +251,7 @@ dnl dap-mouldes is true by default; use --disable-dap-modules or
 dnl --enable-dap-modules=no to turn this off. jhrg 11/17/13
 
 AC_ARG_WITH([dap-modules],
-  [AS_HELP_STRING([--without-dap-modules], [don't build the bundled dap modules (default is to build the modules)])],
+  [AS_HELP_STRING([--without-dap-modules], [do_not build the bundled dap modules (default is to build the modules)])],
   [with_dap_modules=${withval} ],
   [with_dap_modules=yes])
 
@@ -302,7 +302,7 @@ AS_CASE([$host],
     [*sgi*], [AS_IF([test $ac_cv_sizeof_long -eq 4],
                     [FF_CPPFLAGS=-DIRIS4],
                     [FF_CPPFLAGS=-DIRIX])],
-    [AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed"])])
+    [AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed])])
     
 AC_MSG_RESULT([set to $FF_CPPFLAGS])
 AC_SUBST(FF_CPPFLAGS)
@@ -408,7 +408,7 @@ AM_COND_IF([BUILD_GDAL], [
 
 ],[ # else AN_CONF_IF([BUILD_GDAL]
 
-    dnl if we're not building the gdal-related things, make sure that 
+    dnl if we are not building the gdal-related things, make sure that 
     dnl OPENJPEG_FOUND is defined and is false
     AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 
@@ -651,7 +651,7 @@ dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
 
-dnl These are needed because the symbols are used in the modules' Makefile.am
+dnl These are needed because the symbols are used in each modules Makefile.am
 dnl files. It might be that if the generation of those Makefiles was also conditional,
 dnl then we could remove this block of code. jhrg 11/30/14
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
@@ -692,6 +692,9 @@ AC_CONFIG_FILES([Makefile
 		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
+		 dispatch/tests/Makefile
+		 dispatch/tests/atlocal
+		 
 		 docs/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
@@ -721,8 +724,11 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
-		 functions/geo-functions/Makefile
-		 functions/geo-functions/unit-tests/Makefile])
+		 ])
+dnl These need to be moved into the AC_CONFIG_FILES above 
+dnl when geo-functions is reenabled.
+dnl		 functions/geo-functions/Makefile
+dnl		 functions/geo-functions/unit-tests/Makefile
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
@@ -738,6 +744,7 @@ AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
+AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 
 dnl Output files if building the modules too
 		 
@@ -792,11 +799,7 @@ AM_COND_IF([DAP_MODULES],
 	modules/netcdf_handler/bes-testsuite/Makefile 
 	modules/netcdf_handler/bes-testsuite/atlocal 
 	
-	modules/fileout_netcdf/Makefile 
-	modules/fileout_netcdf/unit-tests/Makefile 
-	modules/fileout_netcdf/unit-tests/test_config.h 
-	modules/fileout_netcdf/unit-tests/atlocal
-	
+	modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 
@@ -825,14 +828,16 @@ AM_COND_IF([DAP_MODULES],
     modules/hdf5_handler/Makefile
     modules/hdf5_handler/bes-testsuite/Makefile
     modules/hdf5_handler/bes-testsuite/atlocal
+    modules/hdf5_handler/gctp/Makefile
+    modules/hdf5_handler/gctp/src/Makefile
     
     modules/ncml_module/Makefile 
     modules/ncml_module/tests/Makefile 
     modules/ncml_module/tests/atlocal 
 
     modules/ugrid_functions/Makefile 
-	modules/ugrid_functions/unit-tests/Makefile
-	modules/ugrid_functions/unit-tests/test_config.h
+    modules/ugrid_functions/unit-tests/Makefile
+    modules/ugrid_functions/unit-tests/test_config.h
 	modules/ugrid_functions/tests/Makefile 
 	modules/ugrid_functions/tests/atlocal
         
@@ -868,7 +873,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    dnl AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])

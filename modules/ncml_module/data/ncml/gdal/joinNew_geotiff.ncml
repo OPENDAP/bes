@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf title="joinNew Aggregation using geotiff data files">
+  
+  <aggregation type="joinNew" dimName="slice">    
+    <variableAgg name="band_1"/>
+
+    <!-- Same dataset a few times, but with different coordVal -->
+    <netcdf location="data/gdal/cea.tif" coordValue="1"/>
+    <netcdf location="data/gdal/cea.tif" coordValue="2"/>
+    <netcdf location="data/gdal/cea.tif" coordValue="3"/>
+
+  </aggregation>
+
+</netcdf>

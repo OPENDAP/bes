@@ -1,19 +1,22 @@
 
-Updated for version 0.9.4 on 23 April 2014
+Updated for version 1.1.0 on 1 June 2017
 
-Minor changes to internal production rules.
+I modified this handler so that it builds a DDS object that includes
+global attributes and attributes for each variable. This means that 
+it does not use the DDS::transfer_attributes() hack. The changes to 
+do this were fairly small. I modified the code that builds the DAS so
+that it includes two new functions, one to build global attributes and
+one to build a given variable's attributes. These functions are used
+by both the build-a-DAS and build-a-DDS functions and the DAS only code
+is mostly only these functions.
 
-Updated for version 0.9.3 on 10 Sept. 2013
+The one thing that the handler not longer does is merge in ancillary 
+attributes when building the DDS. I'm not sure how to support that 
+without going back to the older scheme, mixing the current code and
+code that loads the ancillary attrs and uses transfer_attributes() 
+or new code that reads the attrs and adds them directly.
 
-Minor changes to internal production rules.
-
-Updated for version 0.9.2 on 10 Sept. 2013
-
-No comment.
-
-Updated for version 0.9.1 on 10 Sept. 2013
-
-No comment.
+jhrg 6/1/17
 
 Updated for version 0.9.0 on 25 Sept. 2012
 

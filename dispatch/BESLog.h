@@ -82,7 +82,7 @@
  * BESLog provides a static method for access to a single BESLog object,
  * TheLog.
  *
- * @see BESKeys
+ * @see TheBESKeys
  */
 class BESLog: public BESObj {
 private:
@@ -101,6 +101,8 @@ protected:
     void dump_time();
 public:
     ~BESLog();
+
+    const static string mark;
 
     /** @brief Suspend logging of any information until resumed.
      *
@@ -182,6 +184,8 @@ public:
     BESLog& operator<<(p_ios_manipulator);
 
     virtual void dump(std::ostream &strm) const;
+
+    virtual void flush_me();
 
     static BESLog *TheLog();
 

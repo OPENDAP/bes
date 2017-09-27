@@ -1,0 +1,11 @@
+Dataset {
+    Float64 slice[slice = 3];
+    Grid {
+      Array:
+        Byte band_1[slice = 3][northing = 515][easting = 514];
+      Maps:
+        Float64 slice[slice = 3];
+        Float64 northing[northing = 515];
+        Float64 easting[easting = 514];
+    } band_1;
+} joinNew_geotiff.ncml;

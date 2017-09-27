@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<netcdf title="var_mods" location="http://test.opendap.org/opendap/data/ncml/agg/dated/CG2006158_120000h_usfc.nc" >
+ 
+   <variable name="lat">
+    <attribute name="Metadata" type="string">This is TEST metadata!</attribute>
+   </variable>
+
+</netcdf>

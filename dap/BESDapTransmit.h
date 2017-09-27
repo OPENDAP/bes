@@ -33,13 +33,13 @@
 #ifndef I_BESDapTransmit_h
 #define I_BESDapTransmit_h 1
 
-#include "BESBasicTransmitter.h"
+#include "BESTransmitter.h"
 //#include "BESDataHandlerInterface.h"
 
 class BESResponseObject;
 class BESDataHandlerInterface;
 
-class BESDapTransmit: public BESBasicTransmitter {
+class BESDapTransmit: public BESTransmitter {
 public:
 	BESDapTransmit();
 	virtual ~BESDapTransmit();

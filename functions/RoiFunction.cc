@@ -65,8 +65,8 @@ namespace functions {
  * the roi(), bbox() and bbox_union() functions can be used to subset
  * a collection of Arrays where some arrays are taken to be dependent
  * variables and others independent variables. The result is a subset
- * of 'discrete coverage' the collection of independent and dependent
- * variables define.
+ * of the 'discrete coverage' defined by the collection of independent
+ * and dependent variables.
  *
  * @param argc Argument count
  * @param argv Argument vector - variable in the current DDS
@@ -94,7 +94,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         break;
     }
 
-    auto_ptr<Structure> response(new Structure("roi_subset"));
+    auto_ptr<Structure> response(new Structure("roi_subset_unwrap"));
 
     Array *bbox = static_cast<Array*>(argv[argc-1]);
 

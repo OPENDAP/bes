@@ -27,9 +27,9 @@
 
 //#include <cstdlib>
 
-class FONgBaseType;
 class GDALDataset;
 class BESDataHandlerInterface;
+class FONgGrid;
 
 /** @brief Transformation object that converts an OPeNDAP DataDDS to a
  * GeoTiff file
@@ -50,7 +50,7 @@ private:
 
     string d_localfile;
 
-    vector<FONgBaseType *> d_fong_vars;
+    vector<FONgGrid *> d_fong_vars;
 
     // used when there is more than one variable; this is possible
     // when returning a GMLJP2 response but not a GeoTiff.
@@ -67,7 +67,7 @@ private:
     int d_num_bands;
 
     void m_scale_data(double *data);
-    bool effectively_two_D(FONgBaseType *fbtp);
+    bool effectively_two_D(FONgGrid *fbtp);
 
 public:
     FONgTransform(libdap::DDS *dds, libdap::ConstraintEvaluator &evaluator, const string &localfile);
@@ -88,10 +88,10 @@ public:
     int num_bands() { return d_num_bands; }
     void set_num_bands(int n) { d_num_bands = n; }
 
-    void push_var(FONgBaseType *v) { d_fong_vars.push_back(v); }
+    void push_var(FONgGrid *v) { d_fong_vars.push_back(v); }
     int num_var() { return d_fong_vars.size(); }
 
-    FONgBaseType *var(int i) { return d_fong_vars.at(i); }
+    FONgGrid *var(int i) { return d_fong_vars.at(i); }
 
     // Image/band height and width in pixels
     virtual void set_width(int width) { d_width = width; }

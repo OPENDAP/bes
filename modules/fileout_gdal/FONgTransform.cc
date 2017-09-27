@@ -42,7 +42,7 @@
 
 #include "FONgTransform.h"
 
-#include "FONgBaseType.h"
+// #include "../../old/FONgBaseType.h"
 #include "FONgGrid.h"
 
 using namespace std;
@@ -63,6 +63,7 @@ FONgTransform::FONgTransform(DDS *dds, ConstraintEvaluator &/*evaluator*/, const
     d_geo_transform_set(false), d_width(0.0), d_height(0.0), d_top(0.0), d_left(0.0),
     d_bottom(0.0), d_right(0.0), d_no_data(0.0), d_no_data_type(none), d_num_bands(0)
 {
+    BESDEBUG("fong3", "dds numvars = " << dds->num_var() << endl);
     if (localfile.empty())
         throw BESInternalError("Empty local file name passed to constructor", __FILE__, __LINE__);
 }
@@ -73,8 +74,8 @@ FONgTransform::FONgTransform(DDS *dds, ConstraintEvaluator &/*evaluator*/, const
  */
 FONgTransform::~FONgTransform()
 {
-    vector<FONgBaseType *>::iterator i = d_fong_vars.begin();
-    vector<FONgBaseType *>::iterator e = d_fong_vars.end();
+    vector<FONgGrid *>::iterator i = d_fong_vars.begin();
+    vector<FONgGrid *>::iterator e = d_fong_vars.end();
     while (i != e) {
         delete (*i++);
     }
@@ -103,7 +104,7 @@ is_convertable_type(const BaseType *b)
  * @returns The FONg object created via the DAP object
  * @throws BESInternalError if the DAP object is not an expected type
  */
-static FONgBaseType *convert(BaseType *v)
+static FONgGrid *convert(BaseType *v)
 {
     switch (v->type()) {
     case dods_grid_c:
@@ -126,7 +127,7 @@ static FONgBaseType *convert(BaseType *v)
  * than (or less than) the no data value.
  *
  * @note The initial no data value is determined be looking at attributes and
- * is done by FONgBaseType::extract_coordinates().
+ * is done by FONgGrid::extract_coordinates().
  * @note It's an error to call this if no_data_type() is 'none'.
  *
  * @param data The data values to fiddle
@@ -196,7 +197,7 @@ double *FONgTransform::geo_transform()
     BESDEBUG("fong3", "width: " << d_width << ", height: " << d_height << endl);
 
     d_gt[0] = d_left; // The leftmost 'x' value, which is longitude
-    d_gt[3] = d_top;  // The topmost 'y' value, which is latitude
+    d_gt[3] = d_top;  // The topmost 'y' value, which is latitude should be max latitude
 
     // We assume data w/o any rotation (a north-up image)
     d_gt[2] = 0.0;
@@ -204,7 +205,7 @@ double *FONgTransform::geo_transform()
 
     // Compute the lower left values. Note that wehn GDAL builds the geotiff
     // output dataset, it correctly inverts the image when the source data has
-    // inverted latitude values.
+    // inverted latitude values.?
     d_gt[1] = (d_right - d_left) / d_width; // width in pixels; top and bottom in lat
     d_gt[5] = (d_bottom - d_top) / d_height;
 
@@ -225,7 +226,7 @@ double *FONgTransform::geo_transform()
  *
  * @return True if this is a 2D array, false otherwise.
  */
-bool FONgTransform::effectively_two_D(FONgBaseType *fbtp)
+bool FONgTransform::effectively_two_D(FONgGrid *fbtp)
 {
     if (fbtp->type() == dods_grid_c) {
         Grid *g = static_cast<FONgGrid*>(fbtp)->grid();
@@ -253,10 +254,10 @@ static void build_delegate(BaseType *btp, FONgTransform &t)
         BESDEBUG( "fong3", "converting " << btp->name() << endl);
 
         // Build the delegate
-        FONgBaseType *fb = convert(btp);
+        FONgGrid *fb = convert(btp);
 
         // Get the information needed for the transform.
-        // Note that FONgBaseType::extract_coordinates() also pushes the
+        // Note that FONgGrid::extract_coordinates() also pushes the
         // new FONgBaseType instance onto the FONgTransform's vector of
         // delagate variable objects.
         fb->extract_coordinates(t);
@@ -281,7 +282,7 @@ static void find_vars_helper(Structure *s, FONgTransform &t)
 }
 
 // Helper function to scan the DDS top-level for Grids, ...
-// Note that FONgBaseType::extract_coordinates() sets a bunch of
+// Note that FONgGrid::extract_coordinates() sets a bunch of
 // values in the FONgBaseType instance _and_ this instance of
 // FONgTransform. One of these is 'num_bands()'. For GeoTiff,
 // num_bands() must be 1. This is tested in transform().
@@ -350,7 +351,7 @@ void FONgTransform::transform_to_geotiff()
     bool projection_set = false;
     string wkt = "";
     for (int i = 0; i < num_bands(); ++i) {
-        FONgBaseType *fbtp = var(i);
+        FONgGrid *fbtp = var(i);
 
         if (!projection_set) {
             wkt = fbtp->get_projection(d_dds);
@@ -373,9 +374,10 @@ void FONgTransform::transform_to_geotiff()
         if (!band)
             throw Error("Could not get the " + long_to_string(i+1) + "th band: " + string(CPLGetLastErrorMsg()));
 
+        double *data = 0;
         try {
             // TODO We can read any of the basic DAP2 types and let RasterIO convert it to any other type.
-            double *data = fbtp->get_data();
+            data = fbtp->get_data();
 
             // hack the values; because the missing value used with many datasets
             // is often really small it'll skew the mapping of values to the grayscale
@@ -385,20 +387,37 @@ void FONgTransform::transform_to_geotiff()
             if (no_data_type() != none)
                 m_scale_data(data);
 
-            BESDEBUG("fong3", "calling band->RasterIO" << endl);
-            CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(),
-                                          data, width(), height(), GDT_Float64, 0, 0);
+            // If the latitude values are inverted, the 0th value will be less than
+            // the last value.
+            vector<double> local_lat;
+            extract_double_array(fbtp->d_lat, local_lat);
+
+            if (local_lat[0] < local_lat[local_lat.size() - 1]) {
+                BESDEBUG("fong3", "Writing reversed raster. Lat[0] = " << local_lat[0] << endl);
+                //---------- write reverse raster----------
+                for (int row = 0; row <= height()-1; ++row) {
+                    int offsety=height()-row-1;
+                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Float64, 0, 0);
+                    if (error_write != CPLE_None)
+                        throw Error("Could not write data for band: " + long_to_string(i + 1) + ": " + string(CPLGetLastErrorMsg()));
+                }
+            }
+            else {
+                BESDEBUG("fong3", "calling band->RasterIO" << endl);
+                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Float64, 0, 0);
+                if (error != CPLE_None)
+                     throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
+            }
+
             delete[] data;
 
-            if (error != CPLE_None)
-                throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
         }
         catch (...) {
+            delete[] data;
             GDALClose(d_dest);
             throw;
         }
     }
-
     GDALClose(d_dest);
 }
 
@@ -447,7 +466,7 @@ void FONgTransform::transform_to_jpeg2000()
     bool projection_set = false;
     string wkt = "";
     for (int i = 0; i < num_bands(); ++i) {
-        FONgBaseType *fbtp = var(i);
+        FONgGrid *fbtp = var(i);
 
         if (!projection_set) {
             wkt = fbtp->get_projection(d_dds);

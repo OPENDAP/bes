@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_json
-M_VER=1.0.6
+M_VER=1.0.7
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -37,7 +37,7 @@ FOJSON_SRC = FoInstanceJsonTransform.cc FoInstanceJsonTransmitter.cc FoJsonReque
 FOJSON_HDR = FoInstanceJsonTransform.h FoInstanceJsonTransmitter.h FoJsonRequestHandler.h FoJsonModule.h \
 	FoDapJsonTransmitter.h FoDapJsonTransform.h StreamString.h fojson_utils.h
 
-EXTRA_DIST = data COPYING fojson.conf.in doxy.conf
+EXTRA_DIST = data COPYING fojson.conf.in
 
 if !DAP_MODULES
 EXTRA_DIST += fileout_json.spec 
@@ -58,10 +58,6 @@ uninstall-local:
 fojson.conf: fojson.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fojson.conf
 
-.PHONY: docs
-docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
-	(cd docs && tar -czf html.tar.gz html)
 
 C4_DIR=./cccc
 .PHONY: cccc

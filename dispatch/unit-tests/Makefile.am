@@ -1,13 +1,16 @@
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign subdir-objects
+AUTOMAKE_OPTIONS = foreign
+
+# Because cacheT and uncompressT don't work with distcheck and a
+# parallel build. :-( jhrg 8/22/17
+.NOTPARALLEL:
 
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
-#$(LIBS)
-# $(XML2_LIBS)
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
@@ -19,32 +22,22 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
-# noinst_PROGRAMS = BESCache3Test
 
-#nodist_include_HEADERS = test_config.h breaks make rpm jhrg
-noinst_HEADERS = test_config.h
+noinst_HEADERS = test_config.h test_utils.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT			\
-		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
-		infoT agglistT 		\
-		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest 
-
-# cacheT gzT zT uncompressT lockT containerT Temporarily removed while I sort out the cache 
-# errors 5/6/14 jhrg
-# encodeT. Moved to apache/unit-tests. jhrg 4/25/12
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
+reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
+scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
+uncompressT cacheT 
 
 if LIBDAP
 TESTS += catT
 endif
 
-if BZ2UNCOMPRESS
-# TESTS += bz2T
-endif
-
 else
+
 TESTS =
 
 check-local:
@@ -69,14 +62,23 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-	cache_test.ini bes.conf
+    bes.conf
 
 DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.log *.sum real*
 
+############################################
+# This was generating a directory of "." so 
+# I migrated it to the abs_srcdir below 
+# - ndp 4/12/17
+#
+#test_config.h: test_config.h.in Makefile
+#	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+
 test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
 clean-local:
 	cd ${srcdir}/cache && rm -f *_cache*
@@ -87,7 +89,7 @@ clean-local:
 
 constraintT_SOURCES = constraintT.cc
 
-# containerT_SOURCES = containerT.cc
+containerT_SOURCES = containerT.cc
 
 defT_SOURCES = defT.cc
 
@@ -112,9 +114,9 @@ infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
 agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
-# cacheT_SOURCES = cacheT.cc
+cacheT_SOURCES = cacheT.cc
 
-# lockT_SOURCES = lockT.cc
+#lockT_SOURCES = lockT.cc
 
 # gzT_SOURCES = gzT.cc
 # gzT_LDADD =  $(LDADD) -lz
@@ -123,7 +125,7 @@ agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 # zT_SOURCES = zT.cc
 
-# uncompressT_SOURCES = uncompressT.cc
+uncompressT_SOURCES = uncompressT.cc
 
 # encodeT_SOURCES = encodeT.cc
 
@@ -139,7 +141,6 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
-
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
@@ -147,10 +148,11 @@ fsT_SOURCES = fsT.cc
 
 if LIBDAP
 catT_OBJ = ../BESCatalogResponseHandler.o
-catT_SOURCES = catT.cc
+catT_SOURCES = test_utils.cc catT.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
+
 
 # Note that BESCache3Test is not a CPP Unit test. jhrg 4/12/12
 # BESCache3Test_SOURCES = BESCache3Test.cc

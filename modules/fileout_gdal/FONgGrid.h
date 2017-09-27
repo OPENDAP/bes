@@ -25,8 +25,7 @@
 #ifndef FONgGrid_h_
 #define FONgGrid_h_ 1
 
-class FONgTransform;
-class FONgBaseType;
+class GDALDataset;
 
 namespace libdap {
     class Grid;
@@ -47,7 +46,7 @@ namespace libdap {
  * It is possible to share maps among grids, so a global map list is
  * kept as well.
  */
-class FONgGrid: public FONgBaseType {
+class FONgGrid: public BESObj {
 private:
     libdap::Grid *d_grid;
     libdap::Array *d_lat, *d_lon;
@@ -62,6 +61,8 @@ private:
     bool m_lat_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name);
     bool m_lon_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name);
 
+    friend class FONgTransform;
+
 public:
     FONgGrid(libdap::Grid *g);
     virtual ~FONgGrid();
@@ -70,9 +71,33 @@ public:
 
     bool find_lat_lon_maps();
 
+    /// Get the GDAL/OGC WKT projection string
     virtual void extract_coordinates(FONgTransform &t);
     string get_projection(libdap::DDS *dds);
+    ///Get the data values for the band(s). Call must delete.
     virtual double *get_data();
+    virtual libdap::Type type() { return d_type; }
+    FONgGrid(): d_name(""), d_type(libdap::dods_null_c) {}
+
+protected:
+    string d_name;
+    libdap::Type d_type;
+
+    virtual string name() { return d_name; }
+    virtual void set_name(const string &n) { d_name = n; }
+
+    // virtual libdap::Type type() { return d_type; }
+    virtual void set_type(libdap::Type t) { d_type = t; }
+
+    // virtual void extract_coordinates(FONgTransform &t) = 0;
+
+
+   // virtual string get_projection(libdap::DDS *dds) = 0;
+
+
+   // virtual double *get_data() = 0;
+
+    virtual void dump(ostream &) const {};
 
 };
 

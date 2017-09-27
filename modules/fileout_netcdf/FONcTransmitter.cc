@@ -60,6 +60,7 @@
 #include <BESDataNames.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
+#include <BESHandlerUtil.h>
 
 #include <BESDapResponseBuilder.h>
 
@@ -93,7 +94,7 @@ using namespace std;
  * defaults to the macro definition FONC_TEMP_DIR.
  */
 FONcTransmitter::FONcTransmitter() :
-    BESBasicTransmitter()
+    BESTransmitter()
 {
     add_method(DATA_SERVICE, FONcTransmitter::send_data);
 }
@@ -107,6 +108,9 @@ struct wrap_temp_descriptor {
     ~wrap_temp_descriptor() { close(d_fd); }
 };
 
+#if 0
+// Replaced by code in BESHandlerUtil. jhrg 8/25/17
+
 /**
  * Hack to ensure that the temporary file name used with mkstemp() will
  * be 'unlinked' no matter how we exit.
@@ -116,6 +120,7 @@ struct wrap_temp_name {
     wrap_temp_name(vector<char> &name) : d_name(name) {}
     ~wrap_temp_name() { unlink(&d_name[0]); }
 };
+#endif
 
 /**
  * Process the "history" attribute.
@@ -240,7 +245,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
         // Now that we are ready to start reading the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
@@ -250,6 +255,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // jhrg 9/6/16
         updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
 
+#if 0
         // TODO Make this code and the two struct classes that wrap the name a fd part of
         // a utility class or file. jhrg 9/7/16
 
@@ -264,25 +270,28 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         umask(original_mode);
 
         // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter hoe we exit. jhrg 9/7/16
+        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
+        // Except if there is a hard crash.. jhrg 3/30/17
         wrap_temp_name w_temp_file(temp_file);
         wrap_temp_descriptor w_fd(fd);
 
         if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
+#endif
+        // This object closes the file when it goes out of scope.
+        bes::TemporaryFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
-
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << &temp_file[0] << endl);
+        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dds, dhi, &temp_file[0], dhi.data[RETURN_CMD]);
+        FONcTransform ft(loaded_dds, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
         ft.transform();
 
         ostream &strm = dhi.get_output_stream();
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Transmitting temp file " << &temp_file[0] << endl);
+        BESDEBUG("fonc", "FONcTransmitter::send_data - Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(fd, strm); //, loaded_dds->filename(), ncVersion);
+        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);

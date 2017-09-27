@@ -1,0 +1,10 @@
+BESCatalogEntry::dump - ()
+    name: /
+    catalog: 
+    size: 
+    modification date: 
+    modification time: 
+    services: none
+    metadata: none
+    is collection? no
+    count: 0

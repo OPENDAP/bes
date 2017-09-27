@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=usage
-M_VER=4.2.6
+M_VER=4.2.7
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -41,7 +41,7 @@ libusage_module_la_LDFLAGS = -avoid-version -module
 libusage_module_la_LIBADD = $(LIBADD) # $(BES_DAP_LIBS)
 
 EXTRA_DIST = COPYING COPYRIGHT_URI README \
-	usage.conf.in OSX_Resources
+	usage.conf.in 
 
 if !DAP_MODULES
 EXTRA_DIST += usage.spec

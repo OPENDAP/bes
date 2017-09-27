@@ -36,9 +36,9 @@ namespace functions {
 class GSEClause;
 struct gse_arg;         // in gse_parser.h
 
-void getGrids(libdap::BaseType *bt, std::vector<libdap::Grid *> *grids);
-void getGrids(libdap::DDS &dds, std::vector<libdap::Grid *> *grids);
-bool isGeoGrid(libdap::Grid *d_grid);
+void get_grids(libdap::BaseType *bt, std::vector<libdap::Grid *> *grids);
+void get_grids(libdap::DDS &dds, std::vector<libdap::Grid *> *grids);
+bool is_geo_grid(libdap::Grid *d_grid);
 
 void parse_gse_expression(gse_arg *arg, libdap::BaseType * expr);
 void apply_grid_selection_expressions(libdap::Grid * grid, std::vector <GSEClause *>clauses);

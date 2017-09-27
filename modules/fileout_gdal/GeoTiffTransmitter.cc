@@ -44,6 +44,7 @@ using namespace libdap;
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
 
+#include <BESUtil.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESContextManager.h>
@@ -51,6 +52,7 @@ using namespace libdap;
 #include <BESDapNames.h>
 #include <BESDataNames.h>
 #include <BESDebug.h>
+#include <BESHandlerUtil.h>
 #include <DapFunctionUtils.h>
 
 #include <TheBESKeys.h>
@@ -77,7 +79,7 @@ string GeoTiffTransmitter::default_gcs;
  *
  * @see FONgModule
  */
-GeoTiffTransmitter::GeoTiffTransmitter() :  BESBasicTransmitter()
+GeoTiffTransmitter::GeoTiffTransmitter() :  BESTransmitter()
 {
     // DATA_SERVICE == "dods"
     add_method(DATA_SERVICE, GeoTiffTransmitter::send_data_as_geotiff);
@@ -194,7 +196,9 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
         throw BESInternalError("Failed to read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-
+    // This closes the file when it goes out of scope. jhrg 8/25/17
+    bes::TemporaryFile temp_file(GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX");
+#if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
     string temp_file_name = GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX";
@@ -212,42 +216,50 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
 
     if (fd == -1)
         throw BESInternalError("Failed to open the temporary file: " + temp_file_name, __FILE__, __LINE__);
-
+#endif
     // transform the OPeNDAP DataDDS to the geotiff file
-    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transforming into temporary file " << &temp_file[0] << endl);
+    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transforming into temporary file " << temp_file.get_name() << endl);
 
     try {
-        FONgTransform ft(dds, bdds->get_ce(), &temp_file[0]);
+        FONgTransform ft(dds, bdds->get_ce(), temp_file.get_name());
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
-        conditional_timeout_cancel();
+        BESUtil::conditional_timeout_cancel();
 
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_geotiff();
 
-        BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transmitting temp file " << &temp_file[0] << endl );
+        BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transmitting temp file " << temp_file.get_name() << endl );
 
-        GeoTiffTransmitter::return_temp_stream(&temp_file[0], strm);
+        GeoTiffTransmitter::return_temp_stream(temp_file.get_name(), strm);
     }
     catch (Error &e) {
+#if 0
         close(fd);
         (void) unlink(&temp_file[0]);
+#endif
         throw BESDapError("Failed to transform data to GeoTiff: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
+#if 0
         close(fd);
         (void) unlink(&temp_file[0]);
+#endif
         throw;
     }
     catch (...) {
+#if 0
         close(fd);
         (void) unlink(&temp_file[0]);
+#endif
         throw BESInternalError("Fileout GeoTiff, was not able to transform to geotiff, unknown error", __FILE__, __LINE__);
     }
 
-    close(fd);
-    (void) unlink(&temp_file[0]);
+#if 0
+        close(fd);
+        (void) unlink(&temp_file[0]);
+#endif
 
     BESDEBUG("fong2", "GeoTiffTransmitter::send_data - done transmitting to geotiff" << endl);
 }

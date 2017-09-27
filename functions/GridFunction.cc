@@ -116,11 +116,6 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     BESDEBUG("functions", "original_grid->array_(): read_p: " << original_grid->array_var()->read_p() << endl);
     BESDEBUG("functions", "l_grid->array+var(): read_p: " << l_grid->array_var()->read_p() << endl);
 
-    // FIXME ***
-    //cerr << "original_grid->print_val(cerr)" << endl; original_grid->print_val(cerr);
-    //cerr << endl;
-    //cerr << "l_grid->print_val(cerr)" << endl; l_grid->print_val(cerr);
-
     // This version makes sure to set the send_p flags which is needed for
     // the hdf4 handler (and is what should be done in general).
     Grid::Map_iter i = l_grid->map_begin();
@@ -128,9 +123,6 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         (*i++)->set_send_p(true);
 
     l_grid->read();
-
-    // FIXME ***
-    //cerr << "second l_grid->print_val(cerr)" << endl; l_grid->print_val(cerr);
 
     DBG(cerr << "grid: past map read" << endl);
 
@@ -170,10 +162,10 @@ function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  *
  * @param dds The DDS to be evaluated.
  */
-bool GridFunction::canOperateOn(DDS &dds) {
-	//vector<Grid *> *grids = new vector<Grid *>();
+bool GridFunction::canOperateOn(DDS &dds)
+{
 	vector<Grid *> grids;
-	getGrids(dds, &grids);
+	get_grids(dds, &grids);
 
 	return !grids.empty();
 }

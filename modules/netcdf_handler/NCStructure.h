@@ -62,7 +62,7 @@ public:
     NCStructure &operator=(const NCStructure &rhs);
     virtual BaseType *ptr_duplicate();
 
-    virtual BaseType *transform_to_dap4(D4Group *root, Constructor *container);
+    virtual void transform_to_dap4(D4Group *root, Constructor *container);
 
     virtual void transfer_attributes(AttrTable *at);
     virtual bool read();

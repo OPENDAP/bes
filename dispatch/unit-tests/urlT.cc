@@ -34,130 +34,168 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ifstream ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ifstream;
 
 #include "BESUtil.h"
 #include "BESError.h"
+#include <GetOpt.h>
+
+static bool debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class urlT: public TestFixture {
 private:
 
 public:
-    urlT() {}
-    ~urlT() {}
+    urlT()
+    {
+    }
+    ~urlT()
+    {
+    }
 
     void setUp()
     {
-    } 
+    }
 
     void tearDown()
     {
     }
 
-    CPPUNIT_TEST_SUITE( urlT ) ;
+CPPUNIT_TEST_SUITE( urlT );
 
-    CPPUNIT_TEST( do_test ) ;
+    CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END() ;
+    CPPUNIT_TEST_SUITE_END()
+    ;
 
-    void check( const string &found, const string &shouldbe, const string &msg )
+    void check(const string &found, const string &shouldbe, const string &msg)
     {
-	if( shouldbe != found )
-	{
-	    cerr << "  " << msg << " FAIL" << endl ;
-	    cerr << "    should be: " << shouldbe << endl ;
-	    cerr << "    found: " << found << endl ;
-	    CPPUNIT_ASSERT( shouldbe == found ) ;
-	}
+        if (shouldbe != found) {
+            cerr << "  " << msg << " FAIL" << endl;
+            cerr << "    should be: " << shouldbe << endl;
+            cerr << "    found: " << found << endl;
+            CPPUNIT_ASSERT( shouldbe == found );
+        }
     }
 
-    void tryme( const string &url,
-	        const string &protocol,
-	        const string &u,
-	        const string &p,
-	        const string &domain,
-	        const string &port,
-	        const string &path )
+    void tryme(const string &url, const string &protocol, const string &u, const string &p, const string &domain,
+        const string &port, const string &path)
     {
-	cerr << "**** Trying " << url << endl ;
+        cerr << "**** Trying " << url << endl;
 
-	BESUtil::url url_parts ;
-	BESUtil::url_explode( url, url_parts ) ;
+        BESUtil::url url_parts;
+        BESUtil::url_explode(url, url_parts);
 
-	check( url_parts.protocol, protocol, "protocol" ) ;
-	check( url_parts.uname, u, "u" ) ;
-	check( url_parts.psswd, p, "p" ) ;
-	check( url_parts.domain, domain, "domain" ) ;
-	check( url_parts.port, port, "port" ) ;
-	check( url_parts.path, path, "path" ) ;
+        check(url_parts.protocol, protocol, "protocol");
+        check(url_parts.uname, u, "u");
+        check(url_parts.psswd, p, "p");
+        check(url_parts.domain, domain, "domain");
+        check(url_parts.port, port, "port");
+        check(url_parts.path, path, "path");
 
-	string url_s = BESUtil::url_create( url_parts ) ;
-	if( url_s != url ) url_s += "/" ;
-	check( url_s, url, "url" ) ;
+        string url_s = BESUtil::url_create(url_parts);
+        if (url_s != url) url_s += "/";
+        check(url_s, url, "url");
     }
 
     void do_test()
     {
-	cout << "*****************************************" << endl;
-	cout << "Entered urlT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Entered urlT::run" << endl;
 
-	string var = "http://tw.rpi.edu" ;
-	tryme( var, "http", "", "", "tw.rpi.edu", "", "" ) ;
+        string var = "http://tw.rpi.edu";
+        tryme(var, "http", "", "", "tw.rpi.edu", "", "");
 
-	var = "http://tw.rpi.edu/" ;
-	tryme( var, "http", "", "", "tw.rpi.edu", "", "" ) ;
+        var = "http://tw.rpi.edu/";
+        tryme(var, "http", "", "", "tw.rpi.edu", "", "");
 
-	var = "http://tw.rpi.edu/web/person/PatrickWest" ;
-	tryme( var, "http", "", "", "tw.rpi.edu", "", "web/person/PatrickWest" ) ;
+        var = "http://tw.rpi.edu/web/person/PatrickWest";
+        tryme(var, "http", "", "", "tw.rpi.edu", "", "web/person/PatrickWest");
 
-	var = "https://scm.escience.rpi.edu/trac" ;
-	tryme( var, "https", "", "", "scm.escience.rpi.edu", "", "trac" ) ;
+        var = "https://scm.escience.rpi.edu/trac";
+        tryme(var, "https", "", "", "scm.escience.rpi.edu", "", "trac");
 
-	var = "https://myname@scm.escience.rpi.edu/trac" ;
-	tryme( var, "https", "myname", "", "scm.escience.rpi.edu", "", "trac" ) ;
+        var = "https://myname@scm.escience.rpi.edu/trac";
+        tryme(var, "https", "myname", "", "scm.escience.rpi.edu", "", "trac");
 
-	var = "https://myname:mypwd@scm.escience.rpi.edu/trac" ;
-	tryme( var, "https", "myname", "mypwd", "scm.escience.rpi.edu", "", "trac" ) ;
+        var = "https://myname:mypwd@scm.escience.rpi.edu/trac";
+        tryme(var, "https", "myname", "mypwd", "scm.escience.rpi.edu", "", "trac");
 
-	var = "https://myname:mypwd@scm.escience.rpi.edu:8890/trac" ;
-	tryme( var, "https", "myname", "mypwd", "scm.escience.rpi.edu", "8890", "trac" ) ;
+        var = "https://myname:mypwd@scm.escience.rpi.edu:8890/trac";
+        tryme(var, "https", "myname", "mypwd", "scm.escience.rpi.edu", "8890", "trac");
 
-	var = "ftp://orion.tw.rpi.edu/someother/dir/and/file.txt" ;
-	tryme( var, "ftp", "", "", "orion.tw.rpi.edu", "", "someother/dir/and/file.txt" ) ;
+        var = "ftp://orion.tw.rpi.edu/someother/dir/and/file.txt";
+        tryme(var, "ftp", "", "", "orion.tw.rpi.edu", "", "someother/dir/and/file.txt");
 
-	var = "ftp://myname@orion.tw.rpi.edu/someother/dir/and/file.txt" ;
-	tryme( var, "ftp", "myname", "", "orion.tw.rpi.edu", "", "someother/dir/and/file.txt" ) ;
+        var = "ftp://myname@orion.tw.rpi.edu/someother/dir/and/file.txt";
+        tryme(var, "ftp", "myname", "", "orion.tw.rpi.edu", "", "someother/dir/and/file.txt");
 
-	var = "ftp://myname:mypwd@orion.tw.rpi.edu/someother/dir/and/file.txt" ;
-	tryme( var, "ftp", "myname", "mypwd", "orion.tw.rpi.edu", "", "someother/dir/and/file.txt" ) ;
+        var = "ftp://myname:mypwd@orion.tw.rpi.edu/someother/dir/and/file.txt";
+        tryme(var, "ftp", "myname", "mypwd", "orion.tw.rpi.edu", "", "someother/dir/and/file.txt");
 
-	var = "ftp://myname:mypwd@orion.tw.rpi.edu:89/someother/dir/and/file.txt" ;
-	tryme( var, "ftp", "myname", "mypwd", "orion.tw.rpi.edu", "89", "someother/dir/and/file.txt" ) ;
+        var = "ftp://myname:mypwd@orion.tw.rpi.edu:89/someother/dir/and/file.txt";
+        tryme(var, "ftp", "myname", "mypwd", "orion.tw.rpi.edu", "89", "someother/dir/and/file.txt");
 
-	cout << "*****************************************" << endl;
-	cout << "Returning from urlT::run" << endl;
+        cout << "*****************************************" << endl;
+        cout << "Returning from urlT::run" << endl;
     }
-} ;
+};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( urlT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( urlT );
 
-int 
-main( int, char** )
+int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner ;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    bool wasSuccessful = runner.run( "", false )  ;
+    GetOpt getopt(argc, argv, "dh");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: urlT has the following tests:" << endl;
+            const std::vector<Test*> &tests = urlT::suite()->getTests();
+            unsigned int prefix_len = urlT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+        default:
+            break;
+        }
 
-    return wasSuccessful ? 0 : 1 ;
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = urlT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
 }
 

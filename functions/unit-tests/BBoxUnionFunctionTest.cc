@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -56,6 +55,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -67,11 +67,9 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace functions
-{
+namespace functions {
 
-class BBoxUnionFunctionTest:public TestFixture
-{
+class BBoxUnionFunctionTest: public TestFixture {
 private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
@@ -79,20 +77,23 @@ private:
     DDS *float32_array, *float32_2d_array;
 
 public:
-    BBoxUnionFunctionTest(): float32_array(0), float32_2d_array(0)
-    {}
+    BBoxUnionFunctionTest() :
+        float32_array(0), float32_2d_array(0)
+    {
+    }
     ~BBoxUnionFunctionTest()
-    {}
+    {
+    }
 
     void setUp()
     {
         try {
             float32_array = new DDS(&btf);
-            float32_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_array.dds");
+            float32_array->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_array.dds");
             DBG2(float32_array->print_xml(stderr, false, "No blob"));
 
             float32_2d_array = new DDS(&btf);
-            float32_2d_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
+            float32_2d_array->parse((string) TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
             DBG2(float32_2d_array->print_xml(stderr, false, "No blob"));
         }
         catch (Error & e) {
@@ -107,10 +108,11 @@ public:
         delete float32_2d_array;
     }
 
-    void no_arg_test() {
+    void no_arg_test()
+    {
         BaseType *result = 0;
         try {
-            BaseType *argv[] = { };
+            BaseType *argv[] = {};
             function_dap2_bbox_union(0, argv, *float32_array /* DDS & */, &result);
             CPPUNIT_FAIL("bbox_union() Should throw an exception when called with no arguments");
         }
@@ -122,7 +124,8 @@ public:
         }
     }
 
-    void union_test_1() {
+    void union_test_1()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -162,7 +165,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void union_test_2() {
+    void union_test_2()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -202,7 +206,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void union_test_3() {
+    void union_test_3()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -242,7 +247,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-   void intersection_test_1() {
+    void intersection_test_1()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -261,7 +267,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -282,7 +289,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void intersection_test_2() {
+    void intersection_test_2()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -301,7 +309,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -322,7 +331,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void intersection_test_3() {
+    void intersection_test_3()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -339,16 +349,17 @@ public:
             CPPUNIT_FAIL("Expected an exception to be thrown");
         }
         catch (Error &e) {
-        	DBG(cerr << "Got the expected error:" + e.get_error_message());
+            DBG(cerr << "Got the expected error:" + e.get_error_message());
             CPPUNIT_ASSERT(true);
         }
         catch (...) {
-        	CPPUNIT_FAIL("Expected an Error exception, got something else.");
+            CPPUNIT_FAIL("Expected an Error exception, got something else.");
         }
     }
 
     // Test 2d (these are actual boxes - not just line segments)
-    void union_test_4() {
+    void union_test_4()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -390,7 +401,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void union_test_5() {
+    void union_test_5()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -432,7 +444,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void union_test_6() {
+    void union_test_6()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -474,7 +487,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void intersection_test_4() {
+    void intersection_test_4()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -495,7 +509,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_2.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -516,7 +531,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void intersection_test_5() {
+    void intersection_test_5()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -537,7 +553,8 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_2.baseline.xml");
+        string baseline = readTestBaseline(
+            string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -558,7 +575,8 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void intersection_test_6() {
+    void intersection_test_6()
+    {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -578,15 +596,15 @@ public:
             CPPUNIT_FAIL("Expected an exception to be thrown");
         }
         catch (Error &e) {
-        	DBG(cerr << "Got the expected error:" + e.get_error_message());
+            DBG(cerr << "Got the expected error:" + e.get_error_message());
             CPPUNIT_ASSERT(true);
         }
         catch (...) {
-        	CPPUNIT_FAIL("Expected an Error exception, got something else.");
+            CPPUNIT_FAIL("Expected an Error exception, got something else.");
         }
     }
 
-    CPPUNIT_TEST_SUITE( BBoxUnionFunctionTest );
+CPPUNIT_TEST_SUITE( BBoxUnionFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(union_test_1);
@@ -605,18 +623,18 @@ public:
     CPPUNIT_TEST(intersection_test_5);
     CPPUNIT_TEST(intersection_test_6);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BBoxUnionFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+int main(int argc, char*argv[])
+{
 
-    GetOpt getopt(argc, argv, "dD");
+    GetOpt getopt(argc, argv, "dDh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -626,21 +644,33 @@ int main(int argc, char*argv[]) {
         case 'D':
             debug2 = 1;
             break;
+        case 'h': {     // help - show test names
+            cerr << "Usage: BBoxUnionFunctionTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = BBoxUnionFunctionTest::suite()->getTests();
+            unsigned int prefix_len = BBoxUnionFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
         default:
             break;
         }
 
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-     if (i == argc) {
+    if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("functions::BBoxUnionFunctionTest::") + argv[i++];
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = BBoxUnionFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

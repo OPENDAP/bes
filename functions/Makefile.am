@@ -6,7 +6,7 @@
 
 AM_CXXFLAGS = 
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign
 
 if DAP_MODULES
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
@@ -40,7 +40,7 @@ SUBDIRS = . unit-tests tests
 # We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
 # However, since we use it we must list all of the subdirs we want; without
 # it, automake will automatically distribute all the stuff in SUBDIRS.
-DIST_SUBDIRS = unit-tests tests
+# DIST_SUBDIRS = unit-tests tests
 # geo-functions
 
 if BUILD_GDAL
@@ -60,8 +60,9 @@ LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
 MakeMaskFunction.cc DilateArrayFunction.cc \
 BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc \
 TabularSequence.cc BBoxFunction.cc RoiFunction.cc roi_util.cc \
-BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc functions_util.cc \
-DapFunctionsRequestHandler.cc scale_util.cc ScaleGrid.cc
+BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc \
+RangeFunction.cc functions_util.cc scale_util.cc ScaleGrid.cc \
+DapFunctionsRequestHandler.cc 
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
@@ -69,8 +70,8 @@ GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h \
 MakeMaskFunction.h DilateArrayFunction.h \
 BindNameFunction.h BindShapeFunction.h TabularFunction.h \
 TabularSequence.h BBoxFunction.h RoiFunction.h roi_util.h \
-BBoxUnionFunction.h Odometer.h MaskArrayFunction.h functions_util.h \
-DapFunctionsRequestHandler.h ScaleGrid.h
+BBoxUnionFunction.h Odometer.h MaskArrayFunction.h \
+RangeFunction.h functions_util.h DapFunctionsRequestHandler.h ScaleGrid.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 # libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

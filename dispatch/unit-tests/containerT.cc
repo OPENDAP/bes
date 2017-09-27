@@ -38,10 +38,13 @@ using namespace CppUnit;
 
 #include <iostream>
 #include <cstdlib>
+#include <dirent.h>
+#include <cerrno>
 
 using std::cerr;
-using std::cout;
 using std::endl;
+
+#include <GetOpt.h>
 
 #include "TheBESKeys.h"
 #include "BESContainerStorageList.h"
@@ -50,7 +53,52 @@ using std::endl;
 #include "BESContainerStorageFile.h"
 #include "BESUncompressCache.h"
 #include "BESError.h"
+#include "BESUtil.h"
+#include "BESDebug.h"
 #include <test_config.h>
+
+static bool debug = false;
+static bool bes_debug = false;
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+
+static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template.txt");
+static const string CACHE_PREFIX("container_test");
+
+int clean_dir(const string &cache_dir, const string &cache_prefix)
+{
+    DBG(cerr << __func__ << "() - BEGIN " << endl);
+    std::ostringstream s;
+    s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
+    DBG(cerr << __func__ << "() - cmd: " << s.str() << endl);
+    int status = system(s.str().c_str());
+    DBG(cerr << __func__ << "() - END " << endl);
+    return status;
+}
+
+#if 0 // replaced with shell based version above. concurrency. woot. ndp-05/3017
+int clean_dir(string dirname, string prefix) {
+    DIR *dp;
+    struct dirent *dirp;
+    if((dp = opendir(dirname.c_str())) == NULL) {
+        DBG( cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
+        return errno;
+    }
+
+    while ((dirp = readdir(dp)) != NULL) {
+        string name(dirp->d_name);
+        if (name.find(prefix) == 0) {
+            string abs_name = BESUtil::assemblePath(dirname, name, true);
+            DBG( cerr << __func__ << "() - Purging file: " << abs_name << endl);
+            remove(abs_name.c_str());
+        }
+
+    }
+    closedir(dp);
+    return 0;
+}
+#endif
 
 class containerT: public TestFixture {
 private:
@@ -67,27 +115,20 @@ public:
     {
         string bes_conf = (string) TEST_SRC_DIR + "/empty.ini";
         TheBESKeys::ConfigFile = bes_conf;
+        if (bes_debug) {
+            BESDebug::SetUp("cerr,cache,cache2");
+            DBG(cerr << __func__ << "() - setup() - BESDEBUG Enabled " << endl);
+        }
     }
 
     void tearDown()
     {
+        clean_dir(CACHE_DIR, CACHE_PREFIX);
     }
 
-CPPUNIT_TEST_SUITE( containerT );
-
-    CPPUNIT_TEST( do_test );
-
-    CPPUNIT_TEST_SUITE_END()
-    ;
-
-    void do_test()
+    void test_default_cannot_find()
     {
-        cout << "*****************************************" << endl;
-        cout << "Entered containerT::run" << endl;
-
-        // test nice, can't find
-        // test nice, can find
-
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
         try {
             string key = (string) "BES.Container.Persistence.File.TheFile=" +
             TEST_SRC_DIR + "/container01.file";
@@ -95,149 +136,176 @@ CPPUNIT_TEST_SUITE( containerT );
             BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageFile("TheFile"));
         }
         catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to add storage persistence" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to add storage persistence");
         }
 
-        cout << "*****************************************" << endl;
-        cout << "try to find symbolic name that doesn't exist, default" << endl;
+        DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, default" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
             if (c) {
-                cerr << "container is valid, should not be" << endl;
-                cerr << " real_name = " << c->get_real_name() << endl;
-                cerr << " constraint = " << c->get_constraint() << endl;
-                cerr << " sym_name = " << c->get_symbolic_name() << endl;
-                cerr << " container type = " << c->get_container_type() << endl;
+                DBG(cerr << __func__ << "() - container is valid, should not be" << endl);
+                DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
+                DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
+                DBG(cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
+                DBG(cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
             }
-            CPPUNIT_ASSERT( !"Found nosym, shouldn't have" );
+            CPPUNIT_ASSERT(!"Found nosym, shouldn't have");
         }
         catch (BESError &e) {
-            cout << "caught exception, didn't find nosym, good" << endl;
-            cout << e.get_message() << endl;
+            DBG(cerr << __func__ << "() - caught exception, didn't find nosym, That's good!" << endl);
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
         }
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "try to find symbolic name that does exist, default" << endl;
+    void test_default_can_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that does exist, default" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
-            CPPUNIT_ASSERT( c );
-            CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" );
-            CPPUNIT_ASSERT( c->get_real_name() == "real1" );
-            CPPUNIT_ASSERT( c->get_container_type() == "type1" );
+            CPPUNIT_ASSERT(c);
+            CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
+            CPPUNIT_ASSERT(c->get_real_name() == "real1");
+            CPPUNIT_ASSERT(c->get_container_type() == "type1");
             delete c;
         }
         catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to find container sym1" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to find container sym1");
         }
-
-        cout << "*****************************************" << endl;
-        cout << "set to strict" << endl;
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
+    void test_strict_cannot_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - set to strict" << endl);
         TheBESKeys::TheKeys()->set_key("BES.Container.Persistence=strict");
 
-        cout << "*****************************************" << endl;
-        cout << "try to find symbolic name that doesn't exist, strict" << endl;
+        DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, strict" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
             if (c) {
-                cerr << "Found nosym, shouldn't have" << endl;
-                cerr << " real_name = " << c->get_real_name() << endl;
-                cerr << " constraint = " << c->get_constraint() << endl;
-                cerr << " sym_name = " << c->get_symbolic_name() << endl;
-                cerr << " container type = " << c->get_container_type() << endl;
-                CPPUNIT_ASSERT( !"Found nosym, shouldn't have" );
+                DBG(cerr << __func__ << "() - Found nosym, shouldn't have" << endl);
+                DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
+                DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
+                DBG(cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
+                DBG(cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
+                CPPUNIT_ASSERT(!"Found nosym, shouldn't have");
             }
             else {
                 CPPUNIT_ASSERT(!"look_for returned null, should have thrown");
             }
         }
         catch (BESError &e) {
-            cout << "caught exception, didn't find nosym, good" << endl;
-            cout << e.get_message() << endl;
+            DBG(cerr << __func__ << "() - caught exception, didn't find nosym, good" << endl);
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
         }
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "try to find symbolic name that does exist, strict" << endl;
+    void test_strict_can_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - try to find symbolic name that does exist, strict" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
-            CPPUNIT_ASSERT( c );
-            CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" );
-            CPPUNIT_ASSERT( c->get_real_name() == "real1" );
-            CPPUNIT_ASSERT( c->get_container_type() == "type1" );
+            CPPUNIT_ASSERT(c);
+            CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
+            CPPUNIT_ASSERT(c->get_real_name() == "real1");
+            CPPUNIT_ASSERT(c->get_container_type() == "type1");
         }
         catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to find container sym1" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to find container sym1");
         }
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "set to nice" << endl;
+    void test_nice_cannot_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - set to nice" << endl);
         TheBESKeys::TheKeys()->set_key("BES.Container.Persistence=nice");
 
-        cout << "*****************************************" << endl;
-        cout << "try to find symbolic name that doesn't exist, nice" << endl;
+        DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, nice" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
             if (c) {
-                cerr << " real_name = " << c->get_real_name() << endl;
-                cerr << " constraint = " << c->get_constraint() << endl;
-                cerr << " sym_name = " << c->get_symbolic_name() << endl;
-                cerr << " container type = " << c->get_container_type() << endl;
-                CPPUNIT_ASSERT( !"Found nosym, shouldn't have" );
+                DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
+                DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
+                DBG(cerr << __func__ << "() -  sym_name = " << c->get_symbolic_name() << endl);
+                DBG(cerr << __func__ << "() -  container type = " << c->get_container_type() << endl);
+                CPPUNIT_ASSERT(!"Found nosym, shouldn't have");
             }
         }
         catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Exception thrown in nice mode" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Exception thrown in nice mode");
         }
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
+    void test_nice_can_find()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
+        DBG(cerr << __func__ << "() - set to nice" << endl);
+        TheBESKeys::TheKeys()->set_key("BES.Container.Persistence=nice");
 
-        cout << "*****************************************" << endl;
-        cout << "try to find symbolic name that does exist, nice" << endl;
+        DBG(cerr << __func__ << "() - try to find symbolic name that does exist, nice" << endl);
         try {
             BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
-            CPPUNIT_ASSERT( c );
-            CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" );
-            CPPUNIT_ASSERT( c->get_real_name() == "real1" );
-            CPPUNIT_ASSERT( c->get_container_type() == "type1" );
+            CPPUNIT_ASSERT(c);
+            CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
+            CPPUNIT_ASSERT(c->get_real_name() == "real1");
+            CPPUNIT_ASSERT(c->get_container_type() == "type1");
         }
         catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to find container sym1" );
+            DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(!"Failed to find container sym1");
         }
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
+
+    void test_forbidden_path_components()
+    {
+
+    }
+
+    void test_compressed()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
 
         /* Because of the nature of the build system sometimes the cache
          * directory will contain ../, which is not allowed for a containers
          * real name (for files). So this test will be different when just doing
          * a make check or a make distcheck
          */
-        string cache_dir = (string) TEST_SRC_DIR + "/cache";
         bool isdotdot = false;
-        string::size_type dotdot = cache_dir.find("../");
+        string::size_type dotdot = CACHE_DIR.find("../");
         if (dotdot != string::npos) isdotdot = true;
 
-        string src_file = cache_dir + "/testfile.txt";
-        string com_file = cache_dir + "/testfile.txt.gz";
+        string src_file = CACHE_DIR + "/testfile.txt";
+        string com_file = CACHE_DIR + "/testfile.txt.gz";
 
-        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.dir", cache_dir);
-        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.prefix", "cont_cache");
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.dir", CACHE_DIR);
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.prefix", CACHE_PREFIX);
         TheBESKeys::TheKeys()->set_key("BES.UncompressCache.size", "1");
 
-        string chmod = (string) "chmod a+w " + TEST_SRC_DIR + "/cache";
+        string chmod = (string) "chmod a+w " + CACHE_DIR;
         system(chmod.c_str());
 
-        cout << "*****************************************" << endl;
-        cout << "access a non compressed file" << endl;
+        DBG(cerr << __func__ << "() - access a non compressed file" << endl);
         if (!isdotdot) {
             try {
                 BESFileContainer c("sym", src_file, "txt");
 
                 string result = c.access();
-                CPPUNIT_ASSERT( result == src_file );
+                CPPUNIT_ASSERT(result == src_file);
             }
             catch (BESError &e) {
-                cerr << e.get_message() << endl;
-                CPPUNIT_ASSERT( !"Failed to access non compressed file" );
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+                CPPUNIT_ASSERT(!"Failed to access non compressed file");
             }
         }
         else {
@@ -245,75 +313,132 @@ CPPUNIT_TEST_SUITE( containerT );
                 BESFileContainer c("sym", src_file, "txt");
 
                 string result = c.access();
-                CPPUNIT_ASSERT( result != src_file );
+                CPPUNIT_ASSERT(result != src_file);
             }
             catch (BESError &e) {
-                cout << "Failed to access file with ../ in name, good" << endl;
-                cout << e.get_message() << endl;
+                DBG(cerr << __func__ << "() - Failed to access file with ../ in name. That's Good!" << endl);
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
             }
         }
 
-        cout << "*****************************************" << endl;
-        cout << "access a compressed file" << endl;
+        DBG(cerr << __func__ << "() - access a compressed file" << endl);
         if (!isdotdot) {
             try {
-                BESUncompressCache cache("BES.UncompressCache.dir", "BES.UncompressCache.prefix",
-                    "BES.UncompressCache.size");
-                string target;
-                bool is_it = cache.is_cached(com_file, target);
-                if (is_it) {
-                    CPPUNIT_ASSERT( remove( target.c_str() ) == 0 );
+                BESUncompressCache *cache = BESUncompressCache::get_instance(CACHE_DIR, CACHE_DIR, CACHE_PREFIX, 1);
+
+                string cache_file_name = cache->get_cache_file_name(com_file);
+                ifstream f(cache_file_name.c_str());
+                if (f.good()) {
+                    cache->purge_file(cache_file_name);
                 }
 
                 BESFileContainer c("sym", com_file, "txt");
 
                 string result = c.access();
-                cout << "    result = " << result << endl;
-                cout << "    target = " << target << endl;
-                CPPUNIT_ASSERT( result == target );
+                DBG(cerr << __func__ << "() - result file name =         " << result << endl);
+                DBG(cerr << __func__ << "() - expected cache_file_name = " << cache_file_name << endl);
+                CPPUNIT_ASSERT(result == cache_file_name);
 
-                CPPUNIT_ASSERT( cache.is_cached( com_file, target ) );
+                int fd;
+
+                CPPUNIT_ASSERT(cache->get_read_lock(cache_file_name, fd));
             }
             catch (BESError &e) {
-                cerr << e.get_message() << endl;
-                CPPUNIT_ASSERT( !"Failed to access compressed file" );
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
+                CPPUNIT_ASSERT(!"Failed to access compressed file");
             }
         }
         else {
             try {
-                BESUncompressCache cache("BES.UncompressCache.dir", "BES.UncompressCache.prefix",
-                    "BES.UncompressCache.size");
-                string target;
-                bool is_it = cache.is_cached(com_file, target);
-                if (is_it) {
-                    CPPUNIT_ASSERT( remove( target.c_str() ) == 0 );
+                BESUncompressCache *cache = BESUncompressCache::get_instance(CACHE_DIR, CACHE_DIR, CACHE_PREFIX, 1);
+
+                string cache_file_name = cache->get_cache_file_name(com_file);
+                ifstream f(cache_file_name.c_str());
+                if (f.good()) {
+                    cache->purge_file(cache_file_name);
                 }
 
                 BESFileContainer c("sym", com_file, "txt");
 
                 string result = c.access();
-                CPPUNIT_ASSERT( result != target );
+                CPPUNIT_ASSERT(result != cache_file_name);
             }
             catch (BESError &e) {
-                cout << "Failed to access file with ../ in name, good" << endl;
-                cout << e.get_message() << endl;
+                DBG(cerr << __func__ << "() - Failed to access file with ../ in name, That's Good!" << endl);
+                DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
             }
         }
 
-        cout << "*****************************************" << endl;
-        cout << "Returning from containerT::run" << endl;
+        DBG(cerr << __func__ << "() - END" << endl);
     }
+
+CPPUNIT_TEST_SUITE( containerT );
+
+    CPPUNIT_TEST(test_default_cannot_find);
+    CPPUNIT_TEST(test_default_can_find);
+    CPPUNIT_TEST(test_strict_cannot_find);
+    CPPUNIT_TEST(test_strict_can_find);
+    CPPUNIT_TEST(test_nice_cannot_find);
+    CPPUNIT_TEST(test_nice_can_find);
+    CPPUNIT_TEST(test_compressed);
+
+    CPPUNIT_TEST_SUITE_END()
+    ;
+
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( containerT );
+CPPUNIT_TEST_SUITE_REGISTRATION(containerT);
 
-int main(int, char**)
+int main(int argc, char*argv[])
 {
+    GetOpt getopt(argc, argv, "dbh");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+        case 'd':
+            debug = true;  // debug is a static global
+            break;
+
+        case 'b':
+            bes_debug = true;  // bes_debug is a static global
+            break;
+
+        case 'h': {     // help - show test names
+            cerr << "Usage: containerT has the following tests:" << endl;
+            const std::vector<Test*> &tests = containerT::suite()->getTests();
+            unsigned int prefix_len = containerT::suite()->getName().append("::").length();
+            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            }
+            break;
+        }
+
+        default:
+            break;
+        }
+
+    // Do this AFTER we process the command line so debugging in the test constructor
+    // (which does a one time construction of the test cache) will work.
+
+    // init_cache(TEST_CACHE_DIR);
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    bool wasSuccessful = runner.run("", false);
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = containerT::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
 
     return wasSuccessful ? 0 : 1;
 }
-

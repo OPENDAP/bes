@@ -214,7 +214,7 @@ bool GeoGridFunction::canOperateOn(DDS &dds)
     // Go find all the Grid variables.
 	//vector<Grid *> *grids = new vector<Grid *>();
 	vector<Grid*> grids;
-	getGrids(dds, &grids);
+	get_grids(dds, &grids);
 
 	// Were there any?
     if(!grids.empty()){
@@ -224,7 +224,7 @@ bool GeoGridFunction::canOperateOn(DDS &dds)
     	vector<Grid *>::iterator git;
     	for(git=grids.begin(); !usable && git!=grids.end() ; git++){
     		Grid *grid = *git;
-    		usable = isGeoGrid(grid);
+    		usable = is_geo_grid(grid);
     	}
     }
     //delete grids;

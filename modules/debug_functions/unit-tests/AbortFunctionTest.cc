@@ -92,9 +92,9 @@ CPPUNIT_TEST_SUITE( AbortFunctionTest );
     void abortFunctionTest()
     {
         DBG(cerr << endl << "abortFunctionTest() - BEGIN." << endl);
-      
+
         debug_function::AbortFunc abortFunc;
-        
+
         libdap::btp_func abort_function = abortFunc.get_btp_func();
 
         libdap::Int32 time("time");
@@ -102,20 +102,18 @@ CPPUNIT_TEST_SUITE( AbortFunctionTest );
         libdap::BaseType *argv[] = { &time };
         libdap::BaseType *result = 0;
         libdap::BaseType **btpp = &result;
-        
-        abort_function(0, argv, *testDDS, btpp);      
-        
-        if(debug){
-            (*btpp)->print_val(cerr,"",false);
+
+        abort_function(0, argv, *testDDS, btpp);
+
+        if (debug) {
+            (*btpp)->print_val(cerr, "", false);
             cerr << endl;
         }
-             
+
         CPPUNIT_ASSERT(true);
-        
+
         DBG(cerr << "abortFunctionTest() - END." << endl);
     }
-
-    
 
 };
 
@@ -125,10 +123,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AbortFunctionTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -136,9 +131,23 @@ int main(int argc, char*argv[])
             debug = true;  // debug is a static global
             BESDebug::SetUp("cerr,ugrid");
             break;
+
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: AbortFunctionTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = libdap::AbortFunctionTest::suite()->getTests();
+            unsigned int prefix_len = libdap::AbortFunctionTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
+
         default:
             break;
         }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
@@ -149,10 +158,8 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("libdap::NDimArrayTest::") + argv[i++];
-
-            DBG(cerr << endl << "Running test " << test << endl << endl);
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = libdap::AbortFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
