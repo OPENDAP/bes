@@ -772,8 +772,8 @@ AM_COND_IF([DAP_MODULES],
     modules/debug_functions/tests/atlocal
 
     modules/dmrpp_module/Makefile
-    modules/dmrpp_module/bes-testsuite/Makefile 
-    modules/dmrpp_module/bes-testsuite/atlocal
+    modules/dmrpp_module/tests/Makefile 
+    modules/dmrpp_module/tests/atlocal
     modules/dmrpp_module/unit-tests/Makefile 
     modules/dmrpp_module/unit-tests/test_config.h
     modules/dmrpp_module/data/Makefile 
@@ -885,7 +885,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/bes-testsuite, [standalone])
 
-    AC_CONFIG_TESTDIR(modules/dmrpp_module/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
 
     ]
 )
