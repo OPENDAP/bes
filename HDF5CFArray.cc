@@ -857,9 +857,11 @@ bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) {
     bool ret_value = false;
     // The compression ratio should be smaller then the threshold(hard to compress)
     // and the total var size should be bigger than the defined size(bigger)
+#if 0
     size_t total_byte = total_elems*dtype_size;
+#endif
     if((comp_ratio < HDF5RequestHandler::get_disk_comp_threshold()) 
-       && (total_elems*dtype_size>= HDF5RequestHandler::get_disk_var_size())) {
+       && (total_elems*dtype_size >= HDF5RequestHandler::get_disk_var_size())) {
         if( true == HDF5RequestHandler::get_disk_cache_float_only_comp()) {
             if(dtype==H5FLOAT32 || dtype == H5FLOAT64) 
                 ret_value = true;
@@ -1220,7 +1222,8 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
 
 void 
-HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,hid_t memtype, const string& cache_fpath,short dtype_size,const vector<char> &buf, int nelms) {
+HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t /*dspace_id*/, hid_t /*mspace_id*/, hid_t memtype,
+    const string& cache_fpath, short dtype_size, const vector<char> &buf, int nelms) {
 
     HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance();
     int total_nelem = 1;

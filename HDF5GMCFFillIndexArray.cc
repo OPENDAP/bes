@@ -60,7 +60,7 @@ bool HDF5GMCFFillIndexArray::read()
 }
 
 
-void HDF5GMCFFillIndexArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf) {
+void HDF5GMCFFillIndexArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf*/) {
 
 
     BESDEBUG("h5","Coming to HDF5GMCFFillIndexArray: read_data_NOT_from_mem_cache"<<endl);

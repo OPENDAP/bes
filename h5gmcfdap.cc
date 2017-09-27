@@ -412,9 +412,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
             for (it_cv = cvars.begin();
                 it_cv != cvars.end(); ++it_cv) {
-
+#if 0
                 bool has_unlimited_dim = false;
-
+#endif
                 // Check unlimited dimension names.
                 for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
                      ird != (*it_cv)->getDimensions().end(); ++ird) {
