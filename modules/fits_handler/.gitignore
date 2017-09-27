@@ -48,8 +48,8 @@ atlocal
 
 fits.conf
 
-bes-testsuite/bes.conf
-bes-testsuite/fits_handlerTest
-bes-testsuite/generate_data_baseline.sh
-bes-testsuite/generate_metadata_baseline.sh
-bes-testsuite/package.m4
+tests/bes.conf
+tests/fits_handlerTest
+tests/generate_data_baseline.sh
+tests/generate_metadata_baseline.sh
+tests/package.m4

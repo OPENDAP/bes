@@ -18,7 +18,7 @@
 # Options: -n: Do not modify files like Makefile.am but do make the 
 #              the temp files.
 #          -v: Verbose
-#          -k: clean temp files
+#          -k: clean backup files
 
 args=`getopt "nvk" $*`
 if test $? != 0
@@ -92,22 +92,6 @@ EOF
      new_version=`echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}'`
      verbose "New Version: $new_version"
 
-     # Update configure.ac
-     verbose "Updating configure.ac"
-     new_ac_init_line="AC_INIT([$name], [$new_version], [opendap-tech@opendap.org])"
-     sed "s/AC_INIT.*/$new_ac_init_line/g" < configure.ac > configure.ac.tmp
-
-     if test -z $non_destructive
-     then
-        mv configure.ac configure.ac.bak
-        mv configure.ac.tmp configure.ac
-     fi
-     
-     if test -n $clean
-     then
-	 rm configure.ac.bak
-     fi
-
      # Update Makefile.am
      verbose "Updating Makefile.am"
      new_m_ver_line="M_VER=$new_version"
@@ -115,56 +99,13 @@ EOF
 
      if test -z $non_destructive
      then
-        mv Makefile.am Makefile.am.bak
-        mv Makefile.am.tmp Makefile.am
+         mv Makefile.am Makefile.am.bak
+         mv Makefile.am.tmp Makefile.am
      fi
      
      if test -n $clean
      then
-	 rm Makefile.am.bak
-     fi 
-
-     # Update ChangeLog
-     verbose "Updating ChangeLog"
-     start_date=`awk '/....-..-../ {print $1 ; exit}' ChangeLog`
-     if test -z "$start_date"; then start_date="1970-01-01"; fi
-
-     gitlog-to-changelog --since=$start_date > ChangeLog.tmp.top
-     cat ChangeLog.tmp.top ChangeLog > ChangeLog.tmp
-     rm ChangeLog.tmp.top
-
-     if test -z $non_destructive
-     then
-        mv ChangeLog ChangeLog.bak
-        mv ChangeLog.tmp ChangeLog
-     fi
-     
-     if test -n $clean
-     then
-	 rm ChangeLog.bak
-     fi 
-
-     # Update NEWS
-     verbose "Updating NEWS"
-     cat <<EOF >NEWS.tmp.top
-News for version $new_version
-
-Updates since $start_date, see the ChangeLog
-
-EOF
-
-     cat NEWS.tmp.top NEWS > NEWS.tmp
-     rm NEWS.tmp.top
-
-     if test -z $non_destructive
-     then
-        mv NEWS NEWS.bak
-        mv NEWS.tmp NEWS
-     fi
-     
-     if test -n $clean
-     then
-	 rm News.bak
+	     rm Makefile.am.bak
      fi 
 
      # This ends the subshell that processes a given module

@@ -47,15 +47,15 @@ ff.conf
 
 ## freeform handler specific files
 
-bes-testsuite/bes.conf
-bes-testsuite/bes.conf.in
-bes-testsuite/package.m4
+tests/bes.conf
+tests/bes.conf.in
+tests/package.m4
 FFND/bufform
 FFND/checkvar
 FFND/chkform
 FFND/newform
 FFND/readfile
-bes-testsuite/freeform_handlerTest
-bes-testsuite/freeform_handlerTest.dir/
+tests/freeform_handlerTest
+tests/freeform_handlerTest.dir/
 
 

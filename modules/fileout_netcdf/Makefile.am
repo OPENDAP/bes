@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_netcdf
-M_VER=1.4.4
+M_VER=1.4.5
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
@@ -47,11 +47,7 @@ FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h
 
-EXTRA_DIST = data COPYRIGHT COPYING fonc.conf.in
-
-if !DAP_MODULES
-EXTRA_DIST += fileout_netcdf.spec
-endif
+EXTRA_DIST = data fonc.conf.in
 
 CLEANFILES = *~ fonc.conf
 
