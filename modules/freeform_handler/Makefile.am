@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = FFND . bes-testsuite
+SUBDIRS = FFND . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=freeform_handler

@@ -23,7 +23,7 @@ endif
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-SUBDIRS = . bes-testsuite
+SUBDIRS = . tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfits_module.la

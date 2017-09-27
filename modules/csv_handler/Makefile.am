@@ -25,7 +25,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libcsv_module.la
 
-SUBDIRS = . bes-testsuite
+SUBDIRS = . tests
 
 CSV_SRCS = \
 		CSVModule.cc CSVRequestHandler.cc			\

@@ -752,8 +752,8 @@ AM_COND_IF([DAP_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
     modules/csv_handler/Makefile
-    modules/csv_handler/bes-testsuite/Makefile
-    modules/csv_handler/bes-testsuite/atlocal
+    modules/csv_handler/tests/Makefile
+    modules/csv_handler/tests/atlocal
 
     modules/usage/Makefile
     
@@ -774,12 +774,12 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
     modules/fileout_json/unit-tests/test_config.h
-    modules/fileout_json/bes-testsuite/Makefile 
-    modules/fileout_json/bes-testsuite/atlocal
+    modules/fileout_json/tests/Makefile 
+    modules/fileout_json/tests/atlocal
     
     modules/freeform_handler/Makefile
-    modules/freeform_handler/bes-testsuite/Makefile
-    modules/freeform_handler/bes-testsuite/atlocal
+    modules/freeform_handler/tests/Makefile
+    modules/freeform_handler/tests/atlocal
     modules/freeform_handler/FFND/Makefile
 
 	modules/xml_data_handler/Makefile
@@ -789,8 +789,8 @@ AM_COND_IF([DAP_MODULES],
     modules/xml_data_handler/tests/atlocal
     
     modules/netcdf_handler/Makefile
-	modules/netcdf_handler/bes-testsuite/Makefile 
-	modules/netcdf_handler/bes-testsuite/atlocal 
+	modules/netcdf_handler/tests/Makefile 
+	modules/netcdf_handler/tests/atlocal 
 	
 	modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
@@ -798,16 +798,16 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_netcdf/data/build_test_data/Makefile 
 	
 	modules/gateway_module/Makefile 
-	modules/gateway_module/bes-testsuite/Makefile 
-	modules/gateway_module/bes-testsuite/atlocal 
+	modules/gateway_module/tests/Makefile 
+	modules/gateway_module/tests/atlocal 
 	
 	modules/fileout_gdal/Makefile
 	modules/fileout_gdal/tests/Makefile 
 	modules/fileout_gdal/tests/atlocal 
 	
 	modules/fits_handler/Makefile
-    modules/fits_handler/bes-testsuite/atlocal
-    modules/fits_handler/bes-testsuite/Makefile
+    modules/fits_handler/tests/atlocal
+    modules/fits_handler/tests/Makefile
     
     modules/gdal_handler/Makefile
     modules/gdal_handler/tests/Makefile
@@ -837,8 +837,8 @@ AM_COND_IF([DAP_MODULES],
 	modules/w10n_handler/Makefile 
 	modules/w10n_handler/unit-tests/Makefile
 	modules/w10n_handler/unit-tests/test_config.h
-	modules/w10n_handler/bes-testsuite/Makefile 
-	modules/w10n_handler/bes-testsuite/atlocal])
+	modules/w10n_handler/tests/Makefile 
+	modules/w10n_handler/tests/atlocal])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -847,10 +847,10 @@ AM_COND_IF([DAP_MODULES],
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
 		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
-	AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh],
-	   [chmod +x modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh])
-    AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_data_baseline.sh],
-        [chmod +x modules/fits_handler/bes-testsuite/generate_data_baseline.sh])
+	AC_CONFIG_FILES([modules/fits_handler/tests/generate_metadata_baseline.sh],
+	   [chmod +x modules/fits_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/fits_handler/tests/generate_data_baseline.sh],
+        [chmod +x modules/fits_handler/tests/generate_data_baseline.sh])
 	
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
@@ -858,25 +858,25 @@ AM_COND_IF([DAP_MODULES],
 	dnl These can stay
     AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
 
-    AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
-    AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])
     dnl AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/gateway_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fits_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/w10n_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
     
     ]
 )
