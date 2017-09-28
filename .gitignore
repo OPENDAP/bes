@@ -51,11 +51,11 @@ h5.conf
 
 ## hdf5_handler specific files
 
-bes-testsuite/bes.default.conf
-bes-testsuite/hdf5_handlerTest
-bes-testsuite/bes.conf
-bes-testsuite/package.m4
-bes-testsuite/bes.ignore.conf
+tests/bes.default.conf
+tests/hdf5_handlerTest
+tests/bes.conf
+tests/package.m4
+tests/bes.ignore.conf
 
 # GCTP Files
 gctp/src/libGctp.a
