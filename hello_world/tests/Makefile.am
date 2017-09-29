@@ -3,9 +3,6 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-# AM_CPPFLAGS =
-# AM_CXXFLAGS =
-
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -17,7 +14,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4	\
+EXTRA_DIST = hello $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4	\
 atlocal.in bes.conf.in
 
 DISTCLEANFILES = atconfig
@@ -44,9 +41,15 @@ clean-local:
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-	mv $@.tmp $@
+
+# $(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4
+#	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+#	mv $@.tmp $@
+
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
+
+% : %.at
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
