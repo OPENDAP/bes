@@ -643,7 +643,13 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 	      /* ------------------- */
 	      if (errorcode != 0)
 		{
-                  throw InternalErr(__FILE__,__LINE__,"GCTP inv_trans Error to retrieve lat/lon from a grid.");
+
+            if(projcode == HE5_GCTP_LAMAZ) {
+                longitude[i] = 1.0e51;
+                latitude[i] = 1.0e51;
+            }
+            else 
+               throw InternalErr(__FILE__,__LINE__,"GCTP inv_trans Error to retrieve lat/lon from a grid.");
 
 		}
 	      else
