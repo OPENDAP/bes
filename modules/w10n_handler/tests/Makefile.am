@@ -1,14 +1,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/w10n_handler $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-else
-AM_CPPFLAGS = -I$(top_srcdir)
-LIBADD = $(BES_DAP_LIBS)
-endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -22,15 +17,11 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = baselines w10n_handlerTest.at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 bes.conf.in bes.conf.modules.in 
+$(srcdir)/package.m4 $(BES_CONF_IN) 
 
 DISTCLEANFILES = atconfig
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

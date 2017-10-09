@@ -17,16 +17,11 @@ CLEANFILES = bes.conf
 
 EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
 nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in package.m4 bes.conf.in bes.conf.modules.in \
-handler_tests_macros.m4
+atlocal.in package.m4 $(BES_CONF_IN) handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

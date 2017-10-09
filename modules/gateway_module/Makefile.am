@@ -13,13 +13,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=gateway_module
 M_VER=1.2.1
 
-if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-else
-AM_CPPFLAGS = $(BES_CPPFLAGS) # or wahtever was set here or in ..._CPPFLAGS
-LIBADD = $(BES_DAP_LIBS)      # and ..._LIBADD
-endif
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 

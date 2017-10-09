@@ -16,18 +16,9 @@ M_VER=3.9.8
 
 # There are some defines which must be set when you build code which uses
 # FreeForm.h. Add them here. 4/17/98 jhrg
-if DAP_MODULES
-# AM_CXXFLAGS = -I$(top_srcdir)/modules/freeform_handler/FFND
-# AM_CFLAGS = -I$(top_srcdir)/modules/freeform_handler/FFND
 AM_CPPFLAGS = -DFREEFORM  $(FF_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/freeform_handler/FFND $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) FFND/libfreeform.la
-else
-# AM_CXXFLAGS = -I$(top_srcdir)/FFND
-# AM_CFLAGS = -I$(top_srcdir)/FFND
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/FFND -DFREEFORM
-LIBADD = $(BES_DAP_LIBS) FFND/libfreeform.la
-endif
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -36,10 +27,9 @@ lib_bes_LTLIBRARIES = libff_module.la
 
 libff_module_la_SOURCES = $(FFTYPE_SRC) $(HANDLER_SRC) $(FFTYPE_HDR) \
 	$(HANDLER_HDR) $(SERVER_SRC) $(SERVER_HDR)
-# libff_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+
 libff_module_la_LDFLAGS = -avoid-version -module 
 libff_module_la_LIBADD = $(LIBADD) 
-# $(BES_DAP_LIBS) 
 
 FFTYPE_SRC = FFArray.cc FFFloat64.cc FFInt32.cc FFStructure.cc	\
 	FFUrl.cc FFByte.cc FFGrid.cc FFSequence.cc FFUInt16.cc	\
@@ -65,8 +55,6 @@ HANDLER_SRC = util_ff.cc ffdds.cc ffdas.cc		\
 	DODS_Date_Time.cc DODS_Date_Time_Factory.cc		\
 	DODS_StartDate_Time_Factory.cc				\
 	DODS_EndDate_Time_Factory.cc
-
-# ff_read.c 
 
 SERVER_SRC = FFRequestHandler.cc FFModule.cc
 

@@ -8,13 +8,8 @@ AM_CXXFLAGS =
 
 AUTOMAKE_OPTIONS = foreign
 
-if DAP_MODULES
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS)
-else
-AM_CPPFLAGS = $(BES_CPPFLAGS) $(GDAL_CFLAGS)
-LIBADD = $(BES_DAP_LIBS) $(GDAL_LDFLAGS)
-endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -35,13 +30,6 @@ M_VER=1.1.0
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = . unit-tests tests 
-# geo-functions
-
-# We use DIST_SUBDIRS because we want geo-functions to be part of the dist.
-# However, since we use it we must list all of the subdirs we want; without
-# it, automake will automatically distribute all the stuff in SUBDIRS.
-# DIST_SUBDIRS = unit-tests tests
-# geo-functions
 
 if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code
@@ -87,16 +75,8 @@ pkginclude_HEADERS = $(HDRS)
 lex.gse.cc: gse.lex gse.tab.cc gse.tab.hh
 	$(LEX) $(LFLAGS) $<
 
-# $(AM_LFLAGS) 
-
 gse.tab.cc gse.tab.hh: gse.yy
 	$(YACC) $(YFLAGS) $<
-
-# gse.tab.hh
-#	if test -e gse.tab.cc.h; then mv gse.tab.cc.h gse.tab.hh; fi
-# $(AM_YFLAGS) -p gse_ -o gse.tab.cc 
-
-# ce_functions.o: ce_functions.cc ce_functions
 
 EXTRA_PROGRAMS = 
 

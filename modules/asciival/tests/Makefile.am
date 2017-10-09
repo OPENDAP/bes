@@ -16,16 +16,11 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = ascii data $(TESTSUITE) $(TESTSUITE).at \
-atlocal.in bes.conf.in bes.conf.modules.in package.m4 \
-handler_tests_macros.m4 
+atlocal.in $(BES_CONF_IN) package.m4 handler_tests_macros.m4 
 
 DISTCLEANFILES = atconfig
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

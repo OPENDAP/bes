@@ -247,19 +247,27 @@ AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
-dnl dap-mouldes is true by default; use --disable-dap-modules or
-dnl --enable-dap-modules=no to turn this off. jhrg 11/17/13
+dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
-AC_ARG_WITH([dap-modules],
-  [AS_HELP_STRING([--without-dap-modules], [do_not build the bundled dap modules (default is to build the modules)])],
-  [with_dap_modules=${withval} ],
-  [with_dap_modules=yes])
+AC_ARG_WITH([dap-exp-modules],
+  [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
+  [with_dap_exp_modules=${withval} ],
+  [with_dap_exp_modules=no])
 
-dnl DAP_MODULES=
-AM_CONDITIONAL([DAP_MODULES], [test x$with_dap_modules = xyes])
+AM_CONDITIONAL([DAP_EXP_MODULES], [test x$with_dap_exp_modules = xyes])
+
+dnl dap-builtin-mouldes is true by default; use --disable-dap-builtin-modules or
+dnl --enable-dap-builtin-modules=no to turn this off. jhrg 11/17/13
+
+AC_ARG_WITH([dap-builtin-modules],
+  [AS_HELP_STRING([--with-dap-builtin-modules], [build the builtin dap modules (default is yes)])],
+  [with_dap_builtin_modules=${withval} ],
+  [with_dap_builtin_modules=yes])
+
+AM_CONDITIONAL([DAP_BUILTIN_MODULES], [test x$with_dap_builtin_modules = xyes])
 
 dnl These are tests that only apply if the modules are being built too.
-AM_COND_IF([DAP_MODULES], [
+AM_COND_IF([DAP_BUILTIN_MODULES], [
 
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
@@ -649,7 +657,7 @@ fi
 
 dnl End handler specific tests
 
-],[ # else AM_COND_IF([DAP_MODULES]
+],[ # else AM_COND_IF([DAP_BUILTIN_MODULES]
 
 dnl These are needed because the symbols are used in each modules Makefile.am
 dnl files. It might be that if the generation of those Makefiles was also conditional,
@@ -667,7 +675,7 @@ AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
 AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
 
-])	# AM_COND_IF([DAP_MODULES]
+])	# AM_COND_IF([DAP_BUILTIN_MODULES]
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
@@ -753,7 +761,7 @@ AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 
 dnl Output files if building the modules too
 		 
-AM_COND_IF([DAP_MODULES],
+AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
     modules/csv_handler/Makefile

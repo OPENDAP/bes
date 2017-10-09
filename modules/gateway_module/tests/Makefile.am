@@ -18,15 +18,11 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = gateway $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 bes.conf.in bes.conf.modules.in
+$(srcdir)/package.m4 $(BES_CONF_IN)
 
 DISTCLEANFILES =  atconfig
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
