@@ -16,7 +16,7 @@ AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
-if DAP_MODULES
+if DAP_BUILTIN_MODULES
 AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir)/modules/hdf4_handler/hdfclass \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(HDF4_CPPFLAGS)
 LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAG) $(HDF4_LIBS) \
@@ -110,7 +110,7 @@ EXTRA_DIST = data data.nasa hdf-testfiles \
 		COPYRIGHT_URI  \
 		OSX_Resources h4.conf.in test.nasa.with_hdfeos2.sh USAGE
 
-if !DAP_MODULES
+if !DAP_BUILTIN_MODULES
 EXTRA_DIST += hdf4_handler.spec hdf4_handler.spec.cf
 endif
 

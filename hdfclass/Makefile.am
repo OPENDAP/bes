@@ -6,7 +6,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-if DAP_MODULES
+if DAP_BUILTIN_MODULES
 # Removed from AM_CPPFLAGS. jhrg 11/3/14 $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) 
 AM_CPPFLAGS = $(HDF4_CFLAGS) -I$(top_srcdir)/modules/hdf4_handler -I$(top_srcdir)/dispatch \
 -I$(top_srcdir)/dap $(DAP_CFLAGS) 

@@ -26,7 +26,7 @@ h4 h4.cf h4.nasa.with_hdfeos2 h4.with_hdfeos2
 
 DISTCLEANFILES = generate_metadata_baseline.sh atconfig
 
-if DAP_MODULES
+if DAP_BUILTIN_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_HDFEOS_CONF_IN = bes.with_hdfeos2.conf.modules.in
 else
