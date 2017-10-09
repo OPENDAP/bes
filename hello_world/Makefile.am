@@ -7,7 +7,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
 AM_CXXFLAGS =
 
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
