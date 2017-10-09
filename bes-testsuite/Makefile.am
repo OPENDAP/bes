@@ -26,7 +26,7 @@ bes.default.conf.modules.in bes.ignore.conf.modules.in
 # will result in a warning from distcheck
 DISTCLEANFILES = atconfig
 
-if DAP_MODULES
+if DAP_BUILTIN_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_DEFAULT_CONF_IN = bes.default.conf.modules.in
 BES_IGNORE_CONF_IN = bes.ignore.conf.modules.in
