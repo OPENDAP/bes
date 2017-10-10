@@ -8,13 +8,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=ugrid_functions
 M_VER=1.1.0
 
-if DAP_MODULES
 AM_CPPFLAGS = $(GF_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(GF_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-else
-AM_CPPFLAGS = $(GF_CFLAGS) $(XML2_CFLAGS)
-LIBADD = $(GF_LIBS) 
-endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:

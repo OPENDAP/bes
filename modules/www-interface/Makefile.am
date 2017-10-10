@@ -11,14 +11,9 @@ AUTOMAKE_OPTIONS = foreign
 M_NAME=dap-server/www
 M_VER=4.1.6
 
-if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand -I$(top_srcdir) $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-else
-AM_CPPFLAGS = -I$(top_srcdir)  $(BES_CPPFLAGS)
-LIBADD = $(BES_DAP_LIBS)
-endif
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -54,7 +49,5 @@ EXTRA_DIST = js2h.pl www.js
 
 javascript.h: www.js js2h.pl js2h.pl.in
 	./js2h.pl $< > $@
-
-#get_html_form.cc: javascript.h
 
 CLEANFILES = *~ javascript.h

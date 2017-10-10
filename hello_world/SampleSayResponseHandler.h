@@ -35,18 +35,17 @@
 
 #include "BESResponseHandler.h"
 
-class SampleSayResponseHandler : public BESResponseHandler {
+class SampleSayResponseHandler: public BESResponseHandler {
 public:
-				SampleSayResponseHandler( const string &name ) ;
-    virtual			~SampleSayResponseHandler( void ) ;
+    SampleSayResponseHandler(const string &name);
+    virtual ~SampleSayResponseHandler(void);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *SampleSayResponseBuilder( const string &name ) ;
+    static BESResponseHandler *SampleSayResponseBuilder(const string &name);
 };
 
 #endif // I_SampleSayResponseHandler_h

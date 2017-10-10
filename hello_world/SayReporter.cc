@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,62 +35,54 @@
 #include "BESInternalError.h"
 #include "SampleResponseNames.h"
 
-SayReporter::SayReporter()
-    : BESReporter(),
-      _file_buffer( 0 )
+SayReporter::SayReporter() :
+    BESReporter(), _file_buffer(0)
 {
-    bool found = false ;
-    TheBESKeys::TheKeys()->get_value( "Say.LogName", _log_name, found );
-    if( _log_name == "" )
-    {
-	throw BESInternalError( "cannot determine Say log name", __FILE__, __LINE__ ) ;
+    bool found = false;
+    TheBESKeys::TheKeys()->get_value("Say.LogName", _log_name, found);
+    if (_log_name == "") {
+        throw BESInternalError("cannot determine Say log name", __FILE__, __LINE__);
     }
-    else
-    {
-	_file_buffer = new ofstream( _log_name.c_str(), ios::out | ios::app ) ;
-	if( !(*_file_buffer) )
-	{
-	    string s = "cannot open Say log file " + _log_name ;;
-	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
-	} 
+    else {
+        _file_buffer = new ofstream(_log_name.c_str(), ios::out | ios::app);
+        if (!(*_file_buffer)) {
+            string s = "cannot open Say log file " + _log_name;
+            ;
+            throw BESInternalError(s, __FILE__, __LINE__);
+        }
     }
 }
 
 SayReporter::~SayReporter()
 {
-    if( _file_buffer )
-    {
-	delete _file_buffer ;
-	_file_buffer = 0 ;
+    if (_file_buffer) {
+        delete _file_buffer;
+        _file_buffer = 0;
     }
 }
 
-void
-SayReporter::report( BESDataHandlerInterface &dhi )
+void SayReporter::report(BESDataHandlerInterface &dhi)
 {
-    const time_t sctime = time( NULL ) ;
-    const struct tm *sttime = localtime( &sctime ) ; 
-    char zone_name[10] ;
-    strftime( zone_name, sizeof( zone_name ), "%Z", sttime ) ;
-    char *b = asctime( sttime ) ;
-    *(_file_buffer) << "[" << zone_name << " " ;
-    for(register int j = 0; b[j] != '\n'; j++ )
-	*(_file_buffer) << b[j] ;
-    *(_file_buffer) << "] " ;
+    const time_t sctime = time( NULL);
+    const struct tm *sttime = localtime(&sctime);
+    char zone_name[10];
+    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    char *b = asctime(sttime);
+    *(_file_buffer) << "[" << zone_name << " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        *(_file_buffer) << b[j];
+    *(_file_buffer) << "] ";
 
-    string say_what ;
-    string say_to ;
-    BESDataHandlerInterface::data_citer i = dhi.data_c().find( SAY_WHAT ) ;
-    if( i != dhi.data_c().end() )
-    {
-	say_what = (*i).second ;
+    string say_what;
+    string say_to;
+    BESDataHandlerInterface::data_citer i = dhi.data_c().find( SAY_WHAT);
+    if (i != dhi.data_c().end()) {
+        say_what = (*i).second;
     }
-    i = dhi.data_c().find( SAY_TO ) ;
-    if( i != dhi.data_c().end() )
-    {
-	say_to = (*i).second ;
-	*(_file_buffer) << "\"" << say_what << "\" said to \"" << say_to << "\""
-			<< endl ;
+    i = dhi.data_c().find( SAY_TO);
+    if (i != dhi.data_c().end()) {
+        say_to = (*i).second;
+        *(_file_buffer) << "\"" << say_what << "\" said to \"" << say_to << "\"" << endl;
     }
 }
 
@@ -101,13 +93,11 @@ SayReporter::report( BESDataHandlerInterface &dhi )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-SayReporter::dump( ostream &strm ) const
+void SayReporter::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "SayReporter::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "Say log name: " << _log_name << endl ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "SayReporter::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "Say log name: " << _log_name << endl;
+    BESIndent::UnIndent();
 }
 

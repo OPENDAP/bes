@@ -16,20 +16,11 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = ff $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 ff bes.conf.in bes.conf.modules.in \
-handler_tests_macros.m4
+$(srcdir)/package.m4 ff $(BES_CONF_IN) handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
-# TESTSUITE = $(builddir)/freeform_handlerTest
-# TESTS_ENVIRONMENT = 
-# TESTS = freeform_handlerTest
-
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
