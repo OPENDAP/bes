@@ -26,13 +26,15 @@ if WITH_DEPENDENCIES
 AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
-SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
-# DIST_SUBDIRS = $(SUBDIRS)
+SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates
 
 if LIBDAP
-SUBDIRS += functions dap dapreader 
+SUBDIRS += functions dap dapreader
 endif
-if DAP_MODULES
+
+SUBDIRS += hello_world
+
+if DAP_BUILTIN_MODULES
 SUBDIRS += modules
 endif
 
@@ -82,39 +84,6 @@ cccc:
 	for d in dispatch xmlcommand ppt server; \
 		do $(MAKE) -C $$d $(MFLAGS) cccc; \
 	done
-
-###########################################################################
-
-# Fortify targets.
-
-# SUBDIRS = dispatch command xmlcommand ppt cmdln server standalone docs bin templates
-# In the server: server, ppt, dispatch, xmlcommand
-# There is porbably a better way to do this. Focus the analysis on the parts
-# used to build the server, not on the test drivers and documentation.
-
-.PHONY: fortify
-fortify:
-	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd server && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd cmdln && $(MAKE) $(MFLAGS))
-	(cd standalone && $(MAKE) $(MFLAGS))
-	(cd docs && $(MAKE) $(MFLAGS))
-	(cd bin && $(MAKE) $(MFLAGS))
-	(cd templates && $(MAKE) $(MFLAGS))
-	(cd dap && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd dapreader && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd functions && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd modules && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
-
-# Use this to clean the fortify project.
-.PHONY: fortifyclean
-fortifyclean:
-	sourceanalyzer -b @PACKAGE@ -clean
-
-##########################################################################
 
 # This hack strips out the individual handlers' spec files from the
 # big tar and lets us use the old target again, which means I don't

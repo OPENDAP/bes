@@ -1,0 +1,1 @@
+libdap exception building response: error_code = 1005: libdap error transmitting DataDDS: The last argument to scale_grid() must be a longitude variable!

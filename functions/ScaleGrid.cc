@@ -40,6 +40,7 @@
 #include <BESDebug.h>
 
 #include "functions_util.h"
+#include "GridGeoConstraint.h"
 
 #define DEBUG_KEY "geo"
 
@@ -84,6 +85,11 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     Grid *src = dynamic_cast < Grid * >(argv[0]);
     if (!src)
         throw Error(malformed_expr,"The first argument to scale_grid() must be a Grid variable!");
+
+    GridGeoConstraint gc(src);
+    if(!gc.is_longitude_rightmost()){
+        throw Error(malformed_expr,"The last argument to scale_grid() must be a longitude variable!");
+    }
 
     BESDEBUG(DEBUG_KEY,"function_scale_grid() - Evaluating grid '"<< src->name() << "'" << endl);
     unsigned long y = extract_uint_value(argv[1]);
@@ -167,5 +173,73 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     SizeBox size(new_x, new_y);
     *btpp = scale_dap_array(data, x, y, size, crs, interp);
 }
+
+//Grid *scale_dap_3D_array(const Array *data, const Array *time const Array *lon, const Array *lat, const SizeBox &size,
+// const string &crs, const string &interp)
+/**
+ * @brief Scale a grid; uses gdal
+ *
+ * A server function that will scale a 3D data array. The function takes 6 required
+ * parameters: A data array to scale, three time/lon/lat arrays that are effectively
+ * DAP2 Grid map vectors and the new Longitude and Latitude extents (y and x in
+ * Cartesian coordinates). It also takes two optional arguments: a CRS for the
+ * result and an interpolation method.
+ *
+ * @param argc Argument count
+ * @param argv Argument list
+ * @param dds Unused
+ * @param btpp Return value (A BaseType that holds the function result)
+ */
+void function_scale_array_3D(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+{
+    // scale_3D_array(arg[0], T, Y, X, y,x)
+    string info =
+        string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            + "<function name=\"scale_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_3D_array\">\n"
+            + "</function>\n";
+
+    BESDEBUG(DEBUG_KEY,"function_scale_array_3D() - argc = " << argc << endl);
+
+    if (argc == 0) {
+        auto_ptr<Str> response(new Str("info"));
+        response->set_value(info);
+        *btpp = response.release();
+        return;
+    }
+
+    if (!(argc > 5 && argc < 9)) {
+        throw Error(
+            "The scale_array_3D() function requires six arguments: four Arrays and the new lat and lon extents.\n\
+             See http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_array");
+    }
+
+    BESDEBUG(DEBUG_KEY,"function_scale_array_3D() - arg[0] name: " << argv[0]->name() << endl);
+
+    Array *data = dynamic_cast<Array *>(argv[0]);
+    if (!data) throw Error(malformed_expr, "The first argument to scale_array_3D() must be an Array variable!");
+    Array *t = dynamic_cast<Array *>(argv[1]);
+    if (!t) throw Error(malformed_expr, "The second argument to scale_array_3D() must be an Array variable!");
+    Array *y = dynamic_cast<Array *>(argv[2]);
+    if (!y) throw Error(malformed_expr, "The third argument to scale_array_3D() must be an Array variable!");
+    Array *x = dynamic_cast<Array *>(argv[3]);
+    if (!x) throw Error(malformed_expr, "The fourth argument to scale_array_3D() must be an Array variable!");
+
+    unsigned long new_x = extract_uint_value(argv[4]);
+    unsigned long new_y = extract_uint_value(argv[5]);
+
+    string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
+    string interp = "nearest";
+    if (argc > 6) {
+        crs = extract_string_argument(argv[6]);
+    }
+
+    if (argc > 7) {
+        interp = extract_string_argument(argv[7]);
+    }
+
+    SizeBox size(new_x, new_y);
+    *btpp = scale_dap_array_3D(data, t, y, x, size, crs, interp);
+}
+
 
 }

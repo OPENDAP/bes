@@ -1,16 +1,9 @@
 
 # Tests
 
-# AUTOMAKE_OPTIONS = foreign
-
 # Arrange to build with the backward compatibility mode enabled.
-if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/modules/xml_data_handler -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
-else
-AM_CPPFLAGS = $(BES_CPPFLAGS) # or wahtever was set here or in ..._CPPFLAGS
-LIBADD = $(BES_DAP_LIBS)
-endif
 
 AM_LDADD = $(LIBADD)
 AM_CXXFLAGS = 

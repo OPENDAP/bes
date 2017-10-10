@@ -1,3 +1,500 @@
+2017-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the hdf4/5 handler submodule commit hashes
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Removed old include in FONgTransform.cc
+	#include "../../old/FONgBaseType.h": This header was factored out of
+	the code.
+
+2017-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #79 from OPENDAP/hyrax281
+	Hyrax281
+
+2017-09-24  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Ticket Hyrax-281. Corrected scale_dataset_3D.
+
+	Ticket Hyrax-281. Scale array 3D update.
+
+2017-09-23  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into hyrax281
+
+2017-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Removed subdir-objects from functions/unit-tests/Makefile.am
+
+2017-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Update README.md
+
+2017-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Test CI Build of master branch
+
+2017-09-16  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Ticket Hyrax-281. Changed scale_util.cc
+
+2017-09-14  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Ticket Hyrax-281. Extend scale_array()/scale_grid() to 3d data.
+
+2017-09-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #78 from OPENDAP/hyrax417
+	Hyrax417
+
+2017-09-02  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Ticket #417. Added test for axis order lon,lat
+
+	Merge branch 'master' into hyrax417
+
+2017-08-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #77 from OPENDAP/mkstemp-fix
+	Removed duplicate code using mkstemp() and used code in BESHandlerUtil
+
+	Merge pull request #76 from OPENDAP/file-locking-cache-test
+	File locking cache test
+
+2017-08-25  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into hyrax417
+
+2017-08-25  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed dispatch/tests/Makefile.am fir distcheck
+	test_config.h.in was missing from EXTRA_DIST
+
+	Removed duplicate code using mkstemp() and used code in BESHandlerUtil
+
+2017-08-24  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'file-locking-cache-test' of
+	https://github.com/opendap/bes into file-locking-cache-test
+
+	Added tests for blocked second call to create_and_lock and for
+	shared read access.
+
+2017-08-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into file-locking-cache-test
+
+	Added gitignore file in dispatch
+
+	Added tests for dispatch's file locking cache code.
+
+	checkpoint - starting autotest
+
+2017-08-24  ndp-opendap  <ndp@opendap.org>
+
+	Added tests for blocked second call to create_and_lock and for shared read access.
+
+2017-08-24  James Gallagher  <jgallagher@opendap.org>
+
+	Recovered the Coverity 'secure' line for .travis.yml
+	[skip ci]
+
+	Updated master with new commits for the hdf4 and hdf5 handlers
+
+2017-08-24  ndp-opendap  <ndp@opendap.org>
+
+	 More refinements
+
+	Added script that actually tests advisory file locking.
+
+2017-08-24  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into hyrax417
+
+2017-08-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #74 from OPENDAP/hyrax294
+	Hyrax294
+
+2017-08-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into hyrax294
+
+	Merge pull request #75 from OPENDAP/travis
+	Travis
+
+	Minor edits to travis.yml
+
+	Force dist to 'trusty' for travis.
+
+	Added parallel autotest operation to travis.yml
+
+	Minor fixes to install_bes_deps.sh
+
+	Removed forced build of libdap4 from install_besPdeps.sh
+
+2017-08-23  ndp-opendap  <ndp@opendap.org>
+
+	Added usage statement to FileLockingCacheTest so people, like me,
+	can figure out how to use it in the future.
+
+2017-08-23  James Gallagher  <jgallagher@opendap.org>
+
+	Try to streamline the travis builds
+
+	Merge branch 'master' into hyrax294
+
+2017-08-23  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into file-locking-cache-test
+
+2017-08-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #73 from OPENDAP/new-distcheck-fix
+	Hacked the travis.yml file to run the whole build.
+
+	Merge branch 'new-distcheck-fix' of https://github.com/opendap/bes
+	into new-distcheck-fix
+
+	Added test_utils.cc/h to dispatch/unit-tests for catT
+
+	Fixes for the catT test.
+
+2017-08-22  James Gallagher  <jgallagher@opendap.org>
+
+	Restored full build (was just distcheck for testing purposes).
+
+	Added -j7 back into distcheck on this branch and set so travis
+	will build this branch.
+
+	test just distcheck w/o parallel build
+
+	Merge branch 'distcheck-fix'
+
+	Removed unused bz2T
+
+	Merge pull request #72 from OPENDAP/distcheck-fix
+	Distcheck fix
+
+	bes/dispatch/unit-tests check does work with a parallel build
+	I 'fixed' this by turning off parallel builds in that directory.
+	Also, I removed the DISTCHECK_CONFIGURE_FLAGS env var from travis
+	since the AM_DISTCHECK_CONFIGURE_FLAGS is now working in the top
+	level Makefile.am. This means that we can now run 'make distcheck'
+	just like that in most cases.
+
+	Fixed conditional AM_DISTCHECK_CONFIGURE_FLAGS
+
+2017-08-18  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into hyrax417
+
+	More changes in unit-tests.
+
+	Merge branch 'master' into hyrax294
+
+2017-08-18  Nathan Potter  <ndp@opendap.org>
+
+	Updating submodules
+
+2017-07-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Task #417. Added condition to function_scale_grid.
+
+2017-07-28  ndp-opendap  <ndp@opendap.org>
+
+	sync
+
+2017-07-26  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Task Hyrax-294. Updated tests baseline.
+
+2017-07-23  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Task Hyrax294. Updated unit-test RangeFunctionTest.
+
+	Task Hyrax-294. Made scale_grid work correctly
+
+2017-07-21  ndp-opendap  <ndp@opendap.org>
+
+	Dropped cruft block
+
+	Dropping bug exploration code
+
+	sync
+
+2017-07-20  ndp-opendap  <ndp@opendap.org>
+
+	sync
+
+	Adding key file for BES
+
+	FileLockingCacheTest is working and behaving correctly. Now we
+	need a test that utilizes it.
+
+2017-07-20  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - Makefile.am 'improved' but the code doesn't build yet
+
+	Fixed issues in the Makefile.am and replaced <> with "" for local includes
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	hdf5_handler updated
+
+2017-07-19  ndp-opendap  <ndp@opendap.org>
+
+	sync
+
+	Starting framework for using two processes to test our friend FileLockingCache
+
+	modules updated
+
+2017-07-19  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #70 from OPENDAP/nodaemon
+	Trying to make besdaemon be a foreground process if we wish.
+
+2017-07-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #69 from OPENDAP/hyrax263
+	Ticket HYRAX-263: Geotiff output appears to have the latitude axis in…
+
+2017-07-11  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'hyrax263' of https://github.com/opendap/bes into hyrax263
+
+	Corrected FONgTransform.cc
+
+2017-07-08  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Ticket HYRAX-263: Geotiff output appears to have the latitude axis inverted.
+
+2017-07-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added stuff to modules/data
+	Information about all of the data files we currently have in the
+	various handlers. Not perfectly clean, but a decent synopsis.
+
+	Added two bescmd file to modules/fileout_gdal to test geotiff output
+	I have not wired these up yet, so they are 'unused' tests. Maybe once
+	the extra_data project gets set up...
+
+	coads data file no longer executable
+
+	Minor edits - removed old comments in functions grid() code
+
+	Method name refactor in functions
+
+	Updated to match the changed name of the 'extra_data' directory in bes/modules
+
+	Formatting and spelling in bes/functions/scale_util.cc
+
+	Added subdir-objects to bes/functions/unit-tests/Makefile.am
+
+	Added bes/functions/test/extra_tests that test some grid() and
+	scale_array/scale_gird with real data.
+
+2017-06-30  Nathan Potter  <ndp@opendap.org>
+
+	Trying to make besdaemon be a foreground process if we wish.
+
+2017-06-26  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #68 from OPENDAP/hyrax-283
+	Resolves seg fault problem the occured when the
+
+2017-06-26  ndp-opendap  <ndp@opendap.org>
+
+	Resolves seg fault problem the occured when the fileout gdal code
+	encountered a grid_mapping attribute whose value failed to name
+	another var in the dds.
+
+2017-06-12  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #67 from OPENDAP/range_function
+	Range function
+
+2017-06-11  ndp-opendap  <ndp@opendap.org>
+
+	Added regression tests for range function
+
+2017-06-09  ndp-opendap  <ndp@opendap.org>
+
+	Added monotonicity edge case unit-test.
+
+	Added monotonicity edge case unit-test.
+
+2017-06-08  ndp-opendap  <ndp@opendap.org>
+
+	Added a monotonicity detector to the range function. Added unit tests.
+
+2017-06-07  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into range_function
+	Conflicts:
+	functions/DapFunctions.cc
+	functions/Makefile.am
+	Added unit tests for the range_fumction code.
+
+2017-06-06  James Gallagher  <jgallagher@opendap.org>
+
+	Hacked RangeFunction a bit and added a unit-test file
+	The unit test does not test the function yet, but it can
+	be built on to do so.
+
+	Merge branch 'master' into range_function
+	Resolved Conflicts:
+	functions/DapFunctions.cc
+	functions/Makefile.am
+
+2017-06-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #66 from OPENDAP/hyrax391
+	Hyrax391
+
+	Merge branch 'master' into hyrax391; also...
+	Fixed an issue on Linux where ppt/unit-test/sbT failed because it
+	included 'getopt.h' and not 'GetOpt.h'. Modified Makefile.am so that
+	it's comment about AM_DISTCHECK_CONFIGURE_FLAGS is correct.
+	# Conflicts:
+	#	dispatch/unit-tests/pfileT.cc
+	#	dispatch/unit-tests/plistT.cc
+
+	Merge pull request #65 from OPENDAP/gdal_handler_fix
+	Gdal handler fix
+
+	Removed a call to configure tests for fileout_netcdf/unit-tests in configure.ac
+
+	Removed 'apache' from Makefile.am EXTRA_DIST
+	I removed the 'apache' dir from the code, too.
+
+2017-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Two Makefile.am fixes for removed files - fixes distcheck
+
+	Fixed comments in gdal_handler testsuite.at
+
+2017-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	New version of gdal_build_dmr() is much better at making shared dims
+	Also, lots of new tests; all pass. This version of the handler will
+	not take care of reduced resolution bands as gracefully as could be
+	the case, but it's pretty good (it will not bind them to shared dims).
+	The DMR is correct and build from DMR/DAP4 API calls except for the
+	attributes which are made using DAP2 AttrTable objects that are transformed
+	to DAP4 attributes.
+
+	Reset the executable bit on GDALTypes.h
+
+	Valgrind suppressions used with the gdal_handler on CentOS
+
+	Merge branch 'master' into gdal_handler_fix
+
+	Hackery for the Hyrax-391 ticket - fix CppUnit tests for the BES.
+	I fixed some conflicts that crep in as we made changes to master
+	for the release. I addressed the issue regarding fileout_netcdf's
+	two overlapping sets of tests - the old ones were deleted. I removed
+	the 'apache' directory from the project (so there's no need to update
+	its tests).
+
+	Merge branch 'master' into hyrax391
+
+	Merge pull request #62 from OPENDAP/hyrax-378
+	Hyrax 378
+
+2017-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added more tests; still need baselines
+
+	Added more tests
+
+	Checkpoint: Added gdal_new_build_dmr() but it's not quite working.
+
+2017-06-01  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into hyrax391
+
+2017-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Refactor in the gdal_handler
+	Extract functions for building global and variable attributes
+	Make a new header for the 'gdal utils' and move the util code into
+	a source file with than name.
+	Make GDAL library handles const & paramters
+	Remove old code.
+	Remove files used with this was a separate project - this will serve as
+	a test for the checklist in ticket Hyrax-401 (or parts of that ticket).
+
+	Merge branch 'master' into gdal_handler_fix
+
+	Added 'tests/cache' to the list of ignores
+	skip-ci ci-skip
+
+	Merge branch 'hyrax-378' of https://github.com/opendap/bes into hyrax-378
+
+	Merge branch 'master' into hyrax-378
+
+2017-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused types/code
+
+	Merge pull request #61 from OPENDAP/gh-docs
+	Gh docs
+
+	Removed unused headers in GDALRequestHandler.cc
+
+	The DAP response now works.
+	There's more work that should be done here, but this is the minimal
+	needed to get the NCML handler working and all of the responses
+	correct.
+
+2017-05-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Task #391. Formatted changed files.
+
+2017-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused class GDAL_DDS
+
+	Added tests - DAP2 only so far
+
+2017-05-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Ticket #391. Part 3.
+
+	Merge branch 'master' into hyrax391
+
+2017-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Refactored gdal_handler so it no longer keeps the GDALDataset handle open.
+	This code was keeping the GDALDataset handle open across calls to the
+	RequestHandler when returning data responses and this breaks the NCML
+	handler.
+
+2017-05-31  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2017-05-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into hyrax391
+
+2017-05-31  Nathan Potter  <ndp@opendap.org>
+
+	Updated static build spec file
+
+	Modified tests to rely on shell/os to manage cleaning up temp dir content
+
+2017-05-30  ndp-opendap  <ndp@opendap.org>
+
+	updates to all_modules.txt
+
+	Versioning for Hyrax-1.13.5 release
+
+	Hyrax-1.13.5 versioning commit
+
 2017-05-26  James Gallagher  <jgallagher@opendap.org>
 
 	Merge pull request #64 from OPENDAP/hdf5-build-fix

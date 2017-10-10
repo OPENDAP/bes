@@ -42,7 +42,7 @@
 
 #include "FONgTransform.h"
 
-#include "../../old/FONgBaseType.h"
+// #include "../../old/FONgBaseType.h"
 #include "FONgGrid.h"
 
 using namespace std;
@@ -498,14 +498,35 @@ void FONgTransform::transform_to_jpeg2000()
 
             BESDEBUG("fong3", "calling band->RasterIO" << endl);
 
+            // If the latitude values are inverted, the 0th value will be less than
+            // the last value.
+            vector<double> local_lat;
+            extract_double_array(fbtp->d_lat, local_lat);
+
             // NB: Here the 'type' value indicates the type of data in the buffer. The
             // type of the band is set above when the dataset is created.
-            CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(),
-                                          data, width(), height(), GDT_Float64, 0, 0);
+//            CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(),
+//                                          data, width(), height(), GDT_Float64, 0, 0);
+
+            if (local_lat[0] < local_lat[local_lat.size() - 1]) {
+                BESDEBUG("fong3", "Writing reversed raster. Lat[0] = " << local_lat[0] << endl);
+                //---------- write reverse raster----------
+                for (int row = 0; row <= height()-1; ++row) {
+                    int offsety=height()-row-1;
+                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Float64, 0, 0);
+                    if (error_write != CPLE_None)
+                        throw Error("Could not write data for band: " + long_to_string(i + 1) + ": " + string(CPLGetLastErrorMsg()));
+                }
+            }
+            else {
+                BESDEBUG("fong3", "calling band->RasterIO" << endl);
+                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Float64, 0, 0);
+                if (error != CPLE_None)
+                     throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
+            }
+
             delete[] data;
 
-            if (error != CPLE_None)
-                throw Error(CPLGetLastErrorMsg());
         }
         catch (...) {
             GDALClose(d_dest);

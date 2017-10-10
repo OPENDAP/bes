@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 TESTSUITE = $(srcdir)/testsuite
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4		\
-atlocal.in bes.conf.modules.in gdal handler_tests_macros.m4
+atlocal.in $(BES_CONF_IN) gdal handler_tests_macros.m4
 
 noinst_DATA = bes.conf
 
@@ -19,11 +19,7 @@ clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE)
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
