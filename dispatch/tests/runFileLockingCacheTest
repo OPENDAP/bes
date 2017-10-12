@@ -29,7 +29,7 @@ write_lock_elapsed=0;
 read_lock_hold_time=3;
 read_lock_elapsed=0;
 #
-# Time it should take if
+# Time it should take if the lock is working
 minimum_expected_time=`echo "$write_lock_hold_time+$read_lock_hold_time" | bc`
 
 
