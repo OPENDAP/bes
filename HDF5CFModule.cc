@@ -53,6 +53,8 @@ bool check_eos5(hid_t file_id) {
     string eos5_check_attr  = "HDFEOSVersion";
     string eos5_dataset     = "StructMetadata.0";
     htri_t has_eos_group    = -1;
+    bool   eos5_module_fields    = true;
+    
 
     has_eos_group = H5Lexists(file_id,eos5_check_group.c_str(),H5P_DEFAULT);
 
@@ -81,8 +83,15 @@ bool check_eos5(hid_t file_id) {
 
             // check the existence of the EOS5 dataset
             has_eos_dset = H5Lexists(eos_group_id,eos5_dataset.c_str(),H5P_DEFAULT);
-            if (has_eos_dset >0) 
-                return true;
+            if (has_eos_dset >0) {
+                // We still need to check if there are non-EOS5 fields that the 
+                // current HDF-EOS5 module cannot handle.
+                // If yes, the file cannot be handled by the HDF-EOS5 module since
+                // the current module is very tight to the HDF-EOS5 model.
+                // We will treat this file as a general HDF5 file.
+                eos5_module_fields = check_eos5_module_fields(file_id);
+                return eos5_module_fields;
+            }
             else if(0 == has_eos_dset) 
                 return false;
             else {
@@ -105,8 +114,9 @@ bool check_eos5(hid_t file_id) {
             throw InternalErr(__FILE__, __LINE__, msg);
         }
     }
-    else if( 0 == has_eos_group) 
+    else if( 0 == has_eos_group) {
         return false;
+    }
     else {
         string msg = "Fail to determine if the HDF5 group  ";
         msg += eos5_check_group;
@@ -119,4 +129,62 @@ bool check_eos5(hid_t file_id) {
 bool check_jpss(hid_t fileid) {
   // Currently not supported.
   return false;
+}
+
+bool check_eos5_module_fields(hid_t fileid){ 
+
+    bool ret_value = true;
+    string eos5_swath_group = "/HDFEOS/SWATHS";
+    string eos5_grid_group  = "/HDFEOS/GRIDS";
+    string eos5_zas_group   = "/HDFEOS/ZAS";
+    bool swath_unsupported_dset = false;
+    bool grid_unsupported_dset  = false;
+    bool zas_unsupported_dset   = false;
+    if(H5Lexists(fileid,eos5_swath_group.c_str(),H5P_DEFAULT)>0)
+        swath_unsupported_dset = grp_has_dset(fileid,eos5_swath_group); 
+    if(swath_unsupported_dset == true) 
+        return false;
+    else {
+        if(H5Lexists(fileid,eos5_grid_group.c_str(),H5P_DEFAULT)>0)
+            grid_unsupported_dset = grp_has_dset(fileid,eos5_grid_group);
+        if(grid_unsupported_dset == true)
+            return false;
+        else {
+            if(H5Lexists(fileid,eos5_zas_group.c_str(),H5P_DEFAULT)>0)
+                zas_unsupported_dset = grp_has_dset(fileid,eos5_zas_group);
+            if(zas_unsupported_dset == true) 
+                return false;
+        }
+    }
+
+    return ret_value;
+}
+
+bool grp_has_dset(hid_t fileid, const string & grp_path ) {
+
+    bool ret_value = false;
+    H5O_info_t oinfo;
+    if(H5Oget_info_by_name(fileid, grp_path.c_str(),&oinfo,H5P_DEFAULT)<0) { 
+        string msg = "Fail to obtain the HDF5 object information by name for the object.";
+        msg += grp_path;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    unsigned nelems = oinfo.rc;
+
+    for (unsigned i = 0; i<nelems;i++) {
+
+        H5O_info_t s_oinfo;
+        if(H5Oget_info_by_idx(fileid, grp_path.c_str(), H5_INDEX_NAME, H5_ITER_NATIVE,
+                                            i, &s_oinfo, H5P_DEFAULT)<0) {
+            string msg = "Error obtaining the info for the group";
+            msg += grp_path;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+        if(s_oinfo.type == H5O_TYPE_DATASET) {
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
 }
