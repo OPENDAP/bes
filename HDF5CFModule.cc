@@ -163,28 +163,39 @@ bool check_eos5_module_fields(hid_t fileid){
 bool grp_has_dset(hid_t fileid, const string & grp_path ) {
 
     bool ret_value = false;
-    H5O_info_t oinfo;
-    if(H5Oget_info_by_name(fileid, grp_path.c_str(),&oinfo,H5P_DEFAULT)<0) { 
-        string msg = "Fail to obtain the HDF5 object information by name for the object.";
+    hid_t pid = -1;
+    if((pid = H5Gopen(fileid,grp_path.c_str(),H5P_DEFAULT))<0){
+        string msg = "Unable to open the HDF5 group ";
         msg += grp_path;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    unsigned nelems = oinfo.rc;
+    H5G_info_t g_info;
 
-    for (unsigned i = 0; i<nelems;i++) {
+    if (H5Gget_info(pid, &g_info) < 0) {
+        H5Gclose(pid);
+        string msg = "Unable to obtain the HDF5 group info. for ";
+        msg += grp_path;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+ 
+    hsize_t nelems = g_info.nlinks;
 
-        H5O_info_t s_oinfo;
-        if(H5Oget_info_by_idx(fileid, grp_path.c_str(), H5_INDEX_NAME, H5_ITER_NATIVE,
-                                            i, &s_oinfo, H5P_DEFAULT)<0) {
-            string msg = "Error obtaining the info for the group";
+    for (hsize_t i = 0; i < nelems; i++) {
+
+        // Obtain the object type
+        H5O_info_t oinfo;
+        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
+            string msg = "Cannot obtain the object info for the group";
             msg += grp_path;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
-        if(s_oinfo.type == H5O_TYPE_DATASET) {
+
+        if(oinfo.type == H5O_TYPE_DATASET) {
             ret_value = true;
             break;
         }
     }
+    H5Gclose(pid);
     return ret_value;
 }
