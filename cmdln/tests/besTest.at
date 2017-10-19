@@ -1,38 +1,43 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-
 # ------------------------------
 #
 
 AT_INIT([bescmdln])
-# AT_COPYRIGHT([])
 
 AT_TESTED([bescmdln])
 
-AT_ARG_OPTION_ARG([generate g],
-    [  -g arg, --generate=arg   Build the baseline file for test 'arg'],
-    [if ./generate_metadata_baseline.sh $at_arg_generate; then
-         echo "Built baseline for $at_arg_generate"
-     else
-         echo "Could not generate baseline for $at_arg_generate"
-     fi     
-     exit],[])
-
-AT_ARG_OPTION_ARG([generate_data a],
-    [  -a arg, --generate_data=arg   Build the baseline file for test 'arg'],
-    [if ./generate_data_baseline.sh $at_arg_generate_data; then
-         echo "Built baseline for $at_arg_generate_data"
-     else
-         echo "Could not generate baseline for $at_arg_generate_data"
-     fi     
-     exit],[])
+AT_ARG_OPTION_ARG([baselines],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
      
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
 m4_define([_AT_BESCMD_TEST],   
-[AT_CHECK([bescmdln -h localhost -p 10022 -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_XFAIL_IF([test "$3" = "xfail"])
+[
+    input=$1
+    baseline=$2
+    pass=$3
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input], [], [stdout], [stderr])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+
+    dnl AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
+    dnl AT_CHECK([diff -b -B $baseline stdout])
+    dnl AT_XFAIL_IF([test z$pass = zxfail])
+    ])
+
+    dnl AT_CHECK([bescmdln -h localhost -p 10022 -i $1 || true], [], [stdout], [stderr])
+    dnl AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+    dnl AT_XFAIL_IF([test "$3" = "xfail"])
 ])
 
 m4_define([AT_BESCMD_DAS_RESPONSE_TEST],
