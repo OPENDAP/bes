@@ -482,6 +482,8 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw (Exce
     // datasets when data is written. It is not useful for data accessing as far as I know.
     // So we will remove it from the list. 
     // This algoritm will also remove  any dimension with size <=0. KY 2011-1-14
+    // Note: Unlimited dimension is supported by the handler but not by using this "Unlimited" name.
+    // For the unlimited dimension support, check class Dimension and function Retrieve_H5_VarDim.
     for (id = groupdimlist.begin(); id != groupdimlist.end();) {
         if ((*id).size <= 0) {
             id = groupdimlist.erase(id);
@@ -493,6 +495,9 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw (Exce
 }
 
 //  Condense redundant XDim, YDim in the grid/swath/za dimension list
+//  Some products use Xdim rather XDim, Ydim rather than Ydim. 
+//  This is significant for grids. We need to make them "XDim" and "YDim".
+//  See comments of function Adjust_EOS5VarDim_Info for the reason.
 void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Exception)
 {
 
@@ -678,7 +683,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) thr
 
         } // for (int j=0; j <he5g.dim_list.size(); j++)
 
-        // Check if having  Latitude/Longitude.
+        // Check if having  Latitude/Longitude. We will use those Latitude and Longitude as CVs if possible.
         EOS5SwathGrid_Set_LatLon_Flags(eos5grid, he5g.data_var_list);
 
         // Using map for possible the third-D CVs.
@@ -703,6 +708,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) thr
 
     } // for(int i=0; i < strmeta_info->grid_list.size(); i++)
 
+    // Adding this here seems a hack. 
     this->grids_multi_latloncvs = grids_mllcv;
 
     // Second Swath
@@ -794,7 +800,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) thr
         this->eos5cfzas.push_back(eos5za);
     } // for(int i=0; i < strmeta_info->za_list.size(); i++)
 
-// Debugging info
+// Debugging info,leave it here. They are very useful.
 #if 0
     for (vector<EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin();
         irg != this->eos5cfgrids.end(); ++irg) {
@@ -981,6 +987,8 @@ void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5T
     else
         throw1("Unsupported HDF-EOS5 type, this type is not swath, grid or zonal average");
 
+    // This assumption is pretty bold. It says: Any 1-D var that has a unique dim. name 
+    // in the var list is a 3rd-dim cv. We need to review this as time goes on. KY 2017-10-19
     pair<map<string, string>::iterator, bool> mapret;
     for (unsigned int i = 0; i < eos5varlist.size(); ++i) {
         HE5Var he5v = eos5varlist.at(i);
@@ -1133,8 +1141,8 @@ bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info) throw (Except
                     Set_NonParse_Var_Dims(eos5cfgrid, var, dimsizes_to_dimnames, num_grids, vartype);
                 }
             }
-        }                    // for (unsigned int i = 0; i < num_grids; ++i)
-    }                    // if (GRID == vartype)
+        }// for (unsigned int i = 0; i < num_grids; ++i)
+    }// if (GRID == vartype)
     else if (SWATH == vartype) {
         int num_swaths = strmeta_info->swath_list.size();
         for (int i = 0; i < num_swaths; ++i) {
@@ -1247,6 +1255,10 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
             for (unsigned int j = 0; j < he5v.dim_list.size(); j++) {
                 HE5Dim he5d = he5v.dim_list.at(j);
                 for (vector<Dimension *>::iterator ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
+
+                    // TOODOO: HDF-EOS5 has a bug to provide the right dimension size when the dataset is extensible. 
+                    // Very possible we need to provide a patch. KY 2017-10-19
+                    // All we need to do is perhaps to change the he5v dimension size. 
                     if ((hsize_t) (he5d.size) == (*ird)->size) {
                         // This will assure that the same size dims be assigned to different dims
                         if ("" == (*ird)->name) {
@@ -1268,6 +1280,7 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
             } // for (unsigned int j=0; j<he5v.dim_list.size();j++)
 
             // We have to go through the dimension list of this variable again to assure that every dimension has a name.
+            // This is how that FakeDim is added. We still need it just in case. KY 2017-10-19
             for (vector<Dimension *>::iterator ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
                 if ("" == (*ird)->name)
                     Create_Unique_DimName(eos5data, thisvar_dimname_set, *ird, num_groups, eos5type);
@@ -1687,6 +1700,7 @@ bool EOS5File::Check_Augmented_Var_Attrs(Var *var) throw(Exception) {
 // The general HDF-EOS5 variables have path like /HDFEOS/GRIDS/HIRDLS/Data Fields/Times.
 // So if we find the var name is the same as the string stripped from /HDFEOS/GRIDS/HIRDLS, 
 // then this file is augmented.
+// Hope that no other hybrid-HDFEOS5 files fall to this category.
 template<class T>
 bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, Var *var, EOS5Type eos5type) throw (Exception)
 {
@@ -3330,7 +3344,7 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr() throw (Exception)
                         (*ira)->strsize.resize(1);
                         (*ira)->strsize[0] = units_value.size();
                         copy(units_value.begin(), units_value.end(), (*ira)->value.begin());
-                        string tempstring((*ira)->value.begin(), (*ira)->value.end());
+                        //string tempstring((*ira)->value.begin(), (*ira)->value.end());
                     }
                     else if ((lon_cf_unit_attrvalue != units_value) && (*irv)->name == "Longitude") {
                         units_value = lon_cf_unit_attrvalue;

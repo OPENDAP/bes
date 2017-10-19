@@ -83,7 +83,12 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Retrieve all HDF5 info(Not the values)
         f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
-        // Update product type(this may occur that some special products may follow DIMSCALE model.
+        // Update product type
+        // Newer version of a product may have different layout and the 
+        // product type needs to be changed to reflect it. We also want
+        // to support the older version in case people still use them. 
+        // This routine will check if newer layout can be applied. If yes,
+        // update the product type.
         f->Update_Product_Type();
 
         // Need to add dimension names.
@@ -102,6 +107,9 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Handle special variables
         f->Handle_SpVar();
 
+        // When cv memory cache is on, the unit attributes are needed to
+        // distinguish whether this is lat/lon. Generally, memory cache 
+        // is not used. This routine will not be accessed.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
@@ -196,7 +204,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
     try {
         f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
-        // Update product type(this may occur that some special products may follow DIMSCALE model.
+        // Update product type(check comments of map_gmh5_cfdds)
         f->Update_Product_Type();
 
         f->Add_Dim_Name();
