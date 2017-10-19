@@ -6,7 +6,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
@@ -54,18 +54,17 @@ $(top_builddir)/ppt/libbes_ppt.la \
 $(top_builddir)/dispatch/libbes_dispatch.la
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS)
-libdmrpp_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module 
 libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = data dmrpp.conf.in
+EXTRA_DIST = dmrpp.conf.in
 
 CLEANFILES = *~ dmrpp.conf
 
-sample_datadir = $(datadir)/hyrax/data/dmrpp
-sample_data_DATA = $(SAMPLE_DATA_FILES)
+# sample_datadir = $(datadir)/hyrax/data/dmrpp
+# sample_data_DATA = $(SAMPLE_DATA_FILES)
 
 install-data-local: dmrpp.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
@@ -153,4 +152,3 @@ data/dmrpp/t_float.h5 \
 data/dmrpp/t_float.h5.dmrpp \
 data/dmrpp/t_int_scalar.h5 \
 data/dmrpp/t_int_scalar.h5.dmrpp
-
