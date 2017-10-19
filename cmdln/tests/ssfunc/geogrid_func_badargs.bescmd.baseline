@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <getAscii>
+    <getDODS>
         <BESError>
             <Type>3</Type>
-            <Message>libdap exception building response: error_code = 1005: Failed to read data: Wrong number of arguments to geogrid() (expected at least 5 args). See geogrid() for more information.</Message>
+            <Message>libdap exception building response: error_code = 1005: Failed to get values as ascii: Wrong number of arguments to geogrid() (expected at least 5 args). See geogrid() for more information.</Message>
             <Administrator>admin.email.address@your.domain.name</Administrator>
             <Location>
-                <File>BESAsciiTransmit.cc</File>
-                <Line>145</Line>
+                
+                
             </Location>
         </BESError>
-    </getAscii>
+    </getDODS>
 </response>

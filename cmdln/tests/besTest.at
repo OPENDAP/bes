@@ -26,75 +26,128 @@ m4_define([_AT_BESCMD_TEST],
     AT_CHECK([mv stdout $baseline.tmp])
     ],
     [
-    AT_CHECK([bescmdln -i $input], [], [stdout], [stderr])
+    AT_CHECK([bescmdln -i $input], [], [stdout])
     AT_CHECK([diff -b -B $baseline stdout])
     AT_XFAIL_IF([test _$pass = _xfail])
-
-    dnl AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
-    dnl AT_CHECK([diff -b -B $baseline stdout])
-    dnl AT_XFAIL_IF([test z$pass = zxfail])
     ])
-
-    dnl AT_CHECK([bescmdln -h localhost -p 10022 -i $1 || true], [], [stdout], [stderr])
-    dnl AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-    dnl AT_XFAIL_IF([test "$3" = "xfail"])
 ])
 
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([data])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input | getdap -M -], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input | getdap -M -], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    ])
+    
+    AT_CLEANUP
+])
+
+dnl
+dnl All the macros below use _AT_BESCMD_TEST. They provide keywords that
+dnl can be used to run different conceptually related groups of tests.
+dnl
+
 m4_define([AT_BESCMD_DAS_RESPONSE_TEST],
-[AT_SETUP([BESCMD $1])
-AT_KEYWORDS([das])
-_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
+[
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([das])
+    _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+    AT_CLEANUP
 ])
 
 m4_define([AT_BESCMD_DDS_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([dds])
 _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
+AT_CLEANUP
 ])
 
 m4_define([AT_BESCMD_DDX_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([ddx])
 _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
+AT_CLEANUP
 ])
 
 m4_define([AT_BESCMD_INFO_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([info])
 _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
+AT_CLEANUP
 ])
 
 m4_define([AT_BESCMD_HTML_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([html])
 _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
+AT_CLEANUP
 ])
 
 m4_define([AT_BESCMD_ASCII_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([ascii])
 _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
+AT_CLEANUP
 ])
+
+m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
+[
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([error])
+    
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/<Line>.*//g' | sed 's/<File>.*//g' ], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/<Line>.*//g' | sed 's/<File>.*//g'], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    ])
+
+    AT_CLEANUP
+])
+
+dnl lastModified="2017-07-18T17:45:39"
 
 m4_define([AT_BESCMD_SHOW_RESPONSE_TEST],
-[AT_SETUP([BESCMD $1])
-AT_KEYWORDS([show])
-_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP]
-])
+[   AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([show])
 
-m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
-[AT_SETUP([BESCMD $1])
-AT_KEYWORDS([data])
-AT_CHECK([bescmdln -h localhost -p 10022 -i $abs_srcdir/$1 | getdap -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
-AT_CLEANUP]
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1\3/g'], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1\3/g'], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    ])
+
+    dnl _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+
+    AT_CLEANUP
 ])
 
 AT_BESCMD_DAS_RESPONSE_TEST([ff/1998-6-avhrr.dat.0.bescmd], [pass])
@@ -129,30 +182,11 @@ AT_BESCMD_DDX_RESPONSE_TEST([ff/gsodock.dat.8.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ff/gsodock.dat.9.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/gsodock.dat.a.bescmd])
 
-AT_BESCMD_DAS_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.0.bescmd], [pass])
-AT_BESCMD_DDS_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.1.bescmd], [pass])
-AT_BESCMD_DDX_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.2.bescmd], [pass])
-AT_BESCMD_DDS_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.3.bescmd], [pass])
-AT_BESCMD_DDX_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.4.bescmd], [pass])
-AT_BESCMD_INFO_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.5.bescmd], [pass])
-AT_BESCMD_ASCII_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.6.bescmd], [pass])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf4/1990104h09da-gdm.hdf.7.bescmd])
-
 AT_BESCMD_DAS_RESPONSE_TEST([hdf4/S2000415.HDF.0.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([hdf4/S2000415.HDF.1.bescmd], [pass])
 AT_BESCMD_DDX_RESPONSE_TEST([hdf4/S2000415.HDF.2.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([hdf4/S2000415.HDF.3.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf4/S2000415.HDF.4.bescmd])
-
-# 12.28.12 jhrg. The hdf5 handlers is calling all its datasets
-# 'virtual' and THG has completely revamped the tests, so the 
-# tcompoind.h5 file isn't there anyway. 
-# AT_BESCMD_DAS_RESPONSE_TEST([hdf5/tcompound.h5.0.bescmd], [pass])
-# AT_BESCMD_DDS_RESPONSE_TEST([hdf5/tcompound.h5.1.bescmd], [pass])
-# AT_BESCMD_DDX_RESPONSE_TEST([hdf5/tcompound.h5.2.bescmd], [pass])
-# AT_BESCMD_INFO_RESPONSE_TEST([hdf5/tcompound.h5.3.bescmd], [pass])
-# AT_BESCMD_ASCII_RESPONSE_TEST([hdf5/tcompound.h5.4.bescmd], [pass])
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf5/tcompound.h5.5.bescmd])
 
 AT_BESCMD_DAS_RESPONSE_TEST([nc/fnoc1.nc.0.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([nc/fnoc1.nc.1.bescmd], [pass])
@@ -171,10 +205,10 @@ AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/ff_date_func.5.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/ff_date_func.6.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/ff_date_func.7.bescmd])
 
-AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_badargs.bescmd], [pass])
+AT_BESCMD_ERROR_RESPONSE_TEST([ssfunc/geogrid_func_badargs.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_basic.0.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_basic.1.bescmd])
-AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_swapcoords.bescmd], [pass])
+AT_BESCMD_ERROR_RESPONSE_TEST([ssfunc/geogrid_func_swapcoords.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.0.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.1.bescmd])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.2.bescmd], [pass])
