@@ -7,5 +7,5 @@
 	    <constraint>&amp;GSO_AVHRR.day_num&gt;160&amp;GSO_AVHRR.day_num&lt;162</constraint>
 	</container>
     </define>
-    <get type="ascii" definition="e" />
+    <get type="dods" definition="e" returnAs="ascii"/>
 </request>

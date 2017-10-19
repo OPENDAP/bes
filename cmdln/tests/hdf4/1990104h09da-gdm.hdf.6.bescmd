@@ -10,5 +10,5 @@
 	    <constraint>Sea_Surface_Temperature[0:200:4095][0:200:2047]</constraint>
 	</container>
     </define>
-    <get type="ascii" definition="c" />
+    <get type="dods" definition="c" returnAs="ascii"/>
 </request>
