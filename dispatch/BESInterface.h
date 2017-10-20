@@ -134,7 +134,7 @@ private:
     int _timeout_from_keys; ///< can be overridden by a setContext command
 
 protected:
-    BESDataHandlerInterface *_dhi;
+    BESDataHandlerInterface *d_dhi_ptr;
     BESTransmitter *_transmitter;
 
     virtual int exception_manager(BESError &e);

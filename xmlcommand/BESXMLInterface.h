@@ -36,9 +36,9 @@
 #include <new>
 #include <vector>
 
-using std::new_handler;
-using std::bad_alloc;
-using std::vector;
+//using std::new_handler;
+//using std::bad_alloc;
+//using std::vector;
 
 #include "BESInterface.h"
 #include "BESXMLUtils.h"
@@ -51,8 +51,9 @@ class BESXMLCommand;
  */
 class BESXMLInterface: public BESInterface {
 private:
-    vector<BESXMLCommand *> _cmd_list;
-    BESDataHandlerInterface _base_dhi;
+    vector<BESXMLCommand *> d_xml_cmd_list;
+    BESDataHandlerInterface d_xml_interface_dhi;
+
 protected:
     virtual void initialize();
     virtual void validate_data_request();
@@ -63,6 +64,7 @@ protected:
     virtual void log_status();
     virtual void report_request();
     virtual void clean();
+
 public:
     BESXMLInterface(const string &cmd, ostream *strm);
     virtual ~BESXMLInterface();
