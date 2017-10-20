@@ -5,5 +5,5 @@
     <define name="d">
 	<container name="nscat" />
     </define>
-    <get type="ascii" definition="d" />
+    <get type="dods" definition="d" returnAs="ascii"/>
 </request>

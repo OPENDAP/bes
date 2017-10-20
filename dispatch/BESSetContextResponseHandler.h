@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -50,19 +50,17 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESSetContextResponseHandler : public BESResponseHandler
-{
+class BESSetContextResponseHandler: public BESResponseHandler {
 public:
-				BESSetContextResponseHandler( const string &name ) ;
-    virtual			~BESSetContextResponseHandler( void ) ;
+    BESSetContextResponseHandler(const string &name);
+    virtual ~BESSetContextResponseHandler(void);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *SetContextResponseBuilder( const string &name ) ;
+    static BESResponseHandler *SetContextResponseBuilder(const string &name);
 };
 
 #endif // I_BESSetContextResponseHandler_h

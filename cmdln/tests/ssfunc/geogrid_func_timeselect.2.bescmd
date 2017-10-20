@@ -7,5 +7,5 @@
 	    <constraint>geogrid(SST,61,-82,38,-19,&quot;TIME&lt;1500&quot;)</constraint>
 	</container>
     </define>
-    <get type="ascii" definition="e" />
+    <get type="dods" definition="e" returnAs="ascii"/>
 </request>

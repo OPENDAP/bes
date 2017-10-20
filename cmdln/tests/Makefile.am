@@ -15,8 +15,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
-EXTRA_DIST = besTest.at $(TESTSUITE) atlocal.in	\
-ff hdf4 hdf5 nc show ssfunc
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
 
 DISTCLEANFILES = besTest
 
@@ -26,8 +25,11 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/besTest
 
-server-tests: atconfig atlocal $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+check-local: atconfig atlocal $(TESTSUITE)
+	@if echo `besctl status` | grep "PID:"; \
+		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
+		else echo "no bes found, not running cmdln-based tests"; \
+	fi
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

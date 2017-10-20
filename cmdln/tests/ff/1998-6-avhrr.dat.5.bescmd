@@ -5,5 +5,5 @@
     <define name="e">
 	<container name="av" />
     </define>
-    <get type="ascii" definition="e" />
+    <get type="dods" definition="e" returnAs="ascii" />
 </request>
