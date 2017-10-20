@@ -71,10 +71,10 @@
 #include "BESLog.h"
 
 using namespace std;
-
+#if 0
 list<p_bes_init> BESInterface::_init_list;
 list<p_bes_end> BESInterface::_end_list;
-
+#endif
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
 
@@ -483,10 +483,12 @@ int BESInterface::finish_with_error(int status)
     return finish(status);
 }
 
+#if 0
 void BESInterface::add_init_callback(p_bes_init init)
 {
     _init_list.push_back(init);
 }
+#endif
 
 /** @brief Initialize the BES object
  *
@@ -516,11 +518,10 @@ void BESInterface::initialize()
 
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::initialize", d_dhi_ptr->data[REQUEST_ID]);
-
+#if 0
     BESDEBUG("bes", "Initializing request: " << d_dhi_ptr->data[DATA_REQUEST] << " ... " << endl);
     bool do_continue = true;
     init_iter i = _init_list.begin();
-
     for (; i != _init_list.end() && do_continue == true; i++) {
         p_bes_init p = *i;
         do_continue = p(*d_dhi_ptr);
@@ -534,6 +535,7 @@ void BESInterface::initialize()
     else {
         BESDEBUG("bes", "OK" << endl);
     }
+#endif
 }
 
 void BESInterface::build_data_request_plan()
@@ -754,10 +756,12 @@ void BESInterface::report_request()
     BESDEBUG("bes", "OK" << endl);
 }
 
+#if 0
 void BESInterface::add_end_callback(p_bes_end end)
 {
     _end_list.push_back(end);
 }
+#endif
 
 /** @brief End the BES request
  *
@@ -766,13 +770,14 @@ void BESInterface::add_end_callback(p_bes_end end)
  */
 void BESInterface::end_request()
 {
+#if 0
     BESDEBUG("bes", "Ending request: " << d_dhi_ptr->data[DATA_REQUEST] << " ... " << endl);
     end_iter i = _end_list.begin();
     for (; i != _end_list.end(); i++) {
         p_bes_end p = *i;
         p(*d_dhi_ptr);
     }
-
+#endif
     // now clean up any containers that were used in the request, release
     // the resource
     d_dhi_ptr->first_container();
@@ -833,6 +838,7 @@ void BESInterface::dump(ostream & strm) const
     strm << BESIndent::LMarg << "BESInterface::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
 
+#if 0
     if (_init_list.size()) {
         strm << BESIndent::LMarg << "termination functions:" << endl;
         BESIndent::Indent();
@@ -860,6 +866,7 @@ void BESInterface::dump(ostream & strm) const
     else {
         strm << BESIndent::LMarg << "termination functions: none" << endl;
     }
+#endif
 
     strm << BESIndent::LMarg << "data handler interface:" << endl;
     BESIndent::Indent();
@@ -875,5 +882,6 @@ void BESInterface::dump(ostream & strm) const
     else {
         strm << BESIndent::LMarg << "transmitter: not set" << endl;
     }
+
     BESIndent::UnIndent();
 }

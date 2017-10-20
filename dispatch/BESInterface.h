@@ -122,6 +122,7 @@ typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
  */
 class BESInterface: public BESObj {
 private:
+#if 0
     typedef list<p_bes_init>::const_iterator init_citer;
     typedef list<p_bes_init>::iterator init_iter;
     static list<p_bes_init> _init_list;
@@ -129,6 +130,7 @@ private:
     typedef list<p_bes_end>::const_iterator end_citer;
     typedef list<p_bes_end>::iterator end_iter;
     static list<p_bes_end> _end_list;
+#endif
 
     ostream *_strm;
     int _timeout_from_keys; ///< can be overridden by a setContext command
@@ -169,9 +171,11 @@ public:
     virtual int finish_with_error(int status);
 
     virtual void dump(ostream &strm) const;
-
+#if 0
     static void add_init_callback(p_bes_init init);
     static void add_end_callback(p_bes_end end);
+#endif
+
 };
 
 #endif // BESInterface_h_
