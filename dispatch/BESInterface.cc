@@ -192,7 +192,7 @@ static void* alarm_wait(void * /* arg */)
     }
     else {
         stringstream oss;
-        oss << "While waiting for a timeout, found signal '" << result << "' in "  << __PRETTY_FUNCTION__ << ends;
+        oss << "While waiting for a timeout, found signal '" << result << "' in " << __PRETTY_FUNCTION__ << ends;
         BESDEBUG("bes", oss.str() << endl);
         throw BESInternalFatalError(oss.str(), __FILE__, __LINE__);
     }
@@ -200,18 +200,18 @@ static void* alarm_wait(void * /* arg */)
 
 static void wait_for_timeout()
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     pthread_attr_t thread_attr;
 
     if (pthread_attr_init(&thread_attr) != 0)
-        throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
     if (pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED /*PTHREAD_CREATE_JOINABLE*/) != 0)
-        throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
 
     int status = pthread_create(&alarm_thread, &thread_attr, alarm_wait, NULL);
     if (status != 0)
-        throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
 }
 #endif
 
@@ -329,11 +329,10 @@ int BESInterface::execute_request(const string &from)
         initialize();
 
         string m = BESLog::mark;
-        *(BESLog::TheLog()) << _dhi->data[REQUEST_FROM] << m <<
-            "request received" << m << endl;
+        *(BESLog::TheLog()) << _dhi->data[REQUEST_FROM] << m << "request received" << m << endl;
         BESLog::TheLog()->flush_me();
 
-        // This does not do anything here or in BESBasicInterface or BESXMLInterface.
+        // This does not do anything here or in BESXMLInterface.
         // Remove it? jhrg 12/23/15
         validate_data_request();
 
@@ -539,7 +538,7 @@ void BESInterface::initialize()
 
 void BESInterface::build_data_request_plan()
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     // The derived class build_data_request_plan should be run first to
     // parse the incoming request. Once parsed we can determine if there is
@@ -561,7 +560,6 @@ void BESInterface::build_data_request_plan()
         BESDEBUG("bes", "OK" << endl);
     }
 }
-
 
 /** @brief Validate the incoming request information
  */
@@ -611,7 +609,6 @@ void BESInterface::execute_data_request_plan()
         VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
         alarm(bes_timeout);
     }
-
 
     BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
     BESResponseHandler *rh = _dhi->response_handler;
@@ -795,12 +792,12 @@ void BESInterface::clean()
     if (_dhi) {
         _dhi->clean();
 
-        VERBOSE(_dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl);
+        VERBOSE(
+            _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " [" << _dhi->data[DATA_REQUEST] << "] cleaning" << endl);
 #if 0
         if (BESLog::TheLog()->is_verbose()) {
             *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-                << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
         }
 #endif
     }
