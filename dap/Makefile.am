@@ -8,6 +8,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+AM_CPPFLAGS =  $(XML2_CFLAGS) -I$(top_srcdir)/xmlcommand
 AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
@@ -58,7 +59,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	CacheTypeFactory.cc \
 	BESHandlerUtil.cc \
 	CacheMarshaller.cc CacheUnMarshaller.cc \
-	ObjMemCache.cc
+	ObjMemCache.cc \
+	ShowPathInfoResponseHandler.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -88,7 +90,8 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	CacheTypeFactory.h \
 	BESHandlerUtil.h \
 	CacheMarshaller.h CacheUnMarshaller.h \
-	ObjMemCache.h
+	ObjMemCache.h \
+	ShowPathInfoResponseHandler.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
