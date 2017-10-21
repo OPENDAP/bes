@@ -109,7 +109,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
         // When cv memory cache is on, the unit attributes are needed to
         // distinguish whether this is lat/lon. Generally, memory cache 
-        // is not used. This routine will not be accessed.
+        // is not used. This snipnet will not be accessed.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
@@ -512,10 +512,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             case CV_EXIST: 
             {
                 HDF5CFArray *ar = NULL;
+
+                // Need to check if this CV is lat/lon. This is necessary when data memory cache is turned on.
                 bool is_latlon = cvar->isLatLon();
-//cerr<<"cvar path is "<<cvar->getFullPath()<<endl;
-//if(is_latlon) cerr<<"this is lat/lon" <<endl;
-//else cerr<<"this is NOT lat/lon"<<endl;
                 
                 try {
                     ar = new HDF5CFArray (

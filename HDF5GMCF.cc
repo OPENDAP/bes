@@ -6216,6 +6216,77 @@ GMFile::Handle_SpVar_Attr() throw(Exception) {
 
 }
 
+bool
+GMFile::Is_Hybrid_EOS5() {
+
+    bool has_group_hdfeos  = false;
+    bool has_group_hdfeos_info = false;
+
+    // Too costly to check the dataset. 
+    // We will just check the attribute under /HDFEOS INFORMATION.
+    // bool hasdd_dset_structmeta = false;
+
+    // First check if the HDFEOS groups are included
+    for (vector<Group *>::iterator irg = this->groups.begin();
+        irg != this->groups.end(); ++ irg) {
+        if ("/HDFEOS" == (*irg)->path) 
+            has_group_hdfeos = true;
+        else if("/HDFEOS INFORMATION" == (*irg)->path) {
+            for(vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                ira != (*irg)->attrs.end();ira++) {
+                if("HDFEOSVersion" == (*ira)->name)
+                    has_group_hdfeos_info = true;
+            }
+        }
+        if(true == has_group_hdfeos && true == hdf_group_hdfeos_info)
+            break;
+    }
+
+    
+    if(true == has_group_hdfeos && true == hdf_group_hdfeos_info) 
+        return true;
+    else 
+        return false;
+}
+
+void GMFile::Handle_Hybrid_EOS5() {
+
+    string eos_str="HDFEOS_";
+    string grid_str="GRIDS_";
+    string swath_str="SWATHS_";
+    string df_str="Data_Fields_";
+    string gf_str="Geolocation_Fields_";
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); irv++) {
+        string temp_var_name = (*irv)->newname;
+        
+        //temp_var_newname = reduce_string(temp_var_name,"HDFEOS_","GRIDS_","Data_Fields");
+        
+//#if 0
+        string::size_type eos_pos = temp_var_name.find(eos_str);
+        if(eos_pos!=string::npos) {
+            temp_var_name.erase(eos_pos,eos_str.size());
+            // Check grid,swath and zonal 
+            string::size_type grid_pos=temp_var_name.find(grid_str);
+            if(grid_pos!=string::npos){
+                if(temp_var_name.find("Data_Fields")!=string::npos) {
+                     string temp_var_newname = HDF5CFUtil::Remove_Strs(
+
+                }
+
+            }
+            else {
+            
+
+
+            }
+        }
+//#endif
+          
+
+
+    }
+}
 // We will create some temporary coordinate variables. The resource allocoated
 // for these variables need to be released.
 void 

@@ -609,6 +609,12 @@ public:
     /// Add supplemental attributes such as fullpath and original name
     virtual void Add_Supplement_Attrs(bool) throw (Exception);
 
+    /// Check if having Grid Mapping Attrs
+    virtual void Have_Grid_Mapping_Attrs();
+
+    /// Handle Grid Mapping Vars
+    virtual void Handle_Grid_Mapping_Vars();
+
     /// Handle "coordinates" attributes
     virtual void Handle_Coor_Attr() = 0;
 
@@ -872,6 +878,16 @@ public:
     /// Add supplemental attributes such as fullpath and original name for general NASA HDF5 products
     void Add_Supplement_Attrs(bool) throw (Exception);
 
+    /// Check if having Grid Mapping Attrs
+    void Have_Grid_Mapping_Attrs();
+    
+    /// Handle Grid Mapping Vars
+    void Handle_Grid_Mapping_Vars();
+
+    //
+    bool Is_Hybrid_EOS5();
+    void Handle_Hybrid_EOS5();
+ 
     /// Handle "coordinates" attributes for general HDF5 products
     void Handle_Coor_Attr();
 
@@ -992,6 +1008,8 @@ protected:
     void Handle_GM_Unsupported_Dtype(bool) throw (Exception);
     void Handle_GM_Unsupported_Dspace(bool) throw (Exception);
 
+    bool Is_hybrid_eos5();
+    void Handle_Hybrid_EOS5();
     void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
 
 private:
