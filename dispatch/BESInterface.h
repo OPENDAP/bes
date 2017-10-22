@@ -44,8 +44,10 @@ using std::list;
 class BESError;
 class BESTransmitter;
 
+#if 0
 typedef bool (*p_bes_init)(BESDataHandlerInterface &dhi);
 typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
+#endif
 
 /** @brief Entry point into BES, building responses to given requests.
 
