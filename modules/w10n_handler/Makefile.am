@@ -27,12 +27,12 @@ libw10n_handler_la_LDFLAGS = -avoid-version -module
 libw10n_handler_la_LIBADD = $(LIBADD)
 
 W10N_SRC = w10n_utils.cc W10NModule.cc \
-	# ShowPathInfoResponseHandler.cc ShowPathInfoCommand.cc \
 	W10nJsonTransform.cc W10nJsonTransmitter.cc W10nJsonRequestHandler.cc
+#	ShowPathInfoResponseHandler.cc ShowPathInfoCommand.cc 
 
 W10N_HDR = w10n_utils.h  W10NModule.h  \
-	# ShowPathInfoResponseHandler.h  ShowPathInfoCommand.h \
 	W10nJsonTransform.h W10nJsonTransmitter.h W10nJsonRequestHandler.h W10NNames.h
+#	ShowPathInfoResponseHandler.h  ShowPathInfoCommand.h 
 
 EXTRA_DIST = data w10n.conf.in
 

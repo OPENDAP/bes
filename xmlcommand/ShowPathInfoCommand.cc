@@ -8,6 +8,10 @@
 
 #define SPI_DEBUG_KEY "show_path_info"
 
+#define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
+#define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
+
+
 ShowPathInfoCommand::ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {

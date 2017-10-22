@@ -25,10 +25,12 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_W10NResponseHandler_h
-#define I_W10NResponseHandler_h 1
+#ifndef I_ShowPathInfoResponseHandler_h
+#define I_ShowPathInfoResponseHandler_h 1
 
 #include "BESResponseHandler.h"
+
+#define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
 
 /** @brief response handler that returns nodes or leaves within the catalog
  * either at the root or at a specified node.
@@ -46,6 +48,15 @@
 class ShowPathInfoResponseHandler : public BESResponseHandler
 {
 private:
+    void eval_resource_path(
+        const string &w10nResourceId,
+        const string &catalogRoot,
+        const bool follow_sym_links,
+        string &validPath,
+        bool &isFile,
+        bool &isDir,
+        string &remainder);
+
 public:
 	ShowPathInfoResponseHandler( const string &name );
     virtual	~ShowPathInfoResponseHandler( void ) ;
@@ -59,5 +70,5 @@ public:
     static BESResponseHandler *ShowPathInfoResponseBuilder( const string &name ) ;
 };
 
-#endif // I_W10NResponseHandler_h
+#endif // I_ShowPathInfoResponseHandler_h
 

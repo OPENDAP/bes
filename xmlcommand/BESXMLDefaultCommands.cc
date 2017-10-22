@@ -50,6 +50,7 @@ using std::endl;
 #include "BESXMLDeleteContainersCommand.h"
 #include "BESXMLDeleteDefinitionCommand.h"
 #include "BESXMLDeleteDefinitionsCommand.h"
+#include "ShowPathInfoCommand.h"
 
 /** @brief Loads the default set of BES XML commands
  */
@@ -79,6 +80,10 @@ int BESXMLDefaultCommands::initialize(int, char**)
     BESXMLCommand::add_command( DELETE_CONTAINERS_STR, BESXMLDeleteContainersCommand::CommandBuilder);
     BESXMLCommand::add_command( DELETE_DEFINITION_STR, BESXMLDeleteDefinitionCommand::CommandBuilder);
     BESXMLCommand::add_command( DELETE_DEFINITIONS_STR, BESXMLDeleteDefinitionsCommand::CommandBuilder);
+
+    BESDEBUG( "besxml", "    adding " << SHOW_PATH_INFO_RESPONSE_STR << " command" << endl ) ;
+    BESXMLCommand::add_command( SHOW_PATH_INFO_RESPONSE_STR, ShowPathInfoCommand::CommandBuilder ) ;
+
 
     BESDEBUG("besxml", "Done Initializing default commands:" << endl);
 

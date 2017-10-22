@@ -8,7 +8,7 @@
 #define W10N_CALLBACK_KEY "w10nCallback"
 #define W10N_TRAVERSE_KEY "w10nTraverse"
 
-
+/*
 #define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
 #define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
 
@@ -19,5 +19,6 @@
 #define IS_DATA "isData"
 #define IS_FILE "isFile"
 #define IS_DIR  "isDir"
+*/
 
 #endif // D_W10NNames_H

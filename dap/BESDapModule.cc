@@ -71,6 +71,7 @@ using std::endl;
 
 #include "DapFunctionUtils.h"
 #include "ServerFunctionsList.h"
+#include "ShowPathInfoResponseHandler.h"
 
 
 void BESDapModule::initialize(const string &modname)
@@ -137,13 +138,11 @@ void BESDapModule::initialize(const string &modname)
     WrapItUp *wiu = new WrapItUp();
     libdap::ServerFunctionsList::TheList()->add_function(wiu);
 
+    BESDEBUG("dap", "    adding " << SHOW_PATH_INFO_RESPONSE << " response handler" << endl ) ;
+    BESResponseHandlerList::TheList()->add_handler( SHOW_PATH_INFO_RESPONSE, ShowPathInfoResponseHandler::ShowPathInfoResponseBuilder ) ;
 
 	BESDEBUG("dap", "    adding dap debug context" << endl);
 	BESDebug::Register("dap");
-
-
-
-
 
 	BESDEBUG("dap", "Done Initializing DAP Modules:" << endl);
 }
