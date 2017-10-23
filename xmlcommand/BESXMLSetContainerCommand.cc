@@ -80,13 +80,13 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         string err = action + " command: name property missing";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _dhi.data[SYMBOLIC_NAME] = name;
+    d_xmlcmd_dhi.data[SYMBOLIC_NAME] = name;
 
     // where should this container be stored
-    _dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+    d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
     storage = props["space"];
     if (!storage.empty()) {
-        _dhi.data[STORE_NAME] = storage;
+        d_xmlcmd_dhi.data[STORE_NAME] = storage;
     }
     else {
         storage = PERSISTENCE_VOLATILE;
@@ -94,10 +94,10 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
 
     // this can be the empty string, so just set it this way
     string container_type = props["type"];
-    _dhi.data[CONTAINER_TYPE] = container_type;
+    d_xmlcmd_dhi.data[CONTAINER_TYPE] = container_type;
 
     // now that everything has passed tests, set the value in the dhi
-    _dhi.data[REAL_NAME] = value;
+    d_xmlcmd_dhi.data[REAL_NAME] = value;
 
     // if there is a child node, then the real value of the container is
     // this content, or is set in this content.
@@ -106,17 +106,17 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         xmlNodeDump(buf, real->doc, real, 2, 1);
         if (buf->content) {
             value = (char *) buf->content;
-            _dhi.data[REAL_NAME] = (char *) (buf->content);
+            d_xmlcmd_dhi.data[REAL_NAME] = (char *) (buf->content);
         }
     }
 
-    _dhi.action = SETCONTAINER;
+    d_xmlcmd_dhi.action = SETCONTAINER;
 
-    _str_cmd = (string) "set container in " + storage + " values " + name + "," + value;
+    d_cmd_log_info = (string) "set container in " + storage + " values " + name + "," + value;
     if (!container_type.empty()) {
-        _str_cmd += "," + container_type;
+        d_cmd_log_info += "," + container_type;
     }
-    _str_cmd += ";";
+    d_cmd_log_info += ";";
 
     // now that we've set the action, go get the response handler for the
     // action

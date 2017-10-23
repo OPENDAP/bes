@@ -59,6 +59,7 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
     string value;
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, name, value, props);
+
     if (name != GET_RESPONSE) {
         string err = "The specified command " + name + " is not a get command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
@@ -75,7 +76,7 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
     p_xmlcmd_builder bldr = BESXMLCommand::find_command(new_cmd);
     if (bldr) {
         // the base dhi was copied to this instance's _dhi variable.
-        _sub_cmd = bldr(_dhi);
+        _sub_cmd = bldr(d_xmlcmd_dhi);
         if (!_sub_cmd) {
             string err = (string) "Failed to build command object for " + new_cmd;
             throw BESInternalError(err, __FILE__, __LINE__);
@@ -88,42 +89,58 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
         return;
     }
 
-    parse_basic_get(node, name, type, value, props);
-    _str_cmd += ";";
+    parse_basic_get(type, props);
+    d_cmd_log_info += ";";
 
     // now that we've set the action, go get the response handler for the
     // action
     BESXMLCommand::set_response();
 }
 
-void BESXMLGetCommand::parse_basic_get(xmlNode */*node*/, const string &name, const string &type,
-    const string &/*value*/, map<string, string> &props)
+/**
+ * @brief Extract information from the 'props' map
+ *
+ * Extract the values for various properties from the whole command
+ * file and load them into this command's DHI 'data' map or the specific
+ * 'definition' or 'space' values.
+ *
+ * @param name Always 'get' FIXME Remove this
+ * @param type The thing to get (e.g., dds)
+ * @param props Holds the definition, space, returnAs, etc., values to
+ * be used with when running the command.
+ */
+void BESXMLGetCommand::parse_basic_get(const string &type, map<string, string> &props)
 {
-    _str_cmd = (string) "get " + type;
+    d_cmd_log_info = (string) "get " + type;
+
     _definition = props["definition"];
     if (_definition.empty()) {
-        string err = name + " command: Must specify definition";
+        string err = "get command: Must specify definition";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _str_cmd += " for " + _definition;
+
+    d_cmd_log_info += " for " + _definition;
 
     _space = props["space"];
-    if (!_space.empty()) _str_cmd += " in " + _space;
+
+    if (!_space.empty()) d_cmd_log_info += " in " + _space;
 
     string returnAs = props["returnAs"];
     if (returnAs.empty()) {
         returnAs = DAP2_FORMAT;
     }
-    _dhi.data[RETURN_CMD] = returnAs;
 
-    _dhi.data[STORE_RESULT] = props[STORE_RESULT];
-    _dhi.data[ASYNC] = props[ASYNC];
+    d_xmlcmd_dhi.data[RETURN_CMD] = returnAs;
 
-    _str_cmd += " return as " + returnAs;
+    d_xmlcmd_dhi.data[STORE_RESULT] = props[STORE_RESULT];
+    d_xmlcmd_dhi.data[ASYNC] = props[ASYNC];
 
-    _dhi.action = "get.";
-    _dhi.action += BESUtil::lowercase(type);
-    BESDEBUG("besxml", "Converted xml element name to command " << _dhi.action << endl);
+    d_cmd_log_info += " return as " + returnAs;
+
+    d_xmlcmd_dhi.action = "get.";
+    d_xmlcmd_dhi.action += BESUtil::lowercase(type);
+
+    BESDEBUG("besxml", "Converted xml element name to command " << d_xmlcmd_dhi.action << endl);
 }
 
 /** @brief returns the BESDataHandlerInterface of either a sub command, if
@@ -133,11 +150,11 @@ void BESXMLGetCommand::parse_basic_get(xmlNode */*node*/, const string &name, co
  *         instances
  */
 BESDataHandlerInterface &
-BESXMLGetCommand::get_dhi()
+BESXMLGetCommand::get_xmlcmd_dhi()
 {
-    if (_sub_cmd) return _sub_cmd->get_dhi();
+    if (_sub_cmd) return _sub_cmd->get_xmlcmd_dhi();
 
-    return _dhi;
+    return d_xmlcmd_dhi;
 }
 
 /** @brief Prepare any information needed to execute the request of
@@ -175,12 +192,12 @@ void BESXMLGetCommand::prep_request()
     BESDefine::containers_citer i = d->first_container();
     BESDefine::containers_citer ie = d->end_container();
     while (i != ie) {
-        _dhi.containers.push_back(*i);
+        d_xmlcmd_dhi.containers.push_back(*i);
         i++;
     }
 
-    _dhi.data[AGG_CMD] = d->get_agg_cmd();
-    _dhi.data[AGG_HANDLER] = d->get_agg_handler();
+    d_xmlcmd_dhi.data[AGG_CMD] = d->get_agg_cmd();
+    d_xmlcmd_dhi.data[AGG_HANDLER] = d->get_agg_handler();
 }
 
 /** @brief dumps information about this object

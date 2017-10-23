@@ -51,15 +51,18 @@ class BESXMLCommand;
  */
 class BESXMLInterface: public BESInterface {
 private:
+    /// This matches all of the XML commands to methods that parse them
     vector<BESXMLCommand *> d_xml_cmd_list;
+
+    //
     BESDataHandlerInterface d_xml_interface_dhi;
 
 protected:
-    virtual void initialize();
-    virtual void validate_data_request();
+    //virtual void initialize();
+    //virtual void validate_data_request();   // never used
     virtual void build_data_request_plan();
     virtual void execute_data_request_plan();
-    virtual void invoke_aggregation();
+    // virtual void invoke_aggregation();      // never used
     virtual void transmit_data();
     virtual void log_status();
     virtual void report_request();
@@ -69,7 +72,7 @@ public:
     BESXMLInterface(const string &cmd, ostream *strm);
     virtual ~BESXMLInterface();
 
-    virtual int execute_request(const string &from);
+    //virtual int execute_request(const string &from);
 
     virtual void dump(ostream &strm) const;
 };

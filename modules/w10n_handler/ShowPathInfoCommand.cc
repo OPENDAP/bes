@@ -30,18 +30,18 @@ void ShowPathInfoCommand::parse_request(xmlNode *node)
     }
 
     // the the action is to show the w10n info response
-    _dhi.action = SHOW_PATH_INFO_RESPONSE;
-    _dhi.data[SHOW_PATH_INFO_RESPONSE] = SHOW_PATH_INFO_RESPONSE;
-    _str_cmd = "show pathInfo";
+    d_xmlcmd_dhi.action = SHOW_PATH_INFO_RESPONSE;
+    d_xmlcmd_dhi.data[SHOW_PATH_INFO_RESPONSE] = SHOW_PATH_INFO_RESPONSE;
+    d_cmd_log_info = "show pathInfo";
 
     // node is an optional property, so could be empty string
-    _dhi.data[CONTAINER] = props["node"];
-    if (!_dhi.data[CONTAINER].empty()) {
-        _str_cmd += " for " + _dhi.data[CONTAINER];
+    d_xmlcmd_dhi.data[CONTAINER] = props["node"];
+    if (!d_xmlcmd_dhi.data[CONTAINER].empty()) {
+        d_cmd_log_info += " for " + d_xmlcmd_dhi.data[CONTAINER];
     }
-    _str_cmd += ";";
+    d_cmd_log_info += ";";
 
-    BESDEBUG(W10N_DEBUG_KEY, "Built BES Command: '" << _str_cmd << "'"<< endl );
+    BESDEBUG(W10N_DEBUG_KEY, "Built BES Command: '" << d_cmd_log_info << "'"<< endl );
 
     // now that we've set the action, go get the response handler for the
     // action by calling set_response() in our parent class

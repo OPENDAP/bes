@@ -63,6 +63,7 @@ BESXMLInterface::~BESXMLInterface()
     clean();
 }
 
+#if 0
 int BESXMLInterface::execute_request(const string &from)
 {
     return BESInterface::execute_request(from);
@@ -81,6 +82,7 @@ void BESXMLInterface::validate_data_request()
 {
     BESInterface::validate_data_request();
 }
+#endif
 
 /** @brief Build the data request plan using the BESCmdParser.
  */
@@ -193,7 +195,7 @@ void BESXMLInterface::build_data_request_plan()
                     BESDEBUG("besxml", "parse request using " << node_name << endl);
                     current_cmd->parse_request(current_node);
 
-                    BESDataHandlerInterface &current_dhi = current_cmd->get_dhi();
+                    BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
 
                     BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
 
@@ -249,17 +251,19 @@ void BESXMLInterface::execute_data_request_plan()
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         (*i)->prep_request();
-        d_dhi_ptr = &(*i)->get_dhi();
+        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
         BESInterface::execute_data_request_plan();
     }
 }
 
+#if 0
 /** @brief Invoke the aggregation server, if there is one
  */
 void BESXMLInterface::invoke_aggregation()
 {
     BESInterface::invoke_aggregation();
 }
+#endif
 
 /** @brief Transmit the response object
  */
@@ -268,8 +272,8 @@ void BESXMLInterface::transmit_data()
     string returnAs = d_dhi_ptr->data[RETURN_CMD];
     if (returnAs != "") {
         BESDEBUG("xml", "Setting transmitter: " << returnAs << " ...  " << endl);
-        _transmitter = BESReturnManager::TheManager()->find_transmitter(returnAs);
-        if (!_transmitter) {
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(returnAs);
+        if (!d_transmitter) {
             string s = (string) "Unable to find transmitter " + returnAs;
             throw BESSyntaxUserError(s, __FILE__, __LINE__);
         }
@@ -288,7 +292,7 @@ void BESXMLInterface::log_status()
     vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
-        d_dhi_ptr = &(*i)->get_dhi();
+        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
         BESInterface::log_status();
     }
 }
@@ -313,7 +317,7 @@ void BESXMLInterface::report_request()
     vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
-        d_dhi_ptr = &(*i)->get_dhi();
+        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
         BESInterface::report_request();
     }
 }
@@ -326,7 +330,7 @@ void BESXMLInterface::clean()
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
-        d_dhi_ptr = &cmd->get_dhi();
+        d_dhi_ptr = &cmd->get_xmlcmd_dhi();
         BESInterface::clean();
         delete cmd;
     }

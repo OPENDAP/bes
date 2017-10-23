@@ -75,10 +75,11 @@ using namespace std;
 list<p_bes_init> BESInterface::_init_list;
 list<p_bes_end> BESInterface::_end_list;
 #endif
+
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
 
-// Define this to use sigwait() is a child thread to detect that SIGALRM
+// Define this to use sigwait() in a child thread to detect that SIGALRM
 // has been raised (i.e., that the timeout interval has elapsed). This
 // does not currently work, but could be a way to get information about
 // a timeout back to the BES's client if the BES itslef were structured
@@ -216,9 +217,9 @@ static void wait_for_timeout()
 #endif
 
 BESInterface::BESInterface(ostream *output_stream) :
-    _strm(output_stream), _timeout_from_keys(0), d_dhi_ptr(0), _transmitter(0)
+    d_strm(output_stream), d_timeout_from_keys(0), d_dhi_ptr(0), d_transmitter(0)
 {
-    if (!output_stream) {
+    if (!d_strm) {
         throw BESInternalError("output stream must be set in order to output responses", __FILE__, __LINE__);
     }
 
@@ -231,7 +232,7 @@ BESInterface::BESInterface(ostream *output_stream) :
     TheBESKeys::TheKeys()->get_value(BES_TIMEOUT_KEY, timeout_key_value, found);
     if (found) {
         istringstream iss(timeout_key_value);
-        iss >> _timeout_from_keys;
+        iss >> d_timeout_from_keys;
     }
 
     // Install signal handler for alarm() here
@@ -242,9 +243,11 @@ BESInterface::BESInterface(ostream *output_stream) :
 #endif
 }
 
+#if 0
 BESInterface::~BESInterface()
 {
 }
+#endif
 
 /** @brief Executes the given request to generate a specified response object
 
@@ -310,16 +313,13 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
-    d_dhi_ptr->set_output_stream(_strm);
+    d_dhi_ptr->set_output_stream(d_strm);
     d_dhi_ptr->data[REQUEST_FROM] = from;
 
     pid_t thepid = getpid();
     ostringstream ss;
     ss << thepid;
     d_dhi_ptr->data[SERVER_PID] = ss.str();
-
-    // This is never used except as an arg to finish. jhrg 12/23/15
-    //int status = 0;
 
     // We split up the calls for the reason that if we catch an
     // exception during the initialization, building, execution, or response
@@ -338,7 +338,7 @@ int BESInterface::execute_request(const string &from)
 
         build_data_request_plan();
 
-        if (!_transmitter)
+        if (!d_transmitter)
             throw BESInternalError("Unable to transmit the response, no transmitter", __FILE__, __LINE__);
 
         // This method does two key things: Calls the request handler to make a
@@ -509,11 +509,12 @@ void BESInterface::initialize()
     // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
     BESDEBUG("bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl);
 
-    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
-    if (!_transmitter) {
+    d_transmitter = BESReturnManager::TheManager()->find_transmitter(BASIC_TRANSMITTER);
+    if (!d_transmitter) {
         string s = (string) "Unable to find transmitter " + BASIC_TRANSMITTER;
         throw BESInternalError(s, __FILE__, __LINE__);
     }
+
     BESDEBUG("bes", "OK" << endl);
 
     BESStopWatch sw;
@@ -554,11 +555,12 @@ void BESInterface::build_data_request_plan()
     if (d_dhi_ptr->data[RETURN_CMD] != "") {
         BESDEBUG("bes", "Finding transmitter: " << d_dhi_ptr->data[RETURN_CMD] << " ...  " << endl);
 
-        _transmitter = BESReturnManager::TheManager()->find_transmitter(d_dhi_ptr->data[RETURN_CMD]);
-        if (!_transmitter) {
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(d_dhi_ptr->data[RETURN_CMD]);
+        if (!d_transmitter) {
             string s = (string) "Unable to find transmitter " + d_dhi_ptr->data[RETURN_CMD];
             throw BESSyntaxUserError(s, __FILE__, __LINE__);
         }
+
         BESDEBUG("bes", "OK" << endl);
     }
 }
@@ -606,8 +608,8 @@ void BESInterface::execute_data_request_plan()
         VERBOSE("Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
         alarm(bes_timeout);
     }
-    else if (_timeout_from_keys != 0) {
-        bes_timeout = _timeout_from_keys;
+    else if (d_timeout_from_keys != 0) {
+        bes_timeout = d_timeout_from_keys;
         VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
         alarm(bes_timeout);
     }
@@ -712,13 +714,13 @@ void BESInterface::transmit_data()
         (*BESLog::TheLog()) << strm.str() << endl;
         BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
 
-        d_dhi_ptr->error_info->transmit(_transmitter, *d_dhi_ptr);
+        d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
         BESDEBUG("bes",
             "  BESInterface::transmit_data() - Response handler  " << d_dhi_ptr->response_handler->get_name() << endl);
 
-        d_dhi_ptr->response_handler->transmit(_transmitter, *d_dhi_ptr);
+        d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr);
     }
 
     BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl);
@@ -873,10 +875,10 @@ void BESInterface::dump(ostream & strm) const
     d_dhi_ptr->dump(strm);
     BESIndent::UnIndent();
 
-    if (_transmitter) {
+    if (d_transmitter) {
         strm << BESIndent::LMarg << "transmitter:" << endl;
         BESIndent::Indent();
-        _transmitter->dump(strm);
+        d_transmitter->dump(strm);
         BESIndent::UnIndent();
     }
     else {

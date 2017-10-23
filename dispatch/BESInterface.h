@@ -35,7 +35,7 @@
 
 #include <list>
 
-using std::list;
+//using std::list;
 
 #include "BESDataHandlerInterface.h"
 
@@ -134,12 +134,12 @@ private:
     static list<p_bes_end> _end_list;
 #endif
 
-    ostream *_strm;
-    int _timeout_from_keys; ///< can be overridden by a setContext command
+    ostream *d_strm;
+    int d_timeout_from_keys; ///< can be overridden by a setContext command
 
 protected:
     BESDataHandlerInterface *d_dhi_ptr;
-    BESTransmitter *_transmitter;
+    BESTransmitter *d_transmitter;
 
     virtual int exception_manager(BESError &e);
     virtual void initialize();
@@ -166,7 +166,7 @@ protected:
     virtual void clean();
 
     BESInterface(ostream *strm);
-    virtual ~BESInterface();
+    virtual ~BESInterface() { }
 
 public:
     virtual int execute_request(const string &from);

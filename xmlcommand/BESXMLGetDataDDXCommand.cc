@@ -70,7 +70,7 @@ void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    parse_basic_get(node, name, type, value, props);
+    parse_basic_get(type, props);
 
     // Get the elements for contentStartId and mimeBoundary
     map<string, string> cprops;
@@ -85,7 +85,7 @@ void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             _contentStartId = cval;
-            _str_cmd += " contentStartId " + _contentStartId;
+            d_cmd_log_info += " contentStartId " + _contentStartId;
             elems++;
         }
         if (cname == "mimeBoundary") {
@@ -94,7 +94,7 @@ void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             _mimeBoundary = cval;
-            _str_cmd += " mimeBoundary " + _mimeBoundary;
+            d_cmd_log_info += " mimeBoundary " + _mimeBoundary;
             elems++;
         }
         cprops.clear();
@@ -108,7 +108,7 @@ void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
         string err = name + " command: mimeBoundary not specified";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _str_cmd += ";";
+    d_cmd_log_info += ";";
 
     // now that we've set the action, go get the response handler for the
     // action
@@ -123,8 +123,8 @@ void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
 void BESXMLGetDataDDXCommand::prep_request()
 {
     BESXMLGetCommand::prep_request();
-    _dhi.data[DATADDX_STARTID] = _contentStartId;
-    _dhi.data[DATADDX_BOUNDARY] = _mimeBoundary;
+    d_xmlcmd_dhi.data[DATADDX_STARTID] = _contentStartId;
+    d_xmlcmd_dhi.data[DATADDX_BOUNDARY] = _mimeBoundary;
 }
 
 /** @brief dumps information about this object
