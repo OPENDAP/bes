@@ -102,7 +102,8 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
  *
  * Extract the values for various properties from the whole command
  * file and load them into this command's DHI 'data' map or the specific
- * 'definition' or 'space' values.
+ * 'definition' or 'space' values. As a side effect, build the cmd_log_info
+ * string (used to record information about this command in the BES log.
  *
  * @param name Always 'get' FIXME Remove this
  * @param type The thing to get (e.g., dds)
@@ -111,19 +112,18 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
  */
 void BESXMLGetCommand::parse_basic_get(const string &type, map<string, string> &props)
 {
-    d_cmd_log_info = (string) "get " + type;
+    d_cmd_log_info = "get ";    // Remove any old value of this string
+    d_cmd_log_info.append(type);
 
     _definition = props["definition"];
-    if (_definition.empty()) {
-        string err = "get command: Must specify definition";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
+    if (_definition.empty())
+        throw BESSyntaxUserError("get command: Must specify definition", __FILE__, __LINE__);
 
-    d_cmd_log_info += " for " + _definition;
+    d_cmd_log_info.append(" for ").append(_definition);
 
     _space = props["space"];
 
-    if (!_space.empty()) d_cmd_log_info += " in " + _space;
+    if (!_space.empty()) d_cmd_log_info.append(" in ").append(_space);
 
     string returnAs = props["returnAs"];
     if (returnAs.empty()) {
@@ -135,10 +135,10 @@ void BESXMLGetCommand::parse_basic_get(const string &type, map<string, string> &
     d_xmlcmd_dhi.data[STORE_RESULT] = props[STORE_RESULT];
     d_xmlcmd_dhi.data[ASYNC] = props[ASYNC];
 
-    d_cmd_log_info += " return as " + returnAs;
+    d_cmd_log_info.append(" return as ").append(returnAs);
 
     d_xmlcmd_dhi.action = "get.";
-    d_xmlcmd_dhi.action += BESUtil::lowercase(type);
+    d_xmlcmd_dhi.action.append(BESUtil::lowercase(type));
 
     BESDEBUG("besxml", "Converted xml element name to command " << d_xmlcmd_dhi.action << endl);
 }
