@@ -54,9 +54,9 @@ BESXMLGetDataDDXCommand::BESXMLGetDataDDXCommand(const BESDataHandlerInterface &
  */
 void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
 {
-    string name;
-    string value;
-    map<string, string> props;
+    string name;                // element name
+    string value;               // node context
+    map<string, string> props;  // attributes
     BESXMLUtils::GetNodeInfo(node, name, value, props);
 
     if (name != GET_RESPONSE) {

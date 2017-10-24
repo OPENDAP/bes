@@ -47,9 +47,15 @@ BESXMLGetCommand::BESXMLGetCommand(const BESDataHandlerInterface &base_dhi) :
 {
 }
 
-/** @brief parse a get command.
+/**
+ * @brief parse a `get` command.
  *
- &lt;get  type="dds" definition="d" returnAs="name" /&gt;
+ * The `get` commands have the form:
+ *
+ * `get type="dds" definition="d" returnAs="name"`
+ *
+ * and return the `returnAs` item derived from the `type` object
+ * for the data referenced by the `definition`.
  *
  * @param node xml2 element node pointer
  */
