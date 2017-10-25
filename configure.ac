@@ -787,6 +787,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/Makefile
     modules/dmrpp_module/unit-tests/Makefile 
     modules/dmrpp_module/unit-tests/test_config.h
+    modules/dmrpp_module/tests/Makefile 
+    modules/dmrpp_module/tests/atlocal
     modules/dmrpp_module/data/Makefile 
 
     modules/fileout_json/Makefile
@@ -895,13 +897,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
 
+    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
 
     ]
 )
 
-dnl    modules/dmrpp_module/tests/Makefile 
-dnl    modules/dmrpp_module/tests/atlocal
-dnl    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
 
 AC_OUTPUT
 
