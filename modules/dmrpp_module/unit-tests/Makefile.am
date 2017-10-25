@@ -4,11 +4,12 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LDADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
-LDADD += $(CPPUNIT_LIBS)
+LIBADD += $(CPPUNIT_LIBS)
 endif
 
 if USE_VALGRIND
@@ -58,38 +59,40 @@ endif
 # HDRS and SRCS are not used. They were used with VPATH, but that
 # broke the distcheck target.
 
-HDRS = DmrppArray.h DmrppByte.h DmrppD4Enum.h DmrppD4Group.h DmrppD4Opaque.h\
-DmrppD4Sequence.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
-DmrppInt64.h DmrppInt8.h DmrppParserSax2.h DmrppStr.h DmrppStructure.h \
-DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h DmrppUrl.h DmrppUtil.h \
-DmrppTypeFactory.h DmrppCommon.h H4ByteStream.h
+#HDRS = DmrppArray.h DmrppByte.h DmrppD4Enum.h DmrppD4Group.h DmrppD4Opaque.h\
+#DmrppD4Sequence.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
+#DmrppInt64.h DmrppInt8.h DmrppParserSax2.h DmrppStr.h DmrppStructure.h \
+#DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h DmrppUrl.h DmrppUtil.h \
+#DmrppTypeFactory.h DmrppCommon.h H4ByteStream.h
 
-SRCS = DmrppArray.cc DmrppByte.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc\
-DmrppD4Sequence.cc DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc \
-DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
-DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
-DmrppTypeFactory.cc DmrppCommon.cc H4ByteStream.cc $(HDRS)
+#SRCS = DmrppArray.cc DmrppByte.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc\
+#DmrppD4Sequence.cc DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc \
+#DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
+#DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
+#DmrppTypeFactory.cc DmrppCommon.cc H4ByteStream.cc $(HDRS)
 
-OBJS = ../DmrppArray.o ../DmrppByte.o ../DmrppD4Enum.o ../DmrppD4Group.o ../DmrppD4Opaque.o\
-../DmrppD4Sequence.o ../DmrppFloat32.o ../DmrppFloat64.o ../DmrppInt16.o ../DmrppInt32.o \
-../DmrppInt64.o ../DmrppInt8.o ../DmrppParserSax2.o ../DmrppStr.o ../DmrppStructure.o \
-../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppUrl.o ../DmrppUtil.o \
-../DmrppTypeFactory.o ../DmrppCommon.o H4ByteStream.o 
+#OBJS = ../DmrppArray.o ../DmrppByte.o ../DmrppD4Enum.o ../DmrppD4Group.o ../DmrppD4Opaque.o\
+#../DmrppD4Sequence.o ../DmrppFloat32.o ../DmrppFloat64.o ../DmrppInt16.o ../DmrppInt32.o \
+#../DmrppInt64.o ../DmrppInt8.o ../DmrppParserSax2.o ../DmrppStr.o ../DmrppStructure.o \
+#../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppUrl.o ../DmrppUtil.o \
+#../DmrppTypeFactory.o ../DmrppCommon.o H4ByteStream.o 
+
+OBJS = ../*.o 
 
 DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDFLAGS =  $(OBJS) $(LDADD) 
+DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD) 
 
 # -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
 
 DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
-DmrppTypeReadTest_LDFLAGS = $(OBJS) $(LDADD)
+DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
 
 DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
-DmrppChunkedReadTest_LDFLAGS = $(OBJS) $(LDADD)
+DmrppChunkedReadTest_LDADD   = $(OBJS) $(LIBADD)
 
 DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
-DmrppHttpReadTest_LDFLAGS = $(OBJS) $(LDADD)
+DmrppHttpReadTest_LDADD   = $(OBJS) $(LIBADD)
 
 DmrppUtilTest_SOURCES = DmrppUtilTest.cc
-DmrppUtilTest_LDFLAGS = $(OBJS) $(LDADD)
+DmrppUtilTest_LDADD   = $(OBJS) $(LIBADD)
 
