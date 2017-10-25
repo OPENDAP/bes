@@ -287,6 +287,8 @@ BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
 AC_SUBST(BES_XML_CMD_LIB)
 BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
 AC_SUBST(BES_PPT_LIB)
+BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
+AC_SUBST(BES_DAP_LIB)
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 
