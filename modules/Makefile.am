@@ -2,7 +2,7 @@
 #
 # jhrg 11/18/13.
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = csv_handler usage asciival www-interface freeform_handler dmrpp_module
 

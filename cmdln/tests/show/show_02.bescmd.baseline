@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showInfo>
+        <dataset catalog="catalog" count="3"  name="data/hdf4" node="true" size="170"/>
+    </showInfo>
+</response>

@@ -8,9 +8,8 @@ TESTSUITE_TIF = $(srcdir)/testsuite_tif
 TESTSUITE_JP2 = 
 # endif
 
-EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) \
-$(srcdir)/package.m4 atlocal.in bes.conf.in \
-handler_tests_macros.m4 bes.conf.modules.in gdal
+EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) $(srcdir)/package.m4 \
+atlocal.in handler_tests_macros.m4 $(BES_CONF_IN) gdal
 
 # if OPENJPEG_FOUND
 # EXTRA_DIST += $(TESTSUITE_JP2).at $(TESTSUITE_JP2)
@@ -31,11 +30,7 @@ clean-local:
 	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' --clean
 	-rm -f $(TESTSUITE_TIF) $(TESTSUITE_JP2) $(srcdir)/package.m4 
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

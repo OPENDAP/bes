@@ -1,0 +1,8 @@
+
+This directory contains tests that exercise the BES 'end-to-end.'
+They are run using the target server-tests. However, these tests
+are rarely used and are unlikely to be maintained, thus they
+almost certainly will fail. We're keeping them around becuase
+they might be useful some day.
+
+jheg 9/27/17

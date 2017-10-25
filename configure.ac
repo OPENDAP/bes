@@ -247,19 +247,27 @@ AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
-dnl dap-mouldes is true by default; use --disable-dap-modules or
-dnl --enable-dap-modules=no to turn this off. jhrg 11/17/13
+dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
-AC_ARG_WITH([dap-modules],
-  [AS_HELP_STRING([--without-dap-modules], [do_not build the bundled dap modules (default is to build the modules)])],
-  [with_dap_modules=${withval} ],
-  [with_dap_modules=yes])
+AC_ARG_WITH([dap-exp-modules],
+  [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
+  [with_dap_exp_modules=${withval} ],
+  [with_dap_exp_modules=no])
 
-dnl DAP_MODULES=
-AM_CONDITIONAL([DAP_MODULES], [test x$with_dap_modules = xyes])
+AM_CONDITIONAL([DAP_EXP_MODULES], [test x$with_dap_exp_modules = xyes])
+
+dnl dap-builtin-mouldes is true by default; use --disable-dap-builtin-modules or
+dnl --enable-dap-builtin-modules=no to turn this off. jhrg 11/17/13
+
+AC_ARG_WITH([dap-builtin-modules],
+  [AS_HELP_STRING([--with-dap-builtin-modules], [build the builtin dap modules (default is yes)])],
+  [with_dap_builtin_modules=${withval} ],
+  [with_dap_builtin_modules=yes])
+
+AM_CONDITIONAL([DAP_BUILTIN_MODULES], [test x$with_dap_builtin_modules = xyes])
 
 dnl These are tests that only apply if the modules are being built too.
-AM_COND_IF([DAP_MODULES], [
+AM_COND_IF([DAP_BUILTIN_MODULES], [
 
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
@@ -649,7 +657,7 @@ fi
 
 dnl End handler specific tests
 
-],[ # else AM_COND_IF([DAP_MODULES]
+],[ # else AM_COND_IF([DAP_BUILTIN_MODULES]
 
 dnl These are needed because the symbols are used in each modules Makefile.am
 dnl files. It might be that if the generation of those Makefiles was also conditional,
@@ -667,7 +675,7 @@ AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
 AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
 
-])	# AM_COND_IF([DAP_MODULES]
+])	# AM_COND_IF([DAP_BUILTIN_MODULES]
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
@@ -695,6 +703,10 @@ AC_CONFIG_FILES([Makefile
 		 dispatch/tests/Makefile
 		 dispatch/tests/atlocal
 		 
+		 hello_world/Makefile
+		 hello_world/tests/Makefile
+		 hello_world/tests/atlocal
+		  
 		 docs/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
@@ -702,8 +714,8 @@ AC_CONFIG_FILES([Makefile
 		 ppt/unit-tests/Makefile
 		 cmdln/Makefile
 		 cmdln/unit-tests/Makefile
-		 cmdln/testsuite/Makefile
-		 cmdln/testsuite/atlocal
+		 cmdln/tests/Makefile
+		 cmdln/tests/atlocal
 		 standalone/Makefile
 		 server/Makefile
 		 server/test/Makefile
@@ -730,17 +742,18 @@ dnl when geo-functions is reenabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
-AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
-	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
-AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh],
-	[chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
-
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 
-AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
-AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
+AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl])
 
-AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
+dnl A better way to control starting a stopping hyrax is needed.
+dnl For now, use besd (which can be run from startup scripts or
+dnl using besctl) and tomcat. both bes and tomcat can be set to
+dnl start at boot time. jhrg 9/27/17 
+dnl AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
+
+AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
+AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
@@ -748,12 +761,12 @@ AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 
 dnl Output files if building the modules too
 		 
-AM_COND_IF([DAP_MODULES],
+AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
     modules/csv_handler/Makefile
-    modules/csv_handler/bes-testsuite/Makefile
-    modules/csv_handler/bes-testsuite/atlocal
+    modules/csv_handler/tests/Makefile
+    modules/csv_handler/tests/atlocal
 
     modules/usage/Makefile
     
@@ -772,8 +785,6 @@ AM_COND_IF([DAP_MODULES],
     modules/debug_functions/tests/atlocal
 
     modules/dmrpp_module/Makefile
-    modules/dmrpp_module/tests/Makefile 
-    modules/dmrpp_module/tests/atlocal
     modules/dmrpp_module/unit-tests/Makefile 
     modules/dmrpp_module/unit-tests/test_config.h
     modules/dmrpp_module/data/Makefile 
@@ -781,12 +792,12 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
     modules/fileout_json/unit-tests/test_config.h
-    modules/fileout_json/bes-testsuite/Makefile 
-    modules/fileout_json/bes-testsuite/atlocal
+    modules/fileout_json/tests/Makefile 
+    modules/fileout_json/tests/atlocal
     
     modules/freeform_handler/Makefile
-    modules/freeform_handler/bes-testsuite/Makefile
-    modules/freeform_handler/bes-testsuite/atlocal
+    modules/freeform_handler/tests/Makefile
+    modules/freeform_handler/tests/atlocal
     modules/freeform_handler/FFND/Makefile
 
 	modules/xml_data_handler/Makefile
@@ -796,8 +807,8 @@ AM_COND_IF([DAP_MODULES],
     modules/xml_data_handler/tests/atlocal
     
     modules/netcdf_handler/Makefile
-	modules/netcdf_handler/bes-testsuite/Makefile 
-	modules/netcdf_handler/bes-testsuite/atlocal 
+	modules/netcdf_handler/tests/Makefile 
+	modules/netcdf_handler/tests/atlocal 
 	
 	modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
@@ -805,16 +816,16 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_netcdf/data/build_test_data/Makefile 
 	
 	modules/gateway_module/Makefile 
-	modules/gateway_module/bes-testsuite/Makefile 
-	modules/gateway_module/bes-testsuite/atlocal 
+	modules/gateway_module/tests/Makefile 
+	modules/gateway_module/tests/atlocal 
 	
 	modules/fileout_gdal/Makefile
 	modules/fileout_gdal/tests/Makefile 
 	modules/fileout_gdal/tests/atlocal 
 	
 	modules/fits_handler/Makefile
-    modules/fits_handler/bes-testsuite/atlocal
-    modules/fits_handler/bes-testsuite/Makefile
+    modules/fits_handler/tests/atlocal
+    modules/fits_handler/tests/Makefile
     
     modules/gdal_handler/Makefile
     modules/gdal_handler/tests/Makefile
@@ -844,8 +855,8 @@ AM_COND_IF([DAP_MODULES],
 	modules/w10n_handler/Makefile 
 	modules/w10n_handler/unit-tests/Makefile
 	modules/w10n_handler/unit-tests/test_config.h
-	modules/w10n_handler/bes-testsuite/Makefile 
-	modules/w10n_handler/bes-testsuite/atlocal])
+	modules/w10n_handler/tests/Makefile 
+	modules/w10n_handler/tests/atlocal])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -854,10 +865,10 @@ AM_COND_IF([DAP_MODULES],
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
 		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
-	AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh],
-	   [chmod +x modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh])
-    AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_data_baseline.sh],
-        [chmod +x modules/fits_handler/bes-testsuite/generate_data_baseline.sh])
+	AC_CONFIG_FILES([modules/fits_handler/tests/generate_metadata_baseline.sh],
+	   [chmod +x modules/fits_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/fits_handler/tests/generate_data_baseline.sh],
+        [chmod +x modules/fits_handler/tests/generate_data_baseline.sh])
 	
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
@@ -865,30 +876,32 @@ AM_COND_IF([DAP_MODULES],
 	dnl These can stay
     AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
 
-    AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
-    AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
-    dnl AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/gateway_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fits_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/w10n_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
 
-    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
 
     ]
 )
+
+dnl    modules/dmrpp_module/tests/Makefile 
+dnl    modules/dmrpp_module/tests/atlocal
+dnl    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
 
 AC_OUTPUT
 

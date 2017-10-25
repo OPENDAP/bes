@@ -1,0 +1,224 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+# ------------------------------
+#
+
+AT_INIT([bescmdln])
+
+AT_TESTED([bescmdln])
+
+AT_ARG_OPTION_ARG([baselines],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
+     
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([_AT_BESCMD_TEST],   
+[
+    input=$1
+    baseline=$2
+    pass=$3
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    ])
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([data])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input | getdap -M -], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input | getdap -M -], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    ])
+    
+    AT_CLEANUP
+])
+
+dnl
+dnl All the macros below use _AT_BESCMD_TEST. They provide keywords that
+dnl can be used to run different conceptually related groups of tests.
+dnl
+
+m4_define([AT_BESCMD_DAS_RESPONSE_TEST],
+[
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([das])
+    _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+    AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_DDS_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dds])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_DDX_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([ddx])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_INFO_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([info])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_HTML_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([html])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_ASCII_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([ascii])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
+[
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([error])
+    
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/<Line>.*//g' | sed 's/<File>.*//g' ], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/<Line>.*//g' | sed 's/<File>.*//g'], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    ])
+
+    AT_CLEANUP
+])
+
+dnl lastModified="2017-07-18T17:45:39"
+
+m4_define([AT_BESCMD_SHOW_RESPONSE_TEST],
+[   AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([show])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1\3/g'], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([bescmdln -i $input | sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1\3/g'], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    ])
+
+    dnl _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+
+    AT_CLEANUP
+])
+
+AT_BESCMD_DAS_RESPONSE_TEST([ff/1998-6-avhrr.dat.0.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([ff/1998-6-avhrr.dat.1.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ff/1998-6-avhrr.dat.2.bescmd], [pass])
+AT_BESCMD_INFO_RESPONSE_TEST([ff/1998-6-avhrr.dat.3.bescmd], [pass])
+# AT_BESCMD_HTML_RESPONSE_TEST([ff/1998-6-avhrr.dat.4.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ff/1998-6-avhrr.dat.5.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/1998-6-avhrr.dat.6.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([ff/1998-6-avhrr.dat.7.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ff/1998-6-avhrr.dat.8.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ff/1998-6-avhrr.dat.9.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/1998-6-avhrr.dat.a.bescmd])
+
+AT_BESCMD_DAS_RESPONSE_TEST([ff/avhrr.dat.0.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([ff/avhrr.dat.1.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ff/avhrr.dat.2.bescmd], [pass])
+AT_BESCMD_INFO_RESPONSE_TEST([ff/avhrr.dat.3.bescmd], [pass])
+# AT_BESCMD_HTML_RESPONSE_TEST([ff/avhrr.dat.4.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ff/avhrr.dat.5.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/avhrr.dat.6.bescmd])
+AT_BESCMD_DAS_RESPONSE_TEST([ff/gsodock.dat.0.bescmd], [pass])
+
+AT_BESCMD_DDS_RESPONSE_TEST([ff/gsodock.dat.1.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ff/gsodock.dat.2.bescmd], [pass])
+AT_BESCMD_INFO_RESPONSE_TEST([ff/gsodock.dat.3.bescmd], [pass])
+# AT_BESCMD_HTML_RESPONSE_TEST([ff/gsodock.dat.4.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ff/gsodock.dat.5.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/gsodock.dat.6.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([ff/gsodock.dat.7.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ff/gsodock.dat.8.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ff/gsodock.dat.9.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/gsodock.dat.a.bescmd])
+
+AT_BESCMD_DAS_RESPONSE_TEST([hdf4/S2000415.HDF.0.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([hdf4/S2000415.HDF.1.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([hdf4/S2000415.HDF.2.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([hdf4/S2000415.HDF.3.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf4/S2000415.HDF.4.bescmd])
+
+AT_BESCMD_DAS_RESPONSE_TEST([nc/fnoc1.nc.0.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([nc/fnoc1.nc.1.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([nc/fnoc1.nc.2.bescmd], [pass])
+AT_BESCMD_INFO_RESPONSE_TEST([nc/fnoc1.nc.3.bescmd], [pass])
+# AT_BESCMD_HTML_RESPONSE_TEST([nc/fnoc1.nc.4.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([nc/fnoc1.nc.5.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.6.bescmd])
+
+AT_BESCMD_DDS_RESPONSE_TEST([ssfunc/ff_date_func.0.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/ff_date_func.1.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/ff_date_func.2.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/ff_date_func.3.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([ssfunc/ff_date_func.4.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/ff_date_func.5.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/ff_date_func.6.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/ff_date_func.7.bescmd])
+
+AT_BESCMD_ERROR_RESPONSE_TEST([ssfunc/geogrid_func_badargs.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_basic.0.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_basic.1.bescmd])
+AT_BESCMD_ERROR_RESPONSE_TEST([ssfunc/geogrid_func_swapcoords.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.0.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.1.bescmd])
+AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.2.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_timeselect.3.bescmd])
+AT_BESCMD_DDS_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.0.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.1.bescmd], [pass])
+AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.2.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.3.bescmd])
+
+AT_BESCMD_SHOW_RESPONSE_TEST([show/show_01.bescmd], [xfail])
+AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail])
+AT_BESCMD_SHOW_RESPONSE_TEST([show/show_03.bescmd], [xfail])
+

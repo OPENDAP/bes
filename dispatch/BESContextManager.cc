@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,17 +33,16 @@
 #include "BESContextManager.h"
 #include "BESInfo.h"
 
-BESContextManager *BESContextManager::_instance = 0 ;
+BESContextManager *BESContextManager::_instance = 0;
 
 /** @brief set context in the BES
  *
  * @param name name of the context
  * @param value value the context is to take
  */
-void
-BESContextManager::set_context( const string &name, const string &value )
+void BESContextManager::set_context(const string &name, const string &value)
 {
-    _context_list[name] = value ;
+    _context_list[name] = value;
 }
 
 /** @brief set context in the BES
@@ -51,8 +50,7 @@ BESContextManager::set_context( const string &name, const string &value )
  * @param name name of the context
  * @param value value the context is to take
  */
-void
-BESContextManager::unset_context( const string &name )
+void BESContextManager::unset_context(const string &name)
 {
     _context_list.erase(name);
 }
@@ -66,8 +64,7 @@ BESContextManager::unset_context( const string &name )
  * context was found or not. An empty string could be a valid value
  * @return the value of the requested context, empty string if not found
  */
-string
-BESContextManager::get_context( const string &name, bool &found )
+string BESContextManager::get_context(const string &name, bool &found)
 {
     string ret = "";
     found = false;
@@ -83,21 +80,19 @@ BESContextManager::get_context( const string &name, bool &found )
 /** @brief Adds all context and their values to the given informational
  * object
  */
-void
-BESContextManager::list_context( BESInfo &info )
+void BESContextManager::list_context(BESInfo &info)
 {
-    string name ;
-    string value ;
-    map<string,string> props ;
-    BESContextManager::Context_citer i = _context_list.begin() ;
-    BESContextManager::Context_citer e = _context_list.end() ;
-    for( ; i != e; i++ )
-    {
-	props.clear() ;
-	name = (*i).first ;
-	value = (*i).second ;
-	props["name"] = name ;
-	info.add_tag( "context", value, &props ) ;
+    string name;
+    string value;
+    map<string, string> props;
+    BESContextManager::Context_citer i = _context_list.begin();
+    BESContextManager::Context_citer e = _context_list.end();
+    for (; i != e; i++) {
+        props.clear();
+        name = (*i).first;
+        value = (*i).second;
+        props["name"] = name;
+        info.add_tag("context", value, &props);
     }
 }
 
@@ -108,39 +103,32 @@ BESContextManager::list_context( BESInfo &info )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESContextManager::dump( ostream &strm ) const
+void BESContextManager::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESContextManager::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _context_list.size() )
-    {
-	strm << BESIndent::LMarg << "current context:" << endl ;
-	BESIndent::Indent() ;
-	BESContextManager::Context_citer i = _context_list.begin() ;
-	BESContextManager::Context_citer ie = _context_list.end() ;
-	for( ; i != ie; i++ ) 
-	{
-	    strm << BESIndent::LMarg << (*i).first << ": " << (*i).second
-	         << endl ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESContextManager::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_context_list.size()) {
+        strm << BESIndent::LMarg << "current context:" << endl;
+        BESIndent::Indent();
+        BESContextManager::Context_citer i = _context_list.begin();
+        BESContextManager::Context_citer ie = _context_list.end();
+        for (; i != ie; i++) {
+            strm << BESIndent::LMarg << (*i).first << ": " << (*i).second << endl;
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "no context" << endl ;
+    else {
+        strm << BESIndent::LMarg << "no context" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
 BESContextManager *
 BESContextManager::TheManager()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESContextManager ;
+    if (_instance == 0) {
+        _instance = new BESContextManager;
     }
-    return _instance ;
+    return _instance;
 }
 

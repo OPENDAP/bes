@@ -36,51 +36,58 @@
 #include <string>
 #include <map>
 
-using std::string;
-using std::map;
-
 #include <libxml/encoding.h>
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
-class BESResponseHandler;
+//class BESResponseHandler;
 class BESXMLCommand;
 typedef BESXMLCommand *(*p_xmlcmd_builder)(const BESDataHandlerInterface &dhi);
 
 class BESXMLCommand: public BESObj {
 private:
-    static map<string, p_xmlcmd_builder> cmd_list;
-    typedef map<string, p_xmlcmd_builder>::iterator cmd_iter;
+    static std::map<std::string, p_xmlcmd_builder> cmd_list;
+    typedef std::map<std::string, p_xmlcmd_builder>::iterator cmd_iter;
+
 protected:
     BESDataHandlerInterface _dhi;
     virtual void set_response();
+
     // The _str_cmd is used only for the log
-    string _str_cmd;
+    std::string _str_cmd;
     BESXMLCommand(const BESDataHandlerInterface &base_dhi);
+
 public:
     virtual ~BESXMLCommand()
     {
     }
 
-    /** @brief Parse the XML request document begining at the given node
+    /**
+     * @brief Parse the XML request document beginning at the given node
      *
      * @param node Begin parsing at this XML node
      */
     virtual void parse_request(xmlNode *node) = 0;
-    /** @brief Has a response handler been created given the request
+
+    /**
+     * @brief Has a response handler been created given the request
      * document?
      *
      * @return true if a response handler has been set, false otherwise
      */
     virtual bool has_response() = 0;
-    /** @brief Prepare any information needed to execute the request of
+
+    /**
+     * @brief Prepare any information needed to execute the request of
      * this command
      */
     virtual void prep_request()
     {
     }
-    /** @brief Return the current BESDataHandlerInterface
+
+    /**
+     * @brief Return the current BESDataHandlerInterface
      *
      * Since there can be multiple commands within a single request
      * document, different interface objects can be created. This
@@ -95,9 +102,9 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    static void add_command(const string &cmd_str, p_xmlcmd_builder cmd);
-    static bool del_command(const string &cmd_str);
-    static p_xmlcmd_builder find_command(const string &cmd_str);
+    static void add_command(const std::string &cmd_str, p_xmlcmd_builder cmd);
+    static bool del_command(const std::string &cmd_str);
+    static p_xmlcmd_builder find_command(const std::string &cmd_str);
 };
 
 #endif // A_BESXMLCommand_h

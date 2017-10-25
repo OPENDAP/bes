@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value"><showInfo><dataset catalog="catalog" count="2" lastModified="*" name="/data/hdf4" node="true" size="*"/></showInfo></response>

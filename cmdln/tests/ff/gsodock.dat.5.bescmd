@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="av" space="catalog">/data/ff/gsodock.dat</setContainer>
+    <define name="e">
+	<container name="av" />
+    </define>
+    <get type="dods" definition="e" returnAs="ascii"/>
+</request>

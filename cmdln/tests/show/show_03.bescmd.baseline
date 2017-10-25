@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showCatalog>
+        <dataset catalog="catalog" count="14"  name="data/nc" node="true" size="544">
+            <dataset catalog="catalog"  name="Global_0p25deg_best_hs002.nc" node="false" size="3506710569">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="MERRA2_100.statD_2d_slv_Nx.19800101.SUB.nc4" node="false" size="1745950">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="MYD08_M3_NC.2015.11.C051.V02.nc" node="false" size="21529760">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="apcp_sfc_latlon_mean_20170601_20170612_jgalHXbD5f.nc" node="false" size="53812131">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="bears.nc" node="false" size="852">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="bears.nc.das" node="false" size="145"/>
+            <dataset catalog="catalog"  name="big_1.nc" node="false" size="28026396000">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="coads_climatology.nc" node="false" size="3114044">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="feb.nc" node="false" size="5992">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="fnoc1.das" node="false" size="162"/>
+            <dataset catalog="catalog"  name="fnoc1.nc" node="false" size="23944">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="fnoc1.nc.html" node="false" size="177"/>
+            <dataset catalog="catalog"  name="jan.nc" node="false" size="6580">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+            <dataset catalog="catalog"  name="zero_length_array.nc" node="false" size="7751">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+        </dataset>
+    </showCatalog>
+</response>

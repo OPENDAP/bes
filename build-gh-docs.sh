@@ -37,3 +37,14 @@ git commit -m "Added new docs"
 git push -q
 
 git checkout -q $BRANCH
+
+# what we do with asciidoctor to publish to gh pages:
+# - cd output ; mv README.html index.html ; cp -R ../images images
+#  - git init
+#  - git config user.name "${GH_USER_NAME}"
+#  - git config user.email "{GH_USER_EMAIL}"
+#  - git add . ; git commit -m "Deploy to GitHub Pages"
+#  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
+#
+# Where ${GH_REF} == github.com/OPENDAP/documentation
+# and ${GH_TOKEN} == is some secret encrypted thing that is my name and password

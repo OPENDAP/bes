@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="av" space="catalog">/data/nc/coads_climatology.nc</setContainer>
+    <define name="e">
+	<container name="av">
+	    <constraint>geogrid(SST,61,-82,38,-19)</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="e" returnAs="ascii"/>
+</request>

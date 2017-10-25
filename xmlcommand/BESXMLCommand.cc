@@ -62,7 +62,7 @@ void BESXMLCommand::set_response()
     _dhi.response_handler = BESResponseHandlerList::TheList()->find_handler(_dhi.action);
     if (!_dhi.response_handler) {
         throw BESSyntaxUserError(string("Command '") + _dhi.action + "' does not have a registered response handler",
-            __FILE__, __LINE__);
+        __FILE__, __LINE__);
     }
 
     // The _str_cmd is a text version of the xml command used for the log.
@@ -73,9 +73,7 @@ void BESXMLCommand::set_response()
 
     BESLog::TheLog()->flush_me();
     string m = BESLog::mark;
-    *(BESLog::TheLog()) << _dhi.data[REQUEST_FROM] << m
-        << _str_cmd << m <<
-        "request received" << m << endl;
+    *(BESLog::TheLog()) << _dhi.data[REQUEST_FROM] << m << _str_cmd << m << "request received" << m << endl;
     BESLog::TheLog()->flush_me();
 }
 
