@@ -99,8 +99,8 @@ void BESBasicInterface::initialize()
     // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
     BESDEBUG("bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl);
 
-    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
-    if (!_transmitter) {
+    d_transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
+    if (!d_transmitter) {
         string s = (string) "Unable to find transmitter " + BASIC_TRANSMITTER;
         throw BESInternalError(s, __FILE__, __LINE__);
     }
@@ -136,8 +136,8 @@ void BESBasicInterface::build_data_request_plan()
     if (_dhi->data[RETURN_CMD] != "") {
         BESDEBUG("bes", "Finding transmitter: " << _dhi->data[RETURN_CMD] << " ...  " << endl);
 
-        _transmitter = BESReturnManager::TheManager()->find_transmitter(_dhi->data[RETURN_CMD]);
-        if (!_transmitter) {
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(_dhi->data[RETURN_CMD]);
+        if (!d_transmitter) {
             string s = (string) "Unable to find transmitter " + _dhi->data[RETURN_CMD];
             throw BESSyntaxUserError(s, __FILE__, __LINE__);
         }

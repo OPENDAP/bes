@@ -63,15 +63,15 @@ void BESXMLDeleteContainersCommand::parse_request(xmlNode *node)
 
     // optional property, defaults to default
     string storage = props["space"];
-    _dhi.data[STORE_NAME] = storage;
-    if (_dhi.data[STORE_NAME].empty()) {
-        _dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+    d_xmlcmd_dhi.data[STORE_NAME] = storage;
+    if (d_xmlcmd_dhi.data[STORE_NAME].empty()) {
+        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
         storage = PERSISTENCE_VOLATILE;
     }
 
-    _dhi.action = DELETE_CONTAINERS;
+    d_xmlcmd_dhi.action = DELETE_CONTAINERS;
 
-    _str_cmd = (string) "delete containers from " + storage + ";";
+    d_cmd_log_info = (string) "delete containers from " + storage + ";";
 
     // now that we've set the action, go get the response handler for the
     // action

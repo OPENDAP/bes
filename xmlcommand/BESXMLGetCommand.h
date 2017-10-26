@@ -34,16 +34,19 @@
 #define A_BESXMLGetCommand_h 1
 
 #include "BESXMLCommand.h"
-#include "BESDataHandlerInterface.h"
+//#include "BESDataHandlerInterface.h"
+
+class BESDataHandlerInterface;
 
 class BESXMLGetCommand: public BESXMLCommand {
 private:
     BESXMLCommand * _sub_cmd;
     string _definition;
     string _space;
+
 protected:
-    virtual void parse_basic_get(xmlNode *node, const string &name, const string &type, const string &value,
-        map<string, string> &props);
+    virtual void parse_basic_get(const string &type, map<string, string> &props);
+
 public:
     BESXMLGetCommand(const BESDataHandlerInterface &base_dhi);
     virtual ~BESXMLGetCommand()
@@ -51,7 +54,7 @@ public:
     }
 
     virtual void parse_request(xmlNode *node);
-    virtual BESDataHandlerInterface &get_dhi();
+    virtual BESDataHandlerInterface &get_xmlcmd_dhi();
 
     virtual bool has_response()
     {

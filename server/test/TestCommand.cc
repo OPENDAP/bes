@@ -67,10 +67,10 @@ TestCommand::parse_request( xmlNode *node )
     }
 
     string what = props["what"] ;
-    _dhi.action = what ;
-    _str_cmd = (string)"test " + what ;
+    d_xmlcmd_dhi.action = what ;
+    d_cmd_log_info = (string)"test " + what ;
     BESDEBUG( "besxml", "Converted xml element name to command "
-			<< _dhi.action << endl ) ;
+			<< d_xmlcmd_dhi.action << endl ) ;
 
     // now that we've set the action, go get the response handler for the
     // action

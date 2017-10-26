@@ -43,19 +43,24 @@
 
 //class BESResponseHandler;
 class BESXMLCommand;
+
+// p_xmlcmd_builder: a pointer to a function that takes a BESDataHandlerInterface
+// instance and returns a BESXMLCommand instance.
 typedef BESXMLCommand *(*p_xmlcmd_builder)(const BESDataHandlerInterface &dhi);
 
 class BESXMLCommand: public BESObj {
 private:
+    /// Bind names top_xmlcmn_builder functions; used by find_command(), et al.
     static std::map<std::string, p_xmlcmd_builder> cmd_list;
     typedef std::map<std::string, p_xmlcmd_builder>::iterator cmd_iter;
 
 protected:
-    BESDataHandlerInterface _dhi;
+    BESDataHandlerInterface d_xmlcmd_dhi;
     virtual void set_response();
 
-    // The _str_cmd is used only for the log
-    std::string _str_cmd;
+    /// Used only for the log.
+    std::string d_cmd_log_info;
+
     BESXMLCommand(const BESDataHandlerInterface &base_dhi);
 
 public:
@@ -95,9 +100,9 @@ public:
      *
      * @return The current BESDataHandlerInterface object
      */
-    virtual BESDataHandlerInterface &get_dhi()
+    virtual BESDataHandlerInterface &get_xmlcmd_dhi()
     {
-        return _dhi;
+        return d_xmlcmd_dhi;
     }
 
     virtual void dump(ostream &strm) const;
