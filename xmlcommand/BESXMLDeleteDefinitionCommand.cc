@@ -66,19 +66,19 @@ void BESXMLDeleteDefinitionCommand::parse_request(xmlNode *node)
         string err = name + " command: Must specify the definition to delete";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _dhi.data[DEF_NAME] = def_name;
+    d_xmlcmd_dhi.data[DEF_NAME] = def_name;
 
     // optional property
     string storage = props["space"];
-    _dhi.data[STORE_NAME] = storage;
-    if (_dhi.data[STORE_NAME].empty()) {
-        _dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+    d_xmlcmd_dhi.data[STORE_NAME] = storage;
+    if (d_xmlcmd_dhi.data[STORE_NAME].empty()) {
+        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
         storage = PERSISTENCE_VOLATILE;
     }
 
-    _dhi.action = DELETE_DEFINITION;
+    d_xmlcmd_dhi.action = DELETE_DEFINITION;
 
-    _str_cmd = (string) "delete definition " + def_name + " from " + storage + ";";
+    d_cmd_log_info = (string) "delete definition " + def_name + " from " + storage + ";";
 
     // now that we've set the action, go get the response handler for the
     // action

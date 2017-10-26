@@ -77,7 +77,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.action = DEFINE_RESPONSE;
+    d_xmlcmd_dhi.action = DEFINE_RESPONSE;
 
     def_name = props["name"];
     if (def_name.empty()) {
@@ -85,14 +85,14 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.data[DEF_NAME] = def_name;
-    _str_cmd = (string) "define " + def_name;
+    d_xmlcmd_dhi.data[DEF_NAME] = def_name;
+    d_cmd_log_info = (string) "define " + def_name;
 
     def_space = props["space"];
     if (!def_space.empty()) {
-        _str_cmd += " in " + def_space;
+        d_cmd_log_info += " in " + def_space;
     }
-    _dhi.data[STORE_NAME] = def_space;
+    d_xmlcmd_dhi.data[STORE_NAME] = def_space;
 
     int num_containers = 0;
     string child_name;
@@ -132,48 +132,48 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _str_cmd += " as ";
+    d_cmd_log_info += " as ";
     bool first = true;
     vector<string>::iterator i = _containers.begin();
     vector<string>::iterator e = _containers.end();
     for (; i != e; i++) {
-        if (!first) _str_cmd += ",";
-        _str_cmd += (*i);
+        if (!first) d_cmd_log_info += ",";
+        d_cmd_log_info += (*i);
         first = false;
     }
 
     if (_constraints.size() || _dap4constraints.size() || _dap4functions.size() || _attributes.size()) {
-        _str_cmd += " with ";
+        d_cmd_log_info += " with ";
         first = true;
         i = _containers.begin();
         e = _containers.end();
         for (; i != e; i++) {
             if (_constraints.count((*i))) {
-                if (!first) _str_cmd += ",";
+                if (!first) d_cmd_log_info += ",";
                 first = false;
-                _str_cmd += (*i) + ".constraint=\"" + _constraints[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".constraint=\"" + _constraints[(*i)] + "\"";
             }
             if (_dap4constraints.count((*i))) {
-                if (!first) _str_cmd += ",";
+                if (!first) d_cmd_log_info += ",";
                 first = false;
-                _str_cmd += (*i) + ".dap4constraint=\"" + _dap4constraints[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".dap4constraint=\"" + _dap4constraints[(*i)] + "\"";
             }
             if (_dap4functions.count((*i))) {
-                if (!first) _str_cmd += ",";
+                if (!first) d_cmd_log_info += ",";
                 first = false;
-                _str_cmd += (*i) + ".dap4function=\"" + _dap4functions[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".dap4function=\"" + _dap4functions[(*i)] + "\"";
             }
             if (_attributes.count((*i))) {
-                if (!first) _str_cmd += ",";
+                if (!first) d_cmd_log_info += ",";
                 first = false;
-                _str_cmd += (*i) + ".attributes=\"" + _attributes[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".attributes=\"" + _attributes[(*i)] + "\"";
             }
         }
     }
 
-    _str_cmd += ";";
+    d_cmd_log_info += ";";
 
-    BESDEBUG("xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << _str_cmd << endl);
+    BESDEBUG("xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << d_cmd_log_info << endl);
 
     // now that we've set the action, go get the response handler for the
     // action
@@ -317,9 +317,9 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.data[AGG_HANDLER] = handler;
-    _dhi.data[AGG_CMD] = cmd;
-    _str_cmd += " aggregate using " + handler + " by " + cmd;
+    d_xmlcmd_dhi.data[AGG_HANDLER] = handler;
+    d_xmlcmd_dhi.data[AGG_CMD] = cmd;
+    d_cmd_log_info += " aggregate using " + handler + " by " + cmd;
 }
 
 /** @brief prepare the define command by making sure the containers exist
@@ -370,7 +370,7 @@ void BESXMLDefineCommand::prep_request()
 
         string attrs = _attributes[(*i)];
         c->set_attributes(attrs);
-        _dhi.containers.push_back(c);
+        d_xmlcmd_dhi.containers.push_back(c);
 
         BESDEBUG("xml", "BESXMLDefineCommand::prep_request() - define using container: " << endl << *c << endl);
     }

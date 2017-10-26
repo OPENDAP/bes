@@ -54,9 +54,10 @@ void BESXMLUtils::XMLErrorFunc(void *context, const char *msg, ...)
     myerrors->push_back(mymsg);
 }
 
-/** @brief given an xml node, build the map of properties for that node
+/**
+ * @brief given an xml node, build the map of properties (xml attributes) for that node
  *
- * Properties can have multiple values, hence the need for a map of string
+ * Properties (xml attributes) can have multiple values, hence the need for a map of string
  * keys and a list of values.
  *
  * @param node xml node to retrieve properties from
@@ -92,9 +93,10 @@ void BESXMLUtils::GetProps(xmlNode *node, map<string, string> &props)
  * node
  *
  * @param node the xml node to get the information for
- * @param name parameter to store the name of the node
- * @param value parameter to store the value, if any, of the node
- * @param props parameter to store any properties of the node
+ * @param name value-result parameter: the name of the node
+ * @param value v-r parameter: the content of the node, if this is a text node,
+ * else the empty string
+ * @param props v-r parameter to store any properties of the node
  */
 void BESXMLUtils::GetNodeInfo(xmlNode *node, string &name, string &value, map<string, string> &props)
 {
@@ -107,7 +109,7 @@ void BESXMLUtils::GetNodeInfo(xmlNode *node, string &name, string &value, map<st
         while (child_node && !done) {
             if (child_node->type == XML_TEXT_NODE) {
                 if (child_node->content) {
-                    value = BESUtil::xml2id((char *) child_node->content);
+                    value = BESUtil::xml2id((char *)child_node->content);
                     BESUtil::removeLeadingAndTrailingBlanks(value);
                 }
                 else {

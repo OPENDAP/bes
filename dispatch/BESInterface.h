@@ -35,7 +35,7 @@
 
 #include <list>
 
-using std::list;
+//using std::list;
 
 #include "BESDataHandlerInterface.h"
 
@@ -44,8 +44,10 @@ using std::list;
 class BESError;
 class BESTransmitter;
 
+#if 0
 typedef bool (*p_bes_init)(BESDataHandlerInterface &dhi);
 typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
+#endif
 
 /** @brief Entry point into BES, building responses to given requests.
 
@@ -122,6 +124,7 @@ typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
  */
 class BESInterface: public BESObj {
 private:
+#if 0
     typedef list<p_bes_init>::const_iterator init_citer;
     typedef list<p_bes_init>::iterator init_iter;
     static list<p_bes_init> _init_list;
@@ -129,13 +132,14 @@ private:
     typedef list<p_bes_end>::const_iterator end_citer;
     typedef list<p_bes_end>::iterator end_iter;
     static list<p_bes_end> _end_list;
+#endif
 
-    ostream *_strm;
-    int _timeout_from_keys; ///< can be overridden by a setContext command
+    ostream *d_strm;
+    int d_timeout_from_keys; ///< can be overridden by a setContext command
 
 protected:
-    BESDataHandlerInterface *_dhi;
-    BESTransmitter *_transmitter;
+    BESDataHandlerInterface *d_dhi_ptr;
+    BESTransmitter *d_transmitter;
 
     virtual int exception_manager(BESError &e);
     virtual void initialize();
@@ -162,16 +166,18 @@ protected:
     virtual void clean();
 
     BESInterface(ostream *strm);
-    virtual ~BESInterface();
+    virtual ~BESInterface() { }
 
 public:
     virtual int execute_request(const string &from);
     virtual int finish_with_error(int status);
 
     virtual void dump(ostream &strm) const;
-
+#if 0
     static void add_init_callback(p_bes_init init);
     static void add_end_callback(p_bes_end end);
+#endif
+
 };
 
 #endif // BESInterface_h_

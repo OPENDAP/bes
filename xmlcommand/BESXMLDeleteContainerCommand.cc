@@ -66,19 +66,19 @@ void BESXMLDeleteContainerCommand::parse_request(xmlNode *node)
         string err = name + " command: Must specify the container to delete";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _dhi.data[CONTAINER_NAME] = container_name;
+    d_xmlcmd_dhi.data[CONTAINER_NAME] = container_name;
 
     // optional property
     string storage = props["space"];
-    _dhi.data[STORE_NAME] = storage;
-    if (_dhi.data[STORE_NAME].empty()) {
-        _dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+    d_xmlcmd_dhi.data[STORE_NAME] = storage;
+    if (d_xmlcmd_dhi.data[STORE_NAME].empty()) {
+        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
         storage = PERSISTENCE_VOLATILE;
     }
 
-    _dhi.action = DELETE_CONTAINER;
+    d_xmlcmd_dhi.action = DELETE_CONTAINER;
 
-    _str_cmd = (string) "delete container " + container_name + " from " + storage + ";";
+    d_cmd_log_info = (string) "delete container " + container_name + " from " + storage + ";";
 
     // now that we've set the action, go get the response handler for the
     // action
