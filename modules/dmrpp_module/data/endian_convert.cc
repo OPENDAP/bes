@@ -37,8 +37,8 @@
 static bool debug = false;
 using namespace std;
 
-// Code used and didn't use '' (likely a header has using... in it).
-// I switched to using... because it was too much work to put '' everywhere.
+// Code used and didn't use 'std' (likely a header has using... in it).
+// I switched to using... because it was too much work to put 'std' everywhere.
 // jhrg
 
 string usage(string prog_name) {
