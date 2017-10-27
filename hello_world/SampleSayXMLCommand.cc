@@ -73,19 +73,19 @@ void SampleSayXMLCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.data[SAY_WHAT] = props["what"];
-    if (_dhi.data[SAY_WHAT].empty()) {
+    d_xmlcmd_dhi.data[SAY_WHAT] = props["what"];
+    if (d_xmlcmd_dhi.data[SAY_WHAT].empty()) {
         string err = name + " command: Must specify to whom to say";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.data[SAY_TO] = props["to"];
-    if (_dhi.data[SAY_WHAT].empty()) {
+    d_xmlcmd_dhi.data[SAY_TO] = props["to"];
+    if (d_xmlcmd_dhi.data[SAY_WHAT].empty()) {
         string err = name + " command: Must specify what to say";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.action = SAY_RESPONSE;
+    d_xmlcmd_dhi.action = SAY_RESPONSE;
 
     // now that we've set the action, go get the response handler for the
     // action

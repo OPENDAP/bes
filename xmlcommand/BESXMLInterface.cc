@@ -49,13 +49,13 @@ using std::stringstream;
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
 		BESInterface(strm)
 {
-    _dhi = &_base_dhi;
-    _dhi->data[DATA_REQUEST] = "xml document";
+    d_dhi_ptr = &d_xml_interface_dhi;
+    d_dhi_ptr->data[DATA_REQUEST] = "xml document";
     // NB: The xml_doc is only used one place in the BES and that's on
     // line 108  in this file. We could make this a field of the object and
     // cut down on the use of the map. The downside is that putting the
     // xml in the map makes it accessible when we look at the DHI. jhrg 2/23/16
-    _dhi->data["XMLDoc"] = xml_doc;
+    d_dhi_ptr->data["XMLDoc"] = xml_doc;
 }
 
 BESXMLInterface::~BESXMLInterface()
@@ -63,6 +63,7 @@ BESXMLInterface::~BESXMLInterface()
     clean();
 }
 
+#if 0
 int BESXMLInterface::execute_request(const string &from)
 {
     return BESInterface::execute_request(from);
@@ -81,16 +82,17 @@ void BESXMLInterface::validate_data_request()
 {
     BESInterface::validate_data_request();
 }
+#endif
 
 /** @brief Build the data request plan using the BESCmdParser.
  */
 void BESXMLInterface::build_data_request_plan()
 {
     BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
-    BESDEBUG("besxml", "building request plan for xml document: " << endl << _dhi->data["XMLDoc"] << endl);
+    BESDEBUG("besxml", "building request plan for xml document: " << endl << d_dhi_ptr->data["XMLDoc"] << endl);
 
     if (BESLog::TheLog()->is_verbose()) {
-        *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << "] building" << endl;
+        *(BESLog::TheLog()) << d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << "] building" << endl;
     }
 
     // I do not know why, but uncommenting this macro breaks some tests
@@ -109,7 +111,7 @@ void BESXMLInterface::build_data_request_plan()
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
 
         // XML_PARSE_NONET
-        doc = xmlReadMemory(_dhi->data["XMLDoc"].c_str(), _dhi->data["XMLDoc"].size(), "" /* base URL */,
+        doc = xmlReadMemory(d_dhi_ptr->data["XMLDoc"].c_str(), d_dhi_ptr->data["XMLDoc"].size(), "" /* base URL */,
                             NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == NULL) {
@@ -154,9 +156,9 @@ void BESXMLInterface::build_data_request_plan()
             string err = (string) "request id value empty";
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
-        _dhi->data[REQUEST_ID] = reqId;
+        d_dhi_ptr->data[REQUEST_ID] = reqId;
 
-        BESDEBUG("besxml", "request id = " << _dhi->data[REQUEST_ID] << endl);
+        BESDEBUG("besxml", "request id = " << d_dhi_ptr->data[REQUEST_ID] << endl);
 
         // iterate through the children of the request element. Each child is an
         // individual command.
@@ -171,14 +173,14 @@ void BESXMLInterface::build_data_request_plan()
 
                 p_xmlcmd_builder bldr = BESXMLCommand::find_command(node_name);
                 if (bldr) {
-                    BESXMLCommand *current_cmd = bldr(_base_dhi);
+                    BESXMLCommand *current_cmd = bldr(d_xml_interface_dhi);
                     if (!current_cmd) {
                         string err = (string) "Failed to build command object for " + node_name;
                         throw BESInternalError(err, __FILE__, __LINE__);
                     }
 
                     // push this new command to the back of the list
-                    _cmd_list.push_back(current_cmd);
+                    d_xml_cmd_list.push_back(current_cmd);
 
                     // only one of the commands can build a response. If more
                     // than one builds a response, throw an error
@@ -193,7 +195,7 @@ void BESXMLInterface::build_data_request_plan()
                     BESDEBUG("besxml", "parse request using " << node_name << endl);
                     current_cmd->parse_request(current_node);
 
-                    BESDataHandlerInterface &current_dhi = current_cmd->get_dhi();
+                    BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
 
                     BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
 
@@ -245,31 +247,33 @@ void BESXMLInterface::build_data_request_plan()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
-    vector<BESXMLCommand *>::iterator i = _cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = _cmd_list.end();
+    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
+    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         (*i)->prep_request();
-        _dhi = &(*i)->get_dhi();
+        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
         BESInterface::execute_data_request_plan();
     }
 }
 
+#if 0
 /** @brief Invoke the aggregation server, if there is one
  */
 void BESXMLInterface::invoke_aggregation()
 {
     BESInterface::invoke_aggregation();
 }
+#endif
 
 /** @brief Transmit the response object
  */
 void BESXMLInterface::transmit_data()
 {
-    string returnAs = _dhi->data[RETURN_CMD];
+    string returnAs = d_dhi_ptr->data[RETURN_CMD];
     if (returnAs != "") {
         BESDEBUG("xml", "Setting transmitter: " << returnAs << " ...  " << endl);
-        _transmitter = BESReturnManager::TheManager()->find_transmitter(returnAs);
-        if (!_transmitter) {
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(returnAs);
+        if (!d_transmitter) {
             string s = (string) "Unable to find transmitter " + returnAs;
             throw BESSyntaxUserError(s, __FILE__, __LINE__);
         }
@@ -285,10 +289,10 @@ void BESXMLInterface::transmit_data()
  */
 void BESXMLInterface::log_status()
 {
-    vector<BESXMLCommand *>::iterator i = _cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = _cmd_list.end();
+    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
+    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
-        _dhi = &(*i)->get_dhi();
+        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
         BESInterface::log_status();
     }
 }
@@ -310,10 +314,10 @@ void BESXMLInterface::log_status()
  */
 void BESXMLInterface::report_request()
 {
-    vector<BESXMLCommand *>::iterator i = _cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = _cmd_list.end();
+    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
+    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
-        _dhi = &(*i)->get_dhi();
+        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
         BESInterface::report_request();
     }
 }
@@ -322,15 +326,15 @@ void BESXMLInterface::report_request()
  */
 void BESXMLInterface::clean()
 {
-    vector<BESXMLCommand *>::iterator i = _cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = _cmd_list.end();
+    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
+    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
-        _dhi = &cmd->get_dhi();
+        d_dhi_ptr = &cmd->get_xmlcmd_dhi();
         BESInterface::clean();
         delete cmd;
     }
-    _cmd_list.clear();
+    d_xml_cmd_list.clear();
 }
 
 /** @brief dumps information about this object
@@ -344,8 +348,8 @@ void BESXMLInterface::dump(ostream &strm) const
     strm << BESIndent::LMarg << "BESXMLInterface::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESInterface::dump(strm);
-    vector<BESXMLCommand *>::const_iterator i = _cmd_list.begin();
-    vector<BESXMLCommand *>::const_iterator e = _cmd_list.end();
+    vector<BESXMLCommand *>::const_iterator i = d_xml_cmd_list.begin();
+    vector<BESXMLCommand *>::const_iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
         cmd->dump(strm);

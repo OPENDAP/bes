@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,18 +36,19 @@
 #include "BESXMLGetCommand.h"
 #include "BESDataHandlerInterface.h"
 
-class BESXMLWWWGetCommand : public BESXMLGetCommand
-{
+class BESXMLWWWGetCommand: public BESXMLGetCommand {
 public:
-    				BESXMLWWWGetCommand( const BESDataHandlerInterface &base_dhi ) ;
-    virtual			~BESXMLWWWGetCommand() {}
+    BESXMLWWWGetCommand(const BESDataHandlerInterface &base_dhi);
+    virtual ~BESXMLWWWGetCommand()
+    {
+    }
 
-    virtual void		parse_request( xmlNode *node ) ;
+    virtual void parse_request(xmlNode *node);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESXMLCommand *	CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
-} ;
+    static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
+};
 
 #endif // A_BESXMLWWWGetCommand_h
 

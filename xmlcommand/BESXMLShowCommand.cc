@@ -66,11 +66,11 @@ void BESXMLShowCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.action = "show.";
+    d_xmlcmd_dhi.action = "show.";
     string toadd = BESUtil::lowercase(name.substr(4, name.length() - 4));
-    _dhi.action += toadd;
-    _str_cmd = (string) "show " + toadd + ";";
-    BESDEBUG("besxml", "Converted xml element name to command " << _dhi.action << endl);
+    d_xmlcmd_dhi.action += toadd;
+    d_cmd_log_info = (string) "show " + toadd + ";";
+    BESDEBUG("besxml", "Converted xml element name to command " << d_xmlcmd_dhi.action << endl);
 
     // now that we've set the action, go get the response handler for the
     // action

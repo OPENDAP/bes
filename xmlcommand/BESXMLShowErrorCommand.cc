@@ -68,7 +68,7 @@ void BESXMLShowErrorCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.action = SHOW_ERROR;
+    d_xmlcmd_dhi.action = SHOW_ERROR;
 
     etype = props["type"];
     if (etype.empty()) {
@@ -76,8 +76,8 @@ void BESXMLShowErrorCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
     // test the error type number in the response handler
-    _dhi.data[SHOW_ERROR_TYPE] = etype;
-    _str_cmd = (string) "show error " + etype + ";";
+    d_xmlcmd_dhi.data[SHOW_ERROR_TYPE] = etype;
+    d_cmd_log_info = (string) "show error " + etype + ";";
 
     // now that we've set the action, go get the response handler for the
     // action

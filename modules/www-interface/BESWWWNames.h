@@ -33,19 +33,17 @@
 #ifndef D_BESWWWNames_H
 #define D_BESWWWNames_H 1
 
-/** @brief macros representing the WWW response objects handled
- *
- * These include
- * <pre>
- * get
- *     WWW
- * </pre>
- */
-
+/// This name is used to look up both the Response Handler and the XML command.
 #define WWW_RESPONSE "get.html_form"
+
+/// This is the name used to look up this 'dap service'
 #define WWW_SERVICE "html_form"
+
+/// THis is the DHI 'action name'
 #define WWW_RESPONSE_STR "getHtmlForm"
 
+/// When the XML command is parsed, the URL passed in with it is stored in the
+/// DHI data map using this name as the index.
 #define WWW_URL "www_url"
 
 #endif // E_BESWWWNames_H
