@@ -789,8 +789,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/Makefile
     modules/dmrpp_module/unit-tests/Makefile 
     modules/dmrpp_module/unit-tests/test_config.h
-    modules/dmrpp_module/tests/Makefile 
-    modules/dmrpp_module/tests/atlocal
     modules/dmrpp_module/data/Makefile 
 
     modules/fileout_json/Makefile
