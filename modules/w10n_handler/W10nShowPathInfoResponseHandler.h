@@ -25,10 +25,12 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_W10NResponseHandler_h
-#define I_W10NResponseHandler_h 1
+#ifndef I_W10NShowPathInfoResponseHandler_h
+#define I_W10NShowPathInfoResponseHandler_h 1
 
 #include "BESResponseHandler.h"
+
+
 
 /** @brief response handler that returns nodes or leaves within the catalog
  * either at the root or at a specified node.
@@ -43,12 +45,12 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class ShowPathInfoResponseHandler : public BESResponseHandler
+class W10nShowPathInfoResponseHandler : public BESResponseHandler
 {
 private:
 public:
-	ShowPathInfoResponseHandler( const string &name );
-    virtual	~ShowPathInfoResponseHandler( void ) ;
+    W10nShowPathInfoResponseHandler( const string &name );
+    virtual	~W10nShowPathInfoResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
@@ -56,8 +58,8 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *ShowPathInfoResponseBuilder( const string &name ) ;
+    static BESResponseHandler *W10nShowPathInfoResponseBuilder( const string &name ) ;
 };
 
-#endif // I_W10NResponseHandler_h
+#endif // I_W10NShowPathInfoResponseHandler_h
 

@@ -1,14 +1,16 @@
 
-#ifndef A_W10NXMLCatalogCommand_h
-#define A_W10NXMLCatalogCommand_h 1
+#ifndef A_W10NShowPathInfoCommand_h
+#define A_W10NShowPathInfoCommand_h 1
 
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
-class ShowPathInfoCommand: public BESXMLCommand {
+#define W10N_SHOW_PATH_INFO_REQUEST "showW10nPathInfo"
+
+class W10nShowPathInfoCommand: public BESXMLCommand {
 public:
-    ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi);
-    virtual ~ShowPathInfoCommand()
+    W10nShowPathInfoCommand(const BESDataHandlerInterface &base_dhi);
+    virtual ~W10nShowPathInfoCommand()
     {
     }
 
@@ -24,4 +26,4 @@ public:
     static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };
 
-#endif // A_W10NXMLCatalogCommand_h
+#endif // A_W10NShowPathInfoCommand_h
