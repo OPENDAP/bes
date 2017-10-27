@@ -58,8 +58,8 @@ BuildTInterface::~BuildTInterface()
 void
 BuildTInterface::run( const string &requestDoc )
 {
-    _dhi->data[DATA_REQUEST] = "xml Document" ;
-    _dhi->data["XMLDoc"] = requestDoc ;
+    d_dhi_ptr->data[DATA_REQUEST] = "xml Document" ;
+    d_dhi_ptr->data["XMLDoc"] = requestDoc ;
     BESXMLInterface::build_data_request_plan() ;
 }
 

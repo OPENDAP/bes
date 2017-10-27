@@ -68,10 +68,10 @@ void NCMLCacheAggXMLCommand::parse_request(xmlNode* pNode)
     }
 
     // Grab the filename we are to run on.
-    _dhi.data[ModuleConstants::CACHE_AGG_LOCATION_DATA_KEY] = attrs[ModuleConstants::CACHE_AGG_LOCATION_XML_ATTR];
+    d_xmlcmd_dhi.data[ModuleConstants::CACHE_AGG_LOCATION_DATA_KEY] = attrs[ModuleConstants::CACHE_AGG_LOCATION_XML_ATTR];
 
     // It had to be there, or it's an error.
-    if (_dhi.data[ModuleConstants::CACHE_AGG_LOCATION_DATA_KEY].empty()) {
+    if (d_xmlcmd_dhi.data[ModuleConstants::CACHE_AGG_LOCATION_DATA_KEY].empty()) {
         THROW_NCML_PARSE_ERROR(-1,
             cmdName + ": we did find the required aggregation location specified in the attribute="
                 + ModuleConstants::CACHE_AGG_LOCATION_XML_ATTR + " and cannot continue the caching.");
@@ -90,7 +90,7 @@ void NCMLCacheAggXMLCommand::parse_request(xmlNode* pNode)
     }
 
     // Grab the response handler for this action
-    _dhi.action = ModuleConstants::CACHE_AGG_RESPONSE;
+    d_xmlcmd_dhi.action = ModuleConstants::CACHE_AGG_RESPONSE;
     BESXMLCommand::set_response();
 }
 
