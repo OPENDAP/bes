@@ -207,7 +207,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
     info->end_response();
 
 
-    BESDEBUG(W10N_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl ) ;
+    BESDEBUG(W10N_DEBUG_KEY, "W10nShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl ) ;
 
 }
 
@@ -245,7 +245,7 @@ W10nShowPathInfoResponseHandler::transmit( BESTransmitter *transmitter,
 void
 W10nShowPathInfoResponseHandler::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "ShowPathInfoResponseHandler::dump - ("
+    strm << BESIndent::LMarg << "W10nShowPathInfoResponseHandler::dump - ("
 			     << (void *)this << ")" << std::endl ;
     BESIndent::Indent() ;
     BESResponseHandler::dump( strm ) ;

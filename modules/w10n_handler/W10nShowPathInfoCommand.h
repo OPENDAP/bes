@@ -6,6 +6,7 @@
 #include "BESDataHandlerInterface.h"
 
 #define W10N_SHOW_PATH_INFO_REQUEST "showW10nPathInfo"
+#define W10N_SHOW_PATH_INFO_REQUEST_HANDLER_KEY "show.w10nPathInfo"
 
 class W10nShowPathInfoCommand: public BESXMLCommand {
 public:

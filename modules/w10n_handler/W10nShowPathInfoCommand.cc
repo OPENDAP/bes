@@ -34,7 +34,7 @@ void W10nShowPathInfoCommand::parse_request(xmlNode *node)
     // the the action is to show the w10n info response
     d_xmlcmd_dhi.action = W10N_SHOW_PATH_INFO_DHI_TAG;
     d_xmlcmd_dhi.data[W10N_SHOW_PATH_INFO_DHI_TAG] = W10N_SHOW_PATH_INFO_DHI_TAG;
-    d_cmd_log_info = "show pathInfo";
+    d_cmd_log_info = "show w10nPathInfo";
 
     // node is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
@@ -58,7 +58,7 @@ void W10nShowPathInfoCommand::parse_request(xmlNode *node)
  */
 void W10nShowPathInfoCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "ShowPathInfoCommand::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "W10nShowPathInfoCommand::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESXMLCommand::dump(strm);
     BESIndent::UnIndent();
