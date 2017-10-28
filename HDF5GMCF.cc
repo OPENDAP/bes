@@ -6238,12 +6238,12 @@ GMFile::Is_Hybrid_EOS5() {
                     has_group_hdfeos_info = true;
             }
         }
-        if(true == has_group_hdfeos && true == hdf_group_hdfeos_info)
+        if(true == has_group_hdfeos && true == has_group_hdfeos_info)
             break;
     }
 
     
-    if(true == has_group_hdfeos && true == hdf_group_hdfeos_info) 
+    if(true == has_group_hdfeos && true == has_group_hdfeos_info) 
         return true;
     else 
         return false;
@@ -6252,40 +6252,224 @@ GMFile::Is_Hybrid_EOS5() {
 void GMFile::Handle_Hybrid_EOS5() {
 
     string eos_str="HDFEOS_";
+    string eos_info_str="HDFEOS_INFORMATION_";
     string grid_str="GRIDS_";
     string swath_str="SWATHS_";
+    string zas_str="ZAS_";
     string df_str="Data_Fields_";
     string gf_str="Geolocation_Fields_";
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); irv++) {
         string temp_var_name = (*irv)->newname;
+
+        bool remove_eos = Remove_EOS5_Strings(temp_var_name);
         
-        //temp_var_newname = reduce_string(temp_var_name,"HDFEOS_","GRIDS_","Data_Fields");
-        
-//#if 0
-        string::size_type eos_pos = temp_var_name.find(eos_str);
-        if(eos_pos!=string::npos) {
-            temp_var_name.erase(eos_pos,eos_str.size());
-            // Check grid,swath and zonal 
-            string::size_type grid_pos=temp_var_name.find(grid_str);
-            if(grid_pos!=string::npos){
-                if(temp_var_name.find("Data_Fields")!=string::npos) {
-                     string temp_var_newname = HDF5CFUtil::Remove_Strs(
-
-                }
-
-            }
-            else {
-            
-
-
+        if(true == remove_eos)
+            (*irv)->newname = get_CF_string(temp_var_name);
+        else {//HDFEOS info and extra fields
+            string::size_type eos_info_pos = temp_var_name.find(eos_info_str);
+            if(eos_info_pos !=string::npos) 
+                (*irv)->newname = temp_var_name.erase(eos_info_pos,eos_info_str.size());
+            else {// Check the extra fields
+                if(Remove_EOS5_Strings_NonEOS_Fields(temp_var_name)==true)
+                    (*irv)->newname = get_CF_string(temp_var_name);
             }
         }
-//#endif
-          
-
-
     }
+
+    // Now we need to handle the dimension names.
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); irv++) {
+        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+            ird!=(*irv)->dims.end(); ++ird) {
+            string temp_dim_name = (*ird)->newname;
+            bool remove_eos = Remove_EOS5_Strings(temp_dim_name);
+            
+            if(true == remove_eos)
+                (*ird)->newname = get_CF_string(temp_dim_name);
+            else {//HDFEOS info and extra fields
+                string::size_type eos_info_pos = temp_dim_name.find(eos_info_str);
+                if(eos_info_pos !=string::npos) 
+                    (*ird)->newname = temp_dim_name.erase(eos_info_pos,eos_info_str.size());
+                else {// Check the extra fields
+                    if(Remove_EOS5_Strings_NonEOS_Fields(temp_dim_name)==true)
+                        (*ird)->newname = get_CF_string(temp_dim_name);
+                }
+            }
+        }
+    }
+
+    // We have to loop through all CVs.
+    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+                irv != this->cvars.end(); ++irv) {
+        string temp_var_name = (*irv)->newname;
+
+        bool remove_eos = Remove_EOS5_Strings(temp_var_name);
+        
+        if(true == remove_eos)
+            (*irv)->newname = get_CF_string(temp_var_name);
+        else {//HDFEOS info and extra "fields"
+            string::size_type eos_info_pos = temp_var_name.find(eos_info_str);
+            if(eos_info_pos !=string::npos) 
+                (*irv)->newname = temp_var_name.erase(eos_info_pos,eos_info_str.size());
+            else {// Check the extra fields
+                if(Remove_EOS5_Strings_NonEOS_Fields(temp_var_name)==true)
+                    (*irv)->newname = get_CF_string(temp_var_name);
+            }
+        }
+    }
+    // Now we need to handle the dimension names.
+    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+        irv != this->cvars.end(); irv++) {
+        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+            ird!=(*irv)->dims.end(); ++ird) {
+            string temp_dim_name = (*ird)->newname;
+            bool remove_eos = Remove_EOS5_Strings(temp_dim_name);
+            
+            if(true == remove_eos)
+                (*ird)->newname = get_CF_string(temp_dim_name);
+            else {// HDFEOS info and extra "fields"
+                string::size_type eos_info_pos = temp_dim_name.find(eos_info_str);
+                if(eos_info_pos !=string::npos) 
+                    (*ird)->newname = temp_dim_name.erase(eos_info_pos,eos_info_str.size());
+                else {// Check the extra "fields"
+                    if(Remove_EOS5_Strings_NonEOS_Fields(temp_dim_name)==true)
+                        (*ird)->newname = get_CF_string(temp_dim_name);
+                }
+            }
+        }
+    }
+
+
+
+}
+bool GMFile:: Remove_EOS5_Strings(string &var_name) {
+
+    string eos_str="HDFEOS_";
+    string grid_str="GRIDS_";
+    string swath_str="SWATHS_";
+    string zas_str="ZAS_";
+    string df_str="Data_Fields_";
+    string gf_str="Geolocation_Fields_";
+    string temp_var_name = var_name;
+
+    bool remove_eos = false;
+
+    string::size_type eos_pos = temp_var_name.find(eos_str);
+    if(eos_pos!=string::npos) {
+        temp_var_name.erase(eos_pos,eos_str.size());
+        // Check grid,swath and zonal 
+        string::size_type grid_pos=temp_var_name.find(grid_str);
+        string::size_type grid_df_pos=string::npos;
+        if(grid_pos!=string::npos)
+            grid_df_pos = temp_var_name.find(df_str,grid_pos);
+        string::size_type zas_pos = string::npos;
+        string::size_type zas_df_pos=string::npos;
+        if(grid_pos==string::npos || grid_df_pos ==string::npos) 
+            zas_pos=temp_var_name.find(zas_str);
+        if(zas_pos!=string::npos)
+            zas_df_pos=temp_var_name.find(df_str,zas_pos);
+        
+        if(grid_pos !=string::npos && grid_df_pos!=string::npos) {
+            temp_var_name.erase(grid_pos,grid_str.size());
+            grid_df_pos = temp_var_name.find(df_str);              
+            temp_var_name.erase(grid_df_pos,df_str.size());
+            remove_eos = true;
+        }
+        else if(zas_pos!=string::npos && zas_df_pos!=string::npos){
+            temp_var_name.erase(zas_pos,zas_str.size());
+            zas_df_pos = temp_var_name.find(df_str);              
+            temp_var_name.erase(zas_df_pos,df_str.size());
+            remove_eos = true;
+        }
+        else {//Check both Geolocation and Data for Swath
+            
+            string::size_type swath_pos=temp_var_name.find(swath_str);
+            string::size_type swath_df_pos=string::npos;
+            if(swath_pos!=string::npos)
+                swath_df_pos=temp_var_name.find(df_str,swath_pos);
+
+            string::size_type swath_gf_pos=string::npos;
+            if(swath_pos!=string::npos && swath_df_pos == string::npos)
+                swath_gf_pos=temp_var_name.find(gf_str,swath_pos);
+
+            if(swath_pos !=string::npos) {
+
+                if(swath_df_pos!=string::npos) {
+                    temp_var_name.erase(swath_pos,swath_str.size());
+                    swath_df_pos = temp_var_name.find(df_str);              
+                    temp_var_name.erase(swath_df_pos,df_str.size());
+                    remove_eos = true;
+                }
+                else if(swath_gf_pos!=string::npos) {
+                    temp_var_name.erase(swath_pos,swath_str.size());
+                    swath_gf_pos = temp_var_name.find(gf_str);              
+                    temp_var_name.erase(swath_gf_pos,gf_str.size());
+                    remove_eos = true;
+                }
+            }
+        }
+    }
+    if(true == remove_eos)
+        var_name = temp_var_name;
+        
+    return remove_eos;
+}
+
+bool GMFile:: Remove_EOS5_Strings_NonEOS_Fields(string &var_name) {
+
+    string eos_str="HDFEOS_";
+    string grid_str="GRIDS_";
+    string swath_str="SWATHS_";
+    string zas_str="ZAS_";
+    string temp_var_name = var_name;
+
+    bool remove_eos = false;
+
+    string::size_type eos_pos = temp_var_name.find(eos_str);
+    if(eos_pos!=string::npos) {
+        temp_var_name.erase(eos_pos,eos_str.size());
+        remove_eos = true;
+
+        // See if we need to further remove some fields 
+        if(temp_var_name.find(grid_str)==0)
+            temp_var_name.erase(0,grid_str.size());
+        else if(temp_var_name.find(swath_str)==0)
+            temp_var_name.erase(0,swath_str.size());
+        else if(temp_var_name.find(zas_str)==0)
+            temp_var_name.erase(0,zas_str.size());
+    }
+    if(true == remove_eos)
+        var_name = temp_var_name;
+
+        
+    return remove_eos;
+}
+
+
+#if 0
+bool GMFile:: Have_Grid_Mapping_Attrs(){
+
+    bool ret_value = false;
+    for (vector<Var *>::iterator irv = this->vars.begin();
+            irv != this->vars.end(); ++irv) {
+        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+            ira != (*ircv)->attrs.end(); ++ira) {
+            if((*ira)->name =="grid_mapping") {
+                ret_value = true;
+                break;
+            }
+        }
+        if(true == ret_value)
+            break;
+    }
+
+    return ret_value;
+}
+#endif
+
+void GMFile:: Handle_Grid_Mapping_Vars(){
+
 }
 // We will create some temporary coordinate variables. The resource allocoated
 // for these variables need to be released.

@@ -153,10 +153,11 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
         // Adjust Dimension name 
         f->Adjust_Dim_Name();
-         if(General_Product == product_type ||
+        if(General_Product == product_type ||
             true == HDF5RequestHandler::get_check_name_clashing()) 
             f->Handle_DimNameClashing();
 
+        f->Handle_Hybrid_EOS5();
         // Need to handle the "coordinate" attributes when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL))

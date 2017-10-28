@@ -2104,7 +2104,55 @@ bool File::is_var_under_group(const string &varname, const string &grpname, cons
     return ret_value;
 
 }
+bool File::Have_Grid_Mapping_Attrs(){
 
+    bool ret_value = false;
+    for (vector<Var *>::iterator irv = this->vars.begin();
+            irv != this->vars.end(); ++irv) {
+        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+            ira != (*ircv)->attrs.end(); ++ira) {
+            if((*ira)->name =="grid_mapping") {
+                ret_value = true;
+                break;
+            }
+        }
+        if(true == ret_value)
+            break;
+    }
+
+    return ret_value;
+
+}
+
+void File::Handle_Grid_Mapping_Vars(){
+
+    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        string attr_value;
+        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+            if((*ira)->name =="grid_mapping") {
+                Retrieve_H5_Attr_Value(*ira, var->fullpath);
+                attr_value.resize((*ira)->value.size());
+                copy((*ira)->value.begin(), (*ira)->value.end(), attr_value.begin());
+                break;
+            }
+ 
+        }
+        if(attr_value.find('/') ==string::npos){
+            string new_name = Check_Grid_Mapping_VarName(attr_value);
+            if(new_name != NULL)
+                Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
+ 
+        }
+        else {
+            string new_name = Check_Grid_Mapping_FullPath(attr_value);
+            if(new_name != NULL)
+                Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
+                //Using new_name as the attribute value
+
+        }
+    }
+
+}
 // Add ignored page header info. Mainly a helper message.
 void File::add_ignored_info_page_header()
 {

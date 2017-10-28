@@ -3891,6 +3891,14 @@ void EOS5File::Adjust_Obj_Name() throw (Exception)
 
 }
 
+void EOS5File::Have_Grid_Mapping_Attrs() {
+
+}
+void EOS5File::Handle_Grid_Mapping_Vars() {
+
+}
+
+
 // Sometimes need to replace informaton of a variable with the information of another variable.
 void EOS5File::Replace_Var_Info(EOS5CVar *src, EOS5CVar*target)
 {
