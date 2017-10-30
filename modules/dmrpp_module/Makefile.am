@@ -89,7 +89,7 @@ cccc:
 	cccc --outdir=$(C4_DIR) $(libdmrpp_module_la_SOURCES)
 
 SAMPLE_DATA_FILES = data/dmrpp/README \
-data/dmrpp/a2_local_twoD.h5.dmrp \
+data/dmrpp/a2_local_twoD.h5.dmrpp \
 data/dmrpp/a3_local_twoD.h5.dmrpp \
 data/dmrpp/bstream_3980492644c726c40d98833e277e02da.bs \
 data/dmrpp/bstream_52310773dfe8f711ca3ad4a95cbd65d8.bs \
