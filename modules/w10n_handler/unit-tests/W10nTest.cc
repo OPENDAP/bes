@@ -47,6 +47,8 @@
 static bool debug = false;
 static bool bes_debug = false;
 
+using std::cerr;
+
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 

@@ -47,7 +47,7 @@
  */
 class ShowPathInfoResponseHandler : public BESResponseHandler
 {
-private:
+public:
     void eval_resource_path(
         const string &w10nResourceId,
         const string &catalogRoot,
