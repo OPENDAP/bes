@@ -18,9 +18,11 @@ keepalive2_SOURCES = keepalive2.cc
 keepalive2_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 keepalive2_LDADD = $(DAP_SERVER_LIBS) -lcurl
 
+noinst_SCRIPTS = *.sh
+
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = 
+EXTRA_DIST = dmrpp
 
 CLEANFILES = *~
 

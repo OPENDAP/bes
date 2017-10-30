@@ -65,7 +65,7 @@ EXTRA_DIST = data dmrpp.conf.in
 CLEANFILES = *~ dmrpp.conf
 
 sample_datadir = $(datadir)/hyrax/data/dmrpp
-sample_data_DATA = data/dmrpp/*
+sample_data_DATA = $(SAMPLE_DATA_FILES)
 
 install-data-local: dmrpp.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
@@ -87,4 +87,70 @@ C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(libdmrpp_module_la_SOURCES)
+
+SAMPLE_DATA_FILES = data/dmrpp/README \
+data/dmrpp/a2_local_twoD.h5.dmrp \
+data/dmrpp/a3_local_twoD.h5.dmrpp \
+data/dmrpp/bstream_3980492644c726c40d98833e277e02da.bs \
+data/dmrpp/bstream_52310773dfe8f711ca3ad4a95cbd65d8.bs \
+data/dmrpp/bstream_63004b2080d84a81469dc0f113a3c843.bs \
+data/dmrpp/bstream_a6fee7e3efc727e4b43ae9daf881cb58.bs \
+data/dmrpp/chunked_fourD.h5 \
+data/dmrpp/chunked_fourD.h5.dmrpp \
+data/dmrpp/chunked_gzipped_fourD.h5 \
+data/dmrpp/chunked_gzipped_fourD.h5.dmrpp \
+data/dmrpp/chunked_gzipped_oneD.h5 \
+data/dmrpp/chunked_gzipped_oneD.h5.dmrpp \
+data/dmrpp/chunked_gzipped_threeD.h5 \
+data/dmrpp/chunked_gzipped_threeD.h5.dmrpp \
+data/dmrpp/chunked_gzipped_twoD.h5 \
+data/dmrpp/chunked_gzipped_twoD.h5.dmrpp \
+data/dmrpp/chunked_oneD.h5 \
+data/dmrpp/chunked_oneD.h5.dmrpp \
+data/dmrpp/chunked_oneD_uneven.h5 \
+data/dmrpp/chunked_oneD_uneven.h5.dmrpp \
+data/dmrpp/chunked_shuffled_fourD.h5 \
+data/dmrpp/chunked_shuffled_fourD.h5.dmrpp \
+data/dmrpp/chunked_shuffled_oneD.h5 \
+data/dmrpp/chunked_shuffled_oneD.h5.dmrpp \
+data/dmrpp/chunked_shuffled_threeD.h5 \
+data/dmrpp/chunked_shuffled_threeD.h5.dmrpp \
+data/dmrpp/chunked_shuffled_twoD.h5 \
+data/dmrpp/chunked_shuffled_twoD.h5.dmrpp \
+data/dmrpp/chunked_shufzip_fourD.h5 \
+data/dmrpp/chunked_shufzip_fourD.h5.dmrpp \
+data/dmrpp/chunked_shufzip_oneD.h5 \
+data/dmrpp/chunked_shufzip_oneD.h5.dmrpp \
+data/dmrpp/chunked_shufzip_threeD.h5 \
+data/dmrpp/chunked_shufzip_threeD.h5.dmrpp \
+data/dmrpp/chunked_shufzip_twoD.h5 \
+data/dmrpp/chunked_shufzip_twoD.h5.dmrpp \
+data/dmrpp/chunked_threeD.h5 \
+data/dmrpp/chunked_threeD.h5.dmrpp \
+data/dmrpp/chunked_threeD_asymmetric.h5 \
+data/dmrpp/chunked_threeD_asymmetric.h5.dmrpp \
+data/dmrpp/chunked_threeD_asymmetric_uneven.h5 \
+data/dmrpp/chunked_threeD_asymmetric_uneven.h5.dmrpp \
+data/dmrpp/chunked_twoD.h5 \
+data/dmrpp/chunked_twoD.h5.dmrpp \
+data/dmrpp/chunked_twoD_asymmetric.h5 \
+data/dmrpp/chunked_twoD_asymmetric.h5.dmrpp \
+data/dmrpp/chunked_twoD_uneven.h5 \
+data/dmrpp/chunked_twoD_uneven.h5.dmrpp \
+data/dmrpp/coads_climatology.bin \
+data/dmrpp/coads_climatology.dmrpp \
+data/dmrpp/d_int.h5 \
+data/dmrpp/d_int.h5.dmrpp \
+data/dmrpp/grid_1_2d.h5 \
+data/dmrpp/grid_1_2d.h5.dmrpp \
+data/dmrpp/grid_2_2d.h5 \
+data/dmrpp/grid_2_2d.h5.dmrpp \
+data/dmrpp/http_d_int.h5.dmrpp \
+data/dmrpp/http_t_int_scalar.h5.dmrpp \
+data/dmrpp/nc4_group_atomic.h5 \
+data/dmrpp/nc4_group_atomic.h5.dmrpp \
+data/dmrpp/t_float.h5 \
+data/dmrpp/t_float.h5.dmrpp \
+data/dmrpp/t_int_scalar.h5 \
+data/dmrpp/t_int_scalar.h5.dmrpp
 
