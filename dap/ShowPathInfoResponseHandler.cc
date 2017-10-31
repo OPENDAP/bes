@@ -32,6 +32,7 @@
 
 #include "BESInfoList.h"
 #include "BESInfo.h"
+#include "BESUtil.h"
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESNames.h"
@@ -382,9 +383,46 @@ ShowPathInfoResponseHandler::eval_resource_path(
             // ENOENT means that the node wasn't found. Otherwise, access
             // is denied for some reason
             if (errsv == ENOENT || errsv == ENOTDIR) {
-                BESDEBUG(SPI_DEBUG_KEY, "eval_resource_path() - validPath: "<< validPath << endl);
-                BESDEBUG(SPI_DEBUG_KEY, "eval_resource_path() - remainder: "<< remainder << endl);
-                return;
+
+                // I think here is where we look at DAP suffix removal.
+
+                // if there are no slashes in the remainder
+                size_t s_loc = remainder.find('/');
+                if (s_loc == string::npos){
+                    // if there are no more slashes, we check to see if this final path component contains "."
+                    string basename = remainder;
+
+                    bool moreDots = true;
+
+                    while(moreDots){
+                        // working back from end of string, drop each dot (".") suffix until file system match or string gone
+                       size_t d_loc = basename.find_last_of(".");
+                        if(d_loc != string::npos){
+                            basename = basename.substr(0,d_loc);
+                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
+
+                            string candidate_remainder = remainder.substr(basename.length());
+                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
+
+                            string candidate_path = BESUtil::assemblePath(validPath, basename, true);
+                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
+
+                            string full_candidate_path = BESUtil::assemblePath(catalogRoot, candidate_path, true);
+                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
+
+                            struct stat sb1;
+                            int statret1 = ye_old_stat_function(full_candidate_path.c_str(), &sb1);
+                            if (statret1 != -1) {
+                                validPath = candidate_path;
+                                remainder = candidate_remainder;
+                                moreDots = false;
+                            }
+                        }
+                        else {
+                            moreDots = false;
+                        }
+                    }
+                }
             }
             else {
                 throw BESForbiddenError(error, __FILE__, __LINE__);
@@ -393,26 +431,36 @@ ShowPathInfoResponseHandler::eval_resource_path(
         else {
             validPath = checking;
             remainder = rem;
+        }
+        fullpath = BESUtil::assemblePath(catalogRoot, validPath, true);
 
-            if (S_ISREG(sb.st_mode)) {
-                BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                    "'"<< checking << "' Is regular file." << endl);
-                isFile = true;
-                isDir = false;
-            }
-            else if (S_ISDIR(sb.st_mode)) {
-                BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                    "'"<< checking << "' Is directory." << endl);
-                isFile = false;
-                isDir = true;
-            }
-            else if (S_ISLNK(sb.st_mode)) {
-                BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                    "'"<< checking << "' Is symbolic Link." << endl);
-                string error = "Service not configured to traverse symbolic links as embodied by the node '" + checking
-                    + "' ACCESS IS FORBIDDEN";
-                throw BESForbiddenError(error, __FILE__, __LINE__);
-            }
+
+        statret = ye_old_stat_function(fullpath.c_str(), &sb);
+        if (S_ISREG(sb.st_mode)) {
+            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+                "'"<< fullpath << "' Is regular file." << endl);
+            isFile = true;
+            isDir = false;
+        }
+        else if (S_ISDIR(sb.st_mode)) {
+            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+                "'"<< fullpath << "' Is directory." << endl);
+            isFile = false;
+            isDir = true;
+        }
+        else if (S_ISLNK(sb.st_mode)) {
+            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+                "'"<< fullpath << "' Is symbolic Link." << endl);
+            string error = "Service not configured to traverse symbolic links as embodied by the node '" + checking
+                + "' ACCESS IS FORBIDDEN";
+            throw BESForbiddenError(error, __FILE__, __LINE__);
         }
     }
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -  fullpath: " << fullpath << endl);
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - validPath: " << validPath << endl);
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - remainder: " << remainder << endl);
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -       rem: " << rem << endl);
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
+
 }
