@@ -1,5 +1,5 @@
 
-#include "ShowPathInfoCommand.h"
+#include "W10nShowPathInfoCommand.h"
 #include "W10NNames.h"
 #include "BESDataNames.h"
 #include "BESDebug.h"
@@ -7,7 +7,9 @@
 #include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
 
-ShowPathInfoCommand::ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
+#define W10N_SHOW_PATH_INFO_DHI_TAG "show.w10nPathInfo"
+
+W10nShowPathInfoCommand::W10nShowPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {
 }
@@ -18,21 +20,21 @@ ShowPathInfoCommand::ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi
  *
  * @param node xml2 element node pointer
  */
-void ShowPathInfoCommand::parse_request(xmlNode *node)
+void W10nShowPathInfoCommand::parse_request(xmlNode *node)
 {
     string name;
     string value;
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, name, value, props);
-    if (name != SHOW_PATH_INFO_RESPONSE_STR) {
+    if (name != W10N_SHOW_PATH_INFO_REQUEST) {
         string err = "The specified command " + name + " is not a show w10n command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
     // the the action is to show the w10n info response
-    d_xmlcmd_dhi.action = SHOW_PATH_INFO_RESPONSE;
-    d_xmlcmd_dhi.data[SHOW_PATH_INFO_RESPONSE] = SHOW_PATH_INFO_RESPONSE;
-    d_cmd_log_info = "show pathInfo";
+    d_xmlcmd_dhi.action = W10N_SHOW_PATH_INFO_DHI_TAG;
+    d_xmlcmd_dhi.data[W10N_SHOW_PATH_INFO_DHI_TAG] = W10N_SHOW_PATH_INFO_DHI_TAG;
+    d_cmd_log_info = "show w10nPathInfo";
 
     // node is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
@@ -54,17 +56,17 @@ void ShowPathInfoCommand::parse_request(xmlNode *node)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void ShowPathInfoCommand::dump(ostream &strm) const
+void W10nShowPathInfoCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "ShowPathInfoCommand::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "W10nShowPathInfoCommand::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESXMLCommand::dump(strm);
     BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-ShowPathInfoCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
+W10nShowPathInfoCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new ShowPathInfoCommand(base_dhi);
+    return new W10nShowPathInfoCommand(base_dhi);
 }
 

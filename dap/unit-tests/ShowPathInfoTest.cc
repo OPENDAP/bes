@@ -3,7 +3,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2017 OPeNDAP, Inc.
 // Author: Nathan David Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -37,11 +37,11 @@
 #include "GetOpt.h"
 
 #include "test_config.h"
-#include "w10n_utils.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+#include "ShowPathInfoResponseHandler.h"
 #include "util.h"
 
 static bool debug = false;
@@ -52,26 +52,31 @@ using std::cerr;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-class W10nTest: public CppUnit::TestFixture {
+class ShowPathInfoTest: public CppUnit::TestFixture {
 
 private:
     string d_tmpDir;
     string d_testDir;
+    // ShowPathInfoResponseHandler::eval_resource_path
 
-    void eval_w10n_id(string resourceId, string catalogRoot, string expectedValidPath, string expectedRemainder,
+    void eval_resource_path(string resourceId, string catalogRoot, string expectedValidPath, string expectedRemainder,
         bool follow_sym_links)
     {
+        ShowPathInfoResponseHandler spirh("ShowPathInfoResponseHandler-Unit-Test");
+
+
         string validPath;
         string remainder;
         bool isDir, isFile;
-        DBG(cerr << "eval_w10n_id() - ##########################################################" << endl);
-        DBG(cerr << "eval_w10n_id() - ResourceId:         " << resourceId << endl);
-        DBG(cerr << "eval_w10n_id() - expectedValidPath:  " << expectedValidPath << endl);
-        DBG(cerr << "eval_w10n_id() - expectedRemainder:  " << expectedRemainder << endl);
-        DBG(cerr << "eval_w10n_id() - follow_sym_links:   " << (follow_sym_links ? "true" : "false") << endl);
-        w10n::eval_resource_path(resourceId, catalogRoot, follow_sym_links, validPath, isFile, isDir, remainder);
-        DBG(cerr << "eval_w10n_id() - Returned validPath: " << validPath << endl);
-        DBG(cerr << "eval_w10n_id() - Returned remainder: " << remainder << endl);
+        DBG(cerr << __func__ << "() - ##########################################################" << endl);
+        DBG(cerr << __func__ << "() - catalogRoot:         " << catalogRoot << endl);
+        DBG(cerr << __func__ << "() - ResourceId:         " << resourceId << endl);
+        DBG(cerr << __func__ << "() - expectedValidPath:  " << expectedValidPath << endl);
+        DBG(cerr << __func__ << "() - expectedRemainder:  " << expectedRemainder << endl);
+        DBG(cerr << __func__ << "() - follow_sym_links:   " << (follow_sym_links ? "true" : "false") << endl);
+        spirh.eval_resource_path(resourceId, catalogRoot, follow_sym_links, validPath, isFile, isDir, remainder);
+        DBG(cerr << __func__ << "() - Returned validPath: " << validPath << endl);
+        DBG(cerr << __func__ << "() - Returned remainder: " << remainder << endl);
         CPPUNIT_ASSERT(validPath == expectedValidPath);
         CPPUNIT_ASSERT(remainder == expectedRemainder);
     }
@@ -79,15 +84,15 @@ private:
 public:
 
     // Called once before everything gets tested
-    W10nTest() :
-        d_tmpDir(string(TEST_SRC_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/testdir")
+    ShowPathInfoTest() :
+        d_tmpDir(string(TEST_SRC_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/input-files")
     {
     }
 
     // Called at the end of the test
-    ~W10nTest()
+    ~ShowPathInfoTest()
     {
-        // DBG(cerr << "W10nTest - Destructor" << endl);
+        // DBG(cerr << "ShowPathInfoTest - Destructor" << endl);
     }
 
     // Called before each test
@@ -96,72 +101,91 @@ public:
         DBG(cerr << endl);
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
-        DBG(cerr << "W10nTest::setUp() - d_tmpDir:" << d_tmpDir << endl);
-        DBG(cerr << "W10nTest::setUp() - d_testDir:" << d_testDir << endl);
+        DBG(cerr << "ShowPathInfoTest::setUp() - d_tmpDir:" << d_tmpDir << endl);
+        DBG(cerr << "ShowPathInfoTest::setUp() - d_testDir:" << d_testDir << endl);
 
     }
 
     // Called after each test
     void tearDown()
     {
-        DBG(cerr << "W10nTest::tearDown()" << endl);
+        DBG(cerr << "ShowPathInfoTest::tearDown()" << endl);
     }
 
-CPPUNIT_TEST_SUITE( W10nTest );
+CPPUNIT_TEST_SUITE( ShowPathInfoTest );
 
-    CPPUNIT_TEST(eval_w10_path_to_directory);
-    CPPUNIT_TEST(eval_w10_path_to_file);
-    CPPUNIT_TEST(eval_w10_path_to_file_with_variable);
-    CPPUNIT_TEST(eval_w10_path_to_linked_file_with_variable);
-    CPPUNIT_TEST(eval_w10_path_to_forbidden_linked_file_with_variable);
-    CPPUNIT_TEST(eval_w10_path_to_bad_linked_file_with_variable);
+    CPPUNIT_TEST(eval_resource_path_to_directory);
+    CPPUNIT_TEST(eval_resource_path_to_file);
+    CPPUNIT_TEST(eval_resource_path_to_file_with_variable);
+    CPPUNIT_TEST(eval_resource_path_to_linked_file_with_variable);
+    CPPUNIT_TEST(eval_resource_path_to_forbidden_linked_file_with_variable);
+    CPPUNIT_TEST(eval_resource_path_to_bad_linked_file_with_variable);
 #if 0
-    CPPUNIT_TEST(eval_w10_path_to_forbidden_bad_linked_file_with_variable);
+    CPPUNIT_TEST(eval_resource_path_to_forbidden_bad_linked_file_with_variable);
 #endif
-    CPPUNIT_TEST(eval_w10_forbidden_up_traversal_path);
+    CPPUNIT_TEST(eval_resource_path_forbidden_up_traversal);
+    CPPUNIT_TEST(eval_resource_path_to_file_with_a_dap_suffix);
+    CPPUNIT_TEST(eval_resource_path_to_file_with_a_dap_suffix_and_path);
 
     CPPUNIT_TEST_SUITE_END()
     ;
 
-    void eval_w10_path_to_directory()
+    void eval_resource_path_to_directory()
     {
-        string w10nResourceId = "/nc/";
+        string resourceId = "/nc/";
         string expectedPath = "/nc";
         string expectedRemainder = "";
-        eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
-    void eval_w10_path_to_file()
+    void eval_resource_path_to_file()
     {
-        string w10nResourceId = "/nc/testfile.txt";
+        string resourceId = "/nc/testfile.txt";
         string expectedPath = "/nc/testfile.txt";
         string expectedRemainder = "";
-        eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
-    void eval_w10_path_to_file_with_variable()
+    void eval_resource_path_to_file_with_variable()
     {
-        string w10nResourceId = "/nc/testfile.txt/sst/lat";
+        string resourceId = "/nc/testfile.txt/sst/lat";
         string expectedPath = "/nc/testfile.txt";
         string expectedRemainder = "sst/lat";
-        eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
-    void eval_w10_path_to_linked_file_with_variable()
+
+    void eval_resource_path_to_file_with_a_dap_suffix()
     {
-        string w10nResourceId = "/link_to_nc/link_to_testfile.txt/sst/";
+        string resourceId = "/nc/testfile.txt.dmr.xml";
+        string expectedPath = "/nc/testfile.txt";
+        string expectedRemainder = ".dmr.xml";
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
+    }
+
+    void eval_resource_path_to_file_with_a_dap_suffix_and_path()
+    {
+        string resourceId = "/nc/testfile.txt.dmr.xml/look/nothing/here";
+        string expectedPath = "/nc";
+        string expectedRemainder = "testfile.txt.dmr.xml/look/nothing/here";
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
+    }
+
+    void eval_resource_path_to_linked_file_with_variable()
+    {
+        string resourceId = "/link_to_nc/link_to_testfile.txt/sst/";
         string expectedPath = "/link_to_nc/link_to_testfile.txt";
         string expectedRemainder = "sst";
-        eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
-    void eval_w10_path_to_forbidden_linked_file_with_variable()
+    void eval_resource_path_to_forbidden_linked_file_with_variable()
     {
-        string w10nResourceId = "/link_to_nc/link_to_testfile.txt/sst/";
+        string resourceId = "/link_to_nc/link_to_testfile.txt/sst/";
         string expectedPath = "";
         string expectedRemainder = "";
         try {
-            eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, false);
+            eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, false);
         }
         catch (BESForbiddenError &e) {
             DBG(
@@ -171,21 +195,21 @@ CPPUNIT_TEST_SUITE( W10nTest );
         }
     }
 
-    void eval_w10_path_to_bad_linked_file_with_variable()
+    void eval_resource_path_to_bad_linked_file_with_variable()
     {
-        string w10nResourceId = "/nc/bad_link/sst/";
+        string resourceId = "/nc/bad_link/sst/";
         string expectedPath = "/nc";
         string expectedRemainder = "bad_link/sst";
-        eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
+        eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
-    void eval_w10_path_to_forbidden_bad_linked_file_with_variable()
+    void eval_resource_path_to_forbidden_bad_linked_file_with_variable()
     {
-        string w10nResourceId = "/nc/bad_link/sst/";
+        string resourceId = "/nc/bad_link/sst/";
         string expectedPath = "";
         string expectedRemainder = "";
         try {
-            eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, false);
+            eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, false);
         }
         catch (BESForbiddenError &e) {
             DBG(
@@ -194,13 +218,13 @@ CPPUNIT_TEST_SUITE( W10nTest );
             CPPUNIT_ASSERT(true);
         }
     }
-    void eval_w10_forbidden_up_traversal_path()
+    void eval_resource_path_forbidden_up_traversal()
     {
-        string w10nResourceId = "/nc/../../../sst/";
+        string resourceId = "/nc/../../../sst/";
         string expectedPath = "";
         string expectedRemainder = "";
         try {
-            eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
+            eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
         }
         catch (BESForbiddenError &e) {
             DBG(
@@ -213,7 +237,7 @@ CPPUNIT_TEST_SUITE( W10nTest );
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(W10nTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ShowPathInfoTest);
 
 int main(int argc, char*argv[])
 {
@@ -232,8 +256,8 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             std::cerr << "Usage: W10nTest has the following tests:" << std::endl;
-            const std::vector<CppUnit::Test*> &tests = W10nTest::suite()->getTests();
-            unsigned int prefix_len = W10nTest::suite()->getName().append("::").length();
+            const std::vector<CppUnit::Test*> &tests = ShowPathInfoTest::suite()->getTests();
+            unsigned int prefix_len = ShowPathInfoTest::suite()->getName().append("::").length();
             for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
             }
@@ -257,8 +281,9 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = W10nTest::suite()->getName().append("::").append(argv[i]);
+            test = ShowPathInfoTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            i++;
         }
     }
 
