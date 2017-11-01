@@ -42,10 +42,6 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-# $(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4
-#	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-#	mv $@.tmp $@
-
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 
 % : %.at
