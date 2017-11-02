@@ -26,7 +26,7 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/besTest
 
 check-local: atconfig atlocal $(TESTSUITE)
-	@if echo `besctl status` | grep "PID:"; \
+	@if bescmdln -x "show version;"; \
 		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 		else echo "no bes found, not running cmdln-based tests"; \
 	fi

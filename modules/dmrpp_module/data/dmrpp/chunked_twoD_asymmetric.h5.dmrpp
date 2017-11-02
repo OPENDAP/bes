@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0" 
+    dmrVersion="1.0"
+    name="chunked_twoD_asymmetric.h5"
+    xml:base="data/dmrpp/chunked_twoD_asymmetric.h5">
+  <Float32 name="d_8_chunks">
+    <Dim size="100"/>
+    <Dim size="200"/>
+    <Attribute name="origname" type="String">
+      <Value>d_8_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_8_chunks</Value>
+    </Attribute>
+    <h4:chunks>
+      <h4:chunkDimensionSizes>50 50</h4:chunkDimensionSizes>
+      <h4:byteStream offset="4016" uuid="58cd02fd-2ebf-45af-b4c4-c6992fb9ab24" nBytes="10000" md5="73b277caf6a74b95ca3d2d3a46860ced" chunkPositionInArray="[0,0]"/>
+      <h4:byteStream offset="14016" uuid="5ac8e242-938f-4381-a86d-8dab67c5489e" nBytes="10000" md5="107f71e46cf54bb23a3b3db6ae928a40" chunkPositionInArray="[0,50]"/>
+      <h4:byteStream offset="24016" uuid="ec90ef69-5cb3-4694-8b5d-ec4815fb0d77" nBytes="10000" md5="ba8ba63b8ee7c6c4a46708f1c7268779" chunkPositionInArray="[0,100]"/>
+      <h4:byteStream offset="34016" uuid="f1b3d378-399e-48a1-96ec-b72808a5dccf" nBytes="10000" md5="01f643baa860280544fc8ea4d19ca488" chunkPositionInArray="[0,150]"/>
+      <h4:byteStream offset="44016" uuid="a1780059-3690-4ef9-b25f-fbf3cf469e20" nBytes="10000" md5="daa7f1a8a003595098c57ecd030bc16b" chunkPositionInArray="[50,0]"/>
+      <h4:byteStream offset="54016" uuid="caaf30b9-65fe-4721-b5dc-a92dd7f380ff" nBytes="10000" md5="4e17ebcf348add178c1b508404dd8860" chunkPositionInArray="[50,50]"/>
+      <h4:byteStream offset="64016" uuid="03ee32d5-1d2c-4bd5-981e-8f1f3dec9bd4" nBytes="10000" md5="c2dd2eace89a201665417fd71c34897d" chunkPositionInArray="[50,100]"/>
+      <h4:byteStream offset="74016" uuid="a26ae74b-65ad-4fea-acbd-43eb5f271565" nBytes="10000" md5="10ca0aadb13134a6f6a8b30d59812ee7" chunkPositionInArray="[50,150]"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>

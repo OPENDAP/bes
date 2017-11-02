@@ -287,6 +287,8 @@ BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
 AC_SUBST(BES_XML_CMD_LIB)
 BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
 AC_SUBST(BES_PPT_LIB)
+BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
+AC_SUBST(BES_DAP_LIB)
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 
@@ -784,6 +786,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/debug_functions/tests/Makefile 
     modules/debug_functions/tests/atlocal
 
+    modules/dmrpp_module/Makefile
+    modules/dmrpp_module/unit-tests/Makefile 
+    modules/dmrpp_module/unit-tests/test_config.h
+    modules/dmrpp_module/data/Makefile 
+
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
     modules/fileout_json/unit-tests/test_config.h
@@ -889,9 +896,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
-    
     ]
 )
+
 
 AC_OUTPUT
 

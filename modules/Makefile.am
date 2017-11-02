@@ -4,10 +4,12 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = csv_handler usage asciival www-interface freeform_handler 
+SUBDIRS = csv_handler usage asciival www-interface freeform_handler
+
+
 
 if BES_DEVELOPER
-SUBDIRS += debug_functions
+SUBDIRS += debug_functions dmrpp_module
 endif
 
 if BUILD_HDF4

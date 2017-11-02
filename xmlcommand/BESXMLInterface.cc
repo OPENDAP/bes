@@ -97,7 +97,7 @@ void BESXMLInterface::build_data_request_plan()
 
     // I do not know why, but uncommenting this macro breaks some tests
     // on linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
-    // causing some XML elements in DMR responses to be twiddled in the 
+    // causing some XML elements in DMR responses to be twidled in the
     // responses build on linux but not on OSX.
     // LIBXML_TEST_VERSION
 
