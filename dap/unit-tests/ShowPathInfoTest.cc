@@ -175,7 +175,7 @@ CPPUNIT_TEST_SUITE( ShowPathInfoTest );
     {
         string resourceId = "/link_to_nc/link_to_testfile.txt/sst/";
         string expectedPath = "/link_to_nc/link_to_testfile.txt";
-        string expectedRemainder = "sst";
+        string expectedRemainder = "sst/";
         eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
@@ -199,7 +199,7 @@ CPPUNIT_TEST_SUITE( ShowPathInfoTest );
     {
         string resourceId = "/nc/bad_link/sst/";
         string expectedPath = "/nc";
-        string expectedRemainder = "bad_link/sst";
+        string expectedRemainder = "bad_link/sst/";
         eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 

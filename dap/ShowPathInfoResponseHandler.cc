@@ -277,6 +277,13 @@ ShowPathInfoResponseHandler::eval_resource_path(
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
         "resourceID: "<< resourceId << endl);
 
+    // nothing valid yet...
+    validPath = "";
+
+    // It's all remainder at this point...
+    string rem = resourceId;
+    remainder = rem;
+
     // Rather than have two basically identical code paths for the two cases (follow and !follow symlinks)
     // We evaluate the follow_sym_links switch and use a function pointer to get the correct "stat"
     // function for the eval operation.
@@ -296,9 +303,6 @@ ShowPathInfoResponseHandler::eval_resource_path(
     // assumed to be valid.
     if (resourceId == "") {
         BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - The resourceID is empty" << endl);
-
-        validPath = "";
-        remainder = "";
         return;
     }
 
@@ -317,26 +321,11 @@ ShowPathInfoResponseHandler::eval_resource_path(
     // next part of the path.
     bool done = false;
 
-    // what is remaining to check
-    string rem = resourceId;
-    remainder = rem;
-
-    // Remove leading slash
-    if (rem[0] == '/') rem = rem.substr(1, rem.length() - 1);
-
-    // Remove trailing slash
-    if (rem[rem.length() - 1] == '/') rem = rem.substr(0, rem.length() - 1);
-
-    // full path of the thing to check
+    // Full file system path to check
     string fullpath = catalogRoot;
-    // Remove leading slash
-    if (fullpath[fullpath.length() - 1] == '/') {
-        fullpath = fullpath.substr(0, fullpath.length() - 1);
-    }
 
-    // path checked so far
+    // localId that we are checking
     string checking;
-    // string validPath;
 
     isFile = false;
     isDir = false;
@@ -346,26 +335,39 @@ ShowPathInfoResponseHandler::eval_resource_path(
         if (slash == string::npos) {
             BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
                 "Checking final path component: " << rem << endl);
-            fullpath = fullpath + "/" + rem;
-            checking = validPath + "/" + rem;
+            fullpath = BESUtil::assemblePath(fullpath, rem, true);
+            checking = BESUtil::assemblePath(validPath, rem, true);
             rem = "";
             done = true;
         }
         else {
-            fullpath = fullpath + "/" + rem.substr(0, slash);
-            checking = validPath + "/" + rem.substr(0, slash);
+            fullpath = BESUtil::assemblePath(fullpath, rem.substr(0, slash),true);
+            checking = BESUtil::assemblePath(validPath,rem.substr(0, slash),true);
             rem = rem.substr(slash + 1, rem.length() - slash);
         }
 
         BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "fullpath: "<< fullpath << endl);
+            "validPath: "<< validPath << endl);
         BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
             "checking: "<< checking << endl);
+        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+            "fullpath: "<< fullpath << endl);
+
+        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+            "rem: "<< rem << endl);
+
+        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+            "remainder: "<< remainder << endl);
 
         struct stat sb;
         int statret = ye_old_stat_function(fullpath.c_str(), &sb);
 
-        if (statret == -1) {
+        if (statret != -1) {
+            // No Error then keep chugging along.
+            validPath = checking;
+            remainder = rem;
+        }
+        else {
             int errsv = errno;
             // stat failed, so not accessible. Get the error string,
             // store in error, and throw exception
@@ -380,57 +382,57 @@ ShowPathInfoResponseHandler::eval_resource_path(
             BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
                 "error: "<< error << "   errno: " << errno << endl);
 
+            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+                "remainder: '" << remainder << "'" << endl);
+
             // ENOENT means that the node wasn't found. Otherwise, access
             // is denied for some reason
-            if (errsv == ENOENT || errsv == ENOTDIR) {
+            if (errsv != ENOENT && errsv != ENOTDIR) {
+                throw BESForbiddenError(error, __FILE__, __LINE__);
+            }
 
-                // I think here is where we look at DAP suffix removal.
+            // Are there slashes in the remainder?
+            size_t s_loc = remainder.find('/');
+            if (s_loc == string::npos){
+                // if there are no more slashes, we check to see if this final path component contains "."
+                string basename = remainder;
+                bool moreDots = true;
+                while(moreDots){
+                    // working back from end of string, drop each dot (".") suffix until file system match or string gone
+                   size_t d_loc = basename.find_last_of(".");
+                    if(d_loc != string::npos){
+                        basename = basename.substr(0,d_loc);
+                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
 
-                // if there are no slashes in the remainder
-                size_t s_loc = remainder.find('/');
-                if (s_loc == string::npos){
-                    // if there are no more slashes, we check to see if this final path component contains "."
-                    string basename = remainder;
+                        string candidate_remainder = remainder.substr(basename.length());
+                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
 
-                    bool moreDots = true;
+                        string candidate_path = BESUtil::assemblePath(validPath, basename, true);
+                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
 
-                    while(moreDots){
-                        // working back from end of string, drop each dot (".") suffix until file system match or string gone
-                       size_t d_loc = basename.find_last_of(".");
-                        if(d_loc != string::npos){
-                            basename = basename.substr(0,d_loc);
-                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
+                        string full_candidate_path = BESUtil::assemblePath(catalogRoot, candidate_path, true);
+                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
 
-                            string candidate_remainder = remainder.substr(basename.length());
-                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
-
-                            string candidate_path = BESUtil::assemblePath(validPath, basename, true);
-                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
-
-                            string full_candidate_path = BESUtil::assemblePath(catalogRoot, candidate_path, true);
-                            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
-
-                            struct stat sb1;
-                            int statret1 = ye_old_stat_function(full_candidate_path.c_str(), &sb1);
-                            if (statret1 != -1) {
-                                validPath = candidate_path;
-                                remainder = candidate_remainder;
-                                moreDots = false;
-                            }
-                        }
-                        else {
+                        struct stat sb1;
+                        int statret1 = ye_old_stat_function(full_candidate_path.c_str(), &sb1);
+                        if (statret1 != -1) {
+                            validPath = candidate_path;
+                            remainder = candidate_remainder;
                             moreDots = false;
                         }
+                    }
+                    else {
+                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+                            "No dots in remainder: "<< remainder << endl);
+                       moreDots = false;
                     }
                 }
             }
             else {
-                throw BESForbiddenError(error, __FILE__, __LINE__);
+                BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
+                    "Remainder has slash pollution: "<< remainder << endl);
+                done = true;
             }
-        }
-        else {
-            validPath = checking;
-            remainder = rem;
         }
         fullpath = BESUtil::assemblePath(catalogRoot, validPath, true);
 
