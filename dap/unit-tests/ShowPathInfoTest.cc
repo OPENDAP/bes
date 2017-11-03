@@ -64,9 +64,9 @@ private:
     {
         ShowPathInfoResponseHandler spirh("ShowPathInfoResponseHandler-Unit-Test");
 
-
         string validPath;
         string remainder;
+        long long size, time;
         bool isDir, isFile;
         DBG(cerr << __func__ << "() - ##########################################################" << endl);
         DBG(cerr << __func__ << "() - catalogRoot:         " << catalogRoot << endl);
@@ -74,8 +74,10 @@ private:
         DBG(cerr << __func__ << "() - expectedValidPath:  " << expectedValidPath << endl);
         DBG(cerr << __func__ << "() - expectedRemainder:  " << expectedRemainder << endl);
         DBG(cerr << __func__ << "() - follow_sym_links:   " << (follow_sym_links ? "true" : "false") << endl);
-        spirh.eval_resource_path(resourceId, catalogRoot, follow_sym_links, validPath, isFile, isDir, remainder);
+        spirh.eval_resource_path(resourceId, catalogRoot, follow_sym_links, validPath, isFile, isDir, size, time, remainder);
         DBG(cerr << __func__ << "() - Returned validPath: " << validPath << endl);
+        DBG(cerr << __func__ << "() - Returned size:      " << size << endl);
+        DBG(cerr << __func__ << "() - Returned lmt:       " << time << endl);
         DBG(cerr << __func__ << "() - Returned remainder: " << remainder << endl);
         CPPUNIT_ASSERT(validPath == expectedValidPath);
         CPPUNIT_ASSERT(remainder == expectedRemainder);
