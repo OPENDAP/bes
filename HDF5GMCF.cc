@@ -616,6 +616,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
     BESDEBUG("h5", "Coming to GMFile:Handle_Unsupported_Others()"<<endl);
     File::Handle_Unsupported_Others(include_attr);
+
     if(true == this->check_ignored && true == include_attr) {
         if(true == HDF5RequestHandler::get_drop_long_string()){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
@@ -6340,7 +6341,7 @@ void GMFile::Handle_Hybrid_EOS5() {
         }
     }
 
-
+    // Update the coordinate attribute values
 
 }
 bool GMFile:: Remove_EOS5_Strings(string &var_name) {
@@ -6447,28 +6448,62 @@ bool GMFile:: Remove_EOS5_Strings_NonEOS_Fields(string &var_name) {
 }
 
 
-#if 0
 bool GMFile:: Have_Grid_Mapping_Attrs(){
-
-    bool ret_value = false;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-            irv != this->vars.end(); ++irv) {
-        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-            ira != (*ircv)->attrs.end(); ++ira) {
-            if((*ira)->name =="grid_mapping") {
-                ret_value = true;
-                break;
-            }
-        }
-        if(true == ret_value)
-            break;
-    }
-
-    return ret_value;
+    return File::Have_Grid_Mapping_Attrs();
 }
-#endif
 
 void GMFile:: Handle_Grid_Mapping_Vars(){
+    File:: Handle_Grid_Mapping_Vars();
+}
+
+void GMFile:: Remove_Unused_FakeDimVars() {
+
+    // We need to remove the FakeDim added for the unsupported variables.
+    // We found such a case in the AirMSPR product. A compound dataype array
+    // is assigned to a FakeDim. We need to remove them.
+    // KY 2017-11-2: no need to even check the unsupported_var_dspace now. 
+    if(this->unsupported_var_dtype == true) {
+
+        //set<string> removed_fakedim_vars;
+        // Need to check if we have coordinate variables such as FakeDim?
+        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+                 ircv != this->cvars.end();) {
+            if((*ircv)->newname.find("FakeDim")==0) {
+                bool var_has_fakedim = false;
+                for (vector<Var*>::iterator irv2 = this->vars.begin();
+                    irv2 != this->vars.end(); irv2++) {
+                    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
+                         ird !=(*irv2)->dims.end(); ird++) {
+                        if((*ird)->newname == (*ircv)->newname){
+                            var_has_fakedim = true;
+                            break;
+                        }
+                    }
+                    if(var_has_fakedim == true) 
+                        break;
+                }
+                if(var_has_fakedim == false) {
+                    // Remove this cv, the variable is unsupported.
+                    //if(true == include_attri && true == this->have_udim)
+                     //   removed_fakedim_vars.insert((*ircv)->newname);
+                    delete(*ircv);
+                    ircv = this->cvars.erase(ircv);
+                }
+                else 
+                    ++ircv;
+            }
+            else 
+                ++ircv;
+        }
+
+        // We need to handle unlimited dimensions
+        //if(removed_fakedim_vars.size()!=0) {
+
+
+        //}
+    }
+
+
 
 }
 // We will create some temporary coordinate variables. The resource allocoated

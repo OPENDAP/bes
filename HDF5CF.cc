@@ -2109,8 +2109,8 @@ bool File::Have_Grid_Mapping_Attrs(){
     bool ret_value = false;
     for (vector<Var *>::iterator irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
-        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-            ira != (*ircv)->attrs.end(); ++ira) {
+        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+            ira != (*irv)->attrs.end(); ++ira) {
             if((*ira)->name =="grid_mapping") {
                 ret_value = true;
                 break;
@@ -2130,7 +2130,7 @@ void File::Handle_Grid_Mapping_Vars(){
         string attr_value;
         for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
             if((*ira)->name =="grid_mapping") {
-                Retrieve_H5_Attr_Value(*ira, var->fullpath);
+                Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
                 attr_value.resize((*ira)->value.size());
                 copy((*ira)->value.begin(), (*ira)->value.end(), attr_value.begin());
                 break;
@@ -2138,20 +2138,48 @@ void File::Handle_Grid_Mapping_Vars(){
  
         }
         if(attr_value.find('/') ==string::npos){
-            string new_name = Check_Grid_Mapping_VarName(attr_value);
-            if(new_name != NULL)
+            string new_name = Check_Grid_Mapping_VarName(attr_value,(*irv)->fullpath);
+            if(new_name != "")
                 Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
  
         }
         else {
             string new_name = Check_Grid_Mapping_FullPath(attr_value);
-            if(new_name != NULL)
+            if(new_name != "")
                 Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
                 //Using new_name as the attribute value
-
         }
     }
 
+}
+
+string File::Check_Grid_Mapping_VarName(const string & a_value,const string & var_fpath) {
+    
+    string var_path = HDF5CFUtil::obtain_string_before_lastslash(var_fpath);
+    string gmap_new_name;
+    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        if((*irv)->name == a_value){
+            if(var_path == HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) {
+                gmap_new_name = (*irv)->newname;
+                break;
+            }
+        }
+    }
+    return gmap_new_name;
+}
+
+
+string File::Check_Grid_Mapping_FullPath(const string & a_value) {
+
+    string gmap_new_name;
+    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        if((*irv)->fullpath == a_value){
+            gmap_new_name = (*irv)->newname;
+            break;
+        }
+    }
+
+    return gmap_new_name;
 }
 // Add ignored page header info. Mainly a helper message.
 void File::add_ignored_info_page_header()

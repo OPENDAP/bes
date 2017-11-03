@@ -158,11 +158,14 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
             f->Handle_DimNameClashing();
 
         f->Handle_Hybrid_EOS5();
+        if(true == f->Have_Grid_Mapping_Attrs()) 
+            f->Handle_Grid_Mapping_Vars();
         // Need to handle the "coordinate" attributes when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
             f->Handle_Coor_Attr();
  
+        f->Remove_Unused_FakeDimVars();
     }
     catch (HDF5CF::Exception &e){
         if (f != NULL)
@@ -239,6 +242,12 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
         // Handle the "coordinate" attributes.
         f->Handle_Coor_Attr();
+
+        f->Handle_Hybrid_EOS5();
+        if(true == f->Have_Grid_Mapping_Attrs()) 
+            f->Handle_Grid_Mapping_Vars();
+
+        f->Remove_Unused_FakeDimVars();
     }
     catch (HDF5CF::Exception &e){
         if (f!= NULL)
@@ -413,6 +422,29 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         // when there are no dimension names. So don't create DODS_EXTRA even if
         // there is an unlimited dimension in the file. KY 2016-02-18
         if(cvars.size() >0){
+
+            // First check if we do have unlimited dimension in the coordinate variables.
+            // Since unsupported fakedims are removed, we may not have unlimited dimensions.
+            bool still_has_unlimited = false;
+            for (it_cv = cvars.begin();
+                it_cv != cvars.end(); ++it_cv) {
+                // Check unlimited dimension names.
+                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                     ird != (*it_cv)->getDimensions().end(); ++ird) {
+
+                    // Currently we only check one unlimited dimension, which is the most
+                    // common case. When receiving the conventions from JG, will add
+                    // the support of multi-unlimited dimension. KY 2016-02-09
+                    if((*ird)->HaveUnlimitedDim() == true) {
+                        still_has_unlimited = true;
+                        break;
+                    }// if((*ird)->HaveUnlimitedDim()
+                }// for (vector<Dimension*>::
+                if(true == still_has_unlimited) 
+                    break;
+            }// for (it_cv=cvars.begin();
+ 
+           if(true == still_has_unlimited) {
             AttrTable* at = das.get_table("DODS_EXTRA");
             if (NULL == at)
                 at = das.add_table("DODS_EXTRA", new AttrTable);
@@ -447,6 +479,8 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                     }// if((*ird)->HaveUnlimitedDim()
                 }// for (vector<Dimension*>::
             }// for (it_cv=cvars.begin();
+          }// if(true == still_has_unlimited)
+            
         }//if(cvars.size()>0)
         // The following line will generate the string like "Band1 str1 str2".
         //if(unlimited_names!="") 

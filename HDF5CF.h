@@ -761,8 +761,8 @@ protected:
     void release_standalone_var_vector(vector<Var*>&vars);
 
     // Handle grid_mapping attributes
-    string Check_Grid_Mapping_VarName(const string& attr_value);
-    String Check_Grid_Mapping_FullPath(const string& attr_value);
+    string Check_Grid_Mapping_VarName(const string& attr_value,const string& var_full_path);
+    string Check_Grid_Mapping_FullPath(const string& attr_value);
 
 protected:
     File(const char *h5_path, hid_t file_id) :
@@ -894,6 +894,9 @@ public:
  
     /// Handle "coordinates" attributes for general HDF5 products
     void Handle_Coor_Attr();
+
+    /// Unsupported datatype array may generate FakeDim. Remove them.
+    void Remove_Unused_FakeDimVars();
 
     /// Update "product type" attributes for general HDF5 products
     void Update_Product_Type() throw (Exception);

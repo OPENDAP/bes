@@ -3891,11 +3891,11 @@ void EOS5File::Adjust_Obj_Name() throw (Exception)
 
 }
 
-void EOS5File::Have_Grid_Mapping_Attrs() {
-
+bool EOS5File::Have_Grid_Mapping_Attrs() {
+    return File::Have_Grid_Mapping_Attrs();
 }
 void EOS5File::Handle_Grid_Mapping_Vars() {
-
+    File:: Handle_Grid_Mapping_Vars();
 }
 
 
