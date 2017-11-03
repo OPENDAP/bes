@@ -6342,7 +6342,66 @@ void GMFile::Handle_Hybrid_EOS5() {
     }
 
     // Update the coordinate attribute values
-
+    // We need to remove the HDFEOS special information from the coordinates attributes 
+    // since the variable names in the DAP output are already updated.
+    for (vector<Var *>::iterator irv = this->vars.begin();
+                     irv != this->vars.end(); irv++) {
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                     ira != (*irv)->attrs.end();ira++) {
+            // We cannot use Retrieve_Str_Attr_value for "coordinates" since "coordinates" may be added by the handler.
+            // KY 2017-11-3
+            if((*ira)->name == "coordinates") {
+                string cor_values((*ira)->value.begin(),(*ira)->value.end()) ;
+                bool change_cor_values = false;
+                // Find the HDFEOS string
+                if(cor_values.find(eos_str)==0) {
+                    if(cor_values.find(grid_str)!=string::npos) {// Grid
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,eos_str);
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,grid_str);
+                        string new_cor_values = HDF5CFUtil::remove_substrings(cor_values,df_str);
+                        if(new_cor_values.size() < cor_values.size()){//df_str is also removed.
+                            change_cor_values = true;
+                            cor_values = new_cor_values;
+                        }
+                    }
+                    else if(cor_values.find(zas_str)!=string::npos) {//ZA 
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,eos_str);
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,zas_str);
+                        string new_cor_values = HDF5CFUtil::remove_substrings(cor_values,df_str);
+                        if(new_cor_values.size() < cor_values.size()){//df_str is also removed.
+                            change_cor_values = true;
+                            cor_values = new_cor_values;
+                        }
+                    }
+                    else if(cor_values.find(swath_str)!=string::npos) {//Swath 
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,eos_str);
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,swath_str);
+                        string new_cor_values = HDF5CFUtil::remove_substrings(cor_values,df_str);
+                        if(new_cor_values.size() < cor_values.size()){//df_str is also removed.
+                            change_cor_values = true;
+                            cor_values = new_cor_values;
+                        }
+                        else {
+                            new_cor_values = HDF5CFUtil::remove_substrings(cor_values,gf_str);
+                            if(new_cor_values.size() < cor_values.size()){//gf_str is also removed.
+                                change_cor_values = true;
+                                cor_values = new_cor_values;
+                            }
+                        }
+                    }
+                }
+                if(true == change_cor_values) {//Update the coordinate values
+                    (*ira)->value.resize(cor_values.size());
+                    (*ira)->fstrsize=cor_values.size();
+                    (*ira)->strsize[0] = cor_values.size();
+                    copy(cor_values.begin(), cor_values.end(), (*ira)->value.begin());
+                }
+                
+                break;
+             }
+        }
+ 
+    }
 }
 bool GMFile:: Remove_EOS5_Strings(string &var_name) {
 
