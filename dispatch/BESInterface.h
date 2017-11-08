@@ -128,7 +128,9 @@ protected:
     virtual void build_data_request_plan() = 0;
 
     virtual void execute_data_request_plan();
+#if 0
     virtual void invoke_aggregation();
+#endif
 
     virtual int finish(int status);
     virtual void transmit_data();

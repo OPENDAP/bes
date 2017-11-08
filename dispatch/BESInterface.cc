@@ -450,10 +450,8 @@ void BESInterface::build_data_request_plan()
  */
 void BESInterface::execute_data_request_plan()
 {
-    if (BESLog::TheLog()->is_verbose()) {
-        *(BESLog::TheLog()) << d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
-            << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl;
-    }
+    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+            << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
 
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG))
@@ -475,21 +473,17 @@ void BESInterface::execute_data_request_plan()
         alarm(bes_timeout);
     }
 
-    BESDEBUG("bes", "Executing request: " << d_dhi_ptr->data[LOG_INFO] << " ... " << endl);
     BESResponseHandler *rh = d_dhi_ptr->response_handler;
     if (rh) {
         rh->execute(*d_dhi_ptr);
     }
     else {
-        BESDEBUG("bes", "FAILED" << endl);
-        string se = "The response handler \"" + d_dhi_ptr->action + "\" does not exist";
-        throw BESInternalError(se, __FILE__, __LINE__);
+        throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
     }
-    BESDEBUG("bes", "OK" << endl);
-
+#if 0
     // Now we need to do the post processing piece of executing the request
     invoke_aggregation();
-
+#endif
     // And finally, transmit the response of this request
     transmit_data();
 
@@ -563,6 +557,7 @@ int BESInterface::finish_with_error(int status)
     return finish(status);
 }
 
+#if 0
 /** @brief Aggregate the resulting response object
  */
 void BESInterface::invoke_aggregation()
@@ -606,7 +601,7 @@ void BESInterface::invoke_aggregation()
         BESDEBUG("bes", "OK" << endl);
     }
 }
-
+#endif
 /** @brief Transmit the resulting response object
 
  The derived classes are responsible for specifying a transmitter object
@@ -628,20 +623,14 @@ void BESInterface::transmit_data()
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", d_dhi_ptr->data[REQUEST_ID]);
 
-    BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting request: " << d_dhi_ptr->data[LOG_INFO] << endl);
-
     if (d_dhi_ptr->error_info) {
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
         (*BESLog::TheLog()) << strm.str() << endl;
-        BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
-        BESDEBUG("bes",
-            "BESInterface::transmit_data() - Response handler  " << d_dhi_ptr->response_handler->get_name() << endl);
-
         d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr);
     }
 }
