@@ -26,6 +26,7 @@
 //
 
 #include <sstream>
+#include <time.h>
 
 #include "ShowPathInfoResponseHandler.h"
 
@@ -59,7 +60,7 @@
 #define SIZE  "size"
 #define LMT  "lastModified"
 
-#define SPI_DEBUG_KEY "show_path_info"
+#define SPI_DEBUG_KEY "show-path-info"
 #define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
 
 ShowPathInfoResponseHandler::ShowPathInfoResponseHandler( const string &name ): BESResponseHandler( name )
@@ -483,9 +484,9 @@ ShowPathInfoResponseHandler::eval_resource_path(
             throw BESForbiddenError(error, __FILE__, __LINE__);
         }
         size = sb.st_size;
-        lastModifiedTime = sb.st_mtimespec.tv_sec;
-
-    }
+        // Compute LMT by converting the time to milliseconds since epoch - because OLFS is picky
+        lastModifiedTime = (sb.st_mtimespec.tv_sec * 1000) + (sb.st_mtimespec.tv_nsec/1000000);
+   }
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -  fullpath: " << fullpath << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - validPath: " << validPath << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - remainder: " << remainder << endl);
