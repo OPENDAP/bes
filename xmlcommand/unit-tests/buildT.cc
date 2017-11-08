@@ -92,9 +92,7 @@ public:
     {
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/bes.conf";
 
-        cout << endl << "*****************************************" << endl;
-        cout << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl;
-        cout << "Entered buildT::run" << endl;
+        DBG(cerr << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl);
 
         try {
             BESXMLCommand::add_command("cmd1.1", BuildTCmd1::Cmd1Builder);
@@ -103,8 +101,7 @@ public:
             BESXMLCommand::add_command("cmd2.2", BuildTCmd2::Cmd2Builder);
         }
         catch (BESError &e) {
-            cout << "failed to add commands" << endl << e.get_message() << endl;
-            CPPUNIT_ASSERT( false );
+            CPPUNIT_FAIL( "failed to add commands" + e.get_message() );
         }
 
         try {
@@ -124,17 +121,13 @@ public:
 	</element4> \
     </cmd2.1> \
 </request>";
-            BuildTInterface bti;
-            bti.run(myDoc);
+            BuildTInterface bti(myDoc);
+            bti.run();
             CPPUNIT_ASSERT( what_test == 2 );
         }
         catch (BESError &e) {
-            cout << "failed with exception" << endl << e.get_message() << endl;
-            CPPUNIT_ASSERT( false );
+            CPPUNIT_FAIL( "failed with exception" + e.get_message() );
         }
-
-        cout << endl << "*****************************************" << endl;
-        cout << "Leaving buildT::run" << endl;
     }
 
 };

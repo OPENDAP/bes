@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -47,15 +49,16 @@ using std::stringstream;
 #include "BESReturnManager.h"
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
-		BESInterface(strm)
+    d_xml_document(xml_doc), BESInterface(strm)
 {
+    // This is needed because we want the parent to have access to the information
+    // added to the DHI
     d_dhi_ptr = &d_xml_interface_dhi;
-    d_dhi_ptr->data[DATA_REQUEST] = "xml document";
-    // NB: The xml_doc is only used one place in the BES and that's on
-    // line 108  in this file. We could make this a field of the object and
-    // cut down on the use of the map. The downside is that putting the
-    // xml in the map makes it accessible when we look at the DHI. jhrg 2/23/16
-    d_dhi_ptr->data["XMLDoc"] = xml_doc;
+
+    // TODO: Should be able to do this... but there are ctor woes. jhrg 11/7/17
+    // d_dhi_ptr->data[REQUEST_FROM] = from;
+
+    d_dhi_ptr->data[LOG_INFO] = "xml document";
 }
 
 BESXMLInterface::~BESXMLInterface()
@@ -63,42 +66,20 @@ BESXMLInterface::~BESXMLInterface()
     clean();
 }
 
-#if 0
-int BESXMLInterface::execute_request(const string &from)
-{
-    return BESInterface::execute_request(from);
-}
-
-/** @brief Initialize the BES
- */
-void BESXMLInterface::initialize()
-{
-    BESInterface::initialize();
-}
-
-/** @brief Validate the incoming request information
- */
-void BESXMLInterface::validate_data_request()
-{
-    BESInterface::validate_data_request();
-}
-#endif
-
 /** @brief Build the data request plan using the BESCmdParser.
  */
 void BESXMLInterface::build_data_request_plan()
 {
-    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
-    BESDEBUG("besxml", "building request plan for xml document: " << endl << d_dhi_ptr->data["XMLDoc"] << endl);
+    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
+    BESDEBUG("besxml", "building request plan for xml document: " << endl << d_xml_document << endl);
 
-    if (BESLog::TheLog()->is_verbose()) {
-        *(BESLog::TheLog()) << d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << "] building" << endl;
-    }
+    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << "] building" << endl);
 
     // I do not know why, but uncommenting this macro breaks some tests
-    // on linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
-    // causing some XML elements in DMR responses to be twidled in the
-    // responses build on linux but not on OSX.
+    // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
+    // causing some XML elements in DMR responses to be twiddled in the
+    // responses build on Linux but not on OSX.
+    //
     // LIBXML_TEST_VERSION
 
     xmlDoc *doc = NULL;
@@ -111,7 +92,7 @@ void BESXMLInterface::build_data_request_plan()
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
 
         // XML_PARSE_NONET
-        doc = xmlReadMemory(d_dhi_ptr->data["XMLDoc"].c_str(), d_dhi_ptr->data["XMLDoc"].size(), "" /* base URL */,
+        doc = xmlReadMemory(d_xml_document.c_str(), d_xml_document.size(), "" /* base URL */,
                             NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == NULL) {
@@ -131,38 +112,32 @@ void BESXMLInterface::build_data_request_plan()
 
         // get the root element and make sure it exists and is called request
         root_element = xmlDocGetRootElement(doc);
-        if (!root_element) {
-            string err = "There is no root element in the xml document";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
+        if (!root_element) throw BESSyntaxUserError("There is no root element in the xml document", __FILE__, __LINE__);
 
         string root_name;
         string root_val;
         map<string, string> props;
         BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, props);
-        if (root_name != "request") {
-            string err = (string) "The root element should be a request element, " + "name is "
-                + (char *) root_element->name;
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
-        if (root_val != "") {
-            string err = (string) "The request element must not contain a value, " + root_val;
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
+        if (root_name != "request")
+            throw BESSyntaxUserError(string("The root element should be a request element, name is ").append((char *)root_element->name),
+                                     __FILE__, __LINE__);
+
+        if (!root_val.empty())
+            throw BESSyntaxUserError(string("The request element must not contain a value, ").append(root_val),
+                                     __FILE__, __LINE__);
 
         // there should be a request id property with one value.
         string &reqId = props[REQUEST_ID];
-        if (reqId.empty()) {
-            string err = (string) "request id value empty";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
+        if (reqId.empty())
+            throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
+
         d_dhi_ptr->data[REQUEST_ID] = reqId;
 
         BESDEBUG("besxml", "request id = " << d_dhi_ptr->data[REQUEST_ID] << endl);
 
         // iterate through the children of the request element. Each child is an
         // individual command.
-        bool has_response = false;
+        bool has_response = false;  // set to true when a command with a response is found.
         current_node = root_element->children;
 
         while (current_node) {
@@ -172,49 +147,36 @@ void BESXMLInterface::build_data_request_plan()
                 string node_name = (char *) current_node->name;
 
                 p_xmlcmd_builder bldr = BESXMLCommand::find_command(node_name);
-                if (bldr) {
-                    BESXMLCommand *current_cmd = bldr(d_xml_interface_dhi);
-                    if (!current_cmd) {
-                        string err = (string) "Failed to build command object for " + node_name;
-                        throw BESInternalError(err, __FILE__, __LINE__);
-                    }
+                if (!bldr)
+                    throw BESSyntaxUserError(string("Unable to find command for ").append(node_name), __FILE__, __LINE__);
 
-                    // push this new command to the back of the list
-                    d_xml_cmd_list.push_back(current_cmd);
+                BESXMLCommand *current_cmd = bldr(d_xml_interface_dhi);
+                if (!current_cmd)
+                    throw BESInternalError(string("Failed to build command object for ").append(node_name), __FILE__, __LINE__);
 
-                    // only one of the commands can build a response. If more
-                    // than one builds a response, throw an error
-                    bool cmd_has_response = current_cmd->has_response();
-                    if (has_response && cmd_has_response) {
-                        string err = "Multiple responses not allowed";
-                        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-                    }
-                    has_response = cmd_has_response;
+                // push this new command to the back of the list
+                d_xml_cmd_list.push_back(current_cmd);
 
-                    // parse the request given the current node
-                    BESDEBUG("besxml", "parse request using " << node_name << endl);
-                    current_cmd->parse_request(current_node);
+                // only one of the commands can build a response
+                bool cmd_has_response = current_cmd->has_response();
+                if (has_response && cmd_has_response)
+                    throw BESSyntaxUserError("Commands with multiple responses not supported.", __FILE__, __LINE__);
 
-                    BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
+                has_response = cmd_has_response;
 
-                    BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
+                // parse the request given the current node
+                current_cmd->parse_request(current_node);
 
-                    string returnAs = current_dhi.data[RETURN_CMD];
-                    if (returnAs != "") {
-                        BESDEBUG("xml", "Finding transmitter: " << returnAs << " ...  " << endl);
-                        BESTransmitter *transmitter = BESReturnManager::TheManager()->find_transmitter(returnAs);
-                        if (!transmitter) {
-                            string s = (string) "Unable to find transmitter " + returnAs;
-                            throw BESSyntaxUserError(s, __FILE__, __LINE__);
-                        }
-                        BESDEBUG("xml", "OK" << endl);
-                    }
-                }
-                else {
-                    string err = (string) "Unable to find command for " + node_name;
-                    throw BESSyntaxUserError(err, __FILE__, __LINE__);
+                BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
+
+                string return_as = current_dhi.data[RETURN_CMD];
+                if (!return_as.empty()) {
+                    BESTransmitter *transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
+                    if (!transmitter)
+                        throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__, __LINE__);
                 }
             }
+
             current_node = current_node->next;
         }
     }
@@ -255,15 +217,6 @@ void BESXMLInterface::execute_data_request_plan()
         BESInterface::execute_data_request_plan();
     }
 }
-
-#if 0
-/** @brief Invoke the aggregation server, if there is one
- */
-void BESXMLInterface::invoke_aggregation()
-{
-    BESInterface::invoke_aggregation();
-}
-#endif
 
 /** @brief Transmit the response object
  */

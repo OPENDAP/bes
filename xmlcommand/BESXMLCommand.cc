@@ -65,13 +65,7 @@ void BESXMLCommand::set_response()
         __FILE__, __LINE__);
     }
 
-    // The _str_cmd is a text version of the xml command used for the log.
-    // It is not used for anything else. I think the 'sql like' syntax is
-    // actually no longer used by the BES and that the software in cmdln
-    // translates that syntax into XML. But I'm not 100% sure... jhrg 12/29/15
-
-    // FIXME: I think DATA_REQUEST is a misnomer - this is the information to log only. jhrg 10/22/17
-    d_xmlcmd_dhi.data[DATA_REQUEST] = d_cmd_log_info;
+    d_xmlcmd_dhi.data[LOG_INFO] = d_cmd_log_info;
 
     BESLog::TheLog()->flush_me();
     string m = BESLog::mark;

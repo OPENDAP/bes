@@ -161,7 +161,7 @@ BESApacheInterface::initialize()
     }
 
     _dhi.data[USER_ADDRESS] = _dri->user_address ;
-    _dhi.data[DATA_REQUEST] = _dri->request ;
+    _dhi.data[LOG_INFO] = _dri->request ;
 
     string user = "undef" ;
     if( _dri->cookie )
