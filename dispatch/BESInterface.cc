@@ -404,6 +404,7 @@ void BESInterface::initialize()
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::initialize", d_dhi_ptr->data[REQUEST_ID]);
 }
 
+#if 0
 void BESInterface::build_data_request_plan()
 {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
@@ -429,6 +430,7 @@ void BESInterface::build_data_request_plan()
         BESDEBUG("bes", "OK" << endl);
     }
 }
+#endif
 
 /** @brief Execute the data request plan
 

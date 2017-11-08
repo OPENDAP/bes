@@ -62,15 +62,12 @@ void BESXMLCommand::set_response()
     d_xmlcmd_dhi.response_handler = BESResponseHandlerList::TheList()->find_handler(d_xmlcmd_dhi.action);
     if (!d_xmlcmd_dhi.response_handler) {
         throw BESSyntaxUserError(string("Command '") + d_xmlcmd_dhi.action + "' does not have a registered response handler",
-        __FILE__, __LINE__);
+                                 __FILE__, __LINE__);
     }
 
     d_xmlcmd_dhi.data[LOG_INFO] = d_cmd_log_info;
 
-    BESLog::TheLog()->flush_me();
-    string m = BESLog::mark;
-    *(BESLog::TheLog()) << d_xmlcmd_dhi.data[REQUEST_FROM] << m << d_cmd_log_info << m << "request received" << m << endl;
-    BESLog::TheLog()->flush_me();
+    VERBOSE(d_xmlcmd_dhi.data[REQUEST_FROM] << BESLog::mark << d_cmd_log_info  << endl);
 }
 
 /** @brief Add a command to the possible commands allowed by this BES

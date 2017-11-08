@@ -49,7 +49,7 @@ using std::stringstream;
 #include "BESReturnManager.h"
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
-    d_xml_document(xml_doc), BESInterface(strm)
+    BESInterface(strm), d_xml_document(xml_doc)
 {
     // This is needed because we want the parent to have access to the information
     // added to the DHI
@@ -73,7 +73,7 @@ void BESXMLInterface::build_data_request_plan()
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
     BESDEBUG("besxml", "building request plan for xml document: " << endl << d_xml_document << endl);
 
-    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << "] building" << endl);
+    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " building" << endl);
 
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
@@ -146,6 +146,11 @@ void BESXMLInterface::build_data_request_plan()
                 // BESXMLCommand object
                 string node_name = (char *) current_node->name;
 
+                // The Command Builder scheme is a kind of factory, but which uses lists and
+                // a static method defined by each child of BESXMLCommand (called CommandBuilder).
+                // These static methods make new instances of the specific commands and, in so
+                // doing, _copy_ the DataHandlerInterface instance using that class' clone() method.
+                // jhrg 11/7/17
                 p_xmlcmd_builder bldr = BESXMLCommand::find_command(node_name);
                 if (!bldr)
                     throw BESSyntaxUserError(string("Unable to find command for ").append(node_name), __FILE__, __LINE__);
@@ -201,8 +206,9 @@ void BESXMLInterface::build_data_request_plan()
     xmlCleanupParser();
 
     BESDEBUG("besxml", "Done building request plan" << endl);
-
+#if 0
     BESInterface::build_data_request_plan();
+#endif
 }
 
 /** @brief Execute the data request plan
@@ -222,15 +228,12 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::transmit_data()
 {
-    string returnAs = d_dhi_ptr->data[RETURN_CMD];
-    if (returnAs != "") {
-        BESDEBUG("xml", "Setting transmitter: " << returnAs << " ...  " << endl);
-        d_transmitter = BESReturnManager::TheManager()->find_transmitter(returnAs);
+    string return_as = d_dhi_ptr->data[RETURN_CMD];
+    if (!return_as.empty()) {
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
         if (!d_transmitter) {
-            string s = (string) "Unable to find transmitter " + returnAs;
-            throw BESSyntaxUserError(s, __FILE__, __LINE__);
+            throw BESSyntaxUserError(string("Unable to find transmitter ") + return_as, __FILE__, __LINE__);
         }
-        BESDEBUG("xml", "OK" << endl);
     }
 
     BESInterface::transmit_data();

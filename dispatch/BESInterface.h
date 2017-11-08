@@ -125,7 +125,7 @@ protected:
 
     virtual int exception_manager(BESError &e);
 
-    virtual void build_data_request_plan();
+    virtual void build_data_request_plan() = 0;
 
     virtual void execute_data_request_plan();
     virtual void invoke_aggregation();
