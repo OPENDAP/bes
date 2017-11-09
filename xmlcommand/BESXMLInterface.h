@@ -60,6 +60,7 @@ protected:
 
     virtual void execute_data_request_plan();
 
+    // TODO Remove
     virtual void transmit_data();
 
     virtual void log_status();

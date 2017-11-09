@@ -129,6 +129,7 @@ protected:
 
     virtual void finish();
 
+    // TODO Remove
     virtual void transmit_data() = 0;
 
     virtual void log_status() = 0;
