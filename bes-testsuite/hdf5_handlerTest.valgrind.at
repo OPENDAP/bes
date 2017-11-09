@@ -262,6 +262,7 @@ AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
 #Test the removal of FakeDims from unsupported datatypes
 AT_BESCMD_RESPONSE_TEST([FakeDim_remove.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([FakeDim_remove.h5.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([FakeDim_remove.h5.data.bescmd])
 
 # Test simple HDF-EOS5 cases.
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.das.bescmd])
