@@ -228,7 +228,7 @@ void BESXMLInterface::execute_data_request_plan()
 
         rh->execute(*d_dhi_ptr);
 
-        transmit_data();
+        transmit_data();    // TODO move method body in here? jhrg 11/8/17
     }
 }
 
