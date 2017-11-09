@@ -273,17 +273,29 @@ void BESXMLInterface::transmit_data()
 
 }
 
-/** @brief Log the status of the request to the BESLog file
-
- @see BESLog
+/**
+ * @brief Log the status of the request to the BESLog file
+ *
+ * This will only log information in the verbose mode.
+ *
+ * @see BESLog
  */
 void BESXMLInterface::log_status()
 {
-    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
-    for (; i != e; i++) {
-        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
-        BESInterface::log_status();
+    if (BESLog::TheLog()->is_verbose()) {
+        vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
+        vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
+        for (; i != e; i++) {
+            d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
+
+            // IF the DHI's error_info object pointer is null, the request was successful.
+            string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
+
+            LOG(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+#if 0
+            BESInterface::log_status();
+#endif
+        }
     }
 }
 

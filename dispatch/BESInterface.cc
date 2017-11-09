@@ -277,9 +277,11 @@ BESInterface::BESInterface(ostream *output_stream) :
  @see end_request()
  @see exception_manager()
  */
+
+#if 0
 extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
 extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
-
+#endif
 int BESInterface::execute_request(const string &from)
 {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
@@ -291,14 +293,17 @@ int BESInterface::execute_request(const string &from)
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) {
         sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
-
+#if 0
         bes_timing::elapsedTimeToReadStart = new BESStopWatch();
         bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START", d_dhi_ptr->data[REQUEST_ID]);
 
         bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
         bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START", d_dhi_ptr->data[REQUEST_ID]);
+#endif
     }
 
+    // TODO These never change for the life of a BES, so maybe they can move out of
+    // code that runs for every request? jhrg 11/8/17
     d_dhi_ptr->set_output_stream(d_strm);
     d_dhi_ptr->data[REQUEST_FROM] = from;
 
@@ -676,18 +681,18 @@ void BESInterface::transmit_data()
     }
 }
 #endif
-
+#if 0
 /** @brief Log the status of the request
  */
 void BESInterface::log_status()
 {
-    string result = "completed";
-    if (d_dhi_ptr->error_info) result = "failed";
+    // IF the DHI's error_info object pointer is null, the request was successful.
+    string result = (!d_dhi_ptr->error_info) ? "completed": "failed";
 
     VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
             << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
 }
-
+#endif
 /** @brief Report the request and status of the request to
  * BESReporterList::TheList()
 

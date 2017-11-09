@@ -135,9 +135,12 @@ protected:
 
     virtual /*int*/ void finish(/*int status*/);
     virtual void transmit_data() = 0;
-    virtual void log_status();
+
+    virtual void log_status() = 0;
+
     virtual void report_request();
     virtual void end_request();
+
     virtual void clean() = 0;
 
     BESInterface(ostream *strm);
