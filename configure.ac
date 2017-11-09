@@ -7,7 +7,7 @@ AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE([1.10 tar-pax])
 
-AM_CONDITIONAL([DAP_MODULES], [false])
+AM_CONDITIONAL([DAP_BUILTIN_MODULES], [false])
 
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
 

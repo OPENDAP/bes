@@ -616,6 +616,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 
     BESDEBUG("h5", "Coming to GMFile:Handle_Unsupported_Others()"<<endl);
     File::Handle_Unsupported_Others(include_attr);
+
     if(true == this->check_ignored && true == include_attr) {
         if(true == HDF5RequestHandler::get_drop_long_string()){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
@@ -6216,6 +6217,354 @@ GMFile::Handle_SpVar_Attr() throw(Exception) {
 
 }
 
+bool
+GMFile::Is_Hybrid_EOS5() {
+
+    bool has_group_hdfeos  = false;
+    bool has_group_hdfeos_info = false;
+
+    // Too costly to check the dataset. 
+    // We will just check the attribute under /HDFEOS INFORMATION.
+    // bool hasdd_dset_structmeta = false;
+
+    // First check if the HDFEOS groups are included
+    for (vector<Group *>::iterator irg = this->groups.begin();
+        irg != this->groups.end(); ++ irg) {
+        if ("/HDFEOS" == (*irg)->path) 
+            has_group_hdfeos = true;
+        else if("/HDFEOS INFORMATION" == (*irg)->path) {
+            for(vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                ira != (*irg)->attrs.end();ira++) {
+                if("HDFEOSVersion" == (*ira)->name)
+                    has_group_hdfeos_info = true;
+            }
+        }
+        if(true == has_group_hdfeos && true == has_group_hdfeos_info)
+            break;
+    }
+
+    
+    if(true == has_group_hdfeos && true == has_group_hdfeos_info) 
+        return true;
+    else 
+        return false;
+}
+
+void GMFile::Handle_Hybrid_EOS5() {
+
+    string eos_str="HDFEOS_";
+    string eos_info_str="HDFEOS_INFORMATION_";
+    string grid_str="GRIDS_";
+    string swath_str="SWATHS_";
+    string zas_str="ZAS_";
+    string df_str="Data_Fields_";
+    string gf_str="Geolocation_Fields_";
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); irv++) {
+        string temp_var_name = (*irv)->newname;
+
+        bool remove_eos = Remove_EOS5_Strings(temp_var_name);
+        
+        if(true == remove_eos)
+            (*irv)->newname = get_CF_string(temp_var_name);
+        else {//HDFEOS info and extra fields
+            string::size_type eos_info_pos = temp_var_name.find(eos_info_str);
+            if(eos_info_pos !=string::npos) 
+                (*irv)->newname = temp_var_name.erase(eos_info_pos,eos_info_str.size());
+            else {// Check the extra fields
+                if(Remove_EOS5_Strings_NonEOS_Fields(temp_var_name)==true)
+                    (*irv)->newname = get_CF_string(temp_var_name);
+            }
+        }
+    }
+
+    // Now we need to handle the dimension names.
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); irv++) {
+        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+            ird!=(*irv)->dims.end(); ++ird) {
+            string temp_dim_name = (*ird)->newname;
+            bool remove_eos = Remove_EOS5_Strings(temp_dim_name);
+            
+            if(true == remove_eos)
+                (*ird)->newname = get_CF_string(temp_dim_name);
+            else {//HDFEOS info and extra fields
+                string::size_type eos_info_pos = temp_dim_name.find(eos_info_str);
+                if(eos_info_pos !=string::npos) 
+                    (*ird)->newname = temp_dim_name.erase(eos_info_pos,eos_info_str.size());
+                else {// Check the extra fields
+                    if(Remove_EOS5_Strings_NonEOS_Fields(temp_dim_name)==true)
+                        (*ird)->newname = get_CF_string(temp_dim_name);
+                }
+            }
+        }
+    }
+
+    // We have to loop through all CVs.
+    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+                irv != this->cvars.end(); ++irv) {
+        string temp_var_name = (*irv)->newname;
+
+        bool remove_eos = Remove_EOS5_Strings(temp_var_name);
+        
+        if(true == remove_eos)
+            (*irv)->newname = get_CF_string(temp_var_name);
+        else {//HDFEOS info and extra "fields"
+            string::size_type eos_info_pos = temp_var_name.find(eos_info_str);
+            if(eos_info_pos !=string::npos) 
+                (*irv)->newname = temp_var_name.erase(eos_info_pos,eos_info_str.size());
+            else {// Check the extra fields
+                if(Remove_EOS5_Strings_NonEOS_Fields(temp_var_name)==true)
+                    (*irv)->newname = get_CF_string(temp_var_name);
+            }
+        }
+    }
+    // Now we need to handle the dimension names.
+    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+        irv != this->cvars.end(); irv++) {
+        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+            ird!=(*irv)->dims.end(); ++ird) {
+            string temp_dim_name = (*ird)->newname;
+            bool remove_eos = Remove_EOS5_Strings(temp_dim_name);
+            
+            if(true == remove_eos)
+                (*ird)->newname = get_CF_string(temp_dim_name);
+            else {// HDFEOS info and extra "fields"
+                string::size_type eos_info_pos = temp_dim_name.find(eos_info_str);
+                if(eos_info_pos !=string::npos) 
+                    (*ird)->newname = temp_dim_name.erase(eos_info_pos,eos_info_str.size());
+                else {// Check the extra "fields"
+                    if(Remove_EOS5_Strings_NonEOS_Fields(temp_dim_name)==true)
+                        (*ird)->newname = get_CF_string(temp_dim_name);
+                }
+            }
+        }
+    }
+
+    // Update the coordinate attribute values
+    // We need to remove the HDFEOS special information from the coordinates attributes 
+    // since the variable names in the DAP output are already updated.
+    for (vector<Var *>::iterator irv = this->vars.begin();
+                     irv != this->vars.end(); irv++) {
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                     ira != (*irv)->attrs.end();ira++) {
+            // We cannot use Retrieve_Str_Attr_value for "coordinates" since "coordinates" may be added by the handler.
+            // KY 2017-11-3
+            if((*ira)->name == "coordinates") {
+                string cor_values((*ira)->value.begin(),(*ira)->value.end()) ;
+                bool change_cor_values = false;
+                // Find the HDFEOS string
+                if(cor_values.find(eos_str)==0) {
+                    if(cor_values.find(grid_str)!=string::npos) {// Grid
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,eos_str);
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,grid_str);
+                        string new_cor_values = HDF5CFUtil::remove_substrings(cor_values,df_str);
+                        if(new_cor_values.size() < cor_values.size()){//df_str is also removed.
+                            change_cor_values = true;
+                            cor_values = new_cor_values;
+                        }
+                    }
+                    else if(cor_values.find(zas_str)!=string::npos) {//ZA 
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,eos_str);
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,zas_str);
+                        string new_cor_values = HDF5CFUtil::remove_substrings(cor_values,df_str);
+                        if(new_cor_values.size() < cor_values.size()){//df_str is also removed.
+                            change_cor_values = true;
+                            cor_values = new_cor_values;
+                        }
+                    }
+                    else if(cor_values.find(swath_str)!=string::npos) {//Swath 
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,eos_str);
+                        cor_values = HDF5CFUtil::remove_substrings(cor_values,swath_str);
+                        string new_cor_values = HDF5CFUtil::remove_substrings(cor_values,df_str);
+                        if(new_cor_values.size() < cor_values.size()){//df_str is also removed.
+                            change_cor_values = true;
+                            cor_values = new_cor_values;
+                        }
+                        else {
+                            new_cor_values = HDF5CFUtil::remove_substrings(cor_values,gf_str);
+                            if(new_cor_values.size() < cor_values.size()){//gf_str is also removed.
+                                change_cor_values = true;
+                                cor_values = new_cor_values;
+                            }
+                        }
+                    }
+                }
+                if(true == change_cor_values) {//Update the coordinate values
+                    (*ira)->value.resize(cor_values.size());
+                    (*ira)->fstrsize=cor_values.size();
+                    (*ira)->strsize[0] = cor_values.size();
+                    copy(cor_values.begin(), cor_values.end(), (*ira)->value.begin());
+                }
+                
+                break;
+             }
+        }
+ 
+    }
+}
+bool GMFile:: Remove_EOS5_Strings(string &var_name) {
+
+    string eos_str="HDFEOS_";
+    string grid_str="GRIDS_";
+    string swath_str="SWATHS_";
+    string zas_str="ZAS_";
+    string df_str="Data_Fields_";
+    string gf_str="Geolocation_Fields_";
+    string temp_var_name = var_name;
+
+    bool remove_eos = false;
+
+    string::size_type eos_pos = temp_var_name.find(eos_str);
+    if(eos_pos!=string::npos) {
+        temp_var_name.erase(eos_pos,eos_str.size());
+        // Check grid,swath and zonal 
+        string::size_type grid_pos=temp_var_name.find(grid_str);
+        string::size_type grid_df_pos=string::npos;
+        if(grid_pos!=string::npos)
+            grid_df_pos = temp_var_name.find(df_str,grid_pos);
+        string::size_type zas_pos = string::npos;
+        string::size_type zas_df_pos=string::npos;
+        if(grid_pos==string::npos || grid_df_pos ==string::npos) 
+            zas_pos=temp_var_name.find(zas_str);
+        if(zas_pos!=string::npos)
+            zas_df_pos=temp_var_name.find(df_str,zas_pos);
+        
+        if(grid_pos !=string::npos && grid_df_pos!=string::npos) {
+            temp_var_name.erase(grid_pos,grid_str.size());
+            grid_df_pos = temp_var_name.find(df_str);              
+            temp_var_name.erase(grid_df_pos,df_str.size());
+            remove_eos = true;
+        }
+        else if(zas_pos!=string::npos && zas_df_pos!=string::npos){
+            temp_var_name.erase(zas_pos,zas_str.size());
+            zas_df_pos = temp_var_name.find(df_str);              
+            temp_var_name.erase(zas_df_pos,df_str.size());
+            remove_eos = true;
+        }
+        else {//Check both Geolocation and Data for Swath
+            
+            string::size_type swath_pos=temp_var_name.find(swath_str);
+            string::size_type swath_df_pos=string::npos;
+            if(swath_pos!=string::npos)
+                swath_df_pos=temp_var_name.find(df_str,swath_pos);
+
+            string::size_type swath_gf_pos=string::npos;
+            if(swath_pos!=string::npos && swath_df_pos == string::npos)
+                swath_gf_pos=temp_var_name.find(gf_str,swath_pos);
+
+            if(swath_pos !=string::npos) {
+
+                if(swath_df_pos!=string::npos) {
+                    temp_var_name.erase(swath_pos,swath_str.size());
+                    swath_df_pos = temp_var_name.find(df_str);              
+                    temp_var_name.erase(swath_df_pos,df_str.size());
+                    remove_eos = true;
+                }
+                else if(swath_gf_pos!=string::npos) {
+                    temp_var_name.erase(swath_pos,swath_str.size());
+                    swath_gf_pos = temp_var_name.find(gf_str);              
+                    temp_var_name.erase(swath_gf_pos,gf_str.size());
+                    remove_eos = true;
+                }
+            }
+        }
+    }
+    if(true == remove_eos)
+        var_name = temp_var_name;
+        
+    return remove_eos;
+}
+
+bool GMFile:: Remove_EOS5_Strings_NonEOS_Fields(string &var_name) {
+
+    string eos_str="HDFEOS_";
+    string grid_str="GRIDS_";
+    string swath_str="SWATHS_";
+    string zas_str="ZAS_";
+    string temp_var_name = var_name;
+
+    bool remove_eos = false;
+
+    string::size_type eos_pos = temp_var_name.find(eos_str);
+    if(eos_pos!=string::npos) {
+        temp_var_name.erase(eos_pos,eos_str.size());
+        remove_eos = true;
+
+        // See if we need to further remove some fields 
+        if(temp_var_name.find(grid_str)==0)
+            temp_var_name.erase(0,grid_str.size());
+        else if(temp_var_name.find(swath_str)==0)
+            temp_var_name.erase(0,swath_str.size());
+        else if(temp_var_name.find(zas_str)==0)
+            temp_var_name.erase(0,zas_str.size());
+    }
+    if(true == remove_eos)
+        var_name = temp_var_name;
+
+        
+    return remove_eos;
+}
+
+
+bool GMFile:: Have_Grid_Mapping_Attrs(){
+    return File::Have_Grid_Mapping_Attrs();
+}
+
+void GMFile:: Handle_Grid_Mapping_Vars(){
+    File:: Handle_Grid_Mapping_Vars();
+}
+
+void GMFile:: Remove_Unused_FakeDimVars() {
+
+    // We need to remove the FakeDim added for the unsupported variables.
+    // We found such a case in the AirMSPR product. A compound dataype array
+    // is assigned to a FakeDim. We need to remove them.
+    // KY 2017-11-2: no need to even check the unsupported_var_dspace now. 
+    if(this->unsupported_var_dtype == true) {
+
+        //set<string> removed_fakedim_vars;
+        // Need to check if we have coordinate variables such as FakeDim?
+        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+                 ircv != this->cvars.end();) {
+            if((*ircv)->newname.find("FakeDim")==0) {
+                bool var_has_fakedim = false;
+                for (vector<Var*>::iterator irv2 = this->vars.begin();
+                    irv2 != this->vars.end(); irv2++) {
+                    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
+                         ird !=(*irv2)->dims.end(); ird++) {
+                        if((*ird)->newname == (*ircv)->newname){
+                            var_has_fakedim = true;
+                            break;
+                        }
+                    }
+                    if(var_has_fakedim == true) 
+                        break;
+                }
+                if(var_has_fakedim == false) {
+                    // Remove this cv, the variable is unsupported.
+                    //if(true == include_attri && true == this->have_udim)
+                     //   removed_fakedim_vars.insert((*ircv)->newname);
+                    delete(*ircv);
+                    ircv = this->cvars.erase(ircv);
+                }
+                else 
+                    ++ircv;
+            }
+            else 
+                ++ircv;
+        }
+
+        // We need to handle unlimited dimensions
+        //if(removed_fakedim_vars.size()!=0) {
+
+
+        //}
+    }
+
+
+
+}
 // We will create some temporary coordinate variables. The resource allocoated
 // for these variables need to be released.
 void 
