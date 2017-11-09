@@ -101,12 +101,12 @@ public:
             BESXMLCommand::add_command("cmd2.2", BuildTCmd2::Cmd2Builder);
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL( "failed to add commands" + e.get_message() );
+            CPPUNIT_FAIL( "Failed to add commands: " + e.get_message() );
         }
 
         try {
             string myDoc =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
 <request reqID =\"some_unique_value\" > \
    <cmd1.1 prop1=\"prop1val\"> \
 	<element1>element1val</element1> \
@@ -126,7 +126,7 @@ public:
             CPPUNIT_ASSERT( what_test == 2 );
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL( "failed with exception" + e.get_message() );
+            CPPUNIT_FAIL( "Failed with exception: " + e.get_message() );
         }
     }
 

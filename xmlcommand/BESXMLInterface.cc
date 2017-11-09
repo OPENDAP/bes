@@ -35,18 +35,21 @@
 #include <iostream>
 #include <sstream>
 
-using std::endl;
-using std::cout;
-using std::stringstream;
+using namespace std;
 
 #include "BESXMLInterface.h"
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
+
+#include "BESResponseHandler.h"
+#include "BESReturnManager.h"
+#include "BESInfo.h"
+#include "BESStopWatch.h"
+
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
-#include "BESReturnManager.h"
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
     BESInterface(strm), d_xml_document(xml_doc)
@@ -54,11 +57,6 @@ BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
     // This is needed because we want the parent to have access to the information
     // added to the DHI
     d_dhi_ptr = &d_xml_interface_dhi;
-
-    // TODO: Should be able to do this... but there are ctor woes. jhrg 11/7/17
-    // d_dhi_ptr->data[REQUEST_FROM] = from;
-
-    d_dhi_ptr->data[LOG_INFO] = "xml document";
 }
 
 BESXMLInterface::~BESXMLInterface()
@@ -174,12 +172,14 @@ void BESXMLInterface::build_data_request_plan()
 
                 BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
 
+                // Check if the correct transmitter is present. We look for it again in do_transmit()
+                // where it is actually used. This test just keeps us from building a response that
+                // cannot be transmitted. jhrg 11/8/17
+                //
+                // TODO We could add the 'transmitter' to the DHI.
                 string return_as = current_dhi.data[RETURN_CMD];
-                if (!return_as.empty()) {
-                    BESTransmitter *transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
-                    if (!transmitter)
+                if (!return_as.empty() & !BESReturnManager::TheManager()->find_transmitter(return_as))
                         throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__, __LINE__);
-                }
             }
 
             current_node = current_node->next;
@@ -220,7 +220,20 @@ void BESXMLInterface::execute_data_request_plan()
     for (; i != e; i++) {
         (*i)->prep_request();
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
+#if 0
         BESInterface::execute_data_request_plan();
+#endif
+
+        VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+                << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+
+        BESResponseHandler *rh = d_dhi_ptr->response_handler;
+        if (!rh)
+            throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
+
+        rh->execute(*d_dhi_ptr);
+
+        transmit_data();
     }
 }
 
@@ -228,6 +241,9 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::transmit_data()
 {
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", d_dhi_ptr->data[REQUEST_ID]);
+
     string return_as = d_dhi_ptr->data[RETURN_CMD];
     if (!return_as.empty()) {
         d_transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
@@ -236,7 +252,25 @@ void BESXMLInterface::transmit_data()
         }
     }
 
+#if 0
     BESInterface::transmit_data();
+#endif
+
+    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+            << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
+#if 0
+#endif
+    if (d_dhi_ptr->error_info) {
+        ostringstream strm;
+        d_dhi_ptr->error_info->print(strm);
+        (*BESLog::TheLog()) << strm.str() << endl;
+
+        d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
+    }
+    else if (d_dhi_ptr->response_handler) {
+        d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr);
+    }
+
 }
 
 /** @brief Log the status of the request to the BESLog file
@@ -287,9 +321,19 @@ void BESXMLInterface::clean()
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
+#if 0
         BESInterface::clean();
+#endif
+        if (d_dhi_ptr) {
+            VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+                << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
+
+            d_dhi_ptr->clean(); // Delete the ResponseHandler if present
+        }
+
         delete cmd;
     }
+
     d_xml_cmd_list.clear();
 }
 

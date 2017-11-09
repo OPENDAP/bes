@@ -216,7 +216,7 @@ BESInterface::BESInterface(ostream *output_stream) :
     d_strm(output_stream), d_timeout_from_keys(0), d_dhi_ptr(0), d_transmitter(0)
 {
     if (!d_strm) {
-        throw BESInternalError("output stream must be set in order to output responses", __FILE__, __LINE__);
+        throw BESInternalError("Output stream must be set in order to output responses", __FILE__, __LINE__);
     }
 
     // Grab the BES Key for the timeout. Note that the Hyrax server generally
@@ -302,9 +302,8 @@ int BESInterface::execute_request(const string &from)
     d_dhi_ptr->set_output_stream(d_strm);
     d_dhi_ptr->data[REQUEST_FROM] = from;
 
-    pid_t thepid = getpid();
     ostringstream ss;
-    ss << thepid;
+    ss << getpid();
     d_dhi_ptr->data[SERVER_PID] = ss.str();
 
     // We split up the calls for the reason that if we catch an
@@ -312,16 +311,22 @@ int BESInterface::execute_request(const string &from)
     // transmit of the request then we can transmit the exception/error
     // information.
     try {
+#if 0
         initialize();
-
-        string m = BESLog::mark;
-        *(BESLog::TheLog()) << d_dhi_ptr->data[REQUEST_FROM] << m << "request received" << m << endl;
-        BESLog::TheLog()->flush_me();
-
-        build_data_request_plan();
 
         if (!d_transmitter)
             throw BESInternalError("Unable to transmit the response, no transmitter", __FILE__, __LINE__);
+#endif
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << BESLog::mark << "request received" << endl);
+
+        // Initialize the transmitter for this interface instance to the BASIC
+        // TRANSMITTER. This ensures that a simple response, such as an error,
+        // can be sent back to the OLFS should that be needed.
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(BASIC_TRANSMITTER);
+        if (!d_transmitter)
+            throw BESInternalError(string("Unable to find transmitter '") + BASIC_TRANSMITTER + "'", __FILE__, __LINE__);
+
+        build_data_request_plan();
 
         // This method does two key things: Calls the request handler to make a
         // 'response object' (the C++ object that will hold the response) and
@@ -332,7 +337,29 @@ int BESInterface::execute_request(const string &from)
         // return value of 1.
         if (setjmp(timeout_jump) == 0) {
             timeout_jump_valid = true;
+
+            // Set timeout? Use either the value from the keys or a context
+            bool found = false;
+            string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
+            if (found) {
+                bes_timeout = strtol(context.c_str(), NULL, 10);
+                VERBOSE("Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+                alarm(bes_timeout);
+            }
+            else if (d_timeout_from_keys != 0) {
+                bes_timeout = d_timeout_from_keys;
+                VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
+                alarm(bes_timeout);
+            }
+
             execute_data_request_plan();
+
+            // Only clear the timeout if it has been set.
+            if (bes_timeout != 0) {
+                bes_timeout = 0;
+                alarm(0);
+            }
+
             // Once we exit the block where setjmp() was called, the jump_buf is not valid
             timeout_jump_valid = false;
         }
@@ -370,9 +397,13 @@ int BESInterface::execute_request(const string &from)
     delete bes_timing::elapsedTimeToTransmitStart;
     bes_timing::elapsedTimeToTransmitStart = 0;
 
-    return finish(0 /* status */);;
+    finish();
+    return 0;
+#if 0
+    return finish();
+#endif
 }
-
+#if 0
 /** @brief Initialize the BES object
  *
  *  This method must be called by all derived classes as it will initialize
@@ -390,20 +421,11 @@ void BESInterface::initialize()
     // will need to transmit the exception info, which needs a transmitter.
     // If an exception happens before this then the exception info is just
     // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
-    BESDEBUG("bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl);
-
     d_transmitter = BESReturnManager::TheManager()->find_transmitter(BASIC_TRANSMITTER);
-    if (!d_transmitter) {
-        string s = (string) "Unable to find transmitter " + BASIC_TRANSMITTER;
-        throw BESInternalError(s, __FILE__, __LINE__);
-    }
-
-    BESDEBUG("bes", "OK" << endl);
-
-    BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::initialize", d_dhi_ptr->data[REQUEST_ID]);
+    if (!d_transmitter)
+        throw BESInternalError(string("Unable to find transmitter ") + BASIC_TRANSMITTER, __FILE__, __LINE__);
 }
-
+#endif
 #if 0
 void BESInterface::build_data_request_plan()
 {
@@ -431,7 +453,7 @@ void BESInterface::build_data_request_plan()
     }
 }
 #endif
-
+#if 0
 /** @brief Execute the data request plan
 
  Given the information in the BESDataHandlerInterface, execute the
@@ -450,14 +472,17 @@ void BESInterface::build_data_request_plan()
  */
 void BESInterface::execute_data_request_plan()
 {
+#if 0
+
     VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
             << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
-
+#if 0
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG))
         sw.start("BESInterface::execute_data_request_plan(\"" + d_dhi_ptr->data[LOG_INFO] + "\")",
             d_dhi_ptr->data[REQUEST_ID]);
-
+#endif
+#if 0
     // Set timeout if the 'bes_timeout' context value was passed in with the
     // command.
     bool found = false;
@@ -472,33 +497,43 @@ void BESInterface::execute_data_request_plan()
         VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
         alarm(bes_timeout);
     }
-
+#endif
     BESResponseHandler *rh = d_dhi_ptr->response_handler;
+    if (!rh)
+        throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
+
+    rh->execute(*d_dhi_ptr);
+
+#if 0
     if (rh) {
         rh->execute(*d_dhi_ptr);
     }
     else {
         throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
     }
+#endif
 #if 0
     // Now we need to do the post processing piece of executing the request
     invoke_aggregation();
 #endif
     // And finally, transmit the response of this request
     transmit_data();
-
+#if 0
     // Only clear the timeout if it has been set.
     if (bes_timeout != 0) {
         bes_timeout = 0;
         alarm(0);
     }
-}
+#endif
 
+#endif
+}
+#endif
 
 // I think this code was written when execute_request() called transmit_data()
 // (and invoke_aggregation()). I think that the code up to the log_status()
 // call is redundant. This means that so is the param 'status'. jhrg 12/23/15
-int BESInterface::finish(int )
+/*int*/ void BESInterface::finish()
 {
     // If there is error information then the transmit of the error failed,
     // print it to standard out. Once printed, delete the error
@@ -541,20 +576,24 @@ int BESInterface::finish(int )
     catch (...) {
         (*BESLog::TheLog()) << "Unknown problem ending request" << endl;
     }
-
+#if 0
     return 0;
+#endif
 }
 
 int BESInterface::finish_with_error(int status)
 {
     if (!d_dhi_ptr->error_info) {
         // there wasn't an error ... so now what?
-        string serr = "Finish_with_error called with no error object";
-        BESInternalError ex(serr, __FILE__, __LINE__);
+        BESInternalError ex("Finish_with_error called with no error object", __FILE__, __LINE__);
         status = exception_manager(ex);
     }
 
+    finish();
+    return status;
+#if 0
     return finish(status);
+#endif
 }
 
 #if 0
@@ -602,6 +641,8 @@ void BESInterface::invoke_aggregation()
     }
 }
 #endif
+
+#if 0
 /** @brief Transmit the resulting response object
 
  The derived classes are responsible for specifying a transmitter object
@@ -634,6 +675,7 @@ void BESInterface::transmit_data()
         d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr);
     }
 }
+#endif
 
 /** @brief Log the status of the request
  */
@@ -678,6 +720,7 @@ void BESInterface::end_request()
     }
 }
 
+#if 0
 /** @brief Clean up after the request
  */
 void BESInterface::clean()
@@ -689,6 +732,7 @@ void BESInterface::clean()
             << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
     }
 }
+#endif
 
 /** @brief Manage any exceptions thrown during the whole process
 

@@ -115,29 +115,30 @@ class BESDataHandlerInterface;
 class BESInterface: public BESObj {
 private:
     ostream *d_strm;
-    int d_timeout_from_keys; ///< can be overridden by a setContext command
-
+    int d_timeout_from_keys; ///< Command timeout; can be overridden using setContext
+#if 0
     virtual void initialize();
+#endif
 
 protected:
     BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
-    BESTransmitter *d_transmitter;
+    BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
     virtual int exception_manager(BESError &e);
 
     virtual void build_data_request_plan() = 0;
 
-    virtual void execute_data_request_plan();
+    virtual void execute_data_request_plan() = 0;
 #if 0
     virtual void invoke_aggregation();
 #endif
 
-    virtual int finish(int status);
-    virtual void transmit_data();
+    virtual /*int*/ void finish(/*int status*/);
+    virtual void transmit_data() = 0;
     virtual void log_status();
     virtual void report_request();
     virtual void end_request();
-    virtual void clean();
+    virtual void clean() = 0;
 
     BESInterface(ostream *strm);
     virtual ~BESInterface() { }

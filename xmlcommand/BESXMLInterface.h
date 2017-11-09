@@ -49,6 +49,7 @@ private:
     /// This matches all of the XML commands to methods that parse them
     std::vector<BESXMLCommand*> d_xml_cmd_list;
 
+    /// The command(s) to run bundled in an XML document.
     std::string d_xml_document;
 
     /// This is the DHI used to hold information parsed from the request.
