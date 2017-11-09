@@ -1,0 +1,1477 @@
+Attributes {
+    Channel_Information {
+    }
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+        String Acquisition_end_time "2016-10-06T18:17:53.700850Z";
+        String Acquisition_start_time "2016-10-06T18:16:59.279041Z";
+        Float32 Aircraft_heading__degrees_ 268.0582581;
+        String BRF_equation "BRF = radiance * Pi * (sun_distance^2) * (1/solar_irradiance) * (1/cos(sun_zenith))";
+        String Epoch__UTC_ "2016-10-06T18:17:26.475085Z";
+        String Geolocation_stage "Indirect";
+        Float32 Gimbal_angle_average__degrees_ 1.156612277;
+        Float32 Gimbal_angle_maximum__degrees_ 65.49031067;
+        Float32 Gimbal_angle_minimum__degrees_ -65.47910309;
+        String Gimbal_scan_direction "forward";
+        Float64 Lower_left_latitude 34.816626354733316;
+        Float64 Lower_left_longitude -116.80646181519083;
+        Float64 Lower_right_latitude 34.808104891755107;
+        Float64 Lower_right_longitude -115.54702679532295;
+        String Production_time "2017-06-14T10:19:04Z";
+        String Radiance_units "W * (sr^-1) * (m^-2) * (nm^-1) : Watts per steradian per square meter per nanometer";
+        Float64 Resolution 25.000000000000000;
+        Float64 Sun_distance 0.99950062637856041;
+        String Target_type "Land";
+        Float64 Upper_left_latitude 35.162894706720600;
+        Float64 Upper_left_longitude -116.80564508846540;
+        Float64 Upper_right_latitude 35.154263579924802;
+        Float64 Upper_right_longitude -115.54089787963535;
+        Float64 _config__camera_pitch -0.99041298402936362;
+        Float64 _config__camera_roll -1.3828724840993378;
+        Float64 _config__camera_yaw -0.12289263819227680;
+        Float64 _config__gimbal_epsilon 1.1144565768393828;
+        Float64 _config__gimbal_psi 0.0000000000000000;
+        Float64 _config__gimbal_theta -0.26483552311698755;
+        String _config__instrument_info_config "AIRMSPI_CONFIG_INSTRUMENT_INFO_0008.config";
+        String _config__l1b2_diagnostic_field_map_config "AIRMSPI_CONFIG_L1B2_DIAGNOSTIC_FIELD_MAP_0002.config";
+        Int32 _config__l1b2_hdf_chunk_size_x 512;
+        Int32 _config__l1b2_hdf_chunk_size_y 512;
+        String _config__l1b2_standard_field_map_config "AIRMSPI_CONFIG_L1B2_STANDARD_FIELD_MAP_0003.config";
+        String _config__out_of_band_calibration_file "identity_out_of_band_rdqi.hdf5";
+        String _config__polarization_calibration_file "airmspi_polcal_20160415_v6.7.dat";
+        String _config__software_version_tag "V10.2.3";
+        String _history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__instrument_info_config "/data/MSPI/ANC/AirMSPI/instrument/ops/AIRMSPI_CONFIG_INSTRUMENT_INFO_0009.config";
+        String _history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config";
+        String _config__software_version_info "version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+";
+        String _history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag "V10.2.3";
+        String _history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L0 "Run.N5.20161006.171817_ORACLES1_AirMSPI_132.mspi2";
+        Int32 _history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__override_number_frame -1;
+        String _history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info "version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+";
+        String _history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__dn_linearization_file "/data/MSPI/ANC/AirMSPI-CalFiles/ORACLES/airmspi_lincal_20110921_v6.7.dat";
+        String _history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config";
+        Int32 _history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__shielded_pixel_kernel_size 1;
+        String _history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info "version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+";
+        String _history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag "V10.2.3";
+        String _history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L1A1 "AirMSPI_ER2_L1A1_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf";
+        Float64 _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__fill_value -9.9990000000000007e-09;
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__instrument_info_config "/data/MSPI/ANC/AirMSPI/instrument/ops/AIRMSPI_CONFIG_INSTRUMENT_INFO_0009.config";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_diagnostic_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_DIAGNOSTIC_FIELD_MAP_0002.config";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_standard_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_STANDARD_FIELD_MAP_0001.config";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__radiometric_calibration_file "/data/MSPI/ANC/AirMSPI-CalFiles/ORACLES/airmspi_radcal_lab20160330v6.7_vc20160705_update20170418.dat";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info "version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag "V10.2.3";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L1A "AirMSPI_ER2_L1A2_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__cal_dark "AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.caldark";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal "AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.l1b1_cal";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal_content "8 : number_band
+1 2 3 4 5 6 7 8  : band_numbers
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : q_y
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : u_y
+";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation "AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.modulation";
+        String _history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation_content "8 : number_band
+          1           2           3           4           5           6           7           8 : band_numbers
+        355         380         445         470         555         660         865         935 : wavelengths
+# Modulation fitted to validator.
+ 6.0713e+00  5.6427e+00  4.7566e+00  4.4818e+00  3.7368e+00  3.0875e+00  2.2891e+00  2.1010e+00  : delta0_173013Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174211Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174243Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175410Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175442Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180609Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180641Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_181808Z
+ 6.0756e+00  5.6467e+00  4.7600e+00  4.4850e+00  3.7394e+00  3.0897e+00  2.2907e+00  2.1025e+00  : delta0_mean
+
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_173013Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174211Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174243Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175410Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175442Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180609Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180641Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_181808Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_mean
+
+-4.0000e-03 : eta_173013Z
+-4.0000e-03 : eta_174211Z
+-4.0000e-03 : eta_174243Z
+-4.0000e-03 : eta_175410Z
+-4.0000e-03 : eta_175442Z
+-4.0000e-03 : eta_180609Z
+-4.0000e-03 : eta_180641Z
+-4.0000e-03 : eta_181808Z
+-4.0000e-03 : eta_mean
+
+";
+        Float64 _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__fill_value -9.9990000000000007e-09;
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__instrument_info_config "/data/MSPI/ANC/AirMSPI/instrument/ops/AIRMSPI_CONFIG_INSTRUMENT_INFO_0009.config";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_diagnostic_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_DIAGNOSTIC_FIELD_MAP_0002.config";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_standard_field_map_config "/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_STANDARD_FIELD_MAP_0001.config";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__radiometric_calibration_file "/data/MSPI/ANC/AirMSPI-CalFiles/ORACLES/airmspi_radcal_lab20160330v6.7_vc20160705_update20170418.dat";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info "version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag "V10.2.3";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L1A "AirMSPI_ER2_L1A2_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__cal_dark "AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.caldark";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal "AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.l1b1_cal";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal_content "8 : number_band
+1 2 3 4 5 6 7 8  : band_numbers
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : q_y
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : u_y
+";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation "AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.modulation";
+        String _history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation_content "8 : number_band
+          1           2           3           4           5           6           7           8 : band_numbers
+        355         380         445         470         555         660         865         935 : wavelengths
+# Modulation fitted to validator.
+ 6.0713e+00  5.6427e+00  4.7566e+00  4.4818e+00  3.7368e+00  3.0875e+00  2.2891e+00  2.1010e+00  : delta0_173013Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174211Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174243Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175410Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175442Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180609Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180641Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_181808Z
+ 6.0756e+00  5.6467e+00  4.7600e+00  4.4850e+00  3.7394e+00  3.0897e+00  2.2907e+00  2.1025e+00  : delta0_mean
+
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_173013Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174211Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174243Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175410Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175442Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180609Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180641Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_181808Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_mean
+
+-4.0000e-03 : eta_173013Z
+-4.0000e-03 : eta_174211Z
+-4.0000e-03 : eta_174243Z
+-4.0000e-03 : eta_175410Z
+-4.0000e-03 : eta_175442Z
+-4.0000e-03 : eta_180609Z
+-4.0000e-03 : eta_180641Z
+-4.0000e-03 : eta_181808Z
+-4.0000e-03 : eta_mean
+
+";
+        String _input__IgcCollection "AirMSPI_ER2_IGCCOL_20161006_171817-20_CA-NewberrySprings_Voracles-v10.2.3-10m.xml";
+        String _input__L1B1 "AirMSPI_ER2_L1B1_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf";
+        String _input__L1B1_DIAG "AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf";
+        String _input__map_config "1 : ProjectionInformation.proj_code
+11 : ProjectionInformation.zone_code
+8 : ProjectionInformation.sphere_code
+0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000  : ProjectionInformation.proj_param
+517700.0 : MapInformation.min_x
+632900.0 : MapInformation.max_x
+3852725.0 : MapInformation.min_y
+3891125.0 : MapInformation.max_y
+25.0 : MapInformation.res_x
+25.0 : MapInformation.res_y
+0 : MapInformation.origin_code
+0 : MapInformation.pix_reg_code
+";
+        Int32 _input__utm_zone 0;
+        String granule_id "AirMSPI_ER2_L1B2_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf";
+        String fullnamepath "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES";
+    }
+    HDFEOS_GRIDS {
+    }
+    HDFEOS_GRIDS_355nm_band {
+    }
+    HDFEOS_GRIDS_355nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_380nm_band {
+    }
+    HDFEOS_GRIDS_380nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_445nm_band {
+    }
+    HDFEOS_GRIDS_445nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_470nm_band {
+    }
+    HDFEOS_GRIDS_470nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_555nm_band {
+    }
+    HDFEOS_GRIDS_555nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_660nm_band {
+    }
+    HDFEOS_GRIDS_660nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_865nm_band {
+    }
+    HDFEOS_GRIDS_865nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_935nm_band {
+    }
+    HDFEOS_GRIDS_935nm_band_Data_Fields {
+    }
+    HDFEOS_GRIDS_Ancillary {
+    }
+    HDFEOS_GRIDS_Ancillary_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.15";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    Channel_Information_Center_wavelength {
+        String origname "Center_wavelength";
+        String fullnamepath "/Channel_Information/Center_wavelength";
+    }
+    Channel_Information_Channel_name {
+        String origname "Channel_name";
+        String fullnamepath "/Channel_Information/Channel_name";
+    }
+    Channel_Information_Effective_bandwidth {
+        String origname "Effective_bandwidth";
+        String fullnamepath "/Channel_Information/Effective_bandwidth";
+    }
+    Channel_Information_Effective_transmittance {
+        String origname "Effective_transmittance";
+        String fullnamepath "/Channel_Information/Effective_transmittance";
+    }
+    Channel_Information_Solar_irradiance_at_1_AU {
+        String origname "Solar_irradiance_at_1_AU";
+        String fullnamepath "/Channel_Information/Solar_irradiance_at_1_AU";
+    }
+    _355nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/UTM_projection";
+    }
+    _355nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _355nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_355nm_band_UTM_projection";
+    }
+    _380nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/UTM_projection";
+    }
+    _380nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _380nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_380nm_band_UTM_projection";
+    }
+    _445nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/UTM_projection";
+    }
+    _445nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _445nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_445nm_band_UTM_projection";
+    }
+    _470nm_band_AOLP_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "AOLP_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/AOLP_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_AOLP_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "AOLP_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/AOLP_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_DOLP {
+        Float32 _FillValue -999.0000000;
+        String origname "DOLP";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/DOLP";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_IPOL {
+        Float32 _FillValue -999.0000000;
+        String origname "IPOL";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/IPOL";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Q_mask {
+        Int32 _FillValue 1;
+        String origname "Q.mask";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Q.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Q_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "Q_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Q_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Q_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "Q_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Q_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_U_mask {
+        Int32 _FillValue 1;
+        String origname "U.mask";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/U.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/UTM_projection";
+    }
+    _470nm_band_U_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "U_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/U_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_U_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "U_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/U_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _470nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_470nm_band_UTM_projection";
+    }
+    _555nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/UTM_projection";
+    }
+    _555nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _555nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_555nm_band_UTM_projection";
+    }
+    _660nm_band_AOLP_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "AOLP_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/AOLP_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_AOLP_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "AOLP_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/AOLP_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_DOLP {
+        Float32 _FillValue -999.0000000;
+        String origname "DOLP";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/DOLP";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_IPOL {
+        Float32 _FillValue -999.0000000;
+        String origname "IPOL";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/IPOL";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Q_mask {
+        Int32 _FillValue 1;
+        String origname "Q.mask";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Q.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Q_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "Q_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Q_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Q_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "Q_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Q_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_U_mask {
+        Int32 _FillValue 1;
+        String origname "U.mask";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/U.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/UTM_projection";
+    }
+    _660nm_band_U_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "U_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/U_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_U_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "U_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/U_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _660nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_660nm_band_UTM_projection";
+    }
+    _865nm_band_AOLP_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "AOLP_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/AOLP_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_AOLP_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "AOLP_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/AOLP_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_DOLP {
+        Float32 _FillValue -999.0000000;
+        String origname "DOLP";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/DOLP";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_IPOL {
+        Float32 _FillValue -999.0000000;
+        String origname "IPOL";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/IPOL";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Q_mask {
+        Int32 _FillValue 1;
+        String origname "Q.mask";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Q.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Q_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "Q_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Q_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Q_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "Q_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Q_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_U_mask {
+        Int32 _FillValue 1;
+        String origname "U.mask";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/U.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/UTM_projection";
+    }
+    _865nm_band_U_meridian {
+        Float32 _FillValue -999.0000000;
+        String origname "U_meridian";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/U_meridian";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_U_scatter {
+        Float32 _FillValue -999.0000000;
+        String origname "U_scatter";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/U_scatter";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _865nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_865nm_band_UTM_projection";
+    }
+    _935nm_band_Glint_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Glint_angle";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/Glint_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_I {
+        Float32 _FillValue -999.0000000;
+        String origname "I";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/I";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_I_mask {
+        Int32 _FillValue 1;
+        String origname "I.mask";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/I.mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_RDQI {
+        Float32 _FillValue -999.0000000;
+        String origname "RDQI";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/RDQI";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_Scattering_angle {
+        Float32 _FillValue -999.0000000;
+        String origname "Scattering_angle";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/Scattering_angle";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_Sun_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/Sun_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_Sun_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "Sun_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/Sun_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_Time_in_seconds_from_epoch {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Time_in_seconds_from_epoch";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/Time_in_seconds_from_epoch";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/UTM_projection";
+    }
+    _935nm_band_View_azimuth {
+        Float32 _FillValue -999.0000000;
+        String origname "View_azimuth";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/View_azimuth";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    _935nm_band_View_zenith {
+        Float32 _FillValue -999.0000000;
+        String origname "View_zenith";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/View_zenith";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "_935nm_band_UTM_projection";
+    }
+    Ancillary_Elevation {
+        Float64 _FillValue -999.00000000000000;
+        String origname "Elevation";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/Elevation";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "Ancillary_UTM_projection";
+    }
+    Ancillary_Land_water_mask {
+        Int32 _FillValue -999;
+        String origname "Land_water_mask";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/Land_water_mask";
+        String coordinates "Ancillary_Latitude Ancillary_Longitude";
+        String grid_mapping "Ancillary_UTM_projection";
+    }
+    Ancillary_UTM_projection {
+        String transform_name "universal_transverse_mercator";
+        Float64 utm_zone_number 11.000000000000000;
+        Float64 semi_major_axis 6378137.0000000000;
+        Float64 inverse_flattening 298.25722356300003;
+        String origname "UTM_projection";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/UTM_projection";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    StructMetadata_1 {
+        String origname "StructMetadata.1";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.1";
+    }
+    _355nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/XDim";
+    }
+    _355nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/YDim";
+    }
+    Channel_Information_Channel_number {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "Channel_number";
+        String origname "Channel_number";
+        String fullnamepath "/Channel_Information/Channel_number";
+    }
+    _380nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/XDim";
+    }
+    _380nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/YDim";
+    }
+    _445nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/XDim";
+    }
+    _445nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/YDim";
+    }
+    _470nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/XDim";
+    }
+    _470nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/YDim";
+    }
+    _555nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/XDim";
+    }
+    _555nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/YDim";
+    }
+    _660nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/XDim";
+    }
+    _660nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/YDim";
+    }
+    _865nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/XDim";
+    }
+    _865nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/YDim";
+    }
+    _935nm_band_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/XDim";
+    }
+    _935nm_band_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/YDim";
+    }
+    Ancillary_XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/XDim";
+    }
+    Ancillary_YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/YDim";
+    }
+    XDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "XDim";
+        String long_name "UTM X";
+        String units "meters";
+        String standard_name "projection_x_coordinate";
+        String _CoordinateAxisType "GeoX";
+        String origname "XDim";
+        String fullnamepath "/HDFEOS/GRIDS/XDim";
+    }
+    YDim {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "YDim";
+        String _CoordinateAxisType "GeoY";
+        String long_name "UTM Y";
+        String units "meters";
+        String standard_name "projection_y_coordinate";
+        String origname "YDim";
+        String fullnamepath "/HDFEOS/GRIDS/YDim";
+    }
+    Ancillary_Latitude {
+        Float64 _FillValue -999.00000000000000;
+        String grid_mapping "UTM_projection";
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/Latitude";
+    }
+    Ancillary_Longitude {
+        Float64 _FillValue -999.00000000000000;
+        String grid_mapping "UTM_projection";
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/Longitude";
+    }
+    FakeDim2 {
+        String units "level";
+    }
+}
