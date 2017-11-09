@@ -222,46 +222,18 @@ void BESXMLInterface::execute_data_request_plan()
         VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
 
-        // BESResponseHandler *rh = d_dhi_ptr->response_handler;
         if (!d_dhi_ptr->response_handler)
             throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
 
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
 
-        // transmit_data();    // TODO move method body in here? jhrg 11/8/17
-
-        // After running the execute() method of the response handler, transmit the
-        // response of an error.
-        if (d_dhi_ptr->error_info) {
-            ostringstream strm;
-            d_dhi_ptr->error_info->print(strm);
-            LOG(strm.str() << endl);
-
-            d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
-        }
-        else if (d_dhi_ptr->response_handler) {
-            VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
-                    << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
-
-            BESStopWatch sw;
-            if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", d_dhi_ptr->data[REQUEST_ID]);
-
-            string return_as = d_dhi_ptr->data[RETURN_CMD];
-            if (!return_as.empty()) {
-                d_transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
-                if (!d_transmitter) {
-                    throw BESSyntaxUserError(string("Unable to find transmitter ") + return_as, __FILE__, __LINE__);
-                }
-            }
-
-            d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr);
-        }
+        transmit_data();    // TODO move method body in here? jhrg 11/8/17
     }
 }
 
 /**
  * @brief Transmit the response object
- * @todo Remove
+ * @todo Remove?
  *
  * Only transmit if there is an error or if there is a ResponseHandler. For any
  * XML document with one or more commands, there should only be one ResponseHandler.

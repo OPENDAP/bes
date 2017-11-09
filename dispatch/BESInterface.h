@@ -122,23 +122,21 @@ protected:
     BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
     virtual int exception_manager(BESError &e);
+    virtual void finish();
+    virtual void end_request();
 
     virtual void build_data_request_plan() = 0;
 
     virtual void execute_data_request_plan() = 0;
 
-    virtual void finish();
-
-    // TODO Remove
     virtual void transmit_data() = 0;
 
     virtual void log_status() = 0;
 
-    virtual void end_request();
-
     virtual void clean() = 0;
 
     BESInterface(ostream *strm);
+
     virtual ~BESInterface() { }
 
 public:

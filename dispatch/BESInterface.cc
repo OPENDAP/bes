@@ -239,16 +239,21 @@ BESInterface::BESInterface(ostream *output_stream) :
 #endif
 }
 
-/** @brief Executes the given request to generate a specified response object
+#if 0
+extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
+extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
+#endif
+
+/** @brief The entry point for command execution; called by BESServerHandler::execute()
 
  Execute the request by:
  1. initializing BES
- 2. validating the request, make sure all elements are present
- 3. build the request plan (ie filling in the BESDataHandlerInterface)
+
+ 3. build the request plan (i.e., filling in the BESDataHandlerInterface)
  4. execute the request plan using the BESDataHandlerInterface
  5. transmit the resulting response object
  6. log the status of the execution
- 7. notify the reporters of the request
+
  8. end the request, which allows developers to add callbacks to notify
  them of the end of the request
 
@@ -266,22 +271,17 @@ BESInterface::BESInterface(ostream *output_stream) :
  @return status of the execution of the request, 0 if okay, !0 otherwise
 
  @see initialize()
- @see validate_data_request()
+
  @see build_data_request_plan()
  @see execute_data_request_plan()
- @see finish_no_error()
+ @see finish()
  @see finish_with_error()
  @see transmit_data()
  @see log_status()
- @see report_request()
+
  @see end_request()
  @see exception_manager()
  */
-
-#if 0
-extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
-extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
-#endif
 int BESInterface::execute_request(const string &from)
 {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
@@ -400,6 +400,7 @@ int BESInterface::execute_request(const string &from)
 #endif
 
     finish();
+
     return 0;
 }
 
@@ -424,20 +425,20 @@ void BESInterface::finish()
         log_status();
     }
     catch (BESError &ex) {
-        (*BESLog::TheLog()) << "Problem logging status: " << ex.get_message() << endl;
+        LOG("Problem logging status: " << ex.get_message() << endl);
     }
     catch (...) {
-        (*BESLog::TheLog()) << "Unknown problem logging status" << endl;
+        LOG("Unknown problem logging status" << endl);
     }
 
     try {
         end_request();
     }
     catch (BESError &ex) {
-        (*BESLog::TheLog()) << "Problem ending request: " << ex.get_message() << endl;
+        LOG("Problem ending request: " << ex.get_message() << endl);
     }
     catch (...) {
-        (*BESLog::TheLog()) << "Unknown problem ending request" << endl;
+        LOG("Unknown problem ending request" << endl);
     }
 }
 

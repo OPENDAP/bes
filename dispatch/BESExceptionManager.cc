@@ -173,7 +173,7 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
 
     dhi.error_info = BESInfoList::TheList()->build_info();
     string action_name = dhi.action_name;
-    if (action_name == "") action_name = "BES";
+    if (action_name.empty()) action_name = "BES";
     dhi.error_info->begin_response(action_name, dhi);
 
 
