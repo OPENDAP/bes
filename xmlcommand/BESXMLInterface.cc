@@ -69,7 +69,7 @@ BESXMLInterface::~BESXMLInterface()
 void BESXMLInterface::build_data_request_plan()
 {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
-    BESDEBUG("besxml", "building request plan for xml document: " << endl << d_xml_document << endl);
+    BESDEBUG("bes", "building request plan for xml document: " << endl << d_xml_document << endl);
 
     VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " building" << endl);
 
@@ -185,10 +185,10 @@ void BESXMLInterface::build_data_request_plan()
             current_node = current_node->next;
         }
     }
-    catch (... /* BESError &e; changed 7/1/15 jhrg */) {
+    catch (... ) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
-        throw /*e*/;
+        throw;
     }
 
     xmlFreeDoc(doc);
@@ -205,10 +205,7 @@ void BESXMLInterface::build_data_request_plan()
     // valgrind and I see no memory problems from this call. jhrg 9/25/15
     xmlCleanupParser();
 
-    BESDEBUG("besxml", "Done building request plan" << endl);
-#if 0
-    BESInterface::build_data_request_plan();
-#endif
+    BESDEBUG("bes", "Done building request plan" << endl);
 }
 
 /** @brief Execute the data request plan
@@ -219,10 +216,8 @@ void BESXMLInterface::execute_data_request_plan()
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         (*i)->prep_request();
+
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
-#if 0
-        BESInterface::execute_data_request_plan();
-#endif
 
         VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
@@ -237,40 +232,38 @@ void BESXMLInterface::execute_data_request_plan()
     }
 }
 
-/** @brief Transmit the response object
+/**
+ * @brief Transmit the response object
+ *
+ * Only transmit if there is an error or if there is a ResponseHandler. For any
+ * XML document with one or more commands, there should only be one ResponseHandler.
  */
 void BESXMLInterface::transmit_data()
 {
-    BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", d_dhi_ptr->data[REQUEST_ID]);
-
-    string return_as = d_dhi_ptr->data[RETURN_CMD];
-    if (!return_as.empty()) {
-        d_transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
-        if (!d_transmitter) {
-            throw BESSyntaxUserError(string("Unable to find transmitter ") + return_as, __FILE__, __LINE__);
-        }
-    }
-
-#if 0
-    BESInterface::transmit_data();
-#endif
-
-    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
-            << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
-#if 0
-#endif
     if (d_dhi_ptr->error_info) {
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
-        (*BESLog::TheLog()) << strm.str() << endl;
+        LOG(strm.str() << endl);
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
+        VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+                << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
+
+        BESStopWatch sw;
+        if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", d_dhi_ptr->data[REQUEST_ID]);
+
+        string return_as = d_dhi_ptr->data[RETURN_CMD];
+        if (!return_as.empty()) {
+            d_transmitter = BESReturnManager::TheManager()->find_transmitter(return_as);
+            if (!d_transmitter) {
+                throw BESSyntaxUserError(string("Unable to find transmitter ") + return_as, __FILE__, __LINE__);
+            }
+        }
+
         d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr);
     }
-
 }
 
 /**
@@ -292,35 +285,7 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             LOG(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
-#if 0
-            BESInterface::log_status();
-#endif
         }
-    }
-}
-
-/** @brief Report the request and status of the request
-
- If interested in reporting the request and status of the request then
- one must register a BESReporter with BESReporterList::TheList().
-
- If no BESReporter objects are registered then nothing happens.
-
- Since there are multiple commands in an XML request document we
- iterate through the commands and execute report_request for each of
- the commands, giving the reporter a chance to report on each of the
- commands.
-
- @see BESReporterList
- @see BESReporter
- */
-void BESXMLInterface::report_request()
-{
-    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
-    for (; i != e; i++) {
-        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
-        BESInterface::report_request();
     }
 }
 
@@ -333,9 +298,7 @@ void BESXMLInterface::clean()
     for (; i != e; i++) {
         BESXMLCommand *cmd = *i;
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
-#if 0
-        BESInterface::clean();
-#endif
+
         if (d_dhi_ptr) {
             VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);

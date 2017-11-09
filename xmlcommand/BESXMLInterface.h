@@ -57,16 +57,18 @@ private:
 
 protected:
     virtual void build_data_request_plan();
+
     virtual void execute_data_request_plan();
 
     virtual void transmit_data();
 
     virtual void log_status();
-    virtual void report_request();
+
     virtual void clean();
 
 public:
     BESXMLInterface(const std::string &cmd, std::ostream *strm);
+
     virtual ~BESXMLInterface();
 
     virtual void dump(std::ostream &strm) const;

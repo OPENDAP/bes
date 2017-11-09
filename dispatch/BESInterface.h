@@ -116,9 +116,6 @@ class BESInterface: public BESObj {
 private:
     ostream *d_strm;
     int d_timeout_from_keys; ///< Command timeout; can be overridden using setContext
-#if 0
-    virtual void initialize();
-#endif
 
 protected:
     BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
@@ -129,16 +126,13 @@ protected:
     virtual void build_data_request_plan() = 0;
 
     virtual void execute_data_request_plan() = 0;
-#if 0
-    virtual void invoke_aggregation();
-#endif
 
-    virtual /*int*/ void finish(/*int status*/);
+    virtual void finish();
+
     virtual void transmit_data() = 0;
 
     virtual void log_status() = 0;
 
-    virtual void report_request();
     virtual void end_request();
 
     virtual void clean() = 0;
@@ -150,6 +144,7 @@ public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control
     // to the 'run the command' part of the server. jhrg 11/7/17
     virtual int execute_request(const string &from);
+
     virtual int finish_with_error(int status);
 
     virtual void dump(ostream &strm) const;
