@@ -259,6 +259,9 @@ AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
 # Turn it off for the time being. See comments at hdf5_handlerTest.at
 #AT_BESCMD_RESPONSE_TEST([t_invalid_fvalue.h5.das.bescmd])
 
+#Test the removal of FakeDims from unsupported datatypes
+AT_BESCMD_RESPONSE_TEST([FakeDim_remove.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([FakeDim_remove.h5.dds.bescmd])
 
 # Test simple HDF-EOS5 cases.
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.das.bescmd])
@@ -379,6 +382,14 @@ AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.ddx.bescmd])
 
+
+#HDF-EOS5 extra field cases(the handler will not treat them as HDF-EOS5 files)
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_ef.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_ef.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.dds.bescmd])
 
 # Test subsetting.
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset.bescmd])
