@@ -378,22 +378,22 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError & ex) {
         timeout_jump_valid = false;
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
     catch (...) {
         timeout_jump_valid = false;
         BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
 
 #if 0
