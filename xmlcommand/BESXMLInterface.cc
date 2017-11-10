@@ -252,7 +252,7 @@ void BESXMLInterface::transmit_data()
                 << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", d_dhi_ptr->data[REQUEST_ID]);
+        if (BESISDEBUG(TIMING_LOG)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
 
         string return_as = d_dhi_ptr->data[RETURN_CMD];
         if (!return_as.empty()) {

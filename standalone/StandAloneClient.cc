@@ -87,6 +87,7 @@ extern "C" {
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
 
 #include "BESXMLInterface.h"
+#include "BESStopWatch.h"
 #include "BESError.h"
 #include "BESDebug.h"
 
@@ -219,7 +220,12 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			if (CmdTranslation::is_show()) {
 				show_stream = new ostringstream;
 			}
-			BESDEBUG( "standalone", "cmdclient sending " << cmd << endl );
+
+			BESDEBUG( "standalone", "cmd client sending " << cmd << endl );
+
+	        BESStopWatch sw;
+	        if (BESISDEBUG(TIMING_LOG)) sw.start("StandAloneClient::executeCommand");
+
 			BESXMLInterface *interface = 0;
 			if (show_stream) {
 				interface = new BESXMLInterface(cmd, show_stream);
@@ -227,6 +233,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			else {
 				interface = new BESXMLInterface(cmd, _strm);
 			}
+
 			int status = interface->execute_request("standalone");
 
 			if (status == 0) {

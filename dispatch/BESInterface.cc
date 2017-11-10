@@ -292,6 +292,9 @@ int BESInterface::execute_request(const string &from)
 
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) {
+        // It would be great to have more info to put here, but that is buried in
+        // BESXMLInterface::build_data_request_plan() where the XML document is
+        // parsed. jhrg 11/9/17
         sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
 #if 0
         bes_timing::elapsedTimeToReadStart = new BESStopWatch();
@@ -315,6 +318,9 @@ int BESInterface::execute_request(const string &from)
     // exception during the initialization, building, execution, or response
     // transmit of the request then we can transmit the exception/error
     // information.
+    //
+    // TODO status is not used. jhrg 11/9/17
+    int status = 0; // save the return status from exception_manager() and return that.
     try {
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << BESLog::mark << "request received" << endl);
 
@@ -372,22 +378,22 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError & ex) {
         timeout_jump_valid = false;
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
     catch (...) {
         timeout_jump_valid = false;
         BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
 
 #if 0
@@ -401,7 +407,7 @@ int BESInterface::execute_request(const string &from)
 
     finish();
 
-    return 0;
+    return 0; //jhrg 11/9/17 TODO return status;
 }
 
 // I think this code was written when execute_request() called transmit_data()
@@ -409,6 +415,10 @@ int BESInterface::execute_request(const string &from)
 // call is redundant. This means that so is the param 'status'. jhrg 12/23/15
 void BESInterface::finish()
 {
+#if 1
+    // This seems really odd to me... writing to cout and erasing the errors.
+    // jhrg 11/9/17
+    //
     // If there is error information then the transmit of the error failed,
     // print it to standard out. Once printed, delete the error
     // information since we are done with it.
@@ -417,28 +427,19 @@ void BESInterface::finish()
         delete d_dhi_ptr->error_info;
         d_dhi_ptr->error_info = 0;
     }
-
+#endif
     // if there is a problem with the rest of these steps then all we will
     // do is log it to the BES log file and not handle the exception with
     // the exception manager.
     try {
         log_status();
-    }
-    catch (BESError &ex) {
-        LOG("Problem logging status: " << ex.get_message() << endl);
-    }
-    catch (...) {
-        LOG("Unknown problem logging status" << endl);
-    }
-
-    try {
         end_request();
     }
     catch (BESError &ex) {
-        LOG("Problem ending request: " << ex.get_message() << endl);
+        LOG("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
     }
     catch (...) {
-        LOG("Unknown problem ending request" << endl);
+        LOG("Unknown problem logging status or running end of request cleanup" << endl);
     }
 }
 

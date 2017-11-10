@@ -192,7 +192,7 @@ static void CatchSigPipe(int sig)
             raise(sig);
         }
         else {
-            (*BESLog::TheLog()) << "Master listener (PID: " << getpid() << ") caught SIGPIPE." << endl;
+            LOG("Master listener (PID: " << getpid() << ") caught SIGPIPE." << endl);
 
             sigpipe = 1;
         }
@@ -361,7 +361,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (found) {
@@ -381,7 +381,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
 
@@ -399,7 +399,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
     }
@@ -410,7 +410,7 @@ int ServerApp::initialize(int argc, char **argv)
         msg += " and/or -u <unix_socket>\n";
         msg += "Or specify in the bes configuration file with " + port_key + " and/or " + socket_key + "\n";
         cout << endl << msg;
-        (*BESLog::TheLog()) << msg << endl;
+        LOG(msg << endl);
         BESServerUtils::show_usage(BESApp::TheApplication()->appName());
     }
 
@@ -424,7 +424,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes") {
@@ -489,7 +489,7 @@ int ServerApp::run()
             int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
 
             if (res == -1) {
-                (*BESLog::TheLog()) << "Master listener could not send status to daemon: " << strerror(errno) << endl;
+                LOG("Master listener could not send status to daemon: " << strerror(errno) << endl);
                 ::exit(SERVER_EXIT_FATAL_CANNOT_START);
             }
         }
@@ -524,7 +524,7 @@ int ServerApp::run()
                 while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/)) > 0) {
                     _ps->decr_num_children();
                     if (sigpipe) {
-                        (*BESLog::TheLog()) << "Master listener caught SISPIPE from child: " << cpid << endl;
+                        LOG("Master listener caught SISPIPE from child: " << cpid << endl);
                     }
 
                     BESDEBUG("ppt2",
@@ -535,14 +535,14 @@ int ServerApp::run()
             if (sighup) {
                 BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
 
-                (*BESLog::TheLog()) << "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl;
+                LOG("Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
                 ::exit(SERVER_EXIT_RESTART);
             }
 
             if (sigterm) {
                 BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
 
-                (*BESLog::TheLog()) << "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl;
+                LOG("Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
                 ::exit(SERVER_EXIT_NORMAL_SHUTDOWN);
             }
 
@@ -560,14 +560,14 @@ int ServerApp::run()
     catch (BESError &se) {
         BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
 
-        (*BESLog::TheLog()) << se.get_message() << endl;
+        LOG(se.get_message() << endl);
         int status = SERVER_EXIT_FATAL_CANNOT_START;
         write(BESLISTENER_PIPE_FD, &status, sizeof(status));
         close(BESLISTENER_PIPE_FD);
         return 1;
     }
     catch (...) {
-        (*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
+        LOG("caught unknown exception initializing sockets" << endl);
         int status = SERVER_EXIT_FATAL_CANNOT_START;
         write(BESLISTENER_PIPE_FD, &status, sizeof(status));
         close(BESLISTENER_PIPE_FD);
