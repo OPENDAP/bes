@@ -34,7 +34,8 @@
 #define A_SampleSayXMLCommand_h 1
 
 #include "BESXMLCommand.h"
-#include "BESDataHandlerInterface.h"
+
+class BESDataHandlerInterface;
 
 class SampleSayXMLCommand: public BESXMLCommand {
 public:

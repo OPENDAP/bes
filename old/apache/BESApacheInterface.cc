@@ -161,7 +161,7 @@ BESApacheInterface::initialize()
     }
 
     _dhi.data[USER_ADDRESS] = _dri->user_address ;
-    _dhi.data[DATA_REQUEST] = _dri->request ;
+    _dhi.data[LOG_INFO] = _dri->request ;
 
     string user = "undef" ;
     if( _dri->cookie )
@@ -298,7 +298,7 @@ BESApacheInterface::welcome_browser()
     string who = _dri->user_address ;
     string agent = _dri->user_agent ;
     if( BESLog::TheLog() )
-	(*BESLog::TheLog()) << "Incoming request from " << who.c_str() << " using " << agent.c_str() << endl;
+	LOG("Incoming request from " << who.c_str() << " using " << agent.c_str() << endl);
 
     // see if request comes from the Netscape or the HotJava...
     int mo=agent.find("Mozilla");

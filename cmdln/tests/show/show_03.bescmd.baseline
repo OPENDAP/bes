@@ -1,26 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showCatalog>
-        <dataset catalog="catalog" count="elided" lastModified="elided" name="data/nc" node="true" size="elided">
-            <dataset catalog="catalog" lastModified="elided" name="bears.nc" node="false" size="elided">
-                <serviceRef>dap</serviceRef>
-            </dataset>
-            <dataset catalog="catalog" lastModified="elided" name="bears.nc.das" node="false" size="elided"/>
-            <dataset catalog="catalog" lastModified="elided" name="coads_climatology.nc" node="false" size="elided">
-                <serviceRef>dap</serviceRef>
-            </dataset>
-            <dataset catalog="catalog" lastModified="elided" name="feb.nc" node="false" size="elided">
-                <serviceRef>dap</serviceRef>
-            </dataset>
-            <dataset catalog="catalog" lastModified="elided" name="fnoc1.das" node="false" size="elided"/>
-            <dataset catalog="catalog" lastModified="elided" name="fnoc1.nc" node="false" size="elided">
-                <serviceRef>dap</serviceRef>
-            </dataset>
-            <dataset catalog="catalog" lastModified="elided" name="fnoc1.nc.html" node="false" size="elided"/>
-            <dataset catalog="catalog" lastModified="elided" name="jan.nc" node="false" size="elided">
-                <serviceRef>dap</serviceRef>
-            </dataset>
-            <dataset catalog="catalog" lastModified="elided" name="zero_length_array.nc" node="false" size="elided">
+        <dataset catalog="catalog" count="elided" lastModified="elided" name="data/csv" node="true" size="elided">
+            <dataset catalog="catalog" lastModified="elided" name="temperature.csv" node="false" size="elided">
                 <serviceRef>dap</serviceRef>
             </dataset>
         </dataset>

@@ -152,7 +152,7 @@ void log_error(BESError &e){
  is to create an informational object (BESInfo instance) and the exception
  information stored there.
 
- @param e excption to be managed
+ @param e exception to be managed
  @param dhi information related to request and response
  @return status after exception is handled
  @see BESError
@@ -162,10 +162,10 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
 {
     // Let's see if any of these exception callbacks can handle the
     // exception. The first callback that can handle the exception wins
-    ehm_iter i = _ehm_list.begin();
-    for (; i != _ehm_list.end(); i++) {
+
+    for (ehm_iter i = _ehm_list.begin(), ei = _ehm_list.end(); i != ei; ++i) {
         p_bes_ehm p = *i;
-        int handled = p(e, dhi);
+        int handled = p(e, dhi);    //
         if (handled) {
             return handled;
         }
@@ -173,7 +173,7 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
 
     dhi.error_info = BESInfoList::TheList()->build_info();
     string action_name = dhi.action_name;
-    if (action_name == "") action_name = "BES";
+    if (action_name.empty()) action_name = "BES";
     dhi.error_info->begin_response(action_name, dhi);
 
 

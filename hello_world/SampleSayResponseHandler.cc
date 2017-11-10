@@ -30,9 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "SampleSayResponseHandler.h"
+#include "config.h"
+
 #include "BESInfoList.h"
 #include "BESInfo.h"
+
+#include "SampleSayResponseHandler.h"
 #include "SampleResponseNames.h"
 
 SampleSayResponseHandler::SampleSayResponseHandler(const string &name) :
@@ -52,8 +55,8 @@ void SampleSayResponseHandler::execute(BESDataHandlerInterface &dhi)
     _response = info;
 
     // Here is where your code would fill in the new response object
-    info->begin_response( SAY_RESPONSE, dhi);
-    string str = dhi.data[ SAY_WHAT] + " " + dhi.data[ SAY_TO];
+    info->begin_response(SAY_RESPONSE, dhi);
+    string str = dhi.data[SAY_WHAT] + " " + dhi.data[SAY_TO];
     info->add_tag("text", str);
     info->end_response();
 }

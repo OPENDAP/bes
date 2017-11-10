@@ -34,7 +34,7 @@ static bool
 OPENDAP_CLASSCmdInit(int, char**)
 {
     if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing OPENDAP_CLASS Commands:" << endl ;
+	LOG("Initializing OPENDAP_CLASS Commands:" << endl );
 
     string cmd_name ;
 

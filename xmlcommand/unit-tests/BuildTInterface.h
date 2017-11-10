@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,18 +37,17 @@
 
 /** @brief Entry point into BES using xml document requests
 
-    @see BESInterface
+ @see BESInterface
  */
-class BuildTInterface : public BESXMLInterface
-{
+class BuildTInterface: public BESXMLInterface {
 public:
-    				BuildTInterface() ;
-    virtual			~BuildTInterface() ;
+    BuildTInterface(const string &xml_doc);
+    virtual ~BuildTInterface();
 
-    virtual void		run( const string &requestDoc ) ;
+    virtual void run();
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // BuildTInterface_h_
 

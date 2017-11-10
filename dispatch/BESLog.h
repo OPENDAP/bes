@@ -94,6 +94,7 @@ private:
     int _suspended;
     // Flag to indicate whether to log verbose messages
     bool _verbose;
+
 protected:
     BESLog();
 

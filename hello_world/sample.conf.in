@@ -10,4 +10,4 @@ BES.module.sample=@bes_modules_dir@/libsample_module.so
 # Data Handler Specific parameters
 
 # Say.LogName= - path to sample reporter log file
-Say.LogName=./say.log
+Say.LogName=@prefix@/var/say.log

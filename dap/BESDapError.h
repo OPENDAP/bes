@@ -34,12 +34,12 @@
 #define BESDapError_h_ 1
 
 #include "BESError.h"
-#include "Error.h"
 #include "BESDataHandlerInterface.h"
 
-//using namespace libdap;
+#include "Error.h"
 
-/** @brief error object created from libdap error objects and can handle
+/**
+ * @brief error object created from libdap error objects and can handle
  * those errors
  *
  * The BESDapError is an error object that is created from libdap error
@@ -50,14 +50,16 @@
  */
 class BESDapError: public BESError {
 private:
-    libdap::ErrorCode _error_code;
+    libdap::ErrorCode d_error_code;
+
 protected:
-    BESDapError() : _error_code(unknown_error)
+    BESDapError() : d_error_code(unknown_error)
     {
     }
+
 public:
     BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line) :
-            BESError(s, 0, file, line), _error_code(ec)
+            BESError(s, 0, file, line), d_error_code(ec)
     {
         if (fatal)
             set_error_type(BES_INTERNAL_FATAL_ERROR);
@@ -71,7 +73,7 @@ public:
 
     virtual int get_error_code() const
     {
-        return _error_code;
+        return d_error_code;
     }
 
     virtual void dump(ostream &strm) const;

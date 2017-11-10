@@ -30,11 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "SampleSayXMLCommand.h"
+#include "config.h"
+
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
+
+#include "SampleSayXMLCommand.h"
 #include "SampleResponseNames.h"
 
 SampleSayXMLCommand::SampleSayXMLCommand(const BESDataHandlerInterface &base_dhi) :
