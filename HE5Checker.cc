@@ -35,6 +35,7 @@
 /// \author MuQun Yang <myang6@hdfgroup.org>
 #include <map>
 #include <math.h>
+#include <BESDebug.h>
 #include "HE5Checker.h"
 
 using namespace std;
@@ -75,10 +76,8 @@ void
 HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p)
 {
     unsigned int i = 0;
-#if 0
- "h5", "HE5Checker::set_missing_values(Grid Size=" 
-         << p->grid_list.size() << ")" << endl;
-#endif
+    BESDEBUG("h5", "HE5Checker::set_missing_values(Grid Size=" 
+         << p->grid_list.size() << ")" << endl);
     for(i=0; i < p->grid_list.size(); i++) {
 #if 0 
 // Unnecessary 
@@ -126,6 +125,8 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
     Dimmap dim_map;
     bool flag = false;
 
+    // Pick up the same dimension name with different sizes
+    // This is not unusual since typically for grid since XDim and YDim are default for any EOS5 grid.
     for(i=0; i < p->grid_list.size(); i++) {
         HE5Grid g = p->grid_list.at(i);
         unsigned int j = 0;
@@ -134,15 +135,9 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
             Dimmap::iterator iter = dim_map.find(d.name);
             if(iter != dim_map.end()){
                 if(d.size != iter->second){
-#if 0
-                    "h5", "Dimension size mismatch is found." 
-                         << " Name=" << d.name 
-                         << " Size=" << d.size << endl;
-#endif 
                     flag = true;
                     break;
                 }
-             
             }
             else{
                 dim_map[d.name] = d.size;
@@ -152,7 +147,9 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
 
     }
 
-   
+    // Even if the {name,size} is the same for different grids,
+    // we still need to check their projection parameters to
+    // make sure they are matched.  
     if (false == flag) {
 
         HE5Grid g = p->grid_list.at(0);
@@ -164,8 +161,6 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
         float uppercoor = g.point_upper;
         float leftcoor =g.point_left;
         float rightcoor= g.point_right;
-
-
 
         for(i=1; i < p->grid_list.size(); i++) {
             g = p->grid_list.at(i);

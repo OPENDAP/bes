@@ -15,7 +15,7 @@ GCTP_CPPFLAGS=-I gctp/include
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
-if DAP_MODULES
+if DAP_BUILTIN_MODULES
 AM_CPPFLAGS = $(GCTP_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(GCTP_LIBS)
 else
@@ -78,7 +78,7 @@ libhdf5_module_la_LIBADD = $(LIBADD)
 EXTRA_DIST = he5das.yy he5dds.yy he5das.lex he5dds.lex OSX_Resources \
 	data data.nasa COPYING h5.conf.in test.nasa.sh
 
-if !DAP_MODULES
+if !DAP_BUILTIN_MODULES
 EXTRA_DIST += hdf5_handler.spec
 endif
 

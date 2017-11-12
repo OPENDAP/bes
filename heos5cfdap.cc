@@ -122,7 +122,6 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Retrieve ProjParams from StructMetadata
         p.add_projparams(st_str);
         //p.print();
-        // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {
@@ -133,8 +132,8 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
             throw InternalErr("The HDF-EOS5 is missing project code ");
         }
 
-// Just check 
 //#if 0
+        // We gradually add the support of different projection code
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
@@ -143,7 +142,6 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // HDF-EOS5 provides default pixel and origin values if they are not defined.
         c.set_grids_missing_pixreg_orig(&p);
 
-        // cerr<<"after unknown parameters "<<endl;
         // Check if this multi-grid file shares the same grid.
         bool grids_mllcv = c.check_grids_multi_latlon_coord_vars(&p);
 
@@ -154,6 +152,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Adjust_EOS5Dim_Info(&p);
 
         // Translate the parsed output to HDF-EOS5 grids/swaths/zonal.
+        // Several maps related to dimension and coordiantes are set up here.
         f->Add_EOS5File_Info(&p, grids_mllcv);
 
         // Add the dimension names
@@ -182,18 +181,12 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Handle coordinate variables
         f->Handle_CVar();
 
-        // Retrieve existing coordinate variable attributes for memory cache use.
-        //f->Retrieve_H5_CVar_Supported_Attr_Values();
-
         // Adjust variable and dimension names again based on the handling coordinate variables.
         f->Adjust_Var_Dim_NewName_Before_Flattening();
 
-        // Remove unsupported datatype 
-        //f->Handle_Unsupported_Dtype(include_attr);
 
-        // Remove unsupported dataspace 
-        //f->Handle_Unsupported_Dspace(include_attr);
-
+        // We need to use the CV units to distinguish lat/lon from th 3rd CV when
+        // memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
@@ -219,6 +212,9 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
  
         
         // Need to retrieve the units of CV when memory cache is turned on.
+        // The units of CV will be used to distinguish whether this CV is 
+        // latitude/longitude or a third-dimension CV. 
+        // isLatLon() will use the units value.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
             f->Adjust_Attr_Info();

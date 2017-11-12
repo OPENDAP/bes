@@ -4,8 +4,8 @@
 // Authors: 
 // Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 // MuQun Yang <myang6@hdfgroup.org> 
-
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+//
+// Copyright (c) 2011-2017 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@
 #define YYSTYPE char *
 #define YYDEBUG 1
 // Uncomment the following line for debugging.
-//#define VERBOSE 
+// #define VERBOSE 
 //#define YYPARSE_PARAM he5parser
 
 #include <stdio.h>
@@ -342,20 +342,34 @@ attribute_grid_name: GRID_NAME '=' STR
 }
 ;
 
-attribute_swath_name: SWATH_NAME '=' STR
+attribute_swath_name:  SWATH_NAME '=' STR 
 {
     HE5Parser* p = (HE5Parser*)he5parser;
     HE5Swath s;
 
 #ifdef VERBOSE
-    cout << "Swath Name is:" << $3 << endl;
+    cout << "Swath Name is:[" << $3 << "]" << endl;
+ #endif
+    string str = string($3);
+    // Save the Swath name. 
+    s.name = str.substr(0, str.find("\""));
+    // cout << "New name is " << s.name <<  endl;
+    p->swath_list.push_back(s);  
+    p->structure_state = HE5Parser::SWATH;	
+}
+| SWATH_NAME '=' STR '(' STR ')'
+{
+    HE5Parser* p = (HE5Parser*)he5parser;
+    HE5Swath s;
+
+#ifdef VERBOSE
+    cout << "Swath Name has parentheses:[" << $3 << "]" << endl;
 #endif
 
     // Save the Swath name. 
-    s.name = $3;
+    s.name = string($3);
     p->swath_list.push_back(s);  
     p->structure_state = HE5Parser::SWATH;
-
 }
 ;
 

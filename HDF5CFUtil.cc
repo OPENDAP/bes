@@ -289,8 +289,16 @@ string HDF5CFUtil::trim_string(hid_t ty_id,const string s, int num_sect, size_t 
    return final_str;
 }
 
-// Obtain the unique name for the clashed names and save it to set namelist.
+string HDF5CFUtil::remove_substrings(string str,const string &substr) {
 
+    string::size_type i = str.find(substr);
+    while (i != std::string::npos) {
+        str.erase(i, substr.size());
+        i = str.find(substr, i);
+    }
+    return str;
+}
+// Obtain the unique name for the clashed names and save it to set namelist.
 void HDF5CFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_index) {
 
     pair<set<string>::iterator,bool> ret;

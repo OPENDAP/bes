@@ -609,6 +609,12 @@ public:
     /// Add supplemental attributes such as fullpath and original name
     virtual void Add_Supplement_Attrs(bool) throw (Exception);
 
+    /// Check if having Grid Mapping Attrs
+    virtual bool Have_Grid_Mapping_Attrs();
+
+    /// Handle Grid Mapping Vars
+    virtual void Handle_Grid_Mapping_Vars();
+
     /// Handle "coordinates" attributes
     virtual void Handle_Coor_Attr() = 0;
 
@@ -754,6 +760,10 @@ protected:
 
     void release_standalone_var_vector(vector<Var*>&vars);
 
+    // Handle grid_mapping attributes
+    string Check_Grid_Mapping_VarName(const string& attr_value,const string& var_full_path);
+    string Check_Grid_Mapping_FullPath(const string& attr_value);
+
 protected:
     File(const char *h5_path, hid_t file_id) :
         path(string(h5_path)), fileid(file_id), rootid(-1), unsupported_var_dtype(false), unsupported_attr_dtype(false), unsupported_var_dspace(
@@ -872,8 +882,21 @@ public:
     /// Add supplemental attributes such as fullpath and original name for general NASA HDF5 products
     void Add_Supplement_Attrs(bool) throw (Exception);
 
+    /// Check if having Grid Mapping Attrs
+    bool Have_Grid_Mapping_Attrs();
+    
+    /// Handle Grid Mapping Vars
+    void Handle_Grid_Mapping_Vars();
+
+    //
+    bool Is_Hybrid_EOS5();
+    void Handle_Hybrid_EOS5();
+ 
     /// Handle "coordinates" attributes for general HDF5 products
     void Handle_Coor_Attr();
+
+    /// Unsupported datatype array may generate FakeDim. Remove them.
+    void Remove_Unused_FakeDimVars();
 
     /// Update "product type" attributes for general HDF5 products
     void Update_Product_Type() throw (Exception);
@@ -992,6 +1015,8 @@ protected:
     void Handle_GM_Unsupported_Dtype(bool) throw (Exception);
     void Handle_GM_Unsupported_Dspace(bool) throw (Exception);
 
+    bool Remove_EOS5_Strings(string &);
+    bool Remove_EOS5_Strings_NonEOS_Fields (string &);
     void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
 
 private:
@@ -1222,6 +1247,13 @@ public:
 
     void Handle_DimNameClashing() throw (Exception);
 
+    /// Check if having Grid Mapping Attrs
+    bool Have_Grid_Mapping_Attrs();
+    
+    /// Handle Grid Mapping Vars
+    void Handle_Grid_Mapping_Vars();
+
+
     bool Get_IgnoredInfo_Flag()
     {
         return check_ignored;
@@ -1303,6 +1335,7 @@ protected:
     void Adjust_CF_attr() throw (Exception);
     template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const string &, EOS5Type, int) throw (Exception);
     void Create_Added_Var_NewName_FullPath(EOS5Type, const string&, const string&, string &, string &) throw (Exception);
+
 
     //void add_ignored_info_attrs(bool is_grp,bool is_first);
     //void add_ignored_info_objs(bool is_dim_related, bool is_first);
