@@ -184,6 +184,7 @@ void BESServerHandler::execute(Connection *c)
         int status = cmd.execute_request(from);
 
         if (status == 0) {
+            cmd.finish(status);
             fds.finish();
 
             cout.rdbuf(holder);
@@ -203,10 +204,12 @@ void BESServerHandler::execute(Connection *c)
                 extensions["exit"] = "true";
             }
             c->sendExtensions(extensions);
-
+#if 0
             // transmit the error message. finish_with_error will transmit
             // the error
             cmd.finish_with_error(status);
+#endif
+            cmd.finish(status);
 
             // we are finished, send the last chunk
             fds.finish();
