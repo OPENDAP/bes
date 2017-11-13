@@ -408,9 +408,6 @@ int BESInterface::execute_request(const string &from)
     return status;
 }
 
-// I think this code was written when execute_request() called transmit_data()
-// (and invoke_aggregation()). I think that the code up to the log_status()
-// call is redundant. This means that so is the param 'status'. jhrg 12/23/15
 /**
  * Call this once execute_request() has completed.
 
@@ -426,14 +423,9 @@ int BESInterface::finish(int status)
         status = exception_manager(ex);
     }
 #endif
-    // This seems really odd to me... writing to cout and erasing the errors.
-    // jhrg 11/9/17
-    //
-    // If there is error information then the transmit of the error failed,
-    // print it to standard out. Once printed, delete the error information
-    // since we are done with it. NB: cout is wired to a PPTStreamBuf.
+
     if (d_dhi_ptr->error_info) {
-        d_dhi_ptr->error_info->print(cout);
+        d_dhi_ptr->error_info->print(d_strm /*cout*/);
         delete d_dhi_ptr->error_info;
         d_dhi_ptr->error_info = 0;
     }

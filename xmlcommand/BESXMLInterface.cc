@@ -241,6 +241,9 @@ void BESXMLInterface::execute_data_request_plan()
 void BESXMLInterface::transmit_data()
 {
     if (d_dhi_ptr->error_info) {
+        VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+                << d_dhi_ptr->data[LOG_INFO] << "] Error" << endl);
+
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
         LOG(strm.str() << endl);
