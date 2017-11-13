@@ -182,34 +182,28 @@ void BESServerHandler::execute(Connection *c)
 
         BESXMLInterface cmd(cmd_str, &cout);
         int status = cmd.execute_request(from);
-#if 0
-        cout << flush;
-#endif
+
         if (status == 0) {
-#if 1
             cmd.finish(status);
-#endif
             fds.finish();
             cout.rdbuf(holder);
         }
         else {
-            // an error has occurred.
             BESDEBUG("server", "BESServerHandler::execute - " << "error occurred" << endl);
 
-            // Send the extension status=error to the client so that it
-            // can reset.
+            // Send the extension status=error to the client so that it can reset. The finish()
+            // method is called _after_ this so that the error response will be recognizable.
+            // At least, I think that's what is happening... jhrg 11/12/17
             map<string, string> extensions;
             extensions["status"] = "error";
             if (status == BES_INTERNAL_FATAL_ERROR) {
                 extensions["exit"] = "true";
             }
             c->sendExtensions(extensions);
-#if 1
+
             cmd.finish(status);
-#endif
             // we are finished, send the last chunk
             fds.finish();
-
             // reset the cout stream buffer
             cout.rdbuf(holder);
 

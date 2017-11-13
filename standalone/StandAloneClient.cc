@@ -238,25 +238,17 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			*_strm << flush;
 
+			// Put the call to finish() here beacuse we're not sending chunked responses back
+			// to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
+			// break up the call to finish() for the error and no-error cases.
 			status = interface->finish(status);
 
             if (status == 0) {
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - executed successfully" << endl);
-#if 0
-                interface->finish(status);
-#endif
             }
             else {
                 // an error has occurred.
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - error occurred" << endl);
-#if 0
-                // flush what we have in the stream to the client
-                *_strm << flush;
-#endif
-                // transmit the error message. finish will transmit the error
-#if 0
-                interface->finish(status);
-#endif
                 switch (status) {
                 case BES_INTERNAL_FATAL_ERROR: {
                     cerr << "Status not OK, dispatcher returned value " << status << endl;
