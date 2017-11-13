@@ -182,19 +182,19 @@ void BESServerHandler::execute(Connection *c)
 
         BESXMLInterface cmd(cmd_str, &cout);
         int status = cmd.execute_request(from);
-
+#if 0
+        cout << flush;
+#endif
         if (status == 0) {
+#if 1
             cmd.finish(status);
+#endif
             fds.finish();
-
             cout.rdbuf(holder);
         }
         else {
             // an error has occurred.
             BESDEBUG("server", "BESServerHandler::execute - " << "error occurred" << endl);
-
-            // flush what we have in the stream to the client
-            cout << flush;
 
             // Send the extension status=error to the client so that it
             // can reset.
@@ -204,13 +204,9 @@ void BESServerHandler::execute(Connection *c)
                 extensions["exit"] = "true";
             }
             c->sendExtensions(extensions);
-#if 0
-            // transmit the error message. finish_with_error will transmit
-            // the error
-            cmd.finish_with_error(status);
-#endif
+#if 1
             cmd.finish(status);
-
+#endif
             // we are finished, send the last chunk
             fds.finish();
 

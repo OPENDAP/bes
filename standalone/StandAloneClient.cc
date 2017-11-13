@@ -236,21 +236,27 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			int status = interface->execute_request("standalone");
 
+			*_strm << flush;
+
+			status = interface->finish(status);
+
             if (status == 0) {
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - executed successfully" << endl);
+#if 0
                 interface->finish(status);
+#endif
             }
             else {
                 // an error has occurred.
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - error occurred" << endl);
-
+#if 0
                 // flush what we have in the stream to the client
                 *_strm << flush;
-
-                // transmit the error message. finish_with_error will transmit
-                // the error
+#endif
+                // transmit the error message. finish will transmit the error
+#if 0
                 interface->finish(status);
-
+#endif
                 switch (status) {
                 case BES_INTERNAL_FATAL_ERROR: {
                     cerr << "Status not OK, dispatcher returned value " << status << endl;
