@@ -88,7 +88,7 @@ void log_error(BESError &e)
     string error_name = "";
     // TODO This should be configurable; I'm changing the values below to always log all errors.
     // I'm also confused about the actual intention. jhrg 11/14/17
-    bool log_to_verbose = false;
+    bool only_log_to_verbose = false;
     switch (e.get_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
@@ -100,7 +100,7 @@ void log_error(BESError &e)
 
     case BES_SYNTAX_USER_ERROR:
         error_name = "BES User Syntax Error";
-        log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
+        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
         break;
 
     case BES_FORBIDDEN_ERROR:
@@ -109,7 +109,7 @@ void log_error(BESError &e)
 
     case BES_NOT_FOUND_ERROR:
         error_name = "BES Not Found Error";
-        log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
+        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
         break;
 
     default:
@@ -117,14 +117,16 @@ void log_error(BESError &e)
         break;
     }
 
+#if 0
     string m = BESLog::mark;
     std::ostringstream msg;
     msg << "ERROR: " << error_name << m << "type: " << e.get_error_type() << m << "file: " << e.get_file() << m
         << "line: " << e.get_line() << m << "message: " << e.get_message();
+#endif
 
-    if (log_to_verbose) {
-        if (BESLog::TheLog()->is_verbose()) {
-            LOG(msg.str() << endl);
+    if (only_log_to_verbose) {
+        VERBOSE("ERROR: " << error_name << ", type: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+                << e.get_line()  << ", message: " << e.get_message() << endl);
 #if 0
             // This seems buggy - if you don't flush the
             // log it won't print the time correctly.
@@ -132,10 +134,9 @@ void log_error(BESError &e)
             *(BESLog::TheLog()) << msg.str() << endl;
             BESLog::TheLog()->flush_me();
 #endif
-        }
     }
     else {
-        LOG(msg.str() << endl);
+        LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
 #if 0
         BESLog::TheLog()->flush_me();
         *(BESLog::TheLog()) << msg.str() << endl;

@@ -39,9 +39,18 @@
 // Note that the BESLog::operator<<() methods will prefix output with
 // the time and PID by checking for the flush and endl stream operators.
 //
-// FIXME Remove file and line once this is working... jhrg 11/14/17
+// TRACE_LOGGING provides a way to see just where in the code the log info
+// is written from. jhrg 11/14/17
+
+#undef TRACE_LOGGING
+
+#ifdef TRACE_LOGGING
 #define LOG(x) do { *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#else
+#define LOG(x) do { *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#endif
 
 #include "BESObj.h"
 

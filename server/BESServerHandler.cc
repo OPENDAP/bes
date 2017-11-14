@@ -228,6 +228,8 @@ void BESServerHandler::execute(Connection *c)
 
                 break;
 
+            // These cases print redundant information given the code in
+            // BESExceptionManager::log_error(). jhrg 11/14/17
             case BES_INTERNAL_ERROR:
                 LOG("BES Internal Error" << endl);
                 break;

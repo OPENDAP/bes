@@ -89,7 +89,7 @@ void BESXMLInterface::build_data_request_plan()
 
         // XML_PARSE_NONET
         doc = xmlReadMemory(d_xml_document.c_str(), d_xml_document.size(), "" /* base URL */,
-                            NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+        NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == NULL) {
             string err = "Problem parsing the request xml document:\n";
@@ -115,17 +115,17 @@ void BESXMLInterface::build_data_request_plan()
         map<string, string> props;
         BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, props);
         if (root_name != "request")
-            throw BESSyntaxUserError(string("The root element should be a request element, name is ").append((char *)root_element->name),
-                                     __FILE__, __LINE__);
+            throw BESSyntaxUserError(
+                string("The root element should be a request element, name is ").append((char *) root_element->name),
+                __FILE__, __LINE__);
 
         if (!root_val.empty())
             throw BESSyntaxUserError(string("The request element must not contain a value, ").append(root_val),
-                                     __FILE__, __LINE__);
+            __FILE__, __LINE__);
 
         // there should be a request id property with one value.
         string &reqId = props[REQUEST_ID];
-        if (reqId.empty())
-            throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
+        if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
 
         d_dhi_ptr->data[REQUEST_ID] = reqId;
 
@@ -149,11 +149,13 @@ void BESXMLInterface::build_data_request_plan()
                 // jhrg 11/7/17
                 p_xmlcmd_builder bldr = BESXMLCommand::find_command(node_name);
                 if (!bldr)
-                    throw BESSyntaxUserError(string("Unable to find command for ").append(node_name), __FILE__, __LINE__);
+                    throw BESSyntaxUserError(string("Unable to find command for ").append(node_name), __FILE__,
+                        __LINE__);
 
                 BESXMLCommand *current_cmd = bldr(d_xml_interface_dhi);
                 if (!current_cmd)
-                    throw BESInternalError(string("Failed to build command object for ").append(node_name), __FILE__, __LINE__);
+                    throw BESInternalError(string("Failed to build command object for ").append(node_name), __FILE__,
+                        __LINE__);
 
                 // push this new command to the back of the list
                 d_xml_cmd_list.push_back(current_cmd);
@@ -177,13 +179,14 @@ void BESXMLInterface::build_data_request_plan()
                 // TODO We could add the 'transmitter' to the DHI.
                 string return_as = current_dhi.data[RETURN_CMD];
                 if (!return_as.empty() & !BESReturnManager::TheManager()->find_transmitter(return_as))
-                        throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__, __LINE__);
+                    throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__,
+                        __LINE__);
             }
 
             current_node = current_node->next;
         }
     }
-    catch (... ) {
+    catch (...) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
         throw;
@@ -218,29 +221,36 @@ void BESXMLInterface::execute_data_request_plan()
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
 
         // This is the main log entry when the serve is not in 'verbose' mode.
-        // FIXME Make this configurable. Also/maybe make this more savvy about
-        // what gets written to LOG_INFO. jhrg 11/14/17
+        // TODO Make this configurable? jhrg 11/14/17
         if (!BESLog::TheLog()->is_verbose()) {
-            if (d_dhi_ptr->action.find("set.context") == string::npos && d_dhi_ptr->action.find("show.catalog") == string::npos)
+            if (d_dhi_ptr->action.find("set.context") == string::npos
+                && d_dhi_ptr->action.find("show.catalog") == string::npos) {
                 LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+
+#if 0
+                // TODO Hack LOG_INFO here using this info if it's valid?
+                // Assume only one container for DAP/OLFS. jhrg 11/14/17
+                BESContainer *c = *(d_dhi_ptr->containers.begin());
+                if (c) {
+                    LOG(c->access() << endl);
+
+                    if (!c->get_constraint().empty())
+                    LOG(c->get_constraint() << endl);
+                    if (!c->get_dap4_constraint().empty())
+                    LOG(c->get_dap4_constraint() << endl);
+                    if (!c->get_dap4_function().empty())
+                    LOG(c->get_dap4_function() << endl);
+                }
+#endif
+            }
         }
         else {
-            LOG(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
-                << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+            LOG(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
         }
 
-        // FIXME Use this below once the 'get' and 'show' commands are more concise
-        // (instead of as they are now, depending  on set context, set container and
-        // define commands that precede them). jhrg 11/13/17
-#if 0
-        // If logging is simple (not verbose) only log the get and show commands
-        if (!BESLog::TheLog()->is_verbose()
-            && (d_dhi_ptr->action.find("get") != string::npos || d_dhi_ptr->action.find("show") != string::npos)) {
-            LOG(d_dhi_ptr->data[LOG_INFO] << endl);
-        }
-#endif
         if (!d_dhi_ptr->response_handler)
-            throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
+            throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__,
+                __LINE__);
 
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
 
@@ -265,8 +275,8 @@ void BESXMLInterface::transmit_data()
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
-        VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
-                << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
+        VERBOSE(
+            /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
         if (BESISDEBUG(TIMING_LOG)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
@@ -302,7 +312,8 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            LOG(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            LOG(
+                /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
         }
     }
 }
@@ -318,8 +329,8 @@ void BESXMLInterface::clean()
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
         if (d_dhi_ptr) {
-            VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
-                << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
+            VERBOSE(
+                /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
 
             d_dhi_ptr->clean(); // Delete the ResponseHandler if present
         }
