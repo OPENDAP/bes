@@ -233,7 +233,7 @@ void BESServerHandler::execute(Connection *c)
                 break;
 
             case BES_SYNTAX_USER_ERROR:
-                LOG("BES Syntax User Error" << endl);
+                LOG("BES User Syntax Error" << endl);
                 break;
 
             case BES_FORBIDDEN_ERROR:

@@ -38,8 +38,10 @@
 
 // Note that the BESLog::operator<<() methods will prefix output with
 // the time and PID by checking for the flush and endl stream operators.
-#define LOG(x) do { *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+//
+// FIXME Remove file and line once this is working... jhrg 11/14/17
+#define LOG(x) do { *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 
 #include "BESObj.h"
 

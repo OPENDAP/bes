@@ -350,12 +350,12 @@ int BESInterface::execute_request(const string &from)
             string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
             if (found) {
                 bes_timeout = strtol(context.c_str(), NULL, 10);
-                VERBOSE("Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+                VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
                 alarm(bes_timeout);
             }
             else if (d_timeout_from_keys != 0) {
                 bes_timeout = d_timeout_from_keys;
-                VERBOSE("Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
+                VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
                 alarm(bes_timeout);
             }
 

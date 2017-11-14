@@ -217,11 +217,17 @@ void BESXMLInterface::execute_data_request_plan()
 
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
 
-        if (!BESLog::TheLog()->is_verbose())
-            LOG(d_dhi_ptr->data[LOG_INFO] << endl);
-
-        VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
+        // This is the main log entry when the serve is not in 'verbose' mode.
+        // FIXME Make this configurable. Also/maybe make this more savvy about
+        // what gets written to LOG_INFO. jhrg 11/14/17
+        if (!BESLog::TheLog()->is_verbose()) {
+            if (d_dhi_ptr->action.find("set.context") == string::npos && d_dhi_ptr->action.find("show.catalog") == string::npos)
+                LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+        }
+        else {
+            LOG(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+        }
 
         // FIXME Use this below once the 'get' and 'show' commands are more concise
         // (instead of as they are now, depending  on set context, set container and
@@ -254,7 +260,7 @@ void BESXMLInterface::transmit_data()
     if (d_dhi_ptr->error_info) {
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
-        LOG(strm.str() << endl);
+        LOG("Transmitting error: " << strm.str() << endl);
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
