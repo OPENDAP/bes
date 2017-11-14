@@ -71,8 +71,6 @@ void BESXMLInterface::build_data_request_plan()
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
     BESDEBUG("bes", "building request plan for xml document: " << endl << d_xml_document << endl);
 
-    VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " building" << endl);
-
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
     // causing some XML elements in DMR responses to be twiddled in the
@@ -219,9 +217,22 @@ void BESXMLInterface::execute_data_request_plan()
 
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
 
-        VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+        if (!BESLog::TheLog()->is_verbose())
+            LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+
+        VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
 
+        // FIXME Use this below once the 'get' and 'show' commands are more concise
+        // (instead of as they are now, depending  on set context, set container and
+        // define commands that precede them). jhrg 11/13/17
+#if 0
+        // If logging is simple (not verbose) only log the get and show commands
+        if (!BESLog::TheLog()->is_verbose()
+            && (d_dhi_ptr->action.find("get") != string::npos || d_dhi_ptr->action.find("show") != string::npos)) {
+            LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+        }
+#endif
         if (!d_dhi_ptr->response_handler)
             throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__, __LINE__);
 
@@ -248,7 +259,7 @@ void BESXMLInterface::transmit_data()
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
-        VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+        VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
@@ -284,7 +295,8 @@ void BESXMLInterface::log_status()
             // IF the DHI's error_info object pointer is null, the request was successful.
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
-            LOG(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            // This is only printed for verbose logging.
+            LOG(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
         }
     }
 }
@@ -300,7 +312,7 @@ void BESXMLInterface::clean()
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
         if (d_dhi_ptr) {
-            VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
+            VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
 
             d_dhi_ptr->clean(); // Delete the ResponseHandler if present

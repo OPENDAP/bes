@@ -103,7 +103,7 @@ volatile int bes_timeout = 0;
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        LOG("Child listener timeout after " << bes_timeout << " seconds, exiting." << endl);
+        LOG("BES timeout after " << bes_timeout << " seconds." << endl);
 
         // Causes setjmp() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
@@ -310,6 +310,8 @@ int BESInterface::execute_request(const string &from)
     d_dhi_ptr->set_output_stream(d_strm);
     d_dhi_ptr->data[REQUEST_FROM] = from;
 
+    // TODO If this is only used for logging, it is not needed since the log has a copy
+    // of the BES PID. jhrg 11/13/17
     ostringstream ss;
     ss << getpid();
     d_dhi_ptr->data[SERVER_PID] = ss.str();
@@ -322,7 +324,7 @@ int BESInterface::execute_request(const string &from)
     // TODO status is not used. jhrg 11/9/17
     int status = 0; // save the return status from exception_manager() and return that.
     try {
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << BESLog::mark << "request received" << endl);
+        VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " request received" << endl);
 
         // Initialize the transmitter for this interface instance to the BASIC
         // TRANSMITTER. This ensures that a simple response, such as an error,

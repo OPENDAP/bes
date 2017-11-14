@@ -115,6 +115,8 @@ void BESServerHandler::handle(Connection *c)
 
 void BESServerHandler::execute(Connection *c)
 {
+    // TODO This seems like a waste of time - do we really need to log this information?
+    // jhrg 11/13/17
     ostringstream strm;
     strm << "ip " << c->getSocket()->getIp() << ", port " << c->getSocket()->getPort();
     string from = strm.str();
@@ -218,7 +220,7 @@ void BESServerHandler::execute(Connection *c)
             // continue, wait for the next request.
             switch (status) {
             case BES_INTERNAL_FATAL_ERROR:
-                LOG("beslistener: BES Internal Fatal Error; child returning "
+                LOG("BES Internal Fatal Error; child returning "
                     << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
                 c->closeConnection();
@@ -227,23 +229,23 @@ void BESServerHandler::execute(Connection *c)
                 break;
 
             case BES_INTERNAL_ERROR:
-                LOG("beslistener: BES Internal Error" << endl);
+                LOG("BES Internal Error" << endl);
                 break;
 
             case BES_SYNTAX_USER_ERROR:
-                LOG("beslistener: BES Syntax User Error" << endl);
+                LOG("BES Syntax User Error" << endl);
                 break;
 
             case BES_FORBIDDEN_ERROR:
-                LOG("beslistener: BES Forbidden Error" << endl);
+                LOG("BES Forbidden Error" << endl);
                 break;
 
             case BES_NOT_FOUND_ERROR:
-                LOG("beslistener: BES Not Found Error" << endl);
+                LOG("BES Not Found Error" << endl);
                 break;
 
             default:
-                LOG("beslistener: Unrecognized BES Error" << endl);
+                LOG("Unrecognized BES Error" << endl);
                 break;
             }
         }
