@@ -84,13 +84,8 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 
                 if (control_heap == "yes") {
                     unsigned int max = atol(mhs.c_str());
-                    BESDEBUG( "bes", "Initializing emergency heap to "
-                        << (long int)emergency << " MB" << endl );
-                    BESDEBUG( "bes", "Initializing max heap size to "
-                        << (long int)(max+1) << " MB" << endl );
-                    (*BESLog::TheLog()) << "Initialize emergency heap size to " << (long int) emergency
-                        << " and heap size to ";
-                    LOG((long int) (max + 1) << " megabytes" << endl);
+
+                    LOG("Initialize emergency heap size to " << (unsigned long)emergency << " and heap size to " << (unsigned long)(max + 1) << " MB" << endl);
                     if (emergency > max) {
                         string s = string("BES: ") + "unable to start since the emergency "
                             + "pool is larger than the maximum size of " + "the heap.\n";
@@ -166,15 +161,15 @@ inline void BESMemoryGlobalArea::log_limits(const string &msg)
         throw BESInternalFatalError(strerror( errno), __FILE__, __LINE__);
     }
     if (limit.rlim_cur == RLIM_INFINITY)
-        LOG(msg << "heap size soft limit is infinte" << endl);
+        LOG(msg << "BES heap size soft limit is infinite" << endl);
     else
-        (*BESLog::TheLog()) << msg << "heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
-            << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl;
+        LOG(msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
+            << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl);
     if (limit.rlim_max == RLIM_INFINITY)
-        LOG(msg << "heap size hard limit is infinite" << endl);
+        LOG(msg << "BES heap size hard limit is infinite" << endl);
     else
-        (*BESLog::TheLog()) << msg << "heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
-            << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl;
+        LOG("BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
+            << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl);
 }
 
 void BESMemoryGlobalArea::release_memory()

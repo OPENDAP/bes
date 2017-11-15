@@ -67,7 +67,8 @@ void BESXMLCommand::set_response()
 
     d_xmlcmd_dhi.data[LOG_INFO] = d_cmd_log_info;
 
-    VERBOSE(d_xmlcmd_dhi.data[REQUEST_FROM] << BESLog::mark << d_cmd_log_info  << endl);
+    VERBOSE(/*d_xmlcmd_dhi.data[SERVER_PID] << " from " <<*/ d_xmlcmd_dhi.data[REQUEST_FROM] << " ["
+            << d_xmlcmd_dhi.data[LOG_INFO] << "] parsed" << endl);
 }
 
 /** @brief Add a command to the possible commands allowed by this BES
