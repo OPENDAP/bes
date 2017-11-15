@@ -227,6 +227,9 @@ void BESXMLInterface::execute_data_request_plan()
                 && d_dhi_ptr->action.find("show.catalog") == string::npos) {
                 LOG(d_dhi_ptr->data[LOG_INFO] << endl);
 
+                ostringstream oss;
+                d_dhi_ptr->dump(oss);
+                LOG("DHI: " << oss.str() << endl);
 #if 0
                 // TODO Hack LOG_INFO here using this info if it's valid?
                 // Assume only one container for DAP/OLFS. jhrg 11/14/17
