@@ -81,8 +81,9 @@ void BESXMLDapCommandModule::terminate(const string &/*modname*/)
 
     BESXMLCommand::del_command( CATALOG_RESPONSE_STR );
     BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR );
+#if 0
     BESXMLCommand::del_command( DATADDX_RESPONSE );
-
+#endif
     BESDEBUG( "dap", "Done Removing DAP Commands" << endl );
 }
 

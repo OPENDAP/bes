@@ -32,14 +32,15 @@
 
 #include "config.h"
 
-#include "SampleRequestHandler.h"
 #include "BESResponseHandler.h"
 #include "BESResponseNames.h"
-#include "SampleResponseNames.h"
 #include "BESVersionInfo.h"
 #include "BESTextInfo.h"
 #include "BESConstraintFuncs.h"
 #include "BESInternalError.h"
+
+#include "SampleRequestHandler.h"
+#include "SampleResponseNames.h"
 
 SampleRequestHandler::SampleRequestHandler(const string &name) :
     BESRequestHandler(name)

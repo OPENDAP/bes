@@ -136,11 +136,19 @@ m4_define([AT_BESCMD_SHOW_RESPONSE_TEST],
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
-    AT_CHECK([bescmdln -i $input | sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1\3/g'], [], [stdout])
+    AT_CHECK([bescmdln -i $input |
+    	      sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1lastModified="elided"\3/g' |
+	      sed 's/\(.*\)\(size="[[0-9]]*"\)\(.*\)/\1size="elided"\3/g' |
+	      sed 's/\(.*\)\(count="[[0-9]]*"\)\(.*\)/\1count="elided"\3/g'
+	      ], [], [stdout])
     AT_CHECK([mv stdout $baseline.tmp])
     ],
     [
-    AT_CHECK([bescmdln -i $input | sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1\3/g'], [], [stdout])
+    AT_CHECK([bescmdln -i $input | 
+    	      sed 's/\(.*\)\(lastModified="[[-:T0-9]]*"\)\(.*\)/\1lastModified="elided"\3/g' |
+	      sed 's/\(.*\)\(size="[[0-9]]*"\)\(.*\)/\1size="elided"\3/g' |
+	      sed 's/\(.*\)\(count="[[0-9]]*"\)\(.*\)/\1count="elided"\3/g'
+	      ], [], [stdout])
     AT_CHECK([diff -b -B $baseline stdout])
     AT_XFAIL_IF([test _$pass = _xfail])
     ])

@@ -33,8 +33,22 @@
 #ifndef D_BESDataNames_h
 #define D_BESDataNames_h 1
 
-#define DATA_REQUEST "request"
+/**
+ * @brief Names used with the DHI data map.
+ *
+ * The DataHanderInterface uses a map<string, string> hash map as a simple
+ * 'database' of key/value pairs to pass information about a request from
+ * place to place in the BESInterface, BESCommand, RequestHandler and
+ * ResponseHandler classes. Knowning these names and how the information
+ * is used helps reveal the BES flow of control.
+ */
+
+/// Information is built up describing the command and then dumped to the bes.log
+#define LOG_INFO "log_info"
+
 #define REQUEST_ID "reqID"
+
+/// The IP and port numbers from which the BES read this information.
 #define REQUEST_FROM "from"
 
 #define AGG_CMD "aggregation_command"
@@ -56,6 +70,7 @@
 #define USER_NAME "username"
 #define USER_TOKEN "token"
 
+/// The pid for this instance of the BES
 #define SERVER_PID "pid"
 
 #define CONTAINER_NAME "container_name"

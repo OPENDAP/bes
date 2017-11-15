@@ -33,6 +33,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 //      hyoklee     Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+
 #include "config.h"
 
 #include <cstdlib>
@@ -80,11 +81,17 @@ extern "C" {
 }
 #  endif                        /* defined(HAVE_READLINE_HISTORY_H) */
 /* no history */
-#endif                          /* HAVE_READLINE_HISTORY */
+#endif       /* HAVE_READLINE_HISTORY */
+
+
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
-#include "StandAloneClient.h"
-#include "BESDebug.h"
+
 #include "BESXMLInterface.h"
+#include "BESStopWatch.h"
+#include "BESError.h"
+#include "BESDebug.h"
+
+#include "StandAloneClient.h"
 #include "CmdTranslation.h"
 
 StandAloneClient::~StandAloneClient()
@@ -213,7 +220,12 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			if (CmdTranslation::is_show()) {
 				show_stream = new ostringstream;
 			}
-			BESDEBUG( "standalone", "cmdclient sending " << cmd << endl );
+
+			BESDEBUG( "standalone", "cmd client sending " << cmd << endl );
+
+	        BESStopWatch sw;
+	        if (BESISDEBUG(TIMING_LOG)) sw.start("StandAloneClient::executeCommand");
+
 			BESXMLInterface *interface = 0;
 			if (show_stream) {
 				interface = new BESXMLInterface(cmd, show_stream);
@@ -221,6 +233,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			else {
 				interface = new BESXMLInterface(cmd, _strm);
 			}
+
 			int status = interface->execute_request("standalone");
 
 			if (status == 0) {

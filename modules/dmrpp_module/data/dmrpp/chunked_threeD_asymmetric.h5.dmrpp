@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0"
+    dmrVersion="1.0" 
+    name="chunked_threeD_asymmetric.h5"
+    xml:base="data/dmrpp/chunked_threeD_asymmetric.h5">
+  <Float32 name="d_8_chunks">
+    <Dim size="100"/>
+    <Dim size="50"/>
+    <Dim size="200"/>
+    <Attribute name="origname" type="String">
+      <Value>d_8_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_8_chunks</Value>
+    </Attribute>
+    <h4:chunks>
+      <h4:chunkDimensionSizes>50 50 50</h4:chunkDimensionSizes>
+      <h4:byteStream nBytes="500000" md5="364279d20f73733a41cb613ca118ddab" offset="4208" uuid="adfe2e7d-6d01-4610-81a0-82b882bee5c2" chunkPositionInArray="[0,0,0]"/>
+      <h4:byteStream nBytes="500000" md5="51f4935de20d34f17d6e3c4764394223" offset="504208" uuid="7a24fb5c-af1d-4713-8809-4153f2e511ed" chunkPositionInArray="[0,0,50]"/>
+      <h4:byteStream nBytes="500000" md5="4e5a9187dd68d1bd5d388d47c720ee6b" offset="1004208" uuid="6ce116c3-8628-4acb-94bd-d37e63166468" chunkPositionInArray="[0,0,100]"/>
+      <h4:byteStream nBytes="500000" md5="40b7eef7075820c2d35861200d52e000" offset="1504208" uuid="1f44b125-b6cd-4c7a-8b87-f929983dbdb1" chunkPositionInArray="[0,0,150]"/>
+      <h4:byteStream nBytes="500000" md5="4305f88bac9ae2e37d8071f337adee84" offset="2004208" uuid="e4953bed-5496-4774-a414-67dfc194c85a" chunkPositionInArray="[50,0,0]"/>
+      <h4:byteStream nBytes="500000" md5="05b51765f7e3789cab55ccd352105458" offset="2504208" uuid="691297ff-7f60-453f-83fb-55bd508e008d" chunkPositionInArray="[50,0,50]"/>
+      <h4:byteStream nBytes="500000" md5="e14e4ff01f9645862f2d6e92ac318bcf" offset="3006256" uuid="738d0418-7063-40d1-b065-d0dec144134d" chunkPositionInArray="[50,0,100]"/>
+      <h4:byteStream nBytes="500000" md5="e70566f96ed4f4990c4a156e6cfca47b" offset="3506256" uuid="1d403418-12af-41e5-b68c-ffe87593c134" chunkPositionInArray="[50,0,150]"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>

@@ -25,7 +25,7 @@ DISTCLEANFILES = atconfig
 bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 ############## Autotest follows #####################
 
@@ -41,10 +41,6 @@ clean-local:
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-
-# $(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4
-#	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-#	mv $@.tmp $@
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 

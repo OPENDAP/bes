@@ -286,7 +286,7 @@ BESContainerStorageList::look_for(const string &sym_name)
     }
     if (!ret_container) {
         if (isnice()) {
-            (*BESLog::TheLog()) << "Could not find the symbolic name " << sym_name << endl;
+            LOG("Could not find the symbolic name " << sym_name << endl);
         }
         else {
             string s = (string) "Could not find the symbolic name " + sym_name;

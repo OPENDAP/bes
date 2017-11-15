@@ -30,6 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <sstream>
+
 #include "BESXMLGetCommand.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
@@ -37,10 +41,14 @@
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
 #include "BESDapNames.h"
+
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESSyntaxUserError.h"
+#include "BESLog.h"
 #include "BESDebug.h"
+
+using namespace std;
 
 BESXMLGetCommand::BESXMLGetCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi), _sub_cmd(0)
@@ -125,6 +133,8 @@ void BESXMLGetCommand::parse_basic_get(const string &type, map<string, string> &
     if (_definition.empty())
         throw BESSyntaxUserError("get command: Must specify definition", __FILE__, __LINE__);
 
+    // TODO Lookup the definition and get the container. Then lookup the container and
+    // get the path and constraint. jhrg 11/14/17
     d_cmd_log_info.append(" for ").append(_definition);
 
     _space = props["space"];

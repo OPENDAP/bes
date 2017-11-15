@@ -124,15 +124,17 @@ void BESDapModule::initialize(const string &modname)
 	BESDEBUG("dap", "    adding dap exception handler" << endl);
 	BESExceptionManager::TheEHM()->add_ehm_callback(BESDapError::handleException);
 
+#if 0
+	// Aggregations are no longer run. jhrg 11/9/17
 	// Add the new 'Null' AggregationServer. jhrg 1/30/15
 	// TODO Add these names to BESDapNames.h
 	BESDEBUG("dap", "    adding null aggregation handler" << endl);
-        BESAggFactory::TheFactory()->add_handler("null.aggregation", BESDapNullAggregationServer::NewBESDapNullAggregationServer);
-#if 0
-        // Removed jhrg 3/17/15
-        BESAggFactory::TheFactory()->add_handler("sequence.aggregation", BESDapSequenceAggregationServer::NewBESDapSequenceAggregationServer);
+    BESAggFactory::TheFactory()->add_handler("null.aggregation", BESDapNullAggregationServer::NewBESDapNullAggregationServer);
 #endif
-
+#if 0
+    // Removed jhrg 3/17/15
+    BESAggFactory::TheFactory()->add_handler("sequence.aggregation", BESDapSequenceAggregationServer::NewBESDapSequenceAggregationServer);
+#endif
 
     BESDEBUG("dap", "    adding DAP Utility Function 'wrapitup'()" << endl);
     WrapItUp *wiu = new WrapItUp();
@@ -173,7 +175,9 @@ void BESDapModule::terminate(const string &modname)
 	BESReturnManager::TheManager()->del_transmitter(DAP2_FORMAT);
 	// TODO ?? BESReturnManager::TheManager()->del_transmitter( DAP4_FORMAT );
 
+#if 0
 	BESAggFactory::TheFactory()->remove_handler("null.aggregation");
+#endif
 
 	BESDEBUG("dap", "Done Removing DAP Modules:" << endl);
 }

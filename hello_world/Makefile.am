@@ -22,19 +22,11 @@ lib_bes_LTLIBRARIES = libsample_module.la
 
 SUBDIRS = . tests
 
-BES_SRCS = \
-	SampleSayResponseHandler.cc SampleSayXMLCommand.cc \
-		SampleModule.cc SampleRequestHandler.cc \
-		SayReporter.cc
+BES_SRCS = SampleSayResponseHandler.cc SampleSayXMLCommand.cc SampleModule.cc SampleRequestHandler.cc
 
-BES_HDRS = \
-	SampleSayResponseHandler.h SampleSayXMLCommand.h \
-		SampleModule.h SampleRequestHandler.h \
-		SampleResponseNames.h \
-		SayReporter.h 
+BES_HDRS = SampleSayResponseHandler.h SampleSayXMLCommand.h SampleModule.h SampleRequestHandler.h \
+SampleResponseNames.h
 		
-#		config_sample.h
-
 libsample_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libsample_module_la_LDFLAGS = -avoid-version -module 
 libsample_module_la_LIBADD = $(BES_LIBS)

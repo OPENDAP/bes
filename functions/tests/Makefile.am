@@ -53,7 +53,7 @@ TESTSUITEFLAGS =
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4
 
-# Note 
+# Note These tests do not work when run in parallel.
 check-local: atconfig atlocal $(TESTSUITE)
 	@echo "Run tests with an empty cache"
 	-rm -rf dap_cache/*
@@ -64,8 +64,6 @@ check-local: atconfig atlocal $(TESTSUITE)
 	@echo "Run tests with a full cache"
 	$(SHELL) '$(TESTSUITE)' # $(TESTSUITEFLAGS)
 	-test `ls -1 dap_cache/ | wc -l` -eq 52
-	
-#	-rm -rf dap_cache/*
 	
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

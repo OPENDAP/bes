@@ -1,10 +1,7 @@
 
- $Id$
 
-See the INSTALL file for build instructions.
-
-For more information on Hyrax and the BES, please visit our documentation
-wiki at docs.opendap.org. This will include the latest install and build
+For more information on Hyrax and the BES, please visit our web site
+at www.opendap.org. This will include the latest install and build
 instructions, the latest configuration information, tutorials, how to
 develop new modules for the BES, and more.
 
@@ -17,28 +14,12 @@ Contents
 * What's here:
 
 The hello_world example module provides developers with an example of how
-modules, commands, and response handlers are added in to the BES
+modules, commands, request and response handlers are added in to the BES
 dynamically.
 
 * Configuration
 
-The bes.conf file should work as is. In order to use the bes.conf file for
-this example, set the environment variable BES_CONF to point to the bes.conf
-file located in the "bes-testsuite" directory.
-
-      setenv BES_CONF ./bes-testsuite/bes.conf
-
-      or
-
-      BES_CONF=./bes-testsuite/bes.conf
-      export BES_CONF
-
-Or you can use the -c option to besctl to specify a configuration file:
-
-      besctl start -c ./bes-testsuite/bes.conf
-
-Note that you will need to have done an install of the handler into the bes for this to work, not just a make.
-
+The sample.conf file should work as is.
 
 * Testing
 
@@ -47,21 +28,20 @@ the bes control script besctl (which is installed in <prefix>/bin)
 and using the -c switch to name the configuration file. If the server standalone
 starts correctly it should print something like the following to stdout:
 
-    [jimg@zoe sbin]$ besctl start -c ./bes-testsuite/bes.conf
+    [jimg@zoe sbin]$ besctl start
     BES install directory: <prefix>/bin
     Starting the BES
     OK: Succesfully started the BES
     PID: <process_id> UID: <uid of process>
 
-Go back to your first window and run the bescmdln program. Use the -h (host)
-and -p (port) switches to tell it how to connect to the BES. And use the
+Go back to your first window and run the bescmdln program, and use the
 -i option to tell the command line client what command file to use. All
 requests to the BES are in XML format. The bescmdln does have built-in
 string commands for the built-in requests (set container, define, get,
 etc...) but not for new commands like this. So we need to use a file
 that has the XML document in it.
 
-    [jimg@zoe bin]$ bescmdln -p 10002 -h localhost -i bes-testsuite/hello/hello.bescmd
+    [jimg@zoe bin]$ bescmdln -i bes-testsuite/hello/hello.bescmd
 
     <say>
 	<response>
@@ -71,11 +51,6 @@ that has the XML document in it.
 	</response>
     </say>
     
-The response is logged in the file "say.log".  For example:
-
-	[EDT Thu Sep 30 17:14:00 2010] "hello" said to "world"
-    
-
 Rather than using the -i option, you may run bescmdln interactively
 and load the hello command with the 'client load' command:
 
@@ -93,6 +68,11 @@ To stop the BES use the bes control script with the stop option:
 
 
 * Creating this sample module yourself.
+
+NOTE: This material is old and some of it is potentially misleading. As of 
+11/8/2017 we have removed Reporters (this sample module and its commands
+was the only part of the server that used them). The main points of this
+sections should still hold true.
 
 Here we will tell you how to generate this sample module yourself. It's very
 easy to do.
