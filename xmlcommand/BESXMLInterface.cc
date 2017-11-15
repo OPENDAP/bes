@@ -51,6 +51,8 @@ using namespace std;
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
 
+#define LOG_ONLY_GET_COMMANDS
+
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
     BESInterface(strm), d_xml_document(xml_doc)
 {
@@ -220,40 +222,54 @@ void BESXMLInterface::execute_data_request_plan()
 
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
 
-        // This is the main log entry when the serve is not in 'verbose' mode.
+        // In 'verbose' logging mode, log all the commands.
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+
+        // This is the main log entry when the server is not in 'verbose' mode.
+        // There are two ays we can do this, one writes a log line for only the
+        // get commands, the other write the set container, define and get commands.
         // TODO Make this configurable? jhrg 11/14/17
+#ifdef LOG_ONLY_GET_COMMANDS
+        // Special logging action for the 'get' command. In non-verbose logging mode,
+        // only log the get command.
+        if (d_dhi_ptr->action.find("get.") != string::npos) {
+
+            string new_log_info = d_dhi_ptr->action;
+            if (!d_dhi_ptr->data[RETURN_CMD].empty())
+                new_log_info.append(",").append(d_dhi_ptr->data[RETURN_CMD]);
+
+            // Assume this is DAP and thus there is at most one container. Log a warning if that's
+            // not true. jhrg 11/14/17
+            BESContainer *c = *(d_dhi_ptr->containers.begin());
+            if (c) {
+                if (!c->access().empty()) new_log_info.append(",").append(c->access());
+
+                if (!c->get_constraint().empty()) {
+                    new_log_info.append(",").append(c->get_constraint());
+                }
+                else {
+                    if (!c->get_dap4_constraint().empty()) new_log_info.append(",").append(c->get_dap4_constraint());
+                    if (!c->get_dap4_function().empty()) new_log_info.append(",").append(c->get_dap4_function());
+                }
+            }
+
+            LOG(new_log_info << endl);
+
+            if (d_dhi_ptr->containers.size() > 1)
+                LOG("Warning: The previous command had multiple containers defined, but only the was logged.");
+        }
+#else
         if (!BESLog::TheLog()->is_verbose()) {
             if (d_dhi_ptr->action.find("set.context") == string::npos
                 && d_dhi_ptr->action.find("show.catalog") == string::npos) {
                 LOG(d_dhi_ptr->data[LOG_INFO] << endl);
-
-                ostringstream oss;
-                d_dhi_ptr->dump(oss);
-                LOG("DHI: " << oss.str() << endl);
-#if 0
-                // TODO Hack LOG_INFO here using this info if it's valid?
-                // Assume only one container for DAP/OLFS. jhrg 11/14/17
-                BESContainer *c = *(d_dhi_ptr->containers.begin());
-                if (c) {
-                    LOG(c->access() << endl);
-
-                    if (!c->get_constraint().empty())
-                    LOG(c->get_constraint() << endl);
-                    if (!c->get_dap4_constraint().empty())
-                    LOG(c->get_dap4_constraint() << endl);
-                    if (!c->get_dap4_function().empty())
-                    LOG(c->get_dap4_function() << endl);
-                }
-#endif
             }
         }
-        else {
-            LOG(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
-        }
+#endif
 
         if (!d_dhi_ptr->response_handler)
             throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__,
-                __LINE__);
+            __LINE__);
 
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
 
