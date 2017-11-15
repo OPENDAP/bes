@@ -3,6 +3,7 @@
     # off, so until we get that under control, rotate every
     # day. Keep one week plus a day.
     daily
+    copytruncate
     rotate 8
     
     missingok
@@ -12,7 +13,7 @@
     compress
     delaycompress
     
-    postrotate
+    # postrotate
 	# This is a brute-force way to get the BES to rotate its
 	# log. The tomcat will end any current access that does
 	# not finish in 10s after the shutdown command is run, so
@@ -24,10 +25,10 @@
 	#
 	# We will need to add to the admin interface to get a
 	# robust log rotation feature for the BES. jhrg 12/28/16
-	/sbin/service tomcat stop > /dev/null 2>&1 || true
-        /sbin/service besd stop > /dev/null 2>&1 || true
+	#/sbin/service tomcat stop > /dev/null 2>&1 || true
+        #/sbin/service besd stop > /dev/null 2>&1 || true
 
-        /sbin/service besd start > /dev/null 2>&1 || true
-	/sbin/service tomcat start > /dev/null 2>&1 || true
-    endscript
+        #/sbin/service besd start > /dev/null 2>&1 || true
+	#/sbin/service tomcat start > /dev/null 2>&1 || true
+    #endscript
 }
