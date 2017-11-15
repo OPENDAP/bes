@@ -44,6 +44,8 @@
 #include <unistd.h>
 #endif
 
+#define ISO8601_TIME_IN_LOGS
+
 using namespace std;
 
 BESLog *BESLog::d_instance = 0;
@@ -60,12 +62,15 @@ const string BESLog::mark = string("|&|");
  * Verbose logging is determined also using the BESKeys mechanism. The key
  * used is BES.LogVerbose.
  *
+ * By default, log using UTC. BES.LogTimeLocal=yes will switch to using local
+ * time. Times are recorded in IOS8601.
+ *
  * @throws BESInternalError if BESLogName is not set or if there are
  * problems opening or writing to the log file.
  * @see BESKeys
  */
 BESLog::BESLog() :
-    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false)
+    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false), d_use_local_time(false)
 {
     d_suspended = 0;
     bool found = false;
@@ -73,22 +78,36 @@ BESLog::BESLog() :
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
     catch (...) {
-        string err = (string) "BES Fatal: unable to determine log file name."
-            + " The key BES.LogName has multiple values";
+        string err ="BES Fatal: unable to determine log file name. The key BES.LogName has multiple values";
+        cerr << err << endl;
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
+    }
+
+    // By default, use UTC in the logs.
+    found = false;
+    string local_time = "no";
+    try {
+        TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
+        if (local_time == "YES" || local_time == "Yes" || local_time == "yes") {
+            d_use_local_time = true;
+        }
+
+    }
+    catch (...) {
+        string err ="BES Fatal: Unable to read the value of BES.LogTimeUTC";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
 
     if (d_file_name == "") {
-        string err = (string) "BES Fatal: unable to determine log file name."
-            + " Please set BES.LogName in your initialization file";
+        string err = "BES Fatal: unable to determine log file name. Please set BES.LogName in your initialization file";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
 
     d_file_buffer = new ofstream(d_file_name.c_str(), ios::out | ios::app);
     if (!(*d_file_buffer)) {
-        string err = (string) "BES Fatal; cannot open log file " + d_file_name + ".";
+        string err = "BES Fatal; cannot open log file " + d_file_name + ".";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
@@ -114,12 +133,33 @@ BESLog::~BESLog()
 
 /** @brief Protected method that dumps the date/time to the log file
  *
- * The time is dumped to the log file in the format:
- *
- * [MDT Thu Sep  9 11:05:16 2004 id: &lt;pid&gt;]
+ * Depending on the compile-time constant ISO8601_TIME_IN_LOGS,
+ * the time is dumped to the log file in the format:
+ * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
+ * "YYYY-MM-DDTHH:MM:SS zone"
  */
 void BESLog::dump_time()
 {
+#ifdef ISO8601_TIME_IN_LOGS
+    time_t now;
+    time(&now);
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!d_use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+
+    (*d_file_buffer) << buf;
+
+#else
     const time_t sctime = time(NULL);
     const struct tm *sttime = localtime(&sctime);
     char zone_name[10];
@@ -129,6 +169,7 @@ void BESLog::dump_time()
     (*d_file_buffer) << zone_name << " ";
     for (register int j = 0; b[j] != '\n'; j++)
         (*d_file_buffer) << b[j];
+#endif
 
     (*d_file_buffer) << mark << getpid() << mark;
 

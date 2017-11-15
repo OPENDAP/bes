@@ -109,6 +109,8 @@ private:
     // Flag to indicate whether to log verbose messages
     bool d_verbose;
 
+    bool d_use_local_time; ///< Use UTC by default
+
 protected:
     BESLog();
 
