@@ -453,7 +453,7 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() BEGIN" << endl);
 
     int still_running;
-    int repeats;
+    int repeats = 0;
     long long lap_counter = 0;  // TODO Remove or ... see below
     CURLMcode mcode;
 
