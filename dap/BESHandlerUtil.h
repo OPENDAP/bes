@@ -60,6 +60,9 @@ public:
 
     TemporaryFile(const std::string &path_template);
 
+    ~TemporaryFile();
+
+#if 0
     /**
      * @brief Free the temporary file
      *
@@ -69,12 +72,12 @@ public:
         close(d_fd);
         unlink(&d_name[0]);
     }
-
+#endif
     /** @return The temporary file's file descriptor */
-    int get_fd() { return d_fd; }
+    int get_fd() const { return d_fd; }
 
     /** @return The temporary file's name */
-    std::string get_name() { return &d_name[0]; }
+    std::string get_name() const { return &d_name[0]; }
 };
 
 } // namespace bes

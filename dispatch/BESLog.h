@@ -52,6 +52,11 @@
 #define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #endif
 
+// Pretty silly - for now ERROR is the same as LOG, but I suspect that we might
+// want to treat errors differently in the near future given the special logging
+// needs of the 'Hyrax in the Cloud' project. jhrg 11/16/17
+#define ERROR(x) LOG(x)
+
 #include "BESObj.h"
 
 /** @brief Provides a mechanism for applications to log information to an
