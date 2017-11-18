@@ -92,7 +92,7 @@ libdap::Grid *scale_dap_grid(const libdap::Grid *src, const SizeBox &size, const
     const std::string &interp);
 libdap::Grid *scale_dap_array(const libdap::Array *data, const libdap::Array *lon, const libdap::Array *lat,
     const SizeBox &size, const std::string &crs, const std::string &interp);
-libdap::Grid *scale_dap_array_3D(const libdap::Array *data, const libdap::Array *t, const libdap::Array *y, const libdap::Array *x, const SizeBox &size,
+libdap::Grid *scale_dap_array_3D(const libdap::Array *data, const libdap::Array *t, const libdap::Array *lon, const libdap::Array *lat, const SizeBox &size,
     const std::string &crs, const std::string &interp);
 
 void function_scale_grid(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp);
