@@ -33,21 +33,11 @@
 #ifndef BESInterface_h_
 #define BESInterface_h_ 1
 
-#include <list>
-
-//using std::list;
-
-#include "BESDataHandlerInterface.h"
-
 #include "BESObj.h"
 
 class BESError;
 class BESTransmitter;
-
-#if 0
-typedef bool (*p_bes_init)(BESDataHandlerInterface &dhi);
-typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
-#endif
+class BESDataHandlerInterface;
 
 /** @brief Entry point into BES, building responses to given requests.
 
@@ -124,60 +114,39 @@ typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
  */
 class BESInterface: public BESObj {
 private:
-#if 0
-    typedef list<p_bes_init>::const_iterator init_citer;
-    typedef list<p_bes_init>::iterator init_iter;
-    static list<p_bes_init> _init_list;
-
-    typedef list<p_bes_end>::const_iterator end_citer;
-    typedef list<p_bes_end>::iterator end_iter;
-    static list<p_bes_end> _end_list;
-#endif
-
     ostream *d_strm;
-    int d_timeout_from_keys; ///< can be overridden by a setContext command
+    int d_timeout_from_keys; ///< Command timeout; can be overridden using setContext
 
 protected:
-    BESDataHandlerInterface *d_dhi_ptr;
-    BESTransmitter *d_transmitter;
+    BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
+    BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
     virtual int exception_manager(BESError &e);
-    virtual void initialize();
-    virtual void validate_data_request();
-
-    /** @brief Build the data request plan.
-
-     It is the responsibility of the derived class to build the request plan.
-     In other words, the container list must be filled in and the action set
-     in the BESDataHandlerInterface structure.
-
-     @see BESDataHandlerInterface
-     */
-    virtual void build_data_request_plan();
-
-    virtual void execute_data_request_plan();
-    virtual void invoke_aggregation();
-
-    virtual int finish(int status);
-    virtual void transmit_data();
-    virtual void log_status();
-    virtual void report_request();
+    virtual void finish();
     virtual void end_request();
-    virtual void clean();
+
+    virtual void build_data_request_plan() = 0;
+
+    virtual void execute_data_request_plan() = 0;
+
+    virtual void transmit_data() = 0;
+
+    virtual void log_status() = 0;
+
+    virtual void clean() = 0;
 
     BESInterface(ostream *strm);
+
     virtual ~BESInterface() { }
 
 public:
+    // This is the point where BESServerHandler::execute(Connection *c) passes control
+    // to the 'run the command' part of the server. jhrg 11/7/17
     virtual int execute_request(const string &from);
+
     virtual int finish_with_error(int status);
 
     virtual void dump(ostream &strm) const;
-#if 0
-    static void add_init_callback(p_bes_init init);
-    static void add_end_callback(p_bes_end end);
-#endif
-
 };
 
 #endif // BESInterface_h_

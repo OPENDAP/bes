@@ -1,3 +1,5 @@
-/DmrppHttpReadTest
 /DmrppParserTest
 /DmrppTypeReadTest
+/DmrppHttpReadTest
+/DmrppChunkedReadTest
+/DmrppUtilTest

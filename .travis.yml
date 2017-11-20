@@ -65,7 +65,7 @@ install:
 before_script:
   - autoreconf --force --install --verbose
   - export PATH=$HOME/deps/bin:$PATH
-  - ./configure --prefix=$HOME/build --with-dependencies=$HOME/deps
+  - ./configure --prefix=$HOME/build --with-dependencies=$HOME/deps --enable-developer
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure. Note that the coverity scan addon runs make

@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0" 
+    dmrVersion="1.0" 
+    name="chunked_fourD.h5"
+    xml:base="data/dmrpp/chunked_fourD.h5">
+  <Float32 name="d_16_chunks">
+    <Dim size="40"/>
+    <Dim size="40"/>
+    <Dim size="40"/>
+    <Dim size="40"/>
+    <Attribute name="origname" type="String">
+      <Value>d_16_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_16_chunks</Value>
+    </Attribute>
+    <h4:chunks>
+      <h4:chunkDimensionSizes>20 20 20 20</h4:chunkDimensionSizes>
+      <h4:byteStream offset="4728" uuid="33145d5e-5d0f-4f45-847c-22a1a17f5fc5" nBytes="640000" chunkPositionInArray="[0,0,0,0]" md5="0be2486ca003317033500ba637a08c20"/>
+      <h4:byteStream offset="644728" uuid="3e66bd31-0879-4cf3-86ae-a1799d8cef8f" nBytes="640000" chunkPositionInArray="[0,0,0,20]" md5="a0eb5e4d7530db08b22787eb481dfae2"/>
+      <h4:byteStream offset="1284728" uuid="97c10076-57a0-44a2-a2e1-598a4efe24c9" nBytes="640000" chunkPositionInArray="[0,0,20,0]" md5="996f2b55d2fa5c648d2ead32a543252f"/>
+      <h4:byteStream offset="1924728" uuid="4a9b1006-8ce4-4f9b-a3cc-c5abdd034122" nBytes="640000" chunkPositionInArray="[0,0,20,20]" md5="d9f4e9ecd5e14462a5a37e5db54a5588"/>
+      <h4:byteStream offset="2564728" uuid="da0a1ebd-0237-47f2-82bc-28f9493be33f" nBytes="640000" chunkPositionInArray="[0,20,0,0]" md5="eebe6cc78a975433305350944f07687a"/>
+      <h4:byteStream offset="3204728" uuid="37050004-9c2c-437e-8c4f-2df08b3fa863" nBytes="640000" chunkPositionInArray="[0,20,0,20]" md5="d0152263f5f846cbcb59b87ec8a5d9be"/>
+      <h4:byteStream offset="3844728" uuid="74901920-14af-4633-a3c5-07188a9d26ab" nBytes="640000" chunkPositionInArray="[0,20,20,0]" md5="d3af03a82f7d1edd8ec08b79befae5ba"/>
+      <h4:byteStream offset="4484728" uuid="a34dd3d6-d466-45a7-b7fc-340be2891693" nBytes="640000" chunkPositionInArray="[0,20,20,20]" md5="5a6a71b3b3499adde7a4100e8911d128"/>
+      <h4:byteStream offset="5124728" uuid="546657b3-b253-4e66-b18f-131903907a97" nBytes="640000" chunkPositionInArray="[20,0,0,0]" md5="5c404ecb9e91c65d3040d00fa120a535"/>
+      <h4:byteStream offset="5764728" uuid="ccb317a6-da4d-476d-8195-02c8e884aed1" nBytes="640000" chunkPositionInArray="[20,0,0,20]" md5="ebb033e4089fe806995fdb98c99e2b69"/>
+      <h4:byteStream offset="6404728" uuid="905dd747-857b-48b5-8779-97a4950b1bec" nBytes="640000" chunkPositionInArray="[20,0,20,0]" md5="744165d12ce7e711d351b34e26bdda93"/>
+      <h4:byteStream offset="7044728" uuid="d32ae4f2-cfcd-49f3-a75e-7d629670f2b7" nBytes="640000" chunkPositionInArray="[20,0,20,20]" md5="92b32b823475edd1d7a883a38c421f5f"/>
+      <h4:byteStream offset="7684728" uuid="1ebb6fd4-daa1-4823-b88f-fe2258f6929d" nBytes="640000" chunkPositionInArray="[20,20,0,0]" md5="c3c0d9fcb49c278c6d6f87cf4e055533"/>
+      <h4:byteStream offset="8324728" uuid="a0b01b6a-5223-45b2-a9c7-25863ec21e24" nBytes="640000" chunkPositionInArray="[20,20,0,20]" md5="da76457dbbc0cd4ff297d47dc3ac71cd"/>
+      <h4:byteStream offset="8964728" uuid="02392809-7018-4f7a-8dd7-ad853fa11518" nBytes="640000" chunkPositionInArray="[20,20,20,0]" md5="6f43b5e854d39fa311ba21e006f2ec26"/>
+      <h4:byteStream offset="9606776" uuid="9ba9ad4c-fb1f-4de1-9235-19cf2e4dd09b" nBytes="640000" chunkPositionInArray="[20,20,20,20]" md5="dd4b683673450ccd2c9da64966cfc7b9"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>

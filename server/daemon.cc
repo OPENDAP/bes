@@ -762,7 +762,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -770,7 +770,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << group_str << " ... " << endl);
@@ -790,7 +790,7 @@ static void set_group_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Group " + group_str + " does not exist";
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_gid = ent->gr_gid;
@@ -801,7 +801,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -811,7 +811,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: unable to set the group id to " << new_gid;
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -839,7 +839,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: " + e.get_message();
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -847,7 +847,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << user_str << " ... " << endl);
@@ -865,7 +865,7 @@ static void set_user_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Bad user name specified: " + user_str;
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_id = ent->pw_uid;
@@ -876,7 +876,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -889,7 +889,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to relinquish supplementary groups (" << new_id << ")";
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -899,7 +899,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to set user id to " << new_id;
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 

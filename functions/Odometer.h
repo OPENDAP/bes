@@ -35,6 +35,10 @@ namespace functions {
  * to step through each element of an N-dim array without using
  * multiplication to compute the offset into the vector that holds
  * the array's data.
+ *
+ * @note The code does use multiplication, but only performs N-1 multiplies
+ * for a N dimensions in set_indices() (called once) and not in next()
+ * which will likely be called many times.
  */
 class Odometer
 {
@@ -113,7 +117,7 @@ public:
 
     /**
      * Increment the Odometer to the next element and return the offset value.
-     * This increments the internal state so that calling indices() and returns
+     * This increments the internal state and returns
      * the offset to that element in a vector of values. Calling indices() after
      * calling this method will return a vector<unsigned int> of the current
      * index value.

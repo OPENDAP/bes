@@ -41,10 +41,10 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/debug_functionsTest
 
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' # $(TESTSUITEFLAGS)
 
 installcheck-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' # $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

@@ -23,7 +23,7 @@ if WITH_DEPENDENCIES
 # With automake 1.14 setting AM_DISTCHECK... means that the user variable
 # DISTCHECK_CONFIGURE_FLAGS no longer needs to be used. Earlier versions
 # of automake don't support this. jhrg 6/5/17
-AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@
+AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@ --enable-developer
 endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates
@@ -56,7 +56,7 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = hello_world doxy.conf.in bes.spec \
+EXTRA_DIST = doxy.conf.in bes.spec \
 OSX_Resources bes-config-pkgconfig besd.logrotate README.md
 
 server-tests:

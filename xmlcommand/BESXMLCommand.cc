@@ -62,21 +62,13 @@ void BESXMLCommand::set_response()
     d_xmlcmd_dhi.response_handler = BESResponseHandlerList::TheList()->find_handler(d_xmlcmd_dhi.action);
     if (!d_xmlcmd_dhi.response_handler) {
         throw BESSyntaxUserError(string("Command '") + d_xmlcmd_dhi.action + "' does not have a registered response handler",
-        __FILE__, __LINE__);
+                                 __FILE__, __LINE__);
     }
 
-    // The _str_cmd is a text version of the xml command used for the log.
-    // It is not used for anything else. I think the 'sql like' syntax is
-    // actually no longer used by the BES and that the software in cmdln
-    // translates that syntax into XML. But I'm not 100% sure... jhrg 12/29/15
+    d_xmlcmd_dhi.data[LOG_INFO] = d_cmd_log_info;
 
-    // FIXME: I think DATA_REQUEST is a misnomer - this is the information to log only. jhrg 10/22/17
-    d_xmlcmd_dhi.data[DATA_REQUEST] = d_cmd_log_info;
-
-    BESLog::TheLog()->flush_me();
-    string m = BESLog::mark;
-    *(BESLog::TheLog()) << d_xmlcmd_dhi.data[REQUEST_FROM] << m << d_cmd_log_info << m << "request received" << m << endl;
-    BESLog::TheLog()->flush_me();
+    VERBOSE(/*d_xmlcmd_dhi.data[SERVER_PID] << " from " <<*/ d_xmlcmd_dhi.data[REQUEST_FROM] << " ["
+            << d_xmlcmd_dhi.data[LOG_INFO] << "] parsed" << endl);
 }
 
 /** @brief Add a command to the possible commands allowed by this BES

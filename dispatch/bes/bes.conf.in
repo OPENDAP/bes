@@ -25,7 +25,13 @@ BES.Group=group_name
 # Where should the BES keep its log file?
 
 BES.LogName=@prefix@/var/bes.log
+
+# Verbose logging records all five phases of evaluation of each command.
+# Regular mode only records 'get' commands.
 BES.LogVerbose=no
+
+# Set to 'yes' to use local time in the bes log. UTC is used by default.
+# BES.LogTimeLocal=yes
 
 # Set the value of BES.Catalog.catalog.RootDirectory to the root
 # directory of the data this BES will serve. If you are not using the 

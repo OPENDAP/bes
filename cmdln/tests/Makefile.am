@@ -3,9 +3,6 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-# AM_CPPFLAGS =
-# AM_CXXFLAGS =
-
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -17,7 +14,7 @@ CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
 
-DISTCLEANFILES = besTest
+DISTCLEANFILES = $(TESTSUITE)
 
 ############## Autotest follows #####################
 
@@ -26,7 +23,7 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/besTest
 
 check-local: atconfig atlocal $(TESTSUITE)
-	@if echo `besctl status` | grep "PID:"; \
+	@if bescmdln -x "show version;"; \
 		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 		else echo "no bes found, not running cmdln-based tests"; \
 	fi

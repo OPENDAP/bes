@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    dapVersion="4.0" 
+    dmrVersion="1.0" 
+    name="chunked_gzipped_threeD.h5"
+    xml:base="data/dmrpp/chunked_gzipped_threeD.h5">
+
+  <Float32 name="d_8_gzipped_chunks">
+    <Dim size="100"/>
+    <Dim size="100"/>
+    <Dim size="100"/>
+    <Attribute name="origname" type="String">
+      <Value>d_8_gzipped_chunks</Value>
+    </Attribute>
+    <Attribute name="fullnamepath" type="String">
+      <Value>/d_8_gzipped_chunks</Value>
+    </Attribute>
+    <h4:chunks deflate_level="6" compressionType="deflate">
+      <h4:chunkDimensionSizes>50 50 50</h4:chunkDimensionSizes>
+      <h4:byteStream offset="4208" uuid="d8c80ec2-28a9-4cc8-a048-01cdb10e6e31" nBytes="131549" chunkPositionInArray="[0,0,0]" md5="ba7a50dd5cbf5503d2de98a33de3fef1"/>
+      <h4:byteStream offset="135757" uuid="8b7520af-82ee-4ac1-8167-0f7f6640e37f" nBytes="133648" chunkPositionInArray="[0,0,50]" md5="2fd5abfceed0a2a01d0454338caf422a"/>
+      <h4:byteStream offset="269405" uuid="3fd48b6d-12c0-4c56-bc4a-77a34364e550" nBytes="131239" chunkPositionInArray="[0,50,0]" md5="59d58e2b848f9c9e1a050f73cd1c1db7"/>
+      <h4:byteStream offset="400644" uuid="af33e62c-954d-45be-aafc-8e6c41f1e286" nBytes="133468" chunkPositionInArray="[0,50,50]" md5="92c81c5d83b10c646ef377a39d0c5c18"/>
+      <h4:byteStream offset="534112" uuid="472bec76-e6ae-40af-bc07-5adf7206fb10" nBytes="126076" chunkPositionInArray="[50,0,0]" md5="8d91d79d2c3e5f1cbdefde5d13a7258d"/>
+      <h4:byteStream offset="660188" uuid="6fe8fe93-e205-4cfd-b3c9-3c4aa30fe98d" nBytes="127667" chunkPositionInArray="[50,0,50]" md5="0ed8dda973d8c3ae3a2f2c22f52d52df"/>
+      <h4:byteStream offset="789903" uuid="50cc4e58-7450-45dc-b846-f88e8bf5223e" nBytes="126915" chunkPositionInArray="[50,50,0]" md5="4d2c268a4b83d69f30327aa8480d5b39"/>
+      <h4:byteStream offset="916818" uuid="845d8325-d4fe-42c1-97ad-da70908ede1d" nBytes="127903" chunkPositionInArray="[50,50,50]" md5="5e40661df635531a24fe9be011e57300"/>
+    </h4:chunks>
+  </Float32>
+</Dataset>
