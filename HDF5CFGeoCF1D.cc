@@ -13,7 +13,7 @@
 #include <InternalErr.h>
 #include <BESDebug.h>
 
-
+// This now only applies to Sinusoidal projection. I need to handle LAMAZ and PS.
 bool HDF5CFGeoCF1D::read()
 {
 
