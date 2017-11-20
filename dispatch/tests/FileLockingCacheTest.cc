@@ -54,20 +54,18 @@
 #include "BESUtil.h"
 #include "BESFileLockingCache.h"
 
-#include "FileLockingCacheTest.h"
-
 #include "test_config.h"
 
 using namespace std;
 
-static const std::string CACHE_PREFIX = string("flc_");
-static const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
-static const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+const std::string CACHE_PREFIX = string("flc_");
+const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
+const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
 
-static const std::string LOCK_TEST_FILE = std::string("lock_test");
+const std::string LOCK_TEST_FILE = std::string("lock_test");
 
-static bool debug = false;
-static bool bes_debug = false;
+bool debug = false;
+bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -79,14 +77,19 @@ void run_sys(const string cmd)
     DBG(cerr << "' status: " << status << endl);
 }
 
+/**
+ * Purge the cache by removing the contents of the directory.
+ */
 void purge_cache(const string &cache_dir, const string &cache_prefix)
 {
     DBG(cerr << __func__ << "() - BEGIN " << endl);
+
     ostringstream s;
     s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
     DBG(cerr << __func__ << "() - cmd: '" << s.str() << "' ");
     int status = system(s.str().c_str());
     DBG(cerr << "status: " << status << endl);
+
     DBG(cerr << __func__ << "() - END " << endl);
 }
 
@@ -96,22 +99,24 @@ private:
 public:
     FileLockingCacheTest()
     {
-        // string bes_conf = (string) TEST_ABS_SRC_DIR + "/flct_bes.keys";
-        // TheBESKeys::ConfigFile = bes_conf;
-
     }
+
     ~FileLockingCacheTest()
     {
     }
 
-    int get_and_hold_read_lock(long int nap_time)
+    /**
+     * Get a read lock for given time on a file. By default the file is the
+     * LOCK_TEST_FILE file defined as a global above.
+     */
+    int get_and_hold_read_lock(long int nap_time, const string &file_name = LOCK_TEST_FILE)
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
 
         BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
         DBG(cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl);
 
-        string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
+        string cache_file_name = cache.get_cache_file_name(file_name);
         int fd=0;
 
         DBG(cerr << __func__ << "() - cache file name:" << cache_file_name << endl);
@@ -121,40 +126,37 @@ public:
         time_t stop = time(0);
         DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE")
                 << " (fd: " << fd  << ")"<< endl);
-#if 0
-        DBG(cerr << __func__ << "() - cache file name: " << cache_file_name << endl);
-        DBG(cerr << __func__ << "() - BES_INTERNAL_ERROR: " << BES_INTERNAL_ERROR << endl);
-        DBG(cerr << __func__ << "() - __FILE__: " << __FILE__ << endl);
-        DBG(cerr << __func__ << "() - __LINE__: " << __LINE__ << endl);
-#endif
 
         DBG(cerr << __func__ << "() - cache.d_cache_info_fd: " << cache.d_cache_info_fd << endl);
 
         if(!locked){
             DBG(cerr << __func__ << "() - END - FAILED to get read lock on " << cache_file_name << endl);
             return 2;
-            //throw BESError("Failed to get read lock on "+cache_file_name, BES_INTERNAL_ERROR, __FILE__,__LINE__);
         }
-
 
         DBG(cerr << __func__ << "() - Read lock  ACQUIRED @" << stop << endl);
         DBG(cerr << __func__ << "() - Lock acquisition took " << stop - start << " seconds." << endl);
         DBG(cerr << __func__ << "() - Holding lock for " << nap_time << " seconds" << endl);
+
         sleep(nap_time);
         cache.unlock_and_close(cache_file_name);
+
         DBG(cerr << __func__ << "() - Lock Released" << endl);
         DBG(cerr << __func__ << "() - END - SUCCEEDED" << endl);
         return 0;
     }
 
-    int get_and_hold_exclusive_lock(long int nap_time)
+    /**
+     * Create and lock a file. By default, the file is the LOCK_TEST_FILE defined above.
+     */
+    int get_and_hold_exclusive_lock(long int nap_time, const string &file_name = LOCK_TEST_FILE)
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             DBG(cerr << __func__ << "() - Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl);
             int fd;
-            string cache_file_name = cache.get_cache_file_name(LOCK_TEST_FILE);
+            string cache_file_name = cache.get_cache_file_name(file_name);
 
             time_t start = time(NULL);
             DBG(cerr << __func__ << "() - Exclusive lock REQUESTED @" << start << endl);
@@ -195,10 +197,11 @@ int main(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
 
-    GetOpt getopt(argc, argv, "db:pr:x:h");
+    GetOpt getopt(argc, argv, "db:pr:x:hf:");
     int option_char;
     long int time;
     int retVal=0;
+    string file_name = LOCK_TEST_FILE;
     while (!retVal && (option_char = getopt()) != EOF) {
         switch (option_char) {
         case 'd':
@@ -212,10 +215,15 @@ int main(int argc, char*argv[])
             cerr << "BES debug enabled." << endl;
             break;
 
+        case 'f':
+            file_name = string(getopt.optarg);
+            DBG(cerr << __func__ << "() - use filename " << file_name << endl);
+            break;
+
         case 'r':
             std::istringstream(getopt.optarg) >> time;
             DBG(cerr << __func__ << "() - get_and_hold_read_lock for " << time << " seconds" << endl);
-            retVal = flc_test.get_and_hold_read_lock(time);
+            retVal = flc_test.get_and_hold_read_lock(time, file_name);
             break;
 
         case 'p':
@@ -227,7 +235,7 @@ int main(int argc, char*argv[])
         case 'x':
             std::istringstream(getopt.optarg) >> time;
             DBG(cerr << __func__ << "() -  get_and_hold_exclusive_lock for " << time << " seconds." << endl);
-            retVal = flc_test.get_and_hold_exclusive_lock(time);
+            retVal = flc_test.get_and_hold_exclusive_lock(time, file_name);
             break;
 
         case 'h':
@@ -242,6 +250,7 @@ int main(int argc, char*argv[])
             cerr << "    FileLockingCacheTest [-d][-b bes_debug_string][-p][-r time][-x time][-h]" << endl;
             cerr << "    -x time -- Get and hold an exclusive write lock for 'time' seconds." << endl;
             cerr << "    -r time -- Get and hold a shared read lock for 'time' seconds." << endl;
+            cerr << "    -f file name -- Lock this file. If not given, uses a default name." << endl;
             cerr << "    -p      -- Purge cache files." << endl;
             cerr << "    -d      -- Enable test debugging output." << endl;
             cerr << "    -b str  -- Configure BES debugging with the string 'str'." << endl;
@@ -255,6 +264,8 @@ int main(int argc, char*argv[])
             cerr << "       FileLockingCacheTest -x 10" << endl;
             cerr << "    # Get and hold a shared read lock for 5 seconds." << endl;
             cerr << "       FileLockingCacheTest -r 5" << endl;
+            cerr << "    # Get and hold a shared read lock for 5 seconds on the file 'foobar'." << endl;
+            cerr << "       FileLockingCacheTest -f foobar -r 5" << endl;
             cerr << "" << endl;
             cerr << "Example:" << endl;
             cerr << "    # Purge cache, Get and hold an exclusive write lock for 10 seconds," << endl;

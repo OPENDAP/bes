@@ -30,7 +30,7 @@ test_config.h: test_config.h.in
 	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
-FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc FileLockingCacheTest.h test_config.h
+FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc test_config.h
 
 ############## Autotest follows #####################
 
