@@ -44,9 +44,11 @@
 #include <unistd.h>
 #endif
 
+#define ISO8601_TIME_IN_LOGS
+
 using namespace std;
 
-BESLog *BESLog::_instance = 0;
+BESLog *BESLog::d_instance = 0;
 const string BESLog::mark = string("|&|");
 
 /** @brief constructor that sets up logging for the application.
@@ -60,41 +62,61 @@ const string BESLog::mark = string("|&|");
  * Verbose logging is determined also using the BESKeys mechanism. The key
  * used is BES.LogVerbose.
  *
+ * By default, log using UTC. BES.LogTimeLocal=yes will switch to using local
+ * time. Times are recorded in IOS8601.
+ *
  * @throws BESInternalError if BESLogName is not set or if there are
  * problems opening or writing to the log file.
  * @see BESKeys
  */
 BESLog::BESLog() :
-    _flushed(1), _file_buffer(0), _suspended(0), _verbose(false)
+    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false), d_use_local_time(false)
 {
-    _suspended = 0;
+    d_suspended = 0;
     bool found = false;
     try {
-        TheBESKeys::TheKeys()->get_value("BES.LogName", _file_name, found);
+        TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
     catch (...) {
-        string err = (string) "BES Fatal: unable to determine log file name."
-            + " The key BES.LogName has multiple values";
+        string err ="BES Fatal: unable to determine log file name. The key BES.LogName has multiple values";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
-    if (_file_name == "") {
-        string err = (string) "BES Fatal: unable to determine log file name."
-            + " Please set BES.LogName in your initialization file";
+
+    // By default, use UTC in the logs.
+    found = false;
+    string local_time = "no";
+    try {
+        TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
+        if (local_time == "YES" || local_time == "Yes" || local_time == "yes") {
+            d_use_local_time = true;
+        }
+
+    }
+    catch (...) {
+        string err ="BES Fatal: Unable to read the value of BES.LogTimeUTC";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
-    _file_buffer = new ofstream(_file_name.c_str(), ios::out | ios::app);
-    if (!(*_file_buffer)) {
-        string err = (string) "BES Fatal; cannot open log file " + _file_name + ".";
+
+    if (d_file_name == "") {
+        string err = "BES Fatal: unable to determine log file name. Please set BES.LogName in your initialization file";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
+
+    d_file_buffer = new ofstream(d_file_name.c_str(), ios::out | ios::app);
+    if (!(*d_file_buffer)) {
+        string err = "BES Fatal; cannot open log file " + d_file_name + ".";
+        cerr << err << endl;
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
+    }
+
     found = false;
     string verbose;
     TheBESKeys::TheKeys()->get_value("BES.LogVerbose", verbose, found);
     if (verbose == "YES" || verbose == "Yes" || verbose == "yes") {
-        _verbose = true;
+        d_verbose = true;
     }
 }
 
@@ -104,30 +126,54 @@ BESLog::BESLog() :
  */
 BESLog::~BESLog()
 {
-    _file_buffer->close();
-    delete _file_buffer;
-    _file_buffer = 0;
+    d_file_buffer->close();
+    delete d_file_buffer;
+    d_file_buffer = 0;
 }
 
 /** @brief Protected method that dumps the date/time to the log file
  *
- * The time is dumped to the log file in the format:
- *
- * [MDT Thu Sep  9 11:05:16 2004 id: &lt;pid&gt;]
+ * Depending on the compile-time constant ISO8601_TIME_IN_LOGS,
+ * the time is dumped to the log file in the format:
+ * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
+ * "YYYY-MM-DDTHH:MM:SS zone"
  */
 void BESLog::dump_time()
 {
+#ifdef ISO8601_TIME_IN_LOGS
+    time_t now;
+    time(&now);
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!d_use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+
+    (*d_file_buffer) << buf;
+
+#else
     const time_t sctime = time(NULL);
     const struct tm *sttime = localtime(&sctime);
     char zone_name[10];
     strftime(zone_name, sizeof(zone_name), "%Z", sttime);
     char *b = asctime(sttime);
-    (*_file_buffer) << mark << zone_name << " ";
+
+    (*d_file_buffer) << zone_name << " ";
     for (register int j = 0; b[j] != '\n'; j++)
-        (*_file_buffer) << b[j];
-    pid_t thepid = getpid();
-    (*_file_buffer) << mark << "pid: " << thepid << mark;
-    _flushed = 0;
+        (*d_file_buffer) << b[j];
+#endif
+
+    (*d_file_buffer) << mark << getpid() << mark;
+
+    d_flushed = 0;
 }
 
 /** @brief Overloaded inserter that writes the specified string.
@@ -138,9 +184,9 @@ void BESLog::dump_time()
  */
 BESLog& BESLog::operator<<(string &s)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << s;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << s;
     }
     return *this;
 }
@@ -151,9 +197,9 @@ BESLog& BESLog::operator<<(string &s)
  */
 BESLog& BESLog::operator<<(const string &s)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << s;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << s;
     }
     return *this;
 }
@@ -164,12 +210,12 @@ BESLog& BESLog::operator<<(const string &s)
  */
 BESLog& BESLog::operator<<(char *val)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
         if (val)
-            (*_file_buffer) << val;
+            (*d_file_buffer) << val;
         else
-            (*_file_buffer) << "NULL";
+            (*d_file_buffer) << "NULL";
     }
     return *this;
 }
@@ -180,14 +226,14 @@ BESLog& BESLog::operator<<(char *val)
  */
 BESLog& BESLog::operator<<(const char *val)
 {
-    if (!_suspended) {
-        if (_flushed) {
+    if (!d_suspended) {
+        if (d_flushed) {
             dump_time();
         }
         if (val)
-            (*_file_buffer) << val;
+            (*d_file_buffer) << val;
         else
-            (*_file_buffer) << "NULL";
+            (*d_file_buffer) << "NULL";
     }
     return *this;
 }
@@ -198,9 +244,9 @@ BESLog& BESLog::operator<<(const char *val)
  */
 BESLog& BESLog::operator<<(int val)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << val;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << val;
     }
     return *this;
 }
@@ -211,9 +257,9 @@ BESLog& BESLog::operator<<(int val)
  */
 BESLog& BESLog::operator<<(char val)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << val;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << val;
     }
     return *this;
 }
@@ -224,9 +270,9 @@ BESLog& BESLog::operator<<(char val)
  */
 BESLog& BESLog::operator<<(long val)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << val;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << val;
     }
     return *this;
 }
@@ -237,9 +283,9 @@ BESLog& BESLog::operator<<(long val)
  */
 BESLog& BESLog::operator<<(unsigned long val)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << val;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << val;
     }
     return *this;
 }
@@ -250,9 +296,9 @@ BESLog& BESLog::operator<<(unsigned long val)
  */
 BESLog& BESLog::operator<<(double val)
 {
-    if (!_suspended) {
-        if (_flushed) dump_time();
-        (*_file_buffer) << val;
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << val;
     }
     return *this;
 }
@@ -266,16 +312,16 @@ BESLog& BESLog::operator<<(double val)
  */
 BESLog& BESLog::operator<<(p_ostream_manipulator val)
 {
-    if (!_suspended) {
-        (*_file_buffer) << val;
-        if ((val == (p_ostream_manipulator) endl) || (val == (p_ostream_manipulator) flush)) _flushed = 1;
+    if (!d_suspended) {
+        (*d_file_buffer) << val;
+        if ((val == (p_ostream_manipulator) endl) || (val == (p_ostream_manipulator) flush)) d_flushed = 1;
     }
     return *this;
 }
 
 void BESLog::flush_me(){
-    (*_file_buffer) << flush;
-    _flushed = 1;
+    (*d_file_buffer) << flush;
+    d_flushed = 1;
 }
 
 /** @brief Overloaded inserter that takes ios methods
@@ -286,7 +332,7 @@ void BESLog::flush_me(){
  */
 BESLog& BESLog::operator<<(p_ios_manipulator val)
 {
-    if (!_suspended) (*_file_buffer) << val;
+    if (!d_suspended) (*d_file_buffer) << val;
     return *this;
 }
 
@@ -301,25 +347,25 @@ void BESLog::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "log file: " << _file_name << endl;
-    if (_file_buffer && *_file_buffer) {
+    strm << BESIndent::LMarg << "log file: " << d_file_name << endl;
+    if (d_file_buffer && *d_file_buffer) {
         strm << BESIndent::LMarg << "log is valid" << endl;
     }
     else {
         strm << BESIndent::LMarg << "log is NOT valid" << endl;
     }
-    strm << BESIndent::LMarg << "is verbose: " << _verbose << endl;
-    strm << BESIndent::LMarg << "is flushed: " << _flushed << endl;
-    strm << BESIndent::LMarg << "is suspended: " << _suspended << endl;
+    strm << BESIndent::LMarg << "is verbose: " << d_verbose << endl;
+    strm << BESIndent::LMarg << "is flushed: " << d_flushed << endl;
+    strm << BESIndent::LMarg << "is suspended: " << d_suspended << endl;
     BESIndent::UnIndent();
 }
 
 BESLog *
 BESLog::TheLog()
 {
-    if (_instance == 0) {
-        _instance = new BESLog;
+    if (d_instance == 0) {
+        d_instance = new BESLog;
     }
-    return _instance;
+    return d_instance;
 }
 

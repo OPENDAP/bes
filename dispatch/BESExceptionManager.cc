@@ -71,24 +71,27 @@ void BESExceptionManager::add_ehm_callback(p_bes_ehm ehm)
     _ehm_list.push_back(ehm);
 }
 
-
 /**
  * Writes a message about the passed in BESError to the
  * BESLog.
  */
-void log_error(BESError &e){
-
+void log_error(BESError &e)
+{
+#if 0
     struct tm *ptm;
     time_t timer = time(NULL);
-    ptm = gmtime ( &timer );
+    ptm = gmtime(&timer);
     string now(asctime(ptm));
-    now = now.substr(0,now.length()-1); // drop \n from end of string
+    now = now.substr(0, now.length() - 1); // drop \n from end of string
+#endif
 
-    string error_name;
-    bool log_to_verbose = false;
+    string error_name = "";
+    // TODO This should be configurable; I'm changing the values below to always log all errors.
+    // I'm also confused about the actual intention. jhrg 11/14/17
+    bool only_log_to_verbose = false;
     switch (e.get_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
-        error_name = "BES Internal Fatal Error.";
+        error_name = "BES Internal Fatal Error";
         break;
 
     case BES_INTERNAL_ERROR:
@@ -96,8 +99,8 @@ void log_error(BESError &e){
         break;
 
     case BES_SYNTAX_USER_ERROR:
-        error_name = "BES Syntax User Error";
-        log_to_verbose = true;
+        error_name = "BES User Syntax Error";
+        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
         break;
 
     case BES_FORBIDDEN_ERROR:
@@ -106,37 +109,41 @@ void log_error(BESError &e){
 
     case BES_NOT_FOUND_ERROR:
         error_name = "BES Not Found Error";
-        log_to_verbose = true;
+        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
         break;
 
     default:
         error_name = "Unrecognized BES Error";
         break;
     }
+
+#if 0
     string m = BESLog::mark;
-    std::ostringstream  msg;
-    msg << "ERROR: " << error_name << m <<
-        "type: " << e.get_error_type() << m <<
-        "file: " << e.get_file() << m <<
-        "line: " << e.get_line() << m <<
-        "message: " << e.get_message() << m;
-    if(log_to_verbose){
-        if( BESLog::TheLog()->is_verbose() )
-        {
+    std::ostringstream msg;
+    msg << "ERROR: " << error_name << m << "type: " << e.get_error_type() << m << "file: " << e.get_file() << m
+        << "line: " << e.get_line() << m << "message: " << e.get_message();
+#endif
+
+    if (only_log_to_verbose) {
+        VERBOSE("ERROR: " << error_name << ", type: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+                << e.get_line()  << ", message: " << e.get_message() << endl);
+#if 0
             // This seems buggy - if you don't flush the
             // log it won't print the time correctly.
             BESLog::TheLog()->flush_me();
-            *(BESLog::TheLog()) << msg.str() << endl ;
+            *(BESLog::TheLog()) << msg.str() << endl;
             BESLog::TheLog()->flush_me();
-        }
+#endif
     }
     else {
+        LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+#if 0
         BESLog::TheLog()->flush_me();
-        *(BESLog::TheLog()) << msg.str() << endl ;
+        *(BESLog::TheLog()) << msg.str() << endl;
         BESLog::TheLog()->flush_me();
+#endif
     }
 }
-
 
 /** @brief Manage any exceptions thrown during the handling of a request
 
@@ -165,7 +172,7 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
 
     for (ehm_iter i = _ehm_list.begin(), ei = _ehm_list.end(); i != ei; ++i) {
         p_bes_ehm p = *i;
-        int handled = p(e, dhi);    //
+        int handled = p(e, dhi);
         if (handled) {
             return handled;
         }
@@ -175,7 +182,6 @@ int BESExceptionManager::handle_exception(BESError &e, BESDataHandlerInterface &
     string action_name = dhi.action_name;
     if (action_name.empty()) action_name = "BES";
     dhi.error_info->begin_response(action_name, dhi);
-
 
     string administrator = "";
     try {
