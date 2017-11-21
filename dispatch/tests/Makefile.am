@@ -14,7 +14,7 @@ endif
 
 noinst_PROGRAMS = FileLockingCacheTest
 
-TESTS = testsuite
+# TESTS = testsuite
 
 # You need this because AM assumes that .h files don't need to be built
 BUILT_SOURCES = test_config.h
@@ -41,6 +41,9 @@ TESTSUITE = $(srcdir)/testsuite
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+
+check-local: $(TESTSUITE) atconfig atlocal 
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
