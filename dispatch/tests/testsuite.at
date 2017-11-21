@@ -23,14 +23,14 @@ m4_define([AT_TEST_BLOCKING], [dnl
 
     AT_SETUP([BLOCKING])
 
-    # verbose is "v" xor any other value is false  
-    verbose=$1
+    # This uses the verbose option of the testsuite itself. 
+    AS_IF([test -z $at_verbose], [verbose=v], [verbose=""]);
     
-    FileLockingCacheTest -p
+    # FileLockingCacheTest -p
     
     write_lock_hold_time=3
     write_lock_start_time=`date "+%s"`
-    AT_CHECK([FileLockingCacheTest -x $write_lock_hold_time &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -c blocking -x $write_lock_hold_time &], [0], [ignore], [ignore])
     write_lock_end_time=`date "+%s"`
     
     write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
@@ -39,7 +39,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     
     read_lock_hold_time=1
     read_lock_start_time=`date "+%s"`
-    AT_CHECK([FileLockingCacheTest -r $read_lock_hold_time], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -c blocking -r $read_lock_hold_time], [0], [ignore], [ignore])
     read_lock_end_time=`date "+%s"`
     
     read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
@@ -62,13 +62,13 @@ m4_define([AT_TEST_CREATE_AND_LOCK], [dnl
 
     AT_SETUP([CREATE_AND_LOCK])
 
-    FileLockingCacheTest -p
+    # FileLockingCacheTest -p
     
     # This makes the file and holds the lock for 1 second; it should work fine
-    AT_CHECK([FileLockingCacheTest -x 1], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -c create_and_lock -x 1], [0], [ignore], [ignore])
     
     # This attempts to make the same file again; it should fail (note the [1])
-    AT_CHECK([FileLockingCacheTest -x 1], [1], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest -c create_and_lock -x 1], [1], [ignore], [ignore])
     
     AT_CLEANUP
 ])
@@ -84,8 +84,8 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
 
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK])
 
-    # verbose is "v" xor any other value is false  
-    verbose=$1
+    # This uses the verbose option of the testsuite itself. 
+    AS_IF([test -z $at_verbose], [verbose=v], [verbose=""]);
 
     FileLockingCacheTest -p
     
@@ -121,8 +121,8 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
 
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK_VERSION_2])
 
-    # verbose is "v" xor any other value is false  
-    verbose=$1
+    # This uses the verbose option of the testsuite itself. 
+    AS_IF([test -z $at_verbose], [verbose=v], [verbose=""]);
 
     FileLockingCacheTest -p
     
@@ -186,11 +186,11 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
 ])
 
 
-AT_TEST_BLOCKING(v)
+AT_TEST_BLOCKING()
 AT_TEST_CREATE_AND_LOCK()
-AT_TEST_TWO_FILE_CREATE_AND_LOCK(v)
+AT_TEST_TWO_FILE_CREATE_AND_LOCK()
 AT_TEST_MULTIPLE_READ_LOCKS()
-AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2(v)
+AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2()
 
 # Other things we might test:
 # 1. Test create_and_lock() on two different files - should work but they 
