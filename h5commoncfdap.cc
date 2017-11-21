@@ -553,7 +553,7 @@ void add_cf_grid_mapinfo_var(DDS & dds)
 // This function adds 1D grid mapping CF attributes to CV and data variables.
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     float /*cv_point_lower*/, float /*cv_point_upper*/, float /*cv_point_left*/, float /*cv_point_right*/,
-    const vector<HDF5CF::Dimension*>& dims)
+    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params)
 {
 
     // STOPP Need to handle LAMAZ and PS
@@ -620,12 +620,45 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
             at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
            }
            else if (HE5_GCTP_PS == cv_proj_code) {
+
+            double vert_lon_pole =  HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
+            double lat_true_scale = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
+            double fe = eos5_proj_params[6];
+            double fn = eos5_proj_params[7];
+
             //if(at->simple_find("grid_mapping_name") == at->attr_end())
             at->append_attr("grid_mapping_name", "String", "polar_stereographic");
             //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
-            at->append_attr("longitude_of_central_meridian", "Float64", "0.0");
+
+
+            ostringstream s_vert_lon_pole;
+            s_vert_lon_pole << vert_lon_pole;
+            at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
             //if(at->simple_find("earth_radius") == at->attr_end())
-            at->append_attr("earth_radius", "Float64", "6371007.181");
+            ostringstream s_lat_true_scale;
+            s_lat_true_scale << lat_true_scale;
+            at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
+
+            if(fe == 0.0) 
+                at->append_attr("false_easting","Float64","0.0");
+            else { 
+                ostringstream s_fe;
+                s_fe << fe;
+                at->append_attr("false_easting","Float64",s_fe.str());
+            }
+
+            if(fn == 0.0) 
+                at->append_attr("false_northing","Float64","0.0");
+            else { 
+                ostringstream s_fn;
+                s_fn << fn;
+                at->append_attr("false_northing","Float64",s_fn.str());
+            }
+
+            if(lat_true_scale >0) 
+                at->append_attr("latitude_of_projection_origin","Float64","+90.0");
+            else 
+                at->append_attr("latitude_of_projection_origin","Float64","-90.0");
 
             at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
 

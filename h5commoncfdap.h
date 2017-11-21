@@ -52,7 +52,7 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right,
-    const vector<HDF5CF::Dimension*>& dims);
+    const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params);
 
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
     float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims);

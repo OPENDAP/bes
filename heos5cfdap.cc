@@ -435,6 +435,9 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
+                // TTTOOODDDDOOOO: Here we need to add grid_mapping variables for each grid
+                // for projections other than sinusoidal since attribute values for LAMAZ and PS
+                // are different for each grid.
                 gen_dap_oneeos5cf_dds(dds,*it_cv);
                 has_cf_grid_mapping = true;
             }
@@ -480,7 +483,7 @@ void  gen_dap_oneeos5cf_das(DAS &das,const vector<HDF5CF::Var*>& vars, const HDF
 //cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
    if(dims.size() !=2) 
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
-    add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
+    add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims,cvar->getParams());
 
 }
 

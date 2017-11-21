@@ -40,14 +40,6 @@
 #include <math.h>
 #include<InternalErr.h>
 
-// Angle Conversion Codes 
-#define HE5_HDFE_RAD_DEG      0
-#define HE5_HDFE_DEG_RAD      1
-#define HE5_HDFE_DMS_DEG      2
-#define HE5_HDFE_DEG_DMS      3
-#define HE5_HDFE_RAD_DMS      4
-#define HE5_HDFE_DMS_RAD      5
-
 using namespace libdap;
 // For using GCTP to calculate the lat/lon
 extern "C" {
