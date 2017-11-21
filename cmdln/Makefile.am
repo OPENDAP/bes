@@ -18,8 +18,9 @@ if BUILD_HYRAX_DEBUG
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = . unit-tests testsuite
-DIST_SUBDIRS = unit-tests testsuite
+SUBDIRS = . unit-tests tests
+
+# DIST_SUBDIRS = unit-tests testsuite
 
 bin_PROGRAMS = bescmdln
 

@@ -62,10 +62,10 @@ HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDeleteContainerCommand.h BESXMLDeleteContainersCommand.h	\
 	BESXMLDeleteDefinitionCommand.h BESXMLDeleteDefinitionsCommand.h
 
-DAP_SRCS = BESXMLDapCommandModule.cc BESXMLGetDataDDXCommand.cc		\
-	BESXMLCatalogCommand.cc
-DAP_HDRS = BESXMLDapCommandModule.h BESXMLGetDataDDXCommand.h		\
-	BESXMLCatalogCommand.h
+DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc
+DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h
+
+# BESXMLGetDataDDXCommand.cc BESXMLGetDataDDXCommand.h
 
 C4_DIR=./cccc
 .PHONY: cccc

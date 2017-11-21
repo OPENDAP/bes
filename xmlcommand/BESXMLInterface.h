@@ -33,15 +33,10 @@
 #ifndef BESXMLInterface_h_
 #define BESXMLInterface_h_ 1
 
-#include <new>
 #include <vector>
 
-using std::new_handler;
-using std::bad_alloc;
-using std::vector;
-
 #include "BESInterface.h"
-#include "BESXMLUtils.h"
+#include "BESDataHandlerInterface.h"
 
 class BESXMLCommand;
 
@@ -51,25 +46,32 @@ class BESXMLCommand;
  */
 class BESXMLInterface: public BESInterface {
 private:
-    vector<BESXMLCommand *> _cmd_list;
-    BESDataHandlerInterface _base_dhi;
+    /// This matches all of the XML commands to methods that parse them
+    std::vector<BESXMLCommand*> d_xml_cmd_list;
+
+    /// The command(s) to run bundled in an XML document.
+    std::string d_xml_document;
+
+    /// This is the DHI used to hold information parsed from the request.
+    BESDataHandlerInterface d_xml_interface_dhi;
+
 protected:
-    virtual void initialize();
-    virtual void validate_data_request();
     virtual void build_data_request_plan();
+
     virtual void execute_data_request_plan();
-    virtual void invoke_aggregation();
+
     virtual void transmit_data();
+
     virtual void log_status();
-    virtual void report_request();
+
     virtual void clean();
+
 public:
-    BESXMLInterface(const string &cmd, ostream *strm);
+    BESXMLInterface(const std::string &cmd, std::ostream *strm);
+
     virtual ~BESXMLInterface();
 
-    virtual int execute_request(const string &from);
-
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESXMLInterface_h_

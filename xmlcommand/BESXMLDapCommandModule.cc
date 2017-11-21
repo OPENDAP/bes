@@ -40,7 +40,7 @@ using std::cout;
 #include "BESNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
-#include "BESXMLGetDataDDXCommand.h"
+// FIXME Remove #include "BESXMLGetDataDDXCommand.h"
 
 /** @brief Adds the basic DAP XML command objects to the XMLCommand list of
  * possible commands
@@ -60,10 +60,10 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
 
     BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
             BESXMLCatalogCommand::CommandBuilder );
-
+#if 0
     BESXMLCommand::add_command( DATADDX_RESPONSE,
             BESXMLGetDataDDXCommand::CommandBuilder );
-
+#endif
     BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl );
 }
 
@@ -81,8 +81,9 @@ void BESXMLDapCommandModule::terminate(const string &/*modname*/)
 
     BESXMLCommand::del_command( CATALOG_RESPONSE_STR );
     BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR );
+#if 0
     BESXMLCommand::del_command( DATADDX_RESPONSE );
-
+#endif
     BESDEBUG( "dap", "Done Removing DAP Commands" << endl );
 }
 

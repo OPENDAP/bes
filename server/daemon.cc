@@ -762,7 +762,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -770,7 +770,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << group_str << " ... " << endl);
@@ -790,7 +790,7 @@ static void set_group_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Group " + group_str + " does not exist";
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_gid = ent->gr_gid;
@@ -801,7 +801,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -811,7 +811,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: unable to set the group id to " << new_gid;
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -839,7 +839,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: " + e.get_message();
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -847,7 +847,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << user_str << " ... " << endl);
@@ -865,7 +865,7 @@ static void set_user_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Bad user name specified: " + user_str;
             cerr << err << endl;
-            (*BESLog::TheLog()) << err << endl;
+            LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_id = ent->pw_uid;
@@ -876,7 +876,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
+        LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -889,7 +889,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to relinquish supplementary groups (" << new_id << ")";
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -899,7 +899,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to set user id to " << new_id;
         cerr << err.str() << endl;
-        (*BESLog::TheLog()) << err.str() << endl;
+        LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -928,6 +928,8 @@ int main(int argc, char *argv[])
     string install_dir;
     string pid_dir;
 
+    bool become_daemon = true;
+
     // there are 16 arguments allowed to the daemon, including the program
     // name. 3 options do not have arguments and 6 have arguments
     if (argc > 16) {
@@ -945,7 +947,7 @@ int main(int argc, char *argv[])
         // If you change the getopt statement below, be sure to make the
         // corresponding change in ServerApp.cc and besctl.in
         int c = 0;
-        while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != -1) {
+        while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:n")) != -1) {
             switch (c) {
             case 'v': // version
                 BESServerUtils::show_version(daemon_name);
@@ -953,6 +955,11 @@ int main(int argc, char *argv[])
             case '?': // unknown option
             case 'h': // help
                 BESServerUtils::show_usage(daemon_name);
+               break;
+            case 'n': // no-daemon (Do Not Become A daemon process)
+                become_daemon=false;
+                cerr << "Running in foreground!" << endl;
+                num_args++;
                 break;
             case 'i': // BES install directory
                 install_dir = optarg;
@@ -1092,7 +1099,9 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        daemon_init();
+        if(become_daemon){
+            daemon_init();
+        }
 
         store_daemon_id(getpid());
 

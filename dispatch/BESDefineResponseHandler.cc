@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,7 +32,7 @@
 
 #include <iostream>
 
-using std::endl ;
+using std::endl;
 
 #include "BESDefineResponseHandler.h"
 #include "BESSilentInfo.h"
@@ -43,12 +43,12 @@ using std::endl ;
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
-BESDefineResponseHandler::BESDefineResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESDefineResponseHandler::BESDefineResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESDefineResponseHandler::~BESDefineResponseHandler( )
+BESDefineResponseHandler::~BESDefineResponseHandler()
 {
 }
 
@@ -78,50 +78,43 @@ BESDefineResponseHandler::~BESDefineResponseHandler( )
  * @see BESDefine
  * @see DefintionStorageList
  */
-void
-BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    dhi.action_name = DEFINE_RESPONSE_STR ;
-    BESInfo *info = new BESSilentInfo() ;
-    _response = info ;
+    dhi.action_name = DEFINE_RESPONSE_STR;
+    BESInfo *info = new BESSilentInfo();
+    _response = info;
 
-    string def_name = dhi.data[DEF_NAME] ;
-    string store_name = dhi.data[STORE_NAME] ;
-    if( store_name == "" )
-	store_name = PERSISTENCE_VOLATILE ;
-    BESDefinitionStorage *store =
-	BESDefinitionStorageList::TheList()->find_persistence( store_name ) ;
-    if( store )
-    {
-	store->del_definition( def_name ) ;
+    string def_name = dhi.data[DEF_NAME];
+    string store_name = dhi.data[STORE_NAME];
+    if (store_name == "") store_name = PERSISTENCE_VOLATILE;
 
-	BESDefine *dd = new BESDefine ;
-	dhi.first_container() ;
-	while( dhi.container )
-	{
-	    dd->add_container( dhi.container ) ;
-	    dhi.next_container() ;
-	}
-	dd->set_agg_cmd( dhi.data[AGG_CMD] ) ;
-	dd->set_agg_handler( dhi.data[AGG_HANDLER] ) ;
-	dhi.data[AGG_CMD] = "" ;
-	dhi.data[AGG_HANDLER] = "" ;
+    BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
+    if (store) {
+        store->del_definition(def_name);
 
-	store->add_definition( def_name, dd ) ;
+        BESDefine *dd = new BESDefine;
+        dhi.first_container();
+        while (dhi.container) {
+            dd->add_container(dhi.container);
+            dhi.next_container();
+        }
+        dd->set_agg_cmd(dhi.data[AGG_CMD]);
+        dd->set_agg_handler(dhi.data[AGG_HANDLER]);
+        dhi.data[AGG_CMD] = "";
+        dhi.data[AGG_HANDLER] = "";
+
+        store->add_definition(def_name, dd);
     }
-    else
-    {
-	string err_str = (string)"Uanble to add definition \"" + def_name 
-	                 + "\" to \"" + store_name
-			 + "\" store. Store does not exist" ;
-	throw BESSyntaxUserError( err_str, __FILE__, __LINE__ ) ;
+    else {
+        throw BESSyntaxUserError(string("Unable to add definition '") + def_name + "' to '" + store_name
+                                 + "' store. Store does not exist", __FILE__, __LINE__);
     }
 }
 
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * A BESInfo response object was built in the exeucte command to inform
+ * A BESInfo response object was built in the execute command to inform
  * the user whether the definition was successfully added or replaced. The
  * method send_text is called on the BESTransmitter object.
  *
@@ -131,19 +124,12 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDefineResponseHandler::transmit( BESTransmitter *transmitter,
-                                  BESDataHandlerInterface &dhi )
+void BESDefineResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( _response )
-    {
-        // If this dynamic_cast is to a reference an not a pointer, then if
-        // _response is not a BESInfo the cast will throw bad_cast. 
-        // Casting to a pointer will make it null on error. jhrg 11/10/2005
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+    if (_response) {
+        BESInfo *info = dynamic_cast<BESInfo *>(_response);
+        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -153,18 +139,16 @@ BESDefineResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDefineResponseHandler::dump( ostream &strm ) const
+void BESDefineResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDefineResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDefineResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDefineResponseHandler::DefineResponseBuilder( const string &name )
+BESDefineResponseHandler::DefineResponseBuilder(const string &name)
 {
-    return new BESDefineResponseHandler( name ) ;
+    return new BESDefineResponseHandler(name);
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showCatalog>
+        <dataset catalog="catalog" count="elided" lastModified="elided" name="data/csv" node="true" size="elided">
+            <dataset catalog="catalog" lastModified="elided" name="temperature.csv" node="false" size="elided">
+                <serviceRef>dap</serviceRef>
+            </dataset>
+        </dataset>
+    </showCatalog>
+</response>

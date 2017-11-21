@@ -1,8 +1,0 @@
-Dataset: function_result_MOD04_L2.A2015021.0020.051.NRT.hdf
-table.Optical_Depth_Land_And_Ocean, table.Latitude, table.Longitude
-202, 38.4495, 160.119
--9999, 38.3615, 160.089
--9999, 38.2736, 160.059
-266, 38.2531, 160.182
-292, 38.1858, 160.03
-132, 38.1653, 160.152

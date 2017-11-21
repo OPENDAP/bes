@@ -61,6 +61,8 @@ private:
     bool m_lat_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name);
     bool m_lon_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name);
 
+    friend class FONgTransform;
+
 public:
     FONgGrid(libdap::Grid *g);
     virtual ~FONgGrid();

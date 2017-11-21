@@ -99,8 +99,8 @@ void BESBasicInterface::initialize()
     // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
     BESDEBUG("bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl);
 
-    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
-    if (!_transmitter) {
+    d_transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER);
+    if (!d_transmitter) {
         string s = (string) "Unable to find transmitter " + BASIC_TRANSMITTER;
         throw BESInternalError(s, __FILE__, __LINE__);
     }
@@ -136,8 +136,8 @@ void BESBasicInterface::build_data_request_plan()
     if (_dhi->data[RETURN_CMD] != "") {
         BESDEBUG("bes", "Finding transmitter: " << _dhi->data[RETURN_CMD] << " ...  " << endl);
 
-        _transmitter = BESReturnManager::TheManager()->find_transmitter(_dhi->data[RETURN_CMD]);
-        if (!_transmitter) {
+        d_transmitter = BESReturnManager::TheManager()->find_transmitter(_dhi->data[RETURN_CMD]);
+        if (!d_transmitter) {
             string s = (string) "Unable to find transmitter " + _dhi->data[RETURN_CMD];
             throw BESSyntaxUserError(s, __FILE__, __LINE__);
         }
@@ -156,7 +156,7 @@ void BESBasicInterface::execute_data_request_plan()
 {
     if (BESLog::TheLog()->is_verbose()) {
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] executing" << endl;
+            << _dhi->data[LOG_INFO] << "] executing" << endl;
     }
     BESInterface::execute_data_request_plan();
 }
@@ -173,7 +173,7 @@ void BESBasicInterface::invoke_aggregation()
     if (_dhi->data[AGG_CMD] == "") {
         if (BESLog::TheLog()->is_verbose()) {
             *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-                << _dhi->data[DATA_REQUEST] << "]" << " not aggregating, command empty" << endl;
+                << _dhi->data[LOG_INFO] << "]" << " not aggregating, command empty" << endl;
         }
     }
     else {
@@ -181,13 +181,13 @@ void BESBasicInterface::invoke_aggregation()
         if (!agg) {
             if (BESLog::TheLog()->is_verbose()) {
                 *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-                    << _dhi->data[DATA_REQUEST] << "]" << " not aggregating, no handler" << endl;
+                    << _dhi->data[LOG_INFO] << "]" << " not aggregating, no handler" << endl;
             }
         }
         else {
             if (BESLog::TheLog()->is_verbose()) {
                 *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-                    << _dhi->data[DATA_REQUEST] << "] aggregating" << endl;
+                    << _dhi->data[LOG_INFO] << "] aggregating" << endl;
             }
         }
     }
@@ -205,7 +205,7 @@ void BESBasicInterface::transmit_data()
 {
     if (BESLog::TheLog()->is_verbose()) {
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] transmitting" << endl;
+            << _dhi->data[LOG_INFO] << "] transmitting" << endl;
     }
     BESInterface::transmit_data();
 }
@@ -220,7 +220,7 @@ void BESBasicInterface::log_status()
     if (_dhi->error_info) result = "failed";
     if (BESLog::TheLog()->is_verbose()) {
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] " << result << endl;
+            << _dhi->data[LOG_INFO] << "] " << result << endl;
     }
 }
 
@@ -237,7 +237,7 @@ void BESBasicInterface::clean()
     BESInterface::clean();
     if (BESLog::TheLog()->is_verbose()) {
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " ["
-            << _dhi->data[DATA_REQUEST] << "] cleaning" << endl;
+            << _dhi->data[LOG_INFO] << "] cleaning" << endl;
     }
 }
 

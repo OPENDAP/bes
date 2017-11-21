@@ -1,0 +1,36 @@
+
+# Configuration file to load the sample (hello, world) module into
+# the standalone test harness.
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+
+BES.modules=sample
+BES.module.sample=@abs_top_builddir@/hello_world/.libs/libsample_module.so
+
+# For most handlers, the followin gis required because they read data using
+# the BES Catalog abstraction. For this handler it is not needed. However,
+# the Data.RootDirectory must be defined, even if it's null.
+
+# BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Data.RootDirectory=/dev/null
+
+#-----------------------------------------------------------------------#
+# Should informational response objects be buffered, or streamed        #
+# Should informational objects be formatted as text, html, or xml       #
+#-----------------------------------------------------------------------#
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+Sample.Help.TXT=@abs_top_builddir@/sample_help.txt
+Sample.Help.HTML=@abs_top_builddir@/sample_help.html
+Sample.Help.XML=@abs_top_builddir@/sample_help.html
+
+Say.LogName=./say.log

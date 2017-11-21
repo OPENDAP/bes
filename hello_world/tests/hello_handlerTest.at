@@ -1,0 +1,28 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+# Usage: AT_BESCMD_TEST(<bescmd source>)
+
+m4_define([AT_BESCMD_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([das])
+
+# note that $abs_srcdir/bes.conf should probably be $abs_builddir/...
+# but that's not working for this part of the BES. It seems to be
+# what works for the modules, however. I cannot find the difference.
+# jhrg 9/29/17
+
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/hello/$1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $abs_srcdir/hello/$1.baseline stdout || diff -b -B $abs_srcdir/hello/$1.baseline stderr], [], [ignore],[],[])
+AT_CLEANUP]
+])
+
+AT_BESCMD_TEST([hello.bescmd])

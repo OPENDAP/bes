@@ -32,69 +32,62 @@
 
 #include "config.h"
 
-#include "SampleRequestHandler.h"
 #include "BESResponseHandler.h"
 #include "BESResponseNames.h"
-#include "SampleResponseNames.h"
 #include "BESVersionInfo.h"
 #include "BESTextInfo.h"
 #include "BESConstraintFuncs.h"
 #include "BESInternalError.h"
 
-SampleRequestHandler::SampleRequestHandler( const string &name )
-    : BESRequestHandler( name )
+#include "SampleRequestHandler.h"
+#include "SampleResponseNames.h"
+
+SampleRequestHandler::SampleRequestHandler(const string &name) :
+    BESRequestHandler(name)
 {
-    add_handler( VERS_RESPONSE, SampleRequestHandler::sample_build_vers ) ;
-    add_handler( HELP_RESPONSE, SampleRequestHandler::sample_build_help ) ;
+    add_handler( VERS_RESPONSE, SampleRequestHandler::sample_build_vers);
+    add_handler( HELP_RESPONSE, SampleRequestHandler::sample_build_help);
 }
 
 SampleRequestHandler::~SampleRequestHandler()
 {
 }
 
-bool
-SampleRequestHandler::sample_build_vers( BESDataHandlerInterface &dhi )
+bool SampleRequestHandler::sample_build_vers(BESDataHandlerInterface &dhi)
 {
-    bool ret = true ;
+    bool ret = true;
 
-    BESResponseObject *response =
-        dhi.response_handler->get_response_object();
-    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
-    if( !info )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
-  
-    return ret ;
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(response);
+    if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+    info->add_module( PACKAGE_NAME, PACKAGE_VERSION);
+
+    return ret;
 }
 
-bool
-SampleRequestHandler::sample_build_help( BESDataHandlerInterface &dhi )
+bool SampleRequestHandler::sample_build_help(BESDataHandlerInterface &dhi)
 {
-    bool ret = true ;
+    bool ret = true;
 
-    BESResponseObject *response =
-        dhi.response_handler->get_response_object() ;
-    BESInfo *info = dynamic_cast< BESInfo * >( response ) ;
-    if( !info )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESInfo *info = dynamic_cast<BESInfo *>(response);
+    if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-    map<string,string> attrs ;
-    attrs["name"] = PACKAGE_NAME ;
-    attrs["version"] = PACKAGE_VERSION ;
-    info->begin_tag( "module", &attrs ) ;
-    info->add_data_from_file( "Sample.Help", "Sample Help" ) ;
-    info->end_tag( "module" ) ;
+    map<string, string> attrs;
+    attrs["name"] = PACKAGE_NAME;
+    attrs["version"] = PACKAGE_VERSION;
+    info->begin_tag("module", &attrs);
+    info->add_data_from_file("Sample.Help", "Sample Help");
+    info->end_tag("module");
 
-    return ret ;
+    return ret;
 }
 
-void
-SampleRequestHandler::dump( ostream &strm ) const
+void SampleRequestHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "SampleRequestHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESRequestHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "SampleRequestHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESRequestHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showInfo>
+        <dataset catalog="catalog" lastModified="elided" name="data/nc/fnoc1.nc" node="false" size="elided">
+            <serviceRef>dap</serviceRef>
+        </dataset>
+    </showInfo>
+</response>

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -34,24 +34,29 @@
 #define A_SampleSayXMLCommand_h 1
 
 #include "BESXMLCommand.h"
-#include "BESDataHandlerInterface.h"
 
-class SampleSayXMLCommand : public BESXMLCommand
-{
+class BESDataHandlerInterface;
+
+class SampleSayXMLCommand: public BESXMLCommand {
 public:
-    				SampleSayXMLCommand( const BESDataHandlerInterface &base_dhi ) ;
-    virtual			~SampleSayXMLCommand() {}
+    SampleSayXMLCommand(const BESDataHandlerInterface &base_dhi);
+    virtual ~SampleSayXMLCommand()
+    {
+    }
 
-    virtual void		parse_request( xmlNode *node ) ;
+    virtual void parse_request(xmlNode *node);
 
-    virtual bool		has_response() { return true ; }
+    virtual bool has_response()
+    {
+        return true;
+    }
 
-    virtual void		prep_request() ;
+    virtual void prep_request();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESXMLCommand *	CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
-} ;
+    static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
+};
 
 #endif // A_SampleSayXMLCommand_h
 

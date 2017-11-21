@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,15 +35,15 @@
 
 #include <list>
 
-using std::list ;
+using std::list;
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESInfo.h"
 
-class BESError ;
+class BESError;
 
-typedef int (*p_bes_ehm)( BESError &e, BESDataHandlerInterface &dhi ) ;
+typedef int (*p_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
 
 /** @brief manages exception handling code and default exceptions
  *
@@ -81,25 +81,27 @@ typedef int (*p_bes_ehm)( BESError &e, BESDataHandlerInterface &dhi ) ;
  * @see BESError
  */
 
-class BESExceptionManager : public BESObj
-{
+class BESExceptionManager: public BESObj {
 private:
-    typedef list< p_bes_ehm >::const_iterator ehm_citer ;
-    typedef list< p_bes_ehm >::iterator ehm_iter ;
-    list< p_bes_ehm >	_ehm_list ;
-    static BESExceptionManager *_instance ;
+    typedef list<p_bes_ehm>::const_iterator ehm_citer;
+    typedef list<p_bes_ehm>::iterator ehm_iter;
+
+    list<p_bes_ehm> _ehm_list;
+
+    static BESExceptionManager *_instance;
+
 protected:
-    				BESExceptionManager() ;
-    virtual			~BESExceptionManager() ;
+    BESExceptionManager();
+    virtual ~BESExceptionManager();
+
 public:
-    virtual void		add_ehm_callback( p_bes_ehm ehm ) ;
-    virtual int			handle_exception( BESError &e,
-					      BESDataHandlerInterface &dhi ) ;
+    virtual void add_ehm_callback(p_bes_ehm ehm);
+    virtual int handle_exception(BESError &e, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESExceptionManager *TheEHM() ;
-} ;
+    static BESExceptionManager *TheEHM();
+};
 
 #endif // BESExceptionManager_h_
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,12 +37,12 @@
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
-BESSetContextResponseHandler::BESSetContextResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESSetContextResponseHandler::~BESSetContextResponseHandler( )
+BESSetContextResponseHandler::~BESSetContextResponseHandler()
 {
 }
 
@@ -61,25 +61,23 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler( )
  * @see BESInfo
  * @see BESContextManager
  */
-void
-BESSetContextResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    dhi.action_name = SET_CONTEXT_STR ;
-    BESInfo *info = new BESSilentInfo() ;
-    _response = info ;
+    dhi.action_name = SET_CONTEXT_STR;
+    BESInfo *info = new BESSilentInfo();
+    _response = info;
 
     // the name string cannot be the empty string. No other restrictions
     // apply.
-    string name = dhi.data[CONTEXT_NAME] ;
-    if( name.empty() )
-    {
-	string e = "No context name was specified in set context command" ;
-	throw BESSyntaxUserError( e, __FILE__, __LINE__ ) ;
+    string name = dhi.data[CONTEXT_NAME];
+    if (name.empty()) {
+        string e = "No context name was specified in set context command";
+        throw BESSyntaxUserError(e, __FILE__, __LINE__);
     }
 
-    string value = dhi.data[CONTEXT_VALUE] ;
+    string value = dhi.data[CONTEXT_VALUE];
 
-    BESContextManager::TheManager()->set_context( name, value ) ;
+    BESContextManager::TheManager()->set_context(name, value);
 }
 
 /** @brief transmit the response object built by the execute command
@@ -94,16 +92,12 @@ BESSetContextResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESSetContextResponseHandler::transmit( BESTransmitter *transmitter,
-				        BESDataHandlerInterface &dhi )
+void BESSetContextResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( _response )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+    if (_response) {
+        BESInfo *info = dynamic_cast<BESInfo *>(_response);
+        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -113,19 +107,17 @@ BESSetContextResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESSetContextResponseHandler::dump( ostream &strm ) const
+void BESSetContextResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESSetContextResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESSetContextResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESSetContextResponseHandler::SetContextResponseBuilder( const string &name )
+BESSetContextResponseHandler::SetContextResponseBuilder(const string &name)
 {
-    return new BESSetContextResponseHandler( name ) ;
+    return new BESSetContextResponseHandler(name);
 }
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,14 +36,14 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESObj.h"
 
-class BESResponseHandler ;
+class BESResponseHandler;
 
-typedef BESResponseHandler * (*p_response_handler)( const string &name ) ;
+typedef BESResponseHandler * (*p_response_handler)(const string &name);
 
 /** @brief List of all registered response handlers for this server
  *
@@ -59,29 +59,33 @@ typedef BESResponseHandler * (*p_response_handler)( const string &name ) ;
  * @see BESResponseHandler
  * @see BESResponseObject
  */
-class BESResponseHandlerList : public BESObj
-{
+class BESResponseHandlerList: public BESObj {
 private:
-    static BESResponseHandlerList *	_instance ;
-    map< string, p_response_handler >	_handler_list ;
+    static BESResponseHandlerList * _instance;
+    map<string, p_response_handler> _handler_list;
+
 protected:
-					BESResponseHandlerList(void) {}
+    BESResponseHandlerList(void)
+    {
+    }
+
 public:
-    virtual				~BESResponseHandlerList(void) {}
+    virtual ~BESResponseHandlerList(void)
+    {
+    }
 
-    typedef map< string, p_response_handler >::const_iterator Handler_citer ;
-    typedef map< string, p_response_handler >::iterator Handler_iter ;
+    typedef map<string, p_response_handler>::const_iterator Handler_citer;
+    typedef map<string, p_response_handler>::iterator Handler_iter;
 
-    virtual bool			add_handler( const string &handler,
-					   p_response_handler handler_method ) ;
-    virtual bool			remove_handler( const string &handler ) ;
-    virtual BESResponseHandler *	find_handler( const string &handler ) ;
+    virtual bool add_handler(const string &handler, p_response_handler handler_method);
+    virtual bool remove_handler(const string &handler);
+    virtual BESResponseHandler * find_handler(const string &handler);
 
-    virtual string			get_handler_names() ;
+    virtual string get_handler_names();
 
-    virtual void			dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESResponseHandlerList *	TheList() ;
+    static BESResponseHandlerList * TheList();
 };
 
 #endif // I_BESResponseHandlerList_h

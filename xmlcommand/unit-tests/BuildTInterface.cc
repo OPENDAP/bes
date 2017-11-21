@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 using std::cout ;
 using std::endl ;
@@ -42,8 +43,8 @@ using std::stringstream ;
 
 /** @brief Instantiate a BuildTInterface object
  */
-BuildTInterface::BuildTInterface()
-    : BESXMLInterface( "", &cout )
+BuildTInterface::BuildTInterface(const std::string &xml_doc)
+    : BESXMLInterface(xml_doc, &cout)
 {
 }
 
@@ -56,10 +57,10 @@ BuildTInterface::~BuildTInterface()
  * @param requestDoc request XML document
  */
 void
-BuildTInterface::run( const string &requestDoc )
+BuildTInterface::run()
 {
-    _dhi->data[DATA_REQUEST] = "xml Document" ;
-    _dhi->data["XMLDoc"] = requestDoc ;
+    d_dhi_ptr->data[LOG_INFO] = "xml Document" ;
+    //d_dhi_ptr->data["XMLDoc"] = requestDoc ;
     BESXMLInterface::build_data_request_plan() ;
 }
 
@@ -72,12 +73,9 @@ BuildTInterface::run( const string &requestDoc )
 void
 BuildTInterface::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "BuildTInterface::dump - ("
-			     << (void *)this << ")" << endl ;
+    strm << BESIndent::LMarg << "BuildTInterface::dump - (" << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     BESXMLInterface::dump( strm ) ;
     BESIndent::UnIndent() ;
-
-
 }
 

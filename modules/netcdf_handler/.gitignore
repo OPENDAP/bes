@@ -48,12 +48,12 @@ nc.conf
 
 ## netcdf_handler specific files
 
-bes-testsuite/bes.conf
-bes-testsuite/generate_data_baseline.sh
-bes-testsuite/generate_metadata_baseline.sh
-bes-testsuite/nc4_netcdf_handler_tests
-bes-testsuite/netcdf_handlerTest
-bes-testsuite/package.m4
+tests/bes.conf
+tests/generate_data_baseline.sh
+tests/generate_metadata_baseline.sh
+tests/nc4_netcdf_handler_tests
+tests/netcdf_handlerTest
+tests/package.m4
 
 
 

@@ -51,7 +51,7 @@ BESShowErrorResponseHandler::~BESShowErrorResponseHandler()
 {
 }
 
-/** @brief throws a specific exception to test error handling in client
+/** @brief throws a specific exception to test error handling in clients
  *
  * Where error_type_num is one of the following
  * 1. Internal Error - the error is internal to the BES Server

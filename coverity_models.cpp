@@ -32,11 +32,18 @@ namespace libdap {
 
 class D4Attribute;
 
+// This model was intended to indicate that 'x' will not be leaked
+// memory because the D4Attributes dtor will clean it up. However,
+// this model confuses the scanner into thinking the code deletes
+// the pointer, so any code that uses 'x' after this call will generate
+// a High Priority issue. jhrg 11/16/17
+#if 0
 class D4Attributes {
     void add_attribute_nocopy(D4Attribute *x)
     {
         __coverity_delete__(x);
     }
 };
+#endif
 
 }

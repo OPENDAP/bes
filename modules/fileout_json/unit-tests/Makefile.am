@@ -2,14 +2,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/fileout_json $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) 
-else
-AM_CPPFLAGS = -I$(top_srcdir) $(BES_CPPFLAGS)
-LIBADD = $(BES_DAP_LIBS)
-endif
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)

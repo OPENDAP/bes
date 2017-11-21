@@ -2,8 +2,9 @@
 .deps
 .libs
 autom4te.cache
-bes-*
+/bes-*
 docs
+.autotools
 
 ## files
 *~

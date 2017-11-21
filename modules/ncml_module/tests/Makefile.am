@@ -12,8 +12,7 @@ variable_new_scalars.at variable_new_structures.at variable_remove.at	\
 variable_rename.at gateway_tests.at handler_tests.at
 
 EXTRA_DIST = $(TESTSUITE).at $(TEST_FILES) $(srcdir)/package.m4 \
-$(TESTSUITE) atlocal.in template.bescmd.in bes.conf.in \
-bes_no_nc_global.conf.in bes.conf.modules.in \
+$(TESTSUITE) atlocal.in template.bescmd.in bes.conf.modules.in \
 bes_no_nc_global.conf.modules.in baselines cache
 
 noinst_DATA = bes.conf bes_no_nc_global.conf
@@ -22,13 +21,8 @@ CLEANFILES = bes.conf bes_no_nc_global.conf
 
 DISTCLEANFILES = atconfig cache/*
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_NO_NC_GLOBAL_CONF_IN = bes_no_nc_global.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-BES_NO_NC_GLOBAL_CONF_IN = bes_no_nc_global.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

@@ -3,11 +3,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+# Because cacheT and uncompressT don't work with distcheck and a
+# parallel build. :-( jhrg 8/22/17
+.NOTPARALLEL:
+
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
-#$(LIBS)
-# $(XML2_LIBS)
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
@@ -19,10 +22,8 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
-# noinst_PROGRAMS = BESCache3Test
 
-#nodist_include_HEADERS = test_config.h breaks make rpm jhrg
-noinst_HEADERS = test_config.h
+noinst_HEADERS = test_config.h test_utils.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
@@ -140,7 +141,6 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
-
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
@@ -148,10 +148,11 @@ fsT_SOURCES = fsT.cc
 
 if LIBDAP
 catT_OBJ = ../BESCatalogResponseHandler.o
-catT_SOURCES = catT.cc
+catT_SOURCES = test_utils.cc catT.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
+
 
 # Note that BESCache3Test is not a CPP Unit test. jhrg 4/12/12
 # BESCache3Test_SOURCES = BESCache3Test.cc

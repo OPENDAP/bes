@@ -1,4 +1,2 @@
-# data for 'lon' in the small.dds
--0.5 -0.4 -0.3 -0.2 -0.1
-0.0
-0.1 0.2 0.3 0.4 0.5
+# data for 'lon' [11] in the small.dds
+-0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5

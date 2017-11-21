@@ -6,8 +6,7 @@ TESTSUITE = $(srcdir)/testsuite
 CLEANFILES = bes.conf
 
 EXTRA_DIST = baselines $(TESTSUITE).at $(TESTSUITE)		\
-	$(srcdir)/package.m4 atlocal.in template.bescmd.in	\
-	bes.conf.in bes.conf.modules.in
+$(srcdir)/package.m4 atlocal.in template.bescmd.in $(BES_CONF_IN)
 
 noinst_DATA = bes.conf
 
@@ -18,11 +17,7 @@ dist_check_SCRIPTS = $(TESTSUITE) atconfig atlocal
 check-local: atconfig atlocal $(TESTSUITE) bes.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
-if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
-else
-BES_CONF_IN = bes.conf.in
-endif
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

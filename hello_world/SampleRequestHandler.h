@@ -35,15 +35,15 @@
 
 #include "BESRequestHandler.h"
 
-class SampleRequestHandler : public BESRequestHandler {
+class SampleRequestHandler: public BESRequestHandler {
 public:
-			SampleRequestHandler( const string &name ) ;
-    virtual		~SampleRequestHandler( void ) ;
+    SampleRequestHandler(const string &name);
+    virtual ~SampleRequestHandler(void);
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static bool		sample_build_vers( BESDataHandlerInterface &dhi ) ;
-    static bool		sample_build_help( BESDataHandlerInterface &dhi ) ;
+    static bool sample_build_vers(BESDataHandlerInterface &dhi);
+    static bool sample_build_help(BESDataHandlerInterface &dhi);
 };
 
 #endif // SampleRequestHandler.h
