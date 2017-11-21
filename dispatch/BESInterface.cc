@@ -427,7 +427,7 @@ int BESInterface::finish(int status)
 #endif
 
     if (d_dhi_ptr->error_info) {
-        d_dhi_ptr->error_info->print(d_strm /*cout*/);
+        d_dhi_ptr->error_info->print(*d_strm /*cout*/);
         delete d_dhi_ptr->error_info;
         d_dhi_ptr->error_info = 0;
     }
