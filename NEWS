@@ -3,6 +3,9 @@ News for version 3.20.0
 Interface Refactoring
 
 BESInterface/XMLInterface improved, easier to grok.  
+
+Specifically, streamline the BESInterface and BESXMLInterface 
+classes and how the DataHandlerInterface object is manipulated.
 Removed unused fields, renamed confusng fields, removed 
 unused formal parameters.  Removed useless typedefs from 
 BESInterface.  Removed init and end lists from BESInterface. 
@@ -41,193 +44,80 @@ Logging Improvements
    more reliable dir and baseline.  
 
    
-More robust tests
+General Fixes
 
 Fixed a glitch in the error returns that broke olfs end-to-end regression tests
 
+Move transmit_data() into execute_data_request_plan()
+Removing the invoke_aggregation() code - it's not used anymore.
     
+Refactored the command processing software. 
+Updated tests in cmdln for ubuntu.  
+The size and count xml attrs are no longer recored
+in the 'show' command baselines so that values that
+differ for different file systems and test configs
+won't cause false failures. 
+Cleaning bes directories - bes/cmdln
 
-        Remove transmit_data()?
+
+Cmdln tests: implement 'check' in bes/cmdln/tests;
+check-local runs the tests if a BES is found,
+just prints an innocuous message if it is not found.
+
+Fixed the integration tests in bes/cmdln.  
+Fixed some bescmd files for the cmdln tests. Fewer tests fail...
+
+- Added -lz to the link of the dmr++ unit tests - for ubuntu.
+
+
+- Addressed likely problem with hello_world and distcheck.
+added hello_world to the build.  Symptom: distcheck seems 
+to be putting generated files in
+the srcdir and not builddir - this includes things like
+bes.conf. The problem was (maybe - we'll see how far the
+build gets) that hello_world (the directory) was included
+in a parent Makefile.am's EXTRA_DIST and having generated
+files included in the distribution means they are put in
+$srcdir and not $builddir. And apparently including a dir
+in EXTRA_DIST means put everything in the dist, even if
+that dir has a Makefile.am. Added $(XML2_CFLAGS) to 
+AM_CPPFLAGS in hello_world/makefile.am
+
+- Removed config tests of dmrpp_module/test
+dmrpp_handler is built only when configure is run using --enable-developer
+Added BES dap_module to libs so the dmrpp code can use it.
+Turned bes tests back on in dmrpp code.
+
+- Removed unused Get DataDDX XML Command; edits to comments
+
+- Added --baselines option to besTest; fixed one test
+
+- File locking cache test
+
+- Removed ScaleUtilTest3D (generated); Added ScaleUtilTest3D to gitignore
+
+- Updated hdf4 and 5 handler submodule commit hashes
+
+- Re-worked the DAP_MODULES conditional build
     
-        Move transmit_data() into execute_data_request_plan()
+DAP_MODULES --> DAP_BUILTIN_MODULES and is now only used in the
+main bes Makefile.am. The builtin modules only work as such. The
+DAP_EXP_MODULES symbol/conditional is reserved for the future.
+I modified the hdf4/5 modules minimally, but had to update the
+symbol name in their code. Modules cleanup.
 
-        More movement of functionality to BESXMLInterface.
+- Ticket HYRAX-248. Made reversed raster.
 
-        More refactoring - moved more functionality into BESXMLInterface 
-        from BESInterface
+- Added *Test to gitignore
+- Updated commit hashes for hdf4 and 5 for teh Hyrax 1.14 release
+- Massive file removal. Added gitignore to modules dir.  
+Edits to gitignore - bes-testsuite --> tests
+Edited the version_update_modules script to match the new
+organization of the modules dirs. distcheck now works with the directory changes
 
-        Removing the invoke_aggregation() code - it's not used anymore.
-    
-        Refactoring the command processing software.
-    
-        The first part of this refactoring is to streamline the 
-        BESInterface and BESXMLInterface classes and to understand 
-        how the DataHandlerInterface object is manipulated.
+- All the autotest dirs are now names 'tests'
 
-
-        Merge pull request #86 from OPENDAP/dmr++
-    
-        Adding the keepalive2 program to the list of ignored files
-
-        Removed double quotes on AM_DISTCHECK_CONFIGURE_FLAGS's value
-        This was breaking the distcheck build.
-    
-        I wonder about dropping the parts of the build and 
-        just running distcheck. That would be faster... 
-        Or configuring our build to run two builds in parallel.
-
-
-        Minor edits to tests Makefile.am files in hello_world and functions
-
-        Found the likely problem with hello_world and distcheck.
-        Symptom: distcheck seems to be putting generated files in
-        the srcdir and not builddir - this includes things like
-        bes.conf. The problem was (maybe - we'll see how far the
-        build gets) that hello_world (the directory) was included
-        in a parent Makefile.am's EXTRA_DIST and having generated
-        files included in the distribution means they are put in
-        $srcdir and not $builddir. And apparently including a dir
-        in EXTRA_DIST means put everything in the dist, even if
-        that dir has a Makefile.am.
-
-
-        More changes for distcheck with dmrpp_module.
-    
-        There seem to be issues in the hello_world sample handler.
-
-        Updated tests in cmdln for ubuntu
-    
-        The size and count xml attrs are no longer recored
-        in the 'show' command baselines so that values that
-        differ for different file systems and test configs
-        won't cause false failures.
-
-
-        Added -lz to the link of the dmr++ unit tests - for ubuntu.
-
-        Fixed a typo in the dmrpp_module Makefile.am
-
-        fixes for dmrpp distcheck
-    
-        Changes to build on Travis using --enable-developer.
-
-        Removed config tests of dmrpp_module/test
-        as it was casuing distcheck to fail
-
-        Removed dmrpp_handler/tests configure files.
-    
-        We dropped these tests since they did nothing.
-
-        Now dmrpp_handler is built only when configure is 
-        run using --enable-developer
-    
-        This makes it easier to keep this code on the master branch
-        and avoid having it 'age.'
-
-        Conflicts: xmlcommand/BESXMLInterface.cc
-
-        Merge pull request #85 from OPENDAP/interface-refactor
-    
-        Interface refactor
-
-        Added BES dap_module to libs so the dmrpp code can use it
-
-        Turned bes tests back on in dmrpp code.
-
-        Added a single (not meaningful) test to test the autotest harness
-
-        Merge master to dmr++, resolved conflicts, disabled dmrpp_module/tests
-
-        Updated modules on master
-
-        Removed unused Get DataDDX XML Command; edits to comments
-
-        Checkpoint - refactoring the Interface, XMLCommand classes.
-    
-    
-        Cmdln tests
-
-        Figured out how to implement 'check' in bes/cmdln/tests
-    
-        This version of check-local runs the tests if a BES is found,
-        just prints an innocuous message if it is not found.
-
-        Fixed the integration tests in bes/cmdln
-
-        Added --baselines option to besTest; fixed one test
-
-        Fixed some bescmd files for the cmdln tests. Fewer tests fail...
-
-        Fixed the formatting of some files.
-        
-        File locking cache test
-
-        Removed ScaleUtilTest3D (generated)
-
-        Updating .gitignore stuff.
-
-        Added .autotools file built by eclipse to the .gitignore
-
-        modified:   modules/hdf4_handler
-
-        Merge branch 'master' into file-locking-cache-test
-
-        Added comments to build-gh-docs.sh
-
-        Added $(XML2_CFLAGS) to AM_CPPFLAGS in hello_world/makefile.am
-
-
-        Updated hdf4 and 5 handler submodule commit hashes
-
-        Massive changes - re-worked the DAP_MODULES conditional build
-    
-        DAP_MODULES --> DAP_BUILTIN_MODULES and is now only used in the
-        main bes Makefile.am. The builtin modules only work as such. The
-        DAP_EXP_MODULES symbol/conditional is reserved for the future.
-        I modified the hdf4/5 modules minimally, but had to update the
-        symbol name in their code.
-
-        Various fixes for distcheck, mostly because I added 
-        hello_world to the build
-
-        Merge pull request #81 from OPENDAP/hyrax248
-    
-        Ticket HYRAX-248. Made reversed raster.
-
-        Ticket HYRAX-248. Made reversed raster.
-
-        Added *Test to gitignore
-
-        Cleaning bes directories - bes/cmdln
-
-        Added ScaleUtilTest3D to gitignore
-
-        Edits after merging master into dmr++
-
-        Merge pull request #80 from OPENDAP/modules_cleanup
-    
-        Modules cleanup
-
-        Merged master down to dmr++
-
-        Merge branch 'master' into dmr++
-
-        Updated commit hashes for hdf4 and 5 for teh Hyrax 1.14 release
-
-        Added gitignore to modules dir
-
-        Edits to gitignore - bes-testsuite --> tests
-
-        Massive file removal.
-    
-        Also edited the version_update_modules script to match the new
-        organization of the modules dirs.
-
-        distcheck now works with the directory changes
-
-        All the autotest dirs are now names 'tests'
-
-        First step in normalizing the modules that are now part of the bes
+- First step in normalizing the modules that are now part of the bes
 
 News for version 3.19.0
 
