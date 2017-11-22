@@ -8,6 +8,12 @@
 README for the OPeNDAP BES 
 ==========================
 
+Updated for version 3.20.0
+
+BESInterface/XMLInterface improved
+
+Testing/Logging Improvements
+
 Updated for version 3.19.0
 
 New Server function: range() This function returns the min and max
