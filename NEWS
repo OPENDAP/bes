@@ -1,123 +1,72 @@
 News for version 3.20.0
 
-Interface Refactoring
-
-BESInterface/XMLInterface improved, easier to grok.  
-
-Specifically, streamline the BESInterface and BESXMLInterface 
-classes and how the DataHandlerInterface object is manipulated.
-Removed unused fields, renamed confusng fields, removed 
-unused formal parameters.  Removed useless typedefs from 
-BESInterface.  Removed init and end lists from BESInterface. 
-(as they are not used).  Simplified class field name changes
-Impoved formatting for BESInterface and BESXMLCommand.
-
 Logging Improvements
+
+- HYRAX-548: introduce copytruncate directive in besd.logrotate, 
+  remove brute-force stop/start
+
+- Log only one line per get command. This can be switched back to 
+  the 'three-lines-per-get' mode. using compile-time switches. There
+  is also a way to trace which calls to the LOG() and VERBOSE() macros
+  are responsible for which lines in the log. And there is an ERROR()
+  macro to call out that an error is being logged. See the ChangeLog for
+  more information.
+
+- As per the above, now, when logging is not verbose, there is only about
+  one line per request (more for errors). Turning on verbose mode go back
+  to the old way of logging where each (internal) command run by the BES
+  is explicitly logged.
 
 - Switched to ISO8601 date-time; UTC is the default.
   Can use local time in the logs using BES.LogTimeLocal 
   in bes.conf.  The old date format is still in the code and 
   can be used by #undef the compile-time switch ISO8601_TIME_IN_LOGS.
 
-- HYRAX-548: introduce copytruncate directive in besd.logrotate, 
-  remove brute-force stop/start
+Bug Fixes
 
-- Log only one line per get command. This can be switched back to 
-  the 'three-lines-per-get' mode. Here's more information about 
-  these changes:
-    
-  * Look in BESXMLInteface.cc for the define that controls the
-    three-line or on-line versions (LOG_ONLY_GET_COMMANDS).
-    
-  * Look in BESLog.h for a define that will enable tracing the LOG and
-    VERBOSE macros use (TRACE_LOGGING).
-    
-  * Look in BESExceptionManager.cc at log_error() for massive hacks to
-    that method, including my decision to log all errors in both verbose
-    and regular modes.
+- Fixed the integration tests in bes/cmdln.  
 
-   Verbose is verbose, !verbose is not.
-    
-   Addedx a way to trace where in the code log info is written.
+HYRAX-248   	Fixed the GeoTiff and JPEG2000 responses; in some
+		cases the raster output was upside down.
+HYRAX-263	Geotiff output appears to have the latitude axis inverted.
+HYRAX-283	fileout geotiff doesn't work for NCEP dataset
+HYRAX-294	Make this function (scale_grid) work correctly when
+		subsetting an array drops it down to 2D
+HYRAX-309	Test the geo functions with real data
+HYRAX-362	Make the GeoTiff (GDAL) handler work with NCML aggregations
+HYRAX-432	WCS-2.0 war file/ deployment is broken
+HYRAX-458	Use of mkstemp/mkstemps in libdap and bes is bogus
+HYRAX-465	The bes (travis) build is broken
+HYRAX-491	Missing single source of truth for supported Format
+HYRAX-507	Fix double quote problems with WCS constraint expression eval
+HYRAX-529	Hyrax fails to start using "service besd start"
+HYRAX-547	FreeForm handler fmt file for ASCII data with two header lines
+HYRAX-548	logrotate.d in the release 1.13.4 RPM restarts bes and tomcat every day
 
-   Switched to the LOG() macro and change the show catalog test to a 
-   more reliable dir and baseline.  
+Developer fixes
 
-   
-General Fixes
+Interface Refactoring
 
-Fixed a glitch in the error returns that broke olfs end-to-end regression tests
+BESInterface/XMLInterface improved, easier to grok. This affects only
+people who write modules for the BES. It does not affect the behavior
+of the BES in any way.
 
-Move transmit_data() into execute_data_request_plan()
-Removing the invoke_aggregation() code - it's not used anymore.
-    
-Refactored the command processing software. 
-Updated tests in cmdln for ubuntu.  
-The size and count xml attrs are no longer recored
-in the 'show' command baselines so that values that
-differ for different file systems and test configs
-won't cause false failures. 
-Cleaning bes directories - bes/cmdln
+Specifically, streamline the BESInterface and BESXMLInterface classes
+and how the DataHandlerInterface object is manipulated. Removed unused
+fields, renamed confusing fields, removed unused formal parameters.
+Removed useless typedefs from BESInterface. Removed init and end lists
+from BESInterface. (as they are not used). Simplified class field name
+changes Improved formatting for BESInterface and BESXMLCommand.
 
+Added the 'hello_world' module into the BES's 'developer' build so
+that people using our developer documentation can reference a handler
+that works with the current version of the BES.
 
-Cmdln tests: implement 'check' in bes/cmdln/tests;
-check-local runs the tests if a BES is found,
-just prints an innocuous message if it is not found.
+We have also added the DMR++ handler (see modules/dmrpp_module) the
+regular source distribution. This code is not built as part of the
+regular build, but it is part of the 'developer' build.
 
-Fixed the integration tests in bes/cmdln.  
-Fixed some bescmd files for the cmdln tests. Fewer tests fail...
-
-- Added -lz to the link of the dmr++ unit tests - for ubuntu.
-
-
-- Addressed likely problem with hello_world and distcheck.
-added hello_world to the build.  Symptom: distcheck seems 
-to be putting generated files in
-the srcdir and not builddir - this includes things like
-bes.conf. The problem was (maybe - we'll see how far the
-build gets) that hello_world (the directory) was included
-in a parent Makefile.am's EXTRA_DIST and having generated
-files included in the distribution means they are put in
-$srcdir and not $builddir. And apparently including a dir
-in EXTRA_DIST means put everything in the dist, even if
-that dir has a Makefile.am. Added $(XML2_CFLAGS) to 
-AM_CPPFLAGS in hello_world/makefile.am
-
-- Removed config tests of dmrpp_module/test
-dmrpp_handler is built only when configure is run using --enable-developer
-Added BES dap_module to libs so the dmrpp code can use it.
-Turned bes tests back on in dmrpp code.
-
-- Removed unused Get DataDDX XML Command; edits to comments
-
-- Added --baselines option to besTest; fixed one test
-
-- File locking cache test
-
-- Removed ScaleUtilTest3D (generated); Added ScaleUtilTest3D to gitignore
-
-- Updated hdf4 and 5 handler submodule commit hashes
-
-- Re-worked the DAP_MODULES conditional build
-    
-DAP_MODULES --> DAP_BUILTIN_MODULES and is now only used in the
-main bes Makefile.am. The builtin modules only work as such. The
-DAP_EXP_MODULES symbol/conditional is reserved for the future.
-I modified the hdf4/5 modules minimally, but had to update the
-symbol name in their code. Modules cleanup.
-
-- Ticket HYRAX-248. Made reversed raster.
-
-- Added *Test to gitignore
-- Updated commit hashes for hdf4 and 5 for teh Hyrax 1.14 release
-- Massive file removal. Added gitignore to modules dir.  
-Edits to gitignore - bes-testsuite --> tests
-Edited the version_update_modules script to match the new
-organization of the modules dirs. distcheck now works with the directory changes
-
-- All the autotest dirs are now names 'tests'
-
-- First step in normalizing the modules that are now part of the bes
+All the autotest dirs are now named 'tests'
 
 News for version 3.19.0
 
