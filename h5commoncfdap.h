@@ -52,12 +52,12 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right,
-    const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params);
+    const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params,const unsigned short);
 
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
     float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims);
 
-void add_cf_grid_mapinfo_var(DDS &dds);
+void add_cf_grid_mapinfo_var(DDS &dds,const EOS5GridPCType,const unsigned short);
 bool need_special_attribute_handling(const HDF5CF::Attribute*, const HDF5CF::Var*);
 void gen_dap_special_oneobj_das(AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*);
 bool is_fvalue_valid(H5DataType, const HDF5CF::Attribute*);

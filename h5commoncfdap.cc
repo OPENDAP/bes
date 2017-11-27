@@ -534,7 +534,7 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
 
 }
 
-void add_cf_grid_mapinfo_var(DDS & dds)
+void add_cf_grid_mapinfo_var(DDS & dds, const EOS5GridPCType grid_proj_code, const unsigned short g_suffix)
 {
 
     //Add the dummy projection variable. The attributes of this variable can be used to store the grid mapping info.
@@ -544,8 +544,21 @@ void add_cf_grid_mapinfo_var(DDS & dds)
     //string cf_projection = HDFCFUtil::get_CF_string(gdset->getName()) +"_"+cf_projection_base;
 
     //HDFEOS2GeoCFProj * dummy_proj_cf = new HDFEOS2GeoCFProj(cf_projection,gdset->getName());
-    HDF5CFGeoCFProj * dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_base, cf_projection_base);
-    dds.add_var(dummy_proj_cf);
+    HDF5CFGeoCFProj * dummy_proj_cf = NULL;
+    if(HE5_GCTP_SNSOID == grid_proj_code)  {
+       if(g_suffix == 1) {
+        dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_base, cf_projection_base);
+        dds.add_var(dummy_proj_cf);
+       }
+    }
+    else {
+        stringstream t_suffix_ss;
+        t_suffix_ss << g_suffix;
+        string cf_projection_name = cf_projection_base + "_" + t_suffix_ss.str();
+ //cerr<<"cf_projection_name is "<<cf_projection_name <<endl;
+        dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);
+        dds.add_var(dummy_proj_cf);
+    }
     if (dummy_proj_cf) delete dummy_proj_cf;
 
 }
@@ -553,7 +566,7 @@ void add_cf_grid_mapinfo_var(DDS & dds)
 // This function adds 1D grid mapping CF attributes to CV and data variables.
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     float /*cv_point_lower*/, float /*cv_point_upper*/, float /*cv_point_left*/, float /*cv_point_right*/,
-    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params)
+    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params,const unsigned short g_suffix)
 {
 
     // STOPP Need to handle LAMAZ and PS
@@ -602,15 +615,23 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
         at->append_attr("_CoordinateAxisType", "string", "GeoX");
 
         // Add the attributes for the dummy projection variable.
-        string cf_projection = "eos_cf_projection";
+        string cf_projection_base = "eos_cf_projection";
+        string cf_projection;
+        if(HE5_GCTP_SNSOID == cv_proj_code)
+            cf_projection = cf_projection_base;
+        else {
+            stringstream t_suffix_ss;
+            t_suffix_ss << g_suffix;
+            cf_projection = cf_projection_base + "_" + t_suffix_ss.str();
+        }
         //string cf_projection_base = "eos_cf_projection";
         //string cf_projection = HDFCFUtil::get_CF_string(gdset->getName()) +"_"+cf_projection_base;
         at = das.get_table(cf_projection);
-        if (!at) {
-            at = das.add_table(cf_projection, new AttrTable);
+        if (!at) {// Only append attributes when the table is created.
+           at = das.add_table(cf_projection, new AttrTable);
 
            if (HE5_GCTP_SNSOID == cv_proj_code) {
-            //if(at->simple_find("grid_mapping_name") == at->attr_end())
+           // if(at->simple_find("grid_mapping_name") == at->attr_end())
             at->append_attr("grid_mapping_name", "String", "sinusoidal");
             //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
             at->append_attr("longitude_of_central_meridian", "Float64", "0.0");
@@ -628,16 +649,18 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
 
             //if(at->simple_find("grid_mapping_name") == at->attr_end())
             at->append_attr("grid_mapping_name", "String", "polar_stereographic");
-            //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
 
 
             ostringstream s_vert_lon_pole;
             s_vert_lon_pole << vert_lon_pole;
+            //if(at->simple_find("straight_vertical_longitude_from_pole") == at->attr_end())
             at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
-            //if(at->simple_find("earth_radius") == at->attr_end())
             ostringstream s_lat_true_scale;
             s_lat_true_scale << lat_true_scale;
+            //if(at->simple_find("standard_parallel") == at->attr_end())
             at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
+
+            //if(at->simple_find("false_easting") == at->attr_end()){
 
             if(fe == 0.0) 
                 at->append_attr("false_easting","Float64","0.0");
@@ -647,6 +670,9 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
                 at->append_attr("false_easting","Float64",s_fe.str());
             }
 
+            //}
+
+            //if(at->simple_find("false_northing") == at->attr_end()){
             if(fn == 0.0) 
                 at->append_attr("false_northing","Float64","0.0");
             else { 
@@ -654,13 +680,20 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
                 s_fn << fn;
                 at->append_attr("false_northing","Float64",s_fn.str());
             }
+            //}
 
+            
+            //if(at->simple_find("latitude_of_projection_origin") == at->attr_end()){
             if(lat_true_scale >0) 
                 at->append_attr("latitude_of_projection_origin","Float64","+90.0");
             else 
                 at->append_attr("latitude_of_projection_origin","Float64","-90.0");
+            //}
 
+
+            //if(at->simple_find("_CoordinateAxisTypes") == at->attr_end()){
             at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
+            //}
 
             // • straight_vertical_longitude_from_pole
             // • latitude_of_projection_origin - Either +90. or -90.
@@ -671,12 +704,47 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
 
            }
            else if(HE5_GCTP_LAMAZ == cv_proj_code) {
-            //if(at->simple_find("grid_mapping_name") == at->attr_end())
+             double lon_proj_origin = HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
+             double lat_proj_origin = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
+             double fe = eos5_proj_params[6];
+             double fn = eos5_proj_params[7];
+
+    //if(at->simple_find("grid_mapping_name") == at->attr_end())
             at->append_attr("grid_mapping_name", "String", "lambert_azimuthal_equal_area");
+
+            ostringstream s_lon_proj_origin;
+            s_lon_proj_origin << lon_proj_origin;
             //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
-            at->append_attr("longitude_of_central_meridian", "Float64", "0.0");
+            at->append_attr("longitude_of_projection_origin", "Float64", s_lon_proj_origin.str());
             //if(at->simple_find("earth_radius") == at->attr_end())
-            at->append_attr("earth_radius", "Float64", "6371007.181");
+            
+            ostringstream s_lat_proj_origin;
+            s_lat_proj_origin << lat_proj_origin;
+ 
+            at->append_attr("latitude_of_projection_origin", "Float64", s_lat_proj_origin.str());
+
+            //if(at->simple_find("false_easting") == at->attr_end()){
+
+            if(fe == 0.0) 
+                at->append_attr("false_easting","Float64","0.0");
+            else { 
+                ostringstream s_fe;
+                s_fe << fe;
+                at->append_attr("false_easting","Float64",s_fe.str());
+            }
+
+            //}
+
+            //if(at->simple_find("false_northing") == at->attr_end()){
+            if(fn == 0.0) 
+                at->append_attr("false_northing","Float64","0.0");
+            else { 
+                ostringstream s_fn;
+                s_fn << fn;
+                at->append_attr("false_northing","Float64",s_fn.str());
+            }
+            //}
+
 
             at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
             // • longitude_of_projection_origin
