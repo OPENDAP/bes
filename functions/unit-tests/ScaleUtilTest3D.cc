@@ -584,70 +584,70 @@ public:
 
                 DBG(cerr << "result data_size = " << data_size << endl);
 
-                string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
-                string interp = "nearest";
+//                string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
+//                string interp = "nearest";
+//
+//                DBG(cerr << "Scale done:" << endl);
+//                DBG(cerr << scale_dap_array_3D(data, t, lon, lat, size, crs, interp)->print_val(cerr));
 
-                DBG(cerr << "Scale done:" << endl);
-                //DBG(cerr << scale_dap_array_3D(data, t, lon, lat, size, crs, interp)->print_val(cerr));
 
 
 
-//
-//                // scale GDAL dataset
-//                auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size);
-//                int nBands = dst->GetRasterCount();
-//                DBG(cerr << "scaled nBands = " << nBands << endl);
-//
-//                // result should be DAP array
-//                int t_size = nBands;
-//                int x_size = x_dst_size;
-//                int y_size = y_dst_size;
-//                Array *result = new Array("result", const_cast<Array*>(data)->var()->ptr_duplicate());
-//                result->append_dim(t_size);
-//                result->append_dim(y_size);
-//                result->append_dim(x_size);
-//
-//                vector<dods_float32> res(t_size * x_size * y_size);
-//                //start loop
-//                for(int i=0; i< nBands; i++){
-//                    GDALRasterBand *band = dst->GetRasterBand(i+1);
-//
-//                    if (!band)
-//                        throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
-//                    DBG(cerr << "------------------band #" << band->GetBand() << endl);
-//                    vector<double> gt(6);
-//                    dst->GetGeoTransform(&gt[0]);
-//
-//                    // Extract data from band
-//                    vector<dods_float32> buf(x_dst_size * y_dst_size);
-//                    CPLErr error = band->RasterIO(GF_Read, 0, 0, x_dst_size, y_dst_size, &buf[0], x_dst_size, y_dst_size, get_array_type(data),
-//                        0, 0);
-//                    if (error != CPLE_None)
-//                        throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
-//
-//                    if (debug) {
-//                        cerr << "buf:" << endl;
-//                        for (int y = 0; y < y_dst_size; ++y) {
-//                            for (int x = 0; x < x_dst_size; ++x) {
-//                                cerr << buf[y * x_dst_size + x] << " ";
-//                            }
-//                            cerr << endl;
-//                        }
-//                    }
-//
-//                    if(i==0){
-//                        res =buf;
-//                    }else{
-//                        res.insert(res.end(), buf.begin(), buf.end());
-//                    }
-//                }//end loop
-//                GDALClose(dst.release());
-//
-//                result->set_value(res, res.size());
+                // scale GDAL dataset
+                auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size);
+                int nBands = dst->GetRasterCount();
+                DBG(cerr << "scaled nBands = " << nBands << endl);
 
-//                DBG(cerr << "========= result: " << endl);
-//                DBG(result->print_val(cerr));
-//                DBG(cerr << endl);
+                // result should be DAP array
+                int t_size = nBands;
+                int x_size = x_dst_size;
+                int y_size = y_dst_size;
+                Array *result = new Array("result", const_cast<Array*>(data)->var()->ptr_duplicate());
+                result->append_dim(t_size);
+                result->append_dim(y_size);
+                result->append_dim(x_size);
+
+                vector<dods_float32> res(t_size * x_size * y_size);
+                //start loop
+                for(int i=0; i< nBands; i++){
+                    GDALRasterBand *band = dst->GetRasterBand(i+1);
+
+                    if (!band)
+                        throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+                    DBG(cerr << "------------------band #" << band->GetBand() << endl);
+                    vector<double> gt(6);
+                    dst->GetGeoTransform(&gt[0]);
+
+                    // Extract data from band
+                    vector<dods_float32> buf(x_dst_size * y_dst_size);
+                    CPLErr error = band->RasterIO(GF_Read, 0, 0, x_dst_size, y_dst_size, &buf[0], x_dst_size, y_dst_size, get_array_type(data),
+                        0, 0);
+                    if (error != CPLE_None)
+                        throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
+
+                    if (debug) {
+                        cerr << "buf:" << endl;
+                        for (int y = 0; y < y_dst_size; ++y) {
+                            for (int x = 0; x < x_dst_size; ++x) {
+                                cerr << buf[y * x_dst_size + x] << " ";
+                            }
+                            cerr << endl;
+                        }
+                    }
+
+                    if(i==0){
+                        res =buf;
+                    }else{
+                        res.insert(res.end(), buf.begin(), buf.end());
+                    }
+                }//end loop
+                GDALClose(dst.release());
+
+                result->set_value(res, res.size());
+
+                DBG(cerr << "========= result: " << endl);
+                DBG(result->print_val(cerr));
+                DBG(cerr << endl);
             }
             catch (Error &e) {
                 CPPUNIT_FAIL(e.get_error_message());
