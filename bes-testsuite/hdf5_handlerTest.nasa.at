@@ -252,5 +252,6 @@ AT_BESCMD_RESPONSE_TEST([eos5_sin_one_grid.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([eos5_sin_one_grid.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5_sin_multi_grids.data.bescmd])
 
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d" space="catalog">/data/VNP09GA.A2017161.h10v04.001.2017162212935.h5</setContainer>
+    <define name="d">
+	<container name="grid_1_2d" >
+       <constraint>
+                VNP_Grid_1km_2D_lon[0:1199:1199][0:1199:1199],VNP_Grid_500m_2D_lat[0:2399:2399][0:2399:2399],VNP_Grid_1km_2D_YDim[0:599:1199],VNP_Grid_500m_2D_XDim[0:1199:2399]
+       </constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

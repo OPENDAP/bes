@@ -64,7 +64,7 @@ Dataset {
     Float64 VNP_Grid_500m_2D_lat[VNP_Grid_500m_2D_YDim = 2400][VNP_Grid_500m_2D_XDim = 2400];
     Float64 VNP_Grid_1km_2D_YDim[VNP_Grid_1km_2D_YDim = 1200];
     Float64 VNP_Grid_1km_2D_XDim[VNP_Grid_1km_2D_XDim = 1200];
+    Byte eos_cf_projection;
     Float64 VNP_Grid_500m_2D_YDim[VNP_Grid_500m_2D_YDim = 2400];
     Float64 VNP_Grid_500m_2D_XDim[VNP_Grid_500m_2D_XDim = 2400];
-    Byte eos_cf_projection;
 } VNP09GA.A2017161.h10v04.001.2017162212935.h5;
