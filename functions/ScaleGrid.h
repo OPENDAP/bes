@@ -85,6 +85,7 @@ std::auto_ptr<GDALDataset> scale_dataset_3D(std::auto_ptr<GDALDataset> src, cons
     const std::string &crs = "", const std::string &interp = "nearest");
 
 libdap::Array *build_array_from_gdal_dataset(GDALDataset *dst, const libdap::Array *src);
+libdap::Array *build_array_from_gdal_dataset_3D(GDALDataset *dst, const libdap::Array *src);
 void build_maps_from_gdal_dataset(GDALDataset *dst, libdap::Array *x_map, libdap::Array *y_map, bool name_maps = false);
 void build_maps_from_gdal_dataset_3D(GDALDataset *dst, libdap::Array *t_map, libdap::Array *x_map, libdap::Array *y_map, bool name_maps = false);
 
