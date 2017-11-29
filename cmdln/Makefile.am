@@ -14,9 +14,10 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-if BUILD_HYRAX_DEBUG
-AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-endif
+# Now set using configure. jhrg 11/28/17
+# if BES_DEVELOPER
+# AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+# endif
 
 SUBDIRS = . unit-tests tests
 

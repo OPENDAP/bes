@@ -40,11 +40,11 @@ dnl jhrg 3/4/15
 AC_ARG_ENABLE([developer],
   [AS_HELP_STRING([--enable-developer],[developer mode])],
   [AM_CONDITIONAL([BES_DEVELOPER], [true])
-   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
+   dnl Not used anymore. jhrg 11/28/17 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
    dnl Only set CXXFLAGS if the caller does not have them set in their environment
    AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"])],
   [AM_CONDITIONAL([BES_DEVELOPER], [false])
-   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
+   dnl AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
    AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
 dnl library visioning: Update these when the interface changes. Generally,
@@ -82,6 +82,8 @@ AC_CHECK_LIB([pthread], [pthread_kill],
     
 AC_SUBST([PTHREAD_LIBS])
 
+dnl This seems like it doesn't belong here but in the module, instead.
+dnl TODO. jhrg 11/28/17
 AC_DEFINE([DAPREADER_PACKAGE], ["dapreader_module"], [dapreader_module])
 AC_DEFINE([DAPREADER_VERSION], ["0.0.1"], [0.0.1])
 
@@ -111,6 +113,7 @@ AC_SEARCH_LIBS([uuid_generate], [uuid],
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Perl is used by www-interface during the build
+dnl TODO: Really? jhrg 11/28/17
 AC_CHECK_PROG([PERL], [perl], [`which perl`])
 
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
@@ -249,12 +252,12 @@ AM_PATH_CPPUNIT(1.12.0,
 
 dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
-AC_ARG_WITH([dap-exp-modules],
-  [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
-  [with_dap_exp_modules=${withval} ],
-  [with_dap_exp_modules=no])
+dnl AC_ARG_WITH([dap-exp-modules],
+dnl   [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
+dnl   [with_dap_exp_modules=${withval} ],
+dnl   [with_dap_exp_modules=no])
 
-AM_CONDITIONAL([DAP_EXP_MODULES], [test x$with_dap_exp_modules = xyes])
+dnl AM_CONDITIONAL([DAP_EXP_MODULES], [test x$with_dap_exp_modules = xyes])
 
 dnl dap-builtin-mouldes is true by default; use --disable-dap-builtin-modules or
 dnl --enable-dap-builtin-modules=no to turn this off. jhrg 11/17/13
@@ -299,6 +302,52 @@ dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/1
 AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
 AC_SUBST([DAP_PROTOCOL_VERSION])
 
+dnl DMR++ module support - only when BES_DEVELOPER is set do we need this.
+dnl jhrg 11/28/17
+
+dnl support the --with-curl option for specifying a particular version of curl.
+
+AC_ARG_WITH(curl,
+    AS_HELP_STRING([--with-curl=prefix], [Prefix where curl/libcurl is installed (overrides pkgconfig, etc.]),
+    with_curl_prefix="$withval",
+    with_curl_prefix="")
+
+dnl I wrote these checks because we need the *-config scripts to build, so 
+dnl the AC_CHECK_LIB macro is not needed.
+
+AC_MSG_CHECKING([for libcurl])
+
+PKG_CHECK_MODULES([CURL], [libcurl >= 7.20.0], [pkgconfig_libcurl=yes], [pkgconfig_libcurl=no])
+
+AS_IF([test -n "$with_curl_prefix" -a -x $with_curl_prefix/bin/curl-config],
+    [AC_MSG_NOTICE([Using $with_curl_prefix as the curl prefix directory.])
+     CURL_LIBS="`$with_curl_prefix/bin/curl-config --libs`"
+     CURL_CFLAGS="`$with_curl_prefix/bin/curl-config --cflags`"
+     AC_MSG_RESULT([yes; used $with_curl_prefix/bin/curl-config])],
+    
+    dnl FAIL if $with_curl_prefix is not zero but the script is not executable
+    [test -n "$with_curl_prefix"],
+    [AC_MSG_ERROR([You set the curl-prefix directory to $with_curl_prefix, but curl-config is not there.])],
+    
+    dnl Try pkg-config
+    [PKG_CHECK_MODULES([CURL], [libcurl >= 7.20.0], [pkgconfig_libcurl=yes], [pkgconfig_libcurl=no])
+     || test $pkgconfig_libcurl = yes],
+    [CURL_LIBS="`$PKG_CONFIG --libs libcurl`"
+     CURL_CFLAGS="`$PKG_CONFIG --cflags`"
+     AC_MSG_RESULT([yes; used pkg-config])],
+    
+    dnl Try curl-config using $PATH
+    [version_libcurl=`curl-config --version | sed 's@libcurl \(.*\)@\1@'`
+     || test -n "$version_libcurl"],
+    [AS_VERSION_COMPARE(["$version_libcurl"], ["7.20.0"], 
+     [AC_MSG_ERROR([I could not find libcurl 7.20.0 or newer, found $version_libcurl])])
+     CURL_LIBS="`curl-config --libs`"
+     CURL_CFLAGS="`curl-config --cflags`"
+     AC_MSG_RESULT([yes; used curl-config and found version $version_libcurl])],
+     
+    dnl FAIL no libcurl
+    [AC_MSG_ERROR([could not find libcurl])])
+    
 dnl Freeform hacks
 
 FF_CPPFLAGS=

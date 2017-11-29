@@ -1,0 +1,72 @@
+dnl -*- automake -*-
+dnl Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.63)
+
+dnl Update version here and below at LIB_CURRENT, ..., if needed.
+AC_INIT(bes, 3.19.0, support@opendap.org)
+AC_CONFIG_SRCDIR([libcurl_configure.ac])
+
+AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
+
+dnl flags for the compilers and linkers - set these before locating the
+dnl actual tools since some of the AC_PROG macros set these 'flag variables'
+dnl to default values otherwise.
+AC_CANONICAL_HOST
+AC_SUBST(host)
+
+dnl support the --with-curl option for specifying a particular version of curl.
+
+dnl I wrote these checks because we need the *-config scripts to build, so 
+dnl the AC_CHECK_LIB macro is not needed.
+
+AC_ARG_VAR(CURL_LIBS, [libcurl required libraries])
+AC_ARG_VAR(CURL_CFLAGS, [libcurl required compiler flags])
+
+curl_is_ok=no
+curl_req_version=7.20.0
+
+AC_ARG_WITH(curl,
+    AS_HELP_STRING([--with-curl=prefix], [Prefix where curl/libcurl is installed; any version found is used.]),
+    with_curl_prefix="$withval",
+    with_curl_prefix="")
+
+AS_IF([test -n "$with_curl_prefix" -a -x $with_curl_prefix/bin/curl-config],
+    [AC_MSG_CHECKING([for libcurl])
+     CURL_LIBS="`$with_curl_prefix/bin/curl-config --libs`"
+     CURL_CFLAGS="`$with_curl_prefix/bin/curl-config --cflags`"
+     AC_MSG_RESULT([yes; used $with_curl_prefix/bin/curl-config])
+     curl_is_ok=yes],
+    
+    dnl FAIL if $with_curl_prefix is not zero but the script is not executable
+    [test -n "$with_curl_prefix"],
+    [AC_MSG_ERROR([curl-prefix set to $with_curl_prefix, but curl-config is not there.])])
+    
+AC_ARG_VAR(PKG_CONFIG, [path to pkg-config utility])
+AC_PATH_TOOL(PKG_CONFIG, pkg-config)
+
+AS_IF([test -n "$PKG_CONFIG"], 
+    [AC_MSG_CHECKING([for libcurl using pkg-config])
+     AS_IF([pkg-config --atleast-version=$curl_req_version curl],
+        [CURL_CFLAGS=`pkg-config --cflags curl`
+         CURL_LIBS=`pkg-config --libs curl`
+         AC_MSG_RESULT([yes; found at least version $curl_req_version])
+         curl_is_ok=yes],
+        [AC_MSG_RESULT(no, needed $curl_req_version)])])
+    
+AC_ARG_VAR(CURL_CONFIG, [path to curl-config utility])
+AC_PATH_TOOL(CURL_CONFIG, curl-config)
+
+AS_IF([test -n "$CURL_CONFIG"], 
+    [AC_MSG_CHECKING([for libcurl using curl-config])
+     version_libcurl=`curl-config --version | sed 's@libcurl \(.*\)@\1@'`
+     AS_VERSION_COMPARE([$version_libcurl], [$curl_req_version], [curl_is_ok=no], [curl_is_ok=yes], [curl_is_ok=yes])
+     AS_IF([test $curl_is_ok = yes],
+        [CURL_LIBS="`curl-config --libs`"
+         CURL_CFLAGS="`curl-config --cflags`"
+         AC_MSG_RESULT([yes; found version $version_libcurl])],
+        [AC_MSG_RESULT([no, found version $version_libcurl but needed $curl_req_version])])])
+
+AS_IF([test $curl_is_ok = no],       
+    [AC_MSG_ERROR([libcurl: insufficient version or not found])])
