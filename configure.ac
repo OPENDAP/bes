@@ -287,6 +287,8 @@ BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
 AC_SUBST(BES_XML_CMD_LIB)
 BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
 AC_SUBST(BES_PPT_LIB)
+BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
+AC_SUBST(BES_DAP_LIB)
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 
@@ -750,7 +752,7 @@ dnl A better way to control starting a stopping hyrax is needed.
 dnl For now, use besd (which can be run from startup scripts or
 dnl using besctl) and tomcat. both bes and tomcat can be set to
 dnl start at boot time. jhrg 9/27/17 
-dnl AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
+AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
@@ -783,6 +785,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/debug_functions/unit-tests/test_config.h
     modules/debug_functions/tests/Makefile 
     modules/debug_functions/tests/atlocal
+
+    modules/dmrpp_module/Makefile
+    modules/dmrpp_module/unit-tests/Makefile
+    modules/dmrpp_module/unit-tests/test_config.h
+    modules/dmrpp_module/data/Makefile
 
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
