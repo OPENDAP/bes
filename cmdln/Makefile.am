@@ -34,8 +34,3 @@ CmdApp.h CmdClient.h CmdTranslation.h
 
 bescmdln_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/ppt/libbes_ppt.la \
 $(top_builddir)/xmlcommand/libbes_xml_command.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
-
-server-tests:
-	besctl start && \
-	(cd testsuite && make server-tests) && \
-	besctl stop
