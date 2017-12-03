@@ -307,7 +307,7 @@ dnl jhrg 11/28/17
 dnl
 dnl support the --with-curl option for specifying a particular version of curl.
 dnl This will be used only when BES_DEVELOPER (aka --enable-developer) is set,
-dnl since that's the only time the dmr++ module is build.
+dnl since that is the only time the dmr++ module is build.
 
 AC_ARG_VAR(CURL_LIBS, [libcurl required libraries])
 AC_ARG_VAR(CURL_CFLAGS, [libcurl required compiler flags])
@@ -632,7 +632,7 @@ AC_CHECK_ICU([3.6],
 dnl Look for gridfields
 
 dnl When pkgconfig support is added, use this
-libdap_libgridfields_module='libgridfields >= 1.0.3'
+libdap_libgridfields_module="libgridfields >= 1.0.3"
 libgf_needed="1.0.3"
 
 libgf_ok="no"
@@ -655,58 +655,54 @@ AC_ARG_ENABLE([gridfields],
     AC_HELP_STRING([--enable-gridfields], [Enable gridfields (default is YES)]),
     [ ],
     [enable_gridfields=yes])
-
-dnl ##################################################################
-
-dnl Refactor stoped here jhrg 1/28/17
-
-dnl ##################################################################
  
-if test "$libgf_ok" = "no" -a "$enable_gridfields" = "yes"
-then
+AS_IF([test "x$libgf_ok" = "xno" -a "x$enable_gridfields" = "xyes"],
+    [
 
-# save PATH     
-gridfields_save_path=$PATH
+    dnl save PATH     
+    gridfields_save_path=$PATH
 
-# if --with-dependencies was used, look there too
-AS_IF([test -n "$ac_bes_dependencies_prefix"],
-    [PATH=$ac_bes_dependencies_prefix/bin:$PATH])
+    dnl if --with-dependencies was used, look there too
+    AS_IF([test -n "$ac_bes_dependencies_prefix"], [PATH=$ac_bes_dependencies_prefix/bin:$PATH])
 
-AC_MSG_CHECKING([for libgridfields $libgf_needed])
+    AC_MSG_CHECKING([for libgridfields $libgf_needed])
 
-dnl Use AS_VERSION_COMPARE to test version numbers. jhrg 9/9/15
+    dnl Use AS_VERSION_COMPARE to test version numbers. jhrg 9/9/15
 
-if gridfields-config --version > /dev/null 2>&1
-then
-    version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
-    AS_VERSION_COMPARE($version_libgf, $libgf_needed, [libgf_ok=no], [libgf_ok=yes], [libgf_ok=yes])
-    if test x$libgf_ok = xno
-    then
-        AC_MSG_ERROR([FIXME must have libgf $libgf_needed or greater, found $version_libgf])
-    fi
+    AS_IF([gridfields-config --version > /dev/null 2>&1],
+        [
+        version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
+        AS_VERSION_COMPARE($version_libgf, $libgf_needed, [libgf_ok=no], [libgf_ok=yes], [libgf_ok=yes])
+        AS_IF([test x$libgf_ok = xno],
+            [
+            AC_MSG_ERROR([FIXME must have libgf $libgf_needed or greater, found $version_libgf])
+            ])
 
-    GF_LIBS="`gridfields-config --libs`"
-    GF_CFLAGS="`gridfields-config --cflags`"
-    GF_PATH="`gridfields-config --prefix`"
+        GF_LIBS="`gridfields-config --libs`"
+        GF_CFLAGS="`gridfields-config --cflags`"
+        GF_PATH="`gridfields-config --prefix`"
 
-    AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
-    AC_MSG_RESULT([yes; used gridfields-config])
-elif test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/
-then
-	libgf_ok="yes"
-	GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
-	GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
-	GF_PATH=$ac_bes_dependencies_prefix
-	AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
-	AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
-else
-    AC_MSG_NOTICE([I could not find libgridfields])
-fi
-
-# Restore saved value of PATH
-export PATH=$gridfields_save_path
-
-fi
+        AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
+        AC_MSG_RESULT([yes; used gridfields-config])
+        ],
+        [test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/],
+        [
+        libgf_ok="yes"
+        GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
+        GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
+        GF_PATH=$ac_bes_dependencies_prefix
+        AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
+        AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
+        ],
+        [
+        AC_MSG_NOTICE([I could not find libgridfields])
+        ]
+    )
+    
+    dnl Restore saved value of PATH
+    export PATH=$gridfields_save_path
+    ]
+)
 
 AC_SUBST([GF_LIBS])
 AC_SUBST([GF_CFLAGS])
