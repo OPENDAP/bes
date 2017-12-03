@@ -1,5 +1,5 @@
 
-Updated for version 3.20.0 of the OPeNDAP BES.
+Updated for version 3.19.2 of the OPeNDAP BES.
 
 Building and Installing the BES
 
@@ -39,18 +39,12 @@ in a 'stock' Hyrax distribution. Either way, it starts out the same:
 
 Then...
 
-2. make a symbolic link from configure_standard.ac or
-configure_modules.ac to configure.ac. The '..._modules.ac' file will
-build the framework and all the modules, while the '..._standard.ac'
-will build the framework only.
-
-For the modules build: 'ln -s configure_modules.ac configure.ac'
-
-* If you're going to build the BES plus the modules, there is one more
-command you'll have to do. Use 'git submodule' to clone all of the
-modules so they can be built (by default, while there is a 'modules'
-dir in the BES git repo, it's empty until you clone the modules repos.
-Use this command to get the modules:
+2. If you're going to build the BES plus the modules, there is one
+more command you'll have to do. Use 'git submodule' to clone all of
+the modules so they can be built (by default, while there is a
+'modules' dir in the BES git repo, and some of its directories are
+empty until you clone the modules repos. Use this command to get the
+modules:
 
     'git submodule update --remote --init'
 
