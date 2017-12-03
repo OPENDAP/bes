@@ -513,7 +513,30 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
     y_map->set_value(&y_map_vals[0], y);
 }
 
-void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t_map, Array *x_map, Array *y_map, bool name_maps /*default false */)
+/**
+ * @brief build time, lon and lat maps using a 3D GDAL dataset
+ *
+ * Given a 3D GDAL Dataset, use the geo-transform information along with
+ * the dataset's extent (height and width in pixels) to build Maps/shared
+ * dimensions for DAP2/4 Grid/Coverages. The three Array arguments must
+ * be allocated by the caller and have an element type of dods_float32, but
+ * their dimensionality should not be set.
+ *
+ * @note
+ * Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+ * Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+ * For an inverted dataset, use min_y and res_y for GT(3) and GT(5)
+ * In case of north up images, the GT(2) and GT(4) coefficients are zero
+ *
+ * @param dst Source for the DAP2 Grid maps (or DAP4 shared dimensions)
+ * @param t_map value-result parameter for time map (get values from t)
+ * @param x_map value-result parameter for the longitude map (uses dods_float32
+ * elements)
+ * @param y_map value-result parameter for the latitude map
+ * @param name_maps If true, name t map "Time", the x map "Latitude" and the y map "Longitude"
+ * if false, do not name the maps.
+ */
+void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, Array *x_map, Array *y_map, bool name_maps /*default false */)
 {
     // get the geo-transform data
     vector<double> gt(6);
@@ -523,14 +546,19 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t_map, Array *x_ma
     GDALRasterBand *band = dst->GetRasterBand(1);
 
     // Build Time map
-    int t = dst->GetRasterCount();
+    int t_size = t->length();
 
     if (name_maps) {
-        t_map->append_dim(t, "Time");
+        t_map->append_dim(t_size, "Time");
     }
     else {
-        t_map->append_dim(t);
+        t_map->append_dim(t_size);
     }
+
+    vector<dods_float32> t_buf(t_size);
+    t->value(&t_buf[0]);
+
+    t_map->set_value(&t_buf[0], t_size);
 
     // Build Lon map
     unsigned long x = band->GetXSize(); // x_map_vals
@@ -1139,7 +1167,7 @@ auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Arra
  * @param size
  * @param crs
  * @param interp
- * @return The scaled Grid where the first map holds the longitude data and second
+ * @return The scaled Grid where the first map holds time, the second holds longitude data and third
  * holds the latitude data.
  */
 Grid *scale_dap_array_3D(const Array *data, const Array *time, const Array *lon, const Array *lat, const SizeBox &size,
@@ -1163,17 +1191,18 @@ Grid *scale_dap_array_3D(const Array *data, const Array *time, const Array *lon,
     auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
     auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
 
-    build_maps_from_gdal_dataset_3D(dst.get(), built_time.get(), built_lon.get(), built_lat.get());
+    // Build maps for grid
+    build_maps_from_gdal_dataset_3D(dst.get(), t, built_time.get(), built_lon.get(), built_lat.get());
 
+    // get result Grid
     auto_ptr<Grid> result(new Grid(d->name()));
     result->set_array(built_data.release());
     result->add_map(built_time.release(), false);
     result->add_map(built_lat.release(), false);
     result->add_map(built_lon.release(), false);
-    BESDEBUG(DEBUG_KEY,"dim length: " << result.release()->get_array()->dimensions() << endl);
 
     return result.release();
 }
 
 }
- // namespace libdap
+
