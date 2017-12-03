@@ -304,49 +304,64 @@ AC_SUBST([DAP_PROTOCOL_VERSION])
 
 dnl DMR++ module support - only when BES_DEVELOPER is set do we need this.
 dnl jhrg 11/28/17
-
+dnl
 dnl support the --with-curl option for specifying a particular version of curl.
+dnl This will be used only when BES_DEVELOPER (aka --enable-developer) is set,
+dnl since that's the only time the dmr++ module is build.
 
-AC_ARG_WITH(curl,
-    AS_HELP_STRING([--with-curl=prefix], [Prefix where curl/libcurl is installed (overrides pkgconfig, etc.]),
+AC_ARG_VAR(CURL_LIBS, [libcurl required libraries])
+AC_ARG_VAR(CURL_CFLAGS, [libcurl required compiler flags])
+
+AM_COND_IF([BES_DEVELOPER], [
+
+curl_is_ok=no
+curl_req_version=7.20.0
+
+AC_ARG_WITH([curl],
+    AS_HELP_STRING([--with-curl], [Prefix where curl/libcurl is installed; any version found is used.]),
     with_curl_prefix="$withval",
     with_curl_prefix="")
 
-dnl I wrote these checks because we need the *-config scripts to build, so 
-dnl the AC_CHECK_LIB macro is not needed.
-
-AC_MSG_CHECKING([for libcurl])
-
-PKG_CHECK_MODULES([CURL], [libcurl >= 7.20.0], [pkgconfig_libcurl=yes], [pkgconfig_libcurl=no])
-
 AS_IF([test -n "$with_curl_prefix" -a -x $with_curl_prefix/bin/curl-config],
-    [AC_MSG_NOTICE([Using $with_curl_prefix as the curl prefix directory.])
+    [AC_MSG_CHECKING([for libcurl])
      CURL_LIBS="`$with_curl_prefix/bin/curl-config --libs`"
      CURL_CFLAGS="`$with_curl_prefix/bin/curl-config --cflags`"
-     AC_MSG_RESULT([yes; used $with_curl_prefix/bin/curl-config])],
+     AC_MSG_RESULT([yes; used $with_curl_prefix/bin/curl-config])
+     curl_is_ok=yes],
     
     dnl FAIL if $with_curl_prefix is not zero but the script is not executable
     [test -n "$with_curl_prefix"],
-    [AC_MSG_ERROR([You set the curl-prefix directory to $with_curl_prefix, but curl-config is not there.])],
+    [AC_MSG_ERROR([curl-prefix set to $with_curl_prefix, but curl-config is not there.])])
     
-    dnl Try pkg-config
-    [PKG_CHECK_MODULES([CURL], [libcurl >= 7.20.0], [pkgconfig_libcurl=yes], [pkgconfig_libcurl=no])
-     || test $pkgconfig_libcurl = yes],
-    [CURL_LIBS="`$PKG_CONFIG --libs libcurl`"
-     CURL_CFLAGS="`$PKG_CONFIG --cflags`"
-     AC_MSG_RESULT([yes; used pkg-config])],
+AC_ARG_VAR(PKG_CONFIG, [path to pkg-config utility])
+AC_PATH_TOOL([PKG_CONFIG], [pkg-config])
+
+AS_IF([test -n "$PKG_CONFIG"], 
+    [AC_MSG_CHECKING([for libcurl using pkg-config])
+     AS_IF([pkg-config --atleast-version=$curl_req_version curl],
+        [CURL_CFLAGS=`pkg-config --cflags curl`
+         CURL_LIBS=`pkg-config --libs curl`
+         AC_MSG_RESULT([yes; found at least version $curl_req_version])
+         curl_is_ok=yes],
+        [AC_MSG_RESULT([no, needed $curl_req_version])])])
     
-    dnl Try curl-config using $PATH
-    [version_libcurl=`curl-config --version | sed 's@libcurl \(.*\)@\1@'`
-     || test -n "$version_libcurl"],
-    [AS_VERSION_COMPARE(["$version_libcurl"], ["7.20.0"], 
-     [AC_MSG_ERROR([I could not find libcurl 7.20.0 or newer, found $version_libcurl])])
-     CURL_LIBS="`curl-config --libs`"
-     CURL_CFLAGS="`curl-config --cflags`"
-     AC_MSG_RESULT([yes; used curl-config and found version $version_libcurl])],
-     
-    dnl FAIL no libcurl
-    [AC_MSG_ERROR([could not find libcurl])])
+AC_ARG_VAR(CURL_CONFIG, [path to curl-config utility])
+AC_PATH_TOOL([CURL_CONFIG], [curl-config])
+
+AS_IF([test -n "$CURL_CONFIG"], 
+    [AC_MSG_CHECKING([for libcurl using curl-config])
+     version_libcurl=`curl-config --version | sed 's@libcurl \(.*\)@\1@'`
+     AS_VERSION_COMPARE([$version_libcurl], [$curl_req_version], [curl_is_ok=no], [curl_is_ok=yes], [curl_is_ok=yes])
+     AS_IF([test $curl_is_ok = yes],
+        [CURL_LIBS="`curl-config --libs`"
+         CURL_CFLAGS="`curl-config --cflags`"
+         AC_MSG_RESULT([yes; found version $version_libcurl])],
+        [AC_MSG_RESULT([no, found version $version_libcurl but needed $curl_req_version])])])
+
+AS_IF([test $curl_is_ok = no],       
+    [AC_MSG_ERROR([libcurl: insufficient version or not found])])
+    
+])  dnl End AM_COND_IF BES_DEVELOPER for DMR++/libcurl
     
 dnl Freeform hacks
 
