@@ -9,44 +9,57 @@ total_reps=100;
 # 1.6GB resource held in S3 with access via S3 http
 url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 
-# 1.6GB resource held in EC2 access via httpd
-#url="http://107.23.252.39/MVI_1803.MOV"  resource_size=1647477620;
-
-#resource_size=164747;
-
+# Here are some smaller files. Note that we can provide different values for
+# 'resource_size' and thus work with an artificially smaller file (passing
+# a smaller resource size to 'multiball' and using sharded access will cause
+# that program to to request fewer bytes).
+#
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
 #url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
 
-
-
-################################################################################
-################################################################################
-################################################################################
-function get_resource_size(){
-    resource_id=$1;
+#
+# Read the response from an HTTP HEAD request and return the value of the
+# Content-Length header.
+#
+# This is not used, but if you source the script ('source mtest.sh') then
+# it can be called from the command line.
+#
+function get_resource_size() {
+    resource_id=$1
     
     http_header_file=$(mktemp -t http_header_XXXXXX)
     if [ $verbose = 1 ] ; then echo "http_header_file: " $http_header_file;  fi
 
-    curl -s -I $resource_id > $http_header_file;
+    curl -s -I $resource_id > $http_header_file
     header_size=`cat $http_header_file | wc -c`
-    content_length=`cat $http_header_file | grep -i Content-Length | awk '{printf("%s",$2);}' -`;
+    content_length=`cat $http_header_file | grep -i Content-Length | awk '{printf("%s",$2);}' -`
     if [ $verbose = 1 ] ; then echo "content_length: " $content_length;  fi
     
     export resource_size=`tr -dc '[[:print:]]' <<< "$content_length"`
     if [ $verbose = 1 ] ; then 
-            echo "resource_size: " $resource_size;  
+            echo "resource_size: " $resource_size
     else 
-            echo $resource_size;  
+            echo $resource_size
     fi    
 }
 
-#############################
-#MULTIBALL
+#
+# Call the 'multiball' command line program to read $resource_size bytes from $url.
+# This function will put the results in ${name}_multi_perform_${shards}. For each 
+# shard value (50, 20, ..., 1) the function will run $total_reps times.
+#
+# The entire resource will be accessed 8 * $total_reps times
+#
+# All parameters are accessed via shell variables:
+# $total_reps
+# $url
+# $resource_size
+# $name
+# 
 function multiball() {
     
-    test_base=$name"_multi_perform_";
-    #echo "test_base: $test_base";
+    test_base="${name}_multi_perform_";
+    echo "test_base: $test_base";
     rm -f "$test_base*";
 
     header=`echo "-------------------------------------------------------------------------";
@@ -59,27 +72,25 @@ function multiball() {
 
     for shards in 50 20 10 5 2 1
     do
-        file_base=$test_base$shards;
-        echo "$header" >> $file_base.log
-        echo "file_base: $file_base" >> $file_base.log
+        file_base=${test_base}${shards}.log;
+        echo "$header" >> $file_base
+        echo "file_base: $file_base" >> $file_base
         for ((rep = 0; rep < $total_reps; rep++))
         do
             cmd="./multiball -u $url -s $resource_size -o $file_base -c $shards"
-            echo "COMMAND: $cmd" >> $file_base.log
-            (time -p $cmd) 2>> $file_base.log 
-            seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-            echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log;
+            echo "COMMAND: $cmd" >> $file_base
+            (time -p $cmd) 2>> $file_base 
+            seconds=`tail -3 $file_base | grep real | awk '{print $2;}' -`
+            echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base;
         done
-        time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
+        time_vals=`grep real $file_base | awk '{printf("%s ",$2);}' -`;
         # echo "time_vals: $time_vals";        
         metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
         avg=`echo $metrics | awk '{print $1}' -`;
         stdev=`echo $metrics | awk '{print $2}' -`;
 
-        echo "CuRL_multi_perform shards: $shards reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
-        #exit;
+        echo "CuRL_multi_perform shards: $shards reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base
     done
-
 }
 
 
@@ -212,7 +223,7 @@ exit;
 
 
 
-#pthre
+#pthread
 # time -p ./multiball -u "https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc" -s 140904652 -o MB2006001_2006001_chla.nc -c 20
 
 
