@@ -8,7 +8,7 @@
 README for the OPeNDAP BES 
 ==========================
 
-Updated for version 3.20.0
+Updated for version 3.19.1
 
 BESInterface/XMLInterface improved
 

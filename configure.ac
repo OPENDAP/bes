@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.0, support@opendap.org)
+AC_INIT(bes, 3.19.1, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -40,11 +40,11 @@ dnl jhrg 3/4/15
 AC_ARG_ENABLE([developer],
   [AS_HELP_STRING([--enable-developer],[developer mode])],
   [AM_CONDITIONAL([BES_DEVELOPER], [true])
-   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
+   dnl Not used anymore. jhrg 11/28/17 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
    dnl Only set CXXFLAGS if the caller does not have them set in their environment
    AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"])],
   [AM_CONDITIONAL([BES_DEVELOPER], [false])
-   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
+   dnl AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
    AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
 dnl library visioning: Update these when the interface changes. Generally,
@@ -82,6 +82,8 @@ AC_CHECK_LIB([pthread], [pthread_kill],
     
 AC_SUBST([PTHREAD_LIBS])
 
+dnl This seems like it doesn't belong here but in the module, instead.
+dnl TODO. jhrg 11/28/17
 AC_DEFINE([DAPREADER_PACKAGE], ["dapreader_module"], [dapreader_module])
 AC_DEFINE([DAPREADER_VERSION], ["0.0.1"], [0.0.1])
 
@@ -111,6 +113,7 @@ AC_SEARCH_LIBS([uuid_generate], [uuid],
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Perl is used by www-interface during the build
+dnl TODO: Really? jhrg 11/28/17
 AC_CHECK_PROG([PERL], [perl], [`which perl`])
 
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
@@ -249,12 +252,12 @@ AM_PATH_CPPUNIT(1.12.0,
 
 dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
-AC_ARG_WITH([dap-exp-modules],
-  [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
-  [with_dap_exp_modules=${withval} ],
-  [with_dap_exp_modules=no])
+dnl AC_ARG_WITH([dap-exp-modules],
+dnl   [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
+dnl   [with_dap_exp_modules=${withval} ],
+dnl   [with_dap_exp_modules=no])
 
-AM_CONDITIONAL([DAP_EXP_MODULES], [test x$with_dap_exp_modules = xyes])
+dnl AM_CONDITIONAL([DAP_EXP_MODULES], [test x$with_dap_exp_modules = xyes])
 
 dnl dap-builtin-mouldes is true by default; use --disable-dap-builtin-modules or
 dnl --enable-dap-builtin-modules=no to turn this off. jhrg 11/17/13
@@ -299,6 +302,67 @@ dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/1
 AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
 AC_SUBST([DAP_PROTOCOL_VERSION])
 
+dnl DMR++ module support - only when BES_DEVELOPER is set do we need this.
+dnl jhrg 11/28/17
+dnl
+dnl support the --with-curl option for specifying a particular version of curl.
+dnl This will be used only when BES_DEVELOPER (aka --enable-developer) is set,
+dnl since that is the only time the dmr++ module is build.
+
+AC_ARG_VAR(CURL_LIBS, [libcurl required libraries])
+AC_ARG_VAR(CURL_CFLAGS, [libcurl required compiler flags])
+
+AM_COND_IF([BES_DEVELOPER], [
+
+curl_is_ok=no
+curl_req_version=7.20.0
+
+AC_ARG_WITH([curl],
+    AS_HELP_STRING([--with-curl], [Prefix where curl/libcurl is installed; any version found is used.]),
+    with_curl_prefix="$withval",
+    with_curl_prefix="")
+
+AS_IF([test -n "$with_curl_prefix" -a -x $with_curl_prefix/bin/curl-config],
+    [AC_MSG_CHECKING([for libcurl])
+     CURL_LIBS="`$with_curl_prefix/bin/curl-config --libs`"
+     CURL_CFLAGS="`$with_curl_prefix/bin/curl-config --cflags`"
+     AC_MSG_RESULT([yes; used $with_curl_prefix/bin/curl-config])
+     curl_is_ok=yes],
+    
+    dnl FAIL if $with_curl_prefix is not zero but the script is not executable
+    [test -n "$with_curl_prefix"],
+    [AC_MSG_ERROR([curl-prefix set to $with_curl_prefix, but curl-config is not there.])])
+    
+AC_ARG_VAR(PKG_CONFIG, [path to pkg-config utility])
+AC_PATH_TOOL([PKG_CONFIG], [pkg-config])
+
+AS_IF([test -n "$PKG_CONFIG"], 
+    [AC_MSG_CHECKING([for libcurl using pkg-config])
+     AS_IF([pkg-config --atleast-version=$curl_req_version curl],
+        [CURL_CFLAGS=`pkg-config --cflags curl`
+         CURL_LIBS=`pkg-config --libs curl`
+         AC_MSG_RESULT([yes; found at least version $curl_req_version])
+         curl_is_ok=yes],
+        [AC_MSG_RESULT([no, needed $curl_req_version])])])
+    
+AC_ARG_VAR(CURL_CONFIG, [path to curl-config utility])
+AC_PATH_TOOL([CURL_CONFIG], [curl-config])
+
+AS_IF([test -n "$CURL_CONFIG"], 
+    [AC_MSG_CHECKING([for libcurl using curl-config])
+     version_libcurl=`curl-config --version | sed 's@libcurl \(.*\)@\1@'`
+     AS_VERSION_COMPARE([$version_libcurl], [$curl_req_version], [curl_is_ok=no], [curl_is_ok=yes], [curl_is_ok=yes])
+     AS_IF([test $curl_is_ok = yes],
+        [CURL_LIBS="`curl-config --libs`"
+         CURL_CFLAGS="`curl-config --cflags`"
+         AC_MSG_RESULT([yes; found version $version_libcurl])],
+        [AC_MSG_RESULT([no, found version $version_libcurl but needed $curl_req_version])])])
+
+AS_IF([test $curl_is_ok = no],       
+    [AC_MSG_ERROR([libcurl: insufficient version or not found])])
+    
+])  dnl End AM_COND_IF BES_DEVELOPER for DMR++/libcurl
+    
 dnl Freeform hacks
 
 FF_CPPFLAGS=
@@ -568,7 +632,7 @@ AC_CHECK_ICU([3.6],
 dnl Look for gridfields
 
 dnl When pkgconfig support is added, use this
-libdap_libgridfields_module='libgridfields >= 1.0.3'
+libdap_libgridfields_module="libgridfields >= 1.0.3"
 libgf_needed="1.0.3"
 
 libgf_ok="no"
@@ -591,58 +655,54 @@ AC_ARG_ENABLE([gridfields],
     AC_HELP_STRING([--enable-gridfields], [Enable gridfields (default is YES)]),
     [ ],
     [enable_gridfields=yes])
-
-dnl ##################################################################
-
-dnl Refactor stoped here jhrg 1/28/17
-
-dnl ##################################################################
  
-if test "$libgf_ok" = "no" -a "$enable_gridfields" = "yes"
-then
+AS_IF([test "x$libgf_ok" = "xno" -a "x$enable_gridfields" = "xyes"],
+    [
 
-# save PATH     
-gridfields_save_path=$PATH
+    dnl save PATH     
+    gridfields_save_path=$PATH
 
-# if --with-dependencies was used, look there too
-AS_IF([test -n "$ac_bes_dependencies_prefix"],
-    [PATH=$ac_bes_dependencies_prefix/bin:$PATH])
+    dnl if --with-dependencies was used, look there too
+    AS_IF([test -n "$ac_bes_dependencies_prefix"], [PATH=$ac_bes_dependencies_prefix/bin:$PATH])
 
-AC_MSG_CHECKING([for libgridfields $libgf_needed])
+    AC_MSG_CHECKING([for libgridfields $libgf_needed])
 
-dnl Use AS_VERSION_COMPARE to test version numbers. jhrg 9/9/15
+    dnl Use AS_VERSION_COMPARE to test version numbers. jhrg 9/9/15
 
-if gridfields-config --version > /dev/null 2>&1
-then
-    version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
-    AS_VERSION_COMPARE($version_libgf, $libgf_needed, [libgf_ok=no], [libgf_ok=yes], [libgf_ok=yes])
-    if test x$libgf_ok = xno
-    then
-        AC_MSG_ERROR([FIXME must have libgf $libgf_needed or greater, found $version_libgf])
-    fi
+    AS_IF([gridfields-config --version > /dev/null 2>&1],
+        [
+        version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
+        AS_VERSION_COMPARE($version_libgf, $libgf_needed, [libgf_ok=no], [libgf_ok=yes], [libgf_ok=yes])
+        AS_IF([test x$libgf_ok = xno],
+            [
+            AC_MSG_ERROR([FIXME must have libgf $libgf_needed or greater, found $version_libgf])
+            ])
 
-    GF_LIBS="`gridfields-config --libs`"
-    GF_CFLAGS="`gridfields-config --cflags`"
-    GF_PATH="`gridfields-config --prefix`"
+        GF_LIBS="`gridfields-config --libs`"
+        GF_CFLAGS="`gridfields-config --cflags`"
+        GF_PATH="`gridfields-config --prefix`"
 
-    AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
-    AC_MSG_RESULT([yes; used gridfields-config])
-elif test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/
-then
-	libgf_ok="yes"
-	GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
-	GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
-	GF_PATH=$ac_bes_dependencies_prefix
-	AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
-	AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
-else
-    AC_MSG_NOTICE([I could not find libgridfields])
-fi
-
-# Restore saved value of PATH
-export PATH=$gridfields_save_path
-
-fi
+        AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
+        AC_MSG_RESULT([yes; used gridfields-config])
+        ],
+        [test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/],
+        [
+        libgf_ok="yes"
+        GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
+        GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
+        GF_PATH=$ac_bes_dependencies_prefix
+        AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
+        AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
+        ],
+        [
+        AC_MSG_NOTICE([I could not find libgridfields])
+        ]
+    )
+    
+    dnl Restore saved value of PATH
+    export PATH=$gridfields_save_path
+    ]
+)
 
 AC_SUBST([GF_LIBS])
 AC_SUBST([GF_CFLAGS])

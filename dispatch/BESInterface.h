@@ -122,7 +122,7 @@ protected:
     BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
     virtual int exception_manager(BESError &e);
-    virtual void finish();
+
     virtual void end_request();
 
     virtual void build_data_request_plan() = 0;
@@ -144,7 +144,7 @@ public:
     // to the 'run the command' part of the server. jhrg 11/7/17
     virtual int execute_request(const string &from);
 
-    virtual int finish_with_error(int status);
+    virtual int finish(int status);
 
     virtual void dump(ostream &strm) const;
 };
