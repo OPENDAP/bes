@@ -380,22 +380,22 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError & ex) {
         timeout_jump_valid = false;
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
     catch (...) {
         timeout_jump_valid = false;
         BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
-        return exception_manager(ex);
+        status = exception_manager(ex);
     }
 
 #if 0
@@ -407,29 +407,31 @@ int BESInterface::execute_request(const string &from)
 
 #endif
 
-    finish();
-
-    return 0; //jhrg 11/9/17 TODO return status;
+    return status;
 }
 
-// I think this code was written when execute_request() called transmit_data()
-// (and invoke_aggregation()). I think that the code up to the log_status()
-// call is redundant. This means that so is the param 'status'. jhrg 12/23/15
-void BESInterface::finish()
+/**
+ * Call this once execute_request() has completed.
+
+ * @param status
+ * @return The status value.
+ */
+int BESInterface::finish(int status)
 {
-#if 1
-    // This seems really odd to me... writing to cout and erasing the errors.
-    // jhrg 11/9/17
-    //
-    // If there is error information then the transmit of the error failed,
-    // print it to standard out. Once printed, delete the error
-    // information since we are done with it.
+#if 0
+    if (status != 0 && d_dhi_ptr->error_info == 0) {
+        // there wasn't an error ... so now what?
+        BESInternalError ex("Finish_with_error called with no error object", __FILE__, __LINE__);
+        status = exception_manager(ex);
+    }
+#endif
+
     if (d_dhi_ptr->error_info) {
-        d_dhi_ptr->error_info->print(cout);
+        d_dhi_ptr->error_info->print(*d_strm /*cout*/);
         delete d_dhi_ptr->error_info;
         d_dhi_ptr->error_info = 0;
     }
-#endif
+
     // if there is a problem with the rest of these steps then all we will
     // do is log it to the BES log file and not handle the exception with
     // the exception manager.
@@ -443,17 +445,7 @@ void BESInterface::finish()
     catch (...) {
         LOG("Unknown problem logging status or running end of request cleanup" << endl);
     }
-}
 
-int BESInterface::finish_with_error(int status)
-{
-    if (!d_dhi_ptr->error_info) {
-        // there wasn't an error ... so now what?
-        BESInternalError ex("Finish_with_error called with no error object", __FILE__, __LINE__);
-        status = exception_manager(ex);
-    }
-
-    finish();
     return status;
 }
 
