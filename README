@@ -39,7 +39,7 @@ available on the next section.
 What's new for Hyrax 1.14.0
 CF option:
 1. Add the support of Hybrid HDF-EOS5 products. An example is the NASA ASDC AirMSPI product.
-   (1) The HDF-EOS5 specified group path will be removed before flattening the variable name by following i
+   (1) The HDF-EOS5 specified group path will be removed before flattening the variable name by following 
        the CF. 
    (2) If a hybrid HDF-EOS5 product follows the netCDF-4 data model, the handler will also follow
        the netCDF-4 data model to map the HDF5 objects to DAP2.
