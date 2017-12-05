@@ -192,7 +192,7 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  */
 void function_scale_array_3D(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    // scale_3D_array(arg[0], T, Y, X, y,x)
+    // scale_3D_array(arg[0], T, Y, X, y, x)
     string info =
         string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             + "<function name=\"scale_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#scale_3D_array\">\n"
@@ -224,8 +224,8 @@ void function_scale_array_3D(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     Array *x = dynamic_cast<Array *>(argv[3]);
     if (!x) throw Error(malformed_expr, "The fourth argument to scale_array_3D() must be an Array variable!");
 
-    unsigned long new_x = extract_uint_value(argv[4]);
-    unsigned long new_y = extract_uint_value(argv[5]);
+    unsigned long new_x = extract_uint_value(argv[5]); // lon should be last argument
+    unsigned long new_y = extract_uint_value(argv[4]);
 
     string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
     string interp = "nearest";
@@ -238,7 +238,7 @@ void function_scale_array_3D(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     }
 
     SizeBox size(new_x, new_y);
-    *btpp = scale_dap_array_3D(data, t, y, x, size, crs, interp);
+    *btpp = scale_dap_array_3D(data, t, x, y, size, crs, interp);
 }
 
 
