@@ -4,18 +4,23 @@
 #
 # Here are some simple tests to see...
 
-total_reps=100;
+total_reps=10;
 
 # 1.6GB resource held in S3 with access via S3 http
-url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
+# url="https://s3.amazonaws.com/opendap.test/MVI_1803.MOV"; resource_size=1647477620;
 
 # Here are some smaller files. Note that we can provide different values for
 # 'resource_size' and thus work with an artificially smaller file (passing
 # a smaller resource size to 'multiball' and using sharded access will cause
-# that program to to request fewer bytes).
+# that program to to request fewer bytes). The first line below is the real
+# size of the MB...chla.nc file (134MB). Use a smaller number to test the scrip.
 #
-#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
-#url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=1403;
+# If the resource size is smaller than the total file size, the values returned for 
+# different tests here may not be comparable (e.g., the 'get the whole file in one
+# shot' test will still get all the bytes of the file.
+#
+url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=140904652;
+# url="https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc"; resource_size=100000;
 
 #
 # Read the response from an HTTP HEAD request and return the value of the
@@ -51,15 +56,15 @@ function get_resource_size() {
 # The entire resource will be accessed 8 * $total_reps times
 #
 # All parameters are accessed via shell variables:
-# $total_reps
-# $url
-# $resource_size
-# $name
+#
+# $total_reps - Run each shard-set this many times
+# $url - Use this remote resource
+# $resource_size - Assume it's this many bytes
+# $name - Prefix the log files with this name (use the shard count as a suffix)
 # 
 function multiball() {
     
     test_base="${name}_multi_perform_";
-    echo "test_base: $test_base";
     rm -f "$test_base*";
 
     header=`echo "-------------------------------------------------------------------------";
@@ -72,27 +77,26 @@ function multiball() {
 
     for shards in 50 20 10 5 2 1
     do
-        file_base=${test_base}${shards}.log;
-        echo "$header" >> $file_base
-        echo "file_base: $file_base" >> $file_base
+        file_base=${test_base}${shards}
+        echo "$header" >> $file_base.log
+        echo "file_base: $file_base" >> $file_base.log
         for ((rep = 0; rep < $total_reps; rep++))
         do
             cmd="./multiball -u $url -s $resource_size -o $file_base -c $shards"
-            echo "COMMAND: $cmd" >> $file_base
-            (time -p $cmd) 2>> $file_base 
-            seconds=`tail -3 $file_base | grep real | awk '{print $2;}' -`
-            echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base;
+	    echo -n "."
+            echo "COMMAND: $cmd" >> $file_base.log
+            (time -p $cmd) 2>> $file_base.log
+            seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
+            echo "CuRL_multi_perform file_base: $file_base size: $resource_size shards: $shards  rep: $rep  seconds: $seconds" >> $file_base.log
         done
-        time_vals=`grep real $file_base | awk '{printf("%s ",$2);}' -`;
-        # echo "time_vals: $time_vals";        
-        metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
-        avg=`echo $metrics | awk '{print $1}' -`;
-        stdev=`echo $metrics | awk '{print $2}' -`;
-
-        echo "CuRL_multi_perform shards: $shards reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base
+	echo ""
+        time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`
+        metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`
+        avg=`echo $metrics | awk '{print $1}' -`
+        stdev=`echo $metrics | awk '{print $2}' -`
+        echo "CuRL_multi_perform shards: $shards reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
     done
 }
-
 
 #
 # CuRL Command Line
@@ -112,16 +116,15 @@ function cmdln_curl() {
 
     for ((rep = 0; rep < $total_reps; rep++))
     do
-        #echo -n "."
-        cmd="curl -s "$url" -o $file_base"
+        echo -n "."
+        cmd="curl -s $url -o $file_base"
         echo "COMMAND: $cmd" >> $file_base.log
         (time -p $cmd) 2>> $file_base.log
         seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
         echo "CuRL_command_line file_base: $file_base: rep: $rep seconds: $seconds" >> $file_base.log;
     done
-    #echo "";
+    echo "";
     time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
-    #echo "time_vals: $time_vals";        
     metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
     avg=`echo $metrics | awk '{print $1}' -`;
     stdev=`echo $metrics | awk '{print $2}' -`;
@@ -129,27 +132,26 @@ function cmdln_curl() {
     echo "CuRL_command_line shards: 1 reps: $total_reps average_time: $avg stddev: $stdev" | tee -a $file_base.log
 }
 
-
-
 #
 # CuRL Command Line, use HTTP Range GET to shard and background processes
 #
 function multi_process_curl_cmdln() {
- 
-
     file_base=$name"_curl_mproc";
     rm -f "$file_base*";
+
     echo "-------------------------------------------------------------------------" | tee -a $file_base.log
     echo "- Testing CuRL command line using a multi process RANGE GET approach." | tee -a $file_base.log
     echo "-"  | tee -a $file_base.log
     echo "- Target URL: $url"  | tee -a $file_base.log
     echo "- Target Size: $resource_size"  | tee -a $file_base.log
     echo "-"  | tee -a $file_base.log
-    for shards in  50 20 10 5 2 1
+    # Old loop values:  50 20 10 5 
+    for shards in 5 2 1
     do
         echo "SHARDS: $shards ##########################" >> $file_base.log;
         for ((rep = 0; rep < $total_reps; rep++))
         do
+	    echo -n "."
             time -p (
                 echo "CuRL_command_line_multi_proc proc: $shards rep: $rep url: $url ";
                 if [ $shards -gt 1 ]
@@ -192,6 +194,7 @@ function multi_process_curl_cmdln() {
             seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
             # echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
         done
+	echo ""
         time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
         # echo "time_vals: $time_vals";        
         metrics=`echo $time_vals | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`;        
@@ -218,10 +221,6 @@ rm -f $name*
 multiball
 cmdln_curl
 multi_process_curl_cmdln
-
-exit;
-
-
 
 #pthread
 # time -p ./multiball -u "https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc" -s 140904652 -o MB2006001_2006001_chla.nc -c 20
