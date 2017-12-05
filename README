@@ -36,6 +36,20 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for Hyrax 1.14.0
+CF option:
+1. Add the support of Hybrid HDF-EOS5 products. An example is the NASA ASDC AirMSPI product.
+   (1) The HDF-EOS5 specified group path will be removed before flattening the variable name by following i
+       the CF. 
+   (2) If a hybrid HDF-EOS5 product follows the netCDF-4 data model, the handler will also follow
+       the netCDF-4 data model to map the HDF5 objects to DAP2.
+   (3) For a product that contains the "coordinate" attribute in a variable, the attribute value will
+       be adjusted to reflect the removal of the HDF-EOS5 specified group path.
+   (4) For a grid product that has CF grid_mapping information, the related grid_mapping information is 
+       also adjusted to reflect the removal of the HDF-EOS5 specified group.
+2. Enhance the HDF-EOS5 parser to support new OMI level 2 products. 
+   
+
 What's new for Hyrax 1.13.4
 ----------------------------
 
