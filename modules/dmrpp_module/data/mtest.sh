@@ -167,19 +167,14 @@ function multi_process_curl_cmdln() {
                     # echo "shard_size; $shard_size i: $i";
                     rbegin=`echo "v=$i*$shard_size; v" | bc`;
                     let end_diff=$resource_size-$rbegin;
-                    #echo "shard_size: $shard_size";
-                    #echo "end_diff:   $end_diff";
+                    # echo "shard_size: $shard_size";
+                    # echo "end_diff:   $end_diff";
                     let rend=$rbegin+$shard_size-1;
-                    if [ $rend -ge $resource_size ] 
-                    then
-                        let rend=$resource_size-1;
-                        #echo "------------------ rend: $rend"
-                    #else 
-                        #echo "rend: $rend"
-                    fi
+                    if [ $rend -ge $resource_size ]; then let rend=$resource_size-1; fi
                     range="$rbegin-$rend";
-                    #echo "rbegin: $rbegin rend: $rend range: $range";
-                    cmd="curl -s "$url" -r $range -o $file_base"_"$i"_"$shards"_shard
+                    # echo "rbegin: $rbegin rend: $rend range: $range";
+		    output_file="/dev/null" # ${file_base}_${i}_${shards}_shard
+		    cmd="curl -s $url -r $range -o $output_file"
                     echo "COMMAND: $cmd" >> $file_base.log
                     $cmd &
                     pid=$!
@@ -192,7 +187,6 @@ function multi_process_curl_cmdln() {
                 
             )  >> $file_base.log  2>&1
             seconds=`tail -3 $file_base.log | grep real | awk '{print $2;}' -`
-            # echo "CuRL_command_line_multi_proc file_base: $file_base: shards: $shards rep: $rep seconds: $seconds" | tee -a $file_base.log;
         done
 	echo ""
         time_vals=`grep real $file_base.log | awk '{printf("%s ",$2);}' -`;
@@ -219,8 +213,8 @@ echo "-"
 rm -f $name*
 
 multiball
-cmdln_curl
-multi_process_curl_cmdln
+# cmdln_curl
+# multi_process_curl_cmdln
 
 #pthread
 # time -p ./multiball -u "https://s3.amazonaws.com/opendap.test/data/nc/MB2006001_2006001_chla.nc" -s 140904652 -o MB2006001_2006001_chla.nc -c 20
