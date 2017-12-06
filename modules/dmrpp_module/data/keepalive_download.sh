@@ -39,11 +39,11 @@ do
 
 for ((i = 0; i < $reps; ++i))
 do
-    cmd="./keepalive2 -u $url -s $size -o $out -m 1 -c $count -t $threads"
+    cmd="./keepalive2 -u $url -s $size -o $out -m 1 -c $count -t $threads $ka_switch"
     (time -p $cmd) 2> tmp
 
     # Print one line of the result table
-    echo -n "$url,$size,$threads,$ka_switch,"
+    echo -n "$url,$size,$threads,$ka,"
     awk '/^real.*$/ {r = $2} 
          /^user.*$/ {u = $2} 
          /^sys.*$/ {s = $2} 
