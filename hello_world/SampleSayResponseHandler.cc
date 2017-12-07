@@ -68,6 +68,8 @@ void SampleSayResponseHandler::transmit(BESTransmitter *transmitter, BESDataHand
     // response object
     if (_response) {
         BESInfo *info = dynamic_cast<BESInfo *>(_response);
+        if (!info)
+            throw BESInternalError("Could not cast the BESResponse object to an Info object.", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
 }

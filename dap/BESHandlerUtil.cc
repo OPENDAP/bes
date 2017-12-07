@@ -26,16 +26,38 @@
 #include <unistd.h>
 
 #include <cstdlib>
+#include <cstring>
+#include <cerrno>
 #include <vector>
 #include <string>
 
 #include <BESInternalError.h>
 
 #include "BESHandlerUtil.h"
+#include "BESLog.h"
 
 using namespace std;
 
 namespace bes {
+
+/**
+ * @brief Free the temporary file
+ *
+ * Close the open descriptor and delete (unlink) the file name.
+ */
+TemporaryFile::~TemporaryFile()
+{
+    try {
+        if (!close(d_fd))
+            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+        if (!unlink(&d_name[0]))
+            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+    }
+    catch (...) {
+        // Do nothing. This just protects against BESLog (i.e., ERROR)
+        // throwing an exception
+    }
+}
 
 /**
  * @brief Get a new temporary file

@@ -1,3 +1,358 @@
+2017-11-17  James Gallagher <jgallagher@opendap.org>
+
+        Merge branch 'master' of https://github.com/opendap/bes
+
+        Various fixes.
+
+        add hyraxctl
+
+        Removed old comments and added a new one to besd.logrotate
+
+        Merge pull request #89 from OPENDAP/fang-logrotate
+    
+2017-11-15  James Gallagher <jgallagher@opendap.org>
+
+        Merge pull request #88 from OPENDAP/log-fixes
+   
+        Log fixes
+
+        Switched to ISO8601 date-time; UTC is the default.
+    
+        People can use local time in the logs using BES.LogTimeLocal 
+        in bes.conf.  The old date format is still in the code and 
+        can be used by #undef the compile-time switch ISO8601_TIME_IN_LOGS.
+
+        HYRAX-548: introduce copytruncate directive in besd.logrotate, 
+        remove brute-force stop/start
+
+        Log only one line per get command. This can be switched back to 
+        the 'three-lines-per-get' mode. Here's more information about 
+        these changes:
+    
+        * Look in BESXMLInteface.cc for the define that controls the
+          three-line or on-line versions (LOG_ONLY_GET_COMMANDS).
+    
+        * Look in BESLog.h for a define that will enable tracing the LOG and
+           VERBOSE macros use (TRACE_LOGGING).
+    
+        * Look in BESExceptionManager.cc at log_error() for massive hacks to
+          that method, including my decision to log all errors in both verbose
+          and regular modes.
+
+2017-11-14  James Gallagher <jgallagher@opendap.org>
+
+
+        A little debugging/instrumentation
+
+        Much better logging. 
+        Verbose is verbose, !verbose is not.
+    
+        The regular logging could be more concise, but that's for tomorrow.
+        Also added, a way to trace where in the code log info is written.
+
+        Logging improved...
+
+2017-11-13   James Gallagher <jgallagher@opendap.org>
+
+        Massive attempt to fix the logging of the BES. Somewhat successful...
+    
+        Still a work in progress.
+
+2017-11-10  James Gallagher <jgallagher@opendap.org>
+
+        Merge pull request #87 from OPENDAP/command-refactor
+    
+        Command refactor
+
+2017-11-09   James Gallagher <jgallagher@opendap.org>
+
+        Fixed a glitch in the error returns that broke 
+        olfs end-to-end regression tests
+
+        More refactoring - BESInterface/XMLInterface is now ready for changes.
+    
+        Updated some other parts of the code: Switched to the LOG() macro
+        and change the show catalog test to a more reliable dir and baseline.
+        The latter will simplify these kinds of refactoring changes since I 
+        can run the cmdln tests against a running BES more easily.
+
+        logging issues.
+
+2017-11-08  James Gallagher <jgallagher@opendap.org>
+
+        Remove transmit_data()?
+
+        Added one comment
+    
+        Move transmit_data() into execute_data_request_plan()
+
+        Cleaned up #if ... #endif and removed the unused Reporter feature
+
+        More movement of functionality to BESXMLInterface.
+
+        More refactoring - moved more functionality into BESXMLInterface 
+        from BESInterface
+
+2017-11-07  James Gallagher <jgallagher@opendap.org>
+
+        Removing the invoke_aggregation() code - it's not used anymore.
+    
+        There's a fair amount support for aggregation in the define command
+        as well, but that's another deal for another day.
+
+        Starting to factor BESInterface out and/or reduce its size.
+
+        Refactoring the command processing software.
+    
+        The first part of this refactoring is to streamline the 
+        BESInterface and BESXMLInterface classes and to understand 
+        how the DataHandlerInterface object is manipulated.
+
+2017-11-02  James Gallagher <jgallagher@opendap.org>
+
+        Merge pull request #86 from OPENDAP/dmr++
+    
+2017-11-01  James Gallagher <jgallagher@opendap.org>
+
+        Try not running the debug_functions' tests in parallel...
+    
+        This is an attempt to get the CI build to work.
+
+        Adding the keepalive2 program to the list of ignored files
+
+        Removed double quotes on AM_DISTCHECK_CONFIGURE_FLAGS's value
+        This was breaking the distcheck build.
+    
+        I wonder about dropping the parts of the build and 
+        just running distcheck. That would be faster... 
+        Or configuring our build to run two builds in parallel.
+
+2017-10-31  James Gallagher <jgallagher@opendap.org>
+
+        Minor edits to tests Makefile.am files in hello_world and functions
+
+        Found the likely problem with hello_world and distcheck.
+    
+        Symptom: distcheck seems to be putting generated files in
+        the srcdir and not builddir - this includes things like
+        bes.conf. The problem was (maybe - we'll see how far the
+        build gets) that hello_world (the directory) was included
+        in a parent Makefile.am's EXTRA_DIST and having generated
+        files included in the distribution means they are put in
+        $srcdir and not $builddir. And apparently including a dir
+        in EXTRA_DIST means put everything in the dist, even if
+        that dir has a Makefile.am.
+
+2017-10-19  James Gallagher <jgallagher@opendap.org>
+
+        More changes for distcheck with dmrpp_module.
+    
+        There seem to be issues in the hello_world sample handler.
+
+        Updated tests in cmdln for ubuntu
+    
+        The size and count xml attrs are no longer recored
+        in the 'show' command baselines so that values that
+        differ for different file systems and test configs
+        won't cause false failures.
+
+2017-10-30  James Gallagher <jgallagher@opendap.org>
+
+        Added -lz to the link of the dmr++ unit tests - for ubuntu.
+
+        Fixed a typo in the dmrpp_module Makefile.am
+
+2017-10-29  James Gallagher <jgallagher@opendap.org>
+
+        fixes for dmrpp distcheck
+    
+        Changes to build on Travis using --enable-developer.
+
+2017-10-28   James Gallagher <jgallagher@opendap.org>
+
+        Removed config tests of dmrpp_module/test
+    
+        This was casuing distcheck to fail
+
+2017-10-27  James Gallagher <jgallagher@opendap.org>
+
+        Removed dmrpp_handler/tests configure files.
+    
+        We dropped these tests since they did nothing.
+
+2017-10-26  James Gallagher <jgallagher@opendap.org>
+
+        Fixed dist; retired old code
+
+        Now dmrpp_handler is built only when configure is 
+        run using --enable-developer
+    
+        This makes it easier to keep this code on the master branch
+        and avoid having it 'age.'
+
+        Merge branch 'master' into dmr++
+    
+        Conflicts: xmlcommand/BESXMLInterface.cc
+
+2017-10-25  James Gallagher <jgallagher@opendap.org>
+
+        Merge pull request #85 from OPENDAP/interface-refactor
+    
+        Interface refactor
+
+        Added BES dap_module to libs so the dmrpp code can use it
+
+        Turned bes tests back on in dmrpp code.
+
+        Added a single (not meaningful) test to test the autotest harness
+
+        Merge master to dmr++, resolved conflicts, disabled dmrpp_module/tests
+
+        Updated modules on master
+
+2017-10-24  James Gallagher <jgallagher@opendap.org>
+
+        Removed unused Get DataDDX XML Command; edits to comments
+
+2017-10-23  James Gallagher <jgallagher@opendap.org>
+
+        Changed the way the bes log string is built.
+    
+        I'm not actually sure this string is needed; could the
+        information be written to the log directly? Does it 
+        need predicates like 'as', 'for', and 'in?'
+
+        Checkpoint - refactoring the Interface, XMLCommand classes.
+    
+        Removed unused fields, renamed confusng fields, removed 
+        unused formal parameters.
+
+2017-10-21  James Gallagher <jgallagher@opendap.org>
+
+        Removed useless typedefs from BESInterface
+
+2017-10-20  James Gallagher <jgallagher@opendap.org>
+
+        Removed init and end lists from BESInterface. (not used)
+    
+        Simple class field name changes
+    
+        I'm trying to make these classes a bit easier to grok.
+
+        Formatting for BESInterface and BESXMLCommand
+    
+2017-10-19  James Gallagher <jgallagher@opendap.org>
+
+        Merge pull request #84 from OPENDAP/cmdln-tests
+    
+        Cmdln tests
+
+        Figured out how to implement 'check' in bes/cmdln/tests
+    
+        This version of check-local runs the tests if a BES is found,
+        just prints an innocuous message if it is not found.
+
+        Fixed the integration tests in bes/cmdln
+
+        Added --baselines option to besTest; fixed one test
+
+        Fixed some bescmd files for the cmdln tests. Fewer tests fail...
+
+        Fixed the formatting of some files.
+    
+        Merge pull request #83 from OPENDAP/file-locking-cache-test
+    
+        File locking cache test
+
+        Removed ScaleUtilTest3D (generated) from git
+
+2017-10-11   James Gallagher <jgallagher@opendap.org>
+
+        Updating .gitignore stuff.
+
+        Added .autotools file built by eclipse to the .gitignore
+
+2017-10-09   James Gallagher <jgallagher@opendap.org>
+
+        Changes to be committed: modified:   modules/hdf4_handler
+
+        Merge branch 'master' into file-locking-cache-test
+
+        Added comments to build-gh-docs.sh
+
+        Merge pull request #82 from OPENDAP/dir_cleanup
+    
+        Dir cleanup
+
+        Added $(XML2_CFLAGS) to AM_CPPFLAGS in hello_world/makefile.am
+
+        Merge branch 'master' into dir_cleanup
+
+        Updated hdf4 and 5 handler submodule commit hashes
+
+        Massive changes - I re-worked the DAP_MODULES conditional build
+    
+        DAP_MODULES --> DAP_BUILTIN_MODULES and is now olny used in the
+        main bes Makefile.am. The builtin modules only work as such. The
+        DAP_EXP_MODULES symbol/conditional is reserved for the future.
+        I modified the hdf4/5 modules minimally, but had to update the
+        symbol name in their code.
+
+2017-09-29  James Gallagher <jgallagher@opendap.org>
+
+        Various fixes for distcheck, mostly because I added 
+        hello_world to the build
+
+        Merge pull request #81 from OPENDAP/hyrax248
+    
+        Ticket HYRAX-248. Made reversed raster.
+
+2017-09-29  Slav Korolev <slav.korolev@nasa.gov>
+
+        Ticket HYRAX-248. Made reversed raster.
+
+2017-09-27  James Gallagher <jgallagher@opendap.org>
+
+        Removed old files
+
+        Cleanup of the BES dirs. The hello_world module works, ...
+    
+        Some old code removed, autotest dirs now all names 'tests'
+
+        Added *Test to gitignore
+
+        Cleaning bes directories - bes/cmdln
+
+        Added ScaleUtilTest3D to gitignore
+
+        Edits after merging master into dmr++
+
+        Merge pull request #80 from OPENDAP/modules_cleanup
+    
+        Modules cleanup
+
+        Merged master down to dmr++
+
+        Merge branch 'master' into dmr++
+
+        Updated commit hashes for hdf4 and 5 for teh Hyrax 1.14 release
+
+        Added gitignore to modules dir
+
+        Edits to gitignore - bes-testsuite --> tests
+
+        Massive file removal.
+    
+        Also edited the version_update_modules script to match the new
+        organization of the modules dirs.
+
+        distcheck now works with the directory changes
+
+        All the autotest dirs are now names 'tests'
+
+        First step in normalizing the modules that are now part of the bes
+
+
 2017-09-26  James Gallagher  <jgallagher@opendap.org>
 
 	Updated the hdf4/5 handler submodule commit hashes

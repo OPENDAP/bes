@@ -1,10 +1,5 @@
-# Automake file for dap-handler
-#
-# 5/17/2005 jhrg
-#
-# $Id: Makefile.am 12972 2006-01-05 15:41:07Z pwest $
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 ACLOCAL_AMFLAGS = -I conf

@@ -44,7 +44,6 @@ using namespace std;
 
 char curl_error_buf[CURL_ERROR_SIZE];
 
-
 size_t write_shard(void *buffer, size_t size, size_t nmemb, void *data);
 
 class Shard {
@@ -277,7 +276,7 @@ void groom_curl_handle(CURL *curl, Shard *shard, bool keep_alive)
  * @param shards_map
  */
 void run_multi_perform(CURLM *curl_multi_handle, map<CURL*,Shard*> *shards_map){
-    int repeats;
+    int repeats = 0;    // Added initialization jhrg 11/16/17
     long long lap_counter = 0;
     CURLMcode mcode;
     int still_running=0;
