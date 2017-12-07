@@ -67,21 +67,47 @@ private:
         string validPath;
         string remainder;
         long long size, time;
-        bool isDir, isFile;
+        bool isDir, isFile, canRead;
         DBG(cerr << __func__ << "() - ##########################################################" << endl);
         DBG(cerr << __func__ << "() - catalogRoot:         " << catalogRoot << endl);
         DBG(cerr << __func__ << "() - ResourceId:         " << resourceId << endl);
         DBG(cerr << __func__ << "() - expectedValidPath:  " << expectedValidPath << endl);
         DBG(cerr << __func__ << "() - expectedRemainder:  " << expectedRemainder << endl);
         DBG(cerr << __func__ << "() - follow_sym_links:   " << (follow_sym_links ? "true" : "false") << endl);
-        spirh.eval_resource_path(resourceId, catalogRoot, follow_sym_links, validPath, isFile, isDir, size, time, remainder);
+
+        spirh.eval_resource_path(
+            resourceId,
+            catalogRoot,
+            follow_sym_links,
+            validPath,
+            isFile,
+            isDir,
+            size,
+            time,
+            canRead,
+            remainder);
+
         DBG(cerr << __func__ << "() - Returned validPath: " << validPath << endl);
+        DBG(cerr << __func__ << "() - isDir:              " << (isDir ? "true" : "false") << endl);
+        DBG(cerr << __func__ << "() - isFile:             " << (isFile ? "true" : "false") << endl);
+        DBG(cerr << __func__ << "() - canRead:            " << (canRead ? "true" : "false") << endl);
         DBG(cerr << __func__ << "() - Returned size:      " << size << endl);
         DBG(cerr << __func__ << "() - Returned lmt:       " << time << endl);
         DBG(cerr << __func__ << "() - Returned remainder: " << remainder << endl);
         CPPUNIT_ASSERT(validPath == expectedValidPath);
         CPPUNIT_ASSERT(remainder == expectedRemainder);
     }
+    void eval_resource_path(
+        const string &resource_path,
+        const string &catalog_root,
+        const bool follow_sym_links,
+        string &validPath,
+        bool &isFile,
+        bool &isDir,
+        long long &size,
+        long long &lastModifiedTime,
+        bool &canRead,
+        string &remainder);
 
 public:
 

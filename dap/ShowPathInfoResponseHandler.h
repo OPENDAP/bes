@@ -57,6 +57,7 @@ public:
         bool &isDir,
         long long &size,
         long long &lastModifiedTime,
+        bool &canRead,
         string &remainder);
 
 public:

@@ -26,6 +26,7 @@
 //
 
 #include <sstream>
+#include <fstream>
 #include <time.h>
 
 #include "ShowPathInfoResponseHandler.h"
@@ -57,6 +58,7 @@
 #define IS_DATA "isData"
 #define IS_FILE "isFile"
 #define IS_DIR  "isDir"
+#define IS_ACCESSIBLE "access"
 #define SIZE  "size"
 #define LMT  "lastModified"
 
@@ -154,7 +156,7 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
     info->begin_tag(PATH_INFO_RESPONSE,&pathInfoAttrs);
 
     string validPath, remainder;
-    bool isFile, isDir;
+    bool isFile, isDir, canRead;
     long long size, time;
 
     eval_resource_path(
@@ -166,6 +168,7 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
 			isDir,
 			size,
 			time,
+			canRead,
 			remainder);
 
 
@@ -206,6 +209,7 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
     validPathAttrs[IS_DATA] = isData?"true":"false";
     validPathAttrs[IS_FILE] = isFile?"true":"false";
     validPathAttrs[IS_DIR]  = isDir?"true":"false";
+    validPathAttrs[IS_ACCESSIBLE]  = canRead?"true":"false";
 
     // Convert size to string and add as attribute
     std::ostringstream  os_size;
@@ -293,6 +297,7 @@ ShowPathInfoResponseHandler::eval_resource_path(
     bool &isDir,
     long long &size,
     long long  &lastModifiedTime,
+    bool &canRead,
     string &remainder){
 
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
@@ -483,6 +488,13 @@ ShowPathInfoResponseHandler::eval_resource_path(
                 + "' ACCESS IS FORBIDDEN";
             throw BESForbiddenError(error, __FILE__, __LINE__);
         }
+       // sb.st_uid;
+       // sb.st_uid;
+
+        // Can we read le file?
+        std::ifstream ifile(fullpath);
+        canRead = ifile.good();
+
         size = sb.st_size;
         // Compute LMT by converting the time to milliseconds since epoch - because OLFS is picky
         lastModifiedTime = (sb.st_mtimespec.tv_sec * 1000) + (sb.st_mtimespec.tv_nsec/1000000);
@@ -493,6 +505,7 @@ ShowPathInfoResponseHandler::eval_resource_path(
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -       rem: " << rem << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -    access: " << (canRead?"true":"false") << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -      size: " << size << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -       LMT: " << lastModifiedTime << endl);
 

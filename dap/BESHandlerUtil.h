@@ -54,7 +54,7 @@ public:
      * The temporary file will be in TMP_DIR (likely /tmp) and will have
      * a name like 'opendapXXXXXX' where the Xs are numbers or letters.
      */
-    TemporaryFile() {
+    TemporaryFile() : d_fd(0){
         TemporaryFile(default_path_template);
     }
 

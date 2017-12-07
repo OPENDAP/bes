@@ -21,7 +21,7 @@ BES.Catalog.Default=catalog
 BES.Catalog.catalog.TypeMatch=
 
 BES.Catalog.catalog.Include=;
-BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.catalog.Exclude=(^\..*$)|(^.*\.das$);
 
 #-----------------------------------------------------------------------#
 # DAP help file locations, for text, html, and xml versions             #
