@@ -2509,7 +2509,8 @@ throw (Exception){
     hid_t aspace_id = -1;
     hid_t ref_dset = -1;
 
-
+cerr<<"var name is "<<var->fullpath <<endl;
+cerr<<"attribute name is "<<dimlistattr->name <<endl;
     if(NULL == dimlistattr) 
         throw2("Cannot obtain the dimension list attribute for variable ",var->name);
 
@@ -2550,6 +2551,8 @@ throw (Exception){
         for (vector<Dimension *>::iterator ird = var->dims.begin();
                 ird != var->dims.end(); ++ird) {
 
+            if(vlbuf[vlbuf_index].p== NULL) 
+                throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
             if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) 
                 throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
