@@ -147,6 +147,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     }
 
     BESDEBUG("h5", " Before calling GDij2ll, check all projection parameters. "  << endl);
+    BESDEBUG("h5", " eos5_projcode is "  << eos5_projcode <<endl);
     BESDEBUG("h5", " eos5_zone is "  << eos5_zone <<endl);
     BESDEBUG("h5", " eos5_params[0] is "  << eos5_params[0] <<endl);
     BESDEBUG("h5", " eos5_params[1] is "  << eos5_params[1] <<endl);

@@ -55,7 +55,7 @@ ALGORITHM REFERENCES
 #include "cproj.h"
 #include "proj.h"
 
-int for_init(
+int hfor_init(
 int outsys,		/* output system code				*/
 int outzone,		/* output zone number				*/
 double *outparm,	/* output array of projection parameters	*/
@@ -63,7 +63,7 @@ int outdatum,		/* output datum					*/
 char *fn27,		/* NAD 1927 parameter file			*/
 char *fn83,		/* NAD 1983 parameter file			*/
 int *iflg,		/* status flag					*/
-int (*for_trans[])(double, double, double *, double *))	/* forward function pointer			*/
+int (*hfor_trans[])(double, double, double *, double *))	/* forward function pointer			*/
 {
 long zone;		/* zone number					*/
 double azimuth;		/* azimuth					*/
@@ -159,7 +159,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = ceaforint(r_major,r_minor,center_long,lat1,false_easting,
                      false_northing);
     *iflg = (int)*iflg64;
-    for_trans[outsys] = ceafor;
+    hfor_trans[outsys] = ceafor;
     }
  else 
  if (outsys == BCEA)/* Cylindrical Equal-Area, used for EASE grid wghen
@@ -180,7 +180,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = bceaforint(r_major,r_minor,center_long,lat1,false_easting,
                      false_northing);
     *iflg = (int)*iflg64;
-    for_trans[outsys] = bceafor;
+    hfor_trans[outsys] = bceafor;
     }
   else
   if (outsys == UTM)
@@ -212,7 +212,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     scale_factor = .9996;
     *iflg64 = utmforint(r_major,r_minor,scale_factor,zone);
     *iflg = (int)*iflg64;
-    for_trans[outsys] = utmfor;
+    hfor_trans[outsys] = utmfor;
     }
   else
   if (outsys == SPCS)
@@ -223,7 +223,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg = (int)*iflg64;
     if ((int)*iflg64 != 0)
        return ERROR;
-    for_trans[outsys] = stplnfor;
+    hfor_trans[outsys] = stplnfor;
     }
   else
   if (outsys == ALBERS)
@@ -249,7 +249,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = alberforint(r_major,r_minor,lat1,lat2,center_long,lat_origin,
 		       false_easting, false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = alberfor;
+    hfor_trans[outsys] = alberfor;
     }
   else
   if (outsys == LAMCC)
@@ -275,7 +275,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = lamccforint(r_major,r_minor,lat1,lat2,center_long,lat_origin,
 	   	       false_easting, false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = lamccfor;
+    hfor_trans[outsys] = lamccfor;
     }
   else
   if (outsys == MERCAT)
@@ -293,7 +293,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = merforint(r_major,r_minor,center_long,lat1,false_easting,
 		     false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = merfor;
+    hfor_trans[outsys] = merfor;
     }
   else
   if (outsys == PS)
@@ -313,7 +313,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
 		    false_northing);
       *iflg = (int)*iflg64;
 
-    for_trans[outsys] = psfor;
+    hfor_trans[outsys] = psfor;
     }
   else
   if (outsys == POLYC)
@@ -331,7 +331,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = polyforint(r_major,r_minor,center_long,lat_origin,false_easting,
 		      false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = polyfor;
+    hfor_trans[outsys] = polyfor;
     }
   else
   if (outsys == EQUIDC)
@@ -361,7 +361,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = eqconforint(r_major,r_minor,lat1,lat2,center_long,lat_origin,
 		false_easting,false_northing,mode);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = eqconfor;
+    hfor_trans[outsys] = eqconfor;
     }
   else
   if (outsys == TM)
@@ -380,7 +380,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = tmforint(r_major,r_minor,scale_factor,center_long,lat_origin,
 		    false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = tmfor;
+    hfor_trans[outsys] = tmfor;
     }
   else
   if (outsys == STEREO)
@@ -398,7 +398,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = sterforint(radius,center_long,center_lat,false_easting,
 		      false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = sterfor;
+    hfor_trans[outsys] = sterfor;
     }
   else
   if (outsys == LAMAZ)
@@ -416,7 +416,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = lamazforint(r_major, r_minor, center_long, center_lat,false_easting,
 		       false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = lamazfor;
+    hfor_trans[outsys] = lamazfor;
     }
   else
   if (outsys == AZMEQD)
@@ -434,7 +434,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = azimforint(radius,center_long,center_lat,false_easting,
 		      false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = azimfor;
+    hfor_trans[outsys] = azimfor;
     }
   else
   if (outsys == GNOMON)
@@ -452,7 +452,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = gnomforint(radius,center_long,center_lat,false_easting,
 		      false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = gnomfor;
+    hfor_trans[outsys] = gnomfor;
     }
   else
   if (outsys == ORTHO)
@@ -470,7 +470,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = orthforint(radius,center_long,center_lat,false_easting,
 		      false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = orthfor;
+    hfor_trans[outsys] = orthfor;
     }
   else
   if (outsys == GVNSP)
@@ -489,7 +489,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = gvnspforint(radius,h,center_long,center_lat,false_easting,
 		       false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = gvnspfor;
+    hfor_trans[outsys] = gvnspfor;
     }
   else
   if (outsys == SNSOID)
@@ -502,7 +502,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = sinforint(radius, center_long,false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = sinfor;
+    hfor_trans[outsys] = sinfor;
     }
   else
   if (outsys == EQRECT)
@@ -519,7 +519,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = equiforint(radius,center_long,lat1,false_easting,false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = equifor;
+    hfor_trans[outsys] = equifor;
     }
   else
   if (outsys == MILLER)
@@ -532,7 +532,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = millforint(radius, center_long,false_easting,false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = millfor;
+    hfor_trans[outsys] = millfor;
     }
   else
   if (outsys == VGRINT)
@@ -545,7 +545,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = vandgforint(radius, center_long,false_easting,false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = vandgfor;
+    hfor_trans[outsys] = vandgfor;
     }
   else
   if (outsys == HOM)
@@ -593,7 +593,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
                         lat_origin,false_easting, false_northing,lon1,lat1,
                         lon2,lat2,mode);
       *iflg = (int)*iflg64;
-     for_trans[outsys] = omerfor;
+     hfor_trans[outsys] = omerfor;
      }
   else
   if (outsys == SOM)
@@ -626,7 +626,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = somforint(r_major,r_minor,satnum,path,alf,lon1,false_easting,
 		      false_northing,time,start,mode,sat_ratio);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = somfor;
+    hfor_trans[outsys] = somfor;
     }
   else
   if (outsys == HAMMER)
@@ -639,7 +639,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = hamforint(radius,center_long,false_easting,false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = hamfor;
+    hfor_trans[outsys] = hamfor;
     }
   else
   if (outsys == ROBIN)
@@ -652,7 +652,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = robforint(radius,center_long,false_easting,false_northing); 
       *iflg = (int)*iflg64;
-    for_trans[outsys] = robfor;
+    hfor_trans[outsys] = robfor;
     }
   else
   if (outsys == GOODE)
@@ -661,7 +661,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     ---------------------------------------------------*/
     *iflg64 = goodforint(radius);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = goodfor;
+    hfor_trans[outsys] = goodfor;
     }
   else
   if (outsys == MOLL)
@@ -674,7 +674,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = molwforint(radius, center_long,false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = molwfor;
+    hfor_trans[outsys] = molwfor;
     }
   else
   if (outsys == IMOLL)
@@ -683,7 +683,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     -----------------------------------------------------*/
     *iflg64 = imolwforint(radius);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = imolwfor;
+    hfor_trans[outsys] = imolwfor;
     }
   else
   if (outsys == ALASKA)
@@ -692,7 +692,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     ------------------------------------------------*/
     *iflg64 = alconforint(r_major,r_minor,false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = alconfor;
+    hfor_trans[outsys] = alconfor;
     }
   else
   if (outsys == WAGIV)
@@ -705,7 +705,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = wivforint(radius, center_long,false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = wivfor;
+    hfor_trans[outsys] = wivfor;
     }
   else
   if (outsys == WAGVII)
@@ -718,7 +718,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        return ERROR;
     *iflg64 = wviiforint(radius, center_long,false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = wviifor;
+    hfor_trans[outsys] = wviifor;
     }
   else
   if (outsys == OBEQA)
@@ -742,7 +742,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
     *iflg64 = obleqforint(radius,center_long,center_lat,shape_m, shape_n, 
 		angle,false_easting,false_northing);
       *iflg = (int)*iflg64;
-    for_trans[outsys] = obleqfor;
+    hfor_trans[outsys] = obleqfor;
     }
   else
   if ((outsys == ISINUS) || (outsys == ISINUS1))
@@ -761,7 +761,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
                     dzone, djustify);
       *iflg = (int)*iflg64;
 
-    for_trans[outsys] = isinusfor;
+    hfor_trans[outsys] = isinusfor;
     }
        
 return OK;
