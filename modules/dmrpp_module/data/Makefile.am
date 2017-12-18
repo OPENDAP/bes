@@ -10,10 +10,10 @@ endian_convert_SOURCES = endian_convert.cc
 endian_convert_LDADD = $(DAP_SERVER_LIBS)
 
 multiball_SOURCES = multiball.cc 
-multiball_LDADD = $(DAP_SERVER_LIBS) -lcurl
+multiball_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS)
 
 keepalive2_SOURCES = keepalive2.cc 
-keepalive2_LDADD = $(DAP_SERVER_LIBS) -lcurl
+keepalive2_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS) $(PTHREAD_LIBS)
 
 noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh
 
