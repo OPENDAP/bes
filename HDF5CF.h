@@ -1320,10 +1320,10 @@ protected:
     template<class T> void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*, bool, int, int, int) throw (Exception);
     void Adjust_SharedLatLon_Grid_Var_Dim_Name() throw (Exception);
 
-    void Adjust_Attr_Name() throw (Exception);
-    void Adjust_Attr_Value() throw (Exception);
+    void Adjust_Aura_Attr_Name() throw (Exception);
+    void Adjust_Aura_Attr_Value() throw (Exception);
     void Handle_EOS5CVar_Unit_Attr() throw (Exception);
-    void Handle_EOS5CVar_Special_Attr() throw (Exception);
+    void Handle_Aura_Special_Attr() throw (Exception);
 
     string get_CF_string(string s);
     void Replace_Var_Info(EOS5CVar *src, EOS5CVar *target);
