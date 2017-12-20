@@ -1,3 +1,9 @@
-This "data" directory and it's child "dmrpp" exist in this hierarchy in order to mimic the deployment structure resulting from running "make install". Most modules do not need to do this but since dmr++ files reference other files, and they do so using paths relative the the BES Catalog Root the mimicry is required.
+This "data" directory and it's child "dmrpp" exist in this hierarchy
+in order to mimic the deployment structure resulting from running
+"make install". Most modules do not need to do this but since dmr++
+files reference other files, and they do so using paths relative the
+the BES Catalog Root the mimicry is required.
 
-Also in this directory are scripts, source code, and production rules for tools that were used to create and process many of the data files in the "dmrpp" directory.
+Also in this directory are scripts, source code, and production rules
+for tools that were used to create and process many of the data files
+in the "dmrpp" directory.

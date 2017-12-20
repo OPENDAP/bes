@@ -530,9 +530,17 @@ public:
             Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
             Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
+            DBG(cerr << "old data: ");
+            DBG(data->print_val(cerr));
+            DBG(cerr << endl);
+
             auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
 
             auto_ptr<Array> result(build_array_from_gdal_dataset(src.get(), data));
+
+            DBG(cerr << "new data: ");
+            DBG(data->print_val(cerr));
+            DBG(cerr << endl);
 
             vector<dods_float32> buf(x_size * y_size);
             result->value(&buf[0]);
