@@ -269,3 +269,13 @@ AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5_sin_multi_grids.data.bescmd])
 
+#EOS5 LAMAZ projections
+AT_BESCMD_RESPONSE_TEST([eos5lamaz.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5lamaz.h5.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5lamaz.h5.data.bescmd])
+
+#EOS5 PS projections
+AT_BESCMD_RESPONSE_TEST([eos5ps.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5ps.h5.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5ps.h5.data.bescmd])
+

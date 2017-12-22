@@ -805,3 +805,13 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 }
 //#endif
 
+void add_ll_valid_range(AttrTable* at, bool is_lat) {
+    if(true == is_lat) {
+        at->append_attr("valid_min", "Float64","-90.0");
+        at->append_attr("valid_max", "Float64","90.0");
+    }
+    else {
+        at->append_attr("valid_min", "Float64","-180.0");
+        at->append_attr("valid_max", "Float64","180.0");
+    }
+}

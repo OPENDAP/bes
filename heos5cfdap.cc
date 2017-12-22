@@ -823,6 +823,21 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
         }
     }
 
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        if((*it_cv)->getProjCode() == HE5_GCTP_LAMAZ) {
+            if((*it_cv)->getCVType() == CV_LAT_MISS || (*it_cv)->getCVType() == CV_LON_MISS) {
+                AttrTable *at = das.get_table((*it_cv)->getNewName());
+                if (NULL == at)
+                    at = das.add_table((*it_cv)->getNewName(), new AttrTable);
+                if((*it_cv)->getCVType() == CV_LAT_MISS)
+                    add_ll_valid_range(at,true);
+                else 
+                    add_ll_valid_range(at,false);
+            }
+        }
+    }
+
+
     // To keep the backward compatiablity with the old handler,
     // we parse the special ECS metadata to DAP attributes
 

@@ -62,5 +62,6 @@ bool need_special_attribute_handling(const HDF5CF::Attribute*, const HDF5CF::Var
 void gen_dap_special_oneobj_das(AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*);
 bool is_fvalue_valid(H5DataType, const HDF5CF::Attribute*);
 void gen_dap_str_attr(AttrTable*, const HDF5CF::Attribute *);
+void add_ll_valid_range(AttrTable*, bool is_lat);
 
 #endif

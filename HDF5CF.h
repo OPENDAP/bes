@@ -1323,6 +1323,7 @@ protected:
     void Adjust_Aura_Attr_Name() throw (Exception);
     void Adjust_Aura_Attr_Value() throw (Exception);
     void Handle_EOS5CVar_Unit_Attr() throw (Exception);
+    void Add_EOS5_Grid_CF_Attr() throw (Exception);
     void Handle_Aura_Special_Attr() throw (Exception);
 
     string get_CF_string(string s);
@@ -1332,7 +1333,7 @@ protected:
     void Handle_EOS5CVar_AttrNameClashing() throw (Exception);
     template<typename T> void EOS5Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec)
         throw (Exception);
-    void Adjust_CF_attr() throw (Exception);
+    //void Adjust_CF_attr() throw (Exception);
     template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const string &, EOS5Type, int) throw (Exception);
     void Create_Added_Var_NewName_FullPath(EOS5Type, const string&, const string&, string &, string &) throw (Exception);
 

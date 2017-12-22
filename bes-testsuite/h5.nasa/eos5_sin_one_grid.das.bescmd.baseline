@@ -32,6 +32,7 @@ Attributes {
         String EndTime "2015-09-22 00:00:00";
         String LocalGranuleID "VNP09A1.A2015257.h29v11.001.2016221164845.h5";
         String SensorShortname "VIIRS";
+        String Conventions "CF-1.7";
     }
     HDFEOS {
     }

@@ -101,6 +101,7 @@ Attributes {
         String PGE_StartTime "2017-06-10 00:00:00.000";
         String LocalGranuleID "VNP09GA.A2017161.h10v04.001.2017162212935.h5";
         String EndTime "2017-06-10 23:59:00";
+        String Conventions "CF-1.7";
     }
     HDFEOS {
     }
