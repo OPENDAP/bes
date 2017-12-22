@@ -29,7 +29,6 @@
 
 #include <vector>
 #include <string>
-#include <map>
 
 namespace bes {
 
@@ -47,29 +46,6 @@ class TemporaryFile {
 private:
     int d_fd;
     std::vector<char> d_name;
-    static std::map<std::vector<char>,int> *open_files;
-
-
-    static void delete_temp_files()
-    {
-
-
-    }
-
-    static void delete_temp_file(int fd, std::vector<char> name)
-    {
-        try {
-            if (!close(fd))
-                ERROR(string("Error closing temporary file: ").append(&name[0]).append(": ").append(strerror(errno)));
-            if (!unlink(&name[0]))
-                ERROR(string("Error closing temporary file: ").append(&name[0]).append(": ").append(strerror(errno)));
-        }
-        catch (...) {
-            // Do nothing. This just protects against BESLog (i.e., ERROR)
-            // throwing an exception
-        }
-    }
-
 
 public:
     /**
@@ -78,15 +54,13 @@ public:
      * The temporary file will be in TMP_DIR (likely /tmp) and will have
      * a name like 'opendapXXXXXX' where the Xs are numbers or letters.
      */
-    TemporaryFile(): d_fd(0) {
+    TemporaryFile() {
         TemporaryFile(default_path_template);
     }
 
     TemporaryFile(const std::string &path_template);
 
     ~TemporaryFile();
-
-
 
 #if 0
     /**

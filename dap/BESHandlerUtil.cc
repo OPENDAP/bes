@@ -40,11 +40,6 @@ using namespace std;
 
 namespace bes {
 
-// BESUncompressCache *BESUncompressCache::d_instance = 0;
-
-TemporaryFile TemporaryFile::open_files = new std::map<std::vector<char>,int>;
-
-
 /**
  * @brief Free the temporary file
  *
@@ -52,7 +47,16 @@ TemporaryFile TemporaryFile::open_files = new std::map<std::vector<char>,int>;
  */
 TemporaryFile::~TemporaryFile()
 {
-    delete_temp_file(d_fd,d_name);
+    try {
+        if (!close(d_fd))
+            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+        if (!unlink(&d_name[0]))
+            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+    }
+    catch (...) {
+        // Do nothing. This just protects against BESLog (i.e., ERROR)
+        // throwing an exception
+    }
 }
 
 /**
@@ -83,11 +87,6 @@ TemporaryFile::TemporaryFile(const std::string &path_template)
     umask(original_mode);
 
     if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
-
-#ifdef HAVE_ATEXIT
-            atexit(delete_temp_files);
-#endif
-
 }
 
 } // namespace bes
