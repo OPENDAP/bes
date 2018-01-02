@@ -431,18 +431,28 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
 
     }
 
-    bool has_cf_grid_mapping = false;
+    //bool has_cf_grid_mapping = false;
+
+    unsigned short cv_lat_miss_index = 1;
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
+                // TTTOOODDDDOOOO: Here we need to add grid_mapping variables for each grid
+                // for projections other than sinusoidal since attribute values for LAMAZ and PS
+                // are different for each grid.
+//cerr<<"coming to CV_LAT_MISS DDS"<<endl;
                 gen_dap_oneeos5cf_dds(dds,*it_cv);
-                has_cf_grid_mapping = true;
+                add_cf_grid_mapinfo_var(dds,(*it_cv)->getProjCode(),cv_lat_miss_index);
+                cv_lat_miss_index++;
+                //has_cf_grid_mapping = true;
             }
         }
     }
+#if 0
     if (true == has_cf_grid_mapping){
         add_cf_grid_mapinfo_var(dds);
     }
+#endif
 
 }
 
@@ -464,7 +474,7 @@ void  gen_dap_oneeos5cf_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar) {
 
 }
 
-void  gen_dap_oneeos5cf_das(DAS &das,const vector<HDF5CF::Var*>& vars, const HDF5CF::EOS5CVar* cvar) {
+void  gen_dap_oneeos5cf_das(DAS &das,const vector<HDF5CF::Var*>& vars, const HDF5CF::EOS5CVar* cvar,const unsigned short g_suffix) {
 
     BESDEBUG("h5","Coming to gen_dap_oneeos5cf_das()  "<<endl);
 
@@ -480,7 +490,7 @@ void  gen_dap_oneeos5cf_das(DAS &das,const vector<HDF5CF::Var*>& vars, const HDF
 //cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
    if(dims.size() !=2) 
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
-    add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
+    add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims,cvar->getParams(),g_suffix);
 
 }
 
@@ -802,13 +812,31 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     }
 
     // Add CF 1-D projection variables
+    unsigned short cv_lat_miss_index = 1;
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                gen_dap_oneeos5cf_das(das,vars,*it_cv);
+//cerr<<"coming to CV_LAT_MISS DAS "<<endl;
+                gen_dap_oneeos5cf_das(das,vars,*it_cv,cv_lat_miss_index);
+                cv_lat_miss_index++;
             }
         }
     }
+
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        if((*it_cv)->getProjCode() == HE5_GCTP_LAMAZ) {
+            if((*it_cv)->getCVType() == CV_LAT_MISS || (*it_cv)->getCVType() == CV_LON_MISS) {
+                AttrTable *at = das.get_table((*it_cv)->getNewName());
+                if (NULL == at)
+                    at = das.add_table((*it_cv)->getNewName(), new AttrTable);
+                if((*it_cv)->getCVType() == CV_LAT_MISS)
+                    add_ll_valid_range(at,true);
+                else 
+                    add_ll_valid_range(at,false);
+            }
+        }
+    }
+
 
     // To keep the backward compatiablity with the old handler,
     // we parse the special ECS metadata to DAP attributes

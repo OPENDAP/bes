@@ -53,23 +53,23 @@ bool HDFEOS5CFMissLLArray::read()
     if(NULL == HDF5RequestHandler::get_lrdata_mem_cache())
         read_data_NOT_from_mem_cache(false,NULL);
     else {
-	vector<string> cur_lrd_non_cache_dir_list;                                      
+       	vector<string> cur_lrd_non_cache_dir_list;                                      
         HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);     
                                                                                                     
         string cache_key;
         // Check if this file is included in the non-cache directory                    
         if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                 
     	    ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {  
-                short cache_flag = 2;
-		vector<string> cur_cache_dlist;                                                         
-		HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                            
-		string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');                
-		if(cache_dir != ""){                                                                     
-		    cache_key = cache_dir + varname;                                                    
+            short cache_flag = 2;
+		        vector<string> cur_cache_dlist;                                                         
+        		HDF5RequestHandler::get_lrd_cache_dir_list(cur_cache_dlist);                            
+		        string cache_dir = check_str_sect_in_list(cur_cache_dlist,filename,'/');                
+	        	if(cache_dir != ""){                                                                     
+		            cache_key = cache_dir + varname;                                                    
                     cache_flag = 3;
-                }
-		else                                                                                    
-		    cache_key = filename + varname;     
+            }
+		        else                                                                                    
+		            cache_key = filename + varname;     
 
                 // Need to obtain the total number of elements.
                 // Currently only trivial geographic projection is supported.
@@ -81,10 +81,8 @@ bool HDFEOS5CFMissLLArray::read()
                     handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,cache_flag,cache_key);
         }
         else 
-	    read_data_NOT_from_mem_cache(false,NULL);
+	         read_data_NOT_from_mem_cache(false,NULL);
     }
-                                                                                                    
-                                                   
     return true;
 }
 
@@ -149,6 +147,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     }
 
     BESDEBUG("h5", " Before calling GDij2ll, check all projection parameters. "  << endl);
+    BESDEBUG("h5", " eos5_projcode is "  << eos5_projcode <<endl);
     BESDEBUG("h5", " eos5_zone is "  << eos5_zone <<endl);
     BESDEBUG("h5", " eos5_params[0] is "  << eos5_params[0] <<endl);
     BESDEBUG("h5", " eos5_params[1] is "  << eos5_params[1] <<endl);

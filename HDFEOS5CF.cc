@@ -3212,15 +3212,17 @@ void EOS5File::Adjust_Attr_Info() throw (Exception)
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Info()"<<endl);
     if (true == this->isaura) {
-        Adjust_Attr_Name();
-        Adjust_Attr_Value();
+        Adjust_Aura_Attr_Name();
+        Adjust_Aura_Attr_Value();
     }
-    else
+    else {
         Handle_EOS5CVar_Unit_Attr();
+        Add_EOS5_Grid_CF_Attr();
+    }
 }
 
 // Adjust Attribute Name, mostly for Aura files.
-void EOS5File::Adjust_Attr_Name() throw (Exception)
+void EOS5File::Adjust_Aura_Attr_Name() throw (Exception)
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Name() for Aura"<<endl);
@@ -3241,13 +3243,13 @@ void EOS5File::Adjust_Attr_Name() throw (Exception)
     }
 }
 
-void EOS5File::Adjust_Attr_Value() throw (Exception)
+void EOS5File::Adjust_Aura_Attr_Value() throw (Exception)
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Value() for Aura"<<endl);
     // Handle Units
     Handle_EOS5CVar_Unit_Attr();
-    Handle_EOS5CVar_Special_Attr();
+    Handle_Aura_Special_Attr();
 
     // Handle Time. This is just for Aura files. 
     // This is for speical NASA requests only for Aura. 
@@ -3278,10 +3280,10 @@ void EOS5File::Adjust_Attr_Value() throw (Exception)
 }
 
 // Handle EOS5 coordinate variable special attributes. 
-void EOS5File::Handle_EOS5CVar_Special_Attr() throw (Exception)
+void EOS5File::Handle_Aura_Special_Attr() throw (Exception)
 {
 
-    BESDEBUG("h5", "Coming to Handle_EOS5CVar_Special_Attr()"<<endl);
+    BESDEBUG("h5", "Coming to Handle_Aura_Special_Attr()"<<endl);
     // Need to handle MLS aura file specially.
     if (true == this->isaura && MLS == this->aura_name) {
 
@@ -3395,6 +3397,46 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr() throw (Exception)
         } // switch((*irv)->cvartype)
     } // for (vector<EOS5CVar *>::iterator irv = this->cvars.begin() ...
 }
+
+void EOS5File::Add_EOS5_Grid_CF_Attr() throw(Exception) 
+{
+    BESDEBUG("h5", "Coming to Add_EOS5_Grid_CF_Attr()"<<endl);
+
+    bool has_eos5_grid_nongeo_proj = false;
+
+    // Check if we have EOS5 grids that are not using the geographic projection.
+    for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
+        if ((*irv)->cvartype == CV_LAT_MISS) {
+            if((*irv)->eos5_projcode !=HE5_GCTP_GEO) {
+                has_eos5_grid_nongeo_proj = true;
+                break;
+            }
+        } 
+    } 
+
+    // We would like to add the CF conventions mark if the mark is not there.
+    if(true == has_eos5_grid_nongeo_proj)  {
+        string conventions_attrname = "Conventions";
+        string conventions_attrvalue = "CF-1.7";
+        bool has_conventions_attr=false;
+        for(vector<HDF5CF::Attribute *>::const_iterator it_ra=this->root_attrs.begin();
+                it_ra!=this->root_attrs.end();it_ra++) {
+            if((*it_ra)->name==conventions_attrname){
+                has_conventions_attr = true;
+                break;
+            }
+
+        }
+        if(false==has_conventions_attr) {
+            Attribute * attr = new Attribute();
+            Add_Str_Attr(attr,conventions_attrname,conventions_attrvalue);
+            this->root_attrs.push_back(attr);
+        }
+    }
+
+}
+
+
 
 // Adjust Dimension name
 void EOS5File::Adjust_Dim_Name() throw (Exception)

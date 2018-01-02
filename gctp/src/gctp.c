@@ -45,8 +45,8 @@ static long outpj[MAXPROJ + 1];		/* output projection array	*/
 static long outdat[MAXPROJ + 1];	/* output dataum array		*/
 static long outzn[MAXPROJ + 1];		/* output zone array		*/
 static double pdout[MAXPROJ + 1][15]; 	/* output projection parm array	*/
-static long (*for_trans[MAXPROJ + 1])();/* forward function pointer array*/
-static long (*inv_trans[MAXPROJ + 1])();/* inverse function pointer array*/
+static long (*hfor_trans[MAXPROJ + 1])();/* forward function pointer array*/
+static long (*hinv_trans[MAXPROJ + 1])();/* inverse function pointer array*/
 
 			/* Table of unit codes as specified by state
 			   laws as of 2/1/92 for NAD 1983 State Plane
@@ -251,10 +251,10 @@ y = incoor[1] * factor;
          dummy[0] = inparm[0];
          dummy[1] = inparm[1];
          }
-      inv_init((int)*insys,(int)*inzone,dummy,(int)*indatum,fn27,fn83,&iflgval,(int *)inv_trans);
+      hinv_init((int)*insys,(int)*inzone,dummy,(int)*indatum,fn27,fn83,&iflgval,(int *)hinv_trans);
       }
    else
-     inv_init((int)*insys,(int)*inzone,inparm,(int)*indatum,fn27,fn83,&iflgval,(int *)inv_trans);
+     hinv_init((int)*insys,(int)*inzone,inparm,(int)*indatum,fn27,fn83,&iflgval,(int *)hinv_trans);
    *iflg=(long)iflgval;
 
    if ((int)*iflg != 0)
@@ -275,7 +275,7 @@ if ((int)*insys == GEO)
    lat = y;
    }
 else
-  if ((*iflg = inv_trans[(int)*insys](x, y, &lon, &lat)) != 0)
+  if ((*iflg = hinv_trans[(int)*insys](x, y, &lon, &lat)) != 0)
    {
    close_file();
    return(0);
@@ -313,10 +313,10 @@ else
 	 dummy[0] = outparm[0];
 	 dummy[1] = outparm[1];
 	 }
-      for_init((int)*outsys,(int)*outzone,dummy,(int)*outdatum,fn27,fn83,&iflgval,(int *)for_trans);
+      hfor_init((int)*outsys,(int)*outzone,dummy,(int)*outdatum,fn27,fn83,&iflgval,(int *)hfor_trans);
       }
    else
-     for_init((int)*outsys,(int)*outzone,outparm,(int)*outdatum,fn27,fn83,&iflgval,(int *)for_trans);
+     hfor_init((int)*outsys,(int)*outzone,outparm,(int)*outdatum,fn27,fn83,&iflgval,(int *)hfor_trans);
 
    *iflg=(long)iflgval;
 
@@ -335,7 +335,7 @@ if ((int)*outsys == GEO)
    outcoor[1] = lat;
    }
 else
-  if ((*iflg = for_trans[(int)*outsys](lon, lat, &outcoor[0], &outcoor[1])) != 0)
+  if ((*iflg = hfor_trans[(int)*outsys](lon, lat, &outcoor[0], &outcoor[1])) != 0)
    {
    close_file();
    return(0);

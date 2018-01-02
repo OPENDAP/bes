@@ -246,3 +246,20 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032
 # AIRMrSP UTM projection. Like HDF-EOS5 but it is a netCDF-4 file.
 AT_BESCMD_RESPONSE_TEST([airsm_utm.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([airsm_utm.h5.dds.bescmd])
+
+#EOS5 Sinusodial projections
+AT_BESCMD_RESPONSE_TEST([eos5_sin_one_grid.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5_sin_one_grid.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5_sin_multi_grids.data.bescmd])
+
+#EOS5 LAMAZ projections
+AT_BESCMD_RESPONSE_TEST([eos5lamaz.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5lamaz.h5.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5lamaz.h5.data.bescmd])
+
+#EOS5 PS projections
+AT_BESCMD_RESPONSE_TEST([eos5ps.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5ps.h5.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5ps.h5.data.bescmd])

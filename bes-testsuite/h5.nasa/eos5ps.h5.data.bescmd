@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d" space="catalog">/data/AMSR_2_L3_SeaIce12km_P00_20160831.he5</setContainer>
+    <define name="d">
+	<container name="grid_1_2d" >
+        <constraint>NpPolarGrid12km_lat[0:300:895][0:300:607],NpPolarGrid12km_lon[0:300:895][0:300:607],
+                    SpPolarGrid12km_lat[0:300:663][0:300:631],SpPolarGrid12km_lon[0:300:663][0:300:631],
+                    NpPolarGrid12km_YDim[0:300:895],NpPolarGrid12km_XDim[0:300:607],
+                    SpPolarGrid12km_YDim[0:300:663],SpPolarGrid12km_XDim[0:300:631]
+        </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

@@ -40,20 +40,12 @@
 #include <math.h>
 #include<InternalErr.h>
 
-// Angle Conversion Codes 
-#define HE5_HDFE_RAD_DEG      0
-#define HE5_HDFE_DEG_RAD      1
-#define HE5_HDFE_DMS_DEG      2
-#define HE5_HDFE_DEG_DMS      3
-#define HE5_HDFE_RAD_DMS      4
-#define HE5_HDFE_DMS_RAD      5
-
 using namespace libdap;
 // For using GCTP to calculate the lat/lon
 extern "C" {
-int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
+int hinv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*hinv_trans[])(double, double, double*, double*));
 
-int for_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*for_trans[])(double, double, double *, double *));
+int hfor_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*hfor_trans[])(double, double, double *, double *));
  
 }
 
@@ -531,8 +523,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 {
 
     int errorcode = 0;
-    int(*inv_trans[100]) (double,double,double*,double*);  
-    int(*for_trans[100]) (double,double,double*,double*);  /* GCTP function pointer */
+    int(*hinv_trans[100]) (double,double,double*,double*);  
+    int(*hfor_trans[100]) (double,double,double*,double*);  /* GCTP function pointer */
     double        arg1, arg2;
     double        pixadjX  = 0.;  /* Pixel adjustment (x)                 */
     double        pixadjY  = 0.;  /* Pixel adjustment (y)                 */
@@ -610,21 +602,22 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
   if (projcode != HE5_GCTP_GEO && projcode != HE5_GCTP_BCEA)
     {
 
+//cerr<<"inside HDF5CFUtil "<<endl;
       scaleX = (lowrightpt[0] - upleftpt[0]) / xdimsize;
       scaleY = (lowrightpt[1] - upleftpt[1]) / ydimsize;
       string eastFile = HDF5RequestHandler::get_stp_east_filename();
       string northFile = HDF5RequestHandler::get_stp_north_filename();
       //string northFile;
 
-      inv_init(projcode, zonecode, projparm, spherecode, (char*)eastFile.c_str(), (char*)northFile.c_str(), 
-	       &errorcode, inv_trans);
+      hinv_init(projcode, zonecode, projparm, spherecode, (char*)eastFile.c_str(), (char*)northFile.c_str(), 
+	       &errorcode, hinv_trans);
 
 
       /* Report error if any */
       /* ------------------- */
       if (errorcode != 0)
         {
-            throw InternalErr(__FILE__,__LINE__,"GCTP inv_init Error to retrieve lat/lon from a grid.");
+            throw InternalErr(__FILE__,__LINE__,"GCTP hinv_init Error to retrieve lat/lon from a grid.");
 
         }
       else
@@ -635,7 +628,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
             {
 	      /* Convert from meters to lon/lat (radians) using GCTP */
 	      /* --------------------------------------------------- */
-	      /*errorcode = inv_trans[projcode] ((col[i] + pixadjX) * scaleX + upleftpt[0], (row[i] + pixadjY) * scaleY + upleftpt[1], &lonrad, &latrad);*/
+	      /*errorcode = hinv_trans[projcode] ((col[i] + pixadjX) * scaleX + upleftpt[0], (row[i] + pixadjY) * scaleY + upleftpt[1], &lonrad, &latrad);*/
 
 	      /* modified previous line to the following for the linux64 with -fPIC in cmpilation. 
 		 Whithout the change col[] and row[] values are ridiclous numbers, resulting a strange 
@@ -645,21 +638,49 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 	      */
 	      arg1 = (((int)col[i] + pixadjX) * scaleX + upleftpt[0]);
 	      arg2 = (((int)row[i] + pixadjY) * scaleY + upleftpt[1]);
-	      errorcode = inv_trans[projcode] (arg1, arg2, &lonrad, &latrad);
+//if( i == 0) {
+//cerr<<"GCTP arg1 is "<<arg1 <<endl;
+//cerr<<"GCTP arg2 is "<<arg2 <<endl;
+//cerr<<"projcode is "<<projcode <<endl;
+//if(projcode == HE5_GCTP_SNSOID) 
+//    cerr<<"this projection is sinusoidal projection "<<endl;
+    
+//}
+//projcode = 16;
+//errorcode = 1;
+	      errorcode = hinv_trans[projcode] (arg1, arg2, &lonrad, &latrad);
+//if(i==0)
+//cerr<<"errorcode after hinv_trans is "<<errorcode<<endl;
 
 	      /* Report error if any */
 	      /* ------------------- */
 	      if (errorcode != 0)
 		{
-                  throw InternalErr(__FILE__,__LINE__,"GCTP inv_trans Error to retrieve lat/lon from a grid.");
+
+            if(projcode == HE5_GCTP_LAMAZ) {
+                longitude[i] = 1.0e51;
+                latitude[i] = 1.0e51;
+            }
+            else 
+               throw InternalErr(__FILE__,__LINE__,"GCTP hinv_trans Error to retrieve lat/lon from a grid.");
 
 		}
 	      else
 		{
+//if(i == 0) {
+// cerr<<"GCTP lonrad is "<<lonrad <<endl;
+// cerr<<"GCTP latrad is "<<latrad <<endl;
+
+//}
 		  /* Convert from radians to decimal degrees */
 		  /* --------------------------------------- */
 		  longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
 		  latitude[i]  = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
+//if(i == 0) {
+// cerr<<"GCTP longitudeis "<<longitude[i] <<endl;
+// cerr<<"GCTP latitude is "<<latitude[i] <<endl;
+
+//}
 		}
 	    }
 	}
@@ -674,13 +695,13 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 
       /* Initialize forward transformation */
       /* --------------------------------- */
-      for_init(projcode, zonecode, projparm, spherecode, NULL, NULL,&errorcode, for_trans);
+      hfor_init(projcode, zonecode, projparm, spherecode, NULL, NULL,&errorcode, hfor_trans);
 
       /* Report error if any */
       /* ------------------- */
       if (errorcode != 0)
 	{
-          throw InternalErr(__FILE__,__LINE__,"GCTP for_init Error to retrieve lat/lon from a grid.");
+          throw InternalErr(__FILE__,__LINE__,"GCTP hfor_init Error to retrieve lat/lon from a grid.");
 	}
 
       /* Convert upleft and lowright X coords from DMS to radians */
@@ -696,24 +717,24 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* Convert form lon/lat to meters(or whatever unit is, i.e unit
 	 of r_major and r_minor) using GCTP */
       /* ----------------------------------------- */
-      errorcode = for_trans[projcode] (lonrad0, latrad0, &xMtr0, &yMtr0);
+      errorcode = hfor_trans[projcode] (lonrad0, latrad0, &xMtr0, &yMtr0);
 
       /* Report error if any */
       if (errorcode != 0)
 	{
-          throw InternalErr(__FILE__,__LINE__,"GCTP for_trans Error to retrieve lat/lon from a grid.");
+          throw InternalErr(__FILE__,__LINE__,"GCTP hfor_trans Error to retrieve lat/lon from a grid.");
 
 	}
 
       /* Convert from lon/lat to meters or whatever unit is, i.e unit
 	 of r_major and r_minor) using GCTP */
       /* ----------------------------------------- */
-      errorcode = for_trans[projcode] (lonrad, latrad, &xMtr1, &yMtr1);
+      errorcode = hfor_trans[projcode] (lonrad, latrad, &xMtr1, &yMtr1);
 
       /* Report error if any */
       if (errorcode != 0)
 	{
-          throw InternalErr(__FILE__,__LINE__,"GCTP for_trans Error to retrieve lat/lon from a grid.");
+          throw InternalErr(__FILE__,__LINE__,"GCTP hfor_trans Error to retrieve lat/lon from a grid.");
 	}
 
       /* Compute x scale factor */
@@ -726,12 +747,12 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 
       /* Initialize inverse transformation */
       /* --------------------------------- */
-      inv_init(projcode, zonecode, projparm, spherecode, NULL, NULL, &errorcode, inv_trans);
+      hinv_init(projcode, zonecode, projparm, spherecode, NULL, NULL, &errorcode, hinv_trans);
       /* Report error if any */
       /* ------------------- */
       if (errorcode != 0)
 	{
-          throw InternalErr(__FILE__,__LINE__,"GCTP inv_init Error to retrieve lat/lon from a grid.");
+          throw InternalErr(__FILE__,__LINE__,"GCTP hinv_init Error to retrieve lat/lon from a grid.");
 	}
       /* For each point ... */
       /* ------------------ */
@@ -740,7 +761,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 	  /* Convert from meters (or any units that r_major and
 	     r_minor has) to lon/lat (radians) using GCTP */
 	  /* --------------------------------------------------- */
-	  errorcode = inv_trans[projcode] (
+	  errorcode = hinv_trans[projcode] (
 					   (col[i] + pixadjX) * scaleX + xMtr0,
 					   (row[i] + pixadjY) * scaleY + yMtr0,
 					   &lonrad, &latrad);
@@ -807,8 +828,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 
 
 #if 0
-    inv_init(projcode, zonecode, projparm, spherecode, eastFile, northFile,
-                 (int *)&errorcode, inv_trans);
+    hinv_init(projcode, zonecode, projparm, spherecode, eastFile, northFile,
+                 (int *)&errorcode, hinv_trans);
 
     for (int i = 0; i < npnts; i++)
           {
@@ -816,7 +837,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
  *                r_minor has) to lon/lat (radians) using GCTP */
             /* --------------------------------------------------- */
             errorcode =
-              inv_trans[projcode] (
+              hinv_trans[projcode] (
                                    upleftpt[0],
                                    upleftpt[1],
                                    &lonrad, &latrad);

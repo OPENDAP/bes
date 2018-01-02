@@ -1,0 +1,1171 @@
+Attributes {
+    HDF5_GLOBAL {
+        Int16 maximum_observations_1km 4;
+        Int32 total_additional_observations_1km 1124660;
+        String l2gl_storage_format_1km "compact";
+        Int16 maximum_observations_500m 2;
+        Int32 total_additional_observations_500m 3457713;
+        String l2gl_storage_format_500m "compact";
+        String VersionID "001";
+        String ReprocessingActual "metadata field";
+        String ReprocessingPlanned "metadata field";
+        String DayNightFlag "Day";
+        String LocalVersionID "2.1.0";
+        String ParameterName "VNP09G";
+        String AutomaticQualityFlagExplanation "No automatic quality assessment is performed in the PGE";
+        String ScienceQualityFlagExplanation "unknown";
+        Int16 QAPercentInterpolatedData 0;
+        Int16 QAPercentMissingData 0;
+        Int16 QAPercentOutOfBoundsdata 0;
+        String InputPointer "/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.0754.001.2017161172706.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.0936.001.2017161172536.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1118.001.2017161185911.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1742.001.2017162021105.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1918.001.2017162034502.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1924.001.2017162034501.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.2100.001.2017162051759.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.2106.001.2017162051801.hdf,/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.0754.001.2017161172706.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.0936.001.2017161172536.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1118.001.2017161185911.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1742.001.2017162021105.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1918.001.2017162034502.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.1924.001.2017162034501.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.2100.001.2017162051759.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/NPP_IMFTS_L1.A2017161.2106.001.2017162051801.hdf,/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNPPT1KDI.A2017161.h10v04.001.2017162184241.hdf,/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.0754.001.2017162130816.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.0936.001.2017162145328.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1118.001.2017162143646.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1742.001.2017162150210.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1918.001.2017162153154.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1924.001.2017162145322.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.2100.001.2017162145951.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.2106.001.2017162145450.hdf,/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNPPTHKDI.A2017161.h10v04.001.2017162184241.hdf,/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.0754.001.2017162130816.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.0936.001.2017162145328.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1118.001.2017162143646.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1742.001.2017162150210.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1918.001.2017162153154.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.1924.001.2017162145322.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.2100.001.2017162145951.hdf:/MODAPSops4/archive/f7413/running/VNP_LP_L5m7/1651213062/VNP09.A2017161.2106.001.2017162145450.hdf";
+        String SystemFileName "VNPPT1KDI.A2017161.h10v04.001.2017162184241.hdf,VNPPTHKDI.A2017161.h10v04.001.2017162184241.hdf,VNPMGGAD1I.A2017161.h10v04.001.2017162184241.hdf,VNP09G1KI.A2017161.h10v04.001.2017162191621.hdf,VNP09GHKI.A2017161.h10v04.001.2017162191621.hdf";
+        String RangeBeginningDate "2017-06-10";
+        String RangeBeginningTime " 19:18:00.000";
+        String RangeEndingDate "2017-06-10";
+        String RangeEndingTime " 21:12:00.000";
+        Int16 ZoneIdentifier 0;
+        Int16 OrbitNumber_1 29119;
+        Int16 OrbitNumber_2 29120;
+        Int32 GranulePointerArray -1;
+        Int32 OrbitNumberArray -1;
+        String PGEVersion "1.0.6";
+        String ProcessingEnvironment "Linux minion7413 3.10.0-514.10.2.el7.x86_64 #1 SMP Fri Mar 3 00:04:05 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux";
+        String QAPercentGoodQuality "100";
+        String QAPercentOtherQuality "0";
+        String QAPercentNotProducedCloud "0";
+        String QAPercentNotProducedOther "0";
+        String HorizontalTileNumber "10";
+        String VerticalTileNumber "4";
+        String TileID "51010004";
+        Float64 NorthBoundingCoord 50.000000000000000;
+        Float64 SouthBoundingCoord 40.000000000000000;
+        Float64 EastBoundingCoord -91.367632000000000;
+        Float64 WestBoundingCoord -124.45791000000000;
+        String GeoAnyAbnormal "False";
+        Float64 GeoEstMaxRMSError 0.0000000000000000;
+        Int16 NumberOfOrbits 2;
+        Int16 NumberofOverlapGranules 4;
+        Int16 NumberofInputGranules 8;
+        String GranuleDayNightFlag "Day";
+        String GranuleDayOfYear "161";
+        String GranuleBeginningDateTime "2017-06-10 07:54:00.000,2017-06-10 09:36:00.000,2017-06-10 11:18:00.000,2017-06-10 17:42:00.000,2017-06-10 19:18:00.000,2017-06-10 19:24:00.000,2017-06-10 21:00:00.000,2017-06-10 21:06:00.000";
+        String GranuleEndingDateTime "2017-06-10 08:00:00.000,2017-06-10 09:42:00.000,2017-06-10 11:24:00.000,2017-06-10 17:48:00.000,2017-06-10 19:24:00.000,2017-06-10 19:30:00.000,2017-06-10 21:06:00.000,2017-06-10 21:12:00.000";
+        Float64 CharacteristicBinAngularSize1KM 30.000000000000000;
+        Float64 CharacteristicBinSize1KM 926.62543305555550;
+        Int16 DataColumns1KM 1200;
+        Int16 DataRows1KM 1200;
+        Int32 GlobalGridColumns1KM 43200;
+        Int32 GlobalGridRows1KM 21600;
+        String NadirDataResolution1KM "1km";
+        Float64 CharacteristicBinAngularSize500M 15.000000000000000;
+        Float64 CharacteristicBinSize500M 463.31271652777775;
+        Int16 DataColumns500M 2400;
+        Int16 DataRows500M 2400;
+        Int32 GlobalGridColumns500M 86400;
+        Int32 GlobalGridRows500M 43200;
+        String NadirDataResolution500M "500m";
+        String MaxOutputRes "HKM";
+        Int16 PercentProcessed 100;
+        Int16 PercentLand 98;
+        Int32 PercentLandSeaMaskClass 0;
+        Int16 PercentCloudy 34;
+        Int16 PercentShadow 0;
+        Int16 PercentLowSun 0;
+        String Ranking "No";
+        String KeepAll "No";
+        Float64 CoverageMinimum 0.0099999997764825821;
+        String DeepOceanFlag "Yes";
+        String CoverageCalculationMethod "volume";
+        String FirstLayerSelectionCriteria "order of input pointer";
+        Int32 MaximumObservations1KM 4;
+        Int32 AdditionalLayers1KM 3;
+        Int32 TotalObservations1KM 2564660;
+        Int32 TotalAdditionalObservations1KM 1124660;
+        String L2GStorageFormat1KM "compact";
+        Int32 MaximumObservations500M 2;
+        Int32 AdditionalLayers500M 1;
+        Int32 TotalObservations500M 9217713;
+        Int32 TotalAdditionalObservations500M 3457713;
+        String L2GStorageFormat500M "compact";
+        Int32 NumberLandWater1KM 112;
+        Int32 NumberLandWater500M 224;
+        String StartTime "2017-06-10 00:00:00";
+        String ProductionTime "2017-06-11 21:29:35.000";
+        String identifier_product_doi_authority "http://dx.doi.org";
+        Float64 GRingLatitude 39.755682000000000, 49.967694000000002, 50.104685000000003, 39.855421999999997;
+        String LongName "VIIRS/NPP Surface Reflectance Daily L2G Global 1km and 500m SIN Grid ";
+        Float64 GRingLongitude -104.52020000000000, -124.88536000000001, -109.00214000000000, -91.190961000000001;
+        String ShortName "VNP09GA";
+        String PGE_EndTime "2017-06-11 00:00:00.000";
+        String identifier_product_doi "10.5067/VIIRS/VNP09GA.001";
+        String PGE_StartTime "2017-06-10 00:00:00.000";
+        String LocalGranuleID "VNP09GA.A2017161.h10v04.001.2017162212935.h5";
+        String EndTime "2017-06-10 23:59:00";
+        String Conventions "CF-1.7";
+    }
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_GRIDS {
+    }
+    HDFEOS_GRIDS_VNP_Grid_1km_2D {
+    }
+    HDFEOS_GRIDS_VNP_Grid_1km_2D_Data_Fields {
+    }
+    HDFEOS_GRIDS_VNP_Grid_500m_2D {
+    }
+    HDFEOS_GRIDS_VNP_Grid_500m_2D_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.15";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    VNP_Grid_1km_2D_SensorAzimuth_1 {
+        String long_name "Sensor azimuth - first layer";
+        String units "degree";
+        Int16 valid_range -18000;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SensorAzimuth_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SensorAzimuth_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SensorZenith_1 {
+        String long_name "Sensor zenith - first layer";
+        String units "degree";
+        Int16 valid_range 0;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SensorZenith_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SensorZenith_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SolarAzimuth_1 {
+        String long_name "Solar azimuth - first layer";
+        String units "degree";
+        Int16 valid_range -18000;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SolarAzimuth_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SolarAzimuth_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SolarZenith_1 {
+        String long_name "Solar zenith - first layer";
+        String units "degree";
+        Int16 valid_range 0;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SolarZenith_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SolarZenith_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M10_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 10 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M10_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M10_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M11_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 11 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M11_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M11_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M1_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 1 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M1_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M1_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M2_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 2 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M2_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M2_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M3_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 3 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M3_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M3_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M4_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 4 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M4_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M4_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M5_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 5 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M5_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M5_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M7_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 7 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M7_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M7_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_M8_1 {
+        String long_name "Moderate (750m) Surface Reflectance Band 8 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M8_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_M8_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF1_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 1 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	6-7    SUN GLINT;
+	       00 -- none
+	       01 -- geometry based
+	       10 -- wind speed based
+	       11 -- geometry & wind speed based
+	5      low sun mask;
+	       0 -- high
+	       1 -- low
+	4      day/night;
+	       0 -- day
+	       1 -- night
+	2-3    cloud detection & confidence;
+	       00 -- confident clear
+	       01 -- probably clear
+	       10 -- probably cloudy
+	       11 -- confident cloudy
+	0-1    cloud mask quality;
+	       00 -- poor
+	       01 -- low
+	       10 -- medium
+	       11 -- high
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF1_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF1_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF2_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 2 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      thin cirrus emissive;
+	       0 -- no cloud
+	       1 -- cloud
+	6      thin cirrus reflective;
+	       0 -- no cloud
+	       1 -- cloud
+	5      snow/ice;
+	       0 -- no snow/ice
+	       1 -- snow or ice
+	4      heavy aerosol mask;
+	       0 -- no heavy aerosol
+	       1 -- heavy aerosol
+	3      shadow mask;
+	       0 -- no cloud shadow
+	       1 -- shadow
+	0-2    land/water background;
+	       000 -- land & desert
+	       001 -- land no desert
+	       010 -- inland water
+	       011 -- sea water
+	       101 -- coastal
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF2_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF2_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF3_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 3 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      bad M10 SDR data;
+	       0 -- no
+	       1 -- yes
+	6      bad M8 SDR data;
+	       0 -- no
+	       1 -- yes
+	5      bad M7 SDR data;
+	       0 -- no
+	       1 -- yes
+	4      bad M5 SDR data;
+	       0 -- no
+	       1 -- yes
+	3      bad M4 SDR data;
+	       0 -- no
+	       1 -- yes
+	2      bad M3 SDR data;
+	       0 -- no
+	       1 -- yes
+	1      bad M2 SDR data;
+	       0 -- no
+	       1 -- yes
+	0      bad M1 SDR data;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF3_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF3_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF4_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 4 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      missing PW input data;
+	       0 -- no
+	       1 -- yes
+	6      invalid land AM input data;
+	       0 -- valid
+	       1 -- invalid ami over land or over ocean
+	5      missing AOT input data;
+	       0 -- no
+	       1 -- yes
+	4      overall quality of AOT;
+	       0 -- good
+	       1 -- bad
+	3      bad I3 SDR data;
+	       0 -- no
+	       1 -- yes
+	2      bad I2 SDR data;
+	       0 -- no
+	       1 -- yes
+	1      bad I1 SDR data;
+	       0 -- no
+	       1 -- yes
+	0      bad M11 SDR data;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF4_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF4_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF5_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 5 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      overall quality M7 SR data;
+	       0 -- good
+	       1 -- bad
+	6      overall quality M5 SR data;
+	       0 -- good
+	       1 -- bad
+	5      overall quality M4 SR data;
+	       0 -- good
+	       1 -- bad
+	4      overall quality M3 SR data;
+	       0 -- good
+	       1 -- bad
+	3      overall quality M2 SR data;
+	       0 -- good
+	       1 -- bad
+	2      overall quality M1 SR data;
+	       0 -- good
+	       1 -- bad
+	1      missing SP input data;
+	       0 -- no
+	       1 -- yes
+	0      missing OZ input data;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF5_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF5_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF6_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 6 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      unused;
+	6      unused;
+	5      overall quality I3 SR data;
+	       0 -- good
+	       1 -- bad
+	4      overall quality I2 SR data;
+	       0 -- good
+	       1 -- bad
+	3      overall quality I1 SR data;
+	       0 -- good
+	       1 -- bad
+	2      overall quality M11 SR data;
+	       0 -- good
+	       1 -- bad
+	2      overall quality M10 SR data;
+	       0 -- good
+	       1 -- bad
+	0      overall quality M8 SR data;
+	       0 -- good
+	       1 -- bad
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF6_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF6_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_SurfReflect_QF7_1 {
+        String units "bit field";
+        String long_name "Moderate (750m) Land Quality Flags Byte 7 - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	5-7    Unused;
+	4      Thin Cirrus Flag;
+	       0 -- no
+	       1 -- yes
+	2-3    aerosol quantity;
+	       00 -- climatology
+	       01 -- low
+	       10 -- average
+	       11 -- high
+	1      adjacent to cloud;
+	       0 -- no
+	       1 -- yes
+	0      snow present;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF7_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/SurfReflect_QF7_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_num_observations_1km {
+        String long_name "Number of Observations";
+        String units "none";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "num_observations_1km";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/num_observations_1km";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_obscov_1km_1 {
+        String units "percent";
+        String long_name "Observation coverage - first layer";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "obscov_1km_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/obscov_1km_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_1km_2D_orbit_pnt_1 {
+        String long_name "Orbit pointer - first layer";
+        String units "none";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "orbit_pnt_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_2D/Data Fields/orbit_pnt_1";
+        String coordinates "VNP_Grid_1km_2D_lat VNP_Grid_1km_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_500m_2D_SurfReflect_I1_1 {
+        String long_name "Imagery (375m) Surface Reflectance Band 1 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_I1_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_500m_2D/Data Fields/SurfReflect_I1_1";
+        String coordinates "VNP_Grid_500m_2D_lat VNP_Grid_500m_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_500m_2D_SurfReflect_I2_1 {
+        String long_name "Imagery (375m) Surface Reflectance Band 2 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_I2_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_500m_2D/Data Fields/SurfReflect_I2_1";
+        String coordinates "VNP_Grid_500m_2D_lat VNP_Grid_500m_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_500m_2D_SurfReflect_I3_1 {
+        String long_name "Imagery (375m) Surface Reflectance Band 3 - first layer";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_I3_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_500m_2D/Data Fields/SurfReflect_I3_1";
+        String coordinates "VNP_Grid_500m_2D_lat VNP_Grid_500m_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_500m_2D_iobs_res_1 {
+        String units "none";
+        String long_name "observation number in coarser grid - first layer";
+        Byte valid_range 0;
+        Byte _FillValue 255;
+        String origname "iobs_res_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_500m_2D/Data Fields/iobs_res_1";
+        String coordinates "VNP_Grid_500m_2D_lat VNP_Grid_500m_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_500m_2D_num_observations_500m {
+        String long_name "Number of Observations";
+        String units "none";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "num_observations_500m";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_500m_2D/Data Fields/num_observations_500m";
+        String coordinates "VNP_Grid_500m_2D_lat VNP_Grid_500m_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    VNP_Grid_500m_2D_obscov_500m_1 {
+        String units "percent";
+        String long_name "Observation coverage - first layer";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "obscov_500m_1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_500m_2D/Data Fields/obscov_500m_1";
+        String coordinates "VNP_Grid_500m_2D_lat VNP_Grid_500m_2D_lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    SensorAzimuth_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Sensor azimuth - additional layers, compact";
+        String units "degree";
+        Int16 valid_range -18000;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SensorAzimuth_c";
+        String fullnamepath "/SensorAzimuth_c";
+    }
+    SensorZenith_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Sensor zenith - additional layers, compact";
+        String units "degree";
+        Int16 valid_range 0;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SensorZenith_c";
+        String fullnamepath "/SensorZenith_c";
+    }
+    SolarAzimuth_c {
+        String units "degree";
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Solar azimuth - additional layers, compact";
+        Int16 valid_range -18000;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SolarAzimuth_c";
+        String fullnamepath "/SolarAzimuth_c";
+    }
+    SolarZenith_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Solar zenith - additional layers, compact";
+        String units "degree";
+        Int16 valid_range 0;
+        Int16 _FillValue -32767;
+        String FILL_VALUES "NA_FLOAT32_FILL = -999.9, MISS_FLOAT32_FILL = -999.8, ONBOARD_PT_FLOAT32_FILL = -999.7, ONGROUND_PT_FLOAT32_FILL = -999.6, ERR_FLOAT32_FILL = -999.5, ELLIPSOID_FLOAT32_FILL = -999.4, VDNE_FLOAT32_FILL = -999.3, SOUB_FLOAT32_FILL = -999.2";
+        String origname "SolarZenith_c";
+        String fullnamepath "/SolarZenith_c";
+    }
+    SurfReflect_I1_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_500m";
+        String long_name "Imagery (375m) Surface Reflectance Band 1 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_I1_c";
+        String fullnamepath "/SurfReflect_I1_c";
+    }
+    SurfReflect_I2_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_500m";
+        String long_name "Imagery (375m) Surface Reflectance Band 2 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_I2_c";
+        String fullnamepath "/SurfReflect_I2_c";
+    }
+    SurfReflect_I3_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_500m";
+        String long_name "Imagery (375m) Surface Reflectance Band 3 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_I3_c";
+        String fullnamepath "/SurfReflect_I3_c";
+    }
+    SurfReflect_M10_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 10 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M10_c";
+        String fullnamepath "/SurfReflect_M10_c";
+    }
+    SurfReflect_M11_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 11 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M11_c";
+        String fullnamepath "/SurfReflect_M11_c";
+    }
+    SurfReflect_M1_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 1 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M1_c";
+        String fullnamepath "/SurfReflect_M1_c";
+    }
+    SurfReflect_M2_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 2 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M2_c";
+        String fullnamepath "/SurfReflect_M2_c";
+    }
+    SurfReflect_M3_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 3 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M3_c";
+        String fullnamepath "/SurfReflect_M3_c";
+    }
+    SurfReflect_M4_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 4 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M4_c";
+        String fullnamepath "/SurfReflect_M4_c";
+    }
+    SurfReflect_M5_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 5 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M5_c";
+        String fullnamepath "/SurfReflect_M5_c";
+    }
+    SurfReflect_M7_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 7 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M7_c";
+        String fullnamepath "/SurfReflect_M7_c";
+    }
+    SurfReflect_M8_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Surface Reflectance Band 8 - additional layers, compact";
+        String units "percent reflectance";
+        Int16 valid_range -100;
+        Int16 _FillValue -28672;
+        Float32 Offset 0.000000000;
+        Float32 Scale 9.999999747e-05;
+        String FILL_VALUES "NA_INT16_FILL = -28672, MISS_INT16_FILL = -28672, ONBOARD_PT_INT16_FILL = -28672, ONGROUND_PT_INT16_FILL = -28672, ERR_INT16_FILL = -28672, ELLIPSOID_INT16_FILL = -994, VDNE_INT16_FILL = -993, SOUB_INT16_FILL = -992, NEW_INT16_FILLVALUE = -28672, OUT_OF_RANGE_FILL = -100";
+        String origname "SurfReflect_M8_c";
+        String fullnamepath "/SurfReflect_M8_c";
+    }
+    SurfReflect_QF1_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 1 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	6-7    SUN GLINT;
+	       00 -- none
+	       01 -- geometry based
+	       10 -- wind speed based
+	       11 -- geometry & wind speed based
+	5      low sun mask;
+	       0 -- high
+	       1 -- low
+	4      day/night;
+	       0 -- day
+	       1 -- night
+	2-3    cloud detection & confidence;
+	       00 -- confident clear
+	       01 -- probably clear
+	       10 -- probably cloudy
+	       11 -- confident cloudy
+	0-1    cloud mask quality;
+	       00 -- poor
+	       01 -- low
+	       10 -- medium
+	       11 -- high
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF1_c";
+        String fullnamepath "/SurfReflect_QF1_c";
+    }
+    SurfReflect_QF2_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 2 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      thin cirrus emissive;
+	       0 -- no cloud
+	       1 -- cloud
+	6      thin cirrus reflective;
+	       0 -- no cloud
+	       1 -- cloud
+	5      snow/ice;
+	       0 -- no snow/ice
+	       1 -- snow or ice
+	4      heavy aerosol mask;
+	       0 -- no heavy aerosol
+	       1 -- heavy aerosol
+	3      shadow mask;
+	       0 -- no cloud shadow
+	       1 -- shadow
+	0-2    land/water background;
+	       000 -- land & desert
+	       001 -- land no desert
+	       010 -- inland water
+	       011 -- sea water
+	       101 -- coastal
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF2_c";
+        String fullnamepath "/SurfReflect_QF2_c";
+    }
+    SurfReflect_QF3_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 3 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      bad M10 SDR data;
+	       0 -- no
+	       1 -- yes
+	6      bad M8 SDR data;
+	       0 -- no
+	       1 -- yes
+	5      bad M7 SDR data;
+	       0 -- no
+	       1 -- yes
+	4      bad M5 SDR data;
+	       0 -- no
+	       1 -- yes
+	3      bad M4 SDR data;
+	       0 -- no
+	       1 -- yes
+	2      bad M3 SDR data;
+	       0 -- no
+	       1 -- yes
+	1      bad M2 SDR data;
+	       0 -- no
+	       1 -- yes
+	0      bad M1 SDR data;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF3_c";
+        String fullnamepath "/SurfReflect_QF3_c";
+    }
+    SurfReflect_QF4_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 4 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      missing PW input data;
+	       0 -- no
+	       1 -- yes
+	6      invalid land AM input data;
+	       0 -- valid
+	       1 -- invalid ami over land or over ocean
+	5      missing AOT input data;
+	       0 -- no
+	       1 -- yes
+	4      overall quality of AOT;
+	       0 -- good
+	       1 -- bad
+	3      bad I3 SDR data;
+	       0 -- no
+	       1 -- yes
+	2      bad I2 SDR data;
+	       0 -- no
+	       1 -- yes
+	1      bad I1 SDR data;
+	       0 -- no
+	       1 -- yes
+	0      bad M11 SDR data;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF4_c";
+        String fullnamepath "/SurfReflect_QF4_c";
+    }
+    SurfReflect_QF5_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 5 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      overall quality M7 SR data;
+	       0 -- good
+	       1 -- bad
+	6      overall quality M5 SR data;
+	       0 -- good
+	       1 -- bad
+	5      overall quality M4 SR data;
+	       0 -- good
+	       1 -- bad
+	4      overall quality M3 SR data;
+	       0 -- good
+	       1 -- bad
+	3      overall quality M2 SR data;
+	       0 -- good
+	       1 -- bad
+	2      overall quality M1 SR data;
+	       0 -- good
+	       1 -- bad
+	1      missing SP input data;
+	       0 -- no
+	       1 -- yes
+	0      missing OZ input data;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF5_c";
+        String fullnamepath "/SurfReflect_QF5_c";
+    }
+    SurfReflect_QF6_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 6 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	7      unused;
+	6      unused;
+	5      overall quality I3 SR data;
+	       0 -- good
+	       1 -- bad
+	4      overall quality I2 SR data;
+	       0 -- good
+	       1 -- bad
+	3      overall quality I1 SR data;
+	       0 -- good
+	       1 -- bad
+	2      overall quality M11 SR data;
+	       0 -- good
+	       1 -- bad
+	2      overall quality M10 SR data;
+	       0 -- good
+	       1 -- bad
+	0      overall quality M8 SR data;
+	       0 -- good
+	       1 -- bad
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF6_c";
+        String fullnamepath "/SurfReflect_QF6_c";
+    }
+    SurfReflect_QF7_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Moderate (750m) Land Quality Flags Byte 7 - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0;
+        Byte _FillValue 0;
+        String QA_index "
+	Bits are listed from the MSB (bit 7) to the LSB (bit 0):
+	Bit    Description
+	5-7    Unused;
+	4      Thin Cirrus Flag;
+	       0 -- no
+	       1 -- yes
+	2-3    aerosol quantity;
+	       00 -- climatology
+	       01 -- low
+	       10 -- average
+	       11 -- high
+	1      adjacent to cloud;
+	       0 -- no
+	       1 -- yes
+	0      snow present;
+	       0 -- no
+	       1 -- yes
+";
+        String FILL_VALUES "NA_UINT8_FILL = 255, MISS_UINT8_FILL = 254, ONBOARD_PT_UINT8_FILL = 253, ONGROUND_PT_UINT8_FILL = 252, ERR_UINT8_FILL = 251, ELLIPSOID_UINT8_FILL = 250, VDNE_UINT8_FILL = 249, SOUB_UINT8_FILL = 248";
+        String origname "SurfReflect_QF7_c";
+        String fullnamepath "/SurfReflect_QF7_c";
+    }
+    iobs_res_c {
+        String units "none";
+        String DIMENSION_LABELS "Total_Additional_Observations_500m";
+        String long_name "observation number in coarser grid - additional layers, compact";
+        Byte valid_range 0;
+        Byte _FillValue 255;
+        String origname "iobs_res_c";
+        String fullnamepath "/iobs_res_c";
+    }
+    nadd_obs_row_1km {
+        String DIMENSION_LABELS "YDim_1km";
+        String long_name "Number of additional observations per row";
+        String units "none";
+        Int32 valid_range 0;
+        Int32 _FillValue -1;
+        String origname "nadd_obs_row_1km";
+        String fullnamepath "/nadd_obs_row_1km";
+    }
+    nadd_obs_row_500m {
+        String DIMENSION_LABELS "YDim_500m";
+        String long_name "Number of additional observations per row";
+        String units "none";
+        Int32 valid_range 0;
+        Int32 _FillValue -1;
+        String origname "nadd_obs_row_500m";
+        String fullnamepath "/nadd_obs_row_500m";
+    }
+    obscov_1km_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Observation coverage - additional layers, compact";
+        String units "percent";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "obscov_1km_c";
+        String fullnamepath "/obscov_1km_c";
+    }
+    obscov_500m_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_500m";
+        String long_name "Observation coverage - additional layers, compact";
+        String units "percent";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "obscov_500m_c";
+        String fullnamepath "/obscov_500m_c";
+    }
+    orbit_pnt_c {
+        String DIMENSION_LABELS "Total_Additional_Observations_1km";
+        String long_name "Orbit pointer - additional layers, compact";
+        String units "none";
+        Int16 valid_range 0;
+        Int16 _FillValue -1;
+        String origname "orbit_pnt_c";
+        String fullnamepath "/orbit_pnt_c";
+    }
+    VNP_Grid_1km_2D_lon {
+        String units "degrees_east";
+    }
+    VNP_Grid_1km_2D_lat {
+        String units "degrees_north";
+    }
+    VNP_Grid_500m_2D_lon {
+        String units "degrees_east";
+    }
+    VNP_Grid_500m_2D_lat {
+        String units "degrees_north";
+    }
+    VNP_Grid_1km_2D_YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    VNP_Grid_1km_2D_XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    eos_cf_projection {
+        String grid_mapping_name "sinusoidal";
+        Float64 longitude_of_central_meridian 0.0;
+        Float64 earth_radius 6371007.181;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    VNP_Grid_500m_2D_YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    VNP_Grid_500m_2D_XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+}

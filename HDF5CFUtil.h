@@ -63,6 +63,15 @@ enum H5DataType
 
 enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
 
+// Angle Conversion Codes 
+#define HE5_HDFE_RAD_DEG      0
+#define HE5_HDFE_DEG_RAD      1
+#define HE5_HDFE_DMS_DEG      2
+#define HE5_HDFE_DEG_DMS      3
+#define HE5_HDFE_RAD_DMS      4
+#define HE5_HDFE_DMS_RAD      5
+
+
 using namespace std;
 
 struct Name_Size_2Pairs {

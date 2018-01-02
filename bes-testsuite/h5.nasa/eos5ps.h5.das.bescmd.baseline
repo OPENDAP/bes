@@ -1,0 +1,565 @@
+Attributes {
+    HDF5_GLOBAL {
+        String Conventions "CF-1.7";
+    }
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_GRIDS {
+    }
+    HDFEOS_GRIDS_NpPolarGrid12km {
+    }
+    HDFEOS_GRIDS_NpPolarGrid12km_Data_Fields {
+    }
+    HDFEOS_GRIDS_SpPolarGrid12km {
+    }
+    HDFEOS_GRIDS_SpPolarGrid12km_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.15";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    NpPolarGrid12km_SI_12km_NH_18H_ASC {
+        String origname "SI_12km_NH_18H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_18H_DAY {
+        String origname "SI_12km_NH_18H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_18H_DSC {
+        String origname "SI_12km_NH_18H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_18V_ASC {
+        String origname "SI_12km_NH_18V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_18V_DAY {
+        String origname "SI_12km_NH_18V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_18V_DSC {
+        String origname "SI_12km_NH_18V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_23H_ASC {
+        String origname "SI_12km_NH_23H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_23H_DAY {
+        String origname "SI_12km_NH_23H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_23H_DSC {
+        String origname "SI_12km_NH_23H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_23V_ASC {
+        String origname "SI_12km_NH_23V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_23V_DAY {
+        String origname "SI_12km_NH_23V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_23V_DSC {
+        String origname "SI_12km_NH_23V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_36H_ASC {
+        String origname "SI_12km_NH_36H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_36H_DAY {
+        String origname "SI_12km_NH_36H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_36H_DSC {
+        String origname "SI_12km_NH_36H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_36V_ASC {
+        String origname "SI_12km_NH_36V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_36V_DAY {
+        String origname "SI_12km_NH_36V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_36V_DSC {
+        String origname "SI_12km_NH_36V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_89H_ASC {
+        String origname "SI_12km_NH_89H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_89H_DAY {
+        String origname "SI_12km_NH_89H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_89H_DSC {
+        String origname "SI_12km_NH_89H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_89V_ASC {
+        String origname "SI_12km_NH_89V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_89V_DAY {
+        String origname "SI_12km_NH_89V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_89V_DSC {
+        String origname "SI_12km_NH_89V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_ICECON_ASC {
+        String origname "SI_12km_NH_ICECON_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_ICECON_DAY {
+        String origname "SI_12km_NH_ICECON_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_ICECON_DSC {
+        String origname "SI_12km_NH_ICECON_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_ICEDIFF_ASC {
+        String origname "SI_12km_NH_ICEDIFF_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_ASC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_ICEDIFF_DAY {
+        String origname "SI_12km_NH_ICEDIFF_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_DAY";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    NpPolarGrid12km_SI_12km_NH_ICEDIFF_DSC {
+        String origname "SI_12km_NH_ICEDIFF_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_DSC";
+        String coordinates "NpPolarGrid12km_lat NpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    SpPolarGrid12km_SI_12km_SH_18H_ASC {
+        String origname "SI_12km_SH_18H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_18H_DAY {
+        String origname "SI_12km_SH_18H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_18H_DSC {
+        String origname "SI_12km_SH_18H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_18V_ASC {
+        String origname "SI_12km_SH_18V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_18V_DAY {
+        String origname "SI_12km_SH_18V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_18V_DSC {
+        String origname "SI_12km_SH_18V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_23H_ASC {
+        String origname "SI_12km_SH_23H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_23H_DAY {
+        String origname "SI_12km_SH_23H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_23H_DSC {
+        String origname "SI_12km_SH_23H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_23V_ASC {
+        String origname "SI_12km_SH_23V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_23V_DAY {
+        String origname "SI_12km_SH_23V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_23V_DSC {
+        String origname "SI_12km_SH_23V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_36H_ASC {
+        String origname "SI_12km_SH_36H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_36H_DAY {
+        String origname "SI_12km_SH_36H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_36H_DSC {
+        String origname "SI_12km_SH_36H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_36V_ASC {
+        String origname "SI_12km_SH_36V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_36V_DAY {
+        String origname "SI_12km_SH_36V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_36V_DSC {
+        String origname "SI_12km_SH_36V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_89H_ASC {
+        String origname "SI_12km_SH_89H_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_89H_DAY {
+        String origname "SI_12km_SH_89H_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_89H_DSC {
+        String origname "SI_12km_SH_89H_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_89V_ASC {
+        String origname "SI_12km_SH_89V_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_89V_DAY {
+        String origname "SI_12km_SH_89V_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_89V_DSC {
+        String origname "SI_12km_SH_89V_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_ICECON_ASC {
+        String origname "SI_12km_SH_ICECON_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_ICECON_DAY {
+        String origname "SI_12km_SH_ICECON_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_ICECON_DSC {
+        String origname "SI_12km_SH_ICECON_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_ICEDIFF_ASC {
+        String origname "SI_12km_SH_ICEDIFF_ASC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_ASC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_ICEDIFF_DAY {
+        String origname "SI_12km_SH_ICEDIFF_DAY";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_DAY";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    SpPolarGrid12km_SI_12km_SH_ICEDIFF_DSC {
+        String origname "SI_12km_SH_ICEDIFF_DSC";
+        String fullnamepath "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_DSC";
+        String coordinates "SpPolarGrid12km_lat SpPolarGrid12km_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    CoreMetadata_0 {
+        String origname "CoreMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/CoreMetadata.0";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    NpPolarGrid12km_lon {
+        String units "degrees_east";
+    }
+    NpPolarGrid12km_lat {
+        String units "degrees_north";
+    }
+    SpPolarGrid12km_lon {
+        String units "degrees_east";
+    }
+    SpPolarGrid12km_lat {
+        String units "degrees_north";
+    }
+    NpPolarGrid12km_YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    NpPolarGrid12km_XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    eos_cf_projection_1 {
+        String grid_mapping_name "polar_stereographic";
+        Float64 straight_vertical_longitude_from_pole -45;
+        Float64 standard_parallel 70;
+        Float64 false_easting 0.0;
+        Float64 false_northing 0.0;
+        Float64 latitude_of_projection_origin +90.0;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    SpPolarGrid12km_YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    SpPolarGrid12km_XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    eos_cf_projection_2 {
+        String grid_mapping_name "polar_stereographic";
+        Float64 straight_vertical_longitude_from_pole 0;
+        Float64 standard_parallel -70;
+        Float64 false_easting 0.0;
+        Float64 false_northing 0.0;
+        Float64 latitude_of_projection_origin -90.0;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AMSR_2_L3_SeaIce12km_P00_20160831.he5";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2016-08-31T15:45:01Z";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    Int32 CLASS 1, 2;
+                    PARAMETERNAME {
+                        Int32 CLASS 1, 1;
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "Brightness Temperature", "Sea Ice Concentration";
+                    }
+                    PARAMETERDESCRIPTION {
+                        Int32 NUM_VAL 1, 1;
+                        Int32 CLASS 2, 2;
+                        String VALUE "The apparent temperature of the surface assuming a surface emissivity of 1.0. Setting the emissivity to one is equivalent to assuming the target is a blackbody, so the brightness temperature is defined as the temperature a blackbody would be in order to produce the radiance perceived by the sensor.", "The ratio of the area of the water surface covered by ice as a fraction of the whole area. Sea ice concentration has been monitored by polar orbiting satellites at all wavelengths.";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "A2_SI12_NRT";
+                }
+                LONGNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NRT AMSR2 Daily L3 12.5 km Tb and Sea Ice Concentration Polar Grids";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "0";
+                }
+                COLLECTIONDATATYPE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NEAR_REAL_TIME";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 17;
+                    String VALUE "GW1AM2_201608310008_175A_L1SNRTBR_2220220.h5", "GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5", "GW1AM2_201608310147_191A_L1SNRTBR_2220220.h5", "GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5", "GW1AM2_201608310325_207A_L1SNRTBR_2220220.h5", "GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5", "GW1AM2_201608310504_223A_L1SNRTBR_2220220.h5", "GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5", "GW1AM2_201608310643_006A_L1SNRTBR_2220220.h5", "GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5", "GW1AM2_201608310822_022A_L1SNRTBR_2220220.h5", "GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5", "GW1AM2_201608311001_038A_L1SNRTBR_2220220.h5", "GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5", "GW1AM2_201608311140_054A_L1SNRTBR_2220220.h5", "GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5", "GW1AM2_201608311319_070A_L1SNRTBR_2220220.h5";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2016-08-31";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:08:13.403785Z";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2016-08-31";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "14:05:20.571673Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "identifier_product_doi", "identifier_product_doi_authority";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "10.5067/AMSR2/A2_SI12_NRT", "http://dx.doi.org";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
