@@ -8,7 +8,7 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE([1.10 tar-pax])
 
-AM_CONDITIONAL([DAP_MODULES], [false])
+AM_CONDITIONAL([DAP_BUILTIN_MODULES], [false])
 
 # The handler is a shared object library, so we don't normally need
 # the static lib. Override this default by specifying `--enable-static',
