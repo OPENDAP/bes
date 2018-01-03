@@ -3,5 +3,7 @@
 
 #define TEST_SRC_DIR "@abs_srcdir@"
 
+const std::string temp_dir = "@abs_srcdir@/tmp_dir";
+
 #endif
 

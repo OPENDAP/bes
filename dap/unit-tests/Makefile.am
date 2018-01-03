@@ -27,20 +27,32 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
+noinst_DATA = bes.conf
+
 DIRS_EXTRA = response_cache input-files
 
 EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in
 
-CLEANFILES = testout .dodsrc  *.gcda *.gcno
+CLEANFILES = testout bes.conf .dodsrc  *.gcda *.gcno
 
-DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
+DISTCLEANFILES = test_config.h  *.strm *.file *.Po tmp.txt
+
+BES_CONF_IN = bes.conf.in
+
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest
+UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest TemporaryFileTest
 
 # Class not included in the dap module: SequenceAggregationServerTest
 
@@ -79,6 +91,11 @@ FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(AM_LDADD)
 ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
 ObjMemCacheTest_OBJS = ../ObjMemCache.o
 ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
+
+TemporaryFileTest_SOURCES = TemporaryFileTest.cc
+TemporaryFileTest_OBJS = ../BESHandlerUtil.o ../TempFile.o
+TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
+
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(AM_LDADD)

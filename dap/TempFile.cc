@@ -33,30 +33,57 @@
 
 #include <BESInternalError.h>
 
-#include "BESHandlerUtil.h"
+#include "TempFile.h"
 #include "BESLog.h"
 
 using namespace std;
 
 namespace bes {
 
-/**
- * @brief Free the temporary file
- *
- * Close the open descriptor and delete (unlink) the file name.
- */
-TemporaryFile::~TemporaryFile()
+std::map<string,int> *TempFile::open_files = new std::map<string, int>;
+
+void TempFile::delete_temp_files() {
+    cerr << __func__ << "() - BEGIN " << endl;
+    std::map<string,int>::iterator it;
+    for (it=open_files->begin(); it!=open_files->end(); ++it){
+        delete_temp_file(it->first, it->second);
+    }
+    cerr << __func__ << "() - Clearing open_files list." << endl;
+    open_files->clear();
+    cerr << __func__ << "() - END " << endl;
+}
+
+void TempFile::delete_temp_file(string fname, int fd)
 {
     try {
-        if (!close(d_fd))
-            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
-        if (!unlink(&d_name[0]))
-            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+        cerr << __func__ << "() -  Closing '" << fname << "'  fd: " << fd << endl;
+        if (!close(fd)){
+            ERROR(string("Error closing temporary file: '").append(fname).append("'  msg: ").append(strerror(errno)).append("\n") );
+        }
+        cerr << __func__ << "() -  Unlinking '" << fname << "'  fd: " << fd << endl;
+        if (!unlink(fname.c_str())){
+           ERROR(string("Error unlinking temporary file: '").append(fname).append("' msg: ").append(strerror(errno)).append("\n"));
+        }
     }
     catch (...) {
         // Do nothing. This just protects against BESLog (i.e., ERROR)
         // throwing an exception
     }
+}
+
+
+/**
+ * @brief Free the temporary file
+ *
+ * Close the open descriptor and delete (unlink) the file name.
+ */
+TempFile::~TempFile()
+{
+    cerr << __func__ << "() - BEGIN The end is nigh!" << endl;
+    delete_temp_file(d_fname,d_fd);
+    cerr << __func__ << "() -  Dropping file '" << d_fname << "'  from open_files list" << endl;
+    open_files->erase(d_fname);
+    cerr << __func__ << "() - END" << endl;
 }
 
 /**
@@ -71,22 +98,28 @@ TemporaryFile::~TemporaryFile()
  * @param path_template Template passed to mkstemp() to build the temporary
  * file pathname.
  */
-TemporaryFile::TemporaryFile(const std::string &path_template)
+TempFile::TempFile(const std::string &path_template)
 {
-    //string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-    //vector<char> temp_file(path_template.length() + 1);
-    d_name.reserve(path_template.length() + 1);
-
-    string::size_type len = path_template.copy(&d_name[0], path_template.length());
-    d_name[len] = '\0';
+    char tmp_name[path_template.length()+1];
+    std::string::size_type len = path_template.copy(tmp_name, path_template.length());
+    tmp_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
     // a mode of 666.
     mode_t original_mode = umask(077);
-    d_fd = mkstemp(&d_name[0]);
+    d_fd = mkstemp(tmp_name);
     umask(original_mode);
 
     if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
+
+    d_fname.assign(tmp_name);
+    cerr << __func__ << "() - Created '" << d_fname << "' fd: "<< d_fd << endl;
+    open_files->insert(std::pair<string,int>(d_fname, d_fd));
+
+//#ifdef HAVE_ATEXIT
+            atexit(delete_temp_files);
+//#endif
+
 }
 
 } // namespace bes
