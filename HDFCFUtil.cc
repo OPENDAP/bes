@@ -1051,7 +1051,8 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                         if ((newfname.size() >5) && newfname.find("Range") != string::npos)
                             need_change_scale = false;
                     }
-                    else if((filename.size() >7)&&((filename.compare(0,7,"MOD16A2") == 0)|| (filename.compare(0,7,"MYD16A2")==0))) 
+                    else if((filename.size() >7)&&((filename.compare(0,7,"MOD16A2") == 0)|| (filename.compare(0,7,"MYD16A2")==0) ||
+                            (filename.compare(0,7,"MOD16A3")==0) || (filename.compare(0,7,"MYD16A3")==0))) 
                         need_change_scale = false;
                 }
                 if(true == need_change_scale)  {
@@ -1452,7 +1453,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                                 need_change_scale = false;
                         }
 
-                        else if((filename.size() >7)&&((filename.compare(0,7,"MOD16A2") == 0)|| (filename.compare(0,7,"MYD16A2")==0)))
+                        else if((filename.size() >7)&&((filename.compare(0,7,"MOD16A2") == 0)|| (filename.compare(0,7,"MYD16A2")==0) ||
+                            (filename.compare(0,7,"MOD16A3")==0) || (filename.compare(0,7,"MYD16A3")==0))) 
                             need_change_scale = false;
                     }
                     if(true == need_change_scale) {

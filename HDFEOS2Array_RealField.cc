@@ -1368,7 +1368,8 @@ cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
                 }
                 // MOD16A2
                 else if((temp_filename.size() >7)&&
-                        ((temp_filename.compare(0,7,"MOD16A2") == 0)|| (temp_filename.compare(0,7,"MYD16A2")==0))) 
+                        ((temp_filename.compare(0,7,"MOD16A2") == 0)|| (temp_filename.compare(0,7,"MYD16A2")==0)||
+                         (temp_filename.compare(0,7,"MOD16A3") == 0)|| (temp_filename.compare(0,7,"MYD16A3")==0)))
                         need_change_scale = false;
                 
  
