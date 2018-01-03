@@ -132,12 +132,10 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
             throw InternalErr("The HDF-EOS5 is missing project code ");
         }
 
-//#if 0
-        // We gradually add the support of different projection code
+        // We gradually add the support of different projection codes
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
-//#endif
        
         // HDF-EOS5 provides default pixel and origin values if they are not defined.
         c.set_grids_missing_pixreg_orig(&p);
@@ -181,7 +179,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Handle coordinate variables
         f->Handle_CVar();
 
-        // Adjust variable and dimension names again based on the handling coordinate variables.
+        // Adjust variable and dimension names again based on the handling of coordinate variables.
         f->Adjust_Var_Dim_NewName_Before_Flattening();
 
 
@@ -202,11 +200,11 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         }
         else {
 
-	    // Handle unsupported datatypes
-	    f->Handle_Unsupported_Dtype(include_attr);
+	        // Handle unsupported datatypes
+	        f->Handle_Unsupported_Dtype(include_attr);
 
-	    // Handle unsupported dataspaces
-	    f->Handle_Unsupported_Dspace(include_attr);
+	        // Handle unsupported dataspaces
+	        f->Handle_Unsupported_Dspace(include_attr);
 
         }
  
@@ -317,15 +315,10 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         if (c.check_grids_missing_projcode(&p)) {
             throw InternalErr("The HDF-EOS5 is missing project code ");
         }
-//Just check 
-//#if 0
         if (c.check_grids_support_projcode(&p)) {
             throw InternalErr("The current project code is not supported");
         }
-//#endif
         c.set_grids_missing_pixreg_orig(&p);
-
-        // cerr<<"after unknown parameters "<<endl;
 
         bool grids_mllcv = c.check_grids_multi_latlon_coord_vars(&p);
 
@@ -365,7 +358,6 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         // This function needs to be called after retrieving supported attributes.
         f->Handle_Unsupported_Others(include_attr);
 
-
         // Add/adjust CF attributes
         f->Adjust_Attr_Info();
         f->Adjust_Obj_Name();
@@ -378,12 +370,11 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         //if(true == is_check_nameclashing)
         //   f->Handle_DimNameClashing();
 
-// Add supplemental attributes
+        // Add supplemental attributes
         f->Add_Supplement_Attrs(is_add_path_attrs);
 
         // Handle coordinate attributes
         f->Handle_Coor_Attr();
-
         f->Handle_SpVar_Attr();
     }
     catch (HDF5CF::Exception &e){
@@ -431,20 +422,19 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
 
     }
 
-    //bool has_cf_grid_mapping = false;
-
+    // We need to provide grid_mapping info. for multiple grids.
+    // Here cv_lat_miss_index represents the missing latitude(HDF-EOS grid without the latitude field) cv index
+    // This index is used to create the grid_mapping variable for different grids.
     unsigned short cv_lat_miss_index = 1;
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                // TTTOOODDDDOOOO: Here we need to add grid_mapping variables for each grid
-                // for projections other than sinusoidal since attribute values for LAMAZ and PS
+                // Here we need to add grid_mapping variables for each grid
+                // For projections other than sinusoidal since attribute values for LAMAZ and PS
                 // are different for each grid.
-//cerr<<"coming to CV_LAT_MISS DDS"<<endl;
                 gen_dap_oneeos5cf_dds(dds,*it_cv);
                 add_cf_grid_mapinfo_var(dds,(*it_cv)->getProjCode(),cv_lat_miss_index);
                 cv_lat_miss_index++;
-                //has_cf_grid_mapping = true;
             }
         }
     }
