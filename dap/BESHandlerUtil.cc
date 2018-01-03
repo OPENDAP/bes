@@ -40,9 +40,33 @@ using namespace std;
 
 namespace bes {
 
-// BESUncompressCache *BESUncompressCache::d_instance = 0;
+std::map<string,int> *TemporaryFile::open_files = new std::map<string, int>;
 
-TemporaryFile TemporaryFile::open_files = new std::map<std::vector<char>,int>;
+void TemporaryFile::delete_temp_files() {
+    cerr << "TemporaryFile::delete_temp_files() " << endl;
+    std::map<string,int>::iterator it;
+    for (it=open_files->begin(); it!=open_files->end(); ++it){
+        delete_temp_file(it->first, it->second);
+    }
+    open_files->clear();
+}
+
+void TemporaryFile::delete_temp_file(string fname, int fd)
+{
+    cerr << "delete_temp_file() -  Closing '" << fname << "'  fd: " << fd << endl;
+    try {
+        if (!close(fd)){
+            ERROR(string("Error closing temporary file: '").append(fname).append("'  msg: ").append(strerror(errno)).append("\n") );
+        }
+        if (!unlink(fname.c_str())){
+           ERROR(string("Error unlinking temporary file: '").append(fname).append("' msg: ").append(strerror(errno)).append("\n"));
+        }
+    }
+    catch (...) {
+        // Do nothing. This just protects against BESLog (i.e., ERROR)
+        // throwing an exception
+    }
+}
 
 
 /**
@@ -52,7 +76,9 @@ TemporaryFile TemporaryFile::open_files = new std::map<std::vector<char>,int>;
  */
 TemporaryFile::~TemporaryFile()
 {
-    delete_temp_file(d_fd,d_name);
+    cerr << "~TemporaryFile() - The end is nigh!" << endl;
+    delete_temp_file(d_fname,d_fd);
+    open_files->erase(d_fname);
 }
 
 /**
@@ -69,20 +95,21 @@ TemporaryFile::~TemporaryFile()
  */
 TemporaryFile::TemporaryFile(const std::string &path_template)
 {
-    //string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-    //vector<char> temp_file(path_template.length() + 1);
-    d_name.reserve(path_template.length() + 1);
-
-    string::size_type len = path_template.copy(&d_name[0], path_template.length());
-    d_name[len] = '\0';
+    char tmp_name[path_template.length()+1];
+    string::size_type len = path_template.copy(tmp_name, path_template.length());
+    tmp_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
     // a mode of 666.
     mode_t original_mode = umask(077);
-    d_fd = mkstemp(&d_name[0]);
+    d_fd = mkstemp(tmp_name);
     umask(original_mode);
 
     if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
+
+    d_fname.assign(tmp_name);
+    cerr << "TemporaryFile - Created '" << d_fname << "' fd: "<< d_fd << endl;
+    open_files->insert(std::pair<string,int>(d_fname, d_fd));
 
 #ifdef HAVE_ATEXIT
             atexit(delete_temp_files);

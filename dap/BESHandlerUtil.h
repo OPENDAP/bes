@@ -46,29 +46,11 @@ const std::string default_path_template = "TMP_DIR/opendapXXXXXX";
 class TemporaryFile {
 private:
     int d_fd;
-    std::vector<char> d_name;
-    static std::map<std::vector<char>,int> *open_files;
-
-
-    static void delete_temp_files()
-    {
-
-
-    }
-
-    static void delete_temp_file(int fd, std::vector<char> name)
-    {
-        try {
-            if (!close(fd))
-                ERROR(string("Error closing temporary file: ").append(&name[0]).append(": ").append(strerror(errno)));
-            if (!unlink(&name[0]))
-                ERROR(string("Error closing temporary file: ").append(&name[0]).append(": ").append(strerror(errno)));
-        }
-        catch (...) {
-            // Do nothing. This just protects against BESLog (i.e., ERROR)
-            // throwing an exception
-        }
-    }
+    //std::vector<char> d_name;
+    string d_fname;
+    static std::map<string, int> *open_files;
+    static void delete_temp_files();
+    static void delete_temp_file(string fname, int fd);
 
 
 public:
@@ -103,7 +85,7 @@ public:
     int get_fd() const { return d_fd; }
 
     /** @return The temporary file's name */
-    std::string get_name() const { return &d_name[0]; }
+    std::string get_name() const { return d_fname; }
 };
 
 } // namespace bes
