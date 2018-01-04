@@ -658,8 +658,8 @@ void GMFile::Add_Dim_Name() throw(Exception){
         case Aqu_L3:
             Add_Dim_Name_Aqu_L3();
             break;
-        case SMAP:
-            Add_Dim_Name_SMAP();
+        case OSMAPL2S:
+            Add_Dim_Name_OSMAPL2S();
             break;
         case ACOS_L2S_OR_OCO2_L1B:
             Add_Dim_Name_ACOS_L2S_OCO2_L1B();
@@ -1209,17 +1209,17 @@ void GMFile::Add_Dim_Name_Aqu_L3()throw(Exception)
     }// for (vector<Var *>::iterator irv = this->vars.begin()
 }
 
-// Add dimension names for SMAP(note: the SMAP may change their structures. The code may not apply to them.)
-void GMFile::Add_Dim_Name_SMAP()throw(Exception){
+// Add dimension names for OSMAPL2S(note: the SMAP change their structures. The code doesn't not apply to them.)
+void GMFile::Add_Dim_Name_OSMAPL2S()throw(Exception){
 
-    BESDEBUG("h5", "Coming to Add_Dim_Name_SMAP()"<<endl);
+    BESDEBUG("h5", "Coming to Add_Dim_Name_OSMAPL2S()"<<endl);
     string tempvarname ="";
     string key = "_lat";
-    string smapdim0 ="YDim";
-    string smapdim1 ="XDim";
+    string osmapl2sdim0 ="YDim";
+    string osmapl2sdim1 ="XDim";
 
     // Since the dim. size of each dimension of 2D lat/lon may be the same, so use multimap.
-    multimap<hsize_t,string> smapdimsize_to_dimname;
+    multimap<hsize_t,string> osmapl2sdimsize_to_dimname;
     pair<multimap<hsize_t,string>::iterator,multimap<hsize_t,string>::iterator> mm_er_ret;
     multimap<hsize_t,string>::iterator irmm; 
 
@@ -1230,9 +1230,9 @@ void GMFile::Add_Dim_Name_SMAP()throw(Exception){
         if ((tempvarname.size() > key.size())&& 
             (key == tempvarname.substr(tempvarname.size()-key.size(),key.size()))){
             if ((*irv)->dims.size() !=2) 
-                throw1("Currently only 2D lat/lon is supported for SMAP");
-            smapdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,smapdim0));
-            smapdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[1]->size,smapdim1));
+                throw1("Currently only 2D lat/lon is supported for OSMAPL2S");
+            osmapl2sdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,osmapl2sdim0));
+            osmapl2sdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[1]->size,osmapl2sdim1));
             break;
         }
     }
@@ -1252,7 +1252,7 @@ void GMFile::Add_Dim_Name_SMAP()throw(Exception){
             ird != (*irv)->dims.end(); ++ird) {
 
             fakedimflag = true;
-            mm_er_ret = smapdimsize_to_dimname.equal_range((*ird)->size);
+            mm_er_ret = osmapl2sdimsize_to_dimname.equal_range((*ird)->size);
             for (irmm = mm_er_ret.first; irmm!=mm_er_ret.second;irmm++) {
                 setret = tempdimnamelist.insert(irmm->second);
                 if (setret.second) {
@@ -2649,8 +2649,8 @@ void GMFile::Handle_CVar() throw(Exception){
         Handle_CVar_Aqu_L3(); 
     else if (OBPG_L3 == this->product_type)
         Handle_CVar_OBPG_L3();
-    else if (SMAP == this->product_type) 
-        Handle_CVar_SMAP();
+    else if (OSMAPL2S == this->product_type) 
+        Handle_CVar_OSMAPL2S();
     else if (Mea_Ozone == this->product_type) 
         Handle_CVar_Mea_Ozone();
     else if (GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) 
@@ -2878,17 +2878,17 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() throw(Exception){
     }
 }
 
-// Handle Coordinate varibles for SMAP(Note: this may be subject to change since SMAP products may have new structures)
-void GMFile::Handle_CVar_SMAP() throw(Exception) {
+// Handle Coordinate varibles for OSMAPL2S(Note: this function doesn't apply to SMAP)
+void GMFile::Handle_CVar_OSMAPL2S() throw(Exception) {
 
-    BESDEBUG("h5", "Coming to Handle_CVar_SMAP()"<<endl);
+    BESDEBUG("h5", "Coming to Handle_CVar_OSMAPL2S()"<<endl);
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
     string tempvarname;
     string key0 = "_lat";
     string key1 = "_lon";
-    string smapdim0 ="YDim";
-    string smapdim1 ="XDim";
+    string osmapl2sdim0 ="YDim";
+    string osmapl2sdim1 ="XDim";
 
     bool foundkey0 = false;
     bool foundkey1 = false;
@@ -2905,13 +2905,13 @@ void GMFile::Handle_CVar_SMAP() throw(Exception) {
 
             foundkey0 = true;
 
-            if (dimnamelist.find(smapdim0)== dimnamelist.end()) 
-                throw5("variable ",tempvarname," must have dimension ",smapdim0," , but not found ");
+            if (dimnamelist.find(osmapl2sdim0)== dimnamelist.end()) 
+                throw5("variable ",tempvarname," must have dimension ",osmapl2sdim0," , but not found ");
 
-            tempdimnamelist.erase(smapdim0);
+            tempdimnamelist.erase(osmapl2sdim0);
             GMCVar* GMcvar = new GMCVar(*irv);
             GMcvar->newname = GMcvar->name; // Remove the path, just use the variable name
-            GMcvar->cfdimname = smapdim0;    
+            GMcvar->cfdimname = osmapl2sdim0;    
             GMcvar->cvartype = CV_EXIST;
             GMcvar->product_type = product_type;
             this->cvars.push_back(GMcvar);
@@ -2925,14 +2925,14 @@ void GMFile::Handle_CVar_SMAP() throw(Exception) {
 
             foundkey1 = true;
 
-            if (dimnamelist.find(smapdim1)== dimnamelist.end()) 
-                throw5("variable ",tempvarname," must have dimension ",smapdim1," , but not found ");
+            if (dimnamelist.find(osmapl2sdim1)== dimnamelist.end()) 
+                throw5("variable ",tempvarname," must have dimension ",osmapl2sdim1," , but not found ");
 
-            tempdimnamelist.erase(smapdim1);
+            tempdimnamelist.erase(osmapl2sdim1);
 
             GMCVar* GMcvar = new GMCVar(*irv);
             GMcvar->newname = GMcvar->name;
-            GMcvar->cfdimname = smapdim1;    
+            GMcvar->cfdimname = osmapl2sdim1;    
             GMcvar->cvartype = CV_EXIST;
             GMcvar->product_type = product_type;
             this->cvars.push_back(GMcvar);
@@ -5581,8 +5581,8 @@ void GMFile:: Handle_Coor_Attr() {
                 if(ll2dim_flag != 2) 
                     coor_attr_keep_exist = true;
 
-                // Remove the following code later since the released SMAP products are different. KY 2015-12-08
-                if(product_type == SMAP)
+                // The following line doesn't apply to SMAP,it applies to Old SMAP Level 2 Simulation files. 
+                if(product_type == OSMAPL2S)
                     coor_attr_keep_exist = true;
 
                 if (false == coor_attr_keep_exist) {
@@ -5773,8 +5773,7 @@ void GMFile:: Handle_Coor_Attr() {
                     coor_attr_keep_exist = true;
                 }
                 
-                // Remove the following code later since the released SMAP products are different. KY 2015-12-08
-                if(product_type == SMAP)
+                if(product_type == OSMAPL2S)
                     coor_attr_keep_exist = true;
 
                 // Need to delete the original "coordinates" and rebuild the "coordinates" if this var is associated with the 2-D lat/lon CVs.

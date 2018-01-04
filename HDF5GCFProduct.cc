@@ -23,7 +23,7 @@
 /// \file HDF5GCFProduct.cc
 /// \brief The implementation of functions to identify different NASA HDF5 products.
 /// Current supported products include MEaSUREs SeaWiFS, OZone, Aquarius level 3
-/// Decadal survey SMAP level 2 and ACOS level 2S.
+/// Old SMAP Level 2 Simulation files and ACOS level 2S(OCO level1B).
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
@@ -96,15 +96,15 @@ H5GCFProduct check_product(hid_t file_id) {
         product_type = Mea_Ozone;
     }
     else { 
-        int smap_flag = 1; // This is SMAP 
-        if (true == check_smap_acosl2s_oco2l1b(root_id,smap_flag)) 
-            product_type =  SMAP;
-        // "h5","After checking smap, product type is " << product_type << endl;
+        int osmapl2s_flag = 1; // This is OSMAPL2S 
+        if (true == check_osmapl2s_acosl2s_oco2l1b(root_id,osmapl2s_flag)) 
+            product_type =  OSMAPL2S;
+        // "h5","After checking osmapl2s, product type is " << product_type << endl;
 
         if (General_Product == product_type) {
 
             int acosl2s_oco2l1b_flag = 2; // This is ACOSL2S_OR_OCO2L1B
-            if (true == check_smap_acosl2s_oco2l1b(root_id,acosl2s_oco2l1b_flag)) 
+            if (true == check_osmapl2s_acosl2s_oco2l1b(root_id,acosl2s_oco2l1b_flag)) 
                 product_type =  ACOS_L2S_OR_OCO2_L1B;
                 
             // "h5"," After checking acos(oco2), product type is " << product_type <<endl;
@@ -686,11 +686,11 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
     }
     return ret_flag;
 }
-// Function to check if the product is ACOS Level 2 or SMAP.
-bool check_smap_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
+// Function to check if the product is ACOS Level 2 or OSMAPL2S.
+bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
 
     htri_t has_smac_group;
-    // "h5","coming to smap acos "<<endl;
+    // "h5","coming to osmapl2s acos "<<endl;
     bool return_flag = false;
     has_smac_group = H5Lexists(s_root_id,SMAC2S_META_GROUP_NAME,H5P_DEFAULT);
 
@@ -705,28 +705,28 @@ bool check_smap_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
-        // SMAP 
+        // OSMAPL2S 
         if (1 == which_pro) {
         
-            htri_t has_smap_attr = -1;
-            // SMAP will have an attribute called ProjectID
-            has_smap_attr = H5Aexists(s_group_id,SMAP_ATTR_NAME);
-            if (has_smap_attr >0) {
+            htri_t has_osmapl2s_attr = -1;
+            // OSMAPL2S will have an attribute called ProjectID
+            has_osmapl2s_attr = H5Aexists(s_group_id,OSMAPL2S_ATTR_NAME);
+            if (has_osmapl2s_attr >0) {
                 string attr_value = "";
-                obtain_gm_attr_value(s_group_id, SMAP_ATTR_NAME, attr_value);
-                if (attr_value.compare(SMAP_ATTR_VALUE) == 0) 
+                obtain_gm_attr_value(s_group_id, OSMAPL2S_ATTR_NAME, attr_value);
+                if (attr_value.compare(OSMAPL2S_ATTR_VALUE) == 0) 
                     return_flag = true;
                 else 
                     return_flag = false;
                 H5Gclose(s_group_id);
             }
-            else if (0 == has_smap_attr) {
+            else if (0 == has_osmapl2s_attr) {
                 H5Gclose(s_group_id);
                 return_flag = false;
             }
             else {
                 string msg = "Fail to determine if the HDF5 link  ";
-                msg += string(SMAP_ATTR_NAME);
+                msg += string(OSMAPL2S_ATTR_NAME);
                 msg +="  exists ";
                 H5Gclose(s_group_id);
                 H5Gclose(s_root_id);
@@ -777,7 +777,7 @@ bool check_smap_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
 
                 if (ty_class != H5T_STRING) {
                     H5Tclose(dtype);
-		    H5Dclose(s_dset_id);
+		            H5Dclose(s_dset_id);
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "This dataset must be a H5T_STRING class  ";

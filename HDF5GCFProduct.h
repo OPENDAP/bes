@@ -23,7 +23,7 @@
 /// \file HDF5GCFProduct.h
 /// \brief This file includes functions to identify different NASA HDF5 products.
 /// Current supported products include MEaSUREs SeaWiFS, OZone, Aquarius level 3
-/// Decadal survey SMAP level 2 and ACOS level 2S(OCO2 level1B).
+/// Old SMAP Level 2 Simulation files and ACOS level 2S(OCO2 level1B).
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
@@ -41,7 +41,7 @@ using namespace std;
 
 
 enum H5GCFProduct
-{ General_Product,GPM_L1, GPMS_L3,GPMM_L3,Mea_SeaWiFS_L2, Mea_SeaWiFS_L3,Mea_Ozone,Aqu_L3,OBPG_L3,ACOS_L2S_OR_OCO2_L1B,SMAP };
+{ General_Product,GPM_L1, GPMS_L3,GPMM_L3,Mea_SeaWiFS_L2, Mea_SeaWiFS_L3,Mea_Ozone,Aqu_L3,OBPG_L3,ACOS_L2S_OR_OCO2_L1B,OSMAPL2S};
 
 // Currently we only need to support four NASA generic HDF5 products for
 // the access of NASA data via CF-compliant vis. tools(IDV and Panoply) 
@@ -49,7 +49,8 @@ enum H5GCFProduct
 // MEaSUREs SeaWiFS level 2 and level 3
 // MEaSUREs Ozone zonal average
 // Aquarius level 3
-// Decadal survey SMAP level 2
+// (OSMAPL2S) Old SMAP Level 2 Simulation
+// Note: This is different than the released SMAP products,which complies to a more general case supported by the handler. 
 // ACOS_L2S and OCO L1B needs special handling of 64-bit integer mapping but there 
 // is no way to support the access of data via the CF-compliant tools.
 
@@ -94,10 +95,10 @@ static const char Obpgl3_ATTR2_NAME[] ="cdm_data_type";
 static const string Obpgl3_ATTR2_VALUE ="grid";
 
 
-// SMAP simulation and ACOS L2S(OCO2 L1B) 
+// Old SMAP Level 2 Simulation(OSMAPL2S) and ACOS L2S(OCO2 L1B) 
 static const char SMAC2S_META_GROUP_NAME[] ="Metadata";
-static const char SMAP_ATTR_NAME[] ="ProjectID";
-static const string SMAP_ATTR_VALUE ="SMAP";
+static const char OSMAPL2S_ATTR_NAME[] ="ProjectID";
+static const string OSMAPL2S_ATTR_VALUE ="SMAP";
 
 static const char ACOS_L2S_OCO2_L1B_DSET_NAME[] ="ProjectId";
 static const string ACOS_L2S_ATTR_VALUE ="ACOS";
@@ -137,12 +138,12 @@ bool check_aquarius(hid_t root_id,int & level);
 // Check if this product is an OBPG HDF5 file
 bool check_obpg(hid_t root_id,int & level);
 
-// Function to check if the product is ACOS Level 2 or SMAP.
-//  which_product tells if the product is SMAP or ACOSL2S(OCO2L1B). 
-//  For example, if which_product is SMAP, it will just check
-//  if the attribute name and value are SMAP attribute and value.
+// Function to check if the product is ACOS Level 2 or OSMAPL2S.
+//  which_product tells if the product is OSMAPL2S or ACOSL2S(OCO2L1B). 
+//  For example, if which_product is OSMAPL2S, it will just check
+//  if the attribute name and value are OSMAPL2S attribute and value.
 //  Then return true or false. Similar case is applied to ACOSL2S(OCO2L1B).
-bool check_smap_acosl2s_oco2l1b(hid_t root_id, int which_product);
+bool check_osmapl2s_acosl2s_oco2l1b(hid_t root_id, int which_product);
 
 // Function to check if the product is MEaSURES Ozone zonal average or level 2.
 bool check_measure_ozone(hid_t root_id);

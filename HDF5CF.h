@@ -924,7 +924,7 @@ protected:
 
     void Add_Dim_Name_Aqu_L3() throw (Exception);
     void Add_Dim_Name_OBPG_L3() throw (Exception);
-    void Add_Dim_Name_SMAP() throw (Exception);
+    void Add_Dim_Name_OSMAPL2S() throw (Exception);
     void Add_Dim_Name_ACOS_L2S_OCO2_L1B() throw (Exception);
 
     void Add_Dim_Name_General_Product() throw (Exception);
@@ -969,7 +969,7 @@ protected:
     void Handle_CVar_Mea_SeaWiFS() throw (Exception);
     void Handle_CVar_Aqu_L3() throw (Exception);
     void Handle_CVar_OBPG_L3() throw (Exception);
-    void Handle_CVar_SMAP() throw (Exception);
+    void Handle_CVar_OSMAPL2S() throw (Exception);
     void Handle_CVar_Mea_Ozone() throw (Exception);
     void Handle_SpVar_ACOS_OCO2() throw (Exception);
     void Handle_CVar_Dimscale_General_Product() throw (Exception);
