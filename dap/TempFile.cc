@@ -42,15 +42,13 @@ namespace bes {
 
 std::map<string,int> *TempFile::open_files = new std::map<string, int>;
 
-void TempFile::delete_temp_files() {
-    cerr << __func__ << "() - BEGIN " << endl;
-    std::map<string,int>::iterator it;
-    for (it=open_files->begin(); it!=open_files->end(); ++it){
-        delete_temp_file(it->first, it->second);
+void TempFile::delete_temp_files(int signal) {
+    if (signal == SIGPIPE) {
+        std::map<string,int>::iterator it;
+        for (it=open_files->begin(); it!=open_files->end(); ++it){
+            unlink((it->first).c_str());
+        }
     }
-    cerr << __func__ << "() - Clearing open_files list." << endl;
-    open_files->clear();
-    cerr << __func__ << "() - END " << endl;
 }
 
 void TempFile::delete_temp_file(string fname, int fd)
@@ -115,10 +113,6 @@ TempFile::TempFile(const std::string &path_template)
     d_fname.assign(tmp_name);
     cerr << __func__ << "() - Created '" << d_fname << "' fd: "<< d_fd << endl;
     open_files->insert(std::pair<string,int>(d_fname, d_fd));
-
-//#ifdef HAVE_ATEXIT
-            atexit(delete_temp_files);
-//#endif
 
 }
 
