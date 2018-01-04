@@ -191,6 +191,7 @@ public:
             // parent - wait for the client to get sorted
             sleep(1);
             // Send child a the signal
+            DBG(cerr <<  __func__ << "-PARENT() - Sending SIGPIPE to client."<< endl);
             kill(pid,SIGPIPE);
             // wait for the child to die.
             sleep(1);
@@ -255,6 +256,7 @@ public:
             // parent - wait for the client to get sorted
             sleep(1);
             // Send child a the signal
+            DBG(cerr <<  __func__ << "-PARENT() - Sending SIGPIPE to client."<< endl);
             kill(pid,SIGPIPE);
             // wait for the child to die.
             sleep(1);
