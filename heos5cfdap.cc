@@ -438,12 +438,6 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
             }
         }
     }
-#if 0
-    if (true == has_cf_grid_mapping){
-        add_cf_grid_mapinfo_var(dds);
-    }
-#endif
-
 }
 
 void  gen_dap_oneeos5cf_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar) {
@@ -458,8 +452,6 @@ void  gen_dap_oneeos5cf_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar) {
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
     if(dims.size() !=2) 
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
-//for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d) 
-// cerr<<"dim name is"<<(*it_d)->getNewName() <<endl;
     add_cf_grid_cvs(dds,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
 
 }
@@ -473,11 +465,15 @@ void  gen_dap_oneeos5cf_das(DAS &das,const vector<HDF5CF::Var*>& vars, const HDF
     float cv_point_left  = cvar->getPointLeft();       
     float cv_point_right = cvar->getPointRight();       
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
-//cerr<<"cv_point_lower is "<<cv_point_lower <<endl;
-//cerr<<"cvar name is "<<cvar->getName() <<endl;
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
-//for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d) 
-//cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
+
+#if 0   
+cerr<<"cv_point_lower is "<<cv_point_lower <<endl;
+cerr<<"cvar name is "<<cvar->getName() <<endl;
+for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d) 
+    cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
+#endif
+
    if(dims.size() !=2) 
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
     add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims,cvar->getParams(),g_suffix);
@@ -550,8 +546,6 @@ cerr<<"cvar attribute value type is "<<(*it_ra)->getType() <<endl;
 cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
 #endif
                 bool is_latlon = cvar->isLatLon();
-//if(is_latlon == true) cerr<<"this var is lat/lon"<<endl;
-//else cerr<<"this var is NOT lat/lon" <<endl;
                 HDF5CFArray *ar = NULL;
                 try {
                     ar = new HDF5CFArray (
@@ -590,12 +584,13 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
             case CV_LON_MISS:
             {
 
-//cerr<<"cvar new name latlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
                 HDFEOS5CFMissLLArray *ar = NULL;
                 try {
-//cerr<<"cvar zone here is "<<cvar->getZone() <<endl;
-//cerr<<"cvar Sphere here is "<<cvar->getSphere() <<endl;
-//cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
+#if 0
+cerr<<"cvar zone here is "<<cvar->getZone() <<endl;
+cerr<<"cvar Sphere here is "<<cvar->getSphere() <<endl;
+cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
+#endif
                     ar = new HDFEOS5CFMissLLArray (
                                     cvar->getRank(),
                                     filename,
@@ -637,6 +632,7 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
 
             case CV_NONLATLON_MISS:
             {
+
 //cerr<<"cvar new name nonlatlon miss at heos5cfdap.cc is "<<cvar->getNewName() <<endl;
 
                 if (cvar->getRank() !=1) {
@@ -726,7 +722,6 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
 void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DAS generation function gen_eos5_cfdas  "<<endl);
-    // cerr<<"read_cfdas()"<<endl;
 
      // First check if this is for generating the ignored object info.
     if(true == f->Get_IgnoredInfo_Flag()) {
@@ -786,7 +781,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     }
  
     for (it_cv = cvars.begin(); it_cv !=cvars.end();it_cv++) {
-        // "h5","variable full path= "<< (*it_cv)->getFullPath() <<endl;
 
         if (false == ((*it_cv)->getAttributes().empty())) {
 
@@ -806,7 +800,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-//cerr<<"coming to CV_LAT_MISS DAS "<<endl;
                 gen_dap_oneeos5cf_das(das,vars,*it_cv,cv_lat_miss_index);
                 cv_lat_miss_index++;
             }
