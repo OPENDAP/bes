@@ -193,12 +193,12 @@ public:
             sleep(1);
             kill(pid,SIGPIPE);
             sleep(1);
-            DBG(cerr <<  __func__ << "() - CLIENT SHOULD BE DEAD. Temporary File Name: '" << glob_name << "'"<< endl);
+            DBG(cerr <<  __func__ << "-PARENT() - Client should be dead. Temporary File Name: '" << glob_name << "'"<< endl);
             // Is it STILL there? Better not be...
             struct stat buf;
             int statret = stat(glob_name, &buf);
             CPPUNIT_ASSERT(statret != 0);
-            DBG(cerr <<  __func__ << "() - Temporary File: '" << glob_name  << "' was successfully removed. woot."<< endl);
+            DBG(cerr <<  __func__ << "-PARENT() - Temporary File: '" << glob_name  << "' was successfully removed. woot."<< endl);
 
             munmap(glob_name, name_size);
 
@@ -211,9 +211,10 @@ public:
             std::string tmp_file_name;
 
             try {
+                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf(tmp_template);
                 tmp_file_name = tf.get_name();
-                DBG(cerr <<  __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf.get_fd()  << endl);
+                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf.get_fd()  << endl);
                 tmp_file_name.copy(glob_name, tmp_file_name.size(), 0);
 
                 // Is it really there? Just sayin'...
@@ -221,13 +222,13 @@ public:
                 int statret = stat(tmp_file_name.c_str(), &buf);
                 CPPUNIT_ASSERT(statret == 0);
                 sleep(100);
-                DBG(cerr <<  __func__ << "() - Client is Alive." << endl);
+                DBG(cerr <<  __func__ << "-CHILD() - Client is Alive." << endl);
             }
             catch (BESInternalError &bie) {
-                DBG(cerr <<  __func__ << "() - Caught BESInternalError  Message: "<< bie.get_message()  << endl);
+                DBG(cerr <<  __func__ << "-CHILD() - Caught BESInternalError  Message: "<< bie.get_message()  << endl);
                 CPPUNIT_ASSERT(false);
             }
-            DBG(cerr <<  __func__ << "() - Client is exiting." << endl);
+            DBG(cerr <<  __func__ << "-CHILD() - Client is exiting normally." << endl);
 
         }
 

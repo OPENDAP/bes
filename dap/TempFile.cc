@@ -24,6 +24,8 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h> // for wait
 
 #include <cstdlib>
 #include <cstring>
@@ -42,12 +44,14 @@ namespace bes {
 
 std::map<string,int> *TempFile::open_files = new std::map<string, int>;
 
-void TempFile::delete_temp_files(int signal) {
-    if (signal == SIGPIPE) {
+void TempFile::delete_temp_files(int sig) {
+    if (sig == SIGPIPE) {
         std::map<string,int>::iterator it;
         for (it=open_files->begin(); it!=open_files->end(); ++it){
             unlink((it->first).c_str());
         }
+        signal(sig, SIG_DFL);
+        raise(sig);
     }
 }
 
