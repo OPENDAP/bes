@@ -167,7 +167,7 @@ public:
         sigaddset(&act.sa_mask, SIGPIPE);
         act.sa_flags = 0;
 
-        act.sa_handler = bes::TempFile::delete_temp_files;
+        act.sa_handler = bes::TempFile::sigpipe_handler;
         if (sigaction(SIGPIPE, &act, 0)) {
             cerr << "Could not register a handler to catch SIGPIPE." << endl;
             exit(1);
@@ -178,49 +178,147 @@ public:
 
     void sigpipe_test()
     {
-
+        // Because we are going to fork and the child will be making a temp file, we use shared memory to
+        // allow the parent to know the resulting file name.
         char *glob_name;
         int name_size = tmp_template.length() + 1;
+        glob_name = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
-
-        glob_name = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE,
-                        MAP_SHARED | MAP_ANONYMOUS, -1, 0);
         pid_t pid = fork();
-        CPPUNIT_ASSERT(pid >= 0);
+        CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
 
         if(pid){
-            //parent
+            // parent - wait for the client to get sorted
             sleep(1);
+            // Send child a the signal
             kill(pid,SIGPIPE);
+            // wait for the child to die.
             sleep(1);
             DBG(cerr <<  __func__ << "-PARENT() - Client should be dead. Temporary File Name: '" << glob_name << "'"<< endl);
+
             // Is it STILL there? Better not be...
             struct stat buf;
             int statret = stat(glob_name, &buf);
             CPPUNIT_ASSERT(statret != 0);
             DBG(cerr <<  __func__ << "-PARENT() - Temporary File: '" << glob_name  << "' was successfully removed. woot."<< endl);
 
+            // Tidy up the shared memory business
             munmap(glob_name, name_size);
 
         }
         else {
-            //child
-
+            //child - register a signal handler
             register_sigpipe_handler();
 
             std::string tmp_file_name;
-
             try {
                 DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf(tmp_template);
                 tmp_file_name = tf.get_name();
                 DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf.get_fd()  << endl);
+                // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name, tmp_file_name.size(), 0);
 
                 // Is it really there? Just sayin'...
                 struct stat buf;
                 int statret = stat(tmp_file_name.c_str(), &buf);
                 CPPUNIT_ASSERT(statret == 0);
+                // Wait for the signal
+                sleep(100);
+                DBG(cerr <<  __func__ << "-CHILD() - Client is Alive." << endl);
+            }
+            catch (BESInternalError &bie) {
+                DBG(cerr <<  __func__ << "-CHILD() - Caught BESInternalError  Message: "<< bie.get_message()  << endl);
+                CPPUNIT_ASSERT(false);
+            }
+            DBG(cerr <<  __func__ << "-CHILD() - Client is exiting normally." << endl);
+
+        }
+
+
+    }
+
+    void multifile_sigpipe_test()
+    {
+        // Because we are going to fork and the child will be making a temp file, we use shared memory to
+        // allow the parent to know the resulting file names.
+        char *glob_name[3];
+        int name_size = tmp_template.length() + 1;
+        glob_name[0] = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+        glob_name[1] = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+        glob_name[2] = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+
+        pid_t pid = fork();
+        CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
+
+        if(pid){
+            // parent - wait for the client to get sorted
+            sleep(1);
+            // Send child a the signal
+            kill(pid,SIGPIPE);
+            // wait for the child to die.
+            sleep(1);
+            DBG(cerr <<  __func__ << "-PARENT() - Client should be dead."<< endl);
+
+            for(int i=0; i<3 ;i++){
+                // Is it STILL there? Better not be...
+                struct stat buf;
+                int statret = stat(glob_name[i], &buf);
+                CPPUNIT_ASSERT(statret != 0);
+                DBG(cerr <<  __func__ << "-PARENT() - Temporary File: '" << glob_name[i]  << "' was successfully removed. woot."<< endl);
+            }
+
+            // Tidy up the shared memory business
+            munmap(glob_name, name_size);
+
+        }
+        else {
+            //child - register a signal handler
+            register_sigpipe_handler();
+
+            std::string tmp_file_name;
+            struct stat buf;
+            int statret;
+            try {
+
+                // --------- File One ------------
+                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                bes::TempFile tf1(tmp_template);
+                tmp_file_name = tf1.get_name();
+                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf1.get_fd()  << endl);
+                // copy the filename into shared memory.
+                tmp_file_name.copy(glob_name[0], tmp_file_name.size(), 0);
+
+                // Is it really there? Just sayin'...
+                statret = stat(tmp_file_name.c_str(), &buf);
+                CPPUNIT_ASSERT(statret == 0);
+
+                // --------- File Two ------------
+                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                bes::TempFile tf2(tmp_template);
+                tmp_file_name = tf2.get_name();
+                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf2.get_fd()  << endl);
+                // copy the filename into shared memory.
+                tmp_file_name.copy(glob_name[1], tmp_file_name.size(), 0);
+
+                // Is it really there? Just sayin'...
+                statret = stat(tmp_file_name.c_str(), &buf);
+                CPPUNIT_ASSERT(statret == 0);
+
+                // --------- File Three ------------
+                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                bes::TempFile tf3(tmp_template);
+                tmp_file_name = tf3.get_name();
+                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf3.get_fd()  << endl);
+                // copy the filename into shared memory.
+                tmp_file_name.copy(glob_name[2], tmp_file_name.size(), 0);
+
+                // Is it really there? Just sayin'...
+                statret = stat(tmp_file_name.c_str(), &buf);
+                CPPUNIT_ASSERT(statret == 0);
+
+
+                // Wait for the signal
                 sleep(100);
                 DBG(cerr <<  __func__ << "-CHILD() - Client is Alive." << endl);
             }
@@ -242,6 +340,7 @@ public:
     CPPUNIT_TEST(normal_test);
     CPPUNIT_TEST(exception_test);
     CPPUNIT_TEST(sigpipe_test);
+    CPPUNIT_TEST(multifile_sigpipe_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

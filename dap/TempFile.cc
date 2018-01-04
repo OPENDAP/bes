@@ -3,8 +3,8 @@
 // This file is part of the BES, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2016 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -44,34 +44,24 @@ namespace bes {
 
 std::map<string,int> *TempFile::open_files = new std::map<string, int>;
 
-void TempFile::delete_temp_files(int sig) {
+
+/**
+ * We need to make sure that all of the open temporary files get cleaned up if
+ * bad things happen. So far, SIGPIPE is the only bad thing we know about
+ * at least with respect to the TempFile class.
+ */
+void TempFile::sigpipe_handler(int sig) {
     if (sig == SIGPIPE) {
         std::map<string,int>::iterator it;
         for (it=open_files->begin(); it!=open_files->end(); ++it){
             unlink((it->first).c_str());
         }
+        // Files cleaned up? Sweet! Time to bail...
         signal(sig, SIG_DFL);
         raise(sig);
     }
 }
 
-void TempFile::delete_temp_file(string fname, int fd)
-{
-    try {
-        cerr << __func__ << "() -  Closing '" << fname << "'  fd: " << fd << endl;
-        if (!close(fd)){
-            ERROR(string("Error closing temporary file: '").append(fname).append("'  msg: ").append(strerror(errno)).append("\n") );
-        }
-        cerr << __func__ << "() -  Unlinking '" << fname << "'  fd: " << fd << endl;
-        if (!unlink(fname.c_str())){
-           ERROR(string("Error unlinking temporary file: '").append(fname).append("' msg: ").append(strerror(errno)).append("\n"));
-        }
-    }
-    catch (...) {
-        // Do nothing. This just protects against BESLog (i.e., ERROR)
-        // throwing an exception
-    }
-}
 
 
 /**
@@ -81,11 +71,24 @@ void TempFile::delete_temp_file(string fname, int fd)
  */
 TempFile::~TempFile()
 {
-    cerr << __func__ << "() - BEGIN The end is nigh!" << endl;
-    delete_temp_file(d_fname,d_fd);
-    cerr << __func__ << "() -  Dropping file '" << d_fname << "'  from open_files list" << endl;
+    // cerr << __func__ << "() - BEGIN The end is nigh!" << endl;
+    try {
+        // cerr << __func__ << "() -  Closing '" << fname << "'  fd: " << fd << endl;
+        if (!close(d_fd)){
+            ERROR(string("Error closing temporary file: '").append(d_fname).append("'  msg: ").append(strerror(errno)).append("\n") );
+        }
+        // cerr << __func__ << "() -  Unlinking '" << fname << "'  fd: " << fd << endl;
+        if (!unlink(d_fname.c_str())){
+           ERROR(string("Error unlinking temporary file: '").append(d_fname).append("' msg: ").append(strerror(errno)).append("\n"));
+        }
+    }
+    catch (...) {
+        // Do nothing. This just protects against BESLog (i.e., ERROR)
+        // throwing an exception
+    }
+    // cerr << __func__ << "() -  Dropping file '" << d_fname << "'  from open_files list" << endl;
     open_files->erase(d_fname);
-    cerr << __func__ << "() - END" << endl;
+    // cerr << __func__ << "() - END" << endl;
 }
 
 /**
@@ -115,7 +118,7 @@ TempFile::TempFile(const std::string &path_template)
     if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 
     d_fname.assign(tmp_name);
-    cerr << __func__ << "() - Created '" << d_fname << "' fd: "<< d_fd << endl;
+    //cerr << __func__ << "() - Created '" << d_fname << "' fd: "<< d_fd << endl;
     open_files->insert(std::pair<string,int>(d_fname, d_fd));
 
 }

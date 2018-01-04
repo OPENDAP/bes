@@ -49,11 +49,9 @@ private:
     //std::vector<char> d_name;
     std::string d_fname;
     static std::map<std::string, int> *open_files;
-    static void delete_temp_file(std::string fname, int fd);
-
 
 public:
-    static void delete_temp_files(int signal);
+    static void sigpipe_handler(int signal);
     /**
      * @brief Build a temporary file using a default template.
      *
