@@ -797,6 +797,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
     // Add CF 1-D projection variables
     unsigned short cv_lat_miss_index = 1;
+    // This code block will add grid_mapping attribute info. to corresponding variables.
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {

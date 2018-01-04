@@ -216,16 +216,14 @@ void GMFile::Retrieve_H5_Info(const char *path,
     BESDEBUG("h5", "Coming to Retrieve_H5_Info()"<<endl);
     // GPM needs the attribute info. to obtain the lat/lon.
     // So set the include_attr to be true for these products.
-    //
-//        File::Retrieve_H5_Info(path,file_id,true);
-//#if 0
     if (product_type == Mea_SeaWiFS_L2 || product_type == Mea_SeaWiFS_L3
         || GPMS_L3 == product_type  || GPMM_L3 == product_type || GPM_L1 == product_type || OBPG_L3 == product_type
         || Mea_Ozone == product_type || General_Product == product_type)  
         File::Retrieve_H5_Info(path,file_id,true);
     else 
         File::Retrieve_H5_Info(path,file_id,include_attr);
-//#endif
+
+    //  File::Retrieve_H5_Info(path,file_id,true);
 }
 
 // Update the product type. This is because the file structure may change across different versions of products
@@ -544,7 +542,6 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr) throw(Exception) {
             }
             else {
                 ++ircv;
-
             }
         } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
 
@@ -802,7 +799,7 @@ throw(Exception){
         }
 #endif
         
-    }
+    }//end of else
 }
 
 // Helper function to support dimensions of MeaSUrES SeaWiFS and OZone products
@@ -862,6 +859,8 @@ throw (Exception){
         for (vector<Dimension *>::iterator ird = var->dims.begin();
                 ird != var->dims.end(); ++ird) {
 
+            if(vlbuf[vlbuf_index].p== NULL) 
+                throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
             if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) 
                 throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
@@ -886,6 +885,7 @@ throw (Exception){
             objname.clear();
             vlbuf_index++;
         }// for (vector<Dimension *>::iterator ird = var->dims.begin()
+
         if(vlbuf.size()!= 0) {
 
             if ((aspace_id = H5Aget_space(attr_id)) < 0)
@@ -1431,7 +1431,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
     bool ret_value = false;
     bool ll_flag =  false;
 
-    vector<size_t>lat_size(2.0);
+    vector<size_t>lat_size(2,0);
     vector<size_t>lon_size(2,0);
 
     const string designed_group1 = "/";
@@ -2509,8 +2509,6 @@ throw (Exception){
     hid_t aspace_id = -1;
     hid_t ref_dset = -1;
 
-cerr<<"var name is "<<var->fullpath <<endl;
-cerr<<"attribute name is "<<dimlistattr->name <<endl;
     if(NULL == dimlistattr) 
         throw2("Cannot obtain the dimension list attribute for variable ",var->name);
 
@@ -6406,6 +6404,8 @@ void GMFile::Handle_Hybrid_EOS5() {
  
     }
 }
+
+// This routine is for handling the hybrid-HDFEOS5 products that have to be treated as "general products"
 bool GMFile:: Remove_EOS5_Strings(string &var_name) {
 
     string eos_str="HDFEOS_";
@@ -6509,7 +6509,7 @@ bool GMFile:: Remove_EOS5_Strings_NonEOS_Fields(string &var_name) {
     return remove_eos;
 }
 
-
+// We do have an AirMSPI HDF-EOS5 hybrid UTM product that has grid_mapping attribute.
 bool GMFile:: Have_Grid_Mapping_Attrs(){
     return File::Have_Grid_Mapping_Attrs();
 }

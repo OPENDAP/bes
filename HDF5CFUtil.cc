@@ -483,8 +483,6 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
         if (equal_pos < scolon_pos){
             string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_west = strtof(lon_west_str.c_str(),NULL);
-//cerr<<"latres str is "<<lon_west_str <<endl;
-//cerr<<"latres is "<<lon_west <<endl;
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
@@ -523,6 +521,10 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 {
 
     int errorcode = 0;
+    // In the original GCTP library, the function pointer names should be inv_trans and for_trans.
+    // However, since Hyrax supports both GDAL(including the HDF-EOS2 driver) and HDF handlers,
+    // on some machines, the functions inside the HDF-EOS2 driver will be called in run-time and wrong lat/lon
+    // values may be generated. To avoid, we change the function pointer names inside the GCTP library.
     int(*hinv_trans[100]) (double,double,double*,double*);  
     int(*hfor_trans[100]) (double,double,double*,double*);  /* GCTP function pointer */
     double        arg1, arg2;
@@ -602,7 +604,6 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
   if (projcode != HE5_GCTP_GEO && projcode != HE5_GCTP_BCEA)
     {
 
-//cerr<<"inside HDF5CFUtil "<<endl;
       scaleX = (lowrightpt[0] - upleftpt[0]) / xdimsize;
       scaleY = (lowrightpt[1] - upleftpt[1]) / ydimsize;
       string eastFile = HDF5RequestHandler::get_stp_east_filename();
@@ -638,19 +639,7 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 	      */
 	      arg1 = (((int)col[i] + pixadjX) * scaleX + upleftpt[0]);
 	      arg2 = (((int)row[i] + pixadjY) * scaleY + upleftpt[1]);
-//if( i == 0) {
-//cerr<<"GCTP arg1 is "<<arg1 <<endl;
-//cerr<<"GCTP arg2 is "<<arg2 <<endl;
-//cerr<<"projcode is "<<projcode <<endl;
-//if(projcode == HE5_GCTP_SNSOID) 
-//    cerr<<"this projection is sinusoidal projection "<<endl;
-    
-//}
-//projcode = 16;
-//errorcode = 1;
 	      errorcode = hinv_trans[projcode] (arg1, arg2, &lonrad, &latrad);
-//if(i==0)
-//cerr<<"errorcode after hinv_trans is "<<errorcode<<endl;
 
 	      /* Report error if any */
 	      /* ------------------- */
@@ -667,20 +656,12 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 		}
 	      else
 		{
-//if(i == 0) {
-// cerr<<"GCTP lonrad is "<<lonrad <<endl;
-// cerr<<"GCTP latrad is "<<latrad <<endl;
 
-//}
 		  /* Convert from radians to decimal degrees */
 		  /* --------------------------------------- */
 		  longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
 		  latitude[i]  = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
-//if(i == 0) {
-// cerr<<"GCTP longitudeis "<<longitude[i] <<endl;
-// cerr<<"GCTP latitude is "<<latitude[i] <<endl;
 
-//}
 		}
 	    }
 	}

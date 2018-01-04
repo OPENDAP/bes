@@ -63,7 +63,9 @@ enum H5DataType
 
 enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
 
-// Angle Conversion Codes 
+// Angle Conversion Codes, this is for using GCTP to calculate lat/lon. Since currently we only have HDF-EOS5 grid products
+// to test and we adopt the way how HDF-EOS uses GCTP, we still keep HDF-EOS5 mark(HE5) although our functions can be
+// used to handle non-HDF-EOS5 products.
 #define HE5_HDFE_RAD_DEG      0
 #define HE5_HDFE_DEG_RAD      1
 #define HE5_HDFE_DMS_DEG      2
@@ -125,11 +127,11 @@ struct HDF5CFUtil {
                static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
                static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname);
                
-               static int GDij2ll(int projcode, int zonecode, double projparm[],
-        int spherecode, int xdimsize, int ydimsize,
-        double upleftpt[], double lowrightpt[],
-        int npnts, int row[], int col[],
-        double longitude[], double latitude[], int pixcen, int pixcnr);
+               //static int GDij2ll(int projcode, int zonecode, double projparm[],
+               //                   int spherecode, int xdimsize, int ydimsize,
+               //                   double upleftpt[], double lowrightpt[],
+               //                   int npnts, int row[], int col[],
+               //                   double longitude[], double latitude[], int pixcen, int pixcnr);
 
                //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                //                           const std::vector < size_t > &pos);
@@ -194,10 +196,10 @@ static inline string get_errno() {
 }
 #endif
         int GDij2ll(int projcode, int zonecode, double projparm[],
-        int spherecode, int xdimsize, int ydimsize,
-        double upleftpt[], double lowrightpt[],
-        int npnts, int row[], int col[],
-        double longitude[], double latitude[], EOS5GridPRType pixcen, EOS5GridOriginType pixcnr);
+                    int spherecode, int xdimsize, int ydimsize,
+                    double upleftpt[], double lowrightpt[],
+                    int npnts, int row[], int col[],
+                    double longitude[], double latitude[], EOS5GridPRType pixcen, EOS5GridOriginType pixcnr);
 
 //extern int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
 
