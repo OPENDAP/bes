@@ -44,7 +44,7 @@ using namespace std;
 namespace bes {
 
 std::map<string,int> *TempFile::open_files = new std::map<string, int>;
-static struct sigaction cached_sigpipe_handler;
+struct sigaction TempFile::cached_sigpipe_handler;
 
 
 

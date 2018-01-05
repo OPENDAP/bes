@@ -49,6 +49,7 @@ private:
     //std::vector<char> d_name;
     std::string d_fname;
     static std::map<std::string, int> *open_files;
+    static struct sigaction cached_sigpipe_handler;
 
 public:
     static void sigpipe_handler(int signal);
