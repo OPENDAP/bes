@@ -97,6 +97,7 @@ public:
         DBG2(cerr <<  __func__ << "() - END" << endl);
     }
 
+
     void normal_test()
     {
         std::string tmp_file_name;
@@ -123,6 +124,50 @@ public:
         // And the file should be gone because the class TemporaryFile went out of scope.
         CPPUNIT_ASSERT(statret != 0);
         DBG(cerr <<  __func__ << "() - Temp file '" << tmp_file_name << "' has been removed. (Temporary file out of scope)"  << endl);
+
+
+    }
+
+    void multi_file_normal_test()
+    {
+        int count=3;
+        bes::TempFile *tfiles[count];
+        string tmp_file_names[count];
+
+        try {
+
+            for(int i=0; i<count;i++){
+                tfiles[i] = new bes::TempFile(tmp_template);
+                tmp_file_names[i] = tfiles[i]->get_name();
+                DBG(cerr <<  __func__ << "() - Temp file is: '" << tmp_file_names[i] << "' has been created. fd: "<< tfiles[i]->get_fd()  << endl);
+
+                // Is it really there? Just sayin'...
+                struct stat buf;
+                int statret = stat(tmp_file_names[i].c_str(), &buf);
+                CPPUNIT_ASSERT(statret == 0);
+            }
+
+
+            for(int i=0; i<count;i++){
+                delete tfiles[i];
+            }
+        }
+        catch (BESInternalError &bie) {
+            DBG(cerr <<  __func__ << "() - Caught BESInternalError! Message: "<< bie.get_message()  << endl);
+            CPPUNIT_ASSERT(false);
+        }
+
+        for(int i=0; i<count;i++){
+            // The name should be set to something.
+            CPPUNIT_ASSERT(tmp_file_names[i].length()>0);
+
+            struct stat buf;
+            int statret = stat(tmp_file_names[i].c_str(), &buf);
+            // And the file should be gone because the class TemporaryFile went out of scope.
+            CPPUNIT_ASSERT(statret != 0);
+            DBG(cerr <<  __func__ << "() - Temp file '" << tmp_file_names[i] << "' has been removed. (Temporary file out of scope)"  << endl);
+        }
+
 
 
     }
@@ -209,7 +254,7 @@ public:
         }
         else {
             //child - register a signal handler
-            register_sigpipe_handler();
+            //register_sigpipe_handler();
 
             std::string tmp_file_name;
             try {
@@ -276,7 +321,7 @@ public:
         }
         else {
             //child - register a signal handler
-            register_sigpipe_handler();
+            //register_sigpipe_handler();
 
             std::string tmp_file_name;
             struct stat buf;
@@ -340,6 +385,7 @@ public:
     CPPUNIT_TEST_SUITE( TemporaryFileTest );
 
     CPPUNIT_TEST(normal_test);
+    CPPUNIT_TEST(multi_file_normal_test);
     CPPUNIT_TEST(exception_test);
     CPPUNIT_TEST(sigpipe_test);
     CPPUNIT_TEST(multifile_sigpipe_test);
