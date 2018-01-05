@@ -61,6 +61,7 @@ void TempFile::sigpipe_handler(int sig) {
             unlink((it->first).c_str());
         }
         // Files cleaned up? Sweet! Time to bail...
+        // FIXME Should we set this to the cached_sigpipe_handler? Or just the default?
         signal(sig, SIG_DFL);
         raise(sig);
     }
