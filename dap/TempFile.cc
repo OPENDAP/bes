@@ -47,8 +47,6 @@ std::map<string,int> *TempFile::open_files = new std::map<string, int>;
 struct sigaction TempFile::cached_sigpipe_handler;
 
 
-
-
 /**
  * We need to make sure that all of the open temporary files get cleaned up if
  * bad things happen. So far, SIGPIPE is the only bad thing we know about
@@ -62,8 +60,9 @@ void TempFile::sigpipe_handler(int sig) {
         }
         // Files cleaned up? Sweet! Time to bail...
         // FIXME Should we set this to the cached_sigpipe_handler? Or just the default?
-        signal(sig, SIG_DFL);
-        raise(sig);
+        // if(sigaction(SIGPIPE,  &cached_sigpipe_handler, 0);
+        signal(SIGPIPE, SIG_DFL);
+        raise(SIGPIPE);
     }
 }
 
