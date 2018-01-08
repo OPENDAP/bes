@@ -426,6 +426,21 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
         HE5Swath& he5s = strmeta_info->swath_list.at(i);
 
         Adjust_EOS5Dim_List(he5s.dim_list);
+
+        // TTTDDDOOO: Adjust the dimension size. 
+        // HDF-EOS5 has a bug to provide the right dimension size when the dataset is extensible. 
+        // Very possible we need to provide a patch. KY 2017-10-19
+        // All we need to do is perhaps to change the he5v dimension size. 
+        // Correct the possible wrong dimension size
+        // WE JUST NEED TO CORRECT the EOS group dimension size. 
+        // STEPS:
+        // 1. Merge SWATH data_var_list and geo_var_list
+        // Function parameters will be the object dim. list(he5s.dim_list), EOS5Type(SWATH,GRID...) and varlist
+        // Need to use Obtain_Var_EOS5Type_GroupName to find var's group name and Get_Var_EOS5_Type(var) to find 
+        // Var's EOS5Type. 
+        // After checking group and type, check if(he5v.name == var->name) and change the he5v dim. size to var size.
+        // Check Set_Var_Dims()
+ 
         for (unsigned int j = 0; j < he5s.geo_var_list.size(); ++j) {
             Adjust_EOS5VarDim_Info((he5s.geo_var_list)[j].dim_list, he5s.dim_list, he5s.name, SWATH);
         }
@@ -1215,9 +1230,8 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
         HE5Var he5v = he5var.at(i);
 
         if (he5v.name == var->name) {
-
             if (he5v.dim_list.size() != var->dims.size())
-            throw2("Number of dimensions don't match with the structmetadata for variable ", var->name);
+                throw2("Number of dimensions don't match with the structmetadata for variable ", var->name);
             is_parsed = true;
 
             // Some variables have the same dim. names shared. For examples, we
@@ -1254,6 +1268,8 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
 
             for (unsigned int j = 0; j < he5v.dim_list.size(); j++) {
                 HE5Dim he5d = he5v.dim_list.at(j);
+cerr<<"he5d.dimname is "<<he5d.name <<endl;
+cerr<<"he5d.dimsize is "<<he5d.size <<endl;
                 for (vector<Dimension *>::iterator ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
 
                     // TOODOO: HDF-EOS5 has a bug to provide the right dimension size when the dataset is extensible. 
