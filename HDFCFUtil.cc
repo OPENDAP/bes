@@ -3019,13 +3019,39 @@ string HDFCFUtil::escattr(string s)
         ind += DOUBLE_ESC.length();
     }
 
-    // escape non-printing characters with octal escape
+    // Coverity complains the possiblity of using a negative number as an index. 
+    // But this will never happen. I will try to see if I can make coverity understand this.
     ind = 0;
     while ((ind = s.find_first_not_of(printable, ind)) != s.npos) {
-        // Comment out the following line since it wastes the CPU operation.
-        //if(ind >=0) // Make coverity happy,
+        s.replace(ind, 1, ESC + octstring(s[ind]));
+    }
+
+    // escape non-printing characters with octal escape
+#if 0
+    // Coverity complains the possiblity of using a negative number as an index. 
+    // Here is a potential fix.
+    ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != s.npos) {
+        if(ind >=0) // Make coverity happy,
             s.replace(ind, 1, ESC + octstring(s[ind]));
     }
+#endif 
+
+#if 0
+    // escape non-printing characters with octal escape
+    // Coverity complains the possiblity of using a negative number as an index. 
+    // The original code is fine, Here is another fix.
+   ind = 0;
+    size_t temp_ind = 0;
+    while ((temp_ind = s.find_first_not_of(printable, ind)) != s.npos) {
+        // Comment out the following line since it wastes the CPU operation.
+        //if(ind >=0) // Make coverity happy,
+        ind = temp_ind;
+        s.replace(ind, 1, ESC + octstring(s[ind]));
+        temp_ind = ind;
+    }
+#endif
+
 
     // escape " with backslash
     ind = 0;

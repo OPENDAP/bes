@@ -861,8 +861,9 @@ namespace HDFSP
             /// Special method to prepare TRMM Level 3 CSH latitude,longitude and Height information.
             void PrepareTRMML3C_V6 () throw (Exception);
 
+            /// void Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) throw(Exception);
+            void Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize);
 
-            void Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) throw(Exception);
             bool Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, const int lonsize, std::string& latname, std::string& lonname) throw(Exception);
 
             /// Latitude and longitude are stored in different fields. Need to separate.
@@ -872,7 +873,8 @@ namespace HDFSP
             void PrepareTRMML3S_V7 () throw (Exception);
 
             /// Special method to prepare TRMM multiple grid Level 3 geolocation fields(latitude,longitude,etc) information.
-            void PrepareTRMML3M_V7 () throw (Exception);
+            //void PrepareTRMML3M_V7 () throw (Exception);
+            void PrepareTRMML3M_V7 () ;
 
 
             /// Special method to prepare CERES AVG (CER_AVG_???) and CERES SYN(CER_SYN_???) latitude and longitude information.

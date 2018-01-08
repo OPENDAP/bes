@@ -4235,7 +4235,7 @@ File::Prepare() throw(Exception)
     handle_vdata();
 }
 
-void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) throw(Exception) {
+void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) {
      
     // No need to check if "GridHeader" etc. exists since this has been checked in the CheckSDType routine.
     for (std::vector < Attribute * >::const_iterator i =
@@ -4768,7 +4768,7 @@ File::PrepareTRMML3S_V7() throw(Exception) {
 }
 
 void
-File::PrepareTRMML3M_V7() throw(Exception) {
+File::PrepareTRMML3M_V7()  {
 
     File *file = this;
     for (std::vector < SDField * >::iterator i =
