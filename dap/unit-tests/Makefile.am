@@ -93,7 +93,7 @@ ObjMemCacheTest_OBJS = ../ObjMemCache.o
 ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
-TemporaryFileTest_OBJS = ../BESHandlerUtil.o ../TempFile.o
+TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
 
 
