@@ -77,24 +77,17 @@ public:
     void setUp()
     {
         DBG2(cerr <<  __func__ << "() - BEGIN" << endl);
-
         // Because TemporaryFile uses the BESLog macro ERROR we have to configure the BESKeys with the
         // BES config file name so that there is a log file name... Oy.
         string bes_conf = TEST_SRC_DIR;
         bes_conf.append("/bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
-
         DBG(cerr <<  __func__ << "() - Temp file template is: '" << tmp_template << "'"  << endl);
-
         DBG2(cerr <<  __func__ << "() - END" << endl);
     }
 
     void tearDown()
     {
-        DBG2(cerr <<  __func__ << "() - BEGIN" << endl);
-
-
-        DBG2(cerr <<  __func__ << "() - END" << endl);
     }
 
 
@@ -135,7 +128,6 @@ public:
         string tmp_file_names[count];
 
         try {
-
             for(int i=0; i<count;i++){
                 tfiles[i] = new bes::TempFile(tmp_template);
                 tmp_file_names[i] = tfiles[i]->get_name();
@@ -146,7 +138,6 @@ public:
                 int statret = stat(tmp_file_names[i].c_str(), &buf);
                 CPPUNIT_ASSERT(statret == 0);
             }
-
 
             for(int i=0; i<count;i++){
                 delete tfiles[i];
@@ -232,7 +223,7 @@ public:
         pid_t pid = fork();
         CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
 
-        if(pid){
+        if (pid){
             // parent - wait for the client to get sorted
             sleep(1);
             // Send child a the signal
@@ -297,7 +288,7 @@ public:
         pid_t pid = fork();
         CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
 
-        if(pid){
+        if (pid){
             // parent - wait for the client to get sorted
             sleep(1);
             // Send child a the signal
@@ -307,7 +298,7 @@ public:
             sleep(1);
             DBG(cerr <<  __func__ << "-PARENT() - Client should be dead."<< endl);
 
-            for(int i=0; i<3 ;i++){
+            for (int i=0; i<3 ;i++){
                 // Is it STILL there? Better not be...
                 struct stat buf;
                 int statret = stat(glob_name[i], &buf);

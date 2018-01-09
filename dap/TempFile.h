@@ -64,22 +64,8 @@ public:
     }
 
     TempFile(const std::string &path_template);
-
     ~TempFile();
 
-
-
-#if 0
-    /**
-     * @brief Free the temporary file
-     *
-     * Close the open descriptor and delete (unlink) the file name.
-     */
-    ~TempFile() {
-        close(d_fd);
-        unlink(&d_name[0]);
-    }
-#endif
     /** @return The temporary file's file descriptor */
     int get_fd() const { return d_fd; }
 
