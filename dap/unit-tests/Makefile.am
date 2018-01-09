@@ -31,7 +31,7 @@ noinst_DATA = bes.conf
 
 DIRS_EXTRA = response_cache input-files
 
-EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in
+EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 
 CLEANFILES = testout bes.conf .dodsrc  *.gcda *.gcno
 
