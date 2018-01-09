@@ -60,7 +60,7 @@
 #include <BESDataNames.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include <BESHandlerUtil.h>
+#include <TempFile.h>
 
 #include <BESDapResponseBuilder.h>
 
@@ -278,7 +278,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 #endif
         // This object closes the file when it goes out of scope.
-        bes::TemporaryFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
+        bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
         BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
