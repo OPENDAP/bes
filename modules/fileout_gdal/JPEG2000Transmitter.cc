@@ -52,7 +52,7 @@ using namespace libdap;
 #include <BESDapNames.h>
 #include <BESDataNames.h>
 #include <BESDebug.h>
-#include <BESHandlerUtil.h>
+#include <TempFile.h>
 #include <DapFunctionUtils.h>
 
 #include <TheBESKeys.h>
@@ -156,7 +156,7 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     // now we need to read the data
     BESDEBUG("JPEG20002", "JPEG2000Transmitter::send_data - reading data into DataDDS" << endl);
 
-    bes::TemporaryFile temp_file(JPEG2000Transmitter::temp_dir + '/' + "jp2XXXXXX");
+    bes::TempFile temp_file(JPEG2000Transmitter::temp_dir + '/' + "jp2XXXXXX");
 #if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
