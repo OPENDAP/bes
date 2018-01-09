@@ -29,13 +29,13 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf
 
-DIRS_EXTRA = response_cache input-files
+DIRS_EXTRA = response_cache input-files tmp_dir
 
 EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 
 CLEANFILES = testout bes.conf .dodsrc  *.gcda *.gcno
 
-DISTCLEANFILES = test_config.h  *.strm *.file *.Po tmp.txt
+DISTCLEANFILES = test_config.h  *.strm *.file *.Po tmp.txt bes.conf
 
 BES_CONF_IN = bes.conf.in
 
