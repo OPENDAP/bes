@@ -86,20 +86,20 @@ bool HDF5CFArray::read()
             // If no information is provided in the configuration file of large data cache,
             // just cache the lat/lon varible per file.
             if(HDF5RequestHandler::get_common_cache_dirs() == false) {
-		if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS 
+		        if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS 
                     || (cvtype == CV_EXIST && islatlon == true)) {
 //cerr<<"coming to use_cache_flag =2 "<<endl;
 
                     // Only the data with the numeric datatype DAP2 and CF support are cached.
-		    if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true)
-		        use_cache_flag = 2;
+		            if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true)
+		                use_cache_flag = 2;
                 }
             }
             else {// Have large data cache configuration info.
 
                 // Need to check if we don't want to cache some CVs, now
                 // this only applies to lat/lon CV.
-		if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS
+		        if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS
                     || (cvtype == CV_EXIST && islatlon == true)) {
 
                     vector<string> cur_lrd_non_cache_dir_list;
