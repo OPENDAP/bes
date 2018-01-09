@@ -56,7 +56,6 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	DapFunctionUtils.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
-	BESHandlerUtil.cc \
 	TempFile.cc \
 	CacheMarshaller.cc CacheUnMarshaller.cc \
 	ObjMemCache.cc
@@ -87,7 +86,6 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	DapFunctionUtils.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
-	BESHandlerUtil.h \
 	TempFile.h \
 	CacheMarshaller.h CacheUnMarshaller.h \
 	ObjMemCache.h
