@@ -100,9 +100,8 @@ public:
         try {
             bes::TempFile tf(TEMP_FILE_TEMPLATE);
             tmp_file_name = tf.get_name();
-            DBG(
-                cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd()
-                    << endl);
+            DBG(cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                << tf.get_fd() << endl);
 
             // Is it really there? Just sayin'...
             struct stat buf;
@@ -120,9 +119,8 @@ public:
         int statret = stat(tmp_file_name.c_str(), &buf);
         // And the file should be gone because the class TemporaryFile went out of scope.
         CPPUNIT_ASSERT(statret != 0);
-        DBG(
-            cerr << __func__ << "() - Temp file '" << tmp_file_name
-                << "' has been removed. (Temporary file out of scope)" << endl);
+        DBG(cerr << __func__ << "() - Temp file '" << tmp_file_name
+            << "' has been removed. (Temporary file out of scope)" << endl);
 
     }
 
@@ -136,9 +134,8 @@ public:
             for (int i = 0; i < count; i++) {
                 tfiles[i] = new bes::TempFile(TEMP_FILE_TEMPLATE);
                 tmp_file_names[i] = tfiles[i]->get_name();
-                DBG(
-                    cerr << __func__ << "() - Temp file is: '" << tmp_file_names[i] << "' has been created. fd: "
-                        << tfiles[i]->get_fd() << endl);
+                DBG(cerr << __func__ << "() - Temp file is: '" << tmp_file_names[i] << "' has been created. fd: "
+                    << tfiles[i]->get_fd() << endl);
 
                 // Is it really there? Just sayin'...
                 struct stat buf;
@@ -163,9 +160,8 @@ public:
             int statret = stat(tmp_file_names[i].c_str(), &buf);
             // And the file should be gone because the class TemporaryFile went out of scope.
             CPPUNIT_ASSERT(statret != 0);
-            DBG(
-                cerr << __func__ << "() - Temp file '" << tmp_file_names[i]
-                    << "' has been removed. (Temporary file out of scope)" << endl);
+            DBG(cerr << __func__ << "() - Temp file '" << tmp_file_names[i]
+                << "' has been removed. (Temporary file out of scope)" << endl);
         }
 
     }
@@ -177,9 +173,7 @@ public:
         try {
             bes::TempFile tf(TEMP_FILE_TEMPLATE);
             tmp_file_name = tf.get_name();
-            DBG(
-                cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd()
-                    << endl);
+            DBG(cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd() << endl);
 
             // Is it really there? Just sayin'...
             struct stat buf;
@@ -199,9 +193,8 @@ public:
         int statret = stat(tmp_file_name.c_str(), &buf);
         // And the file should be gone because the class TemporaryFile went out of scope.
         CPPUNIT_ASSERT(statret != 0);
-        DBG(
-            cerr << __func__ << "() - Temp file '" << tmp_file_name
-                << "' has been removed. (Temporary file out of scope)" << endl);
+        DBG(cerr << __func__ << "() - Temp file '" << tmp_file_name
+            << "' has been removed. (Temporary file out of scope)" << endl);
 
     }
 
@@ -238,17 +231,14 @@ public:
             kill(pid, SIGPIPE);
             // wait for the child to die.
             sleep(1);
-            DBG(
-                cerr << __func__ << "-PARENT() - Client should be dead. Temporary File Name: '" << glob_name << "'"
-                    << endl);
+            DBG(cerr << __func__ << "-PARENT() - Client should be dead. Temporary File Name: '"
+                << glob_name << "'" << endl);
 
             // Is it STILL there? Better not be...
             struct stat buf;
             int statret = stat(glob_name, &buf);
             CPPUNIT_ASSERT(statret != 0);
-            DBG(
-                cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name << "' was successfully removed. woot."
-                    << endl);
+            DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name << "' was successfully removed. woot." << endl);
 
             // Tidy up the shared memory business
             munmap(glob_name, name_size);
@@ -263,9 +253,8 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf.get_name();
-                DBG(
-                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
-                        << tf.get_fd() << endl);
+                DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                    << tf.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name, tmp_file_name.size(), 0);
 
@@ -315,9 +304,8 @@ public:
                 struct stat buf;
                 int statret = stat(glob_name[i], &buf);
                 CPPUNIT_ASSERT(statret != 0);
-                DBG(
-                    cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name[i]
-                        << "' was successfully removed. woot." << endl);
+                DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name[i]
+                    << "' was successfully removed. woot." << endl);
             }
 
             // Tidy up the shared memory business
@@ -337,9 +325,8 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf1(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf1.get_name();
-                DBG(
-                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
-                        << tf1.get_fd() << endl);
+                DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                    << tf1.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name[0], tmp_file_name.size(), 0);
 
@@ -351,9 +338,8 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf2(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf2.get_name();
-                DBG(
-                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
-                        << tf2.get_fd() << endl);
+                DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                    << tf2.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name[1], tmp_file_name.size(), 0);
 
@@ -365,9 +351,8 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf3(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf3.get_name();
-                DBG(
-                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
-                        << tf3.get_fd() << endl);
+                DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                    << tf3.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name[2], tmp_file_name.size(), 0);
 
