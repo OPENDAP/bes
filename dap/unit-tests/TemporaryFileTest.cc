@@ -60,10 +60,8 @@ static bool debug_2 = false;
 using namespace CppUnit;
 using namespace std;
 
-const string temp_dir = BESUtil::assemblePath(TEST_SRC_DIR, "tmp_dir");
-const string tmp_template = BESUtil::assemblePath(TEST_BUILD_DIR, "tmp_XXXXXX");
-
-const string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR, "bes.conf");
+const string TEMP_FILE_TEMPLATE = BESUtil::assemblePath(TEST_BUILD_DIR, "tmp_XXXXXX");
+const string BES_CONF_FILE = BESUtil::assemblePath(TEST_SRC_DIR, "bes.conf");
 
 class TemporaryFileTest: public CppUnit::TestFixture {
 private:
@@ -83,11 +81,11 @@ public:
         // Because TemporaryFile uses the BESLog macro ERROR we have to configure the BESKeys with the
         // BES config file name so that there is a log file name... Oy.
 #if 0
-        string bes_conf = TEST_SRC_DIR;
-        bes_conf.append("/bes.conf");
+        string BES_CONF_FILE = TEST_SRC_DIR;
+        BES_CONF_FILE.append("/bes.conf");
 #endif
-        TheBESKeys::ConfigFile = bes_conf;
-        DBG(cerr << __func__ << "() - Temp file template is: '" << tmp_template << "'" << endl);
+        TheBESKeys::ConfigFile = BES_CONF_FILE;
+        DBG(cerr << __func__ << "() - Temp file template is: '" << TEMP_FILE_TEMPLATE << "'" << endl);
         DBG2(cerr << __func__ << "() - END" << endl);
     }
 
@@ -100,7 +98,7 @@ public:
         std::string tmp_file_name;
 
         try {
-            bes::TempFile tf(tmp_template);
+            bes::TempFile tf(TEMP_FILE_TEMPLATE);
             tmp_file_name = tf.get_name();
             DBG(
                 cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd()
@@ -136,7 +134,7 @@ public:
 
         try {
             for (int i = 0; i < count; i++) {
-                tfiles[i] = new bes::TempFile(tmp_template);
+                tfiles[i] = new bes::TempFile(TEMP_FILE_TEMPLATE);
                 tmp_file_names[i] = tfiles[i]->get_name();
                 DBG(
                     cerr << __func__ << "() - Temp file is: '" << tmp_file_names[i] << "' has been created. fd: "
@@ -177,7 +175,7 @@ public:
         std::string tmp_file_name;
 
         try {
-            bes::TempFile tf(tmp_template);
+            bes::TempFile tf(TEMP_FILE_TEMPLATE);
             tmp_file_name = tf.get_name();
             DBG(
                 cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd()
@@ -226,7 +224,7 @@ public:
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
         // allow the parent to know the resulting file name.
         char *glob_name;
-        int name_size = tmp_template.length() + 1;
+        int name_size = TEMP_FILE_TEMPLATE.length() + 1;
         glob_name = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
         pid_t pid = fork();
@@ -263,7 +261,7 @@ public:
             std::string tmp_file_name;
             try {
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
-                bes::TempFile tf(tmp_template);
+                bes::TempFile tf(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf.get_name();
                 DBG(
                     cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
@@ -294,7 +292,7 @@ public:
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
         // allow the parent to know the resulting file names.
         char *glob_name[3];
-        int name_size = tmp_template.length() + 1;
+        int name_size = TEMP_FILE_TEMPLATE.length() + 1;
         glob_name[0] = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
         glob_name[1] = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
         glob_name[2] = (char *) mmap(NULL, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
@@ -337,7 +335,7 @@ public:
 
                 // --------- File One ------------
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
-                bes::TempFile tf1(tmp_template);
+                bes::TempFile tf1(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf1.get_name();
                 DBG(
                     cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
@@ -351,7 +349,7 @@ public:
 
                 // --------- File Two ------------
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
-                bes::TempFile tf2(tmp_template);
+                bes::TempFile tf2(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf2.get_name();
                 DBG(
                     cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
@@ -365,7 +363,7 @@ public:
 
                 // --------- File Three ------------
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
-                bes::TempFile tf3(tmp_template);
+                bes::TempFile tf3(TEMP_FILE_TEMPLATE);
                 tmp_file_name = tf3.get_name();
                 DBG(
                     cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
