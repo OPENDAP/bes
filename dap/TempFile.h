@@ -4,7 +4,7 @@
 // Access Protocol.
 
 // Copyright (c) 2016 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
