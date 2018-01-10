@@ -33,7 +33,7 @@ DIRS_EXTRA = response_cache input-files tmp_dir
 
 EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 
-CLEANFILES = testout bes.conf .dodsrc  *.gcda *.gcno
+CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
 DISTCLEANFILES = test_config.h  *.strm *.file *.Po tmp.txt bes.conf
 

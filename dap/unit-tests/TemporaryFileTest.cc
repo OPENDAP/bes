@@ -43,6 +43,7 @@
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 #include "TheBESKeys.h"
+#include "BESUtil.h"
 
 
 #include <debug.h>
@@ -58,8 +59,8 @@ static bool debug_2 = false;
 using namespace CppUnit;
 using namespace std;
 
-string temp_dir = string(TEST_SRC_DIR) + "/tmp_dir";
-string tmp_template = temp_dir + "/tmp_XXXXXX";
+const string temp_dir = BESUtil::assemblePath(TEST_SRC_DIR, "tmp_dir");
+const string tmp_template = BESUtil::assemblePath(temp_dir, "tmp_XXXXXX");
 
 class TemporaryFileTest: public CppUnit::TestFixture {
 private:
