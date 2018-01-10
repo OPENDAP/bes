@@ -52,15 +52,8 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest TemporaryFileTest
-
-# Class not included in the dap module: SequenceAggregationServerTest
-
-# FIXME Look at the problems in ResponseBuilderTest and address the (likley)
-# similar issues in these tests. (Use of machine dependent hash names in the
-# baselines.) jhrg 3/4/15
-# 
-# StoredDap2ResultTest StoredDap4ResultTest 
+UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
+TemporaryFileTest
 
 else
 UNIT_TESTS =
@@ -95,7 +88,6 @@ ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
 TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
-
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(AM_LDADD)

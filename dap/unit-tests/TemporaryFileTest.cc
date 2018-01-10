@@ -21,7 +21,9 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-#include <test_config.h>
+
+#include "config.h"
+
 #include <signal.h>
 #include <sys/stat.h>
 
@@ -37,16 +39,15 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <GetOpt.h>
+#include <debug.h>
 
-
-#include "TempFile.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
+#include "TempFile.h"
 
-
-#include <debug.h>
+#include "test_config.h"
 
 static bool debug = false;
 static bool debug_2 = false;
@@ -60,7 +61,9 @@ using namespace CppUnit;
 using namespace std;
 
 const string temp_dir = BESUtil::assemblePath(TEST_SRC_DIR, "tmp_dir");
-const string tmp_template = BESUtil::assemblePath(temp_dir, "tmp_XXXXXX");
+const string tmp_template = BESUtil::assemblePath(TEST_BUILD_DIR, "tmp_XXXXXX");
+
+const string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR, "bes.conf");
 
 class TemporaryFileTest: public CppUnit::TestFixture {
 private:
@@ -76,20 +79,21 @@ public:
 
     void setUp()
     {
-        DBG2(cerr <<  __func__ << "() - BEGIN" << endl);
+        DBG2(cerr << __func__ << "() - BEGIN" << endl);
         // Because TemporaryFile uses the BESLog macro ERROR we have to configure the BESKeys with the
         // BES config file name so that there is a log file name... Oy.
+#if 0
         string bes_conf = TEST_SRC_DIR;
         bes_conf.append("/bes.conf");
+#endif
         TheBESKeys::ConfigFile = bes_conf;
-        DBG(cerr <<  __func__ << "() - Temp file template is: '" << tmp_template << "'"  << endl);
-        DBG2(cerr <<  __func__ << "() - END" << endl);
+        DBG(cerr << __func__ << "() - Temp file template is: '" << tmp_template << "'" << endl);
+        DBG2(cerr << __func__ << "() - END" << endl);
     }
 
     void tearDown()
     {
     }
-
 
     void normal_test()
     {
@@ -98,7 +102,9 @@ public:
         try {
             bes::TempFile tf(tmp_template);
             tmp_file_name = tf.get_name();
-            DBG(cerr <<  __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf.get_fd()  << endl);
+            DBG(
+                cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd()
+                    << endl);
 
             // Is it really there? Just sayin'...
             struct stat buf;
@@ -106,32 +112,35 @@ public:
             CPPUNIT_ASSERT(statret == 0);
         }
         catch (BESInternalError &bie) {
-            DBG(cerr <<  __func__ << "() - Caught BESInternalError! Message: "<< bie.get_message()  << endl);
+            DBG(cerr << __func__ << "() - Caught BESInternalError! Message: " << bie.get_message() << endl);
             CPPUNIT_ASSERT(false);
         }
         // The name should be set to something.
-        CPPUNIT_ASSERT(tmp_file_name.length()>0);
+        CPPUNIT_ASSERT(tmp_file_name.length() > 0);
 
         struct stat buf;
         int statret = stat(tmp_file_name.c_str(), &buf);
         // And the file should be gone because the class TemporaryFile went out of scope.
         CPPUNIT_ASSERT(statret != 0);
-        DBG(cerr <<  __func__ << "() - Temp file '" << tmp_file_name << "' has been removed. (Temporary file out of scope)"  << endl);
-
+        DBG(
+            cerr << __func__ << "() - Temp file '" << tmp_file_name
+                << "' has been removed. (Temporary file out of scope)" << endl);
 
     }
 
     void multi_file_normal_test()
     {
-        int count=3;
+        int count = 3;
         bes::TempFile *tfiles[count];
         string tmp_file_names[count];
 
         try {
-            for(int i=0; i<count;i++){
+            for (int i = 0; i < count; i++) {
                 tfiles[i] = new bes::TempFile(tmp_template);
                 tmp_file_names[i] = tfiles[i]->get_name();
-                DBG(cerr <<  __func__ << "() - Temp file is: '" << tmp_file_names[i] << "' has been created. fd: "<< tfiles[i]->get_fd()  << endl);
+                DBG(
+                    cerr << __func__ << "() - Temp file is: '" << tmp_file_names[i] << "' has been created. fd: "
+                        << tfiles[i]->get_fd() << endl);
 
                 // Is it really there? Just sayin'...
                 struct stat buf;
@@ -139,27 +148,27 @@ public:
                 CPPUNIT_ASSERT(statret == 0);
             }
 
-            for(int i=0; i<count;i++){
+            for (int i = 0; i < count; i++) {
                 delete tfiles[i];
             }
         }
         catch (BESInternalError &bie) {
-            DBG(cerr <<  __func__ << "() - Caught BESInternalError! Message: "<< bie.get_message()  << endl);
+            DBG(cerr << __func__ << "() - Caught BESInternalError! Message: " << bie.get_message() << endl);
             CPPUNIT_ASSERT(false);
         }
 
-        for(int i=0; i<count;i++){
+        for (int i = 0; i < count; i++) {
             // The name should be set to something.
-            CPPUNIT_ASSERT(tmp_file_names[i].length()>0);
+            CPPUNIT_ASSERT(tmp_file_names[i].length() > 0);
 
             struct stat buf;
             int statret = stat(tmp_file_names[i].c_str(), &buf);
             // And the file should be gone because the class TemporaryFile went out of scope.
             CPPUNIT_ASSERT(statret != 0);
-            DBG(cerr <<  __func__ << "() - Temp file '" << tmp_file_names[i] << "' has been removed. (Temporary file out of scope)"  << endl);
+            DBG(
+                cerr << __func__ << "() - Temp file '" << tmp_file_names[i]
+                    << "' has been removed. (Temporary file out of scope)" << endl);
         }
-
-
 
     }
 
@@ -170,7 +179,9 @@ public:
         try {
             bes::TempFile tf(tmp_template);
             tmp_file_name = tf.get_name();
-            DBG(cerr <<  __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf.get_fd()  << endl);
+            DBG(
+                cerr << __func__ << "() - Temp file is: '" << tmp_file_name << "' has been created. fd: " << tf.get_fd()
+                    << endl);
 
             // Is it really there? Just sayin'...
             struct stat buf;
@@ -179,20 +190,20 @@ public:
 
             throw BESInternalError("Throwing an exception to challenge the lifecycle...", __FILE__, __LINE__);
 
-
         }
         catch (BESInternalError &bie) {
-            DBG(cerr <<  __func__ << "() - Caught BESInternalError (Expected)  Message: "<< bie.get_message()  << endl);
+            DBG(cerr << __func__ << "() - Caught BESInternalError (Expected)  Message: " << bie.get_message() << endl);
         }
         // The name should be set to something.
-        CPPUNIT_ASSERT(tmp_file_name.length()>0);
+        CPPUNIT_ASSERT(tmp_file_name.length() > 0);
 
         struct stat buf;
         int statret = stat(tmp_file_name.c_str(), &buf);
         // And the file should be gone because the class TemporaryFile went out of scope.
         CPPUNIT_ASSERT(statret != 0);
-        DBG(cerr <<  __func__ << "() - Temp file '" << tmp_file_name << "' has been removed. (Temporary file out of scope)"  << endl);
-
+        DBG(
+            cerr << __func__ << "() - Temp file '" << tmp_file_name
+                << "' has been removed. (Temporary file out of scope)" << endl);
 
     }
 
@@ -210,8 +221,6 @@ public:
         }
     }
 
-
-
     void sigpipe_test()
     {
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
@@ -223,21 +232,25 @@ public:
         pid_t pid = fork();
         CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
 
-        if (pid){
+        if (pid) {
             // parent - wait for the client to get sorted
             sleep(1);
             // Send child a the signal
-            DBG(cerr <<  __func__ << "-PARENT() - Sending SIGPIPE to client."<< endl);
-            kill(pid,SIGPIPE);
+            DBG(cerr << __func__ << "-PARENT() - Sending SIGPIPE to client." << endl);
+            kill(pid, SIGPIPE);
             // wait for the child to die.
             sleep(1);
-            DBG(cerr <<  __func__ << "-PARENT() - Client should be dead. Temporary File Name: '" << glob_name << "'"<< endl);
+            DBG(
+                cerr << __func__ << "-PARENT() - Client should be dead. Temporary File Name: '" << glob_name << "'"
+                    << endl);
 
             // Is it STILL there? Better not be...
             struct stat buf;
             int statret = stat(glob_name, &buf);
             CPPUNIT_ASSERT(statret != 0);
-            DBG(cerr <<  __func__ << "-PARENT() - Temporary File: '" << glob_name  << "' was successfully removed. woot."<< endl);
+            DBG(
+                cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name << "' was successfully removed. woot."
+                    << endl);
 
             // Tidy up the shared memory business
             munmap(glob_name, name_size);
@@ -249,10 +262,12 @@ public:
 
             std::string tmp_file_name;
             try {
-                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf(tmp_template);
                 tmp_file_name = tf.get_name();
-                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf.get_fd()  << endl);
+                DBG(
+                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                        << tf.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name, tmp_file_name.size(), 0);
 
@@ -262,16 +277,15 @@ public:
                 CPPUNIT_ASSERT(statret == 0);
                 // Wait for the signal
                 sleep(100);
-                DBG(cerr <<  __func__ << "-CHILD() - Client is Alive." << endl);
+                DBG(cerr << __func__ << "-CHILD() - Client is Alive." << endl);
             }
             catch (BESInternalError &bie) {
-                DBG(cerr <<  __func__ << "-CHILD() - Caught BESInternalError  Message: "<< bie.get_message()  << endl);
+                DBG(cerr << __func__ << "-CHILD() - Caught BESInternalError  Message: " << bie.get_message() << endl);
                 CPPUNIT_ASSERT(false);
             }
-            DBG(cerr <<  __func__ << "-CHILD() - Client is exiting normally." << endl);
+            DBG(cerr << __func__ << "-CHILD() - Client is exiting normally." << endl);
 
         }
-
 
     }
 
@@ -288,22 +302,24 @@ public:
         pid_t pid = fork();
         CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
 
-        if (pid){
+        if (pid) {
             // parent - wait for the client to get sorted
             sleep(1);
             // Send child a the signal
-            DBG(cerr <<  __func__ << "-PARENT() - Sending SIGPIPE to client."<< endl);
-            kill(pid,SIGPIPE);
+            DBG(cerr << __func__ << "-PARENT() - Sending SIGPIPE to client." << endl);
+            kill(pid, SIGPIPE);
             // wait for the child to die.
             sleep(1);
-            DBG(cerr <<  __func__ << "-PARENT() - Client should be dead."<< endl);
+            DBG(cerr << __func__ << "-PARENT() - Client should be dead." << endl);
 
-            for (int i=0; i<3 ;i++){
+            for (int i = 0; i < 3; i++) {
                 // Is it STILL there? Better not be...
                 struct stat buf;
                 int statret = stat(glob_name[i], &buf);
                 CPPUNIT_ASSERT(statret != 0);
-                DBG(cerr <<  __func__ << "-PARENT() - Temporary File: '" << glob_name[i]  << "' was successfully removed. woot."<< endl);
+                DBG(
+                    cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name[i]
+                        << "' was successfully removed. woot." << endl);
             }
 
             // Tidy up the shared memory business
@@ -320,10 +336,12 @@ public:
             try {
 
                 // --------- File One ------------
-                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf1(tmp_template);
                 tmp_file_name = tf1.get_name();
-                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf1.get_fd()  << endl);
+                DBG(
+                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                        << tf1.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name[0], tmp_file_name.size(), 0);
 
@@ -332,10 +350,12 @@ public:
                 CPPUNIT_ASSERT(statret == 0);
 
                 // --------- File Two ------------
-                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf2(tmp_template);
                 tmp_file_name = tf2.get_name();
-                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf2.get_fd()  << endl);
+                DBG(
+                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                        << tf2.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name[1], tmp_file_name.size(), 0);
 
@@ -344,10 +364,12 @@ public:
                 CPPUNIT_ASSERT(statret == 0);
 
                 // --------- File Three ------------
-                DBG(cerr <<  __func__ << "-CHILD() - Creating temporary file." << endl);
+                DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
                 bes::TempFile tf3(tmp_template);
                 tmp_file_name = tf3.get_name();
-                DBG(cerr <<  __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "<< tf3.get_fd()  << endl);
+                DBG(
+                    cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
+                        << tf3.get_fd() << endl);
                 // copy the filename into shared memory.
                 tmp_file_name.copy(glob_name[2], tmp_file_name.size(), 0);
 
@@ -355,25 +377,21 @@ public:
                 statret = stat(tmp_file_name.c_str(), &buf);
                 CPPUNIT_ASSERT(statret == 0);
 
-
                 // Wait for the signal
                 sleep(100);
-                DBG(cerr <<  __func__ << "-CHILD() - Client is Alive." << endl);
+                DBG(cerr << __func__ << "-CHILD() - Client is Alive." << endl);
             }
             catch (BESInternalError &bie) {
-                DBG(cerr <<  __func__ << "-CHILD() - Caught BESInternalError  Message: "<< bie.get_message()  << endl);
+                DBG(cerr << __func__ << "-CHILD() - Caught BESInternalError  Message: " << bie.get_message() << endl);
                 CPPUNIT_ASSERT(false);
             }
-            DBG(cerr <<  __func__ << "-CHILD() - Client is exiting normally." << endl);
+            DBG(cerr << __func__ << "-CHILD() - Client is exiting normally." << endl);
 
         }
 
-
     }
 
-
-
-    CPPUNIT_TEST_SUITE( TemporaryFileTest );
+CPPUNIT_TEST_SUITE( TemporaryFileTest );
 
     CPPUNIT_TEST(normal_test);
     CPPUNIT_TEST(multi_file_normal_test);
@@ -381,7 +399,8 @@ public:
     CPPUNIT_TEST(sigpipe_test);
     CPPUNIT_TEST(multifile_sigpipe_test);
 
-    CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END()
+    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TemporaryFileTest);
