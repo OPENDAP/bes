@@ -35,7 +35,7 @@ EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
-DISTCLEANFILES = test_config.h  *.strm *.file *.Po tmp.txt bes.conf
+DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt bes.conf bes.log
 
 BES_CONF_IN = bes.conf.in
 
