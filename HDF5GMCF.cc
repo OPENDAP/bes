@@ -248,6 +248,45 @@ void GMFile::Update_Product_Type() throw(Exception) {
     }
 }
 
+void GMFile::Remove_Unneeded_Objects() throw(Exception) {
+
+    BESDEBUG("h5", "Coming to Remove_Unneeded_Objects()"<<endl);
+    if(General_Product == this->product_type) {
+        string file_path = this->path;
+//cerr<<"file path is "<<file_path <<endl;
+        if(HDF5CFUtil::obtain_string_after_lastslash(file_path).find("OMPS-NPP")==0) 
+            Remove_OMPSNPP_InputPointers();
+    }
+}
+
+void GMFile::Remove_OMPSNPP_InputPointers() throw(Exception) {
+    // Here I don't check whether this is a netCDF file by 
+    // using Check_Dimscale_General_Product_Pattern() to see if it returns true.
+    // We will see if we need this.
+    for (vector<Group *>::iterator irg = this->groups.begin();
+        irg != this->groups.end(); ) {
+//cerr<<"group path is "<<(*irg)->path <<endl;
+        if((*irg)->path.find("/InputPointers")==0) {
+            delete(*irg);
+            irg = this->groups.erase(irg);
+
+        }
+        else 
+            ++irg;
+    }
+
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ) {
+         if((*irv)->fullpath.find("/InputPointers")==0) {
+// cerr<<"var fullpath is "<<(*irv)->fullpath <<endl;
+            delete(*irv);
+            irv = this->vars.erase(irv);
+
+        }
+        else 
+            ++irv;
+    }
+}
 void GMFile::Retrieve_H5_CVar_Supported_Attr_Values() {
 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();

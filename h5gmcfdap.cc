@@ -91,6 +91,8 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // update the product type.
         f->Update_Product_Type();
 
+        f->Remove_Unneeded_Objects();
+
         // Need to add dimension names.
         f->Add_Dim_Name();
 
@@ -210,6 +212,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
         // Update product type(check comments of map_gmh5_cfdds)
         f->Update_Product_Type();
+
+        f->Remove_Unneeded_Objects();
 
         f->Add_Dim_Name();
         f->Handle_CVar();

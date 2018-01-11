@@ -853,6 +853,9 @@ public:
     /// Handle other unmapped objects/attributes for general HDF5 products
     void Handle_Unsupported_Others(bool) throw (Exception);
 
+    /// Remove unneeded objects 
+    void Remove_Unneeded_Objects() throw(Exception);
+
     /// Add dimension name
     void Add_Dim_Name() throw (Exception);
 
@@ -914,6 +917,7 @@ public:
     }
 
 protected:
+    void Remove_OMPSNPP_InputPointers() throw(Exception);
     void Add_Dim_Name_GPM() throw (Exception);
     void Add_Dim_Name_Mea_SeaWiFS() throw (Exception);
     void Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var*) throw (Exception);
