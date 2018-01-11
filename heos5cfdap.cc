@@ -121,7 +121,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
         // Retrieve ProjParams from StructMetadata
         p.add_projparams(st_str);
-        p.print();
+        //p.print();
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {

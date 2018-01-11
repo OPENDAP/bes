@@ -427,11 +427,7 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
 
         Adjust_EOS5Dim_List(he5s.dim_list);
 
-        // TTTDDDOOO: Adjust the dimension size. 
-        // HDF-EOS5 has a bug to provide the right dimension size when the dataset is extensible. 
-        // Very possible we need to provide a patch. KY 2017-10-19
-        // All we need to do is perhaps to change the he5v dimension size. 
-        // Correct the possible wrong dimension size
+        // Correct the possible wrong dimension size,this only happens for the unlimited dimension,this only happens for the unlimited dimension
         // WE JUST NEED TO CORRECT the EOS group dimension size. 
         // STEPS:
         // 1. Merge SWATH data_var_list and geo_var_list
@@ -439,7 +435,12 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
         // Need to use Obtain_Var_EOS5Type_GroupName to find var's group name and Get_Var_EOS5_Type(var) to find 
         // Var's EOS5Type. 
         // After checking group and type, check if(he5v.name == var->name) and change the he5v dim. size to var size.
-        // Check Set_Var_Dims()
+        if(this->have_udim == true) {
+            vector<HE5Var> svlist = he5s.geo_var_list;
+            svlist.insert(svlist.end(),he5s.data_var_list.begin(),he5s.data_var_list.end());
+            // Only apply when the unlimited dimension is found!! So we don't have to go over this for every file.
+            Adjust_EOS5DimSize_List(he5s.dim_list,svlist,SWATH,he5s.name);
+        }
  
         for (unsigned int j = 0; j < he5s.geo_var_list.size(); ++j) {
             Adjust_EOS5VarDim_Info((he5s.geo_var_list)[j].dim_list, he5s.dim_list, he5s.name, SWATH);
@@ -454,6 +455,13 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
         HE5Grid& he5g = strmeta_info->grid_list.at(i);
 
         Adjust_EOS5Dim_List(he5g.dim_list);
+
+        // Correct possible wrong dimension size in the eosdim list.
+        if(this->have_udim == true) {
+            // Only apply when the unlimited dimension is found!! So we don't have to go over this for every file.
+            Adjust_EOS5DimSize_List(he5g.dim_list,he5g.data_var_list,GRID,he5g.name);
+        }
+ 
         for (unsigned int j = 0; j < he5g.data_var_list.size(); ++j) {
             Adjust_EOS5VarDim_Info((he5g.data_var_list)[j].dim_list, he5g.dim_list, he5g.name, GRID);
         }
@@ -463,6 +471,13 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
         HE5Za& he5z = strmeta_info->za_list.at(i);
 
         Adjust_EOS5Dim_List(he5z.dim_list);
+
+        // Correct possible wrong dimension size in the eosdim list.
+        if(this->have_udim == true) {
+            // Only apply when the unlimited dimension is found!! So we don't have to go over this for every file.
+            Adjust_EOS5DimSize_List(he5z.dim_list,he5z.data_var_list,ZA,he5z.name);
+        }
+ 
         for (unsigned int j = 0; j < he5z.data_var_list.size(); ++j) {
             Adjust_EOS5VarDim_Info((he5z.data_var_list)[j].dim_list, he5z.dim_list, he5z.name, ZA);
         }
@@ -561,6 +576,63 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Except
         }
     }
 }
+
+void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vector<HE5Var> & eos5objvarlist, const EOS5Type eos5type, const string & eos5objname) throw(Exception)
+{
+
+    set<string>updated_dimlist;
+    pair<set<string>::iterator,bool> set_insert_ret;
+
+    for(unsigned int i = 0; i<eos5objvarlist.size();i++) {
+        HE5Var he5v = eos5objvarlist.at(i);
+        for(unsigned int j = 0; j<he5v.dim_list.size();j++) {
+            HE5Dim he5d = he5v.dim_list.at(j);
+            set_insert_ret = updated_dimlist.insert(he5d.name);
+            if(set_insert_ret.second == true) {
+                // Find out the index of this dimension in eos5objdimlist 
+                int objdimlist_index = -1;
+                for(unsigned int k = 0; k <eos5objdimlist.size();k++) {
+                    if(eos5objdimlist[k].name == he5d.name) {
+                        objdimlist_index = k;
+                        break;
+                    }
+                }
+                if(objdimlist_index == -1)
+                    throw2("Cannot find the dimension in the EOS5 object dimension list for the dimension ", he5d.name);
+                for (vector<Var *>::const_iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+
+                    EOS5Type vartype = Get_Var_EOS5_Type((*irv));
+                    // Compare the EOS5 object type: SWATH,GRID or ZA
+                    // eos5objvarlist only stores the variable name, not the path. So we have to ensure the path matches.
+                    if(vartype == eos5type) {
+                        string var_eos5gname = Obtain_Var_EOS5Type_GroupName((*irv),vartype);
+                        // Compare the EOS5 object name
+                        // Now we need to match the var name from eos5objvarlist with the var name. 
+                        if(var_eos5gname == eos5objname) {
+                            if((*irv)->name == he5v.name) {
+                                if (he5v.dim_list.size() != (*irv)->dims.size())
+                                    throw2("Number of dimensions don't match with the structmetadata for variable ", (*irv)->name);
+                                // Change dimension size
+                                (eos5objdimlist[objdimlist_index]).size = ((*irv)->dims[j])->size;
+                                break;
+                            }
+                            
+                        }
+                    }
+                }
+            }
+
+        }
+        if(updated_dimlist.size() == eos5objdimlist.size())// Finish updating the eos5objdimlist
+            break;
+    }
+#if 0
+for(unsigned int k = 0; k <eos5objdimlist.size();k++) {
+    cerr<<"eos5 obj dim name is "<<eos5objdimlist[k].name << " Size is "<< eos5objdimlist[k].size << endl;
+}
+#endif
+}
+
 
 // Adjust HDF-EOS5 Variable,dimension information.
 void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>& groupdimlist,
@@ -1268,13 +1340,10 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
 
             for (unsigned int j = 0; j < he5v.dim_list.size(); j++) {
                 HE5Dim he5d = he5v.dim_list.at(j);
-cerr<<"he5d.dimname is "<<he5d.name <<endl;
-cerr<<"he5d.dimsize is "<<he5d.size <<endl;
+//cerr<<"he5d.dimname is "<<he5d.name <<endl;
+//cerr<<"he5d.dimsize is "<<he5d.size <<endl;
                 for (vector<Dimension *>::iterator ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
 
-                    // TOODOO: HDF-EOS5 has a bug to provide the right dimension size when the dataset is extensible. 
-                    // Very possible we need to provide a patch. KY 2017-10-19
-                    // All we need to do is perhaps to change the he5v dimension size. 
                     if ((hsize_t) (he5d.size) == (*ird)->size) {
                         // This will assure that the same size dims be assigned to different dims
                         if ("" == (*ird)->name) {

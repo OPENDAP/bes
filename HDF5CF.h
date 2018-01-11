@@ -1274,6 +1274,7 @@ protected:
     void Adjust_EOS5Dim_List(vector<HE5Dim>&) throw (Exception);
     void Condense_EOS5Dim_List(vector<HE5Dim>&) throw (Exception);
     void Remove_NegativeSizeDims(vector<HE5Dim>&) throw (Exception);
+    void Adjust_EOS5DimSize_List(vector<HE5Dim>&,const vector<HE5Var>&, const EOS5Type,const string & eos5objname) throw(Exception);
     void Adjust_EOS5VarDim_Info(vector<HE5Dim>&, vector<HE5Dim>&, const string &, EOS5Type) throw (Exception);
 
     void EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5Type, string groupname,
