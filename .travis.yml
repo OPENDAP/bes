@@ -45,7 +45,7 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
-      - sshpasss
+      - sshpass
 
 # The 'secure' line is the encrypted COVERITY_SCAN_TOKEN, created
 # via the "travis encrypt" command using the project repo's public key
