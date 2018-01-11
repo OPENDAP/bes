@@ -30,7 +30,7 @@ branches:
 
 addons:
   ssh_known_hosts:
-  	- www.opendap.org
+    - www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
