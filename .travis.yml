@@ -29,8 +29,7 @@ branches:
     - /^*-[0-9]+\.[0-9]+\.[0-9]+/
 
 addons:
-  ssh_known_hosts:
-    - www.opendap.org
+  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -81,9 +80,9 @@ before_script:
 # jhrg 12/20/17 
 jobs:
   include:
-    - stage: build
-      script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
-      script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
+    stage: build
+    script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
+    script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
 
 # script:
 #    - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7; fi
@@ -98,4 +97,4 @@ jobs:
 after_failure:
   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
-  - sshpass -p ${FTPUSER_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
+  - sshpass -p ${FTPUSER_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
