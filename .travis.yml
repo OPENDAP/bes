@@ -76,7 +76,7 @@ jobs:
   include:
     - stage: build
       # script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
-    - # stage name not required, will continue to use `test`
+#    - # stage name not required, will continue to use `test`
       script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
 
 
