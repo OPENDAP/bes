@@ -125,3 +125,7 @@ _
 #LPDAAC sinusodial projections one grid and multiple grid
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GHRC/AMSR_2_L3_DailySnow_P00_20160831.he5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GHRC/AMSR_2_L3_SeaIce12km_P00_20160831.he5
+
+#OMPS-NPP level 3 daily(long variable names)
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5
+

@@ -279,3 +279,7 @@ AT_BESCMD_RESPONSE_TEST([eos5ps.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([eos5ps.h5.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5ps.h5.data.bescmd])
 
+#OMPS-NPP level 3 -long variable name removal
+AT_BESCMD_RESPONSE_TEST([OMPS-L3.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([OMPS-L3.h5.dds.bescmd])
+
