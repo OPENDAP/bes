@@ -33,7 +33,6 @@ addons:
   coverity_scan:
     project:
       name: "OPENDAP/bes"
-      description: "Build submitted via Travis CI"
     notification_email: jgallagher@opendap.org
     build_command: "make -j7"
     branch_pattern: coverity_scan
@@ -46,20 +45,15 @@ addons:
       - libicu-dev
       - sshpass
 
-# The 'secure' line is the encrypted COVERITY_SCAN_TOKEN, created
-# via the "travis encrypt" command using the project repo's public key
-# and copied from the Coverity web site where there's a how-to for setting
-# this stuff up.
- 
+# COVERITY_SCAN_TOKEN
+# TRAVIS_AT_OO
+# TESTSUITEFLAGS should run the autotest testsuites in parallel. 
 env:
   global:
-  # encrypted COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
-  # $TRAVIS_AT_OO
-  - secure: "iFKg4h1/PrAgprVIbXWVKPcCCYYUyHkbbCqqphcJMO6kTCoUobMXvfLEriLT1h05INWSPk8qAiLq7QErAE3uCVT1YhNbbxxcc6zIKr1szgh7PT+Cdjn5VRdXOHOZ9SLIWsMOlwIjGpjUKpnFJn8ybQZEHIC8YYpOUHJZdHlp7OY="
-  # TESTSUITEFLAGS: run the autotest testsuites in parallel.
+  - secure: "J0HEROlR4GbOB1ZSoUIo5mEUzVzmxTKSvpS/jrAWbFB5JJHxCHd/oQh5dzTK9NiDaGGPN9Y2acA8Oyuz4Hsle7+DgAWvtGr4+hFqfYx7oLsxhhb3VTRNivuSsldsbNCUO4ebtezArH4hVLYw6ScwgDpnQfVrPkBMpyf4Iu3UMYs="
   - TESTSUITEFLAGS=-j7
-  
+
 # Use this to install any prerequisites or dependencies necessary to
 # run your build.
 install:
@@ -76,17 +70,21 @@ before_script:
 # so we don't want to repeat that here.
 #
 # Added 'build' stage with two parallel scripts. This is intended
-# to speed the build up. We could add a second stage for deployment.
+# to spped the build up. We could add a second stage for deployment.
 # jhrg 12/20/17 
 jobs:
   include:
-    stage: build
-    #script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
-    script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
+    - stage: build
+      # script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
+    - # stage name not required, will continue to use `test`
+      script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
 
-# script:
-#    - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 && make distcheck -j7; fi
 
+# This shows how to copy the results of running the tests to a know
+# host. We're not doing this now, but it might be useful. In addition
+# to these lines here, www.opendap.org must be a known_host. set this
+# in the 'addons' section above.
+#
 # Add sshpass using apt under addons.
 #
 # The env var $TRAVIS_AT_OO must be made using 
@@ -94,7 +92,7 @@ jobs:
 # where -r <...> is the name of the travis repo from our Travis landing page
 # and the <secret> is the 'travis' user's password on www.opendap.org.
 
-after_failure:
-  - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
-  - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
-  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
+after_script:
+   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
+   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
