@@ -18,8 +18,8 @@
     <Attribute name="DODS_EXTRA" type="Container">
         <Attribute name="Unlimited_Dimension" type="String">
             <value>Bands</value>
-            <value>Bands_1</value>
             <value>Res2tr</value>
+            <value>Res2xtr</value>
         </Attribute>
     </Attribute>
     <Array name="Spectra">
@@ -30,12 +30,12 @@
             <value>/HDFEOS/SWATHS/Swath1/Data Fields/Spectra</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Bands Res2tr Bands_1</value>
+            <value>Bands Res2tr Res2xtr</value>
         </Attribute>
         <Float64/>
         <dimension name="Bands" size="4"/>
         <dimension name="Res2tr" size="3"/>
-        <dimension name="Bands_1" size="4"/>
+        <dimension name="Res2xtr" size="4"/>
     </Array>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
@@ -74,19 +74,19 @@
         <Int32/>
         <dimension name="Bands" size="4"/>
     </Array>
-    <Array name="Bands_1">
-        <Attribute name="units" type="String">
-            <value>level</value>
-        </Attribute>
-        <Int32/>
-        <dimension name="Bands_1" size="4"/>
-    </Array>
     <Array name="Res2tr">
         <Attribute name="units" type="String">
             <value>level</value>
         </Attribute>
         <Int32/>
         <dimension name="Res2tr" size="3"/>
+    </Array>
+    <Array name="Res2xtr">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Res2xtr" size="4"/>
     </Array>
     <dataBLOB href=""/>
 </Dataset>

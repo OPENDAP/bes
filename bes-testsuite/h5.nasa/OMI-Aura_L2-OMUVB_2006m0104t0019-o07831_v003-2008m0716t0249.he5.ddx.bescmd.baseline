@@ -112,7 +112,7 @@
     </Attribute>
     <Attribute name="DODS_EXTRA" type="Container">
         <Attribute name="Unlimited_Dimension" type="String">
-            <value>FakeDim0</value>
+            <value>nTimes</value>
         </Attribute>
     </Attribute>
     <Array name="CSErythemalDailyDose">
@@ -147,7 +147,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="CSErythemalDoseRate">
@@ -182,7 +182,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="CSIrradiance305">
@@ -217,7 +217,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="CSIrradiance310">
@@ -252,7 +252,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="CSIrradiance324">
@@ -287,7 +287,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="CSIrradiance380">
@@ -322,7 +322,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="CloudOpticalThickness">
@@ -357,7 +357,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="ErythemalDailyDose">
@@ -392,7 +392,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="ErythemalDoseRate">
@@ -427,7 +427,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="Irradiance305">
@@ -462,7 +462,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="Irradiance310">
@@ -497,7 +497,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="Irradiance324">
@@ -532,7 +532,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="Irradiance380">
@@ -567,7 +567,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="LambertianEquivalentReflectivity">
@@ -602,7 +602,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OMTO3AlgorithmFlags">
@@ -637,7 +637,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OMTO3ColumnAmountO3">
@@ -672,7 +672,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OMTO3QualityFlags">
@@ -707,7 +707,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OMUVBQuality">
@@ -742,7 +742,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OPErythemalDoseRate">
@@ -777,7 +777,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OPIrradiance305">
@@ -812,7 +812,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OPIrradiance310">
@@ -847,7 +847,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OPIrradiance324">
@@ -882,7 +882,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="OPIrradiance380">
@@ -917,7 +917,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="SurfaceAlbedo">
@@ -952,7 +952,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="GroundPixelQualityFlags">
@@ -987,7 +987,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="SolarZenithAngle">
@@ -1022,7 +1022,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="TerrainHeight">
@@ -1057,7 +1057,7 @@
             <value>Latitude Longitude</value>
         </Attribute>
         <Int32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="Time">
@@ -1089,7 +1089,7 @@
             <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Time</value>
         </Attribute>
         <Float64/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
     </Array>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
@@ -1128,7 +1128,7 @@
             <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <Array name="Longitude">
@@ -1160,7 +1160,7 @@
             <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude</value>
         </Attribute>
         <Float32/>
-        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nTimes" size="1643"/>
         <dimension name="nXtrack" size="60"/>
     </Array>
     <dataBLOB href=""/>
