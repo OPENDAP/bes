@@ -74,17 +74,17 @@ BESLog::BESLog() :
 {
     d_suspended = 0;
     bool found = false;
+    /*
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
-    }
-    catch (BESInternalFatalError &bie) {
-        throw bie;
     }
     catch (...) {
         string err ="BES Fatal: unable to determine log file name.";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
+    */
+    TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
 
     // By default, use UTC in the logs.
     found = false;
