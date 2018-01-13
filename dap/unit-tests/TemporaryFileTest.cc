@@ -61,7 +61,8 @@ using namespace CppUnit;
 using namespace std;
 
 const string TEMP_FILE_TEMPLATE = BESUtil::assemblePath(TEST_BUILD_DIR, "tmp_XXXXXX");
-const string BES_CONF_FILE = BESUtil::assemblePath(TEST_SRC_DIR, "bes.conf");
+// const string BES_CONF_FILE = BESUtil::assemblePath(TEST_SRC_DIR, "bes.conf");
+const string BES_CONF_FILE = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 
 class TemporaryFileTest: public CppUnit::TestFixture {
 private:
