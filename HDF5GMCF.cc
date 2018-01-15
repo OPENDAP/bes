@@ -653,6 +653,80 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
     BESDEBUG("h5", "Coming to GMFile:Handle_Unsupported_Others()"<<endl);
     File::Handle_Unsupported_Others(include_attr);
 
+    // Add the removal of CLASS=DIM_SCALE attribute if this is a netCDF-4-like attribute.
+    //
+    if(General_Product != this->product_type 
+        || (General_Product == this->product_type && OTHERGMS != this->gproduct_pattern)){
+   //
+#if 0
+    if((General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern)
+        || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) 
+        || (Mea_SeaWiFS_L3 == this->product_type)
+        || (OBPG_L3 == this->product_type)) {
+#endif
+
+        if(true == include_attr) {
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                     ira != (*irv)->attrs.end();) {
+                    if((*ira)->name == "CLASS") {
+                        string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+
+                        // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                        // "DIMENSION_SCALE", which is 15.
+                        if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                            delete((*ira));
+                            ira = (*irv)->attrs.erase(ira);
+                        }
+#if 0
+                        else if(1) {// Add a BES key,also delete
+
+                        }
+#endif
+                        else {
+                            ++ira;
+                        }
+                    }
+                    else if((*ira)->name == "NAME" && 1) {// Add a BES Key 
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+                    else {
+                        ++ira;
+                    }
+                }
+            }
+            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+                irv != this->cvars.end(); ++irv) {
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                     ira != (*irv)->attrs.end();) {
+                    if((*ira)->name == "CLASS") {
+                        string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+
+                        // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                        // "DIMENSION_SCALE", which is 15.
+                        if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                            delete((*ira));
+                            ira = (*irv)->attrs.erase(ira);
+                            // Add another block to set a key
+                        }
+                        else {
+                            ++ira;
+                        }
+                    }
+                    else if((*ira)->name == "NAME" && 1) {// Add a BES Key 
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                        // Also add a check if NAME== var name or NAME==netCDF pure dimension
+                    }
+                    else {
+                        ++ira;
+                    }
+                }
+            }
+        }
+    }
     if(true == this->check_ignored && true == include_attr) {
         if(true == HDF5RequestHandler::get_drop_long_string()){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
