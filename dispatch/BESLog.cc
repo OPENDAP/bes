@@ -78,11 +78,11 @@ BESLog::BESLog() :
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
     catch (BESInternalFatalError &bife) {
-        cerr << "BESInternalFatalError has been thrown! message: " << bife.get_message() << "  file: " << bife.get_file() << " line: " << bife.get_line() << endl;
+        cerr << "BESInternalFatalError! Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
         throw bife;
     }
     catch (...) {
-        string err ="BES Fatal: unable to determine log file name.";
+        string err ="Caught unknown exception! Unable to determine log file name. BES fatal error!";
         cerr << err << endl;
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
