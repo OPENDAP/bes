@@ -642,8 +642,6 @@ Attributes {
         String fullnamepath "/SENSOR_DATA/GratingPositionError";
     }
     nChannels03 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nChannels03";
         String long_name "Wavelength (Channels 10-12)";
         String units "nm";
         String description "The dimension representing the SBUV channels for the Lambertian Equivalent Reflectivity (three channels:  channels 10 to 12).";
@@ -651,8 +649,6 @@ Attributes {
         String fullnamepath "/nChannels03";
     }
     nChannels08 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nChannels08";
         String long_name "Wavelength (Channels 5-12)";
         String units "nm";
         String description "The dimension representing the SBUV channels that correspond to multiple scattering (eight channels:  channels 5 to 12).";
@@ -660,8 +656,6 @@ Attributes {
         String fullnamepath "/nChannels08";
     }
     nChannels10 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nChannels10";
         String long_name "Wavelength (Channels 1-10)";
         String units "nm";
         String description "The dimension representing the SBUV channels for the profile computation (ten channels:  channels 1 to 10).";
@@ -669,8 +663,6 @@ Attributes {
         String fullnamepath "/nChannels10";
     }
     nChannels12 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nChannels12";
         String long_name "Wavelength (Channels 1-12)";
         String units "nm";
         String description "The dimension representing the SBUV channels that correspond to single and multiple scattering (twelve channels:  channels 1 to 12).";
@@ -678,8 +670,6 @@ Attributes {
         String fullnamepath "/nChannels12";
     }
     nChannels13 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nChannels13";
         String long_name "Wavelength (All Channels)";
         String units "nm";
         String description "The dimension representing all of the SBUV channels (thirteen channels).";
@@ -687,8 +677,6 @@ Attributes {
         String fullnamepath "/nChannels13";
     }
     nLayers11 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLayers11";
         String long_name "Pressure (Umkehr Layers 0 to 9 and Layers 10 Plus)";
         String units "hPa";
         String description "The dimension representing Umkehr layers 0 to 9 and layers 10 plus.  The pressure corresponds to the bottom of the layer.";
@@ -696,8 +684,6 @@ Attributes {
         String fullnamepath "/nLayers11";
     }
     nLayers13 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLayers13";
         String long_name "Pressure (Umkehr Layer 12 Plus to Layer 0)";
         String units "hPa";
         String description "The dimension representing Umkehr layer 12 plus to layer 0.  The pressure corresponds to the bottom of the layer.";
@@ -705,8 +691,6 @@ Attributes {
         String fullnamepath "/nLayers13";
     }
     nLevels15 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLevels15";
         String long_name "Pressure (for Mixing Ratio)";
         String units "hPa";
         String description "The dimension representing the pressure levels for the ozone volume mixing ratio.";
@@ -714,8 +698,6 @@ Attributes {
         String fullnamepath "/nLevels15";
     }
     nLevels20 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLevels20";
         String long_name "Pressure (Levels 1-20)";
         String units "hPa";
         String description "The dimension representing the pressure levels for the ozone retrievals (total number of levels minus one).";
@@ -723,8 +705,6 @@ Attributes {
         String fullnamepath "/nLevels20";
     }
     nLevels20b {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLevels20b";
         String long_name "Copy of Pressure (Levels 1-20)";
         String units "hPa";
         String description "An additional dimension representing the pressure levels for the ozone retrievals (total number of levels minus one).";
@@ -732,8 +712,6 @@ Attributes {
         String fullnamepath "/nLevels20b";
     }
     nLevels21 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLevels21";
         String long_name "Pressure (All Levels)";
         String units "hPa";
         String description "The dimension representing the total number of pressure levels.  There are five levels of pressure per decade spanning four decades.";
@@ -741,8 +719,6 @@ Attributes {
         String fullnamepath "/nLevels21";
     }
     nTimes {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nTimes";
         String long_name "Time";
         String units "seconds since 1993-01-01";
         String description "The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).";

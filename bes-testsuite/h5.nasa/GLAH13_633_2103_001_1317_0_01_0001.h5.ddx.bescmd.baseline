@@ -8713,9 +8713,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <dimension name="FakeDim2" size="3"/>
     </Array>
     <Array name="Data_1HZ_DS_UTCTime_1">
-        <Attribute name="NAME" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>seconds since 2000-01-01 12:00:00 UTC</value>
         </Attribute>
@@ -8733,9 +8730,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>DS_UTCTime_1</value>
@@ -8767,9 +8761,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>d_UTCTime_1</value>
@@ -8807,12 +8798,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="flag_meanings" type="String">
             <value>NW N NE W ORIGIN E SW S SE</value>
         </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>DS_DEMhiresArElv</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>DS_DEMhiresArElv</value>
         </Attribute>
@@ -8841,12 +8826,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>DS_UTCTime_40</value>
         </Attribute>
@@ -8874,9 +8853,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
         </Attribute>
         <Attribute name="NAME" type="String">
             <value>DS_UTCTime_40</value>

@@ -259,9 +259,6 @@
         <dimension name="OMI_Column_Amount_O3_lon" size="1440"/>
     </Array>
     <Array name="OMI_Column_Amount_O3_lat">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>latitude </value>
         </Attribute>
@@ -278,9 +275,6 @@
         <dimension name="OMI_Column_Amount_O3_lat" size="720"/>
     </Array>
     <Array name="OMI_Column_Amount_O3_lon">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>longitude </value>
         </Attribute>

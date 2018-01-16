@@ -44,12 +44,10 @@ Attributes {
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
     }
     XDim {
-        String CLASS "DIMENSION_SCALE";
         String origname "XDim";
         String fullnamepath "/HDFEOS/GRIDS/XDim";
     }
     YDim {
-        String CLASS "DIMENSION_SCALE";
         String origname "YDim";
         String fullnamepath "/HDFEOS/GRIDS/YDim";
     }

@@ -779,12 +779,6 @@
         </Attribute>
     </String>
     <Array name="nLats">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLats</value>
-        </Attribute>
         <Attribute name="missing_value" type="Float32">
             <value>-999.0000000</value>
         </Attribute>
@@ -810,12 +804,6 @@
         <dimension name="nLats" size="73"/>
     </Array>
     <Array name="nLevels">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLevels</value>
-        </Attribute>
         <Attribute name="missing_value" type="Float32">
             <value>-999.0000000</value>
         </Attribute>
@@ -841,12 +829,6 @@
         <dimension name="nLevels" size="121"/>
     </Array>
     <Array name="nTimes">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nTimes</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>seconds since 1993-01-01</value>
         </Attribute>

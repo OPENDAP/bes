@@ -8,8 +8,6 @@ Attributes {
         String coordinates "lat lon pre";
     }
     pre {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "pre";
         Int32 _Netcdf4Dimid 2;
         String units "hPa";
         String origname "pre";

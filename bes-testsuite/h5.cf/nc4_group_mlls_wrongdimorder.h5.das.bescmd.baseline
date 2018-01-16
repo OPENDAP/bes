@@ -32,15 +32,11 @@ Attributes {
         String fullnamepath "/g1/temp";
     }
     g1_dim1 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "dim1";
         Int32 _Netcdf4Dimid 0;
         String origname "dim1";
         String fullnamepath "/g1/dim1";
     }
     g1_dim2 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "dim2";
         Int32 _Netcdf4Dimid 1;
         String origname "dim2";
         String fullnamepath "/g1/dim2";

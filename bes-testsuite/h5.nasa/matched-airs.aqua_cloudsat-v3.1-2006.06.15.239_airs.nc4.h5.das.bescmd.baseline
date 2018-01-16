@@ -1146,75 +1146,37 @@ Attributes {
         String origname "PCT_single_cloud_type";
         String fullnamepath "/CloudSat/CWC-RO/PCT_single_cloud_type";
     }
-    AIRS_Radiances_Channel_L1B_AIRS_Science {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.      2378";
-    }
     AIRS_RetStd_CH4Func {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         7";
         Int32 _Netcdf4Dimid 7;
     }
     AIRS_RetStd_COFunc {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         9";
         Int32 _Netcdf4Dimid 2;
     }
     AIRS_RetStd_Cloud {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         2";
         Int32 _Netcdf4Dimid 6;
     }
     AIRS_RetStd_H2OFunc {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        11";
         Int32 _Netcdf4Dimid 4;
     }
     AIRS_RetStd_H2OPressureLay {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        14";
         Int32 _Netcdf4Dimid 5;
     }
     AIRS_RetStd_O3Func {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         9";
         Int32 _Netcdf4Dimid 1;
     }
     AIRS_RetStd_StdPressureLay {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        28";
         Int32 _Netcdf4Dimid 3;
     }
     AIRS_RetStd_StdPressureLev {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        28";
         Int32 _Netcdf4Dimid 8;
     }
     AIRS_VIS_Radiances_Channel_L1B_VIS_Science {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         4";
         Int32 _Netcdf4Dimid 11;
     }
     AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         9";
         Int32 _Netcdf4Dimid 10;
     }
     AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         8";
         Int32 _Netcdf4Dimid 12;
-    }
-    CloudSat_cs_idx {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        17";
-    }
-    CloudSat_cs_nbin {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.       125";
-    }
-    airs_idx {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.       141";
     }
 }

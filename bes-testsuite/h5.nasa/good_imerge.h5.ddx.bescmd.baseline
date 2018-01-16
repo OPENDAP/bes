@@ -274,12 +274,6 @@ Tue Feb 11 17:56:58 2014: ncrename -d phony_dim_0,lon -d phony_dim_1,lat 3IMERGH
         <dimension name="lat" size="1800"/>
     </Array>
     <Array name="lat">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lat</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>1</value>
         </Attribute>
@@ -296,12 +290,6 @@ Tue Feb 11 17:56:58 2014: ncrename -d phony_dim_0,lon -d phony_dim_1,lat 3IMERGH
         <dimension name="lat" size="1800"/>
     </Array>
     <Array name="lon">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lon</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>0</value>
         </Attribute>

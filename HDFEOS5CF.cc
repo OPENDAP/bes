@@ -356,6 +356,100 @@ void EOS5File::Gen_Unsupported_Dspace_Info() throw (Exception)
 void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
 {
 
+    remove_netCDF_internal_attributes(include_attr);
+#if 0
+    if(true == include_attr) {
+        for (vector<Var *>::iterator irv = this->vars.begin();
+             irv != this->vars.end(); ++irv) {
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                     ira != (*irv)->attrs.end();) {
+                    if((*ira)->name == "CLASS") {
+                        string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+
+                        // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                        // "DIMENSION_SCALE", which is 15.
+                        if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                            delete((*ira));
+                            ira = (*irv)->attrs.erase(ira);
+                        }
+#if 0
+                        else if(1) {// Add a BES key,also delete
+
+                        }
+#endif
+                        else {
+                            ++ira;
+                        }
+                    }
+                    //else if((*ira)->name == "NAME" && 1) {// Add a BES Key later if necessary
+                    else if((*ira)->name == "NAME") {// Add a BES Key 
+                        string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+                        if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
+                            delete((*ira));
+                            ira =(*irv)->attrs.erase(ira);
+                        }
+                        else {
+                            string netcdf_dim_mark= "This is a netCDF dimension but not a netCDF variable";
+                            if( 0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark)) {
+                                delete((*ira));
+                                ira =(*irv)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
+                            }
+                        }
+
+                    }
+                    else {
+                        ++ira;
+                    }
+                }
+            }
+#endif
+    if(true == include_attr) {
+        for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
+            irv != this->cvars.end(); ++irv) {
+            for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                ira != (*irv)->attrs.end();) {
+                if((*ira)->name == "CLASS") {
+                    string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+
+                    // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                    // "DIMENSION_SCALE", which is 15.
+                    if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                        delete((*ira));
+                        ira = (*irv)->attrs.erase(ira);
+                        // Add another block to set a key
+                    }
+                    else {
+                        ++ira;
+                    }
+                }
+                else if((*ira)->name == "NAME") {// Add a BES Key later
+                    string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+                    if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+                    else {
+                        string netcdf_dim_mark= "This is a netCDF dimension but not a netCDF variable";
+                        if( 0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark)) {
+                            delete((*ira));
+                            ira =(*irv)->attrs.erase(ira);
+                        }
+                        else {
+                            ++ira;
+                        }
+                    }
+                }
+                else {
+                    ++ira;
+                }
+            }
+        }
+    }
+    
+ 
     // We cannot use the general routine from the base class since
     // the information of ignored ECS metadata variables is transferred
     // to DAS. The ignored ECS metadata variables should not be reported.

@@ -738,6 +738,9 @@ protected:
     // memory for the dimension sizes(an array(vector is perferred).
     bool is_var_under_group(const string &varname, const string &grpname, const int var_rank, vector<size_t> &var_size);
 
+    // Remove netCDF internal attributes. Right now, only CLASS=DIMENSION_SCALE and NAME=Var_name and NAME=pure netCDF dimesnion are handled.
+    void remove_netCDF_internal_attributes(bool include_attr);
+
     virtual void Gen_Unsupported_Dtype_Info(bool) = 0;
     virtual void Gen_Unsupported_Dspace_Info() throw (Exception);
     void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw (Exception);

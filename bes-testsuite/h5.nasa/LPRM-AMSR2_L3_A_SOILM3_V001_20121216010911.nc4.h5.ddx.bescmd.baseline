@@ -398,12 +398,6 @@
         <dimension name="Latitude" size="720"/>
     </Array>
     <Array name="Latitude">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>Latitude</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>1</value>
         </Attribute>
@@ -432,12 +426,6 @@
         <dimension name="Latitude" size="720"/>
     </Array>
     <Array name="Longitude">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>Longitude</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>0</value>
         </Attribute>

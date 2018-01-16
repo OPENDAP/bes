@@ -138,8 +138,6 @@ Attributes {
         String fullnamepath "/soil_moisture_x_error";
     }
     Latitude {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "Latitude";
         Int32 _Netcdf4Dimid 1;
         String units "degrees_north";
         Float32 scale_factor 1.000000000;
@@ -150,8 +148,6 @@ Attributes {
         String fullnamepath "/Latitude";
     }
     Longitude {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "Longitude";
         Int32 _Netcdf4Dimid 0;
         String units "degrees_east";
         Float32 scale_factor 1.000000000;

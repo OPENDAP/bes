@@ -2491,22 +2491,10 @@
         <dimension name="AIRS_HingeSurf" size="100"/>
     </Array>
     <Array name="AIRS_HingeSurf">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.       100</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_HingeSurf" size="100"/>
     </Array>
     <Array name="AIRS_RetStd_CH4Func">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         7</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>8</value>
         </Attribute>
@@ -2514,12 +2502,6 @@
         <dimension name="AIRS_RetStd_CH4Func" size="7"/>
     </Array>
     <Array name="AIRS_RetStd_COFunc">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         9</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>3</value>
         </Attribute>
@@ -2527,12 +2509,6 @@
         <dimension name="AIRS_RetStd_COFunc" size="9"/>
     </Array>
     <Array name="AIRS_RetStd_Cloud">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         2</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>7</value>
         </Attribute>
@@ -2540,12 +2516,6 @@
         <dimension name="AIRS_RetStd_Cloud" size="2"/>
     </Array>
     <Array name="AIRS_RetStd_H2OFunc">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        11</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>5</value>
         </Attribute>
@@ -2553,12 +2523,6 @@
         <dimension name="AIRS_RetStd_H2OFunc" size="11"/>
     </Array>
     <Array name="AIRS_RetStd_H2OPressureLay">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        14</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>6</value>
         </Attribute>
@@ -2566,12 +2530,6 @@
         <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
     </Array>
     <Array name="AIRS_RetStd_O3Func">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         9</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>2</value>
         </Attribute>
@@ -2579,12 +2537,6 @@
         <dimension name="AIRS_RetStd_O3Func" size="9"/>
     </Array>
     <Array name="AIRS_RetStd_StdPressureLay">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        28</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>4</value>
         </Attribute>
@@ -2592,12 +2544,6 @@
         <dimension name="AIRS_RetStd_StdPressureLay" size="28"/>
     </Array>
     <Array name="AIRS_RetStd_StdPressureLev">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        28</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>9</value>
         </Attribute>
@@ -2605,42 +2551,18 @@
         <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
     </Array>
     <Array name="CloudSat_cs_idx">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        51</value>
-        </Attribute>
         <Float32/>
         <dimension name="CloudSat_cs_idx" size="51"/>
     </Array>
     <Array name="CloudSat_cs_nbin">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.       125</value>
-        </Attribute>
         <Float32/>
         <dimension name="CloudSat_cs_nbin" size="125"/>
     </Array>
     <Array name="amsu_idx">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        46</value>
-        </Attribute>
         <Float32/>
         <dimension name="amsu_idx" size="46"/>
     </Array>
     <Array name="amsu_track_idx">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        45</value>
-        </Attribute>
         <Float32/>
         <dimension name="amsu_track_idx" size="45"/>
     </Array>

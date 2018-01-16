@@ -120,12 +120,6 @@
         </Attribute>
     </String>
     <Array name="TDim">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>TDim</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>TDim</value>
         </Attribute>
@@ -139,12 +133,6 @@
         <dimension name="TDim" size="2"/>
     </Array>
     <Array name="YDim">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>YDim</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>YDim</value>
         </Attribute>
@@ -158,12 +146,6 @@
         <dimension name="YDim" size="8"/>
     </Array>
     <Array name="ZDim">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>ZDim</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>ZDim</value>
         </Attribute>

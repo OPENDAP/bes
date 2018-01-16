@@ -2181,6 +2181,58 @@ string File::Check_Grid_Mapping_FullPath(const string & a_value) {
 
     return gmap_new_name;
 }
+
+void File::remove_netCDF_internal_attributes(bool include_attr) {
+
+    if(true == include_attr) {
+        for (vector<Var *>::iterator irv = this->vars.begin();
+             irv != this->vars.end(); ++irv) {
+            for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                ira != (*irv)->attrs.end();) {
+                if((*ira)->name == "CLASS") {
+                    string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+
+                    // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                    // "DIMENSION_SCALE", which is 15.
+                    if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                        delete((*ira));
+                        ira = (*irv)->attrs.erase(ira);
+                    }
+#if 0
+                        else if(1) {// Add a BES key,also delete
+
+                        }
+#endif
+                    else {
+                        ++ira;
+                    }
+                }
+                else if((*ira)->name == "NAME") {// Add a BES Key 
+                    string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+                    if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+                    else {
+                        string netcdf_dim_mark= "This is a netCDF dimension but not a netCDF variable";
+                        if( 0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark)) {
+                            delete((*ira));
+                            ira =(*irv)->attrs.erase(ira);
+                        }
+                        else {
+                            ++ira;
+                        }
+                    }
+
+                }
+                else {
+                    ++ira;
+                }
+            }
+        }
+    }
+
+}
 // Add ignored page header info. Mainly a helper message.
 void File::add_ignored_info_page_header()
 {

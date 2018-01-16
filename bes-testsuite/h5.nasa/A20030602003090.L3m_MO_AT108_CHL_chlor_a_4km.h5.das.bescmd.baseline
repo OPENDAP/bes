@@ -120,22 +120,16 @@ Attributes {
         String fullnamepath "/palette";
     }
     columns {
-        String CLASS "DIMENSION_SCALE";
         Int32 _Netcdf4Dimid 1;
         String units "degrees_east";
     }
     eightbitcolor {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.       256";
         Int32 _Netcdf4Dimid 3;
     }
     rgb {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         3";
         Int32 _Netcdf4Dimid 2;
     }
     rows {
-        String CLASS "DIMENSION_SCALE";
         Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
     }

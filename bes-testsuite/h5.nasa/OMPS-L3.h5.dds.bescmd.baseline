@@ -1,0 +1,12 @@
+Dataset {
+    Float32 ColumnAmountO3[Latitude = 180][Longitude = 360];
+    Byte LandSeaMask[Latitude = 180][Longitude = 360];
+    Float32 PercentWater[Latitude = 180][Longitude = 360];
+    Float32 RadiativeCloudFraction[Latitude = 180][Longitude = 360];
+    Float32 Reflectivity331[Latitude = 180][Longitude = 360];
+    Float32 SolarZenithAngle[Latitude = 180][Longitude = 360];
+    Float32 UVAerosolIndex[Latitude = 180][Longitude = 360];
+    Float32 ViewingZenithAngle[Latitude = 180][Longitude = 360];
+    Float32 Latitude[Latitude = 180];
+    Float32 Longitude[Longitude = 360];
+} OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5;

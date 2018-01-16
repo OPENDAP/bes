@@ -1131,9 +1131,6 @@
         <Attribute name="long_name" type="String">
             <value>wavelength bands over land</value>
         </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>land_bands</value>
         </Attribute>
@@ -1156,9 +1153,6 @@
         <Attribute name="valid_range" type="Float32">
             <value>-90.00000000</value>
             <value>90.00000000</value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -1183,9 +1177,6 @@
             <value>-180.0000000</value>
             <value>180.0000000</value>
         </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -1201,9 +1192,6 @@
         </Attribute>
         <Attribute name="long_name" type="String">
             <value>wavelength bands over ocean</value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>ocean_bands</value>

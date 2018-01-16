@@ -2863,12 +2863,6 @@
         <dimension name="nWavel" size="4"/>
     </Array>
     <Array name="nTimes">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nTimes</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Time</value>
         </Attribute>
@@ -2888,12 +2882,6 @@
         <dimension name="nTimes" size="392"/>
     </Array>
     <Array name="nXtrack">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nXtrack</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Cross-Track Position (1-Based)</value>
         </Attribute>
@@ -2913,12 +2901,6 @@
         <dimension name="nXtrack" size="35"/>
     </Array>
     <Array name="nCorners">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nCorners</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Ground Pixel Corner</value>
         </Attribute>
@@ -2938,12 +2920,6 @@
         <dimension name="nCorners" size="4"/>
     </Array>
     <Array name="nLevels">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLevels</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Atmospheric Levels</value>
         </Attribute>
@@ -2963,12 +2939,6 @@
         <dimension name="nLevels" size="5"/>
     </Array>
     <Array name="nWavel">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nWavel</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>TOMS Wavelength</value>
         </Attribute>

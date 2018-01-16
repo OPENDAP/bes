@@ -1811,12 +1811,6 @@
         <dimension name="nChannels12" size="12"/>
     </Array>
     <Array name="nChannels03">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nChannels03</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Wavelength (Channels 10-12)</value>
         </Attribute>
@@ -1836,12 +1830,6 @@
         <dimension name="nChannels03" size="3"/>
     </Array>
     <Array name="nChannels08">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nChannels08</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Wavelength (Channels 5-12)</value>
         </Attribute>
@@ -1861,12 +1849,6 @@
         <dimension name="nChannels08" size="8"/>
     </Array>
     <Array name="nChannels10">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nChannels10</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Wavelength (Channels 1-10)</value>
         </Attribute>
@@ -1886,12 +1868,6 @@
         <dimension name="nChannels10" size="10"/>
     </Array>
     <Array name="nChannels12">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nChannels12</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Wavelength (Channels 1-12)</value>
         </Attribute>
@@ -1911,12 +1887,6 @@
         <dimension name="nChannels12" size="12"/>
     </Array>
     <Array name="nChannels13">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nChannels13</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Wavelength (All Channels)</value>
         </Attribute>
@@ -1936,12 +1906,6 @@
         <dimension name="nChannels13" size="13"/>
     </Array>
     <Array name="nLayers11">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLayers11</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure (Umkehr Layers 0 to 9 and Layers 10 Plus)</value>
         </Attribute>
@@ -1961,12 +1925,6 @@
         <dimension name="nLayers11" size="11"/>
     </Array>
     <Array name="nLayers13">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLayers13</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure (Umkehr Layer 12 Plus to Layer 0)</value>
         </Attribute>
@@ -1986,12 +1944,6 @@
         <dimension name="nLayers13" size="13"/>
     </Array>
     <Array name="nLevels15">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLevels15</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure (for Mixing Ratio)</value>
         </Attribute>
@@ -2011,12 +1963,6 @@
         <dimension name="nLevels15" size="15"/>
     </Array>
     <Array name="nLevels20">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLevels20</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure (Levels 1-20)</value>
         </Attribute>
@@ -2036,12 +1982,6 @@
         <dimension name="nLevels20" size="20"/>
     </Array>
     <Array name="nLevels20b">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLevels20b</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Copy of Pressure (Levels 1-20)</value>
         </Attribute>
@@ -2061,12 +2001,6 @@
         <dimension name="nLevels20b" size="20"/>
     </Array>
     <Array name="nLevels21">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nLevels21</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure (All Levels)</value>
         </Attribute>
@@ -2086,12 +2020,6 @@
         <dimension name="nLevels21" size="21"/>
     </Array>
     <Array name="nTimes">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nTimes</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Time</value>
         </Attribute>

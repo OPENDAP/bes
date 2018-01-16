@@ -116,7 +116,6 @@ Attributes {
         String fullnamepath "/HDFEOS INFORMATION/coremetadata.0";
     }
     XDim {
-        String CLASS "DIMENSION_SCALE";
         String long_name "longitude";
         String units "degrees_east";
         String origname "XDim";
@@ -124,7 +123,6 @@ Attributes {
         String orig_dimname "XDim";
     }
     YDim {
-        String CLASS "DIMENSION_SCALE";
         String long_name "latitude";
         String units "degrees_north";
         String origname "YDim";
@@ -132,8 +130,6 @@ Attributes {
         String orig_dimname "YDim";
     }
     nTimes {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nTimes";
         Float32 _FillValue -999.00000000000000;
         Float64 missing_value -999.00000000000000;
         String units "seconds since 1993-01-01";

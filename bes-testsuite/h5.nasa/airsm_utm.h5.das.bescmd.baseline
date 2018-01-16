@@ -1252,8 +1252,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.1";
     }
     _355nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1262,8 +1260,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/XDim";
     }
     _355nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1272,14 +1268,10 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/355nm_band/Data Fields/YDim";
     }
     Channel_Information_Channel_number {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "Channel_number";
         String origname "Channel_number";
         String fullnamepath "/Channel_Information/Channel_number";
     }
     _380nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1288,8 +1280,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/XDim";
     }
     _380nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1298,8 +1288,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/380nm_band/Data Fields/YDim";
     }
     _445nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1308,8 +1296,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/XDim";
     }
     _445nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1318,8 +1304,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/445nm_band/Data Fields/YDim";
     }
     _470nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1328,8 +1312,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/XDim";
     }
     _470nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1338,8 +1320,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/470nm_band/Data Fields/YDim";
     }
     _555nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1348,8 +1328,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/XDim";
     }
     _555nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1358,8 +1336,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/555nm_band/Data Fields/YDim";
     }
     _660nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1368,8 +1344,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/XDim";
     }
     _660nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1378,8 +1352,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/660nm_band/Data Fields/YDim";
     }
     _865nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1388,8 +1360,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/XDim";
     }
     _865nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1398,8 +1368,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/865nm_band/Data Fields/YDim";
     }
     _935nm_band_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1408,8 +1376,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/XDim";
     }
     _935nm_band_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1418,8 +1384,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/935nm_band/Data Fields/YDim";
     }
     Ancillary_XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1428,8 +1392,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/XDim";
     }
     Ancillary_YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";
@@ -1438,8 +1400,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/Ancillary/Data Fields/YDim";
     }
     XDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDim";
         String long_name "UTM X";
         String units "meters";
         String standard_name "projection_x_coordinate";
@@ -1448,8 +1408,6 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
         String fullnamepath "/HDFEOS/GRIDS/XDim";
     }
     YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String _CoordinateAxisType "GeoY";
         String long_name "UTM Y";
         String units "meters";

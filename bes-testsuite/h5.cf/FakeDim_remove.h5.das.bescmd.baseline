@@ -4,7 +4,6 @@ Attributes {
         String fullnamepath "/atomic";
     }
     dima {
-        String CLASS "DIMENSION_SCALE";
         String origname "dima";
         String fullnamepath "/dima";
     }

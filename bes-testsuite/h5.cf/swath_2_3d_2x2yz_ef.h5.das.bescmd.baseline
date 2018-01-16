@@ -44,34 +44,28 @@ Attributes {
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
     }
     Swath1_XDim {
-        String CLASS "DIMENSION_SCALE";
         String origname "XDim";
         String fullnamepath "/HDFEOS/SWATHS/Swath1/XDim";
     }
     Swath1_YDim {
-        String CLASS "DIMENSION_SCALE";
         String origname "YDim";
         String fullnamepath "/HDFEOS/SWATHS/Swath1/YDim";
     }
     Swath2_XDim {
-        String CLASS "DIMENSION_SCALE";
         String origname "XDim";
         String fullnamepath "/HDFEOS/SWATHS/Swath2/XDim";
     }
     Swath2_YDim {
-        String CLASS "DIMENSION_SCALE";
         String origname "YDim";
         String fullnamepath "/HDFEOS/SWATHS/Swath2/YDim";
     }
     Swath1_Pressure {
         String units "hPa";
-        String CLASS "DIMENSION_SCALE";
         String origname "Pressure";
         String fullnamepath "/HDFEOS/SWATHS/Swath1/Geolocation Fields/Pressure";
     }
     Swath2_Pressure {
         String units "hPa";
-        String CLASS "DIMENSION_SCALE";
         String origname "Pressure";
         String fullnamepath "/HDFEOS/SWATHS/Swath2/Geolocation Fields/Pressure";
     }

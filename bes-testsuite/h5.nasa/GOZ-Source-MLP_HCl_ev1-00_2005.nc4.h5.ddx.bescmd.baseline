@@ -1383,22 +1383,10 @@
         <dimension name="Aura_MLS_lat" size="18"/>
     </Array>
     <Array name="ACE_FTS_dayInBin">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        31</value>
-        </Attribute>
         <Float32/>
         <dimension name="ACE_FTS_dayInBin" size="31"/>
     </Array>
     <Array name="ACE_FTS_lat">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lat</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Latitude</value>
         </Attribute>
@@ -1418,12 +1406,6 @@
         <dimension name="ACE_FTS_lat" size="18"/>
     </Array>
     <Array name="ACE_FTS_lev">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lev</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure</value>
         </Attribute>
@@ -1443,12 +1425,6 @@
         <dimension name="ACE_FTS_lev" size="25"/>
     </Array>
     <Array name="ACE_FTS_time">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>time</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Time</value>
         </Attribute>
@@ -1468,22 +1444,10 @@
         <dimension name="ACE_FTS_time" size="12"/>
     </Array>
     <Array name="Aura_MLS_dayInBin">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        31</value>
-        </Attribute>
         <Float32/>
         <dimension name="Aura_MLS_dayInBin" size="31"/>
     </Array>
     <Array name="Aura_MLS_lat">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lat</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Latitude</value>
         </Attribute>
@@ -1503,12 +1467,6 @@
         <dimension name="Aura_MLS_lat" size="18"/>
     </Array>
     <Array name="Aura_MLS_lev">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lev</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure</value>
         </Attribute>
@@ -1528,12 +1486,6 @@
         <dimension name="Aura_MLS_lev" size="25"/>
     </Array>
     <Array name="Aura_MLS_time">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>time</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Time</value>
         </Attribute>
@@ -1553,22 +1505,10 @@
         <dimension name="Aura_MLS_time" size="12"/>
     </Array>
     <Array name="HALOE_dayInBin">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.        31</value>
-        </Attribute>
         <Float32/>
         <dimension name="HALOE_dayInBin" size="31"/>
     </Array>
     <Array name="HALOE_lat">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lat</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Latitude</value>
         </Attribute>
@@ -1588,12 +1528,6 @@
         <dimension name="HALOE_lat" size="18"/>
     </Array>
     <Array name="HALOE_lev">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>lev</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Pressure</value>
         </Attribute>
@@ -1613,12 +1547,6 @@
         <dimension name="HALOE_lev" size="25"/>
     </Array>
     <Array name="HALOE_time">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>time</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Time</value>
         </Attribute>

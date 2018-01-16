@@ -982,8 +982,6 @@ Attributes {
         String fullnamepath "/SENSOR_DATA/Wavelength";
     }
     nTimes {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nTimes";
         String long_name "Time";
         String units "seconds since 1993-01-01";
         String description "The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).";
@@ -991,8 +989,6 @@ Attributes {
         String fullnamepath "/nTimes";
     }
     nXtrack {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nXtrack";
         String long_name "Cross-Track Position (1-Based)";
         String units "1";
         String description "The dimension representing the cross-track position of the observation in the scan line.  The values range from 1 to 35.";
@@ -1000,8 +996,6 @@ Attributes {
         String fullnamepath "/nXtrack";
     }
     nCorners {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nCorners";
         String long_name "Ground Pixel Corner";
         String units "1";
         String description "The dimension representing the ground pixel corners.  There are four corners per ground pixel.";
@@ -1009,8 +1003,6 @@ Attributes {
         String fullnamepath "/nCorners";
     }
     nLevels {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLevels";
         String long_name "Atmospheric Levels";
         String units "km";
         String description "The dimension representing the atmospheric levels.  The values range from 0.0 to 10.0 km.";
@@ -1018,8 +1010,6 @@ Attributes {
         String fullnamepath "/nLevels";
     }
     nWavel {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nWavel";
         String long_name "TOMS Wavelength";
         String units "nm";
         String description "The dimension representing the TOMS wavelengths.  The values range from 331 to 380 nm.";

@@ -391,7 +391,6 @@ Attributes {
     land_bands {
         String units "nm";
         String long_name "wavelength bands over land";
-        String CLASS "DIMENSION_SCALE";
         String origname "land_bands";
         String fullnamepath "/land_bands";
     }
@@ -400,7 +399,6 @@ Attributes {
         String standard_name "latitude";
         String long_name "latitude of center of grid element";
         Float32 valid_range -90.00000000, 90.00000000;
-        String CLASS "DIMENSION_SCALE";
         String origname "latitude";
         String fullnamepath "/latitude";
     }
@@ -409,14 +407,12 @@ Attributes {
         String standard_name "longitude";
         String long_name "longitude of center of grid element";
         Float32 valid_range -180.0000000, 180.0000000;
-        String CLASS "DIMENSION_SCALE";
         String origname "longitude";
         String fullnamepath "/longitude";
     }
     ocean_bands {
         String units "nm";
         String long_name "wavelength bands over ocean";
-        String CLASS "DIMENSION_SCALE";
         String origname "ocean_bands";
         String fullnamepath "/ocean_bands";
     }

@@ -7,10 +7,6 @@ Attributes {
         String fullnamepath "/mydata";
         String coordinates "lat lon zc1";
     }
-    zc1 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         2";
-    }
     lat {
         String units "degrees_north";
         String origname "lat";

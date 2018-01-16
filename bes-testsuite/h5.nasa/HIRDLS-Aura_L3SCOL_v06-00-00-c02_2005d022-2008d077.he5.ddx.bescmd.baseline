@@ -608,9 +608,6 @@
         </Attribute>
     </String>
     <Array name="XDim">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>longitude</value>
         </Attribute>
@@ -630,9 +627,6 @@
         <dimension name="XDim" size="180"/>
     </Array>
     <Array name="YDim">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>latitude</value>
         </Attribute>
@@ -652,12 +646,6 @@
         <dimension name="YDim" size="73"/>
     </Array>
     <Array name="nTimes">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>nTimes</value>
-        </Attribute>
         <Attribute name="_FillValue" type="Float32">
             <value>-999.00000000000000</value>
         </Attribute>

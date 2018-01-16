@@ -340,9 +340,6 @@
         <dimension name="eightbitcolor" size="256"/>
     </Array>
     <Array name="columns">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>1</value>
         </Attribute>
@@ -353,12 +350,6 @@
         <dimension name="columns" size="4320"/>
     </Array>
     <Array name="eightbitcolor">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.       256</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>3</value>
         </Attribute>
@@ -366,12 +357,6 @@
         <dimension name="eightbitcolor" size="256"/>
     </Array>
     <Array name="rgb">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         3</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>2</value>
         </Attribute>
@@ -379,9 +364,6 @@
         <dimension name="rgb" size="3"/>
     </Array>
     <Array name="rows">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
         <Attribute name="_Netcdf4Dimid" type="Int32">
             <value>0</value>
         </Attribute>
