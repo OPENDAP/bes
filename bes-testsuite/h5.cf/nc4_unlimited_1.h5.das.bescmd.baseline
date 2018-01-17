@@ -1,7 +1,4 @@
 Attributes {
-    HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
-    }
     p {
         Float64 _FillValue -9999.0000000000000;
         String origname "p";
@@ -17,19 +14,16 @@ Attributes {
         String fullnamepath "/rh";
     }
     lat {
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
         String origname "lat";
         String fullnamepath "/lat";
     }
     lon {
-        Int32 _Netcdf4Dimid 1;
         String units "degrees_east";
         String origname "lon";
         String fullnamepath "/lon";
     }
     time {
-        Int32 _Netcdf4Dimid 2;
         String units "seconds";
         String origname "time";
         String fullnamepath "/time";

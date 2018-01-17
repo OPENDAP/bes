@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="good_imerge.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_GLOBAL" type="Container">
-        <Attribute name="_nc3_strict" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="FileHeader" type="String">
             <value>AlgorithmID=3IMERGHH;
 AlgorithmVersion=3IMERGH_1.0                                                                                                                                                                                                                                                     ;
@@ -274,9 +271,6 @@ Tue Feb 11 17:56:58 2014: ncrename -d phony_dim_0,lon -d phony_dim_1,lat 3IMERGH
         <dimension name="lat" size="1800"/>
     </Array>
     <Array name="lat">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
         </Attribute>
@@ -290,9 +284,6 @@ Tue Feb 11 17:56:58 2014: ncrename -d phony_dim_0,lon -d phony_dim_1,lat 3IMERGH
         <dimension name="lat" size="1800"/>
     </Array>
     <Array name="lon">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_east</value>
         </Attribute>

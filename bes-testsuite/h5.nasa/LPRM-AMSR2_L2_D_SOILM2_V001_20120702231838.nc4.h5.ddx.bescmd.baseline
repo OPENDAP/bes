@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_GLOBAL" type="Container">
-        <Attribute name="_nc3_strict" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="Conventions" type="String">
             <value>CF-1.0</value>
         </Attribute>

@@ -97,32 +97,12 @@ Attributes {
         String origname "lon1";
         String fullnamepath "/lon1";
     }
-    dimr0 {
-        Int32 _Netcdf4Dimid 0;
-    }
-    dimr1 {
-        Int32 _Netcdf4Dimid 1;
-    }
     g1_dim1 {
-        Int32 _Netcdf4Dimid 2;
         String origname "dim1";
         String fullnamepath "/g1/dim1";
     }
     g1_dim2 {
-        Int32 _Netcdf4Dimid 3;
         String origname "dim2";
         String fullnamepath "/g1/dim2";
-    }
-    g2_dim1 {
-        Int32 _Netcdf4Dimid 4;
-    }
-    g2_dim2 {
-        Int32 _Netcdf4Dimid 5;
-    }
-    g3_dim1 {
-        Int32 _Netcdf4Dimid 6;
-    }
-    g3_dim2 {
-        Int32 _Netcdf4Dimid 7;
     }
 }

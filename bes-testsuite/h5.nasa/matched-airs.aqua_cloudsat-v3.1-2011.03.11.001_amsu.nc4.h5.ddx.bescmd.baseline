@@ -925,9 +925,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>GP_Tropopause</value>
         </Attribute>
@@ -940,9 +937,6 @@
     <Array name="AIRS_RetStd_Press_mid_top_bndry">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>Press_mid_top_bndry</value>
@@ -957,9 +951,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>totH2OStd</value>
         </Attribute>
@@ -972,9 +963,6 @@
     <Array name="AIRS_RetStd_olr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>olr</value>
@@ -989,9 +977,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>TotCld_4_CCfinal</value>
         </Attribute>
@@ -1004,9 +989,6 @@
     <Array name="AIRS_RetStd_Time">
         <Attribute name="_FillValue" type="Float64">
             <value>-9999.0000000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>Time</value>
@@ -1021,9 +1003,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>TSurfStd</value>
         </Attribute>
@@ -1037,9 +1016,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>totCldH2OStdErr</value>
         </Attribute>
@@ -1052,9 +1028,6 @@
     <Array name="AIRS_RetStd_TAirStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>TAirStd</value>
@@ -1070,9 +1043,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>totH2OMWOnlyStd</value>
         </Attribute>
@@ -1085,9 +1055,6 @@
     <Array name="AIRS_RetStd_TSurfStdErr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>TSurfStdErr</value>
@@ -1102,9 +1069,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>landFrac</value>
         </Attribute>
@@ -1117,9 +1081,6 @@
     <Array name="AIRS_RetStd_Longitude">
         <Attribute name="_FillValue" type="Float64">
             <value>-9999.0000000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>Longitude</value>
@@ -1134,9 +1095,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_Surf</value>
         </Attribute>
@@ -1150,9 +1108,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_Temp_Profile_Mid</value>
         </Attribute>
@@ -1165,9 +1120,6 @@
     <Array name="AIRS_RetStd_CH4_verticality">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>CH4_verticality</value>
@@ -1183,9 +1135,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_Cloud_OLR</value>
         </Attribute>
@@ -1196,9 +1145,6 @@
         <dimension name="amsu_idx" size="46"/>
     </Array>
     <Array name="AIRS_RetStd_glintlon">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>glintlon</value>
         </Attribute>
@@ -1211,9 +1157,6 @@
     <Array name="AIRS_RetStd_nGoodStd">
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>nGoodStd</value>
@@ -1228,9 +1171,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>olr_err</value>
         </Attribute>
@@ -1243,9 +1183,6 @@
     <Array name="AIRS_RetStd_T_Tropopause">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>T_Tropopause</value>
@@ -1260,9 +1197,6 @@
         <Attribute name="_FillValue" type="Int32">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>nSurfStd</value>
         </Attribute>
@@ -1276,9 +1210,6 @@
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>nStd_bot_mid_bndry</value>
         </Attribute>
@@ -1291,9 +1222,6 @@
     <Array name="AIRS_RetStd_PCldTopStdErr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>PCldTopStdErr</value>
@@ -1309,9 +1237,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>emisIRStdErr</value>
         </Attribute>
@@ -1325,9 +1250,6 @@
     <Array name="AIRS_RetStd_H2O_verticality">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>H2O_verticality</value>
@@ -1343,9 +1265,6 @@
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>nBestStd</value>
         </Attribute>
@@ -1359,9 +1278,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>solazi</value>
         </Attribute>
@@ -1374,9 +1290,6 @@
     <Array name="AIRS_RetStd_TAirStdErr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>TAirStdErr</value>
@@ -1392,9 +1305,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>O3VMRStdErr</value>
         </Attribute>
@@ -1408,9 +1318,6 @@
     <Array name="AIRS_RetStd_O3VMRStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>O3VMRStd</value>
@@ -1426,9 +1333,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_CO</value>
         </Attribute>
@@ -1442,9 +1346,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>totCldH2OStd</value>
         </Attribute>
@@ -1455,9 +1356,6 @@
         <dimension name="amsu_idx" size="46"/>
     </Array>
     <Array name="AIRS_RetStd_glintlat">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>glintlat</value>
         </Attribute>
@@ -1470,9 +1368,6 @@
     <Array name="AIRS_RetStd_TAirMWOnlyStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>TAirMWOnlyStd</value>
@@ -1488,9 +1383,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_H2O</value>
         </Attribute>
@@ -1503,9 +1395,6 @@
     <Array name="AIRS_RetStd_CO_VMR_eff">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>CO_VMR_eff</value>
@@ -1521,9 +1410,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>CO_dof</value>
         </Attribute>
@@ -1536,9 +1422,6 @@
     <Array name="AIRS_RetStd_Qual_Temp_Profile_Top">
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_Temp_Profile_Top</value>
@@ -1553,9 +1436,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>clrolr</value>
         </Attribute>
@@ -1568,9 +1448,6 @@
     <Array name="AIRS_RetStd_clrolr_err">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>clrolr_err</value>
@@ -1585,9 +1462,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>RetQAFlag</value>
         </Attribute>
@@ -1600,9 +1474,6 @@
     <Array name="AIRS_RetStd_Latitude">
         <Attribute name="_FillValue" type="Float64">
             <value>-9999.0000000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>Latitude</value>
@@ -1617,9 +1488,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>TCldTopStdErr</value>
         </Attribute>
@@ -1633,9 +1501,6 @@
     <Array name="AIRS_RetStd_totO3StdErr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>totO3StdErr</value>
@@ -1660,9 +1525,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>CO_eff_press</value>
         </Attribute>
@@ -1677,9 +1539,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>TSurfAirErr</value>
         </Attribute>
@@ -1692,9 +1551,6 @@
     <Array name="AIRS_RetStd_H2OMMRStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>H2OMMRStd</value>
@@ -1710,9 +1566,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>PTropopause</value>
         </Attribute>
@@ -1725,9 +1578,6 @@
     <Array name="AIRS_RetStd_totH2OStdErr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>totH2OStdErr</value>
@@ -1742,9 +1592,6 @@
         <Attribute name="_FillValue" type="Int32">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>numCloud</value>
         </Attribute>
@@ -1758,9 +1605,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Press_bot_mid_bndry</value>
         </Attribute>
@@ -1773,9 +1617,6 @@
     <Array name="AIRS_RetStd_H2OMMRSat_liquid">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>H2OMMRSat_liquid</value>
@@ -1791,9 +1632,6 @@
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_Temp_Profile_Bot</value>
         </Attribute>
@@ -1806,9 +1644,6 @@
     <Array name="AIRS_RetStd_PGood">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>PGood</value>
@@ -1823,9 +1658,6 @@
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>nStd_mid_top_bndry</value>
         </Attribute>
@@ -1838,9 +1670,6 @@
     <Array name="AIRS_RetStd_totO3Std">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>totO3Std</value>
@@ -1855,9 +1684,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>satzen</value>
         </Attribute>
@@ -1870,9 +1696,6 @@
     <Array name="AIRS_RetStd_Qual_clrolr">
         <Attribute name="_FillValue" type="UInt16">
             <value>65534</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>Qual_clrolr</value>
@@ -1887,9 +1710,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>PBest</value>
         </Attribute>
@@ -1902,9 +1722,6 @@
     <Array name="AIRS_RetStd_GP_Height">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>GP_Height</value>
@@ -1920,9 +1737,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>CH4_total_column</value>
         </Attribute>
@@ -1935,9 +1749,6 @@
     <Array name="AIRS_RetStd_num_clear_spectral_indicator">
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>num_clear_spectral_indicator</value>
@@ -1952,9 +1763,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>solzen</value>
         </Attribute>
@@ -1967,9 +1775,6 @@
     <Array name="AIRS_RetStd_PSurfStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>PSurfStd</value>
@@ -1984,9 +1789,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>satazi</value>
         </Attribute>
@@ -1999,9 +1801,6 @@
     <Array name="AIRS_RetStd_CO_verticality">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>CO_verticality</value>
@@ -2017,9 +1816,6 @@
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>numHingeSurf</value>
         </Attribute>
@@ -2032,9 +1828,6 @@
     <Array name="AIRS_RetStd_H2OMMRStdErr">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>H2OMMRStdErr</value>
@@ -2050,9 +1843,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>CO_total_column</value>
         </Attribute>
@@ -2065,9 +1855,6 @@
     <Array name="AIRS_RetStd_emisIRStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>emisIRStd</value>
@@ -2083,9 +1870,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>Cloud_Resid_Ratio</value>
         </Attribute>
@@ -2098,9 +1882,6 @@
     <Array name="AIRS_RetStd_O3_verticality">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>O3_verticality</value>
@@ -2116,9 +1897,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>freqEmis</value>
         </Attribute>
@@ -2133,9 +1911,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>TSurfAir</value>
         </Attribute>
@@ -2148,9 +1923,6 @@
     <Array name="AIRS_RetStd_TCldTopStd">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>TCldTopStd</value>
@@ -2166,9 +1938,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>PCldTopStd</value>
         </Attribute>
@@ -2183,9 +1952,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>landFrac_err</value>
         </Attribute>
@@ -2198,9 +1964,6 @@
     <Array name="AIRS_RetStd_H2OMMRSat">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>H2OMMRSat</value>
@@ -2215,9 +1978,6 @@
     <Array name="AIRS_RetStd_CO_VMR_eff_err">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>CO_VMR_eff_err</value>
@@ -2495,58 +2255,34 @@
         <dimension name="AIRS_HingeSurf" size="100"/>
     </Array>
     <Array name="AIRS_RetStd_CH4Func">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>8</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_CH4Func" size="7"/>
     </Array>
     <Array name="AIRS_RetStd_COFunc">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>3</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_COFunc" size="9"/>
     </Array>
     <Array name="AIRS_RetStd_Cloud">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>7</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_Cloud" size="2"/>
     </Array>
     <Array name="AIRS_RetStd_H2OFunc">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>5</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_H2OFunc" size="11"/>
     </Array>
     <Array name="AIRS_RetStd_H2OPressureLay">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>6</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
     </Array>
     <Array name="AIRS_RetStd_O3Func">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>2</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_O3Func" size="9"/>
     </Array>
     <Array name="AIRS_RetStd_StdPressureLay">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>4</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_StdPressureLay" size="28"/>
     </Array>
     <Array name="AIRS_RetStd_StdPressureLev">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>9</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
     </Array>

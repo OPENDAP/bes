@@ -22,13 +22,11 @@ Attributes {
         String fullnamepath "/pres1";
     }
     lat {
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
         String origname "lat";
         String fullnamepath "/lat";
     }
     zdim {
-        Int32 _Netcdf4Dimid 1;
         String units "km";
         String origname "zdim";
         String fullnamepath "/zdim";

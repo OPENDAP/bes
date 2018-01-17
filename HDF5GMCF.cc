@@ -666,6 +666,19 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
 #endif
       remove_netCDF_internal_attributes(include_attr);
       if(include_attr == true) {
+            // We also need to remove the _nc3_strict from the root attributes
+            for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end();)  {
+
+                if((*ira)->name == "_nc3_strict") {
+                    delete((*ira));
+                    ira =this->root_attrs.erase(ira);
+                    //If we have other root attributes to remove, remove the break statement.
+                    break;
+                }
+                else {
+                    ++ira;
+                }
+            }
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
                 for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
@@ -701,6 +714,16 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
                             }
                         }
                     }
+                    else if((*ira)->name == "_Netcdf4Dimid") {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+#if 0
+                    else if((*ira)->name == "_nc3_strict") {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+#endif
                     else {
                         ++ira;
                     }

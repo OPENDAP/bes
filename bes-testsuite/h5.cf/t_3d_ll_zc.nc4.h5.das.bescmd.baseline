@@ -1,26 +1,19 @@
 Attributes {
-    HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
-    }
     mydata {
-        Int32 _Netcdf4Dimid 2;
         String origname "mydata";
         String fullnamepath "/mydata";
     }
     lat1 {
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
         String origname "lat1";
         String fullnamepath "/lat1";
     }
     lon1 {
-        Int32 _Netcdf4Dimid 1;
         String units "degrees_east";
         String origname "lon1";
         String fullnamepath "/lon1";
     }
     zc1 {
-        Int32 _Netcdf4Dimid 2;
         String units "km";
         String origname "zc1";
         String fullnamepath "/zc1";

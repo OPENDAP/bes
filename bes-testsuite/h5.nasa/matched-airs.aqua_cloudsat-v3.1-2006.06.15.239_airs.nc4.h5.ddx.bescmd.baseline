@@ -48,9 +48,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>CldFrcStdErr</value>
         </Attribute>
@@ -65,9 +62,6 @@
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>dust_flag</value>
         </Attribute>
@@ -80,9 +74,6 @@
     <Array name="AIRS_RetStd_latAIRS">
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latAIRS</value>
@@ -110,9 +101,6 @@
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>CldFrcStd</value>
         </Attribute>
@@ -126,9 +114,6 @@
     <Array name="AIRS_RetStd_spectral_clear_indicator">
         <Attribute name="_FillValue" type="Int16">
             <value>-9999</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>spectral_clear_indicator</value>
@@ -3346,79 +3331,46 @@
         <dimension name="AIRS_Radiances_Channel_L1B_AIRS_Science" size="2378"/>
     </Array>
     <Array name="AIRS_RetStd_CH4Func">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>7</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_CH4Func" size="7"/>
     </Array>
     <Array name="AIRS_RetStd_COFunc">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>2</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_COFunc" size="9"/>
     </Array>
     <Array name="AIRS_RetStd_Cloud">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>6</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_Cloud" size="2"/>
     </Array>
     <Array name="AIRS_RetStd_H2OFunc">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>4</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_H2OFunc" size="11"/>
     </Array>
     <Array name="AIRS_RetStd_H2OPressureLay">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>5</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
     </Array>
     <Array name="AIRS_RetStd_O3Func">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_O3Func" size="9"/>
     </Array>
     <Array name="AIRS_RetStd_StdPressureLay">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>3</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_StdPressureLay" size="28"/>
     </Array>
     <Array name="AIRS_RetStd_StdPressureLev">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>8</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
     </Array>
     <Array name="AIRS_VIS_Radiances_Channel_L1B_VIS_Science">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>11</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_VIS_Radiances_Channel_L1B_VIS_Science" size="4"/>
     </Array>
     <Array name="AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>10</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science" size="9"/>
     </Array>
     <Array name="AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>12</value>
-        </Attribute>
         <Float32/>
         <dimension name="AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science" size="8"/>
     </Array>

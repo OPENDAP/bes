@@ -42,12 +42,8 @@ Attributes {
         String fullnamepath "/g1/pres2";
     }
     g1_dim1 {
-        Int32 _Netcdf4Dimid 2;
         String origname "dim1";
         String fullnamepath "/g1/dim1";
-    }
-    g2_dim1 {
-        Int32 _Netcdf4Dimid 3;
     }
     latitude {
         String origname "latitude";

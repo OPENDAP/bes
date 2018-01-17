@@ -1,14 +1,10 @@
 Attributes {
-    HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
-    }
     mydata {
         String origname "mydata";
         String fullnamepath "/mydata";
         String coordinates "lat lon pre";
     }
     pre {
-        Int32 _Netcdf4Dimid 2;
         String units "hPa";
         String origname "pre";
         String fullnamepath "/pre";

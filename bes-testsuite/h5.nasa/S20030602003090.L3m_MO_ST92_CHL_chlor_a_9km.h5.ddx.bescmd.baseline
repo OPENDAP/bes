@@ -340,9 +340,6 @@
         <dimension name="eightbitcolor" size="256"/>
     </Array>
     <Array name="columns">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_east</value>
         </Attribute>
@@ -350,23 +347,14 @@
         <dimension name="columns" size="4320"/>
     </Array>
     <Array name="eightbitcolor">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>3</value>
-        </Attribute>
         <Float32/>
         <dimension name="eightbitcolor" size="256"/>
     </Array>
     <Array name="rgb">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>2</value>
-        </Attribute>
         <Float32/>
         <dimension name="rgb" size="3"/>
     </Array>
     <Array name="rows">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
         </Attribute>

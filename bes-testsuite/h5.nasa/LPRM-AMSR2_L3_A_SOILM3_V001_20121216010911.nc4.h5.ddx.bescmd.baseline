@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_GLOBAL" type="Container">
-        <Attribute name="_nc3_strict" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="Conventions" type="String">
             <value>CF-1.0</value>
         </Attribute>
@@ -14,9 +11,6 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <value>Longitude Latitude</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>mask</value>
@@ -43,9 +37,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>opt_depth_c2</value>
@@ -76,9 +67,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>frequency_map</value>
         </Attribute>
@@ -107,9 +95,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>soil_moisture_c2</value>
@@ -140,9 +125,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>soil_moisture_c1</value>
         </Attribute>
@@ -172,9 +154,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>soil_moisture_c2_error</value>
         </Attribute>
@@ -201,9 +180,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>opt_depth_c1</value>
         </Attribute>
@@ -226,9 +202,6 @@
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
             <value>0.0000000000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>scantime</value>
@@ -255,9 +228,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>opt_depth_x</value>
@@ -288,9 +258,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>soil_moisture_c1_error</value>
         </Attribute>
@@ -319,9 +286,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>ts</value>
@@ -352,9 +316,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>soil_moisture_x</value>
         </Attribute>
@@ -384,9 +345,6 @@
         <Attribute name="add_offset" type="Float32">
             <value>0.000000000</value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>soil_moisture_x_error</value>
         </Attribute>
@@ -398,9 +356,6 @@
         <dimension name="Latitude" size="720"/>
     </Array>
     <Array name="Latitude">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>1</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
         </Attribute>
@@ -426,9 +381,6 @@
         <dimension name="Latitude" size="720"/>
     </Array>
     <Array name="Longitude">
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <value>0</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_east</value>
         </Attribute>

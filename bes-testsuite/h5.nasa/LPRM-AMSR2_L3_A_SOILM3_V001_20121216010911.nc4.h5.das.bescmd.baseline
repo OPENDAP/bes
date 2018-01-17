@@ -1,12 +1,10 @@
 Attributes {
     HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
         String Conventions "CF-1.0";
     }
     mask {
         String long_name "Bit Mask";
         String coordinates "Longitude Latitude";
-        Int32 _Netcdf4Dimid 0;
         String origname "mask";
         String fullnamepath "/mask";
     }
@@ -16,7 +14,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.009999999776;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "opt_depth_c2";
         String fullnamepath "/opt_depth_c2";
     }
@@ -27,7 +24,6 @@ Attributes {
         Int16 _FillValue -1;
         Float32 scale_factor 0.1000000015;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "frequency_map";
         String fullnamepath "/frequency_map";
     }
@@ -38,7 +34,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 1.000000000;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "soil_moisture_c2";
         String fullnamepath "/soil_moisture_c2";
     }
@@ -49,7 +44,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 1.000000000;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "soil_moisture_c1";
         String fullnamepath "/soil_moisture_c1";
     }
@@ -60,7 +54,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.009999999776;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "soil_moisture_c2_error";
         String fullnamepath "/soil_moisture_c2_error";
     }
@@ -70,7 +63,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.009999999776;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "opt_depth_c1";
         String fullnamepath "/opt_depth_c1";
     }
@@ -79,7 +71,6 @@ Attributes {
         String units "seconds since 1993-01-01 00:00:00";
         String coordinates "Longitude Latitude";
         Float64 _FillValue 0.0000000000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "scantime";
         String fullnamepath "/scantime";
     }
@@ -89,7 +80,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.009999999776;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "opt_depth_x";
         String fullnamepath "/opt_depth_x";
     }
@@ -100,7 +90,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.009999999776;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "soil_moisture_c1_error";
         String fullnamepath "/soil_moisture_c1_error";
     }
@@ -111,7 +100,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.1000000015;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "ts";
         String fullnamepath "/ts";
     }
@@ -122,7 +110,6 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 1.000000000;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "soil_moisture_x";
         String fullnamepath "/soil_moisture_x";
     }
@@ -133,12 +120,10 @@ Attributes {
         Int16 _FillValue -32767;
         Float32 scale_factor 0.009999999776;
         Float32 add_offset 0.000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "soil_moisture_x_error";
         String fullnamepath "/soil_moisture_x_error";
     }
     Latitude {
-        Int32 _Netcdf4Dimid 1;
         String units "degrees_north";
         Float32 scale_factor 1.000000000;
         Float32 add_offset 0.000000000;
@@ -148,7 +133,6 @@ Attributes {
         String fullnamepath "/Latitude";
     }
     Longitude {
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_east";
         Float32 scale_factor 1.000000000;
         Float32 add_offset 0.000000000;

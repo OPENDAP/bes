@@ -1,6 +1,5 @@
 Attributes {
     HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
         String Conventions "CF-1.0";
     }
     res_c2 {

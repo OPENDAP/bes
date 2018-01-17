@@ -2225,6 +2225,16 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                     }
 
                 }
+                else if((*ira)->name == "_Netcdf4Dimid") {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                }
+#if 0
+                else if((*ira)->name == "_nc3_strict") {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                }
+#endif
                 else {
                     ++ira;
                 }
