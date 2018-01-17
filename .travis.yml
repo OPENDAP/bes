@@ -76,7 +76,7 @@ jobs:
   include:
     - stage: build
 #     script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
-#    - # stage name not required, will continue to use `test`
+#    - # This comment is needed; I don't kow why, but without it only one job runs. jhrg 
       script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
 
 
@@ -93,6 +93,6 @@ jobs:
 # and the <secret> is the 'travis' user's password on www.opendap.org.
 
 after_script:
-   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
    - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
    - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
