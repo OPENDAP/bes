@@ -75,8 +75,8 @@ before_script:
 jobs:
   include:
     - stage: build
-#     script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
-#    - # This comment is needed; I don't kow why, but without it only one job runs. jhrg 
+      script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
+    - # This comment is needed; I don't kow why, but without it only one job runs. jhrg 
       script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
 
 
