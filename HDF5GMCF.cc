@@ -673,8 +673,18 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
                     delete((*ira));
                     ira =this->root_attrs.erase(ira);
                     //If we have other root attributes to remove, remove the break statement.
-                    break;
+                    //break;
                 }
+                else if((*ira)->name == "_NCProperties") {
+                    delete((*ira));
+                    ira =this->root_attrs.erase(ira);
+                }
+#if 0
+                else if((*ira)->name == "_nc3_strict") {
+                    delete((*ira));
+                    ira =this->root_attrs.erase(ira);
+                }
+#endif
                 else {
                     ++ira;
                 }
