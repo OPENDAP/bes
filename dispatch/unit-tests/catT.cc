@@ -365,7 +365,7 @@ public:
             CPPUNIT_ASSERT("Correctly caught exception");
         }
 
-        DBG(cerr << "manipulate non-existant catalog" << endl);
+        DBG(cerr << "manipulate non-existent catalog" << endl);
         BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("dummy");
         CPPUNIT_ASSERT(catobj == 0);
 

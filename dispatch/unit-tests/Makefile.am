@@ -53,7 +53,7 @@ endif
 # created when tests are run. jhrg 5/13/07
 CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z
 
-EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini \
+EXTRA_DIST = $(CACHE) bad_keys1.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \
 	keys_test_include.ini keys_test_m1.ini \
 	keys_test_m2.ini keys_test_m3.ini \
@@ -76,7 +76,8 @@ CLEANFILES = *.log *.sum real*
 #test_config.h: test_config.h.in Makefile
 #	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
 
-test_config.h: test_config.h.in Makefile
+# Changed test_config.h.in tp $(srcdir)/test_config.h.in. jhrg 1/21/18
+test_config.h: $(srcdir)/test_config.h.in Makefile
 	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 

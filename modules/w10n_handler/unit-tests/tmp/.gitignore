@@ -1,5 +1,0 @@
-# Ignore everything in this directory; this hack enables git to track
-# and fetch, etc., an otherwise empty directory.
-*
-# Except this file
-!.gitignore

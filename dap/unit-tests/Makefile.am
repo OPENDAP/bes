@@ -25,27 +25,44 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
+# Don't install test_config.h
 noinst_HEADERS = test_config.h
+# Build it first for the all, check and install targets. jhrg 1/20/18
+BUILT_SOURCES = test_config.h
 
-noinst_DATA = bes.conf
+# Adding this here ensures the directory is made at runtime and in the
+# build directory (I think - check this). jhrg 1/19/18
+noinst_DATA = tmp bes.conf
+
+tmp:
+	test -d tmp || mkdir tmp
 
 DIRS_EXTRA = response_cache input-files
 
 EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 
-CLEANFILES = testout .dodsrc  *.gcda *.gcno
+CLEANFILES = testout test_config.h .dodsrc 
 
 DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt bes.conf bes.log
 
 BES_CONF_IN = bes.conf.in
 
+# Build this here and not in configure to ensure that it is not
+# included in the tar ball built for distribution. Doing so breaks
+# distcheck and the source distribution tar ball. jhrg 1/20/18
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	sed -e "s%[@]srcdir[@]%${srcdir}%" \
+	    -e "s%[@]builddir[@]%${builddir}%" \
+	    -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%${abs_builddir}%" $< > test_config.h
+
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
-bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 ############################################################################
 # Unit Tests
@@ -81,12 +98,14 @@ FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunction
 ../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o 
 FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(AM_LDADD)
 
+VPATH = ..
+
 ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
-ObjMemCacheTest_OBJS = ../ObjMemCache.o
+ObjMemCacheTest_OBJS = ObjMemCache.o
 ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
-TemporaryFileTest_OBJS = ../TempFile.o
+TemporaryFileTest_OBJS = TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)

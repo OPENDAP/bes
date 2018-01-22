@@ -786,7 +786,6 @@ AC_CONFIG_FILES([Makefile
 		 
 		 dap/Makefile
 		 dap/unit-tests/Makefile
-		 dap/unit-tests/test_config.h
 		 dap/tests/Makefile
 		 dap/tests/atlocal
 
@@ -862,30 +861,30 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/freeform_handler/tests/atlocal
     modules/freeform_handler/FFND/Makefile
 
-	modules/xml_data_handler/Makefile
+    modules/xml_data_handler/Makefile
     modules/xml_data_handler/unit-tests/Makefile
     modules/xml_data_handler/unit-tests/test_config.h
     modules/xml_data_handler/tests/Makefile
     modules/xml_data_handler/tests/atlocal
     
     modules/netcdf_handler/Makefile
-	modules/netcdf_handler/tests/Makefile 
-	modules/netcdf_handler/tests/atlocal 
+    modules/netcdf_handler/tests/Makefile 
+    modules/netcdf_handler/tests/atlocal 
 	
-	modules/fileout_netcdf/Makefile 	
+    modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 
 	
-	modules/gateway_module/Makefile 
-	modules/gateway_module/tests/Makefile 
-	modules/gateway_module/tests/atlocal 
-	
-	modules/fileout_gdal/Makefile
-	modules/fileout_gdal/tests/Makefile 
-	modules/fileout_gdal/tests/atlocal 
-	
-	modules/fits_handler/Makefile
+    modules/gateway_module/Makefile 
+    modules/gateway_module/tests/Makefile 
+    modules/gateway_module/tests/atlocal 
+
+    modules/fileout_gdal/Makefile
+    modules/fileout_gdal/tests/Makefile 
+    modules/fileout_gdal/tests/atlocal 
+
+    modules/fits_handler/Makefile
     modules/fits_handler/tests/atlocal
     modules/fits_handler/tests/Makefile
     
@@ -911,24 +910,23 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/ugrid_functions/Makefile 
     modules/ugrid_functions/unit-tests/Makefile
     modules/ugrid_functions/unit-tests/test_config.h
-	modules/ugrid_functions/tests/Makefile 
-	modules/ugrid_functions/tests/atlocal
+    modules/ugrid_functions/tests/Makefile 
+    modules/ugrid_functions/tests/atlocal
         
-	modules/w10n_handler/Makefile 
-	modules/w10n_handler/unit-tests/Makefile
-	modules/w10n_handler/unit-tests/test_config.h
-	modules/w10n_handler/tests/Makefile 
-	modules/w10n_handler/tests/atlocal])
+    modules/w10n_handler/Makefile 
+    modules/w10n_handler/unit-tests/Makefile
+    modules/w10n_handler/tests/Makefile 
+    modules/w10n_handler/tests/atlocal])
         
     dnl Move these into the autotest.at files using an autotest option.
-	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
-		[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
+	[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
 		
-	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
-		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
+    AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
+	[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
-	AC_CONFIG_FILES([modules/fits_handler/tests/generate_metadata_baseline.sh],
-	   [chmod +x modules/fits_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/fits_handler/tests/generate_metadata_baseline.sh],
+	[chmod +x modules/fits_handler/tests/generate_metadata_baseline.sh])
     AC_CONFIG_FILES([modules/fits_handler/tests/generate_data_baseline.sh],
         [chmod +x modules/fits_handler/tests/generate_data_baseline.sh])
 	

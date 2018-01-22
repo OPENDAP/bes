@@ -36,13 +36,14 @@
 
 #include "GetOpt.h"
 
-#include "test_config.h"
-#include "w10n_utils.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "util.h"
+
+#include "test_config.h"
+#include "w10n_utils.h"
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -78,7 +79,7 @@ public:
 
     // Called once before everything gets tested
     W10nTest() :
-        d_tmpDir(string(TEST_SRC_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/testdir")
+        d_tmpDir(string(TEST_BUILD_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/testdir")
     {
     }
 
@@ -257,6 +258,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = W10nTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
         }
     }
 

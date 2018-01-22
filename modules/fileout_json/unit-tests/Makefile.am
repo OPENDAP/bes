@@ -26,6 +26,8 @@ check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
+noinst_HEADERS = test_config.h
+
 ############################################################################
 # Unit Tests
 #
@@ -48,5 +50,3 @@ OBJS = ../FoDapJsonTransform.o ../fojson_utils.o ../FoInstanceJsonTransform.o
 
 FoJsonTest_SOURCES = FoJsonTest.cc
 FoJsonTest_LDADD = $(OBJS) $(LIBADD)
-
-noinst_HEADERS = test_config.h

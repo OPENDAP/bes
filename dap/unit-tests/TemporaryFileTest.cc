@@ -79,12 +79,9 @@ public:
     void setUp()
     {
         DBG2(cerr << __func__ << "() - BEGIN" << endl);
-        // Because TemporaryFile uses the BESLog macro ERROR we have to configure the BESKeys with the
-        // BES config file name so that there is a log file name... Oy.
-#if 0
-        string BES_CONF_FILE = TEST_SRC_DIR;
-        BES_CONF_FILE.append("/bes.conf");
-#endif
+        // Because TemporaryFile uses the BESLog macro ERROR we have
+        // to configure the BESKeys with the BES config file name so
+        // that there is a log file name... Oy.
         TheBESKeys::ConfigFile = BES_CONF_FILE;
         DBG(cerr << __func__ << "() - Temp file template is: '" << TEMP_FILE_TEMPLATE << "'" << endl);
         DBG2(cerr << __func__ << "() - END" << endl);
