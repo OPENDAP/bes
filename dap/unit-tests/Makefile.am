@@ -32,12 +32,15 @@ BUILT_SOURCES = test_config.h
 
 # Adding this here ensures the directory is made at runtime and in the
 # build directory (I think - check this). jhrg 1/19/18
-noinst_DATA = tmp bes.conf
+noinst_DATA = response_cache tmp bes.conf
 
 tmp:
 	test -d tmp || mkdir tmp
 
-DIRS_EXTRA = response_cache input-files
+response_cache:
+	test -d response_cache  || mkdir response_cache 
+	
+DIRS_EXTRA = input-files
 
 EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 
@@ -47,14 +50,11 @@ DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt bes.conf bes.log
 
 BES_CONF_IN = bes.conf.in
 
-# Build this here and not in configure to ensure that it is not
-# included in the tar ball built for distribution. Doing so breaks
-# distcheck and the source distribution tar ball. jhrg 1/20/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	sed -e "s%[@]srcdir[@]%${srcdir}%" \
-	    -e "s%[@]builddir[@]%${builddir}%" \
-	    -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" \
-	    -e "s%[@]abs_builddir[@]%${abs_builddir}%" $< > test_config.h
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
