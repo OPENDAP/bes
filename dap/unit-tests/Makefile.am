@@ -40,13 +40,14 @@ tmp:
 response_cache:
 	test -d response_cache  || mkdir response_cache 
 	
-DIRS_EXTRA = input-files
+clean-local:
+	-rm -rf tmp response_cache
+	
+EXTRA_DIST = input-files test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 
-EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
+CLEANFILES = testout test_config.h bes.conf .dodsrc 
 
-CLEANFILES = testout test_config.h .dodsrc 
-
-DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt bes.conf bes.log
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log
 
 BES_CONF_IN = bes.conf.in
 

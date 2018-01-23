@@ -60,7 +60,7 @@ using namespace std;
 
 const std::string CACHE_PREFIX = string("flc_");
 const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
-const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_BUILD_DIR, "cache");
 
 const std::string LOCK_TEST_FILE = std::string("lock_test");
 
@@ -222,7 +222,7 @@ int main(int argc, char*argv[])
             break;
 
         case 'c':
-            cache_dir = BESUtil::assemblePath(TEST_SRC_DIR, string(getopt.optarg));
+            cache_dir = BESUtil::assemblePath(TEST_BUILD_DIR, string(getopt.optarg));
             DBG(cerr << __func__ << "() - use cache dir " << cache_dir << endl);
             break;
 

@@ -16,18 +16,18 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-DISTCLEANFILES = test_config.h tmp
+DISTCLEANFILES =
 
-CLEANFILES = *.dbg *.log tmp/*
+CLEANFILES = *.dbg *.log test_config.h
 
-EXTRA_DIST = test_config.h.in baselines testdir
+EXTRA_DIST = test_config.h.in baselines
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
 # Adding the tmp dir here causes make to put it in the buld dir
-noinst_DATA = tmp
+noinst_DATA = tmp testdir
 
 BUILT_SOURCES = test_config.h
 
@@ -44,6 +44,18 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 
 tmp:
 	test -d tmp || mkdir tmp
+	
+# If 'testdir' does not exist (i.e., were in $builddir), copy it here.
+# tar (used to make the source dist) dereferences symbolic links, so
+# we make them this way to get distcheck to work.
+testdir:
+	test -d testdir || mkdir -p testdir/nc
+	(cd testdir/nc && touch testfile.txt && ln -s testfile.txt link_to_testfile.txt && ln -s nothing bad_link)
+	(cd testdir && ln -s nc link_to_nc)
+	
+clean-local:
+	-rm -rf tmp
+	-rm -rf testdir
 
 ############################################################################
 # Unit Tests

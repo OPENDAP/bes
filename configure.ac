@@ -836,6 +836,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/w10n_handler/tests/Makefile 
     modules/w10n_handler/tests/atlocal])
         
+    AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
     

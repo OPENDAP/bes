@@ -79,7 +79,8 @@ public:
 
     // Called once before everything gets tested
     W10nTest() :
-        d_tmpDir(string(TEST_BUILD_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/testdir")
+        // both tmp and testdir are generated and thus in the build dir. jhrg 1/23/18
+        d_tmpDir(string(TEST_BUILD_DIR) + "/tmp"), d_testDir(string(TEST_BUILD_DIR) + "/testdir")
     {
     }
 
