@@ -98,14 +98,12 @@ FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunction
 ../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o 
 FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(AM_LDADD)
 
-VPATH = ..
-
 ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
-ObjMemCacheTest_OBJS = ObjMemCache.o
+ObjMemCacheTest_OBJS = ../ObjMemCache.o
 ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
-TemporaryFileTest_OBJS = TempFile.o
+TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)

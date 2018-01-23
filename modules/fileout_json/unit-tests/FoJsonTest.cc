@@ -96,7 +96,7 @@ public:
 
     // Called once before everything gets tested
     FoJsonTest() :
-        d_tmpDir(string(TEST_SRC_DIR) + "/tmp")
+        d_tmpDir(string(TEST_BUILD_DIR) + "/tmp")
     {
         DBG(cerr << "FoJsonTest - Constructor" << endl);
     }

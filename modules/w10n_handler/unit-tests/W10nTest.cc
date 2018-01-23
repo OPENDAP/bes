@@ -178,6 +178,7 @@ CPPUNIT_TEST_SUITE( W10nTest );
         eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
+#if 0
     void eval_w10_path_to_forbidden_bad_linked_file_with_variable()
     {
         string w10nResourceId = "/nc/bad_link/sst/";
@@ -193,6 +194,8 @@ CPPUNIT_TEST_SUITE( W10nTest );
             CPPUNIT_ASSERT(true);
         }
     }
+#endif
+
     void eval_w10_forbidden_up_traversal_path()
     {
         string w10nResourceId = "/nc/../../../sst/";

@@ -20,13 +20,30 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = *.dbg *.log tmp/*
 
-EXTRA_DIST = baselines test_config.h.in tmp
+EXTRA_DIST = baselines test_config.h.in
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
+# Adding the tmp dir here causes make to put it in the buld dir
+noinst_DATA = tmp
+
+BUILT_SOURCES = test_config.h
+
 noinst_HEADERS = test_config.h
+
+# This way of building the header ensures it's in the build dir and that there
+# are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
+# in them in certain circumstances. jhrg 1/21/18
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+tmp:
+	test -d tmp || mkdir tmp
 
 ############################################################################
 # Unit Tests
