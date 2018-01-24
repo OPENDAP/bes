@@ -71,14 +71,14 @@ before_script:
 #
 # Added 'build' stage with two parallel scripts. This is intended
 # to spped the build up. We could add a second stage for deployment.
-# jhrg 12/20/17 
+# Below, both scripts are run in parallel as part of the 'build'
+# stage. jhrg 12/20/17 
 jobs:
   include:
     - stage: build
       script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7; fi
     - # This comment is needed; I don't kow why, but without it only one job runs. jhrg 
       script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
-
 
 # This shows how to copy the results of running the tests to a know
 # host. We're not doing this now, but it might be useful. In addition
