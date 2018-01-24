@@ -29,9 +29,17 @@ TESTS = $(UNIT_TESTS)
 
 EXTRA_DIST = testsuite test_config.h.in
 
-CLEANFILES = 
+CLEANFILES = test_config.h
 
-DISTCLEANFILES = test_config.h
+DISTCLEANFILES = 
+
+BUILT_SOURCES = test_config.h
+
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 ############################################################################
 # Unit Tests
