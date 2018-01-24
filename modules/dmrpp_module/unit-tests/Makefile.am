@@ -43,13 +43,11 @@ BUILT_SOURCES = test_config.h
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_top_abs_srcdir=`echo ${top_abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
-	    -e "s%[@]top_abs_srcdir[@]%$${mod_top_abs_srcdir}%" \
+	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
-
-
 
 ############################################################################
 # Unit Tests
