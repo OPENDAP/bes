@@ -3,8 +3,8 @@
 // This file is part of the BES, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2016 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,17 +22,18 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef DAP_BESHANDLERUTIL_H_
-#define DAP_BESHANDLERUTIL_H_
+#ifndef DAP_TEMPFILE_H_
+#define DAP_TEMPFILE_H_
 
 #include <unistd.h>
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace bes {
 
-const std::string default_path_template = "TMP_DIR/opendapXXXXXX";
+const std::string default_tmp_file_template = "TMP_DIR/opendapXXXXXX";
 
 /**
  * @brief Get a new temporary file
@@ -42,44 +43,36 @@ const std::string default_path_template = "TMP_DIR/opendapXXXXXX";
  * class is to build temporary files that will be closed/deleted regardless
  * of how the caller exits - regularly or via an exception.
  */
-class TemporaryFile {
+class TempFile {
 private:
     int d_fd;
-    std::vector<char> d_name;
+    //std::vector<char> d_name;
+    std::string d_fname;
+    static std::map<std::string, int> *open_files;
+    static struct sigaction cached_sigpipe_handler;
 
 public:
+    static void sigpipe_handler(int signal);
     /**
      * @brief Build a temporary file using a default template.
      *
      * The temporary file will be in TMP_DIR (likely /tmp) and will have
      * a name like 'opendapXXXXXX' where the Xs are numbers or letters.
      */
-    TemporaryFile() {
-        TemporaryFile(default_path_template);
+    TempFile(): d_fd(0) {
+        TempFile(default_tmp_file_template);
     }
 
-    TemporaryFile(const std::string &path_template);
+    TempFile(const std::string &path_template);
+    ~TempFile();
 
-    ~TemporaryFile();
-
-#if 0
-    /**
-     * @brief Free the temporary file
-     *
-     * Close the open descriptor and delete (unlink) the file name.
-     */
-    ~TemporaryFile() {
-        close(d_fd);
-        unlink(&d_name[0]);
-    }
-#endif
     /** @return The temporary file's file descriptor */
     int get_fd() const { return d_fd; }
 
     /** @return The temporary file's name */
-    std::string get_name() const { return &d_name[0]; }
+    std::string get_name() const { return d_fname; }
 };
 
 } // namespace bes
 
-#endif /* DAP_BESHANDLERUTIL_H_ */
+#endif /* DAP_TEMPFILE_H_ */

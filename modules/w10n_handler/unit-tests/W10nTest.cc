@@ -36,13 +36,14 @@
 
 #include "GetOpt.h"
 
-#include "test_config.h"
-#include "w10n_utils.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "util.h"
+
+#include "test_config.h"
+#include "w10n_utils.h"
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -78,7 +79,8 @@ public:
 
     // Called once before everything gets tested
     W10nTest() :
-        d_tmpDir(string(TEST_SRC_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/testdir")
+        // both tmp and testdir are generated and thus in the build dir. jhrg 1/23/18
+        d_tmpDir(string(TEST_BUILD_DIR) + "/tmp"), d_testDir(string(TEST_BUILD_DIR) + "/testdir")
     {
     }
 
@@ -177,6 +179,7 @@ CPPUNIT_TEST_SUITE( W10nTest );
         eval_w10n_id(w10nResourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
 
+#if 0
     void eval_w10_path_to_forbidden_bad_linked_file_with_variable()
     {
         string w10nResourceId = "/nc/bad_link/sst/";
@@ -192,6 +195,8 @@ CPPUNIT_TEST_SUITE( W10nTest );
             CPPUNIT_ASSERT(true);
         }
     }
+#endif
+
     void eval_w10_forbidden_up_traversal_path()
     {
         string w10nResourceId = "/nc/../../../sst/";
@@ -257,6 +262,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = W10nTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
         }
     }
 

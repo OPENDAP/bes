@@ -52,7 +52,7 @@ using namespace libdap;
 #include <BESDapNames.h>
 #include <BESDataNames.h>
 #include <BESDebug.h>
-#include <BESHandlerUtil.h>
+#include <TempFile.h>
 #include <DapFunctionUtils.h>
 
 #include <TheBESKeys.h>
@@ -197,7 +197,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     }
 
     // This closes the file when it goes out of scope. jhrg 8/25/17
-    bes::TemporaryFile temp_file(GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX");
+    bes::TempFile temp_file(GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX");
 #if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.

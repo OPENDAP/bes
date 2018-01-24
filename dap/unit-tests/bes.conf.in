@@ -1,0 +1,5 @@
+# 
+# This bes.conf file sets the Bes Log file so we can deal with errors
+
+BES.LogName=./bes.log
+BES.LogVerbose=no

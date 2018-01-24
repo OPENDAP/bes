@@ -86,7 +86,8 @@ cccc:
 # big tar and lets us use the old target again, which means I don't
 # have to code the rpmbuild root into a target.
 dist-hook:
-	rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
+	-rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
+	-rm -rf `find $(distdir) -name 'test_config.h' `
 
 # Build linux RPMs
 
