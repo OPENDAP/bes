@@ -161,7 +161,7 @@ GMSPVar::GMSPVar(Var*var) {
 
 
 GMFile::GMFile(const char*path, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
-File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),ll2d_no_cv(false)
+File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),ll2d_no_cv(false),have_nc4_non_coord(false)
 {
 
 }
@@ -246,6 +246,10 @@ void GMFile::Update_Product_Type() throw(Exception) {
             this->product_type = General_Product;
         }
     }
+//#if 0
+    else if(General_Product == this->product_type)
+        Check_General_Product_Pattern();
+//#endif
 }
 
 void GMFile::Remove_Unneeded_Objects() throw(Exception) {
@@ -253,9 +257,32 @@ void GMFile::Remove_Unneeded_Objects() throw(Exception) {
     BESDEBUG("h5", "Coming to Remove_Unneeded_Objects()"<<endl);
     if(General_Product == this->product_type) {
         string file_path = this->path;
-//cerr<<"file path is "<<file_path <<endl;
         if(HDF5CFUtil::obtain_string_after_lastslash(file_path).find("OMPS-NPP")==0) 
             Remove_OMPSNPP_InputPointers();
+    }
+    if((General_Product == this->product_type) && (GENERAL_DIMSCALE == this->gproduct_pattern)) {
+        set<string> nc4_non_coord_set;
+        string nc4_non_coord="_nc4_non_coord_";
+        size_t nc4_non_coord_size= nc4_non_coord.size();
+        for (vector<Var *>::iterator irv = this->vars.begin();
+                                    irv != this->vars.end(); ++irv) {
+            if((*irv)->name.find(nc4_non_coord)==0) 
+                nc4_non_coord_set.insert((*irv)->name.substr(nc4_non_coord_size,(*irv)->name.size()-nc4_non_coord_size));
+            
+        }
+
+        for (vector<Var *>::iterator irv = this->vars.begin();
+                                    irv != this->vars.end();) {
+            if(nc4_non_coord_set.find((*irv)->name)!=nc4_non_coord_set.end()){
+                delete(*irv);
+                irv=this->vars.erase(irv);
+            }
+            else 
+                ++irv;
+        }
+
+        if(nc4_non_coord_set.size()!=0)
+            this->have_nc4_non_coord = true;
     }
 }
 
@@ -265,7 +292,6 @@ void GMFile::Remove_OMPSNPP_InputPointers() throw(Exception) {
     // We will see if we need this.
     for (vector<Group *>::iterator irg = this->groups.begin();
         irg != this->groups.end(); ) {
-//cerr<<"group path is "<<(*irg)->path <<endl;
         if((*irg)->path.find("/InputPointers")==0) {
             delete(*irg);
             irg = this->groups.erase(irg);
@@ -278,7 +304,6 @@ void GMFile::Remove_OMPSNPP_InputPointers() throw(Exception) {
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ) {
          if((*irv)->fullpath.find("/InputPointers")==0) {
-// cerr<<"var fullpath is "<<(*irv)->fullpath <<endl;
             delete(*irv);
             irv = this->vars.erase(irv);
 
@@ -827,6 +852,8 @@ void GMFile::Add_Dim_Name_OBPG_L3() throw(Exception) {
 
     BESDEBUG("h5", "Coming to Add_Dim_Name_OBPG_L3()"<<endl);
     // netCDF-4 like structure
+    // Note: We need to change the product type to netCDF-4 like product type and pattern.
+    Check_General_Product_Pattern();
     Add_Dim_Name_General_Product();
 }
 
@@ -1428,11 +1455,12 @@ void GMFile::Add_Dim_Name_General_Product()throw(Exception){
 
     BESDEBUG("h5", "Coming to Add_Dim_Name_General_Product()"<<endl);
     // Check attributes 
-    Check_General_Product_Pattern();
+    //Check_General_Product_Pattern();
 
     // This general product should follow the HDF5 dimension scale model. 
-    if (GENERAL_DIMSCALE == this->gproduct_pattern)
+    if (GENERAL_DIMSCALE == this->gproduct_pattern){
         Add_Dim_Name_Dimscale_General_Product();
+}
     // This general product has 2-D latitude,longitude
     else if (GENERAL_LATLON2D == this->gproduct_pattern)
         Add_Dim_Name_LatLon2D_General_Product();
@@ -6686,13 +6714,29 @@ void GMFile:: Remove_Unused_FakeDimVars() {
 
         // We need to handle unlimited dimensions
         //if(removed_fakedim_vars.size()!=0) {
-
-
         //}
     }
 
+}
 
+void GMFile::Rename_NC4_NonCoordVars() {
 
+    if(true == this->have_nc4_non_coord) {
+        string nc4_non_coord="_nc4_non_coord_";
+        size_t nc4_non_coord_size= nc4_non_coord.size();
+        for (vector<Var*>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); irv++) {
+            if((*irv)->name.find(nc4_non_coord)==0)
+                (*irv)->newname = (*irv)->newname.substr(nc4_non_coord_size,(*irv)->newname.size()-nc4_non_coord_size);
+        }
+ 
+        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+                 ircv != this->cvars.end();++ircv) {
+            if((*ircv)->name.find(nc4_non_coord)==0)
+                (*ircv)->newname = (*ircv)->newname.substr(nc4_non_coord_size,(*ircv)->newname.size()-nc4_non_coord_size);
+        }
+    }
+ 
 }
 // We will create some temporary coordinate variables. The resource allocoated
 // for these variables need to be released.

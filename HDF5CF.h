@@ -904,6 +904,9 @@ public:
     /// Unsupported datatype array may generate FakeDim. Remove them.
     void Remove_Unused_FakeDimVars();
 
+    /// Remove the _nc4_non_coord from the variable new names
+    void Rename_NC4_NonCoordVars();
+
     /// Update "product type" attributes for general HDF5 products
     void Update_Product_Type() throw (Exception);
 
@@ -1038,6 +1041,7 @@ private:
     //map<string,string>dimcvars_2dlatlon;
     bool iscoard;
     bool ll2d_no_cv;
+    bool have_nc4_non_coord;
 
 };
 

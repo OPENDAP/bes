@@ -168,6 +168,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
             f->Handle_Coor_Attr();
  
         f->Remove_Unused_FakeDimVars();
+        f->Rename_NC4_NonCoordVars();
     }
     catch (HDF5CF::Exception &e){
         if (f != NULL)
@@ -252,6 +253,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
             f->Handle_Grid_Mapping_Vars();
 
         f->Remove_Unused_FakeDimVars();
+
+        f->Rename_NC4_NonCoordVars();
     }
     catch (HDF5CF::Exception &e){
         if (f!= NULL)
