@@ -283,3 +283,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([eos5ps.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([OMPS-L3.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([OMPS-L3.h5.dds.bescmd])
 
+#Arctas-car - rename variables _nc4_non_coord_??? to ???
+AT_BESCMD_RESPONSE_TEST([Arctas-car.nc.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([Arctas-car.nc.h5.dds.bescmd])
+
