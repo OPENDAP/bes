@@ -91,7 +91,7 @@ void BESXMLInterface::build_data_request_plan()
 
         // XML_PARSE_NONET
         doc = xmlReadMemory(d_xml_document.c_str(), d_xml_document.size(), "" /* base URL */,
-        NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+                            NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == NULL) {
             string err = "Problem parsing the request xml document:\n";
@@ -114,8 +114,8 @@ void BESXMLInterface::build_data_request_plan()
 
         string root_name;
         string root_val;
-        map<string, string> props;
-        BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, props);
+        map<string, string> attributes;
+        BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, attributes);
         if (root_name != "request")
             throw BESSyntaxUserError(
                 string("The root element should be a request element, name is ").append((char *) root_element->name),
@@ -126,7 +126,7 @@ void BESXMLInterface::build_data_request_plan()
             __FILE__, __LINE__);
 
         // there should be a request id property with one value.
-        string &reqId = props[REQUEST_ID];
+        string &reqId = attributes[REQUEST_ID];
         if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
 
         d_dhi_ptr->data[REQUEST_ID] = reqId;
@@ -297,8 +297,7 @@ void BESXMLInterface::transmit_data()
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
-        VERBOSE(
-            /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
         if (BESISDEBUG(TIMING_LOG)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
@@ -334,8 +333,7 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            LOG(
-                /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            LOG(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
         }
     }
 }

@@ -161,7 +161,7 @@ bool BESCatalogUtils::include(const string &inQuestion) const {
 			string reg = *i_iter;
 			if (!reg.empty()) {
 				try {
-					// must match exactly, meaing result is = to length of string
+					// must match exactly, meaning result is = to length of string
 					// in question
 					BESRegex reg_expr(reg.c_str());
 					if (reg_expr.match(inQuestion.c_str(), inQuestion.length())
