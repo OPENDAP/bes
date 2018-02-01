@@ -42,11 +42,6 @@
 #include <list>
 #include <string>
 
-using std::map;
-using std::vector;
-using std::list;
-using std::string;
-
 #include "BESObj.h"
 #include "BESUtil.h"
 
@@ -55,63 +50,61 @@ class BESCatalogEntry;
 
 class BESCatalogUtils: public BESObj {
 private:
-	static map<string, BESCatalogUtils *> _instances;
+	static std::map<std::string, BESCatalogUtils *> _instances;
 
-	string _name;
-	string _root_dir;
-	list<string> _exclude;
-	list<string> _include;
+	std::string _name;
+	std::string _root_dir;
+	std::list<std::string> _exclude;
+	std::list<std::string> _include;
 	bool _follow_syms;
 
 public:
 	struct type_reg {
-		string type;
-		string reg;
+		std::string type;
+		std::string reg;
 	};
 private:
-	vector<type_reg> _match_list;
+	std::vector<type_reg> _match_list;
 
 	BESCatalogUtils() {
 	}
 
 	static void bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf);
 public:
-	BESCatalogUtils(const string &name);
+	BESCatalogUtils(const std::string &name);
 	virtual ~BESCatalogUtils() {}
 
-	const string & get_root_dir() const {
+	const std::string & get_root_dir() const {
 		return _root_dir;
 	}
 	bool follow_sym_links() const {
 		return _follow_syms;
 	}
-	virtual bool include(const string &inQuestion) const ;
-	virtual bool exclude(const string &inQuestion) const ;
+	virtual bool include(const std::string &inQuestion) const ;
+	virtual bool exclude(const std::string &inQuestion) const ;
 
-	typedef vector<type_reg>::const_iterator match_citer;
+	typedef std::vector<type_reg>::const_iterator match_citer;
 	BESCatalogUtils::match_citer match_list_begin() const ;
 	BESCatalogUtils::match_citer match_list_end() const ;
 
-	virtual unsigned int get_entries(DIR *dip, const string &fullnode,
-			const string &use_node, const string &coi, BESCatalogEntry *entry,
+	virtual unsigned int get_entries(DIR *dip, const std::string &fullnode,
+			const std::string &use_node, const std::string &coi, BESCatalogEntry *entry,
 			bool dirs_only);
 
 	static void display_entry(BESCatalogEntry *entry, BESInfo *info);
 
 	static void bes_add_stat_info(BESCatalogEntry *entry,
-			const string &fullnode);
+			const std::string &fullnode);
 
-	static bool isData(const string &inQuestion, const string &catalog,
-			list<string> &services);
+	static bool isData(const std::string &inQuestion, const std::string &catalog,
+			std::list<std::string> &services);
 
 	virtual void dump(ostream &strm) const ;
 
-	static BESCatalogUtils * Utils(const string &name);
+	static BESCatalogUtils * Utils(const std::string &name);
 
 	// Added because of reported memory leaks. jhrg 12/24/12
 	static void delete_all_catalogs();
-
-
 };
 
 #endif // S_BESCatalogUtils_h
