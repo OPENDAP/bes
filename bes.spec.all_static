@@ -131,7 +131,7 @@ chmod g+w $RPM_BUILD_ROOT%{beslogdir}
 mkdir -p $RPM_BUILD_ROOT%{bespiddir}
 chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
-mv $RPM_BUILD_ROOT%{_bindir}/bes-temfiles-conf %{_sysconfdir}/usr/lib/tempfiles.d/bes.conf
+mv $RPM_BUILD_ROOT%{_bindir}/bes-tempfiles-conf %{_sysconfdir}/usr/lib/tmpfiles.d/bes.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
