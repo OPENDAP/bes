@@ -64,7 +64,6 @@ void SetContextsResponseHandler::execute(BESDataHandlerInterface &dhi)
         throw BESSyntaxUserError( "setContexts: No context names found in the data.", __FILE__, __LINE__);
 
     BESDEBUG("besxml", "dhi.data[CONTEXT_NAMES]: " << names << endl);
-    cerr << "dhi.data[CONTEXT_NAMES]: " << names << endl;
 
     istringstream iss(names);
     string name;
@@ -81,7 +80,6 @@ void SetContextsResponseHandler::execute(BESDataHandlerInterface &dhi)
          name.erase(0, sizeof(CONTEXT_PREFIX)-1);   // The constant includes the two double quotes
 
          BESDEBUG("besxml", "BESContextManager::TheManager()->set_context(" << name << ", " << value << ")" << endl);
-         cerr << "BESContextManager::TheManager()->set_context(" << name << ", " << value << ")" << endl;
 
          BESContextManager::TheManager()->set_context(name, value);
 
@@ -89,13 +87,10 @@ void SetContextsResponseHandler::execute(BESDataHandlerInterface &dhi)
      }
 #endif
 
-    // This is used by the Exception Manager, but nowhere else. jhtg 2/8/18
-    dhi.action_name = SET_CONTEXTS_STR;
-
     // This would be used in the transmit() method below to send a response back to the
     // BES's client, if this command returned data. Since it does not, this can be NULL
     // and the transmit() method can be a no-op. jhrg 2/8/18
-    _response = 0;
+    d_response_object = 0;
 }
 
 /** @brief For the setContexts command, this is a no-op

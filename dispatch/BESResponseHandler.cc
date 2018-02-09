@@ -35,29 +35,29 @@
 #include "BESRequestHandler.h"
 
 BESResponseHandler::BESResponseHandler(const string &name) :
-    _response_name(name), _response(0)
+    d_response_name(name), d_response_object(0)
 {
 }
 
 BESResponseHandler::~BESResponseHandler()
 {
-    if (_response) {
-        delete _response;
+    if (d_response_object) {
+        delete d_response_object;
     }
-    _response = 0;
+    d_response_object = 0;
 }
 
 BESResponseObject *
 BESResponseHandler::get_response_object()
 {
-    return _response;
+    return d_response_object;
 }
 
 BESResponseObject *
 BESResponseHandler::set_response_object(BESResponseObject *new_response)
 {
-    BESResponseObject *curr_obj = _response;
-    _response = new_response;
+    BESResponseObject *curr_obj = d_response_object;
+    d_response_object = new_response;
     return curr_obj;
 }
 
@@ -72,11 +72,11 @@ void BESResponseHandler::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESResponseHandler::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "response name: " << _response_name << endl;
-    if (_response) {
+    strm << BESIndent::LMarg << "response name: " << d_response_name << endl;
+    if (d_response_object) {
         strm << BESIndent::LMarg << "response object:" << endl;
         BESIndent::Indent();
-        _response->dump(strm);
+        d_response_object->dump(strm);
         BESIndent::UnIndent();
     }
     else {

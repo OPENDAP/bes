@@ -99,8 +99,6 @@ SRCS = BESInterface.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc
 	
-# SetContextsResponseHandler.cc
-
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
 	BESNames.h \
@@ -156,8 +154,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h
 	
-# SetContextsResponseHandler.h
-
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
 C4_XM=$(C4_dir)/dispatch.xml

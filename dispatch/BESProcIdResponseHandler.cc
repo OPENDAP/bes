@@ -62,7 +62,7 @@ void
 BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
-    _response = info ;
+    d_response_object = info ;
     dhi.action_name = PROCESS_RESPONSE_STR ;
     info->begin_response( PROCESS_RESPONSE_STR, dhi ) ;
     char mypid[12] ;
@@ -89,9 +89,9 @@ void
 BESProcIdResponseHandler::transmit( BESTransmitter *transmitter,
                                   BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;

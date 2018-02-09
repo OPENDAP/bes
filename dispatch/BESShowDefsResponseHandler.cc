@@ -61,7 +61,7 @@ void
 BESShowDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
-    _response = info ;
+    d_response_object = info ;
     dhi.action_name = SHOWDEFS_RESPONSE_STR ;
     info->begin_response( SHOWDEFS_RESPONSE_STR, dhi ) ;
     BESDefinitionStorageList::TheList()->show_definitions( *info ) ;
@@ -84,9 +84,9 @@ void
 BESShowDefsResponseHandler::transmit( BESTransmitter *transmitter,
                                BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;

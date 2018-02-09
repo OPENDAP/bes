@@ -67,10 +67,6 @@ using std::endl ;
 
 #include "BESSetContextResponseHandler.h"
 #include "BESShowContextResponseHandler.h"
-
-#include "SetContextsNames.h"
-#include "SetContextsResponseHandler.h"
-
 #include "BESShowErrorResponseHandler.h"
 
 #include "BESTransmitterNames.h"
@@ -84,8 +80,6 @@ using std::endl ;
 #include "BESXMLInfo.h"
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
-
-using namespace bes;
 
 int
 BESDefaultModule::initialize(int, char**)
@@ -148,8 +142,12 @@ BESDefaultModule::initialize(int, char**)
     BESDEBUG( "bes", "    adding " << SET_CONTEXT << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler( SET_CONTEXT, BESSetContextResponseHandler::SetContextResponseBuilder ) ;
 
+#if 0
+    // Moved this to the xmlcommand code that loads the commands. It can be in either place, but
+    // it's easier to see how the commands are built if they are in there. jhrg 2/9/18
     BESDEBUG( "bes", "    adding " << SET_CONTEXTS_ACTION << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler(SET_CONTEXTS_ACTION, SetContextsResponseHandler::SetContextsResponseBuilder ) ;
+#endif
 
     BESDEBUG( "bes", "    adding " << SHOW_CONTEXT << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler( SHOW_CONTEXT, BESShowContextResponseHandler::ShowContextResponseBuilder ) ;

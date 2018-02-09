@@ -33,13 +33,17 @@
 
 #include "SetContextsNames.h"
 
+#if !USE_CONTEXTS_RESPONSE_HANDLER
+#include "BESContextManager.h"
+#endif
+
 using namespace bes;
 using namespace std;
 
 /** @brief parse a setContexts command.
  *
  * The form of this command is:
- * ~~~
+ * ~~~{.xml}
  * <setContexts>
  *     <context name="n">value</context>
  *     ...
@@ -96,6 +100,7 @@ void XMLSetContextsCommand::parse_request(xmlNode *node)
 
             BESDEBUG("besxml", "d_xmlcmd_dhi.data[" << context_key << "] = " << value << endl);
 #else
+            BESDEBUG("besxml", "In " << __func__ << " BESContextManager::TheManager()->set_context(" << name << ", " << value << ")" << endl);
             BESContextManager::TheManager()->set_context(attributes["name"], value);
 #endif
         }
@@ -113,7 +118,7 @@ void XMLSetContextsCommand::parse_request(xmlNode *node)
     // Set action_name here because the NULLResponseHandler (aka NULL_ACTION) won't know
     // which command used it (current ResponseHandlers set this because there is a 1-to-1
     // correlation between XMLCommands and ResponseHanlders). jhrg 2/8/18
-    dhi.action_name = SET_CONTEXTS_STR;
+    d_xmlcmd_dhi.action_name = SET_CONTEXTS_STR;
     d_xmlcmd_dhi.action = NULL_ACTION;
 #endif
 

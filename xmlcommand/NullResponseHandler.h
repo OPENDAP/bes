@@ -50,14 +50,43 @@ public:
     NullResponseHandler(const string &name): BESResponseHandler(name) { }
     virtual ~NullResponseHandler(void) { }
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    /** @brief Minimal execution
+     *
+     * Set the ResponseObject for this ResponseHandler to null.
+     *
+     * @param dhi structure that holds request and response information
+     * @throws BESSyntaxUserError if no context name was given object
+     */
+    virtual void execute(BESDataHandlerInterface &/*dhi*/) {
+        // This would be used in the transmit() method below to send a response back to the
+        // BES's client, if this command returned data. Since it does not, this can be NULL
+        // and the transmit() method can be a no-op. jhrg 2/8/18
+        d_response_object = 0;
+    }
 
-    virtual void dump(ostream &strm) const;
+    /** @brief This is a no-op
+     *
+     * The NullResponseHandler does not transmit a response. Errors are returned using
+     * the DHI's error object field and are returned to the BES's client with ExceptionHandler.
+     *
+     * @param transmitter object that knows how to transmit specific basic types
+     * @param dhi structure that holds the request and response information
+     */
+    virtual void transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/) { }
+
+    virtual void dump(ostream &strm) const {
+        strm << BESIndent::LMarg << "NullResponseHandler::dump - (" << (void *) this << ")" << endl;
+        BESIndent::Indent();
+        BESResponseHandler::dump(strm);
+        BESIndent::UnIndent();
+    }
+
 
     // Factory method, used by the DefaultModule to add this to the list of
     // ResponseHandlers for a given 'action'
-    static BESResponseHandler *NullResponseBuilder(const string &name);
+    static BESResponseHandler *NullResponseBuilder(const string &name) {
+        return new NullResponseHandler(name);
+    }
 };
 
 }   // namespace bes

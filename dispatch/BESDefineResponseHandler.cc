@@ -82,7 +82,7 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DEFINE_RESPONSE_STR;
     BESInfo *info = new BESSilentInfo();
-    _response = info;
+    d_response_object = info;
 
     string def_name = dhi.data[DEF_NAME];
     string store_name = dhi.data[STORE_NAME];
@@ -126,8 +126,8 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDefineResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if (_response) {
-        BESInfo *info = dynamic_cast<BESInfo *>(_response);
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
         if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }

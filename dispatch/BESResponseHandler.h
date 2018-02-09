@@ -79,8 +79,8 @@ class BESResponseObject;
  */
 class BESResponseHandler: public BESObj {
 protected:
-    std::string _response_name;
-    BESResponseObject *_response;
+    std::string d_response_name;
+    BESResponseObject *d_response_object;
 
     BESResponseHandler(const std::string &name);
 
@@ -142,19 +142,23 @@ public:
      * @see BESTransmitException
      */
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
-
+#if 0
     /** @brief return the name of this response object
      *
      * This name is used to determine which response handler can handle a
      * requested response, such as das, dds, ddx, tab, info, version, help,
-     * etc...
+     * et cetera.
+     *
+     * @todo Is this really used? Looks like only one test calls it. The d_response_name
+     * field is assigned only a few places. I think dhi.action is what is really used to
+     * choose the correct ResponseHandler. jhrg 2/9/18
      *
      * @return response name
      */
     virtual std::string get_name() const {
-        return _response_name;
+        return d_response_name;
     }
-
+#endif
     virtual void dump(std::ostream &strm) const;
 };
 
