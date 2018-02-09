@@ -68,6 +68,9 @@ using std::endl ;
 #include "BESSetContextResponseHandler.h"
 #include "BESShowContextResponseHandler.h"
 
+#include "SetContextsNames.h"
+#include "SetContextsResponseHandler.h"
+
 #include "BESShowErrorResponseHandler.h"
 
 #include "BESTransmitterNames.h"
@@ -81,6 +84,8 @@ using std::endl ;
 #include "BESXMLInfo.h"
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
+
+using namespace bes;
 
 int
 BESDefaultModule::initialize(int, char**)
@@ -142,6 +147,9 @@ BESDefaultModule::initialize(int, char**)
 
     BESDEBUG( "bes", "    adding " << SET_CONTEXT << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler( SET_CONTEXT, BESSetContextResponseHandler::SetContextResponseBuilder ) ;
+
+    BESDEBUG( "bes", "    adding " << SET_CONTEXTS_ACTION << " response handler" << endl) ;
+    BESResponseHandlerList::TheList()->add_handler(SET_CONTEXTS_ACTION, SetContextsResponseHandler::SetContextsResponseBuilder ) ;
 
     BESDEBUG( "bes", "    adding " << SHOW_CONTEXT << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler( SHOW_CONTEXT, BESShowContextResponseHandler::ShowContextResponseBuilder ) ;
@@ -210,34 +218,6 @@ BESDefaultModule::terminate(void)
     BESInfoList::TheList()->rem_info_builder( BES_TEXT_INFO ) ;
     BESInfoList::TheList()->rem_info_builder( BES_HTML_INFO ) ;
     BESInfoList::TheList()->rem_info_builder( BES_XML_INFO ) ;
-
-#if 0
-    // Original code
-    BESResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( PROCESS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( CONFIG_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( STATUS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SERVICE_RESPONSE ) ;
-
-    BESResponseHandlerList::TheList()->remove_handler( SETCONTAINER ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SHOWCONTAINERS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DELETE_CONTAINER ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DELETE_CONTAINERS ) ;
-    BESContainerStorageList::TheList()->deref_persistence( PERSISTENCE_VOLATILE ) ;
-
-    BESResponseHandlerList::TheList()->remove_handler( DEFINE_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SHOWDEFS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITION ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITIONS ) ;
-
-    BESDefinitionStorageList::TheList()->deref_persistence( PERSISTENCE_VOLATILE ) ;
-
-    BESResponseHandlerList::TheList()->remove_handler( SET_CONTEXT ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SHOW_CONTEXT ) ;
-
-    BESReturnManager::TheManager()->del_transmitter( BASIC_TRANSMITTER ) ;
-#endif
 
     BESDEBUG( "bes", "Done Removing default modules" << endl ) ;
 

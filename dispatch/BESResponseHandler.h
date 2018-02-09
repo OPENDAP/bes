@@ -40,10 +40,6 @@
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
-using std::string ;
-#if 0
-class BESResponseObject ;
-#endif
 
 /** @brief handler object that knows how to create a specific response object
  *
@@ -78,15 +74,15 @@ class BESResponseObject ;
  * @see BESResponseHandlerList
  * @see BESTransmitter
  */
-class BESResponseHandler : public BESObj
-{
+class BESResponseHandler: public BESObj {
 protected:
-    string			_response_name ;
-    BESResponseObject		*_response ;
+    std::string _response_name;
+    BESResponseObject *_response;
 
-				BESResponseHandler( const string &name ) ;
+    BESResponseHandler(const std::string &name);
+
 public:
-    virtual			~BESResponseHandler(void) ;
+    virtual ~BESResponseHandler(void);
 
     /** @brief return the current response object
      *
@@ -97,7 +93,7 @@ public:
      * @return current response object
      * @see BESResponseObject
      */
-    virtual BESResponseObject  *get_response_object() ;
+    virtual BESResponseObject *get_response_object();
 
     /** @brief replaces the current response object with the specified one,
      * returning the current response object
@@ -113,7 +109,7 @@ public:
      * @return the response object being replaced
      * @see BESResponseObject
      */
-    virtual BESResponseObject	*set_response_object( BESResponseObject *o ) ;
+    virtual BESResponseObject *set_response_object(BESResponseObject *o);
 
     /** @brief knows how to build a requested response object
      *
@@ -129,7 +125,7 @@ public:
      * @see BESDataHandlerInterface
      * @see BESResponseObject
      */
-    virtual void		execute( BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void execute(BESDataHandlerInterface &dhi) = 0;
 
     /** @brief transmit the response object built by the execute command
      * using the specified transmitter object
@@ -142,8 +138,7 @@ public:
      * @see BESDataHandlerInterface
      * @see BESTransmitException
      */
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
 
     /** @brief return the name of this response object
      *
@@ -153,9 +148,12 @@ public:
      *
      * @return response name
      */
-    virtual string 		get_name( ) const { return _response_name ; }
+    virtual std::string get_name() const
+    {
+        return _response_name;
+    }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESResponseHandler_h

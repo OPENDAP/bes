@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -34,33 +34,31 @@
 #include "BESResponseObject.h"
 #include "BESRequestHandler.h"
 
-BESResponseHandler::BESResponseHandler( const string &name )
-    : _response_name( name ),
-      _response( 0 )
+BESResponseHandler::BESResponseHandler(const string &name) :
+    _response_name(name), _response(0)
 {
 }
 
-BESResponseHandler::~BESResponseHandler( )
+BESResponseHandler::~BESResponseHandler()
 {
-    if( _response )
-    {
-	delete _response ;
+    if (_response) {
+        delete _response;
     }
-    _response = 0 ;
+    _response = 0;
 }
 
 BESResponseObject *
 BESResponseHandler::get_response_object()
 {
-    return _response ;
+    return _response;
 }
 
 BESResponseObject *
-BESResponseHandler::set_response_object( BESResponseObject *new_response )
+BESResponseHandler::set_response_object(BESResponseObject *new_response)
 {
-    BESResponseObject *curr_obj = _response ;
-    _response = new_response ;
-    return curr_obj ;
+    BESResponseObject *curr_obj = _response;
+    _response = new_response;
+    return curr_obj;
 }
 
 /** @brief dumps information about this object
@@ -70,24 +68,20 @@ BESResponseHandler::set_response_object( BESResponseObject *new_response )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESResponseHandler::dump( ostream &strm ) const
+void BESResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "response name: " << _response_name << endl ;
-    if( _response )
-    {
-	strm << BESIndent::LMarg << "response object:" << endl ;
-	BESIndent::Indent() ;
-	_response->dump( strm ) ;
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "response name: " << _response_name << endl;
+    if (_response) {
+        strm << BESIndent::LMarg << "response object:" << endl;
+        BESIndent::Indent();
+        _response->dump(strm);
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "response object: not set" << endl ;
+    else {
+        strm << BESIndent::LMarg << "response object: not set" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
