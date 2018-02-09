@@ -172,13 +172,13 @@ void BESXMLInterface::build_data_request_plan()
                 // parse the request given the current node
                 current_cmd->parse_request(current_node);
 
-                BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
-
                 // Check if the correct transmitter is present. We look for it again in do_transmit()
                 // where it is actually used. This test just keeps us from building a response that
                 // cannot be transmitted. jhrg 11/8/17
                 //
                 // TODO We could add the 'transmitter' to the DHI.
+                BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
+
                 string return_as = current_dhi.data[RETURN_CMD];
                 if (!return_as.empty() & !BESReturnManager::TheManager()->find_transmitter(return_as))
                     throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__,

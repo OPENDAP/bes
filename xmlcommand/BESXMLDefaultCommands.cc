@@ -30,15 +30,13 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <iostream>
+#include "config.h"
 
-using std::endl;
+#include <iostream>
 
 #include "BESXMLDefaultCommands.h"
 
 #include "BESResponseNames.h"
-
-#include "BESDebug.h"
 
 #include "BESXMLShowCommand.h"
 #include "BESXMLShowErrorCommand.h"
@@ -50,6 +48,14 @@ using std::endl;
 #include "BESXMLDeleteContainersCommand.h"
 #include "BESXMLDeleteDefinitionCommand.h"
 #include "BESXMLDeleteDefinitionsCommand.h"
+
+#include "SetContextsNames.h"
+#include "XMLSetContextsCommand.h"
+
+#include "BESDebug.h"
+
+using std::endl;
+using namespace bes;
 
 /** @brief Loads the default set of BES XML commands
  */
@@ -71,6 +77,9 @@ int BESXMLDefaultCommands::initialize(int, char**)
     BESXMLCommand::add_command( SERVICE_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
 
     BESXMLCommand::add_command( SET_CONTEXT_STR, BESXMLSetContextCommand::CommandBuilder);
+
+    // A new command, added both for utility and to learn. jhrg 2/8/18
+    BESXMLCommand::add_command( SET_CONTEXTS_STR, XMLSetContextsCommand::CommandBuilder);
 
     BESXMLCommand::add_command( SETCONTAINER_STR, BESXMLSetContainerCommand::CommandBuilder);
 
@@ -107,7 +116,10 @@ int BESXMLDefaultCommands::terminate(void)
 #endif
     BESXMLCommand::del_command( VERS_RESPONSE_STR);
     BESXMLCommand::del_command( STATUS_RESPONSE_STR);
+
     BESXMLCommand::del_command( SET_CONTEXT_STR);
+    BESXMLCommand::del_command( SET_CONTEXTS_STR);
+
     BESXMLCommand::del_command( SETCONTAINER_STR);
     BESXMLCommand::del_command( DEFINE_RESPONSE_STR);
     BESXMLCommand::del_command( DELETE_CONTAINER_STR);

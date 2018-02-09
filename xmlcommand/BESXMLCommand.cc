@@ -38,9 +38,7 @@
 #include "BESDataNames.h"
 #include "BESLog.h"
 
-using std::flush;
-
-map<string, p_xmlcmd_builder> BESXMLCommand::cmd_list;
+map<string, p_xmlcmd_builder> BESXMLCommand::factory;
 
 /** @brief Creates a BESXMLCommand document given a base data handler
  * interface object
@@ -82,7 +80,7 @@ void BESXMLCommand::set_response()
  */
 void BESXMLCommand::add_command(const string &cmd_str, p_xmlcmd_builder cmd)
 {
-    BESXMLCommand::cmd_list[cmd_str] = cmd;
+    BESXMLCommand::factory[cmd_str] = cmd;
 }
 
 /** @brief Deletes the command called cmd_str from the list of possible
@@ -90,15 +88,12 @@ void BESXMLCommand::add_command(const string &cmd_str, p_xmlcmd_builder cmd)
  *
  * @param cmd_str The name of the command to remove from the list
  */
-bool BESXMLCommand::del_command(const string &cmd_str)
+void BESXMLCommand::del_command(const string &cmd_str)
 {
-    bool ret = false;
-
-    BESXMLCommand::cmd_iter iter = BESXMLCommand::cmd_list.find(cmd_str);
-    if (iter != BESXMLCommand::cmd_list.end()) {
-        BESXMLCommand::cmd_list.erase(iter);
+    BESXMLCommand::cmd_iter iter = BESXMLCommand::factory.find(cmd_str);
+    if (iter != BESXMLCommand::factory.end()) {
+        BESXMLCommand::factory.erase(iter);
     }
-    return ret;
 }
 
 /** @brief Find the BESXMLCommand creation function with the given name
@@ -107,7 +102,7 @@ bool BESXMLCommand::del_command(const string &cmd_str)
  */
 p_xmlcmd_builder BESXMLCommand::find_command(const string &cmd_str)
 {
-    return BESXMLCommand::cmd_list[cmd_str];
+    return BESXMLCommand::factory[cmd_str];
 }
 
 /** @brief dumps information about this object
