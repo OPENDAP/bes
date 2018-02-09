@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,14 +36,23 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
-typedef bool (*p_request_handler)(BESDataHandlerInterface &);
+/**
+ * A pointer to a static method defined by an instance of RequestHandler
+ * that can 'fill in' a particular ResponseObject based on the information
+ * in a DataHandlerInterface instance.
+ */
+typedef bool (*p_request_handler_method)(BESDataHandlerInterface &);
+
+// TODO Remove
+#if 0
 #define BES_REQUEST_HANDLER_CATCH_ALL "catch_all"
+#endif
 
 /** @brief Represents a specific data type request handler
  *
@@ -70,29 +79,34 @@ typedef bool (*p_request_handler)(BESDataHandlerInterface &);
  * the request handler can fill in. This method is looked up and is passed the
  * information to fill in the response object.
  */
-class BESRequestHandler : public BESObj
-{
+class BESRequestHandler: public BESObj {
 private:
-    map< string, p_request_handler > _handler_list ;
-    string			_name ;
+    map<string, p_request_handler_method> _handler_list;
+    string _name;
 public:
-				BESRequestHandler( const string &name )
-				    : _name( name ) {}
-    virtual			~BESRequestHandler(void) {}
+    BESRequestHandler(const string &name) :
+        _name(name)
+    {
+    }
+    virtual ~BESRequestHandler(void)
+    {
+    }
 
-    typedef map< string, p_request_handler >::const_iterator Handler_citer ;
-    typedef map< string, p_request_handler >::iterator Handler_iter ;
+    typedef map<string, p_request_handler_method>::const_iterator Handler_citer;
+    typedef map<string, p_request_handler_method>::iterator Handler_iter;
 
-    virtual const string &	get_name( ) const { return _name ; }
+    virtual const string & get_name() const
+    {
+        return _name;
+    }
 
-    virtual bool		add_handler( const string &handler_name,
-					    p_request_handler handler_method ) ;
-    virtual bool		remove_handler( const string &handler_name ) ;
-    virtual p_request_handler	find_handler( const string &handler_name ) ;
+    virtual bool add_handler(const string &handler_name, p_request_handler_method handler_method);
+    virtual bool remove_handler(const string &handler_name);
+    virtual p_request_handler_method find_handler(const string &handler_name);
 
-    virtual string		get_handler_names() ;
+    virtual string get_handler_names();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // I_BESRequestHandler_h
