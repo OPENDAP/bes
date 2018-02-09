@@ -95,20 +95,31 @@ void XMLSetContextsCommand::parse_request(xmlNode *node)
             d_xmlcmd_dhi.data[context_key] = value;
 
             BESDEBUG("besxml", "d_xmlcmd_dhi.data[" << context_key << "] = " << value << endl);
+#else
+            BESContextManager::TheManager()->set_context(attributes["name"], value);
 #endif
         }
 
         current_node = current_node->next;
     }
 
-#if USE_CONTEXTS_RESPONSE_HANDLER
     d_cmd_log_info = string("set contexts for ").append(d_xmlcmd_dhi.data[CONTEXT_NAMES]);
 
+
+#if USE_CONTEXTS_RESPONSE_HANDLER
     // The value set to DHI's action field is used to choose the matching ResponseHandler.
     d_xmlcmd_dhi.action = SET_CONTEXTS_ACTION;
+#else
+    // Set action_name here because the NULLResponseHandler (aka NULL_ACTION) won't know
+    // which command used it (current ResponseHandlers set this because there is a 1-to-1
+    // correlation between XMLCommands and ResponseHanlders). jhrg 2/8/18
+    dhi.action_name = SET_CONTEXTS_STR;
+    d_xmlcmd_dhi.action = NULL_ACTION;
 #endif
 
-    // Set the response handler for the action in the command's DHI
+    // Set the response handler for the action in the command's DHI using the value of
+    // the DHI.action field. And, as a bonus, copy the d_cmd_log_info into DHI.data[LOG_INFO]
+    // and if VERBOSE logging is on, log that the command has been parsed.
    BESXMLCommand::set_response();
 }
 

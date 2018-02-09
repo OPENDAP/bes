@@ -29,6 +29,8 @@
 
 #define CONTEXT_NAMES "context_names"
 #define CONTEXT_PREFIX "context_"
+
+#define NULL_ACTION "null"
 //@}
 
 #define USE_CONTEXTS_RESPONSE_HANDLER 1
