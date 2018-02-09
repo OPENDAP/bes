@@ -52,7 +52,6 @@ using namespace std;
  */
 void SetContextsResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-#if USE_CONTEXTS_RESPONSE_HANDLER
     // To record the information in the DHI data[] map, use one value to hold a
     // list of all of Context names, then use the names to hold the values. Read
     // this using names = data[CONTEXT_NAMES] and then:
@@ -85,7 +84,6 @@ void SetContextsResponseHandler::execute(BESDataHandlerInterface &dhi)
 
          iss >> name;
      }
-#endif
 
     // This would be used in the transmit() method below to send a response back to the
     // BES's client, if this command returned data. Since it does not, this can be NULL

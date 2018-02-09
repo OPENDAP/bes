@@ -30,7 +30,13 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <string>
 #include <ctype.h>
+#include <cstring>
+#include <cerrno>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 
@@ -40,9 +46,6 @@
 // Added for OSX 10.9 jhrg
 #include <sys/select.h>
 
-#include <cstring>
-#include <cerrno>
-
 #include "SocketListener.h"
 #include "BESInternalError.h"
 #include "Socket.h"
@@ -51,6 +54,8 @@
 
 //extern volatile int bes_num_children; // defined in PPTServer.cc jhrg 3/5/14
 //extern string bes_exit_message(int cpid, int stat);
+
+using namespace std;
 
 SocketListener::SocketListener() :
 		_accepting(false)

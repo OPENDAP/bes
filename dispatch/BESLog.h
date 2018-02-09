@@ -124,7 +124,7 @@ protected:
 public:
     ~BESLog();
 
-    const static string mark;
+    const static std::string mark;
 
     /** @brief Suspend logging of any information until resumed.
      *

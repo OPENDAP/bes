@@ -40,6 +40,9 @@ namespace bes {
  * This ResponseHandler instance will not transmit anything back to the BES's
  * client unless there is an error.
  *
+ * @note The XMLSetContextsCommand can be built to use the NullResponseHandler
+ * instead.
+ *
  * @see BESResponseObject
  */
 class SetContextsResponseHandler: public BESResponseHandler {

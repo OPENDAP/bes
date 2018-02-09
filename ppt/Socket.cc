@@ -32,6 +32,13 @@
 
 #include "config.h"
 
+#include <string>
+#include <sstream>
+
+#include <cstdio>
+#include <cerrno>
+#include <cstring>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -39,15 +46,11 @@
 #include <unistd.h>
 #endif
 
-#include <cstdio>
-#include <cerrno>
-#include <cstring>
-
-#include <sstream>
-
 #include "Socket.h"
 #include "BESLog.h"
 #include "BESInternalError.h"
+
+using namespace std;
 
 Socket::Socket(int socket, struct sockaddr *addr) :
 		_socket(socket), _connected(true), _listening(false), _addr_set(true)

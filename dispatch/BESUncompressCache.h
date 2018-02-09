@@ -21,6 +21,8 @@
 #ifndef DISPATCH_BESUNCOMPRESSCACHE_H_
 #define DISPATCH_BESUNCOMPRESSCACHE_H_
 
+#include <string>
+
 #include "BESFileLockingCache.h"
 
 class BESUncompressCache: public BESFileLockingCache {
@@ -34,9 +36,9 @@ private:
         d_instance = 0;
     }
 
-    string d_dimCacheDir;
-    string d_dataRootDir;
-    string d_dimCacheFilePrefix;
+    std::string d_dimCacheDir;
+    std::string d_dataRootDir;
+    std::string d_dimCacheFilePrefix;
     unsigned long d_maxCacheSize;
 
     BESUncompressCache();
@@ -44,25 +46,25 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset_file_name);
 
-    static string getCacheDirFromConfig();
-    static string getCachePrefixFromConfig();
+    static std::string getCacheDirFromConfig();
+    static std::string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
 
 protected:
 
-    BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix,
+    BESUncompressCache(const std::string &data_root_dir, const std::string &cache_dir, const std::string &prefix,
         unsigned long long size);
 
 public:
-    static const string DIR_KEY;
-    static const string PREFIX_KEY;
-    static const string SIZE_KEY;
+    static const std::string DIR_KEY;
+    static const std::string PREFIX_KEY;
+    static const std::string SIZE_KEY;
 
-    static BESUncompressCache *get_instance(const string &bes_catalog_root_dir, const string &cache_dir,
-        const string &prefix, unsigned long long size);
+    static BESUncompressCache *get_instance(const std::string &bes_catalog_root_dir, const std::string &cache_dir,
+        const std::string &prefix, unsigned long long size);
     static BESUncompressCache *get_instance();
 
-    virtual string get_cache_file_name(const string &src, bool mangle = true);
+    virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
 
     virtual ~BESUncompressCache();
 };

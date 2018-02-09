@@ -78,13 +78,16 @@ void XMLSetContextsCommand::parse_request(xmlNode *node)
             BESXMLUtils::GetNodeInfo(current_node, name, value, attributes);
 
             if (name != "context")
-                throw BESSyntaxUserError(string("Inside setContexts, expected a 'context' but got '" + name +"'."), __FILE__, __LINE__);
+                throw BESSyntaxUserError(string("Inside setContexts, expected a 'context' but got '"
+                    + name +"'."), __FILE__, __LINE__);
 
             if (value.empty())
-                throw BESSyntaxUserError(string("The 'context' element must contain a value"), __FILE__, __LINE__);
+                throw BESSyntaxUserError(string("The 'context' element must contain a value"), __FILE__,
+                    __LINE__);
 
             if (attributes.size() != 1 || attributes["name"].empty())
-                throw BESSyntaxUserError(string("The 'context' element must contain a 'name' attribute."), __FILE__, __LINE__);
+                throw BESSyntaxUserError(string("The 'context' element must contain a 'name' attribute."),
+                    __FILE__, __LINE__);
 
             // Set the context _or_ push the information into the DHI data[] map
 #if USE_CONTEXTS_RESPONSE_HANDLER
@@ -100,7 +103,9 @@ void XMLSetContextsCommand::parse_request(xmlNode *node)
 
             BESDEBUG("besxml", "d_xmlcmd_dhi.data[" << context_key << "] = " << value << endl);
 #else
-            BESDEBUG("besxml", "In " << __func__ << " BESContextManager::TheManager()->set_context(" << name << ", " << value << ")" << endl);
+            BESDEBUG("besxml", "In " << __func__ << " BESContextManager::TheManager()->set_context("
+                << name << ", " << value << ")" << endl);
+
             BESContextManager::TheManager()->set_context(attributes["name"], value);
 #endif
         }

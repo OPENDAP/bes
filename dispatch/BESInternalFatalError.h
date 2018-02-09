@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,31 +33,34 @@
 #ifndef BESInternalFatalError_h_
 #define BESInternalFatalError_h_ 1
 
+#include <string>
+
 #include "BESError.h"
 
 /** @brief exception thrown if an internal error is found and is fatal to
  * the BES
  */
-class BESInternalFatalError : public BESError
-{
+class BESInternalFatalError: public BESError {
 protected:
-      			BESInternalFatalError() {}
+    BESInternalFatalError()
+    {
+    }
 public:
-      			BESInternalFatalError( const string &s,
-					       const string &file,
-					       unsigned int line )
-			    : BESError( s, BES_INTERNAL_FATAL_ERROR,
-			                file, line ) {}
-    virtual		~BESInternalFatalError() {}
+    BESInternalFatalError(const std::string &s, const std::string &file, unsigned int line) :
+        BESError(s, BES_INTERNAL_FATAL_ERROR, file, line)
+    {
+    }
+    virtual ~BESInternalFatalError()
+    {
+    }
 
-    virtual void	dump( ostream &strm ) const
-			{
-			    strm << "BESInternalFatalError::dump - ("
-			         << (void *)this << ")" << endl ;
-			    BESIndent::Indent() ;
-			    BESError::dump( strm ) ;
-			    BESIndent::UnIndent() ;
-			}
+    virtual void dump(ostream &strm) const
+    {
+        strm << "BESInternalFatalError::dump - (" << (void *) this << ")" << endl;
+        BESIndent::Indent();
+        BESError::dump(strm);
+        BESIndent::UnIndent();
+    }
 
 };
 
