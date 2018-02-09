@@ -368,7 +368,44 @@ H5.EnableDiskMetaDataCache=false
 # The following is the directory where the DAS cache file will be put.
 H5.DiskMetaDataCachePath=/tmp
 
-
+#
+# HDF-EOS5 geolocation data cache key
+#
+# The latitude and longitude of an HDF-EOS5 grid will be calculated
+# on-the-fly according to projection parameters stored in the HDF-EOS5
+# file. The same latitude and longitude are calculated each time when
+# an HDF-EOS5 grid is fetched. When the H4.EnableEOSGeoCacheFile key
+# is set to true, the calculated latitude and longitude are cached to
+# two flat binary files so that the same latitude and longitude will
+# be obtained from the cached files starting from the second fetch.
+# Several associated keys must be set correctly when this key is set
+# to true.
+#
+# The description of these associated keys are:
+#
+# HDF5.Cache.latlon.path - An existing directory with read and write
+# permissions for the BES process.
+#
+# HDF5.Cache.latlon.prefix - The cache file prefix, it must be given
+# for the cache to work.
+#
+# HDF5.Cache.latlon.size - The size of the cache in megabytes, the
+# must must be > 0.
+#
+# Example:  
+# H5.EnableEOSGeoCacheFile=true
+# H5.Cache.latlon.path=/tmp/latlon
+# H5.Cache.latlon.prefix=l
+# H5.Cache.latlon.size=20000
+#
+H5.EnableEOSGeoCacheFile=false
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+#
+#
+#
+#
 #  State Plane Projection east and north files: Must provide the absolute path
 #H5.STPEastFileName=/usr/tmp/nad27sp_le
 #H5.STPNorthFileName=/usr/tmp/nad83sp_le

@@ -113,6 +113,11 @@ class HDF5RequestHandler:public BESRequestHandler {
     static float get_disk_comp_threshold() {return _disk_cache_comp_threshold;}
     static long get_disk_var_size() {return _disk_cache_var_size; }
 
+    static bool get_use_eosgeo_cachefile() {return _use_latlon_disk_cache; }
+    static string get_latlon_disk_cache_dir() { return _latlon_disk_cache_dir;}
+    static string get_latlon_disk_cachefile_prefix() { return _latlon_disk_cachefile_prefix;}
+    static long get_latlon_disk_cache_size() {return _latlon_disk_cache_size;}
+ 
   private:
      //cache variables. 
 
@@ -155,6 +160,11 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _use_disk_meta_cache;
      static bool _use_disk_dds_cache;
      static string _disk_meta_cache_path;
+
+     static bool _use_latlon_disk_cache;
+     static long _latlon_disk_cache_size;
+     static string _latlon_disk_cache_dir;
+     static string _latlon_disk_cachefile_prefix;
 
      static bool _common_cache_dirs;
      static vector<string> lrd_cache_dir_list;

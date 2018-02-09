@@ -512,6 +512,151 @@ void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
 
 }
 
+// Somehow the conversion of double to c++ string with sprintf causes the memory error in
+// the testing code. I used the following code to do the conversion. Most part of the code
+// in reverse, int_to_str and dtoa are adapted from geeksforgeeks.org
+
+// reverses a string 'str' of length 'len'
+void HDF5CFUtil::rev_str(char *str, int len)
+{
+    int i=0;
+    int j=len-1;
+    int temp = 0;
+    while (i<j)
+    {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++; 
+        j--;
+    }
+}
+ 
+// Converts a given integer x to string str[].  d is the number
+// of digits required in output. If d is more than the number
+// of digits in x, then 0s are added at the beginning.
+int HDF5CFUtil::int_to_str(int x, char str[], int d)
+{
+    int i = 0;
+    while (x)
+    {
+        str[i++] = (x%10) + '0';
+        x = x/10;
+    }
+ 
+    // If number of digits required is more, then
+    // add 0s at the beginning
+    while (i < d)
+        str[i++] = '0';
+ 
+    rev_str(str, i);
+    str[i] = '\0';
+    return i;
+}
+ 
+// Converts a double floating point number to string.
+void HDF5CFUtil::dtoa(double n, char *res, int afterpoint)
+{
+    // Extract integer part
+    int ipart = (int)n;
+ 
+    // Extract the double part
+    double fpart = n - (double)ipart;
+ 
+    // convert integer part to string
+    int i = int_to_str(ipart, res, 0);
+ 
+    // check for display option after point
+    if (afterpoint != 0)
+    {
+        res[i] = '.';  // add dot
+ 
+        // Get the value of fraction part upto given no.
+        // of points after dot. The third parameter is needed
+        // to handle cases like 233.007
+        fpart = fpart * pow(10, afterpoint);
+ 
+        // A round-error of 1 is found when casting to the integer for some numbers.
+        // We need to correct it.
+        int final_fpart = (int)fpart;
+        if(fpart -(int)fpart >0.5)
+            final_fpart = (int)fpart +1;
+        int_to_str(final_fpart, res + i + 1, afterpoint);
+    }
+}
+
+
+// Used to generate EOS geolocation cache name
+string HDF5CFUtil::get_int_str(int x) {
+
+   string str;
+   if(x > 0 && x <10)   
+      str.push_back(x+'0');
+   
+   else if (x >10 && x<100) {
+      str.push_back(x/10+'0');
+      str.push_back(x%10+'0');
+   }
+   else {
+      int num_digit = 0;
+      int abs_x = (x<0)?-x:x;
+      while(abs_x/=10) 
+         num_digit++;
+      if(x<=0)
+         num_digit++;
+      //char buf[num_digit];
+      vector<char> buf;
+      buf.resize(num_digit);
+      sprintf(&buf[0],"%d",x);
+      //sprintf(buf,"%d",x);
+      str.assign(&buf[0]);
+      //str.assign(buf);
+
+   }      
+
+//cerr<<"int str is "<<str<<endl;
+   return str;
+
+}
+ 
+//Used to generate EOS5 lat/lon cache name
+string HDF5CFUtil::get_double_str(double x,int total_digit,int after_point) {
+    
+    string str;
+    if(x!=0) {
+        //char res[total_digit];
+        vector<char> res;
+        res.resize(total_digit);
+        for(int i = 0; i<total_digit;i++)
+           res[i] = '\0';
+        if (x<0) { 
+           str.push_back('-');
+           dtoa(-x,&res[0],after_point);
+           for(int i = 0; i<total_digit;i++) {
+               if(res[i] != '\0')
+                  str.push_back(res[i]);
+           }
+        }
+        else {
+           dtoa(x, &res[0], after_point);
+           //dtoa(x, res, after_point);
+           for(int i = 0; i<total_digit;i++) {
+               if(res[i] != '\0')
+                  str.push_back(res[i]);
+           }
+        }
+    
+    }
+    else 
+       str.push_back('0');
+        
+//std::cerr<<"str length is "<<str.size() <<std::endl;
+//std::cerr<<"str is "<<str <<std::endl;
+    return str;
+
+}
+
+
 // This function is adapted from the HDF-EOS library.
 int GDij2ll(int projcode, int zonecode, double projparm[],
         int spherecode, int xdimsize, int ydimsize,

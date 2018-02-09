@@ -160,6 +160,13 @@ long HDF5RequestHandler::_disk_cache_var_size        =0;
 
 bool HDF5RequestHandler::_use_disk_meta_cache        = false;
 string HDF5RequestHandler::_disk_meta_cache_path       ="";
+
+bool HDF5RequestHandler::_use_latlon_disk_cache        = false;
+long HDF5RequestHandler::_latlon_disk_cache_size        =0;
+string HDF5RequestHandler::_latlon_disk_cache_dir       ="";
+string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
+
+
 //BaseTypeFactory factory;
 //libdap::DDS HDF5RequestHandler::hd_dds(&factory,"");
 string HDF5RequestHandler::_stp_east_filename;
@@ -220,8 +227,13 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _disk_cache_var_size         = 1024*get_uint_key("H5.DiskCacheCompVarSize",0);
 
     _use_disk_meta_cache         = check_beskeys("H5.EnableDiskMetaDataCache");
-    _use_disk_dds_cache         = check_beskeys("H5.EnableDiskDDSCache");
+    _use_disk_dds_cache          = check_beskeys("H5.EnableDiskDDSCache");
     _disk_meta_cache_path        = get_beskeys("H5.DiskMetaDataCachePath");
+
+    _use_latlon_disk_cache       = check_beskeys("H5.EnableEOSGeoCacheFile");
+    _latlon_disk_cache_size      = get_uint_key("H5.Cache.latlon.size",0);
+    _latlon_disk_cache_dir       = get_beskeys("H5.Cache.latlon.path");
+    _latlon_disk_cachefile_prefix= get_beskeys("H5.Cache.latlon.prefix");
 
     if(get_usecf()) {
         if(get_lrdcache_entries()) {

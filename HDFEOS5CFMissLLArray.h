@@ -45,7 +45,7 @@ using namespace libdap;
 
 class HDFEOS5CFMissLLArray:public HDF5BaseArray {
     public:
-        HDFEOS5CFMissLLArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid,  const string &varfullpath, CVType h5_cvartype,float h5_point_lower, float h5_point_upper, float h5_point_left, float h5_point_right, EOS5GridPRType h5_eos5_pixelreg, EOS5GridOriginType h5_eos5_origin, EOS5GridPCType h5_eos5_projcode, const std::vector<double> h5_eos5_params,int h5_eos5_zone,int h5_eos5_sphere,int h5_xdimsize, int h5_ydimsize, const string & n="",  BaseType * v = 0):
+        HDFEOS5CFMissLLArray(int h5_rank, const std::string & h5_filename, const hid_t h5_fileid,  const std::string &varfullpath, CVType h5_cvartype,float h5_point_lower, float h5_point_upper, float h5_point_left, float h5_point_right, EOS5GridPRType h5_eos5_pixelreg, EOS5GridOriginType h5_eos5_origin, EOS5GridPCType h5_eos5_projcode, const std::vector<double> h5_eos5_params,int h5_eos5_zone,int h5_eos5_sphere,int h5_xdimsize, int h5_ydimsize, const std::string & n="",  BaseType * v = 0):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         filename(h5_filename),
@@ -72,13 +72,14 @@ class HDFEOS5CFMissLLArray:public HDF5BaseArray {
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
     void read_data_NOT_from_mem_cache_geo(bool add_cache,void*buf);
+    std::string  obtain_ll_cache_name();
     //int format_constraint (int *cor, int *step, int *edg);
 
     private:
         int rank;
-        string filename;
+        std::string filename;
         hid_t  fileid;
-        string varname;
+        std::string varname;
         CVType cvartype;
         float point_lower;
         float point_upper;

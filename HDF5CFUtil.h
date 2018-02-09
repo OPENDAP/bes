@@ -126,6 +126,24 @@ struct HDF5CFUtil {
                // wrap function of Unix read to a buffer. Memory for the buffer should be allocated.
                static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
                static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname);
+
+               //Use to generate cache file name.
+               // Reverse the char array order
+               static void rev_str(char *str, int len);
+
+               // Return the index of the char array for the integer part
+               static int int_to_str(int,char str[],int);
+
+               // Convert a double number to char array
+               static void dtoa(double,char *,int);
+
+               // convert double to string
+               static string get_double_str(double x,int total_digit,int after_point);
+
+               // convert int to string
+               static string get_int_str(int x);
+
+
                
                //static int GDij2ll(int projcode, int zonecode, double projparm[],
                //                   int spherecode, int xdimsize, int ydimsize,

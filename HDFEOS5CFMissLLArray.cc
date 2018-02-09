@@ -30,6 +30,7 @@
 /// All rights reserved.
 
 #include "config_hdf5.h"
+#include <sys/stat.h>
 #include <iostream>
 #include <sstream>
 #include <cassert>
@@ -89,6 +90,9 @@ bool HDFEOS5CFMissLLArray::read()
 void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf){
 
     BESDEBUG("h5","Coming to read_data_NOT_from_mem_cache "<<endl);
+
+    // Check if geo-cache is turned on.
+    bool use_latlon_cache = HDF5RequestHandler::get_use_eosgeo_cachefile();
 
     // First handle geographic projection. No GCTP is needed.
     if(eos5_projcode == HE5_GCTP_GEO) {
@@ -179,6 +183,11 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     BESDEBUG("h5", " lowright[0] is "  << lowright[0] <<endl);
     BESDEBUG("h5", " lowright[1] is "  << lowright[1] <<endl);
 #endif
+    if(use_latlon_cache == true) {
+        string cache_fname = obtain_ll_cache_name();
+//cerr<<"cache_fname is "<<cache_fname <<endl;
+
+    }
  
     r = GDij2ll (eos5_projcode, eos5_zone, &eos5_params[0], eos5_sphere, xdimsize, ydimsize, upleft, lowright,
                  xdimsize * ydimsize, &rows[0], &cols[0], &lon[0], &lat[0], eos5_pixelreg, eos5_origin);
@@ -240,6 +249,74 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     }
 }
 
+string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
+
+    BESDEBUG("h5","Coming to obtain_ll_cache_name "<<endl);
+
+
+    // Here we have a sanity check for the cached parameters:Cached directory,file prefix and cached directory size.
+    // Supposedly Hyrax BES cache feature should check this and the code exists. However, the
+    string bescachedir = HDF5RequestHandler::get_latlon_disk_cache_dir();
+    string bescacheprefix = HDF5RequestHandler::get_latlon_disk_cachefile_prefix();
+    long cachesize = HDF5RequestHandler::get_latlon_disk_cache_size();
+
+    if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
+        throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
+    }
+    else {
+        struct stat sb;
+        if(stat(bescachedir.c_str(),&sb) !=0) {
+            string err_mesg="The cached directory " + bescachedir;
+            err_mesg = err_mesg + " doesn't exist.  ";
+            throw InternalErr(__FILE__,__LINE__,err_mesg);
+                    
+        }
+        else { 
+            if(true == S_ISDIR(sb.st_mode)) {
+                if(access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
+                    string err_mesg="The cached directory " + bescachedir;
+                    err_mesg = err_mesg + " can NOT be read,written or executable.";
+                    throw InternalErr(__FILE__,__LINE__,err_mesg);
+                }
+            }
+            else {
+                string err_mesg="The cached directory " + bescachedir;
+                err_mesg = err_mesg + " is not a directory.";
+                throw InternalErr(__FILE__,__LINE__,err_mesg);
+            }
+        }
+    }
+
+    //string cache_fname=llcache->getCachePrefixFromConfig();
+    string cache_fname=HDF5RequestHandler::get_latlon_disk_cachefile_prefix();
+
+    // Projection code,zone,sphere,pix,origin
+    cache_fname +=HDF5CFUtil::get_int_str(eos5_projcode);
+    cache_fname +=HDF5CFUtil::get_int_str(eos5_zone);
+    cache_fname +=HDF5CFUtil::get_int_str(eos5_sphere);
+    cache_fname +=HDF5CFUtil::get_int_str(eos5_pixelreg);
+    cache_fname +=HDF5CFUtil::get_int_str(eos5_origin);
+
+    cache_fname +=HDF5CFUtil::get_int_str(ydimsize);
+    cache_fname +=HDF5CFUtil::get_int_str(xdimsize);
+ 
+    // upleft,lowright
+    // HDF-EOS upleft,lowright,params use DDDDMMMSSS.6 digits. So choose %17.6f.
+    cache_fname +=HDF5CFUtil::get_double_str(point_left,17,6);
+    cache_fname +=HDF5CFUtil::get_double_str(point_upper,17,6);
+    cache_fname +=HDF5CFUtil::get_double_str(point_right,17,6);
+    cache_fname +=HDF5CFUtil::get_double_str(point_lower,17,6);
+
+    // According to HDF-EOS2 document, only 13 parameters are used.
+    for(int ipar = 0; ipar<13;ipar++) {
+//cerr<<"params["<<ipar<<"] is "<<params[ipar]<<endl;
+                cache_fname+=HDF5CFUtil::get_double_str(eos5_params[ipar],17,6);
+    }
+            
+    string cache_fpath = bescachedir + "/"+ cache_fname;
+    return cache_fpath;
+
+}
 void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*buf){
 
     BESDEBUG("h5","Coming to read_data_NOT_from_mem_cache_geo "<<endl);
@@ -384,6 +461,7 @@ for (int i =0; i <nelms; i++)
  
     return;
 }
+
 #if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
