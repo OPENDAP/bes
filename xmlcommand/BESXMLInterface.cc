@@ -279,7 +279,13 @@ void BESXMLInterface::execute_data_request_plan()
 
 /**
  * @brief Transmit the response object
- * @todo Remove?
+ *
+ * This is only called from BESXMLInterface::execute_data_request_plan().
+ *
+ * @note The idea here is that the execute() and transmit() parts are separate to
+ * increase the chance of catching errors _before_ transmission starts. Once  we
+ * call d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr) it's really
+ * hard to tell the client about a problem.
  *
  * Only transmit if there is an error or if there is a ResponseHandler. For any
  * XML document with one or more commands, there should only be one ResponseHandler.
