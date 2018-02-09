@@ -99,7 +99,7 @@ TestRequestHandler::test()
     BESDataHandlerInterface dhi ;
 
     cout << "    finding resp1" << endl ;
-    p_request_handler p = find_handler( "resp1" ) ;
+    p_request_handler_method p = find_handler( "resp1" ) ;
     CPPUNIT_ASSERT( p ) ;
     p( dhi ) ;
     CPPUNIT_ASSERT( _resp_num == 1 ) ;

@@ -226,7 +226,7 @@ void BESXMLInterface::execute_data_request_plan()
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
 
         // This is the main log entry when the server is not in 'verbose' mode.
-        // There are two ays we can do this, one writes a log line for only the
+        // There are two ways we can do this, one writes a log line for only the
         // get commands, the other write the set container, define and get commands.
         // TODO Make this configurable? jhrg 11/14/17
 #ifdef LOG_ONLY_GET_COMMANDS

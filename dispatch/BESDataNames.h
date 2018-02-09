@@ -77,7 +77,10 @@
 #define STORE_NAME "store_name"
 #define SYMBOLIC_NAME "symbolic_name"
 #define REAL_NAME "real_name"
+// TODO Never used
+#if 0
 #define REAL_NAME_LIST "real_name_list"
+#endif
 #define CONTAINER_TYPE "type"
 
 #define DEF_NAME "def_name"

@@ -40,6 +40,9 @@
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
+#if 0
+class BESResponseObject;
+#endif
 
 /** @brief handler object that knows how to create a specific response object
  *
@@ -148,8 +151,7 @@ public:
      *
      * @return response name
      */
-    virtual std::string get_name() const
-    {
+    virtual std::string get_name() const {
         return _response_name;
     }
 
