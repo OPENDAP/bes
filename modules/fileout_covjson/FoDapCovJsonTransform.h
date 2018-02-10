@@ -48,7 +48,7 @@ class BESDataHandlerInterface;
  * The output is written to a local file whose name is passed as a parameter
  * to the constructor.
  */
-class FoDapJsonTransform: public BESObj {
+class FoDapCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
     std::string _returnAs;
@@ -74,21 +74,21 @@ private:
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
     template<typename T>
-    void json_simple_type_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void covjson_simple_type_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
-    void json_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void covjson_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     template<typename T>
-    unsigned int json_simple_type_array_worker(std::ostream *strm, T *values, unsigned int indx,
+    unsigned int covjson_simple_type_array_worker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
 public:
-    FoDapJsonTransform(libdap::DDS *dds);
+    FoDapCovJsonTransform(libdap::DDS *dds);
 
-    virtual ~FoDapJsonTransform() { }
+    virtual ~FoDapCovJsonTransform() { }
 
     virtual void transform(std::ostream &ostrm, bool sendData);
 
     virtual void dump(std::ostream &strm) const;
 };
 
-#endif /* FODAPJSONTRANSFORM_H_ */
+#endif /* FODAPCOVJSONTRANSFORM_H_ */

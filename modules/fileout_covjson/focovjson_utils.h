@@ -26,8 +26,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef FOJSON_UTILS_H_
-#define FOJSON_UTILS_H_ 1
+#ifndef FOCOVJSON_UTILS_H_
+#define FOCOVJSON_UTILS_H_ 1
 
 #include <string>
 #include <vector>
@@ -36,7 +36,7 @@
 
 namespace fojson {
 
-std::string escape_for_json(const std::string &source);
+std::string escape_for_covjson(const std::string &source);
 
 long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape );
 
@@ -44,10 +44,10 @@ long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape 
 std::string backslash_escape(std::string source, char char_to_escape);
 #endif
 
-} // namespace fojson
+} // namespace focovjson
 
 
 
-#endif /* FOJSON_UTILS_H_ */
+#endif /* FOCOVJSON_UTILS_H_ */
 
 

@@ -1,8 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoInstanceJsonTransmitter.h
+// FoInstanceCovJsonransmitter.h
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES COVJSON File Out Module
 //
 // Copyright (c) 2014 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
@@ -26,33 +26,33 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef A_FoInstanceJsonTransmitter_h
-#define A_FoInstanceJsonTransmitter_h 1
+#ifndef A_FoInstanceCovJsonTransmitter_h
+#define A_FoInstanceCovJsonTransmitter_h 1
 
 #include <BESTransmitter.h>
 
 class BESResponseObject;
 class BESDataHandlerInterface;
 
-/** @brief BESTransmitter class named "json" that transmits an OPeNDAP
- * data object as a JSON file
+/** @brief BESTransmitter class named "covjson" that transmits an OPeNDAP
+ * data object as a COVJSON file
  *
- * The FoJsonTransmitter transforms an OPeNDAP DataDDS object into a
- * JSON file and streams the new (temporary) JSON file back to the
+ * The FoCovJsonTransmitter transforms an OPeNDAP DataDDS object into a
+ * COVJSON file and streams the new (temporary) COVJSON file back to the
  * client.
  *
  * @see BESTransmitter
  */
-class FoInstanceJsonTransmitter: public BESTransmitter {
+class FoInstanceCovJsonTransmitter: public BESTransmitter {
 private:
 	static string temp_dir;
 
 public:
-	FoInstanceJsonTransmitter();
-	virtual ~FoInstanceJsonTransmitter() { }
+	FoInstanceCovJsonTransmitter();
+	virtual ~FoInstanceCovJsonTransmitter() { }
 
 	static void send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 
-#endif // A_FoInstanceJsonTransmitter_h
+#endif // A_FoInstanceCovJsonTransmitter_h

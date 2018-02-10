@@ -1,12 +1,12 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoJsonRequestHandler.cc
+// FoCovJsonRequestHandler.cc
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES COVJSON File Out Module
 //
 // Copyright (c) 2014 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
-//
+// Original Author: Nathan Potter <ndp@opendap.org>
+// Copied from the JSON module implemented by Nathan Potter
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
@@ -26,7 +26,7 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#include "FoJsonRequestHandler.h"
+#include "FoCovJsonRequestHandler.h"
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
 #include <BESVersionInfo.h>
@@ -43,16 +43,16 @@
  * @param name The name of the request handler being added to the list
  * of request handlers
  */
-FoJsonRequestHandler::FoJsonRequestHandler(const string &name) :
+FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler( HELP_RESPONSE, FoJsonRequestHandler::build_help);
-    add_handler( VERS_RESPONSE, FoJsonRequestHandler::build_version);
+    add_handler( HELP_RESPONSE, FoCovJsonRequestHandler::build_help);
+    add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
 }
 
 /** @brief Any cleanup that needs to take place
  */
-FoJsonRequestHandler::~FoJsonRequestHandler()
+FoCovJsonRequestHandler::~FoCovJsonRequestHandler()
 {
 }
 
@@ -67,17 +67,17 @@ FoJsonRequestHandler::~FoJsonRequestHandler()
  * @throws BESInternalError if the response object is not an
  * informational response object.
  */
-bool FoJsonRequestHandler::build_help(BESDataHandlerInterface &dhi)
+bool FoCovJsonRequestHandler::build_help(BESDataHandlerInterface &dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESInfo *info = dynamic_cast<BESInfo *>(response);
     if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
     bool found = false;
-    string key = "FoJson.Reference";
+    string key = "FoCovJson.Reference";
     string ref;
     TheBESKeys::TheKeys()->get_value(key, ref, found);
-    if (ref.empty()) ref = "http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_JSON";
+    if (ref.empty()) ref = "http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_COVJSON";
     map<string, string> attrs;
     attrs["name"] = MODULE_NAME;
     attrs["version"] = MODULE_VERSION;
@@ -96,7 +96,7 @@ bool FoJsonRequestHandler::build_help(BESDataHandlerInterface &dhi)
  * @param dhi The data interface containing information for the current
  * request to the BES
  */
-bool FoJsonRequestHandler::build_version(BESDataHandlerInterface &dhi)
+bool FoCovJsonRequestHandler::build_version(BESDataHandlerInterface &dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(response);
@@ -113,9 +113,9 @@ bool FoJsonRequestHandler::build_version(BESDataHandlerInterface &dhi)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void FoJsonRequestHandler::dump(ostream &strm) const
+void FoCovJsonRequestHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "FoJsonRequestHandler::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "FoCovJsonRequestHandler::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESRequestHandler::dump(strm);
     BESIndent::UnIndent();

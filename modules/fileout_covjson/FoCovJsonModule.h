@@ -27,8 +27,8 @@
 //
 
 
-#ifndef FOJSONMODULE_H_
-#define FOJSONMODULE_H_
+#ifndef FOCOVJSONMODULE_H_
+#define FOCOVJSONMODULE_H_
 
 #include <BESAbstractModule.h>
 
@@ -48,11 +48,11 @@
  *
  * @see FONgTransmitter
  */
-class FoJsonModule : public BESAbstractModule
+class FoCovJsonModule : public BESAbstractModule
 {
 public:
-	FoJsonModule() {}
-    virtual		    	~FoJsonModule() {}
+	FoCovJsonModule() {}
+    virtual		    	~FoCovJsonModule() {}
     virtual void		initialize( const string &modname ) ;
     virtual void		terminate( const string &modname ) ;
 
@@ -60,4 +60,4 @@ public:
 } ;
 
 
-#endif /* FOJSONMODULE_H_ */
+#endif /* FOCOVJSONMODULE_H_ */

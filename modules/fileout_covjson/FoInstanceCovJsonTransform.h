@@ -26,8 +26,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef FoInstanceJsonTransfrom_h_
-#define FoInstanceJsonTransfrom_h_ 1
+#ifndef FoInstanceCovJsonTransfrom_h_
+#define FoInstanceCovJsonTransfrom_h_ 1
 
 #include <string>
 #include <vector>
@@ -51,7 +51,7 @@ class BESDataHandlerInterface;
  * The output is written to a local file whose name is passed as a parameter
  * to the constructor.
  */
-class FoInstanceJsonTransform: public BESObj {
+class FoInstanceCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
     // std::string _localfile;
@@ -60,12 +60,12 @@ private:
 
     // std::ostream *_ostrm;
 
-    template<typename T> unsigned int json_simple_type_array_worker(std::ostream *strm, const std::vector<T> &values,
+    template<typename T> unsigned int covjson_simple_type_array_worker(std::ostream *strm, const std::vector<T> &values,
         unsigned int indx, const std::vector<unsigned int> &shape, unsigned int currentDim);
 
-    template<typename T> void json_simple_type_array(std::ostream *strm, libdap::Array *a, std::string indent,
+    template<typename T> void covjson_simple_type_array(std::ostream *strm, libdap::Array *a, std::string indent,
         bool sendData);
-    void json_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void covjson_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
 
@@ -79,14 +79,14 @@ private:
 
 public:
     //FoInstanceJsonTransform(libdap::DDS *dds, BESDataHandlerInterface &dhi, const std::string &localfile);
-    FoInstanceJsonTransform(libdap::DDS *dds/*, BESDataHandlerInterface &dhi, std::ostream *ostrm*/);
+    FoInstanceCovJsonTransform(libdap::DDS *dds/*, BESDataHandlerInterface &dhi, std::ostream *ostrm*/);
 
-    virtual ~FoInstanceJsonTransform() { }
+    virtual ~FoInstanceCovJsonTransform() { }
 
     virtual void transform(std::ostream &ostrm, bool sendData);
 
     virtual void dump(std::ostream &strm) const;
 };
 
-#endif // FoInstanceJsonTransfrom_h_
+#endif // FoInstanceCovJsonTransfrom_h_
 

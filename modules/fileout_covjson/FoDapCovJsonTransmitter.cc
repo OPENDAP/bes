@@ -59,14 +59,14 @@
 #include <BESDebug.h>
 #include <DapFunctionUtils.h>
 
-#include "FoDapJsonTransmitter.h"
-#include "FoDapJsonTransform.h"
+#include "FoDapCovJsonTransmitter.h"
+#include "FoDapCovJsonTransform.h"
 
 using namespace ::libdap;
 
-#define FO_JSON_TEMP_DIR "/tmp"
+#define FO_COVJSON_TEMP_DIR "/tmp"
 
-string FoDapJsonTransmitter::temp_dir;
+string FoDapCovJsonTransmitter::temp_dir;
 
 /** @brief Construct the FoW10nJsonTransmitter
  *
@@ -79,22 +79,22 @@ string FoDapJsonTransmitter::temp_dir;
  * FoJson.Tempdir. If this variable is not found or is not set then it
  * defaults to the macro definition FO_JSON_TEMP_DIR.
  */
-FoDapJsonTransmitter::FoDapJsonTransmitter() : BESTransmitter()
+FoDapCovJsonTransmitter::FoDapCovJsonTransmitter() : BESTransmitter()
 {
-    add_method(DATA_SERVICE, FoDapJsonTransmitter::send_data);
-    add_method(DDX_SERVICE,  FoDapJsonTransmitter::send_metadata);
+    add_method(DATA_SERVICE, FoDapCovJsonTransmitter::send_data);
+    add_method(DDX_SERVICE,  FoDapCovJsonTransmitter::send_metadata);
 
-    if (FoDapJsonTransmitter::temp_dir.empty()) {
+    if (FoDapCovJsonTransmitter::temp_dir.empty()) {
         // Where is the temp directory for creating these files
         bool found = false;
-        string key = "FoJson.Tempdir";
-        TheBESKeys::TheKeys()->get_value(key, FoDapJsonTransmitter::temp_dir, found);
-        if (!found || FoDapJsonTransmitter::temp_dir.empty()) {
-        	FoDapJsonTransmitter::temp_dir = FO_JSON_TEMP_DIR;
+        string key = "FoCovJson.Tempdir";
+        TheBESKeys::TheKeys()->get_value(key, FoDapCovJsonTransmitter::temp_dir, found);
+        if (!found || FoDapCovJsonTransmitter::temp_dir.empty()) {
+        	FoDapCovJsonTransmitter::temp_dir = FO_COVJSON_TEMP_DIR;
         }
-        string::size_type len = FoDapJsonTransmitter::temp_dir.length();
-        if (FoDapJsonTransmitter::temp_dir[len - 1] == '/') {
-        	FoDapJsonTransmitter::temp_dir = FoDapJsonTransmitter::temp_dir.substr(0, len - 1);
+        string::size_type len = FoDapCovJsonTransmitter::temp_dir.length();
+        if (FoDapCovJsonTransmitter::temp_dir[len - 1] == '/') {
+        	FoDapCovJsonTransmitter::temp_dir = FoDapCovJsonTransmitter::temp_dir.substr(0, len - 1);
         }
     }
 }
@@ -114,14 +114,14 @@ FoDapJsonTransmitter::FoDapJsonTransmitter() : BESTransmitter()
  * there are any problems reading the data, writing to a JSON file, or
  * streaming the JSON file
  */
-void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG("fojson", "FoDapJsonTransmitter::send_data - BEGIN" << endl);
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_data - BEGIN" << endl);
 
     try {
         BESDapResponseBuilder responseBuilder;
 
-        BESDEBUG("fojson", "FoJsonTransmitter::send_data - Reading data into DataDDS" << endl);
+        BESDEBUG("focovjson", "FoCovJsonTransmitter::send_data - Reading data into DataDDS" << endl);
 
         // Now that we are ready to start reading the response data we
         // cancel any pending timeout alarm according to the configuration.
@@ -136,9 +136,9 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
 
         ostream &o_strm = dhi.get_output_stream();
         if (!o_strm)
-            throw BESInternalError("Output stream is not set, can not return as JSON", __FILE__, __LINE__);
+            throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
 
-        FoDapJsonTransform ft(loaded_dds);
+        FoDapCovJsonTransform ft(loaded_dds);
 
         ft.transform(o_strm, true /* send data */);
     }
@@ -155,7 +155,7 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG("fojson", "FoDapJsonTransmitter::send_data - done transmitting JSON" << endl);
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_data - done transmitting COVJSON" << endl);
 }
 
 /** @brief The static method registered to transmit OPeNDAP data objects as
@@ -173,9 +173,9 @@ void FoDapJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInter
  * there are any problems reading the data, writing to a JSON file, or
  * streaming the JSON file
  */
-void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+void FoDapCovJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG("fojson", "FoDapJsonTransmitter::send_data - BEGIN transmitting JSON" << endl);
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_data - BEGIN transmitting COVJSON" << endl);
 
     try {
         BESDapResponseBuilder responseBuilder;
@@ -185,9 +185,9 @@ void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerI
 
         ostream &o_strm = dhi.get_output_stream();
         if (!o_strm)
-            throw BESInternalError("Output stream is not set, can not return as JSON", __FILE__, __LINE__);
+            throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
 
-        FoDapJsonTransform ft(processed_dds);
+        FoDapCovJsonTransform ft(processed_dds);
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
@@ -196,15 +196,15 @@ void FoDapJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerI
         ft.transform(o_strm, false /* do not send data */);
     }
     catch (Error &e) {
-        throw BESDapError("Failed to transform data to JSON: " + e.get_error_message(), false, e.get_error_code(),
+        throw BESDapError("Failed to transform data to COVJSON: " + e.get_error_message(), false, e.get_error_code(),
             __FILE__, __LINE__);
     }
     catch (BESError &e) {
         throw;
     }
     catch (...) {
-        throw BESInternalError("Failed to transform to JSON: Unknown exception caught", __FILE__, __LINE__);
+        throw BESInternalError("Failed to transform to COVJSON: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG("fojson", "FoDapJsonTransmitter::send_data - done transmitting JSON" << endl);
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_data - done transmitting COVJSON" << endl);
 }

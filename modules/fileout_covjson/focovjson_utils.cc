@@ -2,10 +2,11 @@
 //
 // utils.cc
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES CovJSON File Out Module
 //
 // Copyright (c) 2014 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Original Author: Nathan Potter <ndp@opendap.org>
+// Copied from the JSON module implemented form Nathan Potter
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,7 +27,7 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#include "fojson_utils.h"
+#include "focovjson_utils.h"
 
 
 #include <BESDebug.h>
@@ -34,11 +35,11 @@
 #include <sstream>
 #include <iomanip>
 
-#define utils_debug_key "fojson"
+#define utils_debug_key "focovjson" // Dont know what this does -Riley
 
-namespace fojson {
+namespace focovjson {
 
-std::string escape_for_json(const std::string &input) {
+std::string escape_for_covjson(const std::string &input) {
     std::stringstream ss;
     for (size_t i = 0; i < input.length(); ++i) {
         if (unsigned(input[i]) < '\x20' || input[i] == '\\' || input[i] == '"') {
@@ -59,7 +60,7 @@ std::string escape_for_json(const std::string &input) {
  * @return The total number of elements in the constrained Array.
  */
 long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape ){
-    BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - BEGIN. Array name: "<< a->name() << endl);
+    BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - BEGIN. Array name: "<< a->name() << endl);
 
     libdap::Array::Dim_iter dIt;
     unsigned int start;
@@ -70,23 +71,23 @@ long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape 
     int dimNum = 0;
     long totalSize = 1;
 
-    BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - Array has " << a->dimensions(true) << " dimensions."<< endl);
+    BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - Array has " << a->dimensions(true) << " dimensions."<< endl);
 
     for(dIt = a->dim_begin() ; dIt!=a->dim_end() ;dIt++){
-        BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - Processing dimension '" << a->dimension_name(dIt)<< "'. (dim# "<< dimNum << ")"<< endl);
+        BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - Processing dimension '" << a->dimension_name(dIt)<< "'. (dim# "<< dimNum << ")"<< endl);
         start  = a->dimension_start(dIt, true);
         stride = a->dimension_stride(dIt, true);
         stop   = a->dimension_stop(dIt, true);
-        BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - start: " << start << "  stride: " << stride << "  stop: "<<stop<< endl);
+        BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - start: " << start << "  stride: " << stride << "  stop: "<<stop<< endl);
 
         dimSize = 1 + ( (stop - start) / stride);
-        BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - dimSize: " << dimSize << endl);
+        BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - dimSize: " << dimSize << endl);
 
         (*shape)[dimNum++] = dimSize;
         totalSize *= dimSize;
     }
-    BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - totalSize: " << totalSize << endl);
-    BESDEBUG(utils_debug_key, "fojson::computeConstrainedShape() - END." << endl);
+    BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - totalSize: " << totalSize << endl);
+    BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - END." << endl);
 
     return totalSize;
 }
@@ -110,4 +111,4 @@ std::string backslash_escape(std::string source, char char_to_escape){
 }
 #endif
 
-} /* namespace fojson */
+} /* namespace focovjson */

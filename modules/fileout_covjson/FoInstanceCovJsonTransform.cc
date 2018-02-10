@@ -49,22 +49,22 @@
 #include <BESDebug.h>
 #include <BESInternalError.h>
 
-#include "FoInstanceJsonTransform.h"
-#include "fojson_utils.h"
+#include "FoInstanceCovJsonTransform.h"
+#include "focovjson_utils.h"
 
 using namespace std;
 
 #define ATTRIBUTE_SEPARATOR "."
-#define JSON_ORIGINAL_NAME "json_original_name"
+#define COVJSON_ORIGINAL_NAME "covjson_original_name"
 
-#define FoInstanceJsonTransform_debug_key "fojson"
+#define FoInstanceCovJsonTransform_debug_key "focovjson"
 const int int_64_precision = 15; // See also in FODapJsonTransform.cc. jhrg 9/14/15
 
 /**
  * Writes out the values of an n-dimensional array. Uses recursion.
  */
 template<typename T>
-unsigned int FoInstanceJsonTransform::json_simple_type_array_worker(std::ostream *strm,
+unsigned int FoInstanceCovJsonTransform::covjson_simple_type_array_worker(std::ostream *strm,
     const std::vector<T> &values, unsigned int indx, const std::vector<unsigned int> &shape, unsigned int currentDim)
 {
     *strm << "[";
@@ -73,10 +73,10 @@ unsigned int FoInstanceJsonTransform::json_simple_type_array_worker(std::ostream
 
     for (unsigned int i = 0; i < currentDimSize; i++) {
         if (currentDim < shape.size() - 1) {
-            BESDEBUG(FoInstanceJsonTransform_debug_key,
-                "json_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
+            BESDEBUG(FoInstanceCovJsonTransform_debug_key,
+                "covjson_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
 
-            indx = json_simple_type_array_worker<T>(strm, values, indx, shape, currentDim + 1);
+            indx = covjson_simple_type_array_worker<T>(strm, values, indx, shape, currentDim + 1);
             if (i + 1 != currentDimSize) *strm << ", ";
         }
         else {
@@ -98,15 +98,15 @@ unsigned int FoInstanceJsonTransform::json_simple_type_array_worker(std::ostream
  * @param indent A string containing the indent level.
  * @param sendData A boolean value that when evaluated as true will cause the data values to be sent and not the metadata.
  */
-template<typename T> void FoInstanceJsonTransform::json_simple_type_array(std::ostream *strm, libdap::Array *a,
+template<typename T> void FoInstanceCovJsonTransform::covjson_simple_type_array(std::ostream *strm, libdap::Array *a,
     std::string indent, bool sendData)
 {
     std::string name = a->name();
-    *strm << indent << "\"" << fojson::escape_for_json(name) + "\":  ";
+    *strm << indent << "\"" << focovjson::escape_for_covjson(name) + "\":  ";
 
     if (sendData) { // send data
         std::vector<unsigned int> shape(a->dimensions(true));
-        long length = fojson::computeConstrainedShape(a, &shape);
+        long length = focovjson::computeConstrainedShape(a, &shape);
 
         vector<T> src(length);
         a->value(&src[0]);
@@ -116,7 +116,7 @@ template<typename T> void FoInstanceJsonTransform::json_simple_type_array(std::o
         if (typeid(T) == typeid(libdap::dods_float64)) {
             streamsize prec = strm->precision(int_64_precision);
             try {
-                indx = json_simple_type_array_worker(strm, src, 0, shape, 0);
+                indx = covjson_simple_type_array_worker(strm, src, 0, shape, 0);
                 strm->precision(prec);
             }
             catch (...) {
@@ -125,7 +125,7 @@ template<typename T> void FoInstanceJsonTransform::json_simple_type_array(std::o
             }
         }
         else {
-            indx = json_simple_type_array_worker(strm, src, 0, shape, 0);
+            indx = covjson_simple_type_array_worker(strm, src, 0, shape, 0);
         }
 
         // make this an assert?
@@ -153,25 +153,25 @@ template<typename T> void FoInstanceJsonTransform::json_simple_type_array(std::o
  * @param indent Indent the output so humans can make sense of it
  * @param sendData True: send data; false: send metadata
  */
-void FoInstanceJsonTransform::json_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData)
+void FoInstanceCovJsonTransform::covjson_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData)
 {
     std::string name = a->name();
-    *strm << indent << "\"" << fojson::escape_for_json(name) + "\":  ";
+    *strm << indent << "\"" << focovjson::escape_for_covjson(name) + "\":  ";
 
     if (sendData) { // send data
         std::vector<unsigned int> shape(a->dimensions(true));
-        long length = fojson::computeConstrainedShape(a, &shape);
+        long length = focovjson::computeConstrainedShape(a, &shape);
 
         // The string type utilizes a specialized version of libdap::Array::value()
         std::vector<std::string> sourceValues;
         a->value(sourceValues);
 
-        unsigned int indx = json_simple_type_array_worker(strm, sourceValues, 0, shape, 0);
+        unsigned int indx = covjson_simple_type_array_worker(strm, sourceValues, 0, shape, 0);
 
         // make this an assert?
         if (length != indx)
-            BESDEBUG(FoInstanceJsonTransform_debug_key,
-                "json_string_array() - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
+            BESDEBUG(FoInstanceCovJsonTransform_debug_key,
+                "covjson_string_array() - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
     }
     else { // otherwise send metadata
         *strm << "{" << endl;
@@ -218,9 +218,9 @@ FoInstanceJsonTransform::FoInstanceJsonTransform(libdap::DDS *dds, BESDataHandle
  * @param dhi
  * @param ostrm
  */
-FoInstanceJsonTransform::FoInstanceJsonTransform(libdap::DDS *dds):  _dds(dds), _indent_increment(" ")
+FoInstanceCovJsonTransform::FoInstanceCovJsonTransform(libdap::DDS *dds):  _dds(dds), _indent_increment(" ")
 {
-    if (!_dds) throw BESInternalError("File out JSON, null DDS passed to constructor", __FILE__, __LINE__);
+    if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
 /** @brief dumps information about this transformation object for debugging
@@ -232,9 +232,9 @@ FoInstanceJsonTransform::FoInstanceJsonTransform(libdap::DDS *dds):  _dds(dds), 
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void FoInstanceJsonTransform::dump(std::ostream &strm) const
+void FoInstanceCovJsonTransform::dump(std::ostream &strm) const
 {
-    strm << BESIndent::LMarg << "FoInstanceJsonTransform::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "FoInstanceCovJsonTransform::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_dds != 0) {
         _dds->print(strm);
@@ -254,7 +254,7 @@ void FoInstanceJsonTransform::dump(std::ostream &strm) const
  * @param sendData If the sendData parameter is true data will be
  * sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(ostream &ostrm, bool sendData)
+void FoInstanceCovJsonTransform::transform(ostream &ostrm, bool sendData)
 {
     transform(&ostrm, _dds, "", sendData);
 }
@@ -269,7 +269,7 @@ void FoInstanceJsonTransform::transform(ostream &ostrm, bool sendData)
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, string indent, bool sendData)
 {
     bool sentSomething = false;
 
@@ -278,7 +278,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
 
     // Name object
     std::string name = dds->get_dataset_name();
-    *strm << indent + _indent_increment << "\"name\": \"" << fojson::escape_for_json(name) << "\"," << endl;
+    *strm << indent + _indent_increment << "\"name\": \"" << focovjson::escape_for_covjson(name) << "\"," << endl;
 
     if (!sendData) {
         // Send metadata if we aren't sending data
@@ -298,7 +298,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
             if ((*vi)->send_p()) {
 
                 libdap::BaseType *v = *vi;
-                BESDEBUG(FoInstanceJsonTransform_debug_key, "Processing top level variable: " << v->name() << endl);
+                BESDEBUG(FoInstanceCovJsonTransform_debug_key, "Processing top level variable: " << v->name() << endl);
 
                 if (sentSomething) {
                     *strm << ",";
@@ -324,7 +324,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
 {
     switch (bt->type()) {
     // Handle the atomic types - that's easy!
@@ -364,13 +364,13 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::BaseType *bt
         // case libdap::dods_url4_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
-        string s = (string) "File out JSON, " + "DAP4 types not yet supported.";
+        string s = (string) "File out COVJSON, " + "DAP4 types not yet supported.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
 
     default: {
-        string s = (string) "File out JSON, " + "Unrecognized type.";
+        string s = (string) "File out COVJSON, " + "Unrecognized type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
@@ -389,17 +389,17 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::BaseType *bt
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transformAtomic(std::ostream *strm, libdap::BaseType *b, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transformAtomic(std::ostream *strm, libdap::BaseType *b, string indent, bool sendData)
 {
     std::string name = b->name();
-    *strm << indent << "\"" << fojson::escape_for_json(name) << "\": ";
+    *strm << indent << "\"" << focovjson::escape_for_covjson(name) << "\": ";
 
     if (sendData) {
 
         if (b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
             libdap::Str *strVar = (libdap::Str *) b;
             std::string tmpString = strVar->value();
-            *strm << "\"" << fojson::escape_for_json(tmpString) << "\"";
+            *strm << "\"" << focovjson::escape_for_covjson(tmpString) << "\"";
         }
         else {
             b->print_val(*strm, "", false);
@@ -420,12 +420,12 @@ void FoInstanceJsonTransform::transformAtomic(std::ostream *strm, libdap::BaseTy
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Structure *b, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::Structure *b, string indent, bool sendData)
 {
 
     // Open object with name of the structure
     std::string name = b->name();
-    *strm << indent << "\"" << fojson::escape_for_json(name) << "\": {" << endl;
+    *strm << indent << "\"" << focovjson::escape_for_covjson(name) << "\": {" << endl;
 
     // Process the variables.
     if (b->width(true) > 0) {
@@ -437,8 +437,8 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Structure *b
             // If the variable is projected, send (transform) it.
             if ((*vi)->send_p()) {
                 libdap::BaseType *v = *vi;
-                BESDEBUG(FoInstanceJsonTransform_debug_key,
-                    "FoInstanceJsonTransform::transform() - Processing structure variable: " << v->name() << endl);
+                BESDEBUG(FoInstanceCovJsonTransform_debug_key,
+                    "FoInstanceCovJsonTransform::transform() - Processing structure variable: " << v->name() << endl);
                 transform(strm, v, indent + _indent_increment, sendData);
                 if ((vi + 1) != ve) {
                     *strm << ",";
@@ -459,15 +459,15 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Structure *b
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Grid *g, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::Grid *g, string indent, bool sendData)
 {
 
     // Open JSON property object with name of the grid
     std::string name = g->name();
-    *strm << indent << "\"" << fojson::escape_for_json(name) << "\": {" << endl;
+    *strm << indent << "\"" << focovjson::escape_for_covjson(name) << "\": {" << endl;
 
-    BESDEBUG(FoInstanceJsonTransform_debug_key,
-        "FoInstanceJsonTransform::transform() - Processing Grid data Array: " << g->get_array()->name() << endl);
+    BESDEBUG(FoInstanceCovJsonTransform_debug_key,
+        "FoInstanceCovJsonTransform::transform() - Processing Grid data Array: " << g->get_array()->name() << endl);
 
     // Process the data array
     transform(strm, g->get_array(), indent + _indent_increment, sendData);
@@ -475,8 +475,8 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Grid *g, str
 
     // Process the MAP arrays
     for (libdap::Grid::Map_iter mapi = g->map_begin(); mapi < g->map_end(); mapi++) {
-        BESDEBUG(FoInstanceJsonTransform_debug_key,
-            "FoInstanceJsonTransform::transform() - Processing Grid Map Array: " << (*mapi)->name() << endl);
+        BESDEBUG(FoInstanceCovJsonTransform_debug_key,
+            "FoInstanceCovJsonTransform::transform() - Processing Grid Map Array: " << (*mapi)->name() << endl);
         if (mapi != g->map_begin()) {
             *strm << "," << endl;
         }
@@ -496,12 +496,12 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Grid *g, str
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Sequence *s, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::Sequence *s, string indent, bool sendData)
 {
 
     // Open JSON property object with name of the sequence
     std::string name = s->name();
-    *strm << indent << "\"" << fojson::escape_for_json(name) << "\": {" << endl;
+    *strm << indent << "\"" << focovjson::escape_for_covjson(name) << "\": {" << endl;
 
     string child_indent = indent + _indent_increment;
 
@@ -519,7 +519,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Sequence *s,
     for (libdap::Constructor::Vars_iter v = s->var_begin(); v < s->var_end(); v++) {
         if (v != s->var_begin()) *strm << ",";
         std::string name = (*v)->name();
-        *strm << "\"" << fojson::escape_for_json(name) << "\"";
+        *strm << "\"" << focovjson::escape_for_covjson(name) << "\"";
     }
     *strm << "]," << endl;
 
@@ -557,44 +557,44 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Sequence *s,
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Array *a, string indent, bool sendData)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
 
-    BESDEBUG(FoInstanceJsonTransform_debug_key,
-        "FoInstanceJsonTransform::transform() - Processing Array. " << " a->type(): " << a->type() << " a->var()->type(): " << a->var()->type() << endl);
+    BESDEBUG(FoInstanceCovJsonTransform_debug_key,
+        "FoInstanceCovJsonTransform::transform() - Processing Array. " << " a->type(): " << a->type() << " a->var()->type(): " << a->var()->type() << endl);
 
     switch (a->var()->type()) {
     // Handle the atomic types - that's easy!
     case libdap::dods_byte_c:
-        json_simple_type_array<libdap::dods_byte>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_byte>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_int16_c:
-        json_simple_type_array<libdap::dods_int16>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_int16>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_uint16_c:
-        json_simple_type_array<libdap::dods_uint16>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_uint16>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_int32_c:
-        json_simple_type_array<libdap::dods_int32>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_int32>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_uint32_c:
-        json_simple_type_array<libdap::dods_uint32>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_uint32>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_float32_c:
-        json_simple_type_array<libdap::dods_float32>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_float32>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_float64_c:
-        json_simple_type_array<libdap::dods_float64>(strm, a, indent, sendData);
+        covjson_simple_type_array<libdap::dods_float64>(strm, a, indent, sendData);
         break;
 
     case libdap::dods_str_c: {
-        json_string_array(strm, a, indent, sendData);
+        covjson_string_array(strm, a, indent, sendData);
         break;
 #if 0
         //json_simple_type_array<Str>(strm,a,indent);
@@ -606,7 +606,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Array *a, st
     }
 
     case libdap::dods_url_c: {
-        json_string_array(strm, a, indent, sendData);
+        covjson_string_array(strm, a, indent, sendData);
         break;
 #if 0
         //json_simple_type_array<Url>(strm,a,indent);
@@ -618,24 +618,24 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Array *a, st
     }
 
     case libdap::dods_structure_c: {
-        string s = (string) "File out JSON, " + "Arrays of Structure objects not a supported return type.";
+        string s = (string) "File out COVJSON, " + "Arrays of Structure objects not a supported return type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
     case libdap::dods_grid_c: {
-        string s = (string) "File out JSON, " + "Arrays of Grid objects not a supported return type.";
+        string s = (string) "File out COVJSON, " + "Arrays of Grid objects not a supported return type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
 
     case libdap::dods_sequence_c: {
-        string s = (string) "File out JSON, " + "Arrays of Sequence objects not a supported return type.";
+        string s = (string) "File out COVJSON, " + "Arrays of Sequence objects not a supported return type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
 
     case libdap::dods_array_c: {
-        string s = (string) "File out JSON, " + "Arrays of Array objects not a supported return type.";
+        string s = (string) "File out COVJSON, " + "Arrays of Array objects not a supported return type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
@@ -646,13 +646,13 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Array *a, st
         // case libdap::dods_url4_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
-        string s = (string) "File out JSON, " + "DAP4 types not yet supported.";
+        string s = (string) "File out COVJSON, " + "DAP4 types not yet supported.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
 
     default: {
-        string s = (string) "File out JSON, " + "Unrecognized type.";
+        string s = (string) "File out COVJSON, " + "Unrecognized type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
@@ -673,7 +673,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::Array *a, st
  * @param indent White space indent.
  * @param sendData If the sendData parameter is true data will be sent. If sendData is false then the metadata will be sent.
  */
-void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::AttrTable &attr_table, string indent)
+void FoInstanceCovJsonTransform::transform(std::ostream *strm, libdap::AttrTable &attr_table, string indent)
 {
     /*
      * Since Attributes get promoted to JSON "properties" of their parent object (either a
@@ -701,7 +701,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::AttrTable &a
 
                 // Open a JSON property with the name of the Attribute Table and
                 std::string name = atbl->get_name();
-                *strm << child_indent << "\"" << fojson::escape_for_json(name) << "\": {" << endl;
+                *strm << child_indent << "\"" << focovjson::escape_for_covjson(name) << "\": {" << endl;
 
                 // Process the Attribute Table.
                 transform(strm, *atbl, child_indent + _indent_increment);
@@ -718,7 +718,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::AttrTable &a
 
                 // Name of property
                 std::string name = attr_table.get_name(at_iter);
-                *strm << child_indent << "\"" << fojson::escape_for_json(name) << "\": ";
+                *strm << child_indent << "\"" << focovjson::escape_for_covjson(name) << "\": ";
 
                 // Open values array
                 *strm << "[";
@@ -731,7 +731,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::AttrTable &a
                         *strm << "\"";
 
                         string value = (*values)[i];
-                        *strm << fojson::escape_for_json(value);
+                        *strm << focovjson::escape_for_covjson(value);
                         *strm << "\"";
                     }
                     else {

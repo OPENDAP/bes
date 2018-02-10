@@ -33,10 +33,10 @@
 
 using std::endl;
 
-#include "FoJsonModule.h"
-#include "FoDapJsonTransmitter.h"
-#include "FoInstanceJsonTransmitter.h"
-#include "FoJsonRequestHandler.h"
+#include "FoCovJsonModule.h"
+#include "FoDapCovJsonTransmitter.h"
+#include "FoInstanceCovJsonTransmitter.h"
+#include "FoCovJsonRequestHandler.h"
 #include "BESRequestHandlerList.h"
 
 #include <BESReturnManager.h>
@@ -47,8 +47,8 @@ using std::endl;
 #include <TheBESKeys.h>
 #include <BESDebug.h>
 
-#define RETURNAS_JSON "json"
-#define RETURNAS_IJSON "ijson"
+#define RETURNAS_COVJSON "covjson"
+#define RETURNAS_ICOVJSON "icovjson"
 
 
 
@@ -62,24 +62,24 @@ using std::endl;
  *
  * @param modname The name of the module being loaded
  */
-void FoJsonModule::initialize(const string &modname)
+void FoCovJsonModule::initialize(const string &modname)
 {
-    BESDEBUG( "fojson", "Initializing module " << modname << endl );
+    BESDEBUG( "focovjson", "Initializing module " << modname << endl );
 
-    BESRequestHandler *handler = new FoJsonRequestHandler(modname);
+    BESRequestHandler *handler = new FoCovJsonRequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
 
-    BESDEBUG( "fojson", "    adding " << RETURNAS_JSON << " transmitter" << endl );
-    BESReturnManager::TheManager()->add_transmitter(RETURNAS_JSON, new FoDapJsonTransmitter());
+    BESDEBUG( "focovjson", "    adding " << RETURNAS_COVJSON << " transmitter" << endl );
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_COVJSON, new FoDapCovJsonTransmitter());
 
 
-    BESDEBUG( "fojson", "    adding " << RETURNAS_IJSON << " transmitter" << endl );
-    BESReturnManager::TheManager()->add_transmitter(RETURNAS_IJSON, new FoInstanceJsonTransmitter());
+    BESDEBUG( "focovjson", "    adding " << RETURNAS_ICOVJSON << " transmitter" << endl );
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_ICOVJSON, new FoInstanceCovJsonTransmitter());
 
 
-    BESDebug::Register("fojson");
-    BESDEBUG( "fojson", "Done Initializing module " << modname << endl );
+    BESDebug::Register("focovjson");
+    BESDEBUG( "focovjson", "Done Initializing module " << modname << endl );
 }
 
 /** @brief removes any registered callbacks or objects from the
@@ -90,20 +90,20 @@ void FoJsonModule::initialize(const string &modname)
  *
  * @param modname The name of the module being removed
  */
-void FoJsonModule::terminate(const string &modname)
+void FoCovJsonModule::terminate(const string &modname)
 {
-    BESDEBUG( "fojson", "Cleaning module " << modname << endl );
-    BESDEBUG( "fojson", "    removing " << RETURNAS_JSON << " transmitter" << endl );
+    BESDEBUG( "focovjson", "Cleaning module " << modname << endl );
+    BESDEBUG( "focovjson", "    removing " << RETURNAS_COVJSON << " transmitter" << endl );
 
-    BESReturnManager::TheManager()->del_transmitter(RETURNAS_JSON);
+    BESReturnManager::TheManager()->del_transmitter(RETURNAS_COVJSON);
 
-    BESDEBUG( "fojson", "    removing " << modname << " request handler " << endl );
+    BESDEBUG( "focovjson", "    removing " << modname << " request handler " << endl );
 
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     if (rh)
         delete rh;
 
-    BESDEBUG( "fojson", "Done Cleaning module " << modname << endl );
+    BESDEBUG( "focovjson", "Done Cleaning module " << modname << endl );
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -112,9 +112,9 @@ void FoJsonModule::terminate(const string &modname)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void FoJsonModule::dump(ostream &strm) const
+void FoCovJsonModule::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "FoJsonModule::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "FoCovJsonModule::dump - (" << (void *) this << ")" << endl;
 }
 
 /** @brief A c function that adds this module to the list of modules to
@@ -123,6 +123,6 @@ void FoJsonModule::dump(ostream &strm) const
 extern "C"
 BESAbstractModule *maker()
 {
-    return new FoJsonModule;
+    return new FoCovJsonModule;
 }
 

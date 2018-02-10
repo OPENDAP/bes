@@ -1,11 +1,12 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoJsonRequestHandler.h
+// FoCovJsonRequestHandler.h
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES COVJSON File Out Module
 //
 // Copyright (c) 2014 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
+// Copied from Nathan Potters JSON implementation
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,8 +27,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_FoJsonRequestHandler_H
-#define I_FoJsonRequestHandler_H 1
+#ifndef I_FoCovJsonRequestHandler_H
+#define I_FoCovJsonRequestHandler_H 1
 
 #include "BESRequestHandler.h"
 
@@ -38,10 +39,10 @@
  * used to build a Dap DataDDS object, so those functions are not needed
  * here.
  */
-class FoJsonRequestHandler: public BESRequestHandler {
+class FoCovJsonRequestHandler: public BESRequestHandler {
 public:
-    FoJsonRequestHandler(const string &name);
-    virtual ~FoJsonRequestHandler(void);
+    FoCovJsonRequestHandler(const string &name);
+    virtual ~FoCovJsonRequestHandler(void);
 
     virtual void dump(ostream &strm) const;
 

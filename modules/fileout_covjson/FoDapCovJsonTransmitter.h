@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoW10JsonTransmitter.h
+// FoW10CovJsonTransmitter.h
 //
 // This file is part of BES JSON File Out Module
 //
@@ -26,8 +26,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef A_FoDapJsonTransmitter_h
-#define A_FoDapJsonTransmitter_h 1
+#ifndef A_FoDapCovJsonTransmitter_h
+#define A_FoDapCovJsonTransmitter_h 1
 
 #include <BESTransmitter.h>
 
@@ -43,17 +43,17 @@ class BESDataHandlerInterface;
  *
  * @see BESTransmitter
  */
-class FoDapJsonTransmitter: public BESTransmitter {
+class FoDapCovJsonTransmitter: public BESTransmitter {
 private:
     static string temp_dir;
 
 public:
-    FoDapJsonTransmitter();
-    virtual ~FoDapJsonTransmitter() { }
+    FoDapCovJsonTransmitter();
+    virtual ~FoDapCovJsonTransmitter() { }
 
     static void send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
     static void send_metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 
-#endif // A_FoDapJsonTransmitter_h
+#endif // A_FoDapCovJsonTransmitter_h
 
