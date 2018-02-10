@@ -1,0 +1,21 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP File Out NetCDF (FoJson) BES Module Configuration file          #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=fojson
+BES.module.fojson=@bes_modules_dir@/libfojson_module.so
+
+# File Out JSON (FoJson) module specific parameters"
+# FoJson.Tempdir: Directory to store temporary netcdf files during transformation"
+# FoJson.Reference: URL to the FoJson Reference Page at docs.opendap.org"
+FoJson.Tempdir=/tmp
+FoJson.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_JSON
