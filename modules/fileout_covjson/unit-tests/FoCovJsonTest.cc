@@ -1,10 +1,14 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of libdap, A C++ implementation of the OPeNDAP Data
+// This file is part of bes, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
-// Author: Nathan David Potter <ndp@opendap.org>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Corey Hemphill <hemphilc@oregonstate.edu>
+// Author: River Hendriksen <hendriri@oregonstate.edu>
+// Author: Riley Rimer <rrimer@oregonstate.edu>
+//
+// This file was adapted from FoCovJsonTest.cc
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -51,19 +55,19 @@
 #include <BESDebug.h>
 
 #include "test_config.h"
-#include "fojson_utils.h"
+#include "focovjson_utils.h"
 
-#include "FoInstanceJsonTransform.h"
-#include "FoDapJsonTransform.h"
+#include "FoInstanceCovJsonTransform.h"
+#include "FoDapCovJsonTransform.h"
 
 static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-namespace fojson {
+namespace focovjson {
 
-class FoJsonTest: public CppUnit::TestFixture {
+class FoCovJsonTest: public CppUnit::TestFixture {
 
 private:
     string d_tmpDir;
@@ -95,16 +99,16 @@ private:
 public:
 
     // Called once before everything gets tested
-    FoJsonTest() :
+    FoCovJsonTest() :
         d_tmpDir(string(TEST_BUILD_DIR) + "/tmp")
     {
-        DBG(cerr << "FoJsonTest - Constructor" << endl);
+        DBG(cerr << "FoCovJsonTest - Constructor" << endl);
     }
 
     // Called at the end of the test
-    ~FoJsonTest()
+    ~FoCovJsonTest()
     {
-        DBG(cerr << "FoJsonTest - Destructor" << endl);
+        DBG(cerr << "FoCovJsonTest - Destructor" << endl);
     }
 
     // Called before each test
@@ -117,15 +121,14 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( FoJsonTest );
+CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
     CPPUNIT_TEST(test_abstract_object_metadata_representation);
     CPPUNIT_TEST(test_abstract_object_data_representation);
     CPPUNIT_TEST(test_instance_object_metadata_representation);
     CPPUNIT_TEST(test_instance_object_data_representation);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void test_abstract_object_metadata_representation()
     {
@@ -133,18 +136,18 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();
 
-            DBG(cerr << "FoJsonTest::test_abstract_object_metadata_representation() - BEGIN" << endl);
-            DBG(cerr << "FoJsonTest::test_abstract_object_metadata_representation() - d_tmpDir: " << d_tmpDir << endl);
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - d_tmpDir: " << d_tmpDir << endl);
 
             //############################# DATA TEST ####################################
-            string tmpFile(d_tmpDir + "/test_abstract_object_representation_METADATA.json");
-            DBG(cerr << "FoJsonTest::test_abstract_object_metadata_representation() - tmpFile: " << tmpFile << endl);
+            string tmpFile(d_tmpDir + "/test_abstract_object_representation_METADATA.covjson");
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - tmpFile: " << tmpFile << endl);
 
-            FoDapJsonTransform ft(test_DDS);
+            FoDapCovJsonTransform ft(test_DDS);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_abstract_object_metadata_representation() - Calling FoDapJsonTransform::transform(false) - Send metadata"
+                    << "FoCovJsonTest::test_abstract_object_metadata_representation() - Calling FoDapCovJsonTransform::transform(false) - Send metadata"
                     << endl);
 
             fstream output;
@@ -153,30 +156,30 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
             // Compare the result with the baseline file.
             string baseline = fileToString(
-                (string) TEST_SRC_DIR + "/baselines/abstract_object_test_METADATA.json.baseline");
+                (string) TEST_SRC_DIR + "/baselines/abstract_object_test_METADATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
             DBG(
-                cerr << "FoJsonTest::test_abstract_object_metadata_representation() - baseline: " << endl << baseline
+                cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - baseline: " << endl << baseline
                     << endl);
             DBG(
-                cerr << "FoJsonTest::test_abstract_object_metadata_representation() - result: " << endl << result
+                cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - result: " << endl << result
                     << endl);
 
             DBG(
-                cerr << "FoJsonTest::test_abstract_object_metadata_representation() - baseline.compare(result): "
+                cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - baseline.compare(result): "
                     << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_abstract_object_metadata_representation() - FoDapJsonTransform::transform() SUCCESS. Deleting DDS..."
+                    << "FoCovJsonTest::test_abstract_object_metadata_representation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..."
                     << endl);
 
             delete test_DDS;
 
-            DBG(cerr << " FoJsonTest::test_abstract_object_metadata_representation() - END" << endl);
+            DBG(cerr << " FoCovJsonTest::test_abstract_object_metadata_representation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -199,18 +202,18 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();
 
-            DBG(cerr << "FoJsonTest::test_abstract_object_data_representation() - BEGIN" << endl);
-            DBG(cerr << "FoJsonTest::test_abstract_object_data_representation() - d_tmpDir: " << d_tmpDir << endl);
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - d_tmpDir: " << d_tmpDir << endl);
 
             //############################# DATA TEST ####################################
-            string tmpFile(d_tmpDir + "/test_abstract_object_representation_DATA.json");
-            DBG(cerr << "FoJsonTest::test_abstract_object_data_representation() - tmpFile: " << tmpFile << endl);
+            string tmpFile(d_tmpDir + "/test_abstract_object_representation_DATA.covjson");
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - tmpFile: " << tmpFile << endl);
 
-            FoDapJsonTransform ft(test_DDS);
+            FoDapCovJsonTransform ft(test_DDS);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_abstract_object_data_representation() - Calling FoDapJsonTransform::transform(true) - Send data."
+                    << "FoCovJsonTest::test_abstract_object_data_representation() - Calling FoDapCovJsonTransform::transform(true) - Send data."
                     << endl);
 
             fstream output;
@@ -221,18 +224,18 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
             // Compare the result with the baseline file.
             string baseline = fileToString(
-                (string) TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.json.baseline");
+                (string) TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
             DBG(
-                cerr << "FoJsonTest::test_abstract_object_data_representation() - baseline:" << endl << "'" << baseline
+                cerr << "FoCovJsonTest::test_abstract_object_data_representation() - baseline:" << endl << "'" << baseline
                     << "'" << endl);
             DBG(
-                cerr << "FoJsonTest::test_abstract_object_data_representation() - result:" << endl << "'" << result
+                cerr << "FoCovJsonTest::test_abstract_object_data_representation() - result:" << endl << "'" << result
                     << "'" << endl);
 
             DBG(
-                cerr << "FoJsonTest::test_abstract_object_data_representation() - baseline.compare(result): "
+                cerr << "FoCovJsonTest::test_abstract_object_data_representation() - baseline.compare(result): "
                     << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.length() == result.length());
@@ -240,10 +243,10 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_abstract_object_data_representation() - FoDapJsonTransform::transform() SUCCESS. Deleting DDS..."
+                    << "FoCovJsonTest::test_abstract_object_data_representation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..."
                     << endl);
 
-            DBG(cerr << " FoJsonTest::test_abstract_object_data_representation() - END" << endl);
+            DBG(cerr << " FoCovJsonTest::test_abstract_object_data_representation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -269,18 +272,18 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();
 
-            DBG(cerr << "FoJsonTest::test_instance_object_metadata_representation() - BEGIN" << endl);
-            DBG(cerr << "FoJsonTest::test_instance_object_metadata_representation() - d_tmpDir: " << d_tmpDir << endl);
+            DBG(cerr << "FoCovJsonTest::test_instance_object_metadata_representation() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::test_instance_object_metadata_representation() - d_tmpDir: " << d_tmpDir << endl);
 
             //############################# METADATA TEST ####################################
-            string tmpFile(d_tmpDir + "/test_instance_object_representation_METADATA.json");
-            DBG(cerr << "FoJsonTest::test_instance_object_metadata_representation() - tmpFile: " << tmpFile << endl);
+            string tmpFile(d_tmpDir + "/test_instance_object_representation_METADATA.covjson");
+            DBG(cerr << "FoCovJsonTest::test_instance_object_metadata_representation() - tmpFile: " << tmpFile << endl);
 
-            FoInstanceJsonTransform ft(test_DDS);
+            FoInstanceCovJsonTransform ft(test_DDS);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_instance_object_metadata_representation() - Calling FoInstanceJsonTransform::transform(false) (send metadata)"
+                    << "FoCovJsonTest::test_instance_object_metadata_representation() - Calling FoInstanceCovJsonTransform::transform(false) (send metadata)"
                     << endl);
 
             fstream output;
@@ -289,31 +292,31 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
             // Compare the result with the baseline file.
             string baseline = fileToString(
-                (string) TEST_SRC_DIR + "/baselines/instance_object_test_METADATA.json.baseline");
+                (string) TEST_SRC_DIR + "/baselines/instance_object_test_METADATA.covjson.baseline");
             string result = fileToString(tmpFile);
             //libdap::ConstraintEvaluator ce;
 
             DBG(
-                cerr << "FoJsonTest::test_instance_object_metadata_representation() - baseline: " << endl << baseline
+                cerr << "FoCovJsonTest::test_instance_object_metadata_representation() - baseline: " << endl << baseline
                     << endl);
             DBG(
-                cerr << "FoJsonTest::test_instance_object_metadata_representation() - result: " << endl << result
+                cerr << "FoCovJsonTest::test_instance_object_metadata_representation() - result: " << endl << result
                     << endl);
 
             DBG(
-                cerr << "FoJsonTest::test_instance_object_metadata_representation() - baseline.compare(result): "
+                cerr << "FoCovJsonTest::test_instance_object_metadata_representation() - baseline.compare(result): "
                     << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_instance_object_metadata_representation() - FoInstanceJsonTransform::transform() SUCCESS. Deleting DDS..."
+                    << "FoCovJsonTest::test_instance_object_metadata_representation() - FoInstanceCovJsonTransform::transform() SUCCESS. Deleting DDS..."
                     << endl);
 
             delete test_DDS;
 
-            DBG(cerr << " FoJsonTest::test_instance_object_metadata_representation() - END" << endl);
+            DBG(cerr << " FoCovJsonTest::test_instance_object_metadata_representation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -335,18 +338,18 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();
 
-            DBG(cerr << "FoJsonTest::test_instance_object_data_representation() - BEGIN" << endl);
-            DBG(cerr << "FoJsonTest::test_instance_object_data_representation() - d_tmpDir: " << d_tmpDir << endl);
+            DBG(cerr << "FoCovJsonTest::test_instance_object_data_representation() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::test_instance_object_data_representation() - d_tmpDir: " << d_tmpDir << endl);
 
             //############################# DATA TEST ####################################
-            string tmpFile(d_tmpDir + "/test_instance_object_representation_DATA.json");
-            DBG(cerr << "FoJsonTest::test_instance_object_data_representation() - tmpFile: " << tmpFile << endl);
+            string tmpFile(d_tmpDir + "/test_instance_object_representation_DATA.covjson");
+            DBG(cerr << "FoCovJsonTest::test_instance_object_data_representation() - tmpFile: " << tmpFile << endl);
 
-            FoInstanceJsonTransform ft(test_DDS);
+            FoInstanceCovJsonTransform ft(test_DDS);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_instance_object_data_representation() - Calling FoInstanceJsonTransform::transform(true) (send data)"
+                    << "FoCovJsonTest::test_instance_object_data_representation() - Calling FoInstanceCovJsonTransform::transform(true) (send data)"
                     << endl);
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
@@ -354,28 +357,28 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
             // Compare the result with the baseline file.
             string baseline = fileToString(
-                (string) TEST_SRC_DIR + "/baselines/instance_object_test_DATA.json.baseline");
+                (string) TEST_SRC_DIR + "/baselines/instance_object_test_DATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
             DBG(
-                cerr << "FoJsonTest::test_instance_object_data_representation() - baseline: " << endl << baseline
+                cerr << "FoCovJsonTest::test_instance_object_data_representation() - baseline: " << endl << baseline
                     << endl);
-            DBG(cerr << "FoJsonTest::test_instance_object_data_representation() - result: " << endl << result << endl);
+            DBG(cerr << "FoCovJsonTest::test_instance_object_data_representation() - result: " << endl << result << endl);
 
             DBG(
-                cerr << "FoJsonTest::test_instance_object_data_representation() - baseline.compare(result): "
+                cerr << "FoCovJsonTest::test_instance_object_data_representation() - baseline.compare(result): "
                     << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(
                 cerr
-                    << "FoJsonTest::test_instance_object_data_representation() - FoInstanceJsonTransform::transform() SUCCESS. Deleting DDS..."
+                    << "FoCovJsonTest::test_instance_object_data_representation() - FoInstanceCovJsonTransform::transform() SUCCESS. Deleting DDS..."
                     << endl);
 
             delete test_DDS;
 
-            DBG(cerr << " FoJsonTest::test_instance_object_data_representation() - END" << endl);
+            DBG(cerr << " FoCovJsonTest::test_instance_object_data_representation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -646,16 +649,16 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         grid.set_send_p(true);
         dds->add_var(&grid);       // add a copy
 
-        DBG(cerr << "FoJsonTest::makeTestDDS(): " << endl);
+        DBG(cerr << "FoCovJsonTest::makeTestDDS(): " << endl);
         DBG(dds->print_constrained(cerr));
 
         return dds;
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FoJsonTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(FoCovJsonTest);
 
-} // namespace fojson
+} // namespace focovjson
 
 int main(int argc, char*argv[])
 {
@@ -668,9 +671,9 @@ int main(int argc, char*argv[])
             cerr << "##### DEBUG is ON" << endl;
             break;
         case 'h': {     // help - show test names
-            std::cerr << "Usage: FoJsonTest has the following tests:" << std::endl;
-            const std::vector<CppUnit::Test*> &tests = fojson::FoJsonTest::suite()->getTests();
-            unsigned int prefix_len = fojson::FoJsonTest::suite()->getName().append("::").length();
+            std::cerr << "Usage: FoCovJsonTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = focovjson::FoCovJsonTest::suite()->getTests();
+            unsigned int prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
             for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
             }
@@ -696,7 +699,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = fojson::FoJsonTest::suite()->getName().append("::").append(argv[i]);
+            test = focovjson::FoCovJsonTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
 	    ++i;
         }
