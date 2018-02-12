@@ -162,7 +162,7 @@ void BESXMLInterface::build_data_request_plan()
                 // push this new command to the back of the list
                 d_xml_cmd_list.push_back(current_cmd);
 
-                // only one of the commands can build a response
+                // only one of the commands in a request can build a response
                 bool cmd_has_response = current_cmd->has_response();
                 if (has_response && cmd_has_response)
                     throw BESSyntaxUserError("Commands with multiple responses not supported.", __FILE__, __LINE__);
@@ -180,7 +180,7 @@ void BESXMLInterface::build_data_request_plan()
                 BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
 
                 string return_as = current_dhi.data[RETURN_CMD];
-                if (!return_as.empty() & !BESReturnManager::TheManager()->find_transmitter(return_as))
+                if (!return_as.empty() && !BESReturnManager::TheManager()->find_transmitter(return_as))
                     throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__,
                         __LINE__);
             }
@@ -266,6 +266,14 @@ void BESXMLInterface::execute_data_request_plan()
             }
         }
 #endif
+
+        ///////////
+
+        // Here's where we could look at the dynamic type do something different
+        // for a new kind of XMLCommand (e.g., SimpleXMLCommand). For this, the
+        // the code now in the response_handler->execute() and ->transmit().
+
+        //////////
 
         if (!d_dhi_ptr->response_handler)
             throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__,
