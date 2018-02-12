@@ -54,7 +54,7 @@ HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefineCommand.h BESXMLGetCommand.h			\
 	BESXMLDeleteContainerCommand.h BESXMLDeleteContainersCommand.h	\
 	BESXMLDeleteDefinitionCommand.h BESXMLDeleteDefinitionsCommand.h \
-	SetContextsResponseHandler.h XMLSetContextsCommand.h NULLResponseHandler.h
+	SetContextsResponseHandler.h XMLSetContextsCommand.h NullResponseHandler.h
 	
 DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc
 DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h
