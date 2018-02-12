@@ -71,6 +71,13 @@ BESDefineResponseHandler::~BESDefineResponseHandler()
  * If the keyword SILENT is set within the data handler interface then no
  * information is added.
  *
+ * @todo Rewrite this comment to make it correct: no information is written into
+ * the BESInfo object (whcih is a SilentInfo object that never returns anything).
+ * The execution of the command is pretty simple.
+ *
+ * @todo Roll this command's execute() method into the XMLDefineCommand::parse_request()
+ * method using the NullResponseObject.
+ *
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if the store name specified does not exist
  * @see BESDataHandlerInterface
@@ -86,6 +93,8 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     string def_name = dhi.data[DEF_NAME];
     string store_name = dhi.data[STORE_NAME];
+
+
     if (store_name == "") store_name = PERSISTENCE_VOLATILE;
 
     BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
@@ -98,6 +107,8 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
             dd->add_container(dhi.container);
             dhi.next_container();
         }
+
+        // TODO Now no-ops. Aggreagtion removed. jhrg 2/11/18
         dd->set_agg_cmd(dhi.data[AGG_CMD]);
         dd->set_agg_handler(dhi.data[AGG_HANDLER]);
         dhi.data[AGG_CMD] = "";

@@ -355,8 +355,7 @@ void BESXMLInterface::clean()
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
         if (d_dhi_ptr) {
-            VERBOSE(
-                /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
 
             d_dhi_ptr->clean(); // Delete the ResponseHandler if present
         }

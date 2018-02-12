@@ -37,6 +37,8 @@
 
 #include "BESObj.h"
 
+#include <sys/resource.h>
+
 #define MEGABYTE 1024*1024
 
 class BESMemoryGlobalArea: public BESObj {
