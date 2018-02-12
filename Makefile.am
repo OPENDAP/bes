@@ -56,7 +56,7 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = doxy.conf.in bes.spec \
+EXTRA_DIST = doxy.conf.in bes.spec modules \
 OSX_Resources bes-config-pkgconfig besd.logrotate README.md
 
 HTML_DOCS=html
