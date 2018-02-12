@@ -131,7 +131,9 @@ chmod g+w $RPM_BUILD_ROOT%{beslogdir}
 mkdir -p $RPM_BUILD_ROOT%{bespiddir}
 chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
-mv $RPM_BUILD_ROOT%{_bindir}/bes-tempfiles-conf %{_sysconfdir}/usr/lib/tmpfiles.d/bes.conf
+mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
+echo "d /run/var/bes 0755 bes bes -" > /tmp/bes.conf 
+install -m 0644 /tmp/bes.conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -158,6 +160,8 @@ exit 0
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
 %dir %{_sysconfdir}/usr/lib/tempfiles.d
+
+%{_tmpfilesdir}/%{name}.conf
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf

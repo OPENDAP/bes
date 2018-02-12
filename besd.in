@@ -19,8 +19,7 @@ prog=besd
 RETVAL=0
 LD_LIBRARY_PATH="@libdir@:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH
-# https://opendap.atlassian.net/browse/HYRAX-600
-test -d "/var/run/bes" || mkdir -p /var/run/bes
+# test -d "/var/run/bes" || mkdir -p /var/run/bes
 
 # See how we were called.
 case "$1" in
