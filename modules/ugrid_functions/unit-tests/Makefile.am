@@ -34,7 +34,7 @@ noinst_HEADERS = test_config.h
 
 DIRS_EXTRA = 
 
-EXTRA_DIST = 
+EXTRA_DIST = test_config.h.in
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno test_config.h *.strm *.file tmp.txt
 
