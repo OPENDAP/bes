@@ -38,7 +38,7 @@ if DAP_BUILTIN_MODULES
 SUBDIRS += modules
 endif
 
-bin_SCRIPTS = bes-config bes-config-pkgconfig
+bin_SCRIPTS = bes-config bes-config-pkgconfig bes-tmpfiles-conf
 
 # Yes, even though its `init_d_SCRIPTS`, we use `init_ddir`,
 # with-out a second underscore.
