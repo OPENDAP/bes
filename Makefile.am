@@ -57,7 +57,7 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = doxy.conf.in bes.spec OSX_Resources bes-config-pkgconfig \
-besd.logrotate README.md
+bes-tmpfiles-conf besd.logrotate README.md
 
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
