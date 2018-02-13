@@ -135,7 +135,8 @@ mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
 #echo "d /var/run/bes 0755 bes bes -" > /tmp/bes.conf 
 #echo "x /var/run/bes/* " >> /tmp/bes.conf 
 #install -m 0644 /tmp/bes.conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf
-mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
+#mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
+mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/bes.conf 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -161,7 +162,6 @@ exit 0
 %doc ChangeLog NEWS README.md
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
-%dir %{_sysconfdir}/usr/lib/tempfiles.d
 
 %{_tmpfilesdir}/%{name}.conf
 
