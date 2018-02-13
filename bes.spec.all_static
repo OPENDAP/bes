@@ -132,7 +132,8 @@ mkdir -p $RPM_BUILD_ROOT%{bespiddir}
 chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
 mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
-echo "d /run/var/bes 0755 bes bes -" > /tmp/bes.conf 
+echo "d /var/run/bes 0755 bes bes -" > /tmp/bes.conf 
+echo "x /var/run/bes/* " >> /tmp/bes.conf 
 install -m 0644 /tmp/bes.conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf
 
 %clean
