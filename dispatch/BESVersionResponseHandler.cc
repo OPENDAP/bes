@@ -71,7 +71,7 @@ void
 BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESVersionInfo *info = new BESVersionInfo() ;
-    _response = info ;
+    d_response_object = info ;
     dhi.action_name = VERS_RESPONSE_STR ;
     info->begin_response( VERS_RESPONSE_STR, dhi ) ;
 
@@ -116,9 +116,9 @@ void
 BESVersionResponseHandler::transmit( BESTransmitter *transmitter,
                                   BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(_response) ;
+	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;

@@ -33,6 +33,9 @@
 #ifndef BESInternalError_h_
 #define BESInternalError_h_ 1
 
+#include <string>
+#include <ostream>
+
 #include "BESError.h"
 
 /** @brief exception thrown if inernal error encountered
@@ -43,7 +46,7 @@ protected:
 	{
 	}
 public:
-	BESInternalError(const string &msg, const string &file, unsigned int line) :
+	BESInternalError(const std::string &msg, const std::string &file, unsigned int line) :
 			BESError(msg, BES_INTERNAL_ERROR, file, line)
 	{
 	}
@@ -51,7 +54,7 @@ public:
 	{
 	}
 
-	virtual void dump(ostream &strm) const
+	virtual void dump(std::ostream &strm) const
 	{
 		strm << "BESInternalError::dump - (" << (void *) this << ")" << endl;
 		BESIndent::Indent();

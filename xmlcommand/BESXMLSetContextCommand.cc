@@ -61,8 +61,6 @@ void BESXMLSetContextCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    d_xmlcmd_dhi.action = SET_CONTEXT;
-
     name = props["name"];
     if (name.empty()) {
         string err = action + " command: name property missing";
@@ -76,9 +74,11 @@ void BESXMLSetContextCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[CONTEXT_VALUE] = value;
     d_cmd_log_info = (string) "set context " + name + " to " + value + ";";
 
+    d_xmlcmd_dhi.action = SET_CONTEXT;
+
     // now that we've set the action, go get the response handler for the
     // action
-    BESXMLCommand::set_response();
+   BESXMLCommand::set_response();
 }
 
 /** @brief dumps information about this object

@@ -44,14 +44,26 @@
 //class BESResponseHandler;
 class BESXMLCommand;
 
-// p_xmlcmd_builder: a pointer to a function that takes a BESDataHandlerInterface
-// instance and returns a BESXMLCommand instance.
+/**
+ * A pointer to a function that takes a BESDataHandlerInterface instance (passed
+ * by reference) and returns a pointer to a new BESXMLCommand instance.
+ */
 typedef BESXMLCommand *(*p_xmlcmd_builder)(const BESDataHandlerInterface &dhi);
 
+/**
+ * @brief Base class for the BES's commands
+ *
+ * Maintains a factory for used to build all of the BES's commands. This class
+ * also holds instances of the DataHandlerInterface used by a particular instance
+ * of a command and the information about this command that should be written
+ * to the BES log.
+ *
+ * @ The set_response() is used to form a linkage between the code
+ */
 class BESXMLCommand: public BESObj {
 private:
     /// Bind names top_xmlcmn_builder functions; used by find_command(), et al.
-    static std::map<std::string, p_xmlcmd_builder> cmd_list;
+    static std::map<std::string, p_xmlcmd_builder> factory;
     typedef std::map<std::string, p_xmlcmd_builder>::iterator cmd_iter;
 
 protected:
@@ -76,10 +88,15 @@ public:
     virtual void parse_request(xmlNode *node) = 0;
 
     /**
-     * @brief Has a response handler been created given the request
-     * document?
+     * @brief Does this command return a response to the client?
      *
-     * @return true if a response handler has been set, false otherwise
+     *  Every command has an associated ResponseHandler, but not all ResponseHandlers
+     *  return information to the BES's client. In fact, for any group of commands sent
+     *  to the BES, only *one* can return information (except for errors, which stop
+     *  command processing). If this command does not normally return a response (text
+     *  or binary data), the value of this method should be false.
+     *
+     * @return true if it returns a response, false otherwise
      */
     virtual bool has_response() = 0;
 
@@ -108,7 +125,7 @@ public:
     virtual void dump(ostream &strm) const;
 
     static void add_command(const std::string &cmd_str, p_xmlcmd_builder cmd);
-    static bool del_command(const std::string &cmd_str);
+    static void del_command(const std::string &cmd_str);
     static p_xmlcmd_builder find_command(const std::string &cmd_str);
 };
 

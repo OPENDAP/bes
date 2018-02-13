@@ -36,6 +36,21 @@
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
+
+/**
+ * @brief Parse the setContainer element in a request document
+ *
+ * This command will make a new Container object that binds a URL Path
+ * to the name on some data store the BES can access. If no data store
+ * is given in the command, the default 'catalog,' the local POSIX file
+ * system, is assumed. Confusingly, this default catalog is named 'catalog.'
+ *
+ * @todo This command can be shortened like the setContexts command to use
+ * the NullResponseHandler since it does not normally return data to the
+ * BES's client (i.e., it's response handler uses the SilentInfo response
+ * object).
+ *
+ */
 class BESXMLSetContainerCommand: public BESXMLCommand {
 public:
     BESXMLSetContainerCommand(const BESDataHandlerInterface &base_dhi);

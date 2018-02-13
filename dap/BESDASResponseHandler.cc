@@ -67,7 +67,7 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     dhi.action_name = DAS_RESPONSE_STR ;
     DAS *das = new DAS() ;
-    _response = new BESDASResponse( das ) ;
+    d_response_object = new BESDASResponse( das ) ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
@@ -87,9 +87,9 @@ void
 BESDASResponseHandler::transmit( BESTransmitter *transmitter,
                               BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	transmitter->send_response( DAS_SERVICE, _response, dhi ) ;
+	transmitter->send_response( DAS_SERVICE, d_response_object, dhi ) ;
     }
 }
 

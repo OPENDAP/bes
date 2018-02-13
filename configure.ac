@@ -33,19 +33,27 @@ dnl to default values otherwise.
 AC_CANONICAL_HOST
 AC_SUBST(host)
 
+dnl This is the default. If the caller uses --enable-developer, that option
+dnl will override these values
+cxx_debug_flags="-g -O2"
+
 dnl I moved this up to here from the tail end of the file
 dnl because it needs to run before the AC_PROG_CXX macro
 dnl which will also set CXXFLAGS
 dnl jhrg 3/4/15
-AC_ARG_ENABLE([developer],
-  [AS_HELP_STRING([--enable-developer],[developer mode])],
+AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
   [AM_CONDITIONAL([BES_DEVELOPER], [true])
-   dnl Not used anymore. jhrg 11/28/17 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
-   dnl Only set CXXFLAGS if the caller does not have them set in their environment
-   AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"])],
+   cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],   
   [AM_CONDITIONAL([BES_DEVELOPER], [false])
-   dnl AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
    AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
+
+AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])], 
+    [AM_CONDITIONAL([USE_ASAN], [true])
+     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
+    [AM_CONDITIONAL([USE_ASAN], [false])])
+
+dnl Only set CXXFLAGS if the caller didn't supply a value
+AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.

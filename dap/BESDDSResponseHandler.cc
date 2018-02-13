@@ -89,7 +89,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
 		dds->set_dap_version(bdds->get_dap_client_protocol());
 	}
 
-	_response = bdds;
+	d_response_object = bdds;
 
 	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
@@ -108,8 +108,8 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDDSResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-	if (_response) {
-		transmitter->send_response(DDS_SERVICE, _response, dhi);
+	if (d_response_object) {
+		transmitter->send_response(DDS_SERVICE, d_response_object, dhi);
 	}
 }
 

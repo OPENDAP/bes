@@ -1,10 +1,10 @@
-// BESXMLDapCommandModule.h
+// XMLSetContextsCommand.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2018 University Corporation for Atmospheric Research
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,30 +23,31 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#ifndef XMLSetContextsCommand_h
+#define XMLSetContextsCommand_h 1
 
-#ifndef A_BESXMLDapCommandModule_H
-#define A_BESXMLDapCommandModule_H 1
+#include "BESXMLCommand.h"
+#include "BESDataHandlerInterface.h"
 
-#include "BESAbstractModule.h"
+namespace bes {
 
-class BESXMLDapCommandModule: public BESAbstractModule {
+class XMLSetContextsCommand: public BESXMLCommand {
 public:
-    BESXMLDapCommandModule()
-    {
+    XMLSetContextsCommand(const BESDataHandlerInterface &base_dhi) : BESXMLCommand(base_dhi) { }
+    virtual ~XMLSetContextsCommand() { }
+
+    virtual void parse_request(xmlNode *node);
+
+    virtual bool has_response() {
+        return false;
     }
-    virtual ~BESXMLDapCommandModule()
-    {
-    }
-    virtual void initialize(const std::string &modname);
-    virtual void terminate(const std::string &modname);
-    virtual void dump(std::ostream &strm) const;
+
+    virtual void dump(ostream &strm) const;
+
+    static BESXMLCommand *CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };
 
-#endif // A_BESXMLDapCommandModule_H
+} // namespace bes
+
+#endif // XMLSetContextsCommand_h
 
