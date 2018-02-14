@@ -27,7 +27,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     cache_dir=blocking 
     FileLockingCacheTest $debug -c $cache_dir -p
     
-    write_lock_hold_time=3
+    write_lock_hold_time=4
     write_lock_start_time=`date "+%s"`
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x $write_lock_hold_time &], [0], [ignore], [ignore])
     write_lock_end_time=`date "+%s"`
@@ -36,7 +36,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     
     AS_IF([test x$verbose = xv], [echo "write_lock_elapsed: $write_lock_elapsed"], [])
     
-    read_lock_hold_time=1
+    read_lock_hold_time=3
     read_lock_start_time=`date "+%s"`
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r $read_lock_hold_time], [0], [ignore], [ignore])
     read_lock_end_time=`date "+%s"`
@@ -210,8 +210,8 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
     AT_CLEANUP
 ])
 
-
 AT_TEST_BLOCKING()
+
 AT_TEST_CREATE_AND_LOCK()
 AT_TEST_TWO_FILE_CREATE_AND_LOCK()
 AT_TEST_MULTIPLE_READ_LOCKS()
