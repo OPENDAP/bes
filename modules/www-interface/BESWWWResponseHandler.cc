@@ -77,21 +77,21 @@ void
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS(NULL, "virtual");
     BESDDSResponse *bdds = new BESDDSResponse(dds);
-    _response = bdds;
-    _response_name = DDS_RESPONSE;
+    d_response_object = bdds;
+    d_response_name = DDS_RESPONSE;
     dhi.action = DDS_RESPONSE;
     BESRequestHandlerList::TheList()->execute_each(dhi);
 #if 0
     // Fill the DAS
     DAS *das = new DAS;
     BESDASResponse *bdas = new BESDASResponse(das);
-    _response = bdas;
-    _response_name = DAS_RESPONSE;
+    d_response_object = bdas;
+    d_response_name = DAS_RESPONSE;
     dhi.action = DAS_RESPONSE;
     BESRequestHandlerList::TheList()->execute_each(dhi);
 #endif
     BESWWW *www = new BESWWW(/*bdas,*/ bdds);
-    _response = www;
+    d_response_object = www;
     dhi.action = WWW_RESPONSE;
 }
 
@@ -110,8 +110,8 @@ void
 void BESWWWResponseHandler::transmit(BESTransmitter * transmitter,
                                      BESDataHandlerInterface & dhi)
 {
-    if (_response) {
-        transmitter->send_response(WWW_TRANSMITTER, _response, dhi);
+    if (d_response_object) {
+        transmitter->send_response(WWW_TRANSMITTER, d_response_object, dhi);
     }
 }
 

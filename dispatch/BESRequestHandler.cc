@@ -47,7 +47,7 @@
  * @see BESResponseObject
  * @see BESResponseNames
  */
-bool BESRequestHandler::add_handler(const string &handler_name, p_request_handler handler_method)
+bool BESRequestHandler::add_handler(const string &handler_name, p_request_handler_method handler_method)
 {
     if (find_handler(handler_name) == 0) {
         _handler_list[handler_name] = handler_method;
@@ -84,7 +84,7 @@ bool BESRequestHandler::remove_handler(const string &handler_name)
  * @see BESResponseObject
  * @see BESResponseNames
  */
-p_request_handler BESRequestHandler::find_handler(const string &handler_name)
+p_request_handler_method BESRequestHandler::find_handler(const string &handler_name)
 {
     BESRequestHandler::Handler_citer i;
     i = _handler_list.find(handler_name);

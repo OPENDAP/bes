@@ -38,7 +38,7 @@
 /** @brief response handler that set context within the BES as a simple
  * name/value pair
  *
- * This response handler set context withiin the BES using the context name
+ * This response handler set context within the BES using the context name
  * and the context value as specified in the command:
  *
  * set context &lt;context_name&gt; to &lt;context_value&gt;;

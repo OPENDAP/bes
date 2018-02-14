@@ -53,18 +53,13 @@ using std::cout;
  */
 void BESXMLDapCommandModule::initialize(const string &/*modname*/)
 {
-    BESDEBUG( "dap", "Initializing DAP Commands:" << endl );
+    BESDEBUG("dap", "Initializing DAP Commands:" << endl);
 
-    BESXMLCommand::add_command( CATALOG_RESPONSE_STR,
-            BESXMLCatalogCommand::CommandBuilder );
+    BESXMLCommand::add_command(CATALOG_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
 
-    BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
-            BESXMLCatalogCommand::CommandBuilder );
-#if 0
-    BESXMLCommand::add_command( DATADDX_RESPONSE,
-            BESXMLGetDataDDXCommand::CommandBuilder );
-#endif
-    BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl );
+    BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
+
+    BESDEBUG("dap", "Done Initializing DAP Commands:" << endl);
 }
 
 /** @brief Cleans up the DAP XML commands from the list of possible commands
@@ -77,14 +72,12 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
  */
 void BESXMLDapCommandModule::terminate(const string &/*modname*/)
 {
-    BESDEBUG( "dap", "Removing DAP Commands" << endl );
+    BESDEBUG("dap", "Removing DAP Commands" << endl);
 
-    BESXMLCommand::del_command( CATALOG_RESPONSE_STR );
-    BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR );
-#if 0
-    BESXMLCommand::del_command( DATADDX_RESPONSE );
-#endif
-    BESDEBUG( "dap", "Done Removing DAP Commands" << endl );
+    BESXMLCommand::del_command(CATALOG_RESPONSE_STR);
+    BESXMLCommand::del_command(SHOW_INFO_RESPONSE_STR);
+
+    BESDEBUG("dap", "Done Removing DAP Commands" << endl);
 }
 
 /** @brief dumps information about this object

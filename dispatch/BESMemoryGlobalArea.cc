@@ -30,10 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+
+#include <sys/resource.h>
 
 using std::cerr;
 using std::endl;

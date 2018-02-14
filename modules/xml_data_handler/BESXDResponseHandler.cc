@@ -69,13 +69,13 @@ void BESXDResponseHandler::execute(BESDataHandlerInterface &dhi)
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS(NULL, "virtual");
     BESDataDDSResponse *bdds = new BESDataDDSResponse(dds);
-    _response = bdds;
-    _response_name = DATA_RESPONSE;
+    d_response_object = bdds;
+    d_response_name = DATA_RESPONSE;
     dhi.action = DATA_RESPONSE;
     BESRequestHandlerList::TheList()->execute_each(dhi);
 
     dhi.action = XD_RESPONSE;
-    _response = bdds;
+    d_response_object = bdds;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -92,8 +92,8 @@ void BESXDResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESXDResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if (_response) {
-        transmitter->send_response(XD_TRANSMITTER, _response, dhi);
+    if (d_response_object) {
+        transmitter->send_response(XD_TRANSMITTER, d_response_object, dhi);
     }
 }
 

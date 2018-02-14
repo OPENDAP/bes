@@ -38,8 +38,7 @@
 
 #include <iostream>
 
-//using std::ostream ;
-using std::endl ;
+using std::endl;
 
 #include "BESIndent.h"
 

@@ -33,9 +33,11 @@
 #ifndef BESMemoryGlobalArea_h_
 #define BESMemoryGlobalArea_h_ 1
 
-#include <sys/resource.h>
+#include <string>
 
 #include "BESObj.h"
+
+#include <sys/resource.h>
 
 #define MEGABYTE 1024*1024
 
@@ -50,7 +52,7 @@ class BESMemoryGlobalArea: public BESObj {
         return s * MEGABYTE;
     }
 
-    void log_limits(const string &msg);
+    void log_limits(const std::string &msg);
 
 public:
     BESMemoryGlobalArea();

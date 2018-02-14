@@ -64,7 +64,7 @@ BESShowContextResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     dhi.action_name = SET_CONTEXT_STR ;
     BESInfo *info = BESInfoList::TheList()->build_info() ;
-    _response = info ;
+    d_response_object = info ;
 
     info->begin_response( SHOW_CONTEXT_STR, dhi ) ;
     BESContextManager::TheManager()->list_context( *info ) ;
@@ -87,9 +87,9 @@ void
 BESShowContextResponseHandler::transmit( BESTransmitter *transmitter,
 				        BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;
