@@ -18,16 +18,18 @@ m4_define([AT_TEST_BLOCKING], [dnl
     AT_SETUP([BLOCKING])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v], [verbose=""]);
+    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
     # at the same time.
-    FileLockingCacheTest -c blocking -p
+    
+    cache_dir=blocking 
+    FileLockingCacheTest $debug -c $cache_dir -p
     
     write_lock_hold_time=3
     write_lock_start_time=`date "+%s"`
-    AT_CHECK([FileLockingCacheTest -c blocking -x $write_lock_hold_time &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x $write_lock_hold_time &], [0], [ignore], [ignore])
     write_lock_end_time=`date "+%s"`
     
     write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
@@ -36,7 +38,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     
     read_lock_hold_time=1
     read_lock_start_time=`date "+%s"`
-    AT_CHECK([FileLockingCacheTest -c blocking -r $read_lock_hold_time], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r $read_lock_hold_time], [0], [ignore], [ignore])
     read_lock_end_time=`date "+%s"`
     
     read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
@@ -59,13 +61,21 @@ m4_define([AT_TEST_CREATE_AND_LOCK], [dnl
 
     AT_SETUP([CREATE_AND_LOCK])
 
-    FileLockingCacheTest -c create_and_lock -p
+    # This uses the verbose option of the testsuite itself. 
+    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    
+    # naming the cache dir - and using a different one for each test - means the
+    # tests can run in parallel, that's faster and tests multiple caches in use
+    # at the same time.
+    
+    cache_dir=create_and_lock 
+    FileLockingCacheTest $debug -c $cache_dir -p
     
     # This makes the file and holds the lock for 1 second; it should work fine
-    AT_CHECK([FileLockingCacheTest -c create_and_lock -x 1], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x 1], [0], [ignore], [ignore])
     
     # This attempts to make the same file again; it should fail (note the [1])
-    AT_CHECK([FileLockingCacheTest -c create_and_lock -x 1], [1], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x 1], [1], [ignore], [ignore])
     
     AT_CLEANUP
 ])
@@ -82,21 +92,26 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v], [verbose=""]);
-
-    FileLockingCacheTest -c create_and_lock_2 -p
+    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
     
+    # naming the cache dir - and using a different one for each test - means the
+    # tests can run in parallel, that's faster and tests multiple caches in use
+    # at the same time.
+    
+    cache_dir=create_and_lock_2 
+    FileLockingCacheTest $debug -c $cache_dir -p
+
     # Get the start time
     start_time=`date "+%s"`
     
     hold_time=5
     
     # This makes the file and holds the lock for 1 second; it should work fine
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_2 -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
     
     # This attempts to lock a second file. It should block until the above lock 
     # is released.
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_2 -f second_file -x ${hold_time}], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f second_file -x ${hold_time}], [0], [ignore], [ignore])
     
     end_time=`date "+%s"`
     elapsed=`echo "${end_time} - ${start_time}" | bc`
@@ -119,9 +134,14 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK_VERSION_2])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v], [verbose=""]);
-
-    FileLockingCacheTest -c create_and_lock_3 -p
+    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    
+    # naming the cache dir - and using a different one for each test - means the
+    # tests can run in parallel, that's faster and tests multiple caches in use
+    # at the same time.
+    
+    cache_dir=create_and_lock_3 
+    FileLockingCacheTest $debug -c $cache_dir -p
     
     # Get the start time
     start_time=`date "+%s"`
@@ -129,19 +149,19 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     hold_time=2
     
     # This makes the file and holds the lock for 1 second; it should work fine
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_3 -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
     
     # Get four read locks in parallel.
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_3 -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_3 -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_3 -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_3 -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
     
     # *** This part takes ${hold_itme} seconds
     
     # This attempts to lock a second file. It should return right away because
     # it can get the lock for a new file right away.
-    AT_CHECK([FileLockingCacheTest -c create_and_lock_3 -f second_file -x ${hold_time}], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f second_file -x ${hold_time}], [0], [ignore], [ignore])
     
     # *** and this part takes ${hold_time} seconds (since it blocks).
     
@@ -166,18 +186,26 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
 
     AT_SETUP([MULTIPLE_READ_LOCKS])
 
-    FileLockingCacheTest -c read_hooks -p
+    # This uses the verbose option of the testsuite itself. 
+    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    
+    # naming the cache dir - and using a different one for each test - means the
+    # tests can run in parallel, that's faster and tests multiple caches in use
+    # at the same time.
+    
+    cache_dir=read_hooks 
+    FileLockingCacheTest $debug -c $cache_dir -p
     
     # This makes the file and holds the lock for 1 second; it makes the file the read
     # locks will attach to.
-    AT_CHECK([FileLockingCacheTest -c read_hooks -x 1], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x 1], [0], [ignore], [ignore])
     
     # Get four read locks in parallel. The last call waits for the three secs, just so
     # test doesn't complete before the lock processes are done.
-    AT_CHECK([FileLockingCacheTest -c read_hooks -r 2 &], [0], [ignore], [ignore])
-    AT_CHECK([FileLockingCacheTest -c read_hooks -r 2 &], [0], [ignore], [ignore])
-    AT_CHECK([FileLockingCacheTest -c read_hooks -r 2 &], [0], [ignore], [ignore])
-    AT_CHECK([FileLockingCacheTest -c read_hooks -r 3], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r 2 &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r 2 &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r 2 &], [0], [ignore], [ignore])
+    AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r 3], [0], [ignore], [ignore])
     
     AT_CLEANUP
 ])
