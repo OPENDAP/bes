@@ -126,10 +126,10 @@ private:
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
-//protected:
 public:
+    // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
     BESFileLockingCache(): d_cache_enabled(true), d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0),
-        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) {};
+        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) { }
 
     BESFileLockingCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
@@ -142,8 +142,6 @@ public:
     }
 
     void initialize(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
-
-public:
 
     virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
 
@@ -179,7 +177,7 @@ public:
     static bool dir_exists(const std::string &dir);
 
     /// @return Is this cache enabled?
-    bool cache_enabled()
+    bool cache_enabled() const
     {
         return d_cache_enabled;
     }
@@ -190,7 +188,7 @@ public:
         d_cache_enabled = false;
     }
 
-    /// @brief Enabel the cache
+    /// @brief Enable the cache
     void enable()
     {
         d_cache_enabled = true;
