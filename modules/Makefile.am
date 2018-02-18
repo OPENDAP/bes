@@ -4,7 +4,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = netcdf_handler fileout_json w10n_handler
+SUBDIRS = netcdf_handler fileout_json w10n_handler fileout_covjson
 
 SUBDIRS = csv_handler usage asciival www-interface freeform_handler
 
@@ -23,7 +23,7 @@ endif
 # fileout_netcdf needs to come after HDF4 (and maybe HDF5
 # in the future) because of the tests it runs.
 if BUILD_NETCDF
-SUBDIRS += netcdf_handler fileout_netcdf
+SUBDIRS += netcdf_handler fileout_netcdf fileout_covjson
 endif
 
 # Why are these here? Because they have tests that depend on
