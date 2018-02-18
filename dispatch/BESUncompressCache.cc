@@ -231,6 +231,8 @@ BESUncompressCache::~BESUncompressCache()
  * that might not be correct) and that the dataset associated with this
  * ResponseBulder instance is at least as old as the cached entry.
  *
+ * @note This method id used only by the compressT unit test. jhrg 2/17/18
+ *
  * @param cache_file_name File name of the cached entry
  * @param local_id The id, relative to the BES Catalog/Data root of the source dataset.
  * @return True if the thing is valid, false otherwise.

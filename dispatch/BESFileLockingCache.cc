@@ -156,7 +156,7 @@ inline int BESFileLockingCache::m_find_descriptor(const string &file)
  * @param fd An open file descriptor
  * @return A string with information about its status WRT advisory locking.
  */
-string lockStatus(const int fd)
+static string lockStatus(const int fd)
 {
     struct flock lock_query;
 
@@ -368,7 +368,7 @@ bool BESFileLockingCache::m_initialize_cache_info()
     return status;
 }
 
-const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
+static const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
 
 /**
  * Returns the fully qualified file system path name for the cache file
