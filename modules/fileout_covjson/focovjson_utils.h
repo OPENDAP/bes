@@ -34,7 +34,7 @@
 
 #include <Array.h>
 
-namespace fojson {
+namespace focovjson {
 
 std::string escape_for_covjson(const std::string &source);
 
