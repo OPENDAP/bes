@@ -250,6 +250,10 @@ static void unlock(int fd)
  * used - return false. Otherwise, evaluate the parameters and return
  * true if they are valid, or thrown a BESError exception.
  *
+ * @note If the directory is named, but does not exist, this method
+ * will create it. If it cannot (for any reason, e.g., lack of privilege)
+ * then an error is indicated by an exception.
+ *
  * @note Sets the cache_enabled property as a side effect.
  *
  * @return True if the parameters are valid and the cache directory exists,
@@ -271,8 +275,7 @@ bool BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
-    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
-        "d_cache_dir: '" << d_cache_dir << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " << "d_cache_dir: '" << d_cache_dir << "'" << endl);
 
     if (d_cache_dir.empty()) {
         BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
@@ -401,6 +404,7 @@ bool BESFileLockingCache::m_initialize_cache_info()
         BESDEBUG("cache",
             "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
     }
+
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - END [" << "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
 
