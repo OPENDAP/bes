@@ -24,9 +24,9 @@ const string HDF5DiskCache::PATH_KEY = "H5.DiskCacheDataPath";
 const string HDF5DiskCache::PREFIX_KEY = "H5.DiskCacheFilePrefix";
 const string HDF5DiskCache::SIZE_KEY = "H5.DiskCacheSize";
 
-long HDF5DiskCache::getCacheSizeFromConfig()
+long HDF5DiskCache::getCacheSizeFromConfig(const long cache_size)
 {
-    long cache_size = HDF5RequestHandler::get_disk_cache_size();
+    //long cache_size = HDF5RequestHandler::get_disk_cache_size();
     if (cache_size >0) {
         BESDEBUG("cache",
             "In HDF5DiskCache::getCacheSizeFromConfig(): Located BES key " << SIZE_KEY<< "=" << cache_size << endl);
@@ -40,9 +40,9 @@ long HDF5DiskCache::getCacheSizeFromConfig()
     }
 }
 
-string HDF5DiskCache::getCachePrefixFromConfig()
+string HDF5DiskCache::getCachePrefixFromConfig(const string& cache_prefix)
 {
-    string cache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
+    //string cache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
     if (cache_prefix!="") {
         BESDEBUG("cache",
             "In HDF5DiskCache::getCachePrefixFromConfig(): Located BES key " << PATH_KEY<< "=" << cache_prefix << endl);
@@ -56,9 +56,9 @@ string HDF5DiskCache::getCachePrefixFromConfig()
     }
 }
 
-string HDF5DiskCache::getCacheDirFromConfig()
+string HDF5DiskCache::getCacheDirFromConfig(const string& cache_dir)
 {
-    string cache_dir = HDF5RequestHandler::get_disk_cache_dir();
+    //string cache_dir = HDF5RequestHandler::get_disk_cache_dir();
     if (cache_dir!="") {
         BESDEBUG("cache",
             "In HDF5DiskCache::getCacheDirFromConfig(): Located BES key " << PATH_KEY<< "=" << cache_dir << endl);
@@ -73,13 +73,13 @@ string HDF5DiskCache::getCacheDirFromConfig()
 }
 
 
-HDF5DiskCache::HDF5DiskCache()
+HDF5DiskCache::HDF5DiskCache(const long _cache_size, const string &_cache_dir, const string &_cache_prefix)
 {
     BESDEBUG("cache", "In HDF5DiskCache::HDF5DiskCache()" << endl);
 
-    string cacheDir = getCacheDirFromConfig();
-    string prefix = getCachePrefixFromConfig();
-    long size_in_megabytes = getCacheSizeFromConfig();
+    string cacheDir = getCacheDirFromConfig(_cache_dir);
+    string prefix = getCachePrefixFromConfig(_cache_prefix);
+    long size_in_megabytes = getCacheSizeFromConfig(_cache_size);
 
     BESDEBUG("cache",
         "HDF5DiskCache() - Cache config params: " << cacheDir << ", " << prefix << ", " << size_in_megabytes << endl);
@@ -99,14 +99,14 @@ HDF5DiskCache::HDF5DiskCache()
  * of FUNCTION_CACHE_PATH, FUNCTION_CACHE_PREFIX, an FUNCTION_CACHE_SIZE to initialize the cache.
  */
 HDF5DiskCache *
-HDF5DiskCache::get_instance()
+HDF5DiskCache::get_instance(const long _cache_size, const string &_cache_dir, const string &_cache_prefix)
 {
     if (d_instance == 0) {
         struct stat buf;
-        string cache_dir = getCacheDirFromConfig();
+        string cache_dir = getCacheDirFromConfig(_cache_dir);
         if ((stat(cache_dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR)) {
             try {
-                d_instance = new HDF5DiskCache();
+                d_instance = new HDF5DiskCache(_cache_size,_cache_dir,_cache_prefix);
 #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
 #endif

@@ -213,6 +213,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
         BESDEBUG("h5","Coming to use disk cache "<<endl);
 
+        long disk_cache_size = HDF5RequestHandler::get_disk_cache_size();
         string diskcache_dir = HDF5RequestHandler::get_disk_cache_dir();
         string diskcache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
 
@@ -226,7 +227,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
         int expected_file_size = dtype_size *total_elems;
         int fd = 0;
-        HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance();
+        HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance(disk_cache_size,diskcache_dir,diskcache_prefix);
         if( true == disk_cache->get_data_from_cache(cache_fpath, expected_file_size,fd)) {
 
             vector<size_t> offset_size_t;
@@ -1225,7 +1226,10 @@ void
 HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t /*dspace_id*/, hid_t /*mspace_id*/, hid_t memtype,
     const string& cache_fpath, short dtype_size, const vector<char> &buf, int nelms) {
 
-    HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance();
+    long disk_cache_size = HDF5RequestHandler::get_disk_cache_size();
+    string disk_cache_dir = HDF5RequestHandler::get_disk_cache_dir();
+    string disk_cache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
+    HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance(disk_cache_size,disk_cache_dir,disk_cache_prefix);
     int total_nelem = 1;
     for(int i = 0; i <rank; i++)
         total_nelem = total_nelem*dimsizes[i];

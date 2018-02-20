@@ -91,10 +91,9 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
 
     BESDEBUG("h5","Coming to read_data_NOT_from_mem_cache "<<endl);
 
-    // Check if geo-cache is turned on.
-    bool use_latlon_cache = HDF5RequestHandler::get_use_eosgeo_cachefile();
-
-    // First handle geographic projection. No GCTP is needed.
+    // First handle geographic projection. No GCTP is needed.Since the calculation
+    // of lat/lon is really simple for this case. No need to provide the disk cache
+    // unless the calculation takes too long. We will see.
     if(eos5_projcode == HE5_GCTP_GEO) {
         read_data_NOT_from_mem_cache_geo(add_cache,buf);
         return;
@@ -105,12 +104,10 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     vector<int>count;
     vector<int>step;
 
-
     if (rank <=  0) 
        throw InternalErr (__FILE__, __LINE__,
                           "The number of dimension of this variable should be greater than 0");
     else {
-
          offset.resize(rank);
          count.resize(rank);
          step.resize(rank);
@@ -120,6 +117,15 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     if (nelms <= 0) 
        throw InternalErr (__FILE__, __LINE__,
                           "The number of elments is negative.");
+
+    vector<size_t>pos(rank,0);
+    for (int i = 0; i< rank; i++)
+        pos[i] = offset[i];
+
+    vector<size_t>dimsizes;
+    dimsizes.push_back(ydimsize);
+    dimsizes.push_back(xdimsize);
+    int total_elms = xdimsize*ydimsize;
 
     double upleft[2];
     double lowright[2];
@@ -183,12 +189,81 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     BESDEBUG("h5", " lowright[0] is "  << lowright[0] <<endl);
     BESDEBUG("h5", " lowright[1] is "  << lowright[1] <<endl);
 #endif
-    if(use_latlon_cache == true) {
-        string cache_fname = obtain_ll_cache_name();
-//cerr<<"cache_fname is "<<cache_fname <<endl;
-
-    }
  
+    // boolean to mark if the value can be read from the cache. 
+    // Not necessary from programming point of view. Use it to
+    // make the code flow clear.
+    bool ll_read_from_cache = true;
+
+    // Check if geo-cache is turned on.
+    bool use_latlon_cache = HDF5RequestHandler::get_use_eosgeo_cachefile();
+
+
+    // Adding more code to read latlon from cache here.
+    if(use_latlon_cache == true) {
+
+        // Cache name is made in a special way to make sure the same lat/lon 
+        // fall into the same cache file.
+        string cache_fname = obtain_ll_cache_name();
+
+        // Obtain eos-geo disk cache size, dir and prefix.
+        long ll_disk_cache_size = HDF5RequestHandler::get_latlon_disk_cache_size();
+        string ll_disk_cache_dir = HDF5RequestHandler::get_latlon_disk_cache_dir();
+        string ll_disk_cache_prefix = HDF5RequestHandler::get_latlon_disk_cachefile_prefix();
+
+        // Expected cache file size
+        int expected_file_size = 2*xdimsize*ydimsize*sizeof(double);     
+        HDF5DiskCache *ll_cache = HDF5DiskCache::get_instance(ll_disk_cache_size,ll_disk_cache_dir,ll_disk_cache_prefix);
+        int fd = 0;
+        ll_read_from_cache = ll_cache->get_data_from_cache(cache_fname, expected_file_size,fd);
+
+        if(ll_read_from_cache == true) {
+
+            BESDEBUG("h5", " Read latitude and longitude from a disk cache. "  <<endl);
+            size_t var_offset = 0;
+            // Longitude is stored after latitude.
+            if(CV_LON_MISS == cvartype) 
+                var_offset = xdimsize*ydimsize*sizeof(double);
+
+            vector<double> var_value;
+            var_value.resize(xdimsize*ydimsize);
+
+            //Latitude starts from 0, longitude starts from xdimsize*ydimsize*sizeof(double);
+            off_t fpos = lseek(fd,var_offset,SEEK_SET);
+            ssize_t ret_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)&var_value[0],var_value.size()*sizeof(double));
+            ll_cache->unlock_and_close(cache_fname);
+
+            // If the cached file is not read correctly, we should purge the file.
+            if((-1 == ret_val) || ((size_t)ret_val != (xdimsize*ydimsize*sizeof(double)))) {
+                ll_cache->purge_file(cache_fname);
+                ll_read_from_cache = false; 
+            }
+            else {
+                // short-cut, no need to do subset.
+                if(total_elms == nelms)
+                    set_value((dods_float64 *)&var_value[0],total_elms);
+                else {
+                    vector<double>val;
+                    subset<double>(
+                           &var_value[0],
+                           rank,
+                           dimsizes,
+                           &offset[0],
+                           &step[0],
+                           &count[0],
+                           &val,
+                           pos,
+                           0);
+                    set_value((dods_float64 *)&val[0],nelms);              
+                }
+                return;
+            }
+        }
+        else 
+            ll_read_from_cache = false;
+    }
+    
+    // Calculate Lat/lon by using GCTP
     r = GDij2ll (eos5_projcode, eos5_zone, &eos5_params[0], eos5_sphere, xdimsize, ydimsize, upleft, lowright,
                  xdimsize * ydimsize, &rows[0], &cols[0], &lon[0], &lat[0], eos5_pixelreg, eos5_origin);
     if (r != 0) {
@@ -197,9 +272,32 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+
+    // ll_read_from_cache may be redundant. It is good to remind that we will generate the cache file
+    // when reading from the cache fails.
+    // We are using cache and need to write data to the cache.
+    if(use_latlon_cache == true && ll_read_from_cache == false) {
+        string cache_fname = obtain_ll_cache_name();
+        long ll_disk_cache_size = HDF5RequestHandler::get_latlon_disk_cache_size();
+        string ll_disk_cache_dir = HDF5RequestHandler::get_latlon_disk_cache_dir();
+        string ll_disk_cache_prefix = HDF5RequestHandler::get_latlon_disk_cachefile_prefix();
+        
+        BESDEBUG("h5", " Write EOS5 grid latitude and longitude to a disk cache. "  <<endl);
+
+        HDF5DiskCache *ll_cache = HDF5DiskCache::get_instance(ll_disk_cache_size,ll_disk_cache_dir,ll_disk_cache_prefix);
+        
+        // Merge vector lat and lon. lat first.
+        vector <double>latlon;
+        latlon.reserve(xdimsize*ydimsize*2);
+        latlon.insert(latlon.end(),lat.begin(),lat.end());
+        latlon.insert(latlon.end(),lon.begin(),lon.end());
+        ll_cache->write_cached_data(cache_fname,2*xdimsize*ydimsize*sizeof(double),latlon);
+     
+    }
     BESDEBUG("h5", " The first value of lon is "  << lon[0] <<endl);
     BESDEBUG("h5", " The first value of lat is "  << lat[0] <<endl);
 
+#if 0
     vector<size_t>pos(rank,0);
     for (int i = 0; i< rank; i++)
         pos[i] = offset[i];
@@ -208,6 +306,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     dimsizes.push_back(ydimsize);
     dimsizes.push_back(xdimsize);
     int total_elms = xdimsize*ydimsize;
+#endif
 
     
     if(CV_LON_MISS == cvartype) {
@@ -227,6 +326,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            0);
             set_value((dods_float64 *)&val[0],nelms);              
         }
+       
     }
     else if(CV_LAT_MISS == cvartype) {
 
@@ -247,6 +347,8 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
             set_value((dods_float64 *)&val[0],nelms);              
         }
     }
+    return;
+
 }
 
 string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
@@ -310,7 +412,7 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
     // According to HDF-EOS2 document, only 13 parameters are used.
     for(int ipar = 0; ipar<13;ipar++) {
 //cerr<<"params["<<ipar<<"] is "<<params[ipar]<<endl;
-                cache_fname+=HDF5CFUtil::get_double_str(eos5_params[ipar],17,6);
+        cache_fname+=HDF5CFUtil::get_double_str(eos5_params[ipar],17,6);
     }
             
     string cache_fpath = bescachedir + "/"+ cache_fname;
