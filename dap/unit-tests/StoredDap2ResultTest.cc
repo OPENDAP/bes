@@ -531,8 +531,12 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = StoredDap2ResultTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+	    ++i;
         }
     }
 
     return wasSuccessful ? 0 : 1;
 }
+
+
+
