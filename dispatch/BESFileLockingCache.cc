@@ -900,10 +900,10 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
  * size of the cache specified in the constructor. This method uses an exclusive
  * lock on the cache for the duration of the purge process.
  *
- * @param new_file The name of a file this process just added to the cache. Using
- * fcntl(2) locking there is no way this process can detect its own lock, so the
- * shared read lock on the new file won't keep this process from deleting it (but
- * will keep other processes from deleting it).
+ * @param new_file Do not delete this file. The name of a file this process just
+ * added to the cache. Using fcntl(2) locking there is no way this process can
+ * detect its own lock, so the shared read lock on the new file won't keep this
+ * process from deleting it (but will keep other processes from deleting it).
  */
 void BESFileLockingCache::update_and_purge(const string &new_file)
 {
