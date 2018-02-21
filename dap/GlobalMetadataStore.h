@@ -62,7 +62,7 @@ private:
     GlobalMetadataStore();
     GlobalMetadataStore(const GlobalMetadataStore &src);
 
-    friend GlobalMetadataStroreTest;
+    friend class GlobalMetadataStroreTest;
 
 #if 0
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
