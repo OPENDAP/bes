@@ -51,44 +51,36 @@
 #include "test_utils.h"
 #include "test_config.h"
 
-int test_variable_sleep_interval = 0;
-
 static bool debug = false;
 static bool bes_debug = false;
 static bool clean = true;
-static const string c_cache_name = "/response_cache";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+#define DEBUG_KEY "metadata_store"
 
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
 using namespace bes;
 
-const Type requested_type = dods_byte_c;
-const int num_dim = 2;
-const int dim_sz = 3;
-
 // Move this into the class when we goto C++-11
-const string d_cache_prefix = "mds"; // used when cleaning the cache, etc.
+const string d_mds_prefix = "mds"; // used when cleaning the cache, etc.
+static const string c_mds_name = "/mds";
+
 
 class GlobalMetadataStoreTest: public TestFixture {
 private:
-    DDXParser dp;
-    TestTypeFactory ttf;
     DDS *test_dds;
 
-    ConstraintEvaluator eval;
-
-    string d_cache;
-    BESDapFunctionResponseCache *cache;
+    string d_mds_dir;
+    GlobalMetadataStore *mds;
 
 public:
     GlobalMetadataStoreTest() :
-        dp(&ttf), test_dds(0), d_cache(string(TEST_BUILD_DIR) + c_cache_name), cache(0)
+        test_dds(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), mds(0)
     {
-        libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
     }
 
     ~GlobalMetadataStoreTest()
@@ -98,8 +90,8 @@ public:
     void setUp()
     {
         DBG(cerr << "setUp() - BEGIN" << endl);
-        if (bes_debug) BESDebug::SetUp("cerr,response_cache");
-
+        if (bes_debug) BESDebug::SetUp(string("cerr,") + DEBUG_KEY);
+#if 0
         string cid; // This is an unused value-result parameter. jhrg 5/10/16
         test_dds = new DDS(&ttf);
         dp.intern((string) TEST_SRC_DIR + "/input-files/test.05.ddx", test_dds, cid);
@@ -110,8 +102,8 @@ public:
         DBG(cerr << "DDS Name: " << test_dds->get_dataset_name() << endl);
 
         if (clean) clean_cache_dir(d_cache);
-
-        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
+#endif
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // intentionally empty file. jhrg 10/20/15
 
         DBG(cerr << "setUp() - END" << endl);
     }
@@ -122,11 +114,12 @@ public:
 
         delete test_dds;
 
-        if (clean) clean_cache_dir(d_cache);
+        if (clean) clean_cache_dir(d_mds_dir);
 
         DBG(cerr << "tearDown() - END" << endl);
     }
 
+#if 0
     bool re_match(Regex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
@@ -142,25 +135,27 @@ public:
         DBG(cerr << "r.match(s): " << pos << endl);
         return pos > 0;
     }
+#endif
 
-    // The directory 'never' does not exist; the cache won't be initialized,
-    // so is_available() should be false
+    // The call to get_instance should fail since the directory is named but does not exist
+    // and cannot be made.
     void ctor_test_1()
     {
         DBG(cerr << "ctor_test_1() - BEGIN" << endl);
 
-        string cacheDir = string(TEST_SRC_DIR) + "/never";
-        string prefix = "rc";
-        long size = 1000;
-
-        cache = BESDapFunctionResponseCache::get_instance(cacheDir, prefix, size);
-        DBG(cerr << "ctor_test_1() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
-
-        CPPUNIT_ASSERT(!cache);
+        try {
+            mds = GlobalMetadataStore::get_instance(string(TEST_BUILD_DIR) + "/new", d_mds_prefix, 1000);
+            DBG(cerr << "ctor_test_1() - retrieved GlobalMetadataStore instance: " << mds << endl);
+            CPPUNIT_ASSERT(mds);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught exception: " + e.get_message());
+        }
 
         DBG(cerr << "ctor_test_1() - END" << endl);
     }
 
+#if 0
     // The directory 'd_response_cache' should exist so is_available() should be
     // true.
     void ctor_test_2()
@@ -170,8 +165,8 @@ public:
         string cacheDir = d_cache;
         string prefix = "rc";
         long size = 1000;
-        cache = BESDapFunctionResponseCache::get_instance(cacheDir, prefix, size);
-        DBG(cerr << "ctor_test_1() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
+        cache = GlobalMetadataStore::get_instance(cacheDir, prefix, size);
+        DBG(cerr << "ctor_test_1() - retrieved GlobalMetadataStore instance: " << cache << endl);
 
         CPPUNIT_ASSERT(cache);
 
@@ -184,9 +179,9 @@ public:
     void cache_a_response()
     {
         DBG(cerr << "cache_a_response() - BEGIN" << endl);
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
+        cache = GlobalMetadataStore::get_instance(d_cache, d_mds_prefix, 1000);
 
-        DBG(cerr << "cache_a_response() - Retrieved BESDapFunctionResponseCache object: " << cache << endl);
+        DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << cache << endl);
 
         string token;
         try {
@@ -214,7 +209,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
+        cache = GlobalMetadataStore::get_instance(d_cache, d_mds_prefix, 1000);
         try {
             const string constraint = "test(\"bar\")";
 
@@ -272,7 +267,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
+        cache = GlobalMetadataStore::get_instance(d_cache, d_mds_prefix, 1000);
         try {
             // This code is here to load the DataDDX response into the cache if it is not
             // there already. If it is there, it reads it from the cache.
@@ -310,15 +305,17 @@ public:
 
         DBG(cerr << "cache_and_read_a_response() - END" << endl);
     }
+#endif
 
-CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
+    CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
+#if 0
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_response);
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
-
+#endif
     CPPUNIT_TEST_SUITE_END();
 };
 

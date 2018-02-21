@@ -17,7 +17,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
-#include "test_utils.h"
 
 #include "config.h"
 
@@ -29,9 +28,13 @@
 #include <string>
 #include <vector>
 
+// #include <Regex.h>      // libdap includes
 #include <InternalErr.h>
 
+#include "test_utils.h"
+
 using namespace std;
+using namespace libdap;
 
 string
 readTestBaseline(const string &fn)
@@ -61,7 +64,9 @@ readTestBaseline(const string &fn)
 
 void clean_cache_dir(const string &cache)
 {
+#if 0
 	char cwd[MAXPATHLEN];	// MAXPATHLEN is defined in <sys/param.h>
+#endif
 	string cache_dir = cache + "/*";
 
 	string command = string("rm ") + cache_dir + " 2>/dev/null";
@@ -74,4 +79,22 @@ void clean_cache_dir(const string &cache)
 	if (status == -1 || status == 127)
 		throw libdap::InternalErr(__FILE__, __LINE__, "Failed to clean cache dir: " + cache_dir);
 }
+
+#if 0
+bool re_match(Regex &r, const string &s)
+{
+    DBG(cerr << "s.length(): " << s.length() << endl);
+    int pos = r.match(s.c_str(), s.length());
+    DBG(cerr << "r.match(s): " << pos << endl);
+    return pos > 0 && static_cast<unsigned>(pos) == s.length();
+}
+
+bool re_match_binary(Regex &r, const string &s)
+{
+    DBG(cerr << "s.length(): " << s.length() << endl);
+    int pos = r.match(s.c_str(), s.length());
+    DBG(cerr << "r.match(s): " << pos << endl);
+    return pos > 0;
+}
+#endif
 

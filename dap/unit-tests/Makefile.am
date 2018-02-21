@@ -6,8 +6,7 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types \
-$(DAP_LIBS) $(LIBS)
+AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -71,7 +70,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 if CPPUNIT
 UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
-TemporaryFileTest
+TemporaryFileTest GlobalMetadataStoreTest
 
 else
 UNIT_TESTS =
@@ -106,6 +105,10 @@ ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
 TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
+
+GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
+GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(AM_LDADD)
