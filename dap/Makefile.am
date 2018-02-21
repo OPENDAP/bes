@@ -57,8 +57,10 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
 	TempFile.cc \
-	CacheMarshaller.cc CacheUnMarshaller.cc \
-	ObjMemCache.cc
+	CacheMarshaller.cc \
+	CacheUnMarshaller.cc \
+	ObjMemCache.cc \
+	GlobalMetadataStore.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -87,8 +89,10 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
 	TempFile.h \
-	CacheMarshaller.h CacheUnMarshaller.h \
-	ObjMemCache.h
+	CacheMarshaller.h \
+	CacheUnMarshaller.h \
+	ObjMemCache.h \
+	GlobalMetadataStore.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
