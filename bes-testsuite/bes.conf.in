@@ -294,3 +294,17 @@ H5.EnableDiskMetaDataCache=false
 H5.EnableDiskDDSCache=false
 H5.DiskMetaDataCachePath=/tmp
 
+H5.EnableEOSGeoCacheFile=false
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+
+H5.EnableDiskDataCache=false
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheSize=10000
+H5.DiskCacheComp=true
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=10000
+
