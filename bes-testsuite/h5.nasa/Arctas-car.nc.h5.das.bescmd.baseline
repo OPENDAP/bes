@@ -1,0 +1,449 @@
+Attributes {
+    HDF5_GLOBAL {
+        String title "Cloud Absorption Radiometer (CAR) Level-1C NetCDF data";
+        String experiment_name "ARCTAS";
+        String flight_number "2002";
+        String aircraft "NASA - P3";
+        String primary_navigation_system "CAR Autonomous Navigation System";
+        String start_date "2008-04-07:10:59:24.7";
+        String end_date "2008-04-08:18:44:52.6";
+        Float32 lat_min 65.79630280;
+        Float32 lat_max 80.66130066;
+        Float32 lon_min -146.3280945;
+        Float32 lon_max -70.23336029;
+        String flight_summary "https://car.gsfc.nasa.gov/flights/data-arctas-2008-flight-2002";
+        String Instrument_PI "Charles K. Gatebe";
+        String Email "Charles.K.Gatebe@nasa.gov";
+        String Website "https://car.gsfc.nasa.gov";
+        String Reference "Gatebe CK, King MD. Airborne spectral BRDF of various surface types (ocean, vegetation, snow, desert, wetlands, cloud decks, smoke layers) for remote sensing applications. Remote Sensing of Environment. 2016;179:131 - 148. ";
+        String change_log "R2: Data and Global Attributes updates";
+        String Identifier_Product_DOI_Authority "http://dx.doi.org/";
+        String DOI "10.5067/CAR/DATA104";
+        String production_date "2017-11-21T21:45:05.0Z";
+        String ShortName "CAR_ARCTAS_L1C";
+        String LongName "CAR ARCTAS Level 1C Arctic Atmospheric Composition and Climate";
+        String VersionID "1";
+        String GranuleID "Arctas-car_p3b_20080407_2002_Level1C_20171121.nc";
+        String Format "NetCDF4";
+        String ProcessingLevel "1C";
+        String Conventions "CF-1.7";
+    }
+    SRF_1222nm {
+        String long_name "Spectral Response Function 1222 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_1222nm";
+        String fullnamepath "/_nc4_non_coord_SRF_1222nm";
+    }
+    Time {
+        String long_name "seconds since 2008-04-07 00:00:00.0 UTC";
+        String units "seconds since 2008-04-07 00:00:00.0 UTC";
+        String origname "Time";
+        String fullnamepath "/Time";
+    }
+    SRF_2095nm {
+        String long_name "Spectral Response Function 2095 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_2095nm";
+        String fullnamepath "/_nc4_non_coord_SRF_2095nm";
+    }
+    Date {
+        String long_name "Data Acquisition Date in the format of YYYYMMDDhhmmss.s UTC";
+        String origname "Date";
+        String fullnamepath "/Date";
+    }
+    SRF_1731nm {
+        String long_name "Spectral Response Function 1731 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_1731nm";
+        String fullnamepath "/_nc4_non_coord_SRF_1731nm";
+    }
+    SolarAzimuthAngle {
+        String long_name "Solar Azimuth Angle relative to the local geodetic north";
+        String units "degrees";
+        String origname "SolarAzimuthAngle";
+        String fullnamepath "/SolarAzimuthAngle";
+    }
+    radiance_2095nm {
+        String long_name "2095 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_2095nm";
+        String fullnamepath "/radiance_2095nm";
+    }
+    Scan_Start_Angle {
+        String long_name "Scan start angle relative to the local sky-earth normal";
+        Float32 _FillValue -9999.000000;
+        String units "degrees";
+        String scan_start_angle__90_0 "upward-looking imaging mode";
+        String scan_start_angle_0_0 "Starboard";
+        String scan_start_angle_90_0 "downward-looking imaging mode";
+        String origname "Scan_Start_Angle";
+        String fullnamepath "/Scan_Start_Angle";
+    }
+    SRF_1275nm {
+        String long_name "Spectral Response Function 1275 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_1275nm";
+        String fullnamepath "/_nc4_non_coord_SRF_1275nm";
+    }
+    radiance_873nm {
+        String long_name "873 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_873nm";
+        String fullnamepath "/radiance_873nm";
+    }
+    radiance_2196nm {
+        String long_name "2196 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_2196nm";
+        String fullnamepath "/radiance_2196nm";
+    }
+    radiance_1032nm {
+        String long_name "1032 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_1032nm";
+        String fullnamepath "/radiance_1032nm";
+    }
+    ViewingZenithAngle {
+        String long_name "CAR pixel viewing zenith angle relative to the local sky-earth normal";
+        String units "degrees";
+        Float32 _FillValue -9999.000000;
+        Float32 valid_range 0.000000000, 180.0000000;
+        String origname "ViewingZenithAngle";
+        String fullnamepath "/ViewingZenithAngle";
+    }
+    radiance_1649nm {
+        String long_name "1649 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_1649nm";
+        String fullnamepath "/radiance_1649nm";
+    }
+    radiance_382nm {
+        String long_name "382 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_382nm";
+        String fullnamepath "/radiance_382nm";
+    }
+    SRF_382nm {
+        String long_name "Spectral Response Function 382 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_382nm";
+        String fullnamepath "/_nc4_non_coord_SRF_382nm";
+    }
+    radiance_2291nm {
+        String long_name "2291 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_2291nm";
+        String fullnamepath "/radiance_2291nm";
+    }
+    SolarIrradiance {
+        String long_name "Solar Spectral Irradiance";
+        String unit "W m-2";
+        String origname "SolarIrradiance";
+        String fullnamepath "/SolarIrradiance";
+    }
+    SRF_677nm {
+        String long_name "Spectral Response Function 677 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_677nm";
+        String fullnamepath "/_nc4_non_coord_SRF_677nm";
+    }
+    AircraftHeading {
+        String long_name "Aircraft Heading Degrees relative to the local geodetic north";
+        String units "degrees";
+        Float32 valid_range 0.000000000, 360.0000000;
+        Float32 _FillValue -9999.000000;
+        String origname "AircraftHeading";
+        String fullnamepath "/AircraftHeading";
+    }
+    SRF_339nm {
+        String long_name "Spectral Response Function 339 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_339nm";
+        String fullnamepath "/_nc4_non_coord_SRF_339nm";
+    }
+    AircraftAltitude {
+        String long_name "GPS height in Meters above the mean sea level";
+        String units "m";
+        String origname "AircraftAltitude";
+        String fullnamepath "/AircraftAltitude";
+    }
+    radiance_339nm {
+        String long_name "382 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_339nm";
+        String fullnamepath "/radiance_339nm";
+    }
+    SRF_1559nm {
+        String long_name "Spectral Response Function 1559 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_1559nm";
+        String fullnamepath "/_nc4_non_coord_SRF_1559nm";
+    }
+    ViewingAzimuthAngle {
+        String long_name "CAR pixel viewing azimuth angle relative to the local geodetic north";
+        String units "degrees";
+        Float32 _FillValue -9999.000000;
+        Float32 valid_range 0.000000000, 360.0000000;
+        String origname "ViewingAzimuthAngle";
+        String fullnamepath "/ViewingAzimuthAngle";
+    }
+    SolarZenithAngle {
+        String long_name "Solar Zenith Angle relative to the local sky-earth normal";
+        String units "degrees";
+        String origname "SolarZenithAngle";
+        String fullnamepath "/SolarZenithAngle";
+    }
+    AircraftLongitude {
+        String long_name "Aircraft Longitude Degrees";
+        String units "degrees_east";
+        Float32 valid_range -180.0000000, 180.0000000;
+        Float32 _FillValue -9999.000000;
+        String origname "AircraftLongitude";
+        String fullnamepath "/AircraftLongitude";
+    }
+    AircraftPitch {
+        String long_name "Aircraft Pitch Degrees relative to the local sky-earth normal";
+        String units "degrees";
+        Float32 valid_range -90.00000000, 90.00000000;
+        Float32 _FillValue -9999.000000;
+        String Positive "nose_up";
+        String Negative "nose_down";
+        String origname "AircraftPitch";
+        String fullnamepath "/AircraftPitch";
+    }
+    CoordinatedUniversalTime {
+        String long_name "UTC time in the format of HHMMSS.s";
+        Float32 _FillValue -9999.000000;
+        String time_format "HHMMSS.10thSecond";
+        String origname "CoordinatedUniversalTime";
+        String fullnamepath "/CoordinatedUniversalTime";
+    }
+    radiance_677nm {
+        String long_name "677 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_677nm";
+        String fullnamepath "/radiance_677nm";
+    }
+    SRF_2196nm {
+        String long_name "Spectral Response Function 2196 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_2196nm";
+        String fullnamepath "/_nc4_non_coord_SRF_2196nm";
+    }
+    SRF_1032nm {
+        String long_name "Spectral Response Function 1032 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_1032nm";
+        String fullnamepath "/_nc4_non_coord_SRF_1032nm";
+    }
+    SRF_480nm {
+        String long_name "Spectral Response Function 480 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_480nm";
+        String fullnamepath "/_nc4_non_coord_SRF_480nm";
+    }
+    radiance_1222nm {
+        String long_name "1222 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_1222nm";
+        String fullnamepath "/radiance_1222nm";
+    }
+    radiance_1275nm {
+        String long_name "1275 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_1275nm";
+        String fullnamepath "/radiance_1275nm";
+    }
+    radiance_1731nm {
+        String long_name "1731 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_1731nm";
+        String fullnamepath "/radiance_1731nm";
+    }
+    radiance_1559nm {
+        String long_name "1559 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_1559nm";
+        String fullnamepath "/radiance_1559nm";
+    }
+    SRF_2291nm {
+        String long_name "Spectral Response Function 2291 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_2291nm";
+        String fullnamepath "/_nc4_non_coord_SRF_2291nm";
+    }
+    AircraftLatitude {
+        String long_name "Aircraft Latitude Degrees";
+        String units "degrees_north";
+        Float32 valid_range -90.00000000, 90.00000000;
+        Float32 _FillValue -9999.000000;
+        String origname "AircraftLatitude";
+        String fullnamepath "/AircraftLatitude";
+    }
+    SRF_1649nm {
+        String long_name "Spectral Response Function 1649 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_1649nm";
+        String fullnamepath "/_nc4_non_coord_SRF_1649nm";
+    }
+    radiance_480nm {
+        String long_name "480 nm radiance";
+        String units "W m-2 sr-1";
+        Float32 _FillValue -9999.000000;
+        String origname "radiance_480nm";
+        String fullnamepath "/radiance_480nm";
+    }
+    SRF_873nm {
+        String long_name "Spectral Response Function 873 nm";
+        Float32 valid_range 0.000000000, 1.000000000;
+        String units "nm";
+        Float32 _FillValue -9999.000000;
+        String origname "_nc4_non_coord_SRF_873nm";
+        String fullnamepath "/_nc4_non_coord_SRF_873nm";
+    }
+    CAR_Viewing_Angles {
+        String long_name "CAR viewing angles";
+        String units "degrees";
+        Float32 _FillValue -9999.000000;
+        String origname "CAR_Viewing_Angles";
+        String fullnamepath "/CAR_Viewing_Angles";
+    }
+    CentralWavelength {
+        String long_name "CAR Central Wavelength";
+        String unit "nm";
+        String origname "CentralWavelength";
+        String fullnamepath "/CentralWavelength";
+    }
+    Scans {
+        String long_name "Scan line count from data start";
+        Float32 _FillValue -9999.000000;
+        String origname "Scans";
+        String fullnamepath "/Scans";
+    }
+    SpectralRange_1032nm {
+        String long_name "SpectralRange for CAR ch6 1032nm";
+        String units "nm";
+        String origname "SpectralRange_1032nm";
+        String fullnamepath "/SpectralRange_1032nm";
+    }
+    SpectralRange_1222nm {
+        String long_name "SpectralRange for CAR ch7 1222nm";
+        String units "nm";
+        String origname "SpectralRange_1222nm";
+        String fullnamepath "/SpectralRange_1222nm";
+    }
+    SpectralRange_1275nm {
+        String long_name "SpectralRange for CAR ch8 1275nm";
+        String units "nm";
+        String origname "SpectralRange_1275nm";
+        String fullnamepath "/SpectralRange_1275nm";
+    }
+    SpectralRange_1559nm {
+        String long_name "SpectralRange for CAR ch9 1559nm";
+        String units "nm";
+        String origname "SpectralRange_1559nm";
+        String fullnamepath "/SpectralRange_1559nm";
+    }
+    SpectralRange_1649nm {
+        String long_name "SpectralRange for CAR ch10 1649nm";
+        String units "nm";
+        String origname "SpectralRange_1649nm";
+        String fullnamepath "/SpectralRange_1649nm";
+    }
+    SpectralRange_1731nm {
+        String long_name "SpectralRange for CAR ch11 1731nm";
+        String units "nm";
+        String origname "SpectralRange_1731nm";
+        String fullnamepath "/SpectralRange_1731nm";
+    }
+    SpectralRange_2095nm {
+        String long_name "SpectralRange for CAR ch12 2095nm";
+        String units "nm";
+        String origname "SpectralRange_2095nm";
+        String fullnamepath "/SpectralRange_2095nm";
+    }
+    SpectralRange_2196nm {
+        String long_name "SpectralRange for CAR ch13 2196nm";
+        String units "nm";
+        String origname "SpectralRange_2196nm";
+        String fullnamepath "/SpectralRange_2196nm";
+    }
+    SpectralRange_2291nm {
+        String long_name "SpectralRange for CAR ch14 2291nm";
+        String units "nm";
+        String origname "SpectralRange_2291nm";
+        String fullnamepath "/SpectralRange_2291nm";
+    }
+    SpectralRange_339nm {
+        String long_name "SpectralRange for CAR ch1 339nm";
+        String units "nm";
+        String origname "SpectralRange_339nm";
+        String fullnamepath "/SpectralRange_339nm";
+    }
+    SpectralRange_382nm {
+        String long_name "SpectralRange for CAR ch2 382nm";
+        String units "nm";
+        String origname "SpectralRange_382nm";
+        String fullnamepath "/SpectralRange_382nm";
+    }
+    SpectralRange_480nm {
+        String long_name "SpectralRange for CAR ch3 480nm";
+        String units "nm";
+        String origname "SpectralRange_480nm";
+        String fullnamepath "/SpectralRange_480nm";
+    }
+    SpectralRange_677nm {
+        String long_name "SpectralRange for CAR ch4 677nm";
+        String units "nm";
+        String origname "SpectralRange_677nm";
+        String fullnamepath "/SpectralRange_677nm";
+    }
+    SpectralRange_873nm {
+        String long_name "SpectralRange for CAR ch5 873nm";
+        String units "nm";
+        String origname "SpectralRange_873nm";
+        String fullnamepath "/SpectralRange_873nm";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "Scans";
+    }
+}
