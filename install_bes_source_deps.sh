@@ -19,8 +19,8 @@
 # time to make the release RPMs.
 #
 # 3. Travis will cache parts of a build. We cache the hyrax-dependencies and
-# libdap4 builds to save time. That's why there are tests for file in $HOME;
-# if there are files there, then Travis has pulled them from the cahce and 
+# libdap4 builds to save time. That's why there are tests for files in $HOME;
+# if there are files there, then Travis has pulled them from the cache and 
 # this script should not rebuild them.
 
 set -e # enable exit on error
