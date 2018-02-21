@@ -24,16 +24,6 @@
 
 #include "config.h"
 
-#ifdef HAVE_TR1_FUNCTIONAL
-#include <tr1/functional>
-#endif
-
-#ifdef HAVE_TR1_FUNCTIONAL
-#define HASH_OBJ std::tr1::hash
-#else
-#define HASH_OBJ std::hash
-#endif
-
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -51,19 +41,15 @@
 #include <util.h>
 #include <debug.h>
 
-#include <test/TestTypeFactory.h>
-
-#include "BESDapFunctionResponseCache.h"
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 
+#include "GlobalMetadataStore.h"
+
 #include "TestFunction.h"
 #include "test_utils.h"
 #include "test_config.h"
-
-using namespace CppUnit;
-using namespace std;
 
 int test_variable_sleep_interval = 0;
 
@@ -75,59 +61,19 @@ static const string c_cache_name = "/response_cache";
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+using namespace CppUnit;
+using namespace std;
 using namespace libdap;
+using namespace bes;
 
 const Type requested_type = dods_byte_c;
 const int num_dim = 2;
 const int dim_sz = 3;
 
 // Move this into the class when we goto C++-11
-const string d_cache_prefix = "rc"; // used when cleaning the cache, etc.
+const string d_cache_prefix = "mds"; // used when cleaning the cache, etc.
 
-/**
- * Server function used by the ConstraintEvalutor. This is needed because passing
- * the CE a null expression or one that names an non-existent function is an error.
- *
- * The test harness code must load up the ServerFunctionList instance - see also
- * TestFunction.h
- */
-void TestFunction::function_dap2_test(int argc, libdap::BaseType *argv[], libdap::DDS &, libdap::BaseType **btpp)
-{
-    if (argc != 1) {
-        throw Error(malformed_expr, "test(name) requires one argument.");
-    }
-
-    std::string name = extract_string_argument(argv[0]);
-
-    Array *dest = new Array(name, 0);   // The ctor for Array copies the prototype pointer...
-    BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(requested_type));  // ... so use add_var_nocopy() to add it instead
-
-    vector<int> dims(num_dim, dim_sz);
-    //dims.push_back(3); dims.push_back(3);
-    unsigned long elem = 1;
-    vector<int>::iterator i = dims.begin();
-    while (i != dims.end()) {
-        elem *= *i;
-        dest->append_dim(*i++);
-    }
-
-    // stuff the array with values
-    vector<dods_byte> values(elem);
-    for (unsigned int i = 0; i < elem; ++i) {
-        values[i] = i;
-    }
-
-    dest->set_value(values, elem);
-
-    dest->set_send_p(true);
-    dest->set_read_p(true);
-
-    // return the array
-    *btpp = dest;
-}
-
-class FunctionResponseCacheTest: public TestFixture {
+class GlobalMetadataStoreTest: public TestFixture {
 private:
     DDXParser dp;
     TestTypeFactory ttf;
@@ -139,13 +85,13 @@ private:
     BESDapFunctionResponseCache *cache;
 
 public:
-    FunctionResponseCacheTest() :
+    GlobalMetadataStoreTest() :
         dp(&ttf), test_dds(0), d_cache(string(TEST_BUILD_DIR) + c_cache_name), cache(0)
     {
         libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
     }
 
-    ~FunctionResponseCacheTest()
+    ~GlobalMetadataStoreTest()
     {
     }
 
@@ -365,7 +311,7 @@ public:
         DBG(cerr << "cache_and_read_a_response() - END" << endl);
     }
 
-CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
+CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
@@ -373,11 +319,10 @@ CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FunctionResponseCacheTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(GlobalMetadataStoreTest);
 
 int main(int argc, char*argv[])
 {
@@ -393,13 +338,13 @@ int main(int argc, char*argv[])
             bes_debug = true;  // bes_debug is a static global
             cerr << "##### BES DEBUG is ON" << endl;
             break;
-        case 'k':   // -k turns off cleaning the response_cache dir
+        case 'k':   // -k turns off cleaning the metadata store dir
             clean = false;
             break;
         case 'h': {     // help - show test names
-            cerr << "Usage: FunctionResponseCacheTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = FunctionResponseCacheTest::suite()->getTests();
-            unsigned int prefix_len = FunctionResponseCacheTest::suite()->getName().append("::").length();
+            cerr << "Usage: GlobalMetadataStoreTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = GlobalMetadataStoreTest::suite()->getTests();
+            unsigned int prefix_len = GlobalMetadataStoreTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -422,9 +367,10 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = FunctionResponseCacheTest::suite()->getName().append("::").append(argv[i]);
+            test = GlobalMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
-	    ++i;
+
+            ++i;
         }
     }
 
