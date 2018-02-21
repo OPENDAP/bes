@@ -72,7 +72,7 @@ typedef std::list<cache_entry> CacheFiles;
  * latter obtains a shared lock iff the file already exists. The unlock()
  * methods unlock a file. The lock_cache_info() and unlock_cache_info() are
  * used to control access to the whole cache - with the open + lock and
- * close + unlock operations performed atomically. Other methods that operate
+ * close + unlock operations are performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
  *
  * @note The locking mechanism uses Unix fcntl(2) and so is _per process_. That
