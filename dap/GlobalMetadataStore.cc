@@ -246,63 +246,70 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
+
 /**
  * @brief store the DDS response
  *
  * @param dds
+ * @param print_method Either &DDS::print (for the DDS) or &DDS:print_das.
  * @param key
  * @return True if the operation succeeded, False if the key is in use.
  * @throw BESInternalError If ...
  */
 bool
-GlobalMetadataStore::store_dds_response(DDS *dds, const string &key)
+GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, const string &key)
 {
     BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
 
+    string item_name = get_cache_file_name(key, false /*mangle*/);
+
     int fd;
-    if (create_and_lock(key, fd)) {
+    if (create_and_lock(item_name, fd)) {
         // If here, the cache_file_name could not be locked for read access;
         // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << key << endl);
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << item_name << endl);
 
         // Get an output stream directed at the locked cache file
-        ofstream response(key.c_str(), ios::out|ios::app);
+        ofstream response(item_name.c_str(), ios::out|ios::app);
         if (!response.is_open())
             throw BESInternalError("Could not open '" + key + "' to write the DDS response.", __FILE__, __LINE__);
 
         try {
             // Write the DDS response to the cache
-            dds->print(response);
+            // dds->print(response);
+            (dds->*print_method)(response);
 
             // Leave this in place so that sites can make a metadata store of limited size.
             // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
             exclusive_to_shared_lock(fd);
 
-            unsigned long long size = update_cache_info(key);
-            if (cache_too_big(size)) update_and_purge(key);
+            unsigned long long size = update_cache_info(item_name);
+            if (cache_too_big(size)) update_and_purge(item_name);
 
-            unlock_and_close(key);
+            unlock_and_close(item_name);
         }
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
             response.close();
-            this->purge_file(key);
-            unlock_and_close(key);
+            this->purge_file(item_name);
+            unlock_and_close(item_name);
             throw;
         }
 
         return true;
     }
-    else if (get_read_lock(key, fd)) {
+    else if (get_read_lock(item_name, fd)) {
         // We found the key; didn't add this because it was already here
-        unlock_and_close(key);
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
+        unlock_and_close(item_name);
         return false;
     }
     else {
-        throw BESInternalError("Could neither create or open '" + key + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalError("Could neither create or open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
     }
 }
 
+#if 0
 /**
  * @brief store the DDS's DAS response
  *
@@ -359,6 +366,7 @@ GlobalMetadataStore::store_das_response(DDS *dds, const string &key)
         throw BESInternalError("Could neither create or open '" + key + "'  in the metadata store.", __FILE__, __LINE__);
     }
 }
+#endif
 
 /**
  * @brief Add the DDS object to the Metadata store
@@ -366,17 +374,17 @@ GlobalMetadataStore::store_das_response(DDS *dds, const string &key)
  * @param name
  * @param dds
  */
-void GlobalMetadataStore::add_object(const string &name, DDS *dds)
+void GlobalMetadataStore::add_object(DDS *dds, const string &name)
 {
     // I'm appending the 'dds response' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    bool stored = store_dds_response(dds, get_hash(name + "dds_r"));
+    bool stored = store_dap2_response(dds, &DDS::print, get_hash(name + "dds_r"));
     if (!stored) {
         LOG("Metadata store: unable to store the DDS response for '" << name << "'.");
     }
 
-    stored = store_das_response(dds, get_hash(name + "das_r"));
+    stored = store_dap2_response(dds, &DDS::print_das, get_hash(name + "das_r"));
     if (!stored) {
         LOG("Metadata store: unable to store the DAS response for '" << name << "'.");
     }

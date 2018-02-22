@@ -189,7 +189,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -274,7 +274,7 @@ public:
 
         DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_bbox.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 

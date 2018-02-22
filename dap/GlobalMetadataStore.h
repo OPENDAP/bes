@@ -44,6 +44,8 @@ namespace bes {
 
 class GlobalMetadataStore: public BESFileLockingCache {
 private:
+    typedef void (libdap::DDS::*print_method_t)(std::ostream &);
+
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
 
@@ -55,8 +57,7 @@ private:
 
     std::string get_hash(const std::string &name);
 
-    bool store_dds_response(libdap::DDS *dds, const std::string &key);
-    bool store_das_response(libdap::DDS *dds, const std::string &key);
+    bool store_dap2_response(libdap::DDS *dds, print_method_t print_method, const std::string &key);
 
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore();
@@ -117,7 +118,7 @@ public:
     {
     }
 
-    virtual void add_object(const std::string &name, libdap::DDS *dds);
+    virtual void add_object(libdap::DDS *dds, const std::string &name);
 
 #if 0
     virtual std::string get_dds_response(const std::string &key) { }

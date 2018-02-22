@@ -113,7 +113,7 @@ public:
 
         string dmr_filename = (string) TEST_SRC_DIR + "/input-files/test_01.dmr";
         DBG(cerr << "Parsing DMR file " << dmr_filename << endl);
-        d4parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
+        d4parser->intern(read_test_baseline(dmr_filename), test_01_dmr, parser_debug);
         DBG(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
         d_baseline_local_id = "/cache_baseline_files/result_1688151760629011709.dap";

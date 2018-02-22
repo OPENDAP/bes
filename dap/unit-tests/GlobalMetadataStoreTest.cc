@@ -57,18 +57,18 @@ static bool clean = true;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-#define DEBUG_KEY "metadata_store"
+#define DEBUG_KEY "metadata_store,cache,cache2"
 
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
-//using namespace bes;
 
 namespace bes {
 
 // Move this into the class when we goto C++-11
-static const string c_mds_prefix = "mds"; // used when cleaning the cache, etc.
+static const string c_mds_prefix = "mds_"; // used when cleaning the cache, etc.
 static const string c_mds_name = "/mds";
+static const string c_mds_baseline = string(TEST_SRC_DIR) + "/mds_baseline";
 
 
 class GlobalMetadataStoreTest: public TestFixture {
@@ -91,25 +91,26 @@ public:
 
     void setUp()
     {
-        DBG(cerr << "setUp() - BEGIN" << endl);
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
         if (bes_debug) BESDebug::SetUp(string("cerr,") + DEBUG_KEY);
 
         if (clean) clean_cache_dir(c_mds_name);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // intentionally empty file. jhrg 10/20/15
 
-        DBG(cerr << "setUp() - END" << endl);
+        DBG(cerr << __func__ << " - END" << endl);
     }
 
     void tearDown()
     {
-        DBG(cerr << "tearDown() - BEGIN" << endl);
+        DBG(cerr << __func__ << " - BEGIN" << endl);
 
         delete d_test_dds;
 
         if (clean) clean_cache_dir(d_mds_dir);
 
-        DBG(cerr << "tearDown() - END" << endl);
+        DBG(cerr << __func__ << " - END" << endl);
     }
 
 #if 0
@@ -130,13 +131,13 @@ public:
     }
 #endif
 
-    // The call to get_instance should fail since the directory is named but does not exist
-    // and cannot be made.
     void ctor_test_1()
     {
-        DBG(cerr << "ctor_test_1() - BEGIN" << endl);
+        DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
+            // The call to get_instance should fail since the directory is named,
+            // but does not exist and cannot be made.
             d_mds = GlobalMetadataStore::get_instance("/new", c_mds_prefix, 1000);
             DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
             CPPUNIT_FAIL("get_instance() Should not return when the non-existent directory cannot be created");
@@ -145,16 +146,15 @@ public:
             CPPUNIT_ASSERT(!e.get_message().empty());
         }
 
-        DBG(cerr << "ctor_test_1() - END" << endl);
+        DBG(cerr << __func__ << " - END" << endl);
     }
 
-    // The directory 'd_response_cache' should exist so is_available() should be
-    // true.
     void ctor_test_2()
     {
-        DBG(cerr << "ctor_test_2() - BEGIN" << endl);
+        DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
+            // This one should work and will make the directory
             d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
             DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
             CPPUNIT_ASSERT(d_mds);
@@ -163,22 +163,19 @@ public:
             CPPUNIT_FAIL("Caught exception: " + e.get_message());
         }
 
-        DBG(cerr << "ctor_test_2() - END" << endl);
+        DBG(cerr << __func__ << " - END" << endl);
     }
 
-    // TODO
-    // Test get_hash()
-    // std::string get_hash(const std::string &name);
-
-    // Because setup() and teardown() clean out the cache directory
+    // This test may fail if the -k option is used.
     void cache_a_dap2_dds_response()
     {
-        DBG(cerr << "cache_a_response() - BEGIN" << endl);
-        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-
-        DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << d_mds << endl);
+        DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+            // Get a DDS to cache.
             d_test_dds = new DDS(&d_btf);
             DDXParser dp(&d_btf);
             string cid; // This is an unused value-result parameter. jhrg 5/10/16
@@ -186,26 +183,79 @@ public:
 
             // for these tests, set the filename to the dataset_name. ...keeps the cache names short
             d_test_dds->filename(d_test_dds->get_dataset_name());
-
             DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-
             CPPUNIT_ASSERT(d_test_dds);
 
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            bool stored = d_mds->store_dds_response(d_test_dds, d_mds->get_hash(d_test_dds->get_dataset_name() + "dds_r"));
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->store_dap2_response(d_test_dds, &DDS::print, d_test_dds->get_dataset_name() + ".dds_r");
 
+            DBG(cerr << __func__ << " - stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
 
             // Now check the file
+            string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.dds_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            string test_05_dds_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.dds_r";
+            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
+            DBG(cerr << "Reading response: " << response_name << endl);
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == test_05_dds_baseline);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << "cache_a_response() - END" << endl);
+        DBG(cerr << __func__ << " - END" << endl);
     }
 
-    // The first call reads values into the DDS, stores a copy in the cache and
+    // This test may fail if the -k option is used.
+    void cache_a_dap2_das_response()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+            // Get a DDS to cache.
+            d_test_dds = new DDS(&d_btf);
+            DDXParser dp(&d_btf);
+            string cid; // This is an unused value-result parameter. jhrg 5/10/16
+            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
+
+            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
+            d_test_dds->filename(d_test_dds->get_dataset_name());
+            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
+            CPPUNIT_ASSERT(d_test_dds);
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->store_dap2_response(d_test_dds, &DDS::print_das, d_test_dds->get_dataset_name() + ".das_r");
+
+            DBG(cerr << __func__ << " - stored: " << stored << endl);
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
+            string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.das_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            string test_05_dds_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.das_r";
+            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
+            DBG(cerr << "Reading response: " << response_name << endl);
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == test_05_dds_baseline);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+   // The first call reads values into the DDS, stores a copy in the cache and
     // returns the DDS. The second call reads the value from the cache.
     //
     // Use load_from_cache() (Private interface) to read the data.
@@ -317,6 +367,7 @@ public:
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_dap2_dds_response);
+    CPPUNIT_TEST(cache_a_dap2_das_response);
 
 #if 0
     CPPUNIT_TEST(cache_a_response);
