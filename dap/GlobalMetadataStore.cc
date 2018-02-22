@@ -309,86 +309,29 @@ GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, 
     }
 }
 
-#if 0
-/**
- * @brief store the DDS's DAS response
- *
- * @param dds
- * @param key
- * @return True if the operation succeeded, False if the key is in use.
- * @throw BESInternalError If ...
- */
-bool
-GlobalMetadataStore::store_das_response(DDS *dds, const string &key)
-{
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
-
-    int fd;
-    if (create_and_lock(key, fd)) {
-        // If here, the cache_file_name could not be locked for read access;
-        // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << key << endl);
-
-        // Get an output stream directed at the locked cache file
-        ofstream response(key.c_str(), ios::out|ios::app);
-        if (!response.is_open())
-            throw BESInternalError("Could not open '" + key + "' to write the DDS response.", __FILE__, __LINE__);
-
-        try {
-            // Write the DAS response to the cache
-            dds->print_das(response);
-
-            // Leave this in place so that sites can make a metadata store of limited size.
-            // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
-            exclusive_to_shared_lock(fd);
-
-            unsigned long long size = update_cache_info(key);
-            if (cache_too_big(size)) update_and_purge(key);
-
-            unlock_and_close(key);
-        }
-        catch (...) {
-            // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
-            response.close();
-            this->purge_file(key);
-            unlock_and_close(key);
-            throw;
-        }
-
-        return true;
-    }
-    else if (get_read_lock(key, fd)) {
-        // We found the key; didn't add this because it was already here
-        unlock_and_close(key);
-        return false;
-    }
-    else {
-        throw BESInternalError("Could neither create or open '" + key + "'  in the metadata store.", __FILE__, __LINE__);
-    }
-}
-#endif
-
 /**
  * @brief Add the DDS object to the Metadata store
  *
  * @param name
  * @param dds
+ * @return
  */
-void GlobalMetadataStore::add_object(DDS *dds, const string &name)
+bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
 {
     // I'm appending the 'dds response' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    bool stored = store_dap2_response(dds, &DDS::print, get_hash(name + "dds_r"));
-    if (!stored) {
+    bool stored_dds = store_dap2_response(dds, &DDS::print, get_hash(name + "dds_r"));
+    if (!stored_dds) {
         LOG("Metadata store: unable to store the DDS response for '" << name << "'.");
     }
 
-    stored = store_dap2_response(dds, &DDS::print_das, get_hash(name + "das_r"));
-    if (!stored) {
+    bool stored_das = store_dap2_response(dds, &DDS::print_das, get_hash(name + "das_r"));
+    if (!stored_das) {
         LOG("Metadata store: unable to store the DAS response for '" << name << "'.");
     }
 
+    return stored_dds && stored_das;
 }
 
 #if 0

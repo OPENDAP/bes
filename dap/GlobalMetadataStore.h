@@ -118,19 +118,19 @@ public:
     {
     }
 
-    virtual void add_object(libdap::DDS *dds, const std::string &name);
+    virtual bool add_object(libdap::DDS *dds, const std::string &name);
 
 #if 0
-    virtual std::string get_dds_response(const std::string &key) { }
-    virtual std::string get_das_response(const std::string &key) { }
+    virtual std::string get_dds_response(const std::string &name) { }
+    virtual std::string get_das_response(const std::string &name) { }
 
-    virtual void add_object(const std::string &name, libdap::DMR *dmr) { }
+    virtual bool add_object(libdap::DMR *dmr, const std::string &name) { }
 
-    virtual std::string get_dmr_response(const std::string &key) { }
+    virtual std::string get_dmr_response(const std::string &name) { }
 
     // These 'get' methods return null or the empty string if the thing is not in the store.
-    virtual libdap::DDS *get_dds_object(const std::string &key) { }
-    virtual libdap::DMR *get_dmr_object(const std::string &key) { }
+    virtual libdap::DDS *get_dds_object(const std::string &name) { }
+    virtual libdap::DMR *get_dmr_object(const std::string &name) { }
 #endif
 
 };

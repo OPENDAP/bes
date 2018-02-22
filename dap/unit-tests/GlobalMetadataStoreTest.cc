@@ -255,112 +255,51 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-   // The first call reads values into the DDS, stores a copy in the cache and
-    // returns the DDS. The second call reads the value from the cache.
-    //
-    // Use load_from_cache() (Private interface) to read the data.
+
+    void add_object_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << __func__ << " - Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+            // Get a DDS to cache.
+            d_test_dds = new DDS(&d_btf);
+            DDXParser dp(&d_btf);
+            string cid; // This is an unused value-result parameter. jhrg 5/10/16
+            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
+
+            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
+            d_test_dds->filename(d_test_dds->get_dataset_name());
+            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
+            CPPUNIT_ASSERT(d_test_dds);
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
+
+            DBG(cerr << __func__ << " - stored: " << stored << endl);
+            CPPUNIT_ASSERT(stored);
 #if 0
-    void cache_and_read_a_response()
-    {
-        DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
+            // Now check the file
+            string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.das_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            string test_05_dds_baseline = read_test_baseline(baseline_name);
 
-        cache = GlobalMetadataStore::get_instance(d_cache, c_mds_prefix, 1000);
-        try {
-            const string constraint = "test(\"bar\")";
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.das_r";
+            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
+            DBG(cerr << "Reading response: " << response_name << endl);
+            string stored_response = read_test_baseline(response_name);
 
-            // This code is here to load the DataDDX response into the cache if it is not
-            // there already. If it is there, it reads it from the cache.
-            DDS *result = cache->get_or_cache_dataset(d_test_dds, constraint);
-
-            CPPUNIT_ASSERT(result);
-            int var_count = result->var_end() - result->var_begin();
-            CPPUNIT_ASSERT(var_count == 1);
-
-            //DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
-            string resource_id = cache->get_resource_id(d_test_dds, constraint);
-            string cache_file_name = cache->get_hash_basename(resource_id);
-
-            DBG(
-                cerr << "cache_and_read_a_response() - resource_id: " << resource_id << ", cache_file_name: "
-                    << cache_file_name << endl);
-
-            DDS *result2 = cache->load_from_cache(resource_id, cache_file_name);
-            // Better not be null!
-            CPPUNIT_ASSERT(result2);
-            result2->filename("function_result_SimpleTypes");
-
-            // There are nine variables in test.05.ddx
-            var_count = result2->var_end() - result2->var_begin();
-            DBG(cerr << "cache_and_read_a_response() - var_count: " << var_count << endl);
-            CPPUNIT_ASSERT(var_count == 1);
-
-            ostringstream oss;
-            DDS::Vars_iter i = result2->var_begin();
-            while (i != result2->var_end()) {
-                DBG(cerr << "Variable " << (*i)->name() << endl);
-                // this will incrementally add the string rep of values to 'oss'
-                (*i)->print_val(oss, "", false /*print declaration */);
-                DBG(cerr << "Value " << oss.str() << endl);
-                ++i;
-            }
-
-            CPPUNIT_ASSERT(oss.str().compare("{{0, 1, 2},{3, 4, 5},{6, 7, 8}}") == 0);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL(e.get_error_message());
-        }
-
-        DBG(cerr << "cache_and_read_a_response() - END" << endl);
-    }
-
-    // The first call reads values into the DDS, stores a copy in the cache and
-    // returns the DDS. The second call reads the value from the cache.
-    //
-    // Use the public interface to read the data (cache_dataset()), but w/o a
-    // constraint
-    void cache_and_read_a_response2()
-    {
-        DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
-
-        cache = GlobalMetadataStore::get_instance(d_cache, c_mds_prefix, 1000);
-        try {
-            // This code is here to load the DataDDX response into the cache if it is not
-            // there already. If it is there, it reads it from the cache.
-            DDS *result = cache->get_or_cache_dataset(d_test_dds, "test(\"bar\")");
-
-            CPPUNIT_ASSERT(result);
-            int var_count = result->var_end() - result->var_begin();
-            CPPUNIT_ASSERT(var_count == 1);
-
-            DDS *result2 = cache->get_or_cache_dataset(d_test_dds, "test(\"bar\")");
-            // Better not be null!
-            CPPUNIT_ASSERT(result2);
-            result2->filename("function_result_SimpleTypes");
-
-            // There are nine variables in test.05.ddx
-            var_count = result2->var_end() - result2->var_begin();
-            DBG(cerr << "cache_and_read_a_response() - var_count: " << var_count << endl);
-            CPPUNIT_ASSERT(var_count == 1);
-
-            ostringstream oss;
-            DDS::Vars_iter i = result2->var_begin();
-            while (i != result2->var_end()) {
-                DBG(cerr << "Variable " << (*i)->name() << endl);
-                // this will incrementally add the string rep of values to 'oss'
-                (*i)->print_val(oss, "", false /*print declaration */);
-                DBG(cerr << "Value " << oss.str() << endl);
-                ++i;
-            }
-
-            CPPUNIT_ASSERT(oss.str().compare("{{0, 1, 2},{3, 4, 5},{6, 7, 8}}") == 0);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL(e.get_error_message());
-        }
-
-        DBG(cerr << "cache_and_read_a_response() - END" << endl);
-    }
+            CPPUNIT_ASSERT(stored_response == test_05_dds_baseline);
 #endif
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
 
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
@@ -368,12 +307,8 @@ public:
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_dap2_dds_response);
     CPPUNIT_TEST(cache_a_dap2_das_response);
+    CPPUNIT_TEST(add_object_test);
 
-#if 0
-    CPPUNIT_TEST(cache_a_response);
-    CPPUNIT_TEST(cache_and_read_a_response);
-    CPPUNIT_TEST(cache_and_read_a_response2);
-#endif
     CPPUNIT_TEST_SUITE_END();
 };
 
