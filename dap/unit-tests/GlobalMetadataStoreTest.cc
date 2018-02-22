@@ -30,8 +30,6 @@
 
 #include <Array.h>
 #include <Byte.h>
-#include <ServerFunctionsList.h>
-#include <ConstraintEvaluator.h>
 #include <DAS.h>
 #include <DDS.h>
 #include <DDXParserSAX2.h>
@@ -41,13 +39,14 @@
 #include <util.h>
 #include <debug.h>
 
+#include <BaseTypeFactory.h>
+
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 
 #include "GlobalMetadataStore.h"
 
-#include "TestFunction.h"
 #include "test_utils.h"
 #include "test_config.h"
 
@@ -63,23 +62,26 @@ static bool clean = true;
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
-using namespace bes;
+//using namespace bes;
+
+namespace bes {
 
 // Move this into the class when we goto C++-11
-const string d_mds_prefix = "mds"; // used when cleaning the cache, etc.
+static const string c_mds_prefix = "mds"; // used when cleaning the cache, etc.
 static const string c_mds_name = "/mds";
 
 
 class GlobalMetadataStoreTest: public TestFixture {
 private:
-    DDS *test_dds;
+    DDS *d_test_dds;
+    BaseTypeFactory d_btf;
 
     string d_mds_dir;
-    GlobalMetadataStore *mds;
+    GlobalMetadataStore *d_mds;
 
 public:
     GlobalMetadataStoreTest() :
-        test_dds(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), mds(0)
+        d_test_dds(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
     {
     }
 
@@ -91,18 +93,9 @@ public:
     {
         DBG(cerr << "setUp() - BEGIN" << endl);
         if (bes_debug) BESDebug::SetUp(string("cerr,") + DEBUG_KEY);
-#if 0
-        string cid; // This is an unused value-result parameter. jhrg 5/10/16
-        test_dds = new DDS(&ttf);
-        dp.intern((string) TEST_SRC_DIR + "/input-files/test.05.ddx", test_dds, cid);
 
-        // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-        test_dds->filename(test_dds->get_dataset_name());
+        if (clean) clean_cache_dir(c_mds_name);
 
-        DBG(cerr << "DDS Name: " << test_dds->get_dataset_name() << endl);
-
-        if (clean) clean_cache_dir(d_cache);
-#endif
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // intentionally empty file. jhrg 10/20/15
 
         DBG(cerr << "setUp() - END" << endl);
@@ -112,7 +105,7 @@ public:
     {
         DBG(cerr << "tearDown() - BEGIN" << endl);
 
-        delete test_dds;
+        delete d_test_dds;
 
         if (clean) clean_cache_dir(d_mds_dir);
 
@@ -144,55 +137,66 @@ public:
         DBG(cerr << "ctor_test_1() - BEGIN" << endl);
 
         try {
-            mds = GlobalMetadataStore::get_instance(string(TEST_BUILD_DIR) + "/new", d_mds_prefix, 1000);
-            DBG(cerr << "ctor_test_1() - retrieved GlobalMetadataStore instance: " << mds << endl);
-            CPPUNIT_ASSERT(mds);
+            d_mds = GlobalMetadataStore::get_instance("/new", c_mds_prefix, 1000);
+            DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
+            CPPUNIT_FAIL("get_instance() Should not return when the non-existent directory cannot be created");
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL("Caught exception: " + e.get_message());
+            CPPUNIT_ASSERT(!e.get_message().empty());
         }
 
         DBG(cerr << "ctor_test_1() - END" << endl);
     }
 
-#if 0
     // The directory 'd_response_cache' should exist so is_available() should be
     // true.
     void ctor_test_2()
     {
         DBG(cerr << "ctor_test_2() - BEGIN" << endl);
 
-        string cacheDir = d_cache;
-        string prefix = "rc";
-        long size = 1000;
-        cache = GlobalMetadataStore::get_instance(cacheDir, prefix, size);
-        DBG(cerr << "ctor_test_1() - retrieved GlobalMetadataStore instance: " << cache << endl);
-
-        CPPUNIT_ASSERT(cache);
+        try {
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
+            CPPUNIT_ASSERT(d_mds);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught exception: " + e.get_message());
+        }
 
         DBG(cerr << "ctor_test_2() - END" << endl);
     }
 
-    // Because setup() and teardown() clean out the cache directory, there should
-    // never be a cached item; calling read_cached_dataset() should return a
-    // valid DDS with data and store a copy in the cache.
-    void cache_a_response()
+    // TODO
+    // Test get_hash()
+    // std::string get_hash(const std::string &name);
+
+    // Because setup() and teardown() clean out the cache directory
+    void cache_a_dap2_dds_response()
     {
         DBG(cerr << "cache_a_response() - BEGIN" << endl);
-        cache = GlobalMetadataStore::get_instance(d_cache, d_mds_prefix, 1000);
+        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
 
-        DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << cache << endl);
+        DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << d_mds << endl);
 
-        string token;
         try {
-            CPPUNIT_ASSERT(test_dds);
+            d_test_dds = new DDS(&d_btf);
+            DDXParser dp(&d_btf);
+            string cid; // This is an unused value-result parameter. jhrg 5/10/16
+            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
 
-            DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"foo\")");
+            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
+            d_test_dds->filename(d_test_dds->get_dataset_name());
 
-            CPPUNIT_ASSERT(result);
+            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
 
-            CPPUNIT_ASSERT(result->var("foo"));
-            CPPUNIT_ASSERT(result->var("foo")->type() == dods_array_c);
+            CPPUNIT_ASSERT(d_test_dds);
+
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            bool stored = d_mds->store_dds_response(d_test_dds, d_mds->get_hash(d_test_dds->get_dataset_name() + "dds_r"));
+
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -205,24 +209,25 @@ public:
     // returns the DDS. The second call reads the value from the cache.
     //
     // Use load_from_cache() (Private interface) to read the data.
+#if 0
     void cache_and_read_a_response()
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = GlobalMetadataStore::get_instance(d_cache, d_mds_prefix, 1000);
+        cache = GlobalMetadataStore::get_instance(d_cache, c_mds_prefix, 1000);
         try {
             const string constraint = "test(\"bar\")";
 
             // This code is here to load the DataDDX response into the cache if it is not
             // there already. If it is there, it reads it from the cache.
-            DDS *result = cache->get_or_cache_dataset(test_dds, constraint);
+            DDS *result = cache->get_or_cache_dataset(d_test_dds, constraint);
 
             CPPUNIT_ASSERT(result);
             int var_count = result->var_end() - result->var_begin();
             CPPUNIT_ASSERT(var_count == 1);
 
             //DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
-            string resource_id = cache->get_resource_id(test_dds, constraint);
+            string resource_id = cache->get_resource_id(d_test_dds, constraint);
             string cache_file_name = cache->get_hash_basename(resource_id);
 
             DBG(
@@ -267,17 +272,17 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = GlobalMetadataStore::get_instance(d_cache, d_mds_prefix, 1000);
+        cache = GlobalMetadataStore::get_instance(d_cache, c_mds_prefix, 1000);
         try {
             // This code is here to load the DataDDX response into the cache if it is not
             // there already. If it is there, it reads it from the cache.
-            DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
+            DDS *result = cache->get_or_cache_dataset(d_test_dds, "test(\"bar\")");
 
             CPPUNIT_ASSERT(result);
             int var_count = result->var_end() - result->var_begin();
             CPPUNIT_ASSERT(var_count == 1);
 
-            DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
+            DDS *result2 = cache->get_or_cache_dataset(d_test_dds, "test(\"bar\")");
             // Better not be null!
             CPPUNIT_ASSERT(result2);
             result2->filename("function_result_SimpleTypes");
@@ -310,8 +315,10 @@ public:
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
-#if 0
     CPPUNIT_TEST(ctor_test_2);
+    CPPUNIT_TEST(cache_a_dap2_dds_response);
+
+#if 0
     CPPUNIT_TEST(cache_a_response);
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
@@ -320,6 +327,8 @@ public:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(GlobalMetadataStoreTest);
+
+}
 
 int main(int argc, char*argv[])
 {
@@ -340,8 +349,8 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: GlobalMetadataStoreTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = GlobalMetadataStoreTest::suite()->getTests();
-            unsigned int prefix_len = GlobalMetadataStoreTest::suite()->getName().append("::").length();
+            const std::vector<Test*> &tests = bes::GlobalMetadataStoreTest::suite()->getTests();
+            unsigned int prefix_len = bes::GlobalMetadataStoreTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -364,7 +373,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = GlobalMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
+            test = bes::GlobalMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
 
             ++i;
