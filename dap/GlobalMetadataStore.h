@@ -67,23 +67,6 @@ private:
 
     friend class GlobalMetadataStoreTest;
 
-#if 0
-    bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-
-    std::string get_resource_id(libdap::DDS *dds, const std::string &constraint);
-    std::string get_hash_basename(const std::string &resource_id);
-
-    libdap::DDS *read_cached_data(istream &cached_data);
-
-    libdap::DDS *write_dataset_to_cache(libdap::DDS *dds, const string &resourceId, const string &constraint,
-        const string &cache_file_name);
-
-    libdap::DDS *load_from_cache(const string &resource_id, string &cache_file_name);
-
-    friend class FunctionResponseCacheTest;
-    friend class StoredResultTest;
-#endif
-
 protected:
     /**
      * Protected constructor that calls BESFileLockingCache's constructor;

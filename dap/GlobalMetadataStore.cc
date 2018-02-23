@@ -24,48 +24,12 @@
 
 #include "config.h"
 
-//#define DODS_DEBUG
-#if 0
-#include <cstdio>
-#include <unistd.h>
-#include <sys/stat.h>
-#endif
-
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
 
-#if 0
-#ifdef HAVE_TR1_FUNCTIONAL
-#include <tr1/functional>
-#endif
-#endif
-
 #include <DDS.h>
-#if 0
-#include <ConstraintEvaluator.h>
-#include <DDXParserSAX2.h>
-
-#include <XDRStreamMarshaller.h>
-#include <XDRStreamUnMarshaller.h>
-#include <XDRFileUnMarshaller.h>
-
-#include <D4StreamMarshaller.h>
-#include <D4StreamUnMarshaller.h>
-
-#include <Sequence.h>   // We have to special-case these; see read_data_ddx()
-
-#include <debug.h>
-#include <mime_util.h>	// for last_modified_time() and rfc_822_date()
-#include <util.h>
-
-#include "CacheTypeFactory.h"
-#include "CacheMarshaller.h"
-#include "CacheUnMarshaller.h"
-#endif
-
-#include "BESInternalError.h"
 
 #include "PicoSHA2/picosha2.h"
 
@@ -74,17 +38,11 @@
 #include "BESLog.h"
 #include "BESDebug.h"
 
+#include "BESInternalError.h"
+
 #include "GlobalMetadataStore.h"
 
 #define DEBUG_KEY "metadata_store"
-
-#if 0
-#ifdef HAVE_TR1_FUNCTIONAL
-#define HASH_OBJ std::tr1::hash
-#else
-#define HASH_OBJ std::hash
-#endif
-#endif
 
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
@@ -95,14 +53,6 @@
 using namespace std;
 using namespace libdap;
 using namespace bes;
-
-#if 0
-const string DATA_MARK = "--DATA:";
-
-// If the size of the constraint is larger then this value, don't cache the response.
-const unsigned int max_cacheable_ce_len = 4096;
-const unsigned int max_collisions = 50; // It's hard to believe this could happen
-#endif
 
 const unsigned int default_cache_size = 20; // 20 GB
 const string default_cache_prefix = "mds";
