@@ -6,7 +6,7 @@
 #include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
 
-#define SPI_DEBUG_KEY "show_path_info"
+#define SPI_DEBUG_KEY "show-path-info"
 
 #define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
 #define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
