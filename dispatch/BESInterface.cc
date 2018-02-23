@@ -324,7 +324,7 @@ int BESInterface::execute_request(const string &from)
     // TODO status is not used. jhrg 11/9/17
     int status = 0; // save the return status from exception_manager() and return that.
     try {
-        VERBOSE(/*d_dhi_ptr->data[SERVER_PID] << " from " <<*/ d_dhi_ptr->data[REQUEST_FROM] << " request received" << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " request received" << endl);
 
         // Initialize the transmitter for this interface instance to the BASIC
         // TRANSMITTER. This ensures that a simple response, such as an error,

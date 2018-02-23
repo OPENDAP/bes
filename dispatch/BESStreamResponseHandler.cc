@@ -75,7 +75,7 @@ extern volatile int bes_timeout; // defined in BESInterface. jhrg 1/24/17
  */
 void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    _response = 0;
+    d_response_object = 0;
 
     // Hack. We put this here because the bes timeout period should not
     // include the time it takes to send  data for a file transfer response.

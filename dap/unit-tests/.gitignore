@@ -2,3 +2,5 @@ SequenceAggregationServerTest
 ObjMemCacheTest
 vg_supp.txt
 FunctionResponseCacheTest
+TemporaryFileTest
+bes.conf

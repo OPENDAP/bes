@@ -34,15 +34,16 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "GetOpt.h"
+#include <GetOpt.h>
+#include <util.h>
 
-#include "test_config.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "ShowPathInfoResponseHandler.h"
-#include "util.h"
+
+#include "test_config.h"
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -57,10 +58,9 @@ class ShowPathInfoTest: public CppUnit::TestFixture {
 private:
     string d_tmpDir;
     string d_testDir;
-    // ShowPathInfoResponseHandler::eval_resource_path
 
-    void eval_resource_path(string resourceId, string catalogRoot, string expectedValidPath, string expectedRemainder,
-        bool follow_sym_links)
+    void eval_resource_path(string resourceId, string catalogRoot, string expectedValidPath,
+        string expectedRemainder, bool follow_sym_links)
     {
         ShowPathInfoResponseHandler spirh("ShowPathInfoResponseHandler-Unit-Test");
 
@@ -181,7 +181,6 @@ CPPUNIT_TEST_SUITE( ShowPathInfoTest );
         string expectedRemainder = "sst/lat";
         eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
     }
-
 
     void eval_resource_path_to_file_with_a_dap_suffix()
     {

@@ -52,7 +52,7 @@ namespace libdap {
  * The cache stores pointers to objects, not objects themselves. The
  * user of the cache must take care of copying objects that are added
  * or accessed to/from the cache unless the lifetime of an pointer
- * in the cache will suffice for the use at hand. for example, a cached
+ * in the cache will suffice for the use at hand. For example, a cached
  * DAS pointer can be passed to DDS::transfer_attributes(DAS *);
  * there is no need to copy the underlying DAS. However, returning
  * a DAS to the BES for serialization requires that a copy be made

@@ -148,3 +148,4 @@ xmlcommand/unit-tests/test_config.h
 timing/*/*.log
 timing/*/*.result
 timing/*/*.dtps
+/html/

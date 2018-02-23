@@ -75,7 +75,7 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 		dmr->set_request_xml_base(xml_base);
 	}
 
-	_response = new BESDMRResponse(dmr);
+	d_response_object = new BESDMRResponse(dmr);
 
 	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
@@ -94,8 +94,8 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDap4ResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-	if (_response) {
-		transmitter->send_response(DAP4DATA_SERVICE, _response, dhi);
+	if (d_response_object) {
+		transmitter->send_response(DAP4DATA_SERVICE, d_response_object, dhi);
 	}
 }
 

@@ -33,19 +33,27 @@ dnl to default values otherwise.
 AC_CANONICAL_HOST
 AC_SUBST(host)
 
+dnl This is the default. If the caller uses --enable-developer, that option
+dnl will override these values
+cxx_debug_flags="-g -O2"
+
 dnl I moved this up to here from the tail end of the file
 dnl because it needs to run before the AC_PROG_CXX macro
 dnl which will also set CXXFLAGS
 dnl jhrg 3/4/15
-AC_ARG_ENABLE([developer],
-  [AS_HELP_STRING([--enable-developer],[developer mode])],
+AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
   [AM_CONDITIONAL([BES_DEVELOPER], [true])
-   dnl Not used anymore. jhrg 11/28/17 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
-   dnl Only set CXXFLAGS if the caller does not have them set in their environment
-   AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"])],
+   cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],   
   [AM_CONDITIONAL([BES_DEVELOPER], [false])
-   dnl AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
    AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
+
+AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])], 
+    [AM_CONDITIONAL([USE_ASAN], [true])
+     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
+    [AM_CONDITIONAL([USE_ASAN], [false])])
+
+dnl Only set CXXFLAGS if the caller didn't supply a value
+AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
@@ -786,7 +794,6 @@ AC_CONFIG_FILES([Makefile
 		 
 		 dap/Makefile
 		 dap/unit-tests/Makefile
-		 dap/unit-tests/test_config.h
 		 dap/tests/Makefile
 		 dap/tests/atlocal
 
@@ -836,24 +843,20 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/tests/Makefile
     modules/asciival/tests/atlocal
     modules/asciival/unit-tests/Makefile
-    modules/asciival/unit-tests/test_config.h
 
     modules/www-interface/Makefile
 
     modules/debug_functions/Makefile
     modules/debug_functions/unit-tests/Makefile 
-    modules/debug_functions/unit-tests/test_config.h
     modules/debug_functions/tests/Makefile 
     modules/debug_functions/tests/atlocal
 
     modules/dmrpp_module/Makefile
     modules/dmrpp_module/unit-tests/Makefile
-    modules/dmrpp_module/unit-tests/test_config.h
     modules/dmrpp_module/data/Makefile
 
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
-    modules/fileout_json/unit-tests/test_config.h
     modules/fileout_json/tests/Makefile 
     modules/fileout_json/tests/atlocal
     
@@ -862,30 +865,29 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/freeform_handler/tests/atlocal
     modules/freeform_handler/FFND/Makefile
 
-	modules/xml_data_handler/Makefile
+    modules/xml_data_handler/Makefile
     modules/xml_data_handler/unit-tests/Makefile
-    modules/xml_data_handler/unit-tests/test_config.h
     modules/xml_data_handler/tests/Makefile
     modules/xml_data_handler/tests/atlocal
     
     modules/netcdf_handler/Makefile
-	modules/netcdf_handler/tests/Makefile 
-	modules/netcdf_handler/tests/atlocal 
+    modules/netcdf_handler/tests/Makefile 
+    modules/netcdf_handler/tests/atlocal 
 	
-	modules/fileout_netcdf/Makefile 	
+    modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 
 	
-	modules/gateway_module/Makefile 
-	modules/gateway_module/tests/Makefile 
-	modules/gateway_module/tests/atlocal 
-	
-	modules/fileout_gdal/Makefile
-	modules/fileout_gdal/tests/Makefile 
-	modules/fileout_gdal/tests/atlocal 
-	
-	modules/fits_handler/Makefile
+    modules/gateway_module/Makefile 
+    modules/gateway_module/tests/Makefile 
+    modules/gateway_module/tests/atlocal 
+
+    modules/fileout_gdal/Makefile
+    modules/fileout_gdal/tests/Makefile 
+    modules/fileout_gdal/tests/atlocal 
+
+    modules/fits_handler/Makefile
     modules/fits_handler/tests/atlocal
     modules/fits_handler/tests/Makefile
     
@@ -910,25 +912,23 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     modules/ugrid_functions/Makefile 
     modules/ugrid_functions/unit-tests/Makefile
-    modules/ugrid_functions/unit-tests/test_config.h
-	modules/ugrid_functions/tests/Makefile 
-	modules/ugrid_functions/tests/atlocal
+    modules/ugrid_functions/tests/Makefile 
+    modules/ugrid_functions/tests/atlocal
         
-	modules/w10n_handler/Makefile 
-	modules/w10n_handler/unit-tests/Makefile
-	modules/w10n_handler/unit-tests/test_config.h
-	modules/w10n_handler/tests/Makefile 
-	modules/w10n_handler/tests/atlocal])
+    modules/w10n_handler/Makefile 
+    modules/w10n_handler/unit-tests/Makefile
+    modules/w10n_handler/tests/Makefile 
+    modules/w10n_handler/tests/atlocal])
         
     dnl Move these into the autotest.at files using an autotest option.
-	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
-		[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
+	[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
 		
-	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
-		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
+    AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
+	[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
-	AC_CONFIG_FILES([modules/fits_handler/tests/generate_metadata_baseline.sh],
-	   [chmod +x modules/fits_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/fits_handler/tests/generate_metadata_baseline.sh],
+	[chmod +x modules/fits_handler/tests/generate_metadata_baseline.sh])
     AC_CONFIG_FILES([modules/fits_handler/tests/generate_data_baseline.sh],
         [chmod +x modules/fits_handler/tests/generate_data_baseline.sh])
 	

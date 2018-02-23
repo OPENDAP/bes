@@ -123,7 +123,7 @@ function help_button() {
     // the root window's document gets reloaded. This does not happen on IE5.
     // regardless, with scrollbars we don't absolutely need to be able to
     // resize. 10/8/99 jhrg
-    help = window.open("http://www.opendap.org/online_help_files/opendap_form_help.html",
+    help = window.open("https://opendap.github.io/documentation/QuickStart.html#_an_easy_way_using_the_browser_based_opendap_server_dataset_access_form",
                        "help", "scrollbars,dependent,width=600,height=400");
 }
 

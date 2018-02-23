@@ -91,7 +91,7 @@ void BESXMLInterface::build_data_request_plan()
 
         // XML_PARSE_NONET
         doc = xmlReadMemory(d_xml_document.c_str(), d_xml_document.size(), "" /* base URL */,
-        NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+                            NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == NULL) {
             string err = "Problem parsing the request xml document:\n";
@@ -114,8 +114,8 @@ void BESXMLInterface::build_data_request_plan()
 
         string root_name;
         string root_val;
-        map<string, string> props;
-        BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, props);
+        map<string, string> attributes;
+        BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, attributes);
         if (root_name != "request")
             throw BESSyntaxUserError(
                 string("The root element should be a request element, name is ").append((char *) root_element->name),
@@ -126,7 +126,7 @@ void BESXMLInterface::build_data_request_plan()
             __FILE__, __LINE__);
 
         // there should be a request id property with one value.
-        string &reqId = props[REQUEST_ID];
+        string &reqId = attributes[REQUEST_ID];
         if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
 
         d_dhi_ptr->data[REQUEST_ID] = reqId;
@@ -162,7 +162,7 @@ void BESXMLInterface::build_data_request_plan()
                 // push this new command to the back of the list
                 d_xml_cmd_list.push_back(current_cmd);
 
-                // only one of the commands can build a response
+                // only one of the commands in a request can build a response
                 bool cmd_has_response = current_cmd->has_response();
                 if (has_response && cmd_has_response)
                     throw BESSyntaxUserError("Commands with multiple responses not supported.", __FILE__, __LINE__);
@@ -172,15 +172,15 @@ void BESXMLInterface::build_data_request_plan()
                 // parse the request given the current node
                 current_cmd->parse_request(current_node);
 
-                BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
-
                 // Check if the correct transmitter is present. We look for it again in do_transmit()
                 // where it is actually used. This test just keeps us from building a response that
                 // cannot be transmitted. jhrg 11/8/17
                 //
                 // TODO We could add the 'transmitter' to the DHI.
+                BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
+
                 string return_as = current_dhi.data[RETURN_CMD];
-                if (!return_as.empty() & !BESReturnManager::TheManager()->find_transmitter(return_as))
+                if (!return_as.empty() && !BESReturnManager::TheManager()->find_transmitter(return_as))
                     throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__,
                         __LINE__);
             }
@@ -226,7 +226,7 @@ void BESXMLInterface::execute_data_request_plan()
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
 
         // This is the main log entry when the server is not in 'verbose' mode.
-        // There are two ays we can do this, one writes a log line for only the
+        // There are two ways we can do this, one writes a log line for only the
         // get commands, the other write the set container, define and get commands.
         // TODO Make this configurable? jhrg 11/14/17
 #ifdef LOG_ONLY_GET_COMMANDS
@@ -267,6 +267,14 @@ void BESXMLInterface::execute_data_request_plan()
         }
 #endif
 
+        ///////////
+
+        // Here's where we could look at the dynamic type do something different
+        // for a new kind of XMLCommand (e.g., SimpleXMLCommand). For this, the
+        // the code now in the response_handler->execute() and ->transmit().
+
+        //////////
+
         if (!d_dhi_ptr->response_handler)
             throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__,
             __LINE__);
@@ -279,7 +287,13 @@ void BESXMLInterface::execute_data_request_plan()
 
 /**
  * @brief Transmit the response object
- * @todo Remove?
+ *
+ * This is only called from BESXMLInterface::execute_data_request_plan().
+ *
+ * @note The idea here is that the execute() and transmit() parts are separate to
+ * increase the chance of catching errors _before_ transmission starts. Once  we
+ * call d_dhi_ptr->response_handler->transmit(d_transmitter, *d_dhi_ptr) it's really
+ * hard to tell the client about a problem.
  *
  * Only transmit if there is an error or if there is a ResponseHandler. For any
  * XML document with one or more commands, there should only be one ResponseHandler.
@@ -297,8 +311,7 @@ void BESXMLInterface::transmit_data()
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
-        VERBOSE(
-            /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
         if (BESISDEBUG(TIMING_LOG)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
@@ -334,8 +347,7 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            LOG(
-                /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            LOG(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
         }
     }
 }
@@ -351,8 +363,7 @@ void BESXMLInterface::clean()
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
         if (d_dhi_ptr) {
-            VERBOSE(
-                /*d_dhi_ptr->data[SERVER_PID] << " from " <<*/d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
 
             d_dhi_ptr->clean(); // Delete the ResponseHandler if present
         }

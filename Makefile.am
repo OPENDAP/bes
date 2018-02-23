@@ -38,7 +38,7 @@ if DAP_BUILTIN_MODULES
 SUBDIRS += modules
 endif
 
-bin_SCRIPTS = bes-config bes-config-pkgconfig
+bin_SCRIPTS = bes-config bes-config-pkgconfig bes-tmpfiles-conf
 
 # Yes, even though its `init_d_SCRIPTS`, we use `init_ddir`,
 # with-out a second underscore.
@@ -56,8 +56,8 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = doxy.conf.in bes.spec \
-OSX_Resources bes-config-pkgconfig besd.logrotate README.md
+EXTRA_DIST = doxy.conf.in bes.spec OSX_Resources bes-config-pkgconfig \
+bes-tmpfiles-conf besd.logrotate README.md
 
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
@@ -86,7 +86,8 @@ cccc:
 # big tar and lets us use the old target again, which means I don't
 # have to code the rpmbuild root into a target.
 dist-hook:
-	rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
+	-rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
+	-rm -rf `find $(distdir) -name 'test_config.h' `
 
 # Build linux RPMs
 

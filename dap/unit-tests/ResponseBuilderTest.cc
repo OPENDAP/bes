@@ -185,8 +185,8 @@ public:
     ResponseBuilderTest() :
         drb(0), drb3(0), drb5(0), drb6(0), d_stored_result_subdir("/builder_response_cache"), test_05_dds(0),
         // FIXME Cannot rely on hash name being the same on different machines. jhrg 3/4/15
-        stored_dap2_result_filename(TEST_SRC_DIR + d_stored_result_subdir + "/my_result_16877844200208667996.data_ddx"), cont_a(
-            0), das(0), dds(0), test_01_dmr(0), d4_parser(0), d4_ttf(0), d4_btf(0)
+        stored_dap2_result_filename(TEST_BUILD_DIR + d_stored_result_subdir + "/my_result_16877844200208667996.data_ddx"),
+        cont_a(0), das(0), dds(0), test_01_dmr(0), d4_parser(0), d4_ttf(0), d4_btf(0)
     {
         now = time(0);
         ostringstream time_string;
@@ -270,7 +270,7 @@ public:
         DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY,
-            (string) TEST_SRC_DIR + "/response_cache");
+            (string) TEST_BUILD_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, "dap_response");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "100");
 
@@ -612,7 +612,7 @@ public:
                     << stored_object_baseline_file << endl);
             baseline = readTestBaseline(stored_object_baseline_file);
 
-            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir
+            string stored_object_response_file = (string) TEST_BUILD_DIR + d_stored_result_subdir
                 + "/my_result_9619561608535196802.dap";
             DBG(
                 cerr << "store_dap4_result_test() - Stored Object Response File: " << endl
@@ -824,6 +824,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = ResponseBuilderTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
         }
     }
 

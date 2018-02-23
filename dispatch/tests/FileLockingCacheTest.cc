@@ -3,8 +3,8 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2017 University Corporation for Atmospheric Research
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,13 +22,6 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <unistd.h>  // for sleep
 #include <sys/types.h>
@@ -60,7 +53,7 @@ using namespace std;
 
 const std::string CACHE_PREFIX = string("flc_");
 const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
-const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_BUILD_DIR, "cache");
 
 const std::string LOCK_TEST_FILE = std::string("lock_test");
 
@@ -222,7 +215,7 @@ int main(int argc, char*argv[])
             break;
 
         case 'c':
-            cache_dir = BESUtil::assemblePath(TEST_SRC_DIR, string(getopt.optarg));
+            cache_dir = BESUtil::assemblePath(TEST_BUILD_DIR, string(getopt.optarg));
             DBG(cerr << __func__ << "() - use cache dir " << cache_dir << endl);
             break;
 

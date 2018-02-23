@@ -33,6 +33,9 @@
 #ifndef BESInterface_h_
 #define BESInterface_h_ 1
 
+#include <string>
+#include <ostream>
+
 #include "BESObj.h"
 
 class BESError;
@@ -114,7 +117,7 @@ class BESDataHandlerInterface;
  */
 class BESInterface: public BESObj {
 private:
-    ostream *d_strm;
+    std::ostream *d_strm;
     int d_timeout_from_keys; ///< Command timeout; can be overridden using setContext
 
 protected:
@@ -142,11 +145,11 @@ protected:
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control
     // to the 'run the command' part of the server. jhrg 11/7/17
-    virtual int execute_request(const string &from);
+    virtual int execute_request(const std::string &from);
 
     virtual int finish(int status);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESInterface_h_

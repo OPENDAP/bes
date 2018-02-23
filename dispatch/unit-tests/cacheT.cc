@@ -57,7 +57,7 @@ using std::ostringstream;
 #include <BESUtil.h>
 #include <BESFileLockingCache.h>
 
-#include <test_config.h>
+#include "test_config.h"
 
 // Not run by default!
 // Set from the command-line invocation of the main only

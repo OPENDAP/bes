@@ -14,23 +14,30 @@ endif
 
 noinst_PROGRAMS = FileLockingCacheTest
 
-# TESTS = testsuite
-
-# You need this because AM assumes that .h files don't need to be built
-BUILT_SOURCES = test_config.h
-
-noinst_DATA =
-CLEANFILES = 
 EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4 \
 test_config.h.in
 
 DISTCLEANFILES = atconfig
 
-test_config.h: test_config.h.in
-	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
+CLEANFILES = test_config.h
 
-FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc test_config.h
+# These are all created by the FileLockingCacheTest program Run by clean-local.
+# jhrg 1/23/18
+.PHONY: cache-clean
+cache-clean:
+	-rm -rf blocking cache create_and_lock create_and_lock_2 create_and_lock_3 read_hooks
+	
+noinst_HEADERS = test_config.h
+
+BUILT_SOURCES = test_config.h
+
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc
 
 ############## Autotest follows #####################
 
@@ -38,10 +45,11 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-clean-local:
+clean-local: cache-clean
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
+# Force the tests here to run 
 check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
