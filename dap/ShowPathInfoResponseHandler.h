@@ -47,16 +47,8 @@
  */
 class ShowPathInfoResponseHandler: public BESResponseHandler {
 public:
-    void eval_resource_path(
-        const string &resource_path,
-        const string &catalog_root,
-        const bool follow_sym_links,
-        string &validPath,
-        bool &isFile,
-        bool &isDir,
-        long long &size,
-        long long &lastModifiedTime,
-        bool &canRead,
+    void eval_resource_path(const string &resource_path, const string &catalog_root, const bool follow_sym_links,
+        string &validPath, bool &isFile, bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead,
         string &remainder);
 
 public:
