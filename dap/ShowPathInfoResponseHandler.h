@@ -45,29 +45,21 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class ShowPathInfoResponseHandler : public BESResponseHandler
-{
+class ShowPathInfoResponseHandler: public BESResponseHandler {
 public:
-    void eval_resource_path(
-        const string &w10nResourceId,
-        const string &catalogRoot,
-        const bool follow_sym_links,
-        string &validPath,
-        bool &isFile,
-        bool &isDir,
-        string &remainder);
+    void eval_resource_path(const string &w10nResourceId, const string &catalogRoot, const bool follow_sym_links,
+        string &validPath, bool &isFile, bool &isDir, string &remainder);
 
 public:
-	ShowPathInfoResponseHandler( const string &name );
-    virtual	~ShowPathInfoResponseHandler( void ) ;
+    ShowPathInfoResponseHandler(const string &name);
+    virtual ~ShowPathInfoResponseHandler(void);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *ShowPathInfoResponseBuilder( const string &name ) ;
+    static BESResponseHandler *ShowPathInfoResponseBuilder(const string &name);
 };
 
 #endif // I_ShowPathInfoResponseHandler_h

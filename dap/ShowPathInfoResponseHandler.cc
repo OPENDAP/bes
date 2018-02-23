@@ -29,7 +29,6 @@
 
 #include "BESDebug.h"
 
-
 #include "BESInfoList.h"
 #include "BESInfo.h"
 #include "BESUtil.h"
@@ -58,11 +57,12 @@
 #define SPI_DEBUG_KEY "show_path_info"
 #define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
 
-ShowPathInfoResponseHandler::ShowPathInfoResponseHandler( const string &name ): BESResponseHandler( name )
+ShowPathInfoResponseHandler::ShowPathInfoResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-ShowPathInfoResponseHandler::~ShowPathInfoResponseHandler( )
+ShowPathInfoResponseHandler::~ShowPathInfoResponseHandler()
 {
 }
 
@@ -76,27 +76,26 @@ ShowPathInfoResponseHandler::~ShowPathInfoResponseHandler( )
  * @see BESInfo
  * @see BESRequestHandlerList
  */
-void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
+void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
+{
 
-	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
-		sw.start("ShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG)) sw.start("ShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl ) ;
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl );
 
     BESInfo *info = BESInfoList::TheList()->build_info();
-    _response = info;
+    d_response_object = info;
 
     string container = dhi.data[CONTAINER];
     string catname;
     string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
     BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
     if (!defcat) {
-        string err = (string) "Not able to find the default catalog "
-                + defcatname;
+        string err = (string) "Not able to find the default catalog " + defcatname;
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-	BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
+    BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
 
     // remove all of the leading slashes from the container name
     string::size_type notslash = container.find_first_not_of("/", 0);
@@ -109,14 +108,14 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
     string::size_type slash = container.find_first_of("/", 0);
     if (slash != string::npos) {
         catname = container.substr(0, slash);
-    } else {
+    }
+    else {
         catname = container;
     }
 
     // see if this catalog exists. If it does, then remove the catalog
     // name from the container (node)
-    BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(
-            catname);
+    BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(catname);
     if (catobj) {
         if (slash != string::npos) {
             container = container.substr(slash + 1);
@@ -126,112 +125,94 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
             if (notslash != string::npos) {
                 container = container.substr(notslash);
             }
-        } else {
+        }
+        else {
             container = "";
         }
     }
 
-    if (container.empty())
-        container = "/";
+    if (container.empty()) container = "/";
 
-
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - container: " << container << endl ) ;
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - container: " << container << endl );
 
     info->begin_response(SHOW_PATH_INFO_RESPONSE_STR, dhi);
     //string coi = dhi.data[CATALOG_OR_INFO];
 
-    map<string,string> pathInfoAttrs;
+    map<string, string> pathInfoAttrs;
     pathInfoAttrs[PATH] = container;
 
-    info->begin_tag(PATH_INFO_RESPONSE,&pathInfoAttrs);
+    info->begin_tag(PATH_INFO_RESPONSE, &pathInfoAttrs);
 
     string validPath, remainder;
     bool isFile, isDir;
 
-    eval_resource_path(
-    		container,
-    		utils->get_root_dir(),
-			utils->follow_sym_links(),
-			validPath,
-			isFile,
-			isDir,
-			remainder);
-
+    eval_resource_path(container, utils->get_root_dir(), utils->follow_sym_links(), validPath, isFile, isDir,
+        remainder);
 
     // Now that we know what part of the path is actually something
     // we can access, find out if the BES sees it as a dataset
     bool isData = false;
 
     // If the valid path is an empty string then we KNOW it's not a dataset
-    if(validPath.length()!=0){
+    if (validPath.length() != 0) {
 
-		// Get the catalog entry.
-		BESCatalogEntry *entry = 0;
-		string coi = dhi.data[CATALOG];
-		entry = defcat->show_catalog(validPath, coi, entry);
-		if (!entry) {
-			string err = (string) "Failed to find the validPath node " + validPath +
-					" this should not be possible. Some thing BAD is happening.";
-			throw BESInternalError(err, __FILE__, __LINE__);
-		}
+        // Get the catalog entry.
+        BESCatalogEntry *entry = 0;
+        string coi = dhi.data[CATALOG];
+        entry = defcat->show_catalog(validPath, coi, entry);
+        if (!entry) {
+            string err = (string) "Failed to find the validPath node " + validPath
+                + " this should not be possible. Some thing BAD is happening.";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
 
-		// Retrieve the valid services list
-		list<string> services = entry->get_service_list();
+        // Retrieve the valid services list
+        list<string> services = entry->get_service_list();
 
-		// See if there's an OPENDAP_SERVICE available for the node.
-		if (services.size()) {
-			list<string>::const_iterator si = services.begin();
-			list<string>::const_iterator se = services.end();
-			for (; si != se; si++) {
-				if((*si) == OPENDAP_SERVICE)
-					isData = true;
-			}
-		}
+        // See if there's an OPENDAP_SERVICE available for the node.
+        if (services.size()) {
+            list<string>::const_iterator si = services.begin();
+            list<string>::const_iterator se = services.end();
+            for (; si != se; si++) {
+                if ((*si) == OPENDAP_SERVICE) isData = true;
+            }
+        }
     }
 
+    map<string, string> validPathAttrs;
+    validPathAttrs[IS_DATA] = isData ? "true" : "false";
+    validPathAttrs[IS_FILE] = isFile ? "true" : "false";
+    validPathAttrs[IS_DIR] = isDir ? "true" : "false";
 
-
-    map<string,string> validPathAttrs;
-    validPathAttrs[IS_DATA] = isData?"true":"false";
-    validPathAttrs[IS_FILE] = isFile?"true":"false";
-    validPathAttrs[IS_DIR]  = isDir?"true":"false";
-
-    info->add_tag(VALID_PATH,validPath, &validPathAttrs);
-    info->add_tag(REMAINDER,remainder);
+    info->add_tag(VALID_PATH, validPath, &validPathAttrs);
+    info->add_tag(REMAINDER, remainder);
 
     info->end_tag(PATH_INFO_RESPONSE);
-
 
     // end the response object
     info->end_response();
 
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl );
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl ) ;
+    }
 
-}
-
-
-/** @brief transmit the response object built by the execute command
- * using the specified transmitter object
- *
- * If a response object was built then transmit it as text
- *
- * @param transmitter object that knows how to transmit specific basic types
- * @param dhi structure that holds the request and response information
- * @see BESInfo
- * @see BESTransmitter
- * @see BESDataHandlerInterface
- */
-void
-ShowPathInfoResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+    /** @brief transmit the response object built by the execute command
+     * using the specified transmitter object
+     *
+     * If a response object was built then transmit it as text
+     *
+     * @param transmitter object that knows how to transmit specific basic types
+     * @param dhi structure that holds the request and response information
+     * @see BESInfo
+     * @see BESTransmitter
+     * @see BESDataHandlerInterface
+     */
+void ShowPathInfoResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( _response )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -241,41 +222,32 @@ ShowPathInfoResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-ShowPathInfoResponseHandler::dump( ostream &strm ) const
+void ShowPathInfoResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "ShowPathInfoResponseHandler::dump - ("
-			     << (void *)this << ")" << std::endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "ShowPathInfoResponseHandler::dump - (" << (void *) this << ")" << std::endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-ShowPathInfoResponseHandler::ShowPathInfoResponseBuilder( const string &name )
+ShowPathInfoResponseHandler::ShowPathInfoResponseBuilder(const string &name)
 {
-    return new ShowPathInfoResponseHandler( name ) ;
+    return new ShowPathInfoResponseHandler(name);
 }
-
 
 /**
  *
  */
-void
-ShowPathInfoResponseHandler::eval_resource_path(
-    const string &resourceId,
-    const string &catalogRoot,
-    const bool follow_sym_links,
-    string &validPath,
-    bool &isFile,
-    bool &isDir,
-    string &remainder){
+void ShowPathInfoResponseHandler::eval_resource_path(const string &resourceId, const string &catalogRoot,
+    const bool follow_sym_links, string &validPath, bool &isFile, bool &isDir, string &remainder)
+{
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-        "CatalogRoot: "<< catalogRoot << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "CatalogRoot: "<< catalogRoot << endl);
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-        "resourceID: "<< resourceId << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "resourceID: "<< resourceId << endl);
 
     // nothing valid yet...
     validPath = "";
@@ -289,13 +261,13 @@ ShowPathInfoResponseHandler::eval_resource_path(
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "Using 'stat' function (follow_sym_links = true)" << endl);
         ye_old_stat_function = &stat;
     }
     else {
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "Using 'lstat' function (follow_sym_links = false)" << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "Using 'lstat' function (follow_sym_links = false)" << endl);
         ye_old_stat_function = &lstat;
     }
 
@@ -310,8 +282,8 @@ ShowPathInfoResponseHandler::eval_resource_path(
     // not allowed.
     string::size_type dotdot = resourceId.find("..");
     if (dotdot != string::npos) {
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            " ERROR: The resourceID '" << resourceId <<"' contains the substring '..' This is Forbidden." << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << " ERROR: The resourceID '" << resourceId <<"' contains the substring '..' This is Forbidden." << endl);
         string s = (string) "Invalid node name '" + resourceId + "' ACCESS IS FORBIDDEN";
         throw BESForbiddenError(s, __FILE__, __LINE__);
     }
@@ -333,31 +305,30 @@ ShowPathInfoResponseHandler::eval_resource_path(
     while (!done) {
         size_t slash = rem.find('/');
         if (slash == string::npos) {
-            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                "Checking final path component: " << rem << endl);
+            BESDEBUG(SPI_DEBUG_KEY,
+                "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "Checking final path component: " << rem << endl);
             fullpath = BESUtil::assemblePath(fullpath, rem, true);
             checking = BESUtil::assemblePath(validPath, rem, true);
             rem = "";
             done = true;
         }
         else {
-            fullpath = BESUtil::assemblePath(fullpath, rem.substr(0, slash),true);
-            checking = BESUtil::assemblePath(validPath,rem.substr(0, slash),true);
+            fullpath = BESUtil::assemblePath(fullpath, rem.substr(0, slash), true);
+            checking = BESUtil::assemblePath(validPath, rem.substr(0, slash), true);
             rem = rem.substr(slash + 1, rem.length() - slash);
         }
 
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "validPath: "<< validPath << endl);
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "checking: "<< checking << endl);
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "fullpath: "<< fullpath << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "validPath: "<< validPath << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "checking: "<< checking << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "fullpath: "<< fullpath << endl);
 
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "rem: "<< rem << endl);
+        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "rem: "<< rem << endl);
 
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            "remainder: "<< remainder << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "remainder: "<< remainder << endl);
 
         struct stat sb;
         int statret = ye_old_stat_function(fullpath.c_str(), &sb);
@@ -379,11 +350,11 @@ ShowPathInfoResponseHandler::eval_resource_path(
             else {
                 error = error + "unknown access error";
             }
-            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                "error: "<< error << "   errno: " << errno << endl);
+            BESDEBUG(SPI_DEBUG_KEY,
+                "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "error: "<< error << "   errno: " << errno << endl);
 
-            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                "remainder: '" << remainder << "'" << endl);
+            BESDEBUG(SPI_DEBUG_KEY,
+                "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "remainder: '" << remainder << "'" << endl);
 
             // ENOENT means that the node wasn't found. Otherwise, access
             // is denied for some reason
@@ -393,25 +364,29 @@ ShowPathInfoResponseHandler::eval_resource_path(
 
             // Are there slashes in the remainder?
             size_t s_loc = remainder.find('/');
-            if (s_loc == string::npos){
+            if (s_loc == string::npos) {
                 // if there are no more slashes, we check to see if this final path component contains "."
                 string basename = remainder;
                 bool moreDots = true;
-                while(moreDots){
+                while (moreDots) {
                     // working back from end of string, drop each dot (".") suffix until file system match or string gone
-                   size_t d_loc = basename.find_last_of(".");
-                    if(d_loc != string::npos){
-                        basename = basename.substr(0,d_loc);
-                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
+                    size_t d_loc = basename.find_last_of(".");
+                    if (d_loc != string::npos) {
+                        basename = basename.substr(0, d_loc);
+                        BESDEBUG(SPI_DEBUG_KEY,
+                            "ShowPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
 
                         string candidate_remainder = remainder.substr(basename.length());
-                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
+                        BESDEBUG(SPI_DEBUG_KEY,
+                            "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
 
                         string candidate_path = BESUtil::assemblePath(validPath, basename, true);
-                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
+                        BESDEBUG(SPI_DEBUG_KEY,
+                            "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
 
                         string full_candidate_path = BESUtil::assemblePath(catalogRoot, candidate_path, true);
-                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
+                        BESDEBUG(SPI_DEBUG_KEY,
+                            "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
 
                         struct stat sb1;
                         int statret1 = ye_old_stat_function(full_candidate_path.c_str(), &sb1);
@@ -422,37 +397,36 @@ ShowPathInfoResponseHandler::eval_resource_path(
                         }
                     }
                     else {
-                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                            "No dots in remainder: "<< remainder << endl);
-                       moreDots = false;
+                        BESDEBUG(SPI_DEBUG_KEY,
+                            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "No dots in remainder: "<< remainder << endl);
+                        moreDots = false;
                     }
                 }
             }
             else {
-                BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                    "Remainder has slash pollution: "<< remainder << endl);
+                BESDEBUG(SPI_DEBUG_KEY,
+                    "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "Remainder has slash pollution: "<< remainder << endl);
                 done = true;
             }
         }
         fullpath = BESUtil::assemblePath(catalogRoot, validPath, true);
 
-
         statret = ye_old_stat_function(fullpath.c_str(), &sb);
         if (S_ISREG(sb.st_mode)) {
-            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                "'"<< fullpath << "' Is regular file." << endl);
+            BESDEBUG(SPI_DEBUG_KEY,
+                "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "'"<< fullpath << "' Is regular file." << endl);
             isFile = true;
             isDir = false;
         }
         else if (S_ISDIR(sb.st_mode)) {
-            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                "'"<< fullpath << "' Is directory." << endl);
+            BESDEBUG(SPI_DEBUG_KEY,
+                "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "'"<< fullpath << "' Is directory." << endl);
             isFile = false;
             isDir = true;
         }
         else if (S_ISLNK(sb.st_mode)) {
-            BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-                "'"<< fullpath << "' Is symbolic Link." << endl);
+            BESDEBUG(SPI_DEBUG_KEY,
+                "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "'"<< fullpath << "' Is symbolic Link." << endl);
             string error = "Service not configured to traverse symbolic links as embodied by the node '" + checking
                 + "' ACCESS IS FORBIDDEN";
             throw BESForbiddenError(error, __FILE__, __LINE__);
@@ -462,7 +436,9 @@ ShowPathInfoResponseHandler::eval_resource_path(
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - validPath: " << validPath << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - remainder: " << remainder << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -       rem: " << rem << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
 
 }
