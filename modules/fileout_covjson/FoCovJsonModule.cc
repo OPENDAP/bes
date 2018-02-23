@@ -1,12 +1,14 @@
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// FoJsonModule.cc
+// FoCovJsonModule.cc
 
-// This file is part of BES JSON File Out Module
+// This file is part of BES CovJSON File Out Module
 
-// Copyright (c) 2014 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Corey Hemphill <hemphilc@oregonstate.edu>
+// Author: River Hendriksen <hendriri@oregonstate.edu>
+// Author: Riley Rimer <rrimer@oregonstate.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,6 +28,7 @@
 // (c) COPYRIGHT URI/MIT 1995-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
+
 
 #include "config.h"
 
@@ -49,7 +52,6 @@ using std::endl;
 
 #define RETURNAS_COVJSON "covjson"
 #define RETURNAS_ICOVJSON "icovjson"
-
 
 
 /** @brief initialize the module by adding call backs and registering
@@ -125,4 +127,3 @@ BESAbstractModule *maker()
 {
     return new FoCovJsonModule;
 }
-
