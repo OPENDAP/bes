@@ -25,10 +25,12 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_W10NResponseHandler_h
-#define I_W10NResponseHandler_h 1
+#ifndef I_ShowPathInfoResponseHandler_h
+#define I_ShowPathInfoResponseHandler_h 1
 
 #include "BESResponseHandler.h"
+
+#define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
 
 /** @brief response handler that returns nodes or leaves within the catalog
  * either at the root or at a specified node.
@@ -43,21 +45,23 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class ShowPathInfoResponseHandler : public BESResponseHandler
-{
-private:
+class ShowPathInfoResponseHandler: public BESResponseHandler {
 public:
-	ShowPathInfoResponseHandler( const string &name );
-    virtual	~ShowPathInfoResponseHandler( void ) ;
+    void eval_resource_path(const string &resource_path, const string &catalog_root, const bool follow_sym_links,
+        string &validPath, bool &isFile, bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead,
+        string &remainder);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+public:
+    ShowPathInfoResponseHandler(const string &name);
+    virtual ~ShowPathInfoResponseHandler(void);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    static BESResponseHandler *ShowPathInfoResponseBuilder( const string &name ) ;
+    virtual void dump(ostream &strm) const;
+
+    static BESResponseHandler *ShowPathInfoResponseBuilder(const string &name);
 };
 
-#endif // I_W10NResponseHandler_h
+#endif // I_ShowPathInfoResponseHandler_h
 
