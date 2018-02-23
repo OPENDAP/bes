@@ -39,32 +39,26 @@ namespace libdap {
 class StreamString: public Str{
 
 public:
+    StreamString(const string &n): Str(n) {};
+    StreamString(const string &n, const string &d): Str(n,d) {};
+    virtual ~StreamString() {};
+    StreamString(const Str &copy_from): Str(copy_from) {};
 
-	StreamString(const string &n): Str(n) {};
-	StreamString(const string &n, const string &d): Str(n,d) {}
+    friend ostream& operator<<(ostream& out, const Str& s) // output
+    {
+        out <<  s.value();
 
-    virtual ~StreamString()
-    {}
+	return out;
+    }
 
-    StreamString(const Str &copy_from): Str(copy_from){}
+    friend istream& operator>>(istream& in, Str& s) // input
+    {
+	string tmp;
+	in >> tmp;
+	s.set_value(tmp);
 
-
-	friend ostream& operator<<(ostream& out, const Str& s) // output
-	{
-		out <<  s.value();
-
-		return out;
-	}
-
-	friend istream& operator>>(istream& in, Str& s) // input
-	{
-		string tmp;
-		in >> tmp;
-		s.set_value(tmp);
-
-		return in;
-	}
-
+	return in;
+    }
 };
 
 } /* namespace libdap */
