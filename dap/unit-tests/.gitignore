@@ -4,3 +4,4 @@ vg_supp.txt
 FunctionResponseCacheTest
 TemporaryFileTest
 bes.conf
+/GlobalMetadataStoreTest

@@ -46,6 +46,8 @@ class GlobalMetadataStore: public BESFileLockingCache {
 private:
     typedef void (libdap::DDS::*print_method_t)(std::ostream &);
 
+    std::string d_index_entry;  // Built up as info is added, written on success
+
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
 

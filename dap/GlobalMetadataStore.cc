@@ -246,7 +246,6 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
-
 /**
  * @brief store the DDS response
  *
@@ -314,24 +313,44 @@ GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, 
  *
  * @param name
  * @param dds
- * @return
+ * @return True if all of the cache/store entries are written, False if any
+ * could not be written.
  */
 bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
 {
-    // I'm appending the 'dds response' string to the name before hashing so that
+    // Start the index entry
+    d_index_entry = name;
+
+    // I'm appending the 'dds r' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    bool stored_dds = store_dap2_response(dds, &DDS::print, get_hash(name + "dds_r"));
-    if (!stored_dds) {
-        LOG("Metadata store: unable to store the DDS response for '" << name << "'.");
+    string dds_r_hash = get_hash(name + "dds_r");
+    bool stored_dds = store_dap2_response(dds, &DDS::print, dds_r_hash);
+    if (stored_dds) {
+        VERBOSE("Metadata store: Wrote DDS response for '" << name << "'." << endl);
+        d_index_entry.append(",").append(dds_r_hash);
+    }
+    else {
+        LOG("Metadata store: unable to store the DDS response for '" << name << "'." << endl);
     }
 
-    bool stored_das = store_dap2_response(dds, &DDS::print_das, get_hash(name + "das_r"));
-    if (!stored_das) {
-        LOG("Metadata store: unable to store the DAS response for '" << name << "'.");
+    string das_r_hash = get_hash(name + "das_r");
+    bool stored_das = store_dap2_response(dds, &DDS::print_das, das_r_hash);
+    if (stored_das) {
+        VERBOSE("Metadata store: Wrote DAS response for '" << name << "'." << endl);
+        d_index_entry.append(",").append(das_r_hash);
+    }
+    else {
+        LOG("Metadata store: unable to store the DAS response for '" << name << "'." << endl);
     }
 
-    return stored_dds && stored_das;
+    if (stored_dds && stored_das) {
+        // write the index line
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 #if 0

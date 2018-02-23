@@ -97,7 +97,8 @@ public:
 
         if (clean) clean_cache_dir(c_mds_name);
 
-        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // intentionally empty file. jhrg 10/20/15
+        // Contains BES Log parameters but not cache names
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/bes.conf";
 
         DBG(cerr << __func__ << " - END" << endl);
     }
