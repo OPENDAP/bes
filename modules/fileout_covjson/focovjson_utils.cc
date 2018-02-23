@@ -1,12 +1,13 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// utils.cc
+// focovjson_utils.cc
 //
 // This file is part of BES CovJSON File Out Module
 //
-// Copyright (c) 2014 OPeNDAP, Inc.
-// Original Author: Nathan Potter <ndp@opendap.org>
-// Copied from the JSON module implemented form Nathan Potter
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Corey Hemphill <hemphilc@oregonstate.edu>
+// Author: River Hendriksen <hendriri@oregonstate.edu>
+// Author: Riley Rimer <rrimer@oregonstate.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -59,7 +60,7 @@ std::string escape_for_covjson(const std::string &input) {
  * @param shape The shape of the Array, taking into account the constraint
  * @return The total number of elements in the constrained Array.
  */
-long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape ){
+long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape ) {
     BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - BEGIN. Array name: "<< a->name() << endl);
 
     libdap::Array::Dim_iter dIt;
@@ -97,7 +98,7 @@ long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape 
  * Replace every occurrence of 'char_to_escape' with the same preceded
  * by the backslash '\' character.
  */
-std::string backslash_escape(std::string source, char char_to_escape){
+std::string backslash_escape(std::string source, char char_to_escape) {
 	std::string escaped_result = source;
 	if(source.find(char_to_escape) != string::npos ){
 		size_t found = 0;
