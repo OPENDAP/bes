@@ -72,7 +72,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
 		sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
-    _response = info;
+    d_response_object = info;
 
     string container = dhi.data[CONTAINER];
     string catname;
@@ -189,9 +189,9 @@ void
 BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
                                BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;

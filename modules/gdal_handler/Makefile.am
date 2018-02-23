@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_handler
-M_VER=1.1.1
+M_VER=1.1.2
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -30,9 +30,10 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0 -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-if BUILD_HYRAX_DEBUG
-AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-endif
+# Now set using configure. jhrg 11/28/17
+# if BES_DEVELOPER
+# AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+# endif
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libgdal_module.la

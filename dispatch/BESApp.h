@@ -55,19 +55,13 @@
  */
 class BESApp: public BESObj {
 protected:
-    string _appName;
+    std::string _appName;
     bool _debug;
     bool _isInitialized;
     static BESApp * _theApplication;
-    BESApp(void) :
-        _debug(false), _isInitialized(false)
-    {
-    }
+    BESApp(void) : _debug(false), _isInitialized(false) { }
 public:
-    virtual ~BESApp()
-    {
-    }
-    ;
+    virtual ~BESApp() { }
 
     /** @brief main routine, the main entry point for any BES applications.
      *
@@ -131,7 +125,7 @@ public:
      *
      * @return name of the application
      */
-    string appName(void) const
+    std::string appName(void) const
     {
         return _appName;
     }

@@ -77,11 +77,11 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS( NULL, "virtual" ) ;
     BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
-    _response = bdds ;
+    d_response_object = bdds ;
 
     // we're actually going to get the data response, it just gets
     // displayed as a DataDDX
-    _response_name = DATA_RESPONSE ;
+    d_response_name = DATA_RESPONSE ;
     dhi.action = DATA_RESPONSE ;
 
     // Read keywords from the CE and use those to set the DAP version; maybe
@@ -111,7 +111,7 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 
     // we've got what we want, now set the action back to data ddx
     dhi.action = DATADDX_RESPONSE ;
-    _response = bdds ;
+    d_response_object = bdds ;
 
     BESDEBUG( "dap", "Leaving BESDataDDXResponseHandler::execute" << endl ) ;
 }
@@ -132,9 +132,9 @@ void
 BESDataDDXResponseHandler::transmit( BESTransmitter * transmitter,
                                      BESDataHandlerInterface & dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-        transmitter->send_response( DATADDX_SERVICE, _response, dhi ) ;
+        transmitter->send_response( DATADDX_SERVICE, d_response_object, dhi ) ;
     }
 }
 

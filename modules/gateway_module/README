@@ -6,7 +6,7 @@ Code and production rule changes to support OS-X 10.9 compatibility
 Updated for version 1.1.1
 
 In this version of the handler, we added an optional parameter that
-can be used to suppres use of a proxy server for certain hosts. This can
+can be used to suppress use of a proxy server for certain hosts. This can
 be used to address problems with using caching proxy servers and the
 gateway when it is used to access a web service running on the localhost.
 To use this feature, add, for example:

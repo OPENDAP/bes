@@ -10,15 +10,7 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
-
 SUBDIRS = . unit-tests
-# DIST_SUBDIRS = unit-tests
 
 lib_LTLIBRARIES = libbes_xml_command.la
 if LIBDAP
@@ -51,10 +43,10 @@ SRCS = BESXMLInterface.cc BESXMLCommand.cc BESXMLUtils.cc		\
 	BESXMLShowErrorCommand.cc					\
 	BESXMLSetContextCommand.cc BESXMLSetContainerCommand.cc		\
 	BESXMLDefineCommand.cc BESXMLGetCommand.cc			\
-	BESXMLDeleteContainerCommand.cc BESXMLDeleteContainersCommand.cc \
+	BESXMLDeleteContainerCommand.cc BESXMLDeleteContainersCommand.cc\
 	BESXMLDeleteDefinitionCommand.cc BESXMLDeleteDefinitionsCommand.cc \
-	ShowPathInfoCommand.cc
-	
+	ShowPathInfoCommand.cc SetContextsResponseHandler.cc XMLSetContextsCommand.cc
+
 HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefaultCommands.h BESXMLShowCommand.h			\
 	BESXMLShowErrorCommand.h					\
@@ -62,12 +54,11 @@ HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefineCommand.h BESXMLGetCommand.h			\
 	BESXMLDeleteContainerCommand.h BESXMLDeleteContainersCommand.h	\
 	BESXMLDeleteDefinitionCommand.h BESXMLDeleteDefinitionsCommand.h \
-	ShowPathInfoCommand.h
+	SetContextsResponseHandler.h XMLSetContextsCommand.h NullResponseHandler.h \
+	SetContextsNames.h ShowPathInfoCommand.h
 
 DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc
 DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h
-
-# BESXMLGetDataDDXCommand.cc BESXMLGetDataDDXCommand.h
 
 C4_DIR=./cccc
 .PHONY: cccc

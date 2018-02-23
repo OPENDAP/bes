@@ -140,7 +140,7 @@ private:
 
 public:
     FunctionResponseCacheTest() :
-        dp(&ttf), test_dds(0), d_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0)
+        dp(&ttf), test_dds(0), d_cache(string(TEST_BUILD_DIR) + c_cache_name), cache(0)
     {
         libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
     }
@@ -424,6 +424,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = FunctionResponseCacheTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+	    ++i;
         }
     }
 

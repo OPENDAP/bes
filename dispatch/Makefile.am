@@ -3,19 +3,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS =  $(XML2_CFLAGS) 
+# I added a new command to and put the ResponseHandler in xmlcommand to
+# keep all of the files together. jhrg 2/8/18
+AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS) 
 AM_CXXFLAGS = 
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
-
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = . unit-tests tests
 
@@ -102,11 +97,8 @@ SRCS = BESInterface.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
-	BESCatalogResponseHandler.cc 
-
-#	BESBasicInterface.cc BESBasicTransmitter.cc BESCache.cc BESUncompressManager.cc
-#	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc 
-
+	BESCatalogResponseHandler.cc
+	
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
 	BESNames.h \
@@ -161,10 +153,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogList.h \
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h
-
-# 	BESBasicInterface.h BESBasicTransmitter.h BESCache.h BESUncompressManager.h 
-#	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h 
-
+	
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
 C4_XM=$(C4_dir)/dispatch.xml

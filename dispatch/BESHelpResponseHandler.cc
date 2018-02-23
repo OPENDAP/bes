@@ -70,7 +70,7 @@ void
 BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
-    _response = info ;
+    d_response_object = info ;
 
     info->begin_response( HELP_RESPONSE_STR, dhi ) ;
     dhi.action_name = HELP_RESPONSE_STR ;
@@ -106,9 +106,9 @@ void
 BESHelpResponseHandler::transmit( BESTransmitter *transmitter,
                                BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;

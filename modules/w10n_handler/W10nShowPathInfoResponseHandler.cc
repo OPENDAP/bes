@@ -86,7 +86,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi) {
     BESDEBUG(W10N_DEBUG_KEY, "W10NShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl ) ;
 
     BESInfo *info = BESInfoList::TheList()->build_info();
-    _response = info;
+    d_response_object = info;
 
     string container = dhi.data[CONTAINER];
     string catname;
@@ -227,9 +227,9 @@ void
 W10nShowPathInfoResponseHandler::transmit( BESTransmitter *transmitter,
                                BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;

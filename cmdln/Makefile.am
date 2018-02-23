@@ -14,9 +14,10 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-if BUILD_HYRAX_DEBUG
-AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-endif
+# Now set using configure. jhrg 11/28/17
+# if BES_DEVELOPER
+# AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+# endif
 
 SUBDIRS = . unit-tests tests
 
@@ -34,8 +35,3 @@ CmdApp.h CmdClient.h CmdTranslation.h
 
 bescmdln_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/ppt/libbes_ppt.la \
 $(top_builddir)/xmlcommand/libbes_xml_command.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
-
-server-tests:
-	besctl start && \
-	(cd testsuite && make server-tests) && \
-	besctl stop

@@ -38,16 +38,15 @@
  * used to build a Dap DataDDS object, so those functions are not needed
  * here.
  */
-class FoJsonRequestHandler : public BESRequestHandler
-{
+class FoJsonRequestHandler: public BESRequestHandler {
 public:
-			FoJsonRequestHandler( const string &name ) ;
-    virtual		~FoJsonRequestHandler( void ) ;
+    FoJsonRequestHandler(const string &name);
+    virtual ~FoJsonRequestHandler(void);
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static bool		build_help( BESDataHandlerInterface &dhi ) ;
-    static bool		build_version( BESDataHandlerInterface &dhi ) ;
+    static bool build_help(BESDataHandlerInterface &dhi);
+    static bool build_version(BESDataHandlerInterface &dhi);
 };
 
 #endif

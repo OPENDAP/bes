@@ -67,7 +67,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
         dmr->set_request_xml_base(xml_base);
     }
 
-    _response = new BESDMRResponse(dmr);
+    d_response_object = new BESDMRResponse(dmr);
     BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 
@@ -85,8 +85,8 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDMRResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if (_response) {
-        transmitter->send_response(DMR_SERVICE, _response, dhi);
+    if (d_response_object) {
+        transmitter->send_response(DMR_SERVICE, d_response_object, dhi);
     }
 }
 

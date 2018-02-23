@@ -77,8 +77,8 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     DDS *dds = new DDS(NULL, "virtual");
 
     BESDDSResponse *bdds = new BESDDSResponse(dds);
-    _response = bdds;
-    _response_name = DDS_RESPONSE;
+    d_response_object = bdds;
+    d_response_name = DDS_RESPONSE;
     dhi.action = DDS_RESPONSE;
 
     BESDEBUG( "bes", "about to set dap version to: " << bdds->get_dap_client_protocol() << endl);
@@ -115,7 +115,7 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESRequestHandlerList::TheList()->execute_each(dhi);
 
     dhi.action = DDX_RESPONSE;
-    _response = bdds;
+    d_response_object = bdds;
 
     BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl);
 }
@@ -134,8 +134,8 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDDXResponseHandler::transmit(BESTransmitter * transmitter, BESDataHandlerInterface & dhi)
 {
-    if (_response) {
-        transmitter->send_response(DDX_SERVICE, _response, dhi);
+    if (d_response_object) {
+        transmitter->send_response(DDX_SERVICE, d_response_object, dhi);
     }
 }
 

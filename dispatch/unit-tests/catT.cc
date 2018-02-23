@@ -30,13 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-using namespace CppUnit;
-
 #include "config.h"
+
+#include <cerrno>
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,15 +43,9 @@ using namespace CppUnit;
 #include <unistd.h>
 #endif
 
-#include <cerrno>
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ostringstream;
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
 
 #include <GetOpt.h>
 
@@ -73,10 +66,17 @@ using std::ostringstream;
 #include "test_utils.h"
 
 static bool debug = false;
-static string root_dir = "/catalog_test";
-
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+using namespace CppUnit;
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostringstream;
+
+const string root_dir = "/catalog_test";
 
 #if 0
 string empty_response =
@@ -365,7 +365,7 @@ public:
             CPPUNIT_ASSERT("Correctly caught exception");
         }
 
-        DBG(cerr << "manipulate non-existant catalog" << endl);
+        DBG(cerr << "manipulate non-existent catalog" << endl);
         BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("dummy");
         CPPUNIT_ASSERT(catobj == 0);
 

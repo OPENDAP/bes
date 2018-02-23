@@ -10,7 +10,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.19.0
+Version:        3.19.1
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -123,6 +123,8 @@ chmod g+w $RPM_BUILD_ROOT%{beslogdir}
 mkdir -p $RPM_BUILD_ROOT%{bespiddir}
 chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
+mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
+mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -148,6 +150,8 @@ exit 0
 %doc ChangeLog NEWS README.md
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
+
+%{_tmpfilesdir}/%{name}.conf
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf

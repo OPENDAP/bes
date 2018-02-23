@@ -96,7 +96,7 @@ public:
 
     // Called once before everything gets tested
     FoJsonTest() :
-        d_tmpDir(string(TEST_SRC_DIR) + "/tmp")
+        d_tmpDir(string(TEST_BUILD_DIR) + "/tmp")
     {
         DBG(cerr << "FoJsonTest - Constructor" << endl);
     }
@@ -698,6 +698,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = fojson::FoJsonTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+	    ++i;
         }
     }
 

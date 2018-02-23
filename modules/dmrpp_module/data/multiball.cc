@@ -322,7 +322,7 @@ int main(int argc, char **argv) {
         if(debug) cerr << it->second->d_output_filename << " added to CuRL multi_handle."<< endl;
     }
 
-    int repeats;
+    int repeats = 0;
     long long lap_counter = 0;
     CURLMcode mcode;
     int still_running=0;
