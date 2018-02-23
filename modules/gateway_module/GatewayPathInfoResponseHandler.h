@@ -46,6 +46,8 @@
  */
 class GatewayPathInfoResponseHandler : public BESResponseHandler
 {
+private:
+    BESInfo *_response;
 public:
     void eval_resource_path(
         const string &resource_path,
