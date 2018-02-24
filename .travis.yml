@@ -39,7 +39,7 @@ addons:
 
 env:
   global:
-  - prefix=$TRAVIS_BUILD_DIR/install
+  - prefix=$HOME/install
   - PATH=$prefix/bin:$PATH
   - TESTSUITEFLAGS=-j7  
   # COVERITY_SCAN_TOKEN
@@ -59,10 +59,9 @@ before_install:
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
 - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
-- tar -C $TRAVIS_BUILD_DIR -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
+- tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
 - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
-- tar -C $TRAVIS_BUILD_DIR -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
-- ln -s $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../libdap4
+- tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
 before_script:
 - printenv
