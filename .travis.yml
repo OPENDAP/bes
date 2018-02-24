@@ -1,10 +1,12 @@
-# -*- shell-script -*-
+#
+# The bes build
 #
 # Initial Travic-CI control file. 6.5.15 jhrg
 # Hacked quite a bit; added support for parallel autotest tests
 # and removed unused parts. jhrg 8.23.17
-
-# Use the docker container-based build systems
+#
+# Now uses hyrax-dependencies and libdap binaries stored in an AWS S3 bucket
+# that were built using other builds. jhrg 2.24.18
 
 dist: trusty
 
@@ -39,6 +41,7 @@ addons:
 
 env:
   global:
+  # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
   - prefix=$HOME/install
   - PATH=$prefix/bin:$PATH
   - TESTSUITEFLAGS=-j7  
