@@ -65,18 +65,22 @@ install:
 before_script:
 - printenv
 - autoreconf --force --install --verbose
-- ./configure --disable-dependency-tracking --prefix=$prefix --enable-developer  --with-dependencies=$prefix/deps 
 
 jobs:
+  stages:
+  - name: build
+    if:  branch != coverity_scan
   include:
   - stage: build
     script: 
     - export BES_MAIN_BUILD=yes
-    - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7 && make install; fi
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-libdap=$prefix
+    - make -j7 && make check -j7 && make install
   - stage: build
     script:
     - export BES_MAIN_BUILD=no
-    - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make distcheck -j7; fi
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-libdap=$prefix --enable-developer 
+    - make distcheck -j7
 
 # This shows how to copy the results of running the tests to a know
 # host. We're not doing this now, but it might be useful. In addition
