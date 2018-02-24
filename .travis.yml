@@ -58,9 +58,11 @@ before_install:
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-- aws s3 sync s3://opendap.travis.build/ $TRAVIS_BUILD_DIR
+- aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $TRAVIS_BUILD_DIR -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
+- aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $TRAVIS_BUILD_DIR -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
+- ln -s $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../libdap4
 
 before_script:
 - printenv
@@ -74,12 +76,12 @@ jobs:
   - stage: build
     script: 
     - export BES_MAIN_BUILD=yes
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-libdap=$prefix
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make -j7 && make check -j7 && make install
   - stage: build
     script:
     - export BES_MAIN_BUILD=no
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-libdap=$prefix --enable-developer 
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
 
 # This shows how to copy the results of running the tests to a know
