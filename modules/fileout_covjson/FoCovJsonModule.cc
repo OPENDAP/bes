@@ -6,6 +6,7 @@
 // This file is part of BES CovJSON File Out Module
 
 // Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 // Author: Corey Hemphill <hemphilc@oregonstate.edu>
 // Author: River Hendriksen <hendriri@oregonstate.edu>
 // Author: Riley Rimer <rrimer@oregonstate.edu>
