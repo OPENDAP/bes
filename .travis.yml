@@ -43,7 +43,7 @@ env:
   global:
   # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
   - prefix=$HOME/install
-  - PATH=$prefix/bin:$PATH
+  - PATH=$prefix/bin:$prefix/deps/bin:$PATH
   - TESTSUITEFLAGS=-j7  
   # COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
