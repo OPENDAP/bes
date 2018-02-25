@@ -25,9 +25,16 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <time.h>
+
+#include <errno.h>
+#include <string.h>
+
 #include <sstream>
 #include <fstream>
-#include <time.h>
 
 #include "ShowPathInfoResponseHandler.h"
 
@@ -89,7 +96,8 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("ShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl );
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
@@ -138,13 +146,11 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
 
-    if (container.empty())
-        container = "/";
+    if (container.empty()) container = "/";
 
-    if(container[0]!='/')
-        container = "/" + container;
+    if (container[0] != '/') container = "/" + container;
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - container: " << container << endl );
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - container: " << container << endl);
 
     info->begin_response(SHOW_PATH_INFO_RESPONSE_STR, dhi);
     //string coi = dhi.data[CATALOG_OR_INFO];
@@ -158,17 +164,8 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     bool isFile, isDir, canRead;
     long long size, time;
 
-    eval_resource_path(
-    		container,
-    		utils->get_root_dir(),
-			utils->follow_sym_links(),
-			validPath,
-			isFile,
-			isDir,
-			size,
-			time,
-			canRead,
-			remainder);
+    eval_resource_path(container, utils->get_root_dir(), utils->follow_sym_links(), validPath, isFile, isDir, size,
+        time, canRead, remainder);
 
     // Now that we know what part of the path is actually something
     // we can access, find out if the BES sees it as a dataset
@@ -200,21 +197,21 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
 
-    map<string,string> validPathAttrs;
-    validPathAttrs[IS_DATA] = isData?"true":"false";
-    validPathAttrs[IS_FILE] = isFile?"true":"false";
-    validPathAttrs[IS_DIR]  = isDir?"true":"false";
-    validPathAttrs[IS_ACCESSIBLE]  = canRead?"true":"false";
+    map<string, string> validPathAttrs;
+    validPathAttrs[IS_DATA] = isData ? "true" : "false";
+    validPathAttrs[IS_FILE] = isFile ? "true" : "false";
+    validPathAttrs[IS_DIR] = isDir ? "true" : "false";
+    validPathAttrs[IS_ACCESSIBLE] = canRead ? "true" : "false";
 
     // Convert size to string and add as attribute
-    std::ostringstream  os_size;
+    std::ostringstream os_size;
     os_size << size;
-    validPathAttrs[SIZE]  = os_size.str();
+    validPathAttrs[SIZE] = os_size.str();
 
     // Convert lmt to string and add as attribute
-    std::ostringstream  os_time;
+    std::ostringstream os_time;
     os_time << time;
-    validPathAttrs[LMT]  = os_time.str();
+    validPathAttrs[LMT] = os_time.str();
 
     info->add_tag(VALID_PATH, validPath, &validPathAttrs);
     info->add_tag(REMAINDER, remainder);
@@ -224,21 +221,22 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     // end the response object
     info->end_response();
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl );
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl);
 
-    }
+}
 
-    /** @brief transmit the response object built by the execute command
-     * using the specified transmitter object
-     *
-     * If a response object was built then transmit it as text
-     *
-     * @param transmitter object that knows how to transmit specific basic types
-     * @param dhi structure that holds the request and response information
-     * @see BESInfo
-     * @see BESTransmitter
-     * @see BESDataHandlerInterface
-     */
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it as text
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see BESInfo
+ * @see BESTransmitter
+ * @see BESDataHandlerInterface
+ */
 void ShowPathInfoResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
     if (d_response_object) {
@@ -271,24 +269,16 @@ ShowPathInfoResponseHandler::ShowPathInfoResponseBuilder(const string &name)
 /**
  *
  */
-void
-ShowPathInfoResponseHandler::eval_resource_path(
-    const string &resource_path,
-    const string &catalog_root,
-    const bool follow_sym_links,
-    string &validPath,
-    bool &isFile,
-    bool &isDir,
-    long long &size,
-    long long  &lastModifiedTime,
-    bool &canRead,
-    string &remainder){
+void ShowPathInfoResponseHandler::eval_resource_path(const string &resource_path, const string &catalog_root,
+    const bool follow_sym_links, string &validPath, bool &isFile, bool &isDir, long long &size,
+    long long &lastModifiedTime, bool &canRead, string &remainder)
+{
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-        "CatalogRoot: "<< catalog_root << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "CatalogRoot: "<< catalog_root << endl);
 
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-        "resourceID: "<< resource_path << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::"<<__func__ << "() - " << "resourceID: "<< resource_path << endl);
 
     // nothing valid yet...
     validPath = "";
@@ -325,8 +315,8 @@ ShowPathInfoResponseHandler::eval_resource_path(
     // not allowed.
     string::size_type dotdot = resource_path.find("..");
     if (dotdot != string::npos) {
-        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::"<<__func__ << "() - " <<
-            " ERROR: The resourceID '" << resource_path <<"' contains the substring '..' This is Forbidden." << endl);
+        BESDEBUG(SPI_DEBUG_KEY,
+            "ShowPathInfoResponseHandler::"<<__func__ << "() - " << " ERROR: The resourceID '" << resource_path <<"' contains the substring '..' This is Forbidden." << endl);
         string s = (string) "Invalid node name '" + resource_path + "' ACCESS IS FORBIDDEN";
 
         throw BESForbiddenError(s, __FILE__, __LINE__);
@@ -429,7 +419,8 @@ ShowPathInfoResponseHandler::eval_resource_path(
                             "ShowPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
 
                         string full_candidate_path = BESUtil::assemblePath(catalog_root, candidate_path, true);
-                        BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
+                        BESDEBUG(SPI_DEBUG_KEY,
+                            "ShowPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
 
                         struct stat sb1;
                         int statret1 = ye_old_stat_function(full_candidate_path.c_str(), &sb1);
@@ -474,24 +465,43 @@ ShowPathInfoResponseHandler::eval_resource_path(
                 + "' ACCESS IS FORBIDDEN";
             throw BESForbiddenError(error, __FILE__, __LINE__);
         }
-       // sb.st_uid;
-       // sb.st_uid;
+        // sb.st_uid;
+        // sb.st_uid;
 
         // Can we read le file?
-        std::ifstream ifile(fullpath);
+        std::ifstream ifile(fullpath.c_str());
         canRead = ifile.good();
 
         size = sb.st_size;
+
+        // I'm pretty sure that assigning st_mtime to a long long (when it is a time_t) is not a
+        // good plan - time_t is either a 32- or 64-bit signed integer.
+        //
+        // But, see ESCatalogUtils::bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf)
+        // for code that probably does a more universal version. of this (and other things relative
+        // to stat, like symbolic link following).
+        //
+        // I added this #if ... #endif because Linux does not have st_mtimespec in struct stat.
+        // jhrg 2.24.18
+#if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
         // Compute LMT by converting the time to milliseconds since epoch - because OLFS is picky
-        lastModifiedTime = (sb.st_mtimespec.tv_sec * 1000) + (sb.st_mtimespec.tv_nsec/1000000);
-   }
+        lastModifiedTime = (sb.st_mtimespec.tv_sec * 1000) + (sb.st_mtimespec.tv_nsec / 1000000);
+#else
+        lastModifiedTime = sb.st_mtime;
+#endif
+    }
+
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -  fullpath: " << fullpath << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - validPath: " << validPath << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() - remainder: " << remainder << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -       rem: " << rem << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -    access: " << (canRead?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::" << __func__ << "() -    access: " << (canRead?"true":"false") << endl);
     BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -      size: " << size << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::" << __func__ << "() -       LMT: " << lastModifiedTime << endl);
+    BESDEBUG(SPI_DEBUG_KEY,
+        "ShowPathInfoResponseHandler::" << __func__ << "() -       LMT: " << lastModifiedTime << endl);
 }

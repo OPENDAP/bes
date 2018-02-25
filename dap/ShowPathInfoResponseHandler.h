@@ -28,6 +28,9 @@
 #ifndef I_ShowPathInfoResponseHandler_h
 #define I_ShowPathInfoResponseHandler_h 1
 
+#include <string>
+#include <ostream>
+
 #include "BESResponseHandler.h"
 
 #define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
@@ -47,20 +50,20 @@
  */
 class ShowPathInfoResponseHandler: public BESResponseHandler {
 public:
-    void eval_resource_path(const string &resource_path, const string &catalog_root, const bool follow_sym_links,
-        string &validPath, bool &isFile, bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead,
-        string &remainder);
+    void eval_resource_path(const std::string &resource_path, const std::string &catalog_root, const bool follow_sym_links,
+        std::string &validPath, bool &isFile, bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead,
+        std::string &remainder);
 
 public:
-    ShowPathInfoResponseHandler(const string &name);
+    ShowPathInfoResponseHandler(const std::string &name);
     virtual ~ShowPathInfoResponseHandler(void);
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *ShowPathInfoResponseBuilder(const string &name);
+    static BESResponseHandler *ShowPathInfoResponseBuilder(const std::string &name);
 };
 
 #endif // I_ShowPathInfoResponseHandler_h
