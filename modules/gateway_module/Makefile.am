@@ -13,7 +13,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=gateway_module
 M_VER=1.2.2
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -27,6 +27,7 @@ GATEWAY_SRCS = \
 		GatewayModule.cc GatewayRequestHandler.cc		\
 		GatewayContainer.cc GatewayContainerStorage.cc		\
 		GatewayError.cc GatewayRequest.cc GatewayUtils.cc \
+		GatewayPathInfoCommand.cc GatewayPathInfoResponseHandler.cc \
 		GatewayCache.cc RemoteHttpResource.cc curl_utils.cc
 
 GATEWAY_HDRS = \
@@ -34,6 +35,7 @@ GATEWAY_HDRS = \
 		GatewayResponseNames.h					\
 		GatewayContainer.h GatewayContainerStorage.h		\
 		GatewayError.h GatewayRequest.h GatewayUtils.h  \
+		GatewayPathInfoCommand.h GatewayPathInfoResponseHandler.h \
 		GatewayCache.h RemoteHttpResource.h curl_utils.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
