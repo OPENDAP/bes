@@ -26,7 +26,7 @@ pkginclude_HEADERS = $(HDRS)
 pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
-	bes/bes_help.xml
+	bes/bes_help.xml PicoSHA2
 
 DISTCLEANFILES = bes/bes.conf
 

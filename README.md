@@ -358,3 +358,19 @@ list of <container>.constraint="" clauses.
     Place, Suite 330, Boston, MA 02111-1307 USA. Older versions of the BES were
     copyrighted by the University Corporation for Atmospheric Research;
     see the file COPYRIGHT_UCAR.
+    
+    The BES uses PicoSHA2 - a library that provides an implementation of the 
+    SHA256 hashing algorithm; its copyright follows
+    
+    Copyright (C) 2017 okdshin
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+    
