@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -46,12 +46,12 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-BESCatalogResponseHandler::BESCatalogResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESCatalogResponseHandler::~BESCatalogResponseHandler( )
+BESCatalogResponseHandler::~BESCatalogResponseHandler()
 {
 }
 
@@ -65,11 +65,11 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler( )
  * @see BESInfo
  * @see BESRequestHandlerList
  */
-void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
+void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
+{
 
-	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
-		sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG)) sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
@@ -79,8 +79,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
     string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
     BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
     if (!defcat) {
-        string err = (string) "Not able to find the default catalog "
-                + defcatname;
+        string err = (string) "Not able to find the default catalog " + defcatname;
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
@@ -95,14 +94,14 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
     string::size_type slash = container.find_first_of("/", 0);
     if (slash != string::npos) {
         catname = container.substr(0, slash);
-    } else {
+    }
+    else {
         catname = container;
     }
 
     // see if this catalog exists. If it does, then remove the catalog
     // name from the container (node)
-    BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(
-            catname);
+    BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(catname);
     if (catobj) {
         if (slash != string::npos) {
             container = container.substr(slash + 1);
@@ -112,20 +111,21 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
             if (notslash != string::npos) {
                 container = container.substr(notslash);
             }
-        } else {
+        }
+        else {
             container = "";
         }
     }
 
-    if (container.empty())
-        container = "/";
+    if (container.empty()) container = "/";
 
     string coi = dhi.data[CATALOG_OR_INFO];
 
     BESCatalogEntry *entry = 0;
     if (catobj) {
         entry = catobj->show_catalog(container, coi, entry);
-    } else {
+    }
+    else {
         // we always want to get the container information from the
         // default catalog, whether the node is / or not
         entry = defcat->show_catalog(container, coi, entry);
@@ -134,8 +134,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
         // slash (/)
         int num_cats = BESCatalogList::TheCatalogList()->num_catalogs();
         if (container == "/" && num_cats > 1) {
-            entry = BESCatalogList::TheCatalogList()->show_catalogs(dhi, entry,
-                    false);
+            entry = BESCatalogList::TheCatalogList()->show_catalogs(entry, false);
         }
     }
 
@@ -149,7 +148,8 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
     if (coi == CATALOG_RESPONSE) {
         info->begin_response(CATALOG_RESPONSE_STR, dhi);
         dhi.action_name = CATALOG_RESPONSE_STR;
-    } else {
+    }
+    else {
         info->begin_response(SHOW_INFO_RESPONSE_STR, dhi);
         dhi.action_name = SHOW_INFO_RESPONSE_STR;
     }
@@ -185,16 +185,12 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+void BESCatalogResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( d_response_object )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -204,19 +200,17 @@ BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESCatalogResponseHandler::dump( ostream &strm ) const
+void BESCatalogResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESCatalogResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESCatalogResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESCatalogResponseHandler::CatalogResponseBuilder( const string &name )
+BESCatalogResponseHandler::CatalogResponseBuilder(const string &name)
 {
-    return new BESCatalogResponseHandler( name ) ;
+    return new BESCatalogResponseHandler(name);
 }
 

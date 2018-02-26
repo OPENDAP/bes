@@ -78,130 +78,6 @@ using std::ostringstream;
 
 const string root_dir = "/catalog_test";
 
-#if 0
-string empty_response =
-    "BESCatalogEntry::dump - ()\n\
-    name: /\n\
-    catalog: \n\
-    size: \n\
-    modification date: \n\
-    modification time: \n\
-    services: none\n\
-    metadata: none\n\
-    is collection? no\n\
-    count: 0\n\
-";
-
-string one_response =
-
-    "BESCatalogEntry::dump - ()\n\
-    name: /\n\
-    catalog: default\n\
-    size:\n\
-    modification date:\n\
-    modification time:\n\
-    services: none\n\
-    metadata: none\n\
-    is collection? yes\n\
-    count: 1\n\
-        BESCatalogEntry::dump - ()\n\
-            name: /\n\
-            catalog: default\n\
-            size:\n\
-            modification date:\n\
-            modification time:\n\
-            services: none\n\
-            metadata: none\n\
-            is collection? yes\n\
-            count: 1\n\
-                BESCatalogEntry::dump - ()\n\
-                    name: bes.conf\n\
-                    catalog: default\n\
-                    size:\n\
-                    modification date:\n\
-                    modification time:\n\
-                    services: none\n\
-                    metadata: none\n\
-                    is collection? no\n\
-                    count: 0\n\
-";
-
-
-string cat_root =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showCatalog>\n\
-        <dataset catalog=\"default\" count=\"1\" lastModified=\"\" name=\"/\" node=\"true\" size=\"\">\n\
-            <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
-        </dataset>\n\
-    </showCatalog>\n\
-</response>\n";
-
-string two_response =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showCatalog>\n\
-        <dataset catalog=\"default\" count=\"2\" lastModified=\"\" name=\"/\" node=\"true\" size=\"\">\n\
-            <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
-            <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
-        </dataset>\n\
-    </showCatalog>\n\
-</response>\n";
-
-string other_root =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showCatalog>\n\
-        <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\">\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/bad_keys1.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/defT.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/empty.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/info_test.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_include.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m1.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m2.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m3.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/persistence_cgi_test.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/persistence_file_test.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/persistence_mysql_test.ini\" node=\"false\" size=\"\"/>\n\
-        </dataset>\n\
-    </showCatalog>\n\
-</response>\n";
-
-string other_root_info =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showInfo>\n\
-        <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
-    </showInfo>\n\
-</response>\n";
-
-string spec_node =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showCatalog>\n\
-        <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m3.ini\" node=\"false\" size=\"\"/>\n\
-    </showCatalog>\n\
-</response>\n";
-
-string spec_info =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showInfo>\n\
-        <dataset catalog=\"other\" lastModified=\"\" name=\"other/keys_test_m3.ini\" node=\"false\" size=\"\"/>\n\
-    </showInfo>\n\
-</response>\n";
-
-string default_node =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
-    <showCatalog>\n\
-        <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
-    </showCatalog>\n\
-</response>\n";
-#endif
-
 class catT: public TestFixture {
 private:
     string remove(string &str, string attr, string::size_type s)
@@ -216,6 +92,7 @@ private:
         return remove(str, attr, qpos + 1);
     }
 
+    // I think this removes all text enclosed in parentheses. jhrg 2.25.18
     string remove_ptr(string &str, string::size_type pos = 0)
     {
         string ret;
@@ -318,24 +195,27 @@ public:
 
     void default_test()
     {
-        DBG(cerr << "set the default catalog and test" << endl);
+        DBG(cerr << __func__ << endl);
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
         string defcat = BESCatalogList::TheCatalogList()->default_catalog();
         CPPUNIT_ASSERT(defcat == "default");
 
-        DBG(cerr << "num catalogs should be zero" << endl);
-
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
         CPPUNIT_ASSERT(numcats == 0);
 
-        DBG(cerr << "show empty catalog list" << endl);
         try {
-            BESDataHandlerInterface dhi;
+            // show_catalogs(...) the false value for show_default will suppress
+            // showing anything for the default catalog. Since there's no other
+            // catalog, there's nothing to show. jhrg 2.25.18
             BESCatalogEntry *entry = 0;
-            entry = BESCatalogList::TheCatalogList()->show_catalogs(dhi, 0);
+            entry = BESCatalogList::TheCatalogList()->show_catalogs(0, false);
             ostringstream strm;
             entry->dump(strm);
+            DBG(cerr << "Entry before remove_ptr: ");
+            DBG(entry->dump(cerr));
+            DBG(cerr <<endl);
+
             string str = strm.str();
             str = remove_ptr(str);
             string empty_response = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/empty_response.txt");
@@ -351,8 +231,9 @@ public:
         }
     }
 
+    // This is really three different tests. jhrg 2.25.18
     void no_default_test() {
-        DBG(cerr << "no default catalog, use catalog response" << endl);
+        DBG(cerr << __func__ << endl);
         try {
             BESDataHandlerInterface dhi;
             dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
@@ -420,7 +301,7 @@ public:
 
         try {
             BESDataHandlerInterface dhi;
-            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(dhi, 0);
+            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0);
             ostringstream strm;
             entry->dump(strm);
             string str = strm.str();

@@ -288,14 +288,15 @@ GatewayUtils::Get_tempfile_template( char *file_template )
     return temp;
 }
 #endif
-void GatewayUtils::Get_type_from_disposition(const string &disp, string &type) {
+
+void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
+{
     size_t fnpos = disp.find("filename");
     if (fnpos != string::npos) {
         // Got the filename attribute, now get the
         // filename, which is after the pound sign (#)
         size_t pos = disp.find("#", fnpos);
-        if (pos == string::npos)
-            pos = disp.find("=", fnpos);
+        if (pos == string::npos) pos = disp.find("=", fnpos);
         if (pos != string::npos) {
             // Got the filename to the end of the
             // string, now get it to either the end of
@@ -306,7 +307,8 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type) {
             if (pos != string::npos) {
                 // space before the next attribute
                 filename = disp.substr(pos + 1, sp - pos - 1);
-            } else {
+            }
+            else {
                 // to the end of the string
                 filename = disp.substr(pos + 1);
             }
@@ -328,30 +330,23 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type) {
             for (; i != ie && !done; i++) {
                 BESCatalogUtils::type_reg match = (*i);
                 try {
-                    BESDEBUG( "gateway", "  Comparing disp filename "
-                            << filename << " against expr "
-                            << match.reg << endl );
-                        BESRegex reg_expr( match.reg.c_str() );
-                        if( reg_expr.match( filename.c_str(),
-                                        filename.length() )
-                                == static_cast<int>(filename.length()) )
-                        {
-                            type = match.type;
-                            done = true;
-                        }
+                    BESDEBUG("gateway",
+                        "  Comparing disp filename " << filename << " against expr " << match.reg << endl);
+                    BESRegex reg_expr(match.reg.c_str());
+                    if (reg_expr.match(filename.c_str(), filename.length()) == static_cast<int>(filename.length())) {
+                        type = match.type;
+                        done = true;
                     }
-                    catch( Error &e )
-                    {
-                        string serr = (string)"Unable to match data type, "
-                        + "malformed Catalog TypeMatch parameter "
-                        + "in bes configuration file around "
-                        + match.reg + ": " + e.get_error_message();
-                        throw BESDapError(serr, false, e.get_error_code(),__FILE__, __LINE__);
-                    }
+                }
+                catch (Error &e) {
+                    string serr = (string) "Unable to match data type, " + "malformed Catalog TypeMatch parameter "
+                        + "in bes configuration file around " + match.reg + ": " + e.get_error_message();
+                    throw BESDapError(serr, false, e.get_error_code(), __FILE__, __LINE__);
                 }
             }
         }
     }
+}
 
 void GatewayUtils::Get_type_from_content_type(const string &ctype,
         string &type) {

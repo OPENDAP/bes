@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,29 +36,27 @@
 #include <list>
 #include <string>
 
-using std::list ;
-using std::string ;
+using std::list;
+using std::string;
 
 #include "BESCatalog.h"
 
-class BESCatalogEntry ;
-class BESCatalogUtils ;
+class BESCatalogEntry;
+class BESCatalogUtils;
 
 /** @brief builds catalogs from a directory structure
  */
-class BESCatalogDirectory : public BESCatalog
-{
+class BESCatalogDirectory: public BESCatalog {
 private:
-    BESCatalogUtils *		_utils ;
+    BESCatalogUtils * d_utils;
+
 public:
-				BESCatalogDirectory( const string &name ) ;
-    virtual			~BESCatalogDirectory( void ) ;
+    BESCatalogDirectory(const string &name);
+    virtual ~BESCatalogDirectory(void);
 
-    virtual BESCatalogEntry *	show_catalog( const string &container,
-					      const string &coi,
-					      BESCatalogEntry *entry ) ;
+    virtual BESCatalogEntry * show_catalog(const string &container, const string &coi, BESCatalogEntry *entry);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // I_BESCatalogDirectory_h

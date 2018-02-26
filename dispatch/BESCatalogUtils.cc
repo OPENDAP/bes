@@ -60,6 +60,23 @@ using namespace std;
 
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
 
+/**
+ * @brief Initialize the file system catalog utilities
+ *
+ * Use parameters in the bes.conf file to configure a BES catalog
+ * that reads data from a file system. This will set the root directory
+ * of the catalog, regular expressions to exclude and include entries,
+ * regular expressions to identify data, and whether the catalog should
+ * follow symbolic links. The bes.conf key names are (N == catalog name):
+ *
+ * BES.Catalog.N.RootDirectory
+ * BES.Catalog.N.Exclude
+ * BES.Catalog.N.Include
+ * BES.Catalog.N.TypeMatch
+ * BES.Catalog.N.FollowSymLinks
+ *
+ * @param n The name of the catalog.
+ */
 BESCatalogUtils::BESCatalogUtils(const string &n) :
     _name(n), _follow_syms(false)
 {
@@ -70,6 +87,8 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
+
+    // TODO access() would test for existence faster. jhrg 2.25.18
     DIR *dip = opendir(_root_dir.c_str());
     if (dip == NULL) {
         string serr = "BESCatalogDirectory - root directory " + _root_dir + " does not exist";
@@ -140,6 +159,17 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     }
 }
 
+/**
+ * @brief Should this file/directory be included in the catalog?
+ *
+ * First check if the file should be included (matches at least one
+ * regex on the include list). If there are no regexes on the include
+ * list, that means include everything. Then test the exclude list.
+ * If there are no regexes on the exclude list, exclude nothing.
+ *
+ * @param inQuestion File or directory in question
+ * @return True if it should be included, false if not.
+ */
 bool BESCatalogUtils::include(const string &inQuestion) const
 {
     bool toInclude = false;
@@ -184,6 +214,13 @@ bool BESCatalogUtils::include(const string &inQuestion) const
     return toInclude;
 }
 
+/**
+ * @brief Should this file/directory be excluded in the catalog?
+ *
+ * @see BESCatalogUtils::include
+ * @param inQuestion The file or directory name in question
+ * @return True if the file/directory should be excluded, false if not.
+ */
 bool BESCatalogUtils::exclude(const string &inQuestion) const
 {
     list<string>::const_iterator e_iter = _exclude.begin();

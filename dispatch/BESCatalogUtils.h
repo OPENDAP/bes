@@ -48,38 +48,58 @@
 class BESInfo;
 class BESCatalogEntry;
 
+// TODO This seems odd - to have a singleton that is actually a map of
+// instances and have that me a member of (each of?) the instances...
+// I think this should be a member of a catalog, not a singleton with
+// a list of classes. jhrg 2.25.18
+
 class BESCatalogUtils: public BESObj {
 private:
 	static std::map<std::string, BESCatalogUtils *> _instances;
 
-	std::string _name;
-	std::string _root_dir;
-	std::list<std::string> _exclude;
-	std::list<std::string> _include;
-	bool _follow_syms;
+	std::string _name;      ///< The name of the catalog
+	std::string _root_dir;  ///< The pathname of the root directory
+	std::list<std::string> _exclude;    ///< list of regexes; exclude matches
+	std::list<std::string> _include;    ///< include regexes
+	bool _follow_syms;      ///< Follow file system symbolic links?
 
 public:
+	/**
+	 * This matches regular expressions and the types they identify.
+	 *
+	 * @todo I think this enables the utils to identify which files
+	 * are data. See BESContainerStorageCatalog::isData()
+	 */
 	struct type_reg {
 		std::string type;
 		std::string reg;
 	};
+
 private:
-	std::vector<type_reg> _match_list;
+	std::vector<type_reg> _match_list;  ///< The list of types & regexes
 
 	BESCatalogUtils() {
 	}
 
 	static void bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf);
+
 public:
 	BESCatalogUtils(const std::string &name);
 	virtual ~BESCatalogUtils() {}
 
+	/**
+	 * @brief Get the root directory of the catalog
+	 *
+	 * @return The pathname that is the root of the 'catalog'
+	 */
 	const std::string & get_root_dir() const {
 		return _root_dir;
 	}
+
 	bool follow_sym_links() const {
 		return _follow_syms;
 	}
+
 	virtual bool include(const std::string &inQuestion) const ;
 	virtual bool exclude(const std::string &inQuestion) const ;
 
