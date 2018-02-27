@@ -150,8 +150,7 @@ BESCatalogDirectory::show_catalog(const string &node, const string &/*coi*/, BES
     }
 
     // Is this node a directory?
-    // TODO Replace with access(2) and move the opendir call to BESCatalogUtils::get_entries().
-    // jhrg 2.26.18
+    // TODO use stat() instead. jhrg 2.26.18
     DIR *dip = opendir(fullnode.c_str());
     if (dip != NULL) {
         try {
