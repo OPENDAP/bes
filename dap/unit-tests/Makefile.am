@@ -47,7 +47,7 @@ pathinfo_files:
 clean-local:
 	-rm -rf response_cache pathinfo_files
 	
-EXTRA_DIST = test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
+EXTRA_DIST = test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in input-files
 
 CLEANFILES = testout test_config.h bes.conf .dodsrc 
 
