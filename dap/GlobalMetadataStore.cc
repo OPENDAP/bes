@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#include <fcntl.h>
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -54,16 +56,51 @@ using namespace std;
 using namespace libdap;
 using namespace bes;
 
-const unsigned int default_cache_size = 20; // 20 GB
-const string default_cache_prefix = "mds";
-const string default_cache_dir = ""; // I'm making the default empty so that no key == no caching. jhrg 9.26.16
+static const unsigned int default_cache_size = 20; // 20 GB
+static const string default_cache_prefix = "mds";
+static const string default_cache_dir = ""; // I'm making the default empty so that no key == no caching. jhrg 9.26.16
+static const string default_inventory_name = "mds_inventory.txt";   ///< In the CWD of the BES process
 
-const string GlobalMetadataStore::PATH_KEY = "DAP.GlobalMetadataStore.path";
-const string GlobalMetadataStore::PREFIX_KEY = "DAP.GlobalMetadataStore.prefix";
-const string GlobalMetadataStore::SIZE_KEY = "DAP.GlobalMetadataStore.size";
+static const string PATH_KEY = "DAP.GlobalMetadataStore.path";
+static const string PREFIX_KEY = "DAP.GlobalMetadataStore.prefix";
+static const string SIZE_KEY = "DAP.GlobalMetadataStore.size";
+static const string INVENTORY_KEY = "DAP.GlobalMetadataStore.inventory";
 
 GlobalMetadataStore *GlobalMetadataStore::d_instance = 0;
 bool GlobalMetadataStore::d_enabled = true;
+
+/**
+ * Hacked from GNU wc (in coreutils). This was found to be
+ * faster than a memory mapped file read.
+ *
+ * https://stackoverflow.com/questions/17925051/fast-textfile-reading-in-c
+ *
+ * @param fd Open file descriptor to read from; assumed open and
+ * positioned at the start of the file.
+ * @param os C++ stream to write to
+ * @exception BESInternalError Thrown if there's a problem reading or writing.
+ */
+static void transfer_bytes(int fd, ostream &os)
+{
+    static const int BUFFER_SIZE = 16*1024;
+
+#if _POSIX_C_SOURCE >= 200112L
+    /* Advise the kernel of our access pattern.  */
+    posix_fadvise(fd, 0, 0, 1);  // FDADVICE_SEQUENTIAL
+#endif
+
+    char buf[BUFFER_SIZE + 1];
+
+    while(size_t bytes_read = read(fd, buf, BUFFER_SIZE))
+    {
+        if(bytes_read == (size_t)-1)
+            throw BESInternalError("Could not read dds from the metadata store.", __FILE__, __LINE__);
+        if (!bytes_read)
+            break;
+
+        os.write(buf, bytes_read);
+    }
+}
 
 unsigned long GlobalMetadataStore::get_cache_size_from_config()
 {
@@ -185,6 +222,51 @@ GlobalMetadataStore::get_instance()
 //@}
 
 /**
+ * Protected constructor that calls BESFileLockingCache's constructor;
+ * lookup cache directory, item prefix and max cache size in BESKeys
+ *
+ * @note Use the get_instance() methods to get a pointer to the singleton for
+ * this class. Do not use this method except in derived classes. This method
+ * either builds a valid object or throws an exception.
+ *
+ * @param cache_dir key to find cache dir
+ * @param prefix key to find the cache prefix
+ * @param size key to find the cache size (in MBytes)
+ * @throws BESSyntaxUserError if the keys are not set in the BESKeys, if the key
+ * are either the empty string or zero, respectively, or if the cache directory does not exist.
+ */
+GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &prefix,
+    unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
+{
+    bool found;
+
+    TheBESKeys::TheKeys()->get_value(INVENTORY_KEY, d_inventory_name, found);
+    if (found) {
+        BESDEBUG(DEBUG_KEY, "Located BES key " << INVENTORY_KEY << "=" << d_inventory_name << endl);
+    }
+    else {
+        d_inventory_name = default_inventory_name;
+    }
+}
+
+/**
+ * Write the current text of d_inventory_entry to the metadata
+ * store inventory
+ */
+void
+GlobalMetadataStore::write_inventory()
+{
+    ofstream of(d_inventory_name.c_str());
+    if (of) {
+        of << d_inventory_entry << endl;
+    }
+    else {
+        LOG("Warning: Metadata store could not write to is inventory file.");
+        VERBOSE("MD Inventory name: '" << d_inventory_name << "', entry: '" << d_inventory_entry + "'.");
+    }
+}
+
+/**
  * Compute the SHA256 hash for the item name
  *
  * @param name The name to hash
@@ -199,9 +281,9 @@ GlobalMetadataStore::get_hash(const string &name)
 /**
  * @brief store the DDS response
  *
- * @param dds
+ * @param dds DDS object used to build the two DAP2 responses
  * @param print_method Either &DDS::print (for the DDS) or &DDS:print_das.
- * @param key
+ * @param key Unique Id for this response
  * @return True if the operation succeeded, False if the key is in use.
  * @throw BESInternalError If ...
  */
@@ -269,7 +351,7 @@ GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, 
 bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
 {
     // Start the index entry
-    d_index_entry = name;
+    d_inventory_entry = string("add,").append(name);
 
     // I'm appending the 'dds r' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
@@ -278,7 +360,7 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
     bool stored_dds = store_dap2_response(dds, &DDS::print, dds_r_hash);
     if (stored_dds) {
         VERBOSE("Metadata store: Wrote DDS response for '" << name << "'." << endl);
-        d_index_entry.append(",").append(dds_r_hash);
+        d_inventory_entry.append(",").append(dds_r_hash);
     }
     else {
         LOG("Metadata store: unable to store the DDS response for '" << name << "'." << endl);
@@ -288,18 +370,66 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
     bool stored_das = store_dap2_response(dds, &DDS::print_das, das_r_hash);
     if (stored_das) {
         VERBOSE("Metadata store: Wrote DAS response for '" << name << "'." << endl);
-        d_index_entry.append(",").append(das_r_hash);
+        d_inventory_entry.append(",").append(das_r_hash);
     }
     else {
         LOG("Metadata store: unable to store the DAS response for '" << name << "'." << endl);
     }
 
     if (stored_dds && stored_das) {
-        // write the index line
+        write_inventory(); // write the index line
         return true;
     }
     else {
         return false;
+    }
+}
+
+/**
+ * @brief Write the stored DDS response to a stream
+ *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
+ */
+void
+GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
+{
+    string item_name = get_cache_file_name(get_hash(name + "dds_r"), false /*mangle*/);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Read DDS response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+
+        transfer_bytes(fd, os);
+
+        unlock_and_close(item_name);    // closes fd
+    }
+    else {
+        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+    }
+}
+
+/**
+ * @brief Write the stored DAS response to a stream
+ *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
+ */
+void
+GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
+{
+    string item_name = get_cache_file_name(get_hash(name + "das_r"), false /*mangle*/);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Read DAS response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+
+        transfer_bytes(fd, os);
+
+        unlock_and_close(item_name);    // closes fd
+    }
+    else {
+        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
     }
 }
 

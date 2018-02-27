@@ -468,8 +468,9 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  failure (false), otherwise block until a shared read-lock can be
  obtained and then return true.
 
- @exception Error is thrown to indicate a number of untoward
- events. */
+ @exception BESInternalError Thrown to indicate a number of untoward
+ events.
+ */
 static bool getSharedLock(const string &file_name, int &ref_fd)
 {
     BESDEBUG("cache2", "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
