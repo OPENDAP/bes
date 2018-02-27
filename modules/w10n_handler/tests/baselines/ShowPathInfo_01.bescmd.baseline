@@ -2,7 +2,7 @@
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showPathInfo>
         <PathInfo path="/data/fnoc1.nc/u">
-            <validPath access="true" isData="true" isDir="false" isFile="true" lastModified="1486237344000" size="23944">/data/fnoc1.nc</validPath>
+            <validPath access="true" isData="true" isDir="false" isFile="true" lastModified="elided" size="elided">/data/fnoc1.nc</validPath>
             <remainder>u</remainder>
         </PathInfo>
     </showPathInfo>
