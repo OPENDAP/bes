@@ -104,6 +104,11 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     string rootdir = d_utils->get_root_dir();
     string fullnode = rootdir;
     if (!use_node.empty()) {
+        // TODO It's hard to know just what this code is supposed to do, but I
+        // think the following can be an error. Above, if use_node is empty(), the use_node becomes
+        // "/" and then it's not empty() and fullnode becomes "<stuff>//" but we just
+        // jumped through all kinds of hoops to make sure there was either zero
+        // or one trailing slash. jhrg 2.26.18
         fullnode = fullnode + "/" + use_node;
     }
 
@@ -115,6 +120,9 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     else {
         basename = fullnode;
     }
+
+    // fullnode is the full pathname of the node, including the 'root' pathanme
+    // basename is the last component of fullnode
 
     BESDEBUG( "bes", "BESCatalogDirectory::show_catalog: "
             << "use_node = " << use_node << endl
