@@ -57,6 +57,7 @@ using namespace libdap ;
  * name of the file to be used by the corresponding data handler
  *
  * @param url remote request url
+ * @param type A string into which
  * @return HTTPResponse pointer for the remote request response
  * @throws BESInternalError if there is a problem making the remote request or
  * the request fails

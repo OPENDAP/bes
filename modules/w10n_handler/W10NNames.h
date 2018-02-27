@@ -9,15 +9,4 @@
 #define W10N_TRAVERSE_KEY "w10nTraverse"
 
 
-#define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
-#define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
-
-#define PATH_INFO_RESPONSE "PathInfo"
-#define PATH "path"
-#define VALID_PATH "validPath"
-#define REMAINDER  "remainder"
-#define IS_DATA "isData"
-#define IS_FILE "isFile"
-#define IS_DIR  "isDir"
-
 #endif // D_W10NNames_H
