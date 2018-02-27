@@ -56,7 +56,6 @@ using std::cerr;
 class ShowPathInfoTest: public CppUnit::TestFixture {
 
 private:
-    string d_tmpDir;
     string d_testDir;
 
     void eval_resource_path(string resourceId, string catalogRoot, string expectedValidPath,
@@ -97,30 +96,17 @@ private:
         CPPUNIT_ASSERT(validPath == expectedValidPath);
         CPPUNIT_ASSERT(remainder == expectedRemainder);
     }
-    void eval_resource_path(
-        const string &resource_path,
-        const string &catalog_root,
-        const bool follow_sym_links,
-        string &validPath,
-        bool &isFile,
-        bool &isDir,
-        long long &size,
-        long long &lastModifiedTime,
-        bool &canRead,
-        string &remainder);
 
 public:
 
     // Called once before everything gets tested
-    ShowPathInfoTest() :
-        d_tmpDir(string(TEST_SRC_DIR) + "/tmp"), d_testDir(string(TEST_SRC_DIR) + "/input-files")
+    ShowPathInfoTest() : d_testDir(string(TEST_BUILD_DIR) + "/pathinfo_files")
     {
     }
 
-    // Called at the end of the test
+    // Called at the end of the tests
     ~ShowPathInfoTest()
     {
-        // DBG(cerr << "ShowPathInfoTest - Destructor" << endl);
     }
 
     // Called before each test
@@ -129,7 +115,6 @@ public:
         DBG(cerr << endl);
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
-        DBG(cerr << "ShowPathInfoTest::setUp() - d_tmpDir:" << d_tmpDir << endl);
         DBG(cerr << "ShowPathInfoTest::setUp() - d_testDir:" << d_testDir << endl);
 
     }
@@ -215,8 +200,7 @@ CPPUNIT_TEST_SUITE( ShowPathInfoTest );
             eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, false);
         }
         catch (BESForbiddenError &e) {
-            DBG(
-                cerr << "test_path_eval() - Caught expected BESForbiddenError. Message: '" << e.get_message() << "'"
+            DBG(cerr << "test_path_eval() - Caught expected BESForbiddenError. Message: '" << e.get_message() << "'"
                     << endl);
             CPPUNIT_ASSERT(true);
         }
@@ -239,8 +223,7 @@ CPPUNIT_TEST_SUITE( ShowPathInfoTest );
             eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, false);
         }
         catch (BESForbiddenError &e) {
-            DBG(
-                cerr << "test_path_eval() - Caught expected BESForbiddenError. Message: '" << e.get_message() << "'"
+            DBG(cerr << "test_path_eval() - Caught expected BESForbiddenError. Message: '" << e.get_message() << "'"
                     << endl);
             CPPUNIT_ASSERT(true);
         }
@@ -254,8 +237,7 @@ CPPUNIT_TEST_SUITE( ShowPathInfoTest );
             eval_resource_path(resourceId, d_testDir, expectedPath, expectedRemainder, true);
         }
         catch (BESForbiddenError &e) {
-            DBG(
-                cerr << "test_path_eval() - Caught expected BESForbiddenError. Message: '" << e.get_message() << "'"
+            DBG(cerr << "test_path_eval() - Caught expected BESForbiddenError. Message: '" << e.get_message() << "'"
                     << endl);
             CPPUNIT_ASSERT(true);
         }

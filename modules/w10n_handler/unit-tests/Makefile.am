@@ -45,7 +45,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 tmp:
 	test -d tmp || mkdir tmp
 	
-# If 'testdir' does not exist (i.e., were in $builddir), copy it here.
+# If 'testdir' does not exist, replicate it here.
 # tar (used to make the source dist) dereferences symbolic links, so
 # we make them this way to get distcheck to work.
 testdir:
