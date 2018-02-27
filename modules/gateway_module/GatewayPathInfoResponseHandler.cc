@@ -29,10 +29,12 @@
 #include <fstream>
 #include <time.h>
 
+#include <errno.h>
+#include <string.h>
+
 #include "GatewayPathInfoResponseHandler.h"
 
 #include "BESDebug.h"
-
 
 #include "BESInfoList.h"
 #include "BESInfo.h"
@@ -494,8 +496,21 @@ GatewayPathInfoResponseHandler::eval_resource_path(
         canRead = ifile.good();
 
         size = sb.st_size;
+        // I'm pretty sure that assigning st_mtime to a long long (when it is a time_t) is not a
+        // good plan - time_t is either a 32- or 64-bit signed integer.
+        //
+        // But, see ESCatalogUtils::bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf)
+        // for code that probably does a more universal version. of this (and other things relative
+        // to stat, like symbolic link following).
+        //
+        // I added this #if ... #endif because Linux does not have st_mtimespec in struct stat.
+        // jhrg 2.24.18
+#if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
         // Compute LMT by converting the time to milliseconds since epoch - because OLFS is picky
-        lastModifiedTime = (sb.st_mtimespec.tv_sec * 1000) + (sb.st_mtimespec.tv_nsec/1000000);
+        lastModifiedTime = (sb.st_mtimespec.tv_sec * 1000) + (sb.st_mtimespec.tv_nsec / 1000000);
+#else
+        lastModifiedTime = sb.st_mtime;
+#endif
    }
     BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() -  fullpath: " << fullpath << endl);
     BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() - validPath: " << validPath << endl);
