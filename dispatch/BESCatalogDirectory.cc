@@ -86,7 +86,7 @@ BESCatalogDirectory::~BESCatalogDirectory()
  * @return
  */
 BESCatalogEntry *
-BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCatalogEntry *entry)
+BESCatalogDirectory::show_catalog(const string &node, const string &/*coi*/, BESCatalogEntry *entry)
 {
     string use_node = node;
     // use_node should only end in '/' if that's the only character in which
@@ -134,8 +134,11 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
+    // TODO Move up; this canbe done once use_node is set. jhrg 2.26.18
     BESUtil::check_path(use_node, rootdir, d_utils->follow_sym_links());
 
+    // If null is passed in, then return the new entry, else add the new entry to the
+    // existing Entry object. jhrg 2.26.18
     BESCatalogEntry *myentry = new BESCatalogEntry(use_node, get_catalog_name());
     if (entry) {
         // if an entry was passed, then add this one to it
@@ -147,6 +150,8 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     }
 
     // Is this node a directory?
+    // TODO Replace with access(2) and move the opendir call to BESCatalogUtils::get_entries().
+    // jhrg 2.26.18
     DIR *dip = opendir(fullnode.c_str());
     if (dip != NULL) {
         try {
@@ -164,13 +169,17 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
             BESUtil::conditional_timeout_cancel();
 
             bool dirs_only = false;
-            d_utils->get_entries(dip, fullnode, use_node, coi, myentry, dirs_only);
+            // TODO This is the only place in the code where get_entries() is called
+            // jhrg 2.26.18
+            d_utils->get_entries(dip, fullnode, use_node, /*coi not used,*/ myentry, dirs_only);
         } catch (... /*BESError &e */) {
             closedir(dip);
             throw /* e */;
         }
         closedir(dip);
 
+        // TODO This is the only place this method is called. replace the static method
+        // with an object call (i.e., d_utils)? jhrg 2.26.18
         BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
     }
     else {

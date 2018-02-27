@@ -55,76 +55,78 @@ class BESCatalogEntry;
 
 class BESCatalogUtils: public BESObj {
 private:
-	static std::map<std::string, BESCatalogUtils *> _instances;
+    static std::map<std::string, BESCatalogUtils *> _instances;
 
-	std::string _name;      ///< The name of the catalog
-	std::string _root_dir;  ///< The pathname of the root directory
-	std::list<std::string> _exclude;    ///< list of regexes; exclude matches
-	std::list<std::string> _include;    ///< include regexes
-	bool _follow_syms;      ///< Follow file system symbolic links?
+    std::string _name;      ///< The name of the catalog
+    std::string _root_dir;  ///< The pathname of the root directory
+    std::list<std::string> _exclude;    ///< list of regexes; exclude matches
+    std::list<std::string> _include;    ///< include regexes
+    bool _follow_syms;      ///< Follow file system symbolic links?
 
 public:
-	/**
-	 * This matches regular expressions and the types they identify.
-	 *
-	 * @todo I think this enables the utils to identify which files
-	 * are data. See BESContainerStorageCatalog::isData()
-	 */
-	struct type_reg {
-		std::string type;
-		std::string reg;
-	};
+    /**
+     * This matches regular expressions and the types they identify.
+     *
+     * @todo I think this enables the utils to identify which files
+     * are data. See BESContainerStorageCatalog::isData()
+     */
+    struct type_reg {
+        std::string type;
+        std::string reg;
+    };
 
 private:
-	std::vector<type_reg> _match_list;  ///< The list of types & regexes
+    std::vector<type_reg> _match_list;  ///< The list of types & regexes
 
-	BESCatalogUtils() {
-	}
+    BESCatalogUtils()
+    {
+    }
 
-	static void bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf);
+    static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 
 public:
-	BESCatalogUtils(const std::string &name);
-	virtual ~BESCatalogUtils() {}
+    BESCatalogUtils(const std::string &name);
+    virtual ~BESCatalogUtils()
+    {
+    }
 
-	/**
-	 * @brief Get the root directory of the catalog
-	 *
-	 * @return The pathname that is the root of the 'catalog'
-	 */
-	const std::string & get_root_dir() const {
-		return _root_dir;
-	}
+    /**
+     * @brief Get the root directory of the catalog
+     *
+     * @return The pathname that is the root of the 'catalog'
+     */
+    const std::string & get_root_dir() const
+    {
+        return _root_dir;
+    }
 
-	bool follow_sym_links() const {
-		return _follow_syms;
-	}
+    bool follow_sym_links() const
+    {
+        return _follow_syms;
+    }
 
-	virtual bool include(const std::string &inQuestion) const ;
-	virtual bool exclude(const std::string &inQuestion) const ;
+    virtual bool include(const std::string &inQuestion) const;
+    virtual bool exclude(const std::string &inQuestion) const;
 
-	typedef std::vector<type_reg>::const_iterator match_citer;
-	BESCatalogUtils::match_citer match_list_begin() const ;
-	BESCatalogUtils::match_citer match_list_end() const ;
+    typedef std::vector<type_reg>::const_iterator match_citer;
+    BESCatalogUtils::match_citer match_list_begin() const;
+    BESCatalogUtils::match_citer match_list_end() const;
 
-	virtual unsigned int get_entries(DIR *dip, const std::string &fullnode,
-			const std::string &use_node, const std::string &coi, BESCatalogEntry *entry,
-			bool dirs_only);
+    virtual unsigned int get_entries(DIR *dip, const std::string &fullnode, const std::string &use_node,
+        /*const std::string &coi,*/ BESCatalogEntry *entry, bool dirs_only);
 
-	static void display_entry(BESCatalogEntry *entry, BESInfo *info);
+    static void display_entry(BESCatalogEntry *entry, BESInfo *info);
 
-	static void bes_add_stat_info(BESCatalogEntry *entry,
-			const std::string &fullnode);
+    static void bes_add_stat_info(BESCatalogEntry *entry, const std::string &fullnode);
 
-	static bool isData(const std::string &inQuestion, const std::string &catalog,
-			std::list<std::string> &services);
+    static bool isData(const std::string &inQuestion, const std::string &catalog, std::list<std::string> &services);
 
-	virtual void dump(ostream &strm) const ;
+    virtual void dump(ostream &strm) const;
 
-	static BESCatalogUtils * Utils(const std::string &name);
+    static BESCatalogUtils * Utils(const std::string &name);
 
-	// Added because of reported memory leaks. jhrg 12/24/12
-	static void delete_all_catalogs();
+    // Added because of reported memory leaks. jhrg 12/24/12
+    static void delete_all_catalogs();
 };
 
 #endif // S_BESCatalogUtils_h
