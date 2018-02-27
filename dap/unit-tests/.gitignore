@@ -5,3 +5,4 @@ FunctionResponseCacheTest
 TemporaryFileTest
 bes.conf
 /GlobalMetadataStoreTest
+mds_inventory
