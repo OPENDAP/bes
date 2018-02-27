@@ -492,7 +492,7 @@ GatewayPathInfoResponseHandler::eval_resource_path(
        // sb.st_uid;
 
         // Can we read le file?
-        std::ifstream ifile(fullpath);
+        std::ifstream ifile(fullpath.c_str());
         canRead = ifile.good();
 
         size = sb.st_size;
