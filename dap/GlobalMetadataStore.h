@@ -29,8 +29,10 @@
 #include <functional>
 
 #include "BESFileLockingCache.h"
+#include "BESInternalFatalError.h"
 
 namespace libdap {
+class DapObj;
 class DDS;
 class DMR;
 }
@@ -70,10 +72,15 @@ private:
      * StreamDAS and StreamDMR are instantiated and passed to
      * store_dap_response().
      */
-    struct StreamDAP : public std::unary_function<libdap::DDS*, void> {
+    struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
         libdap::DDS *d_dds;
+        libdap::DMR *d_dmr;
 
-        StreamDAP(libdap::DDS *dds) : d_dds(dds) { }
+        StreamDAP() {
+            throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
+        }
+        StreamDAP(libdap::DDS *dds) : d_dds(dds), d_dmr(0) { }
+        StreamDAP(libdap::DMR *dmr) : d_dds(0), d_dmr(dmr) { }
 
         virtual void operator()(std::ostream &os) = 0;
     };
@@ -83,9 +90,15 @@ private:
      */
     struct StreamDDS : public StreamDAP {
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
+        StreamDDS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
         virtual void operator()(ostream &os) {
-            d_dds->print(os);
+            if (d_dds)
+                d_dds->print(os);
+            else if (d_dmr)
+                d_dmr->getDDS()->print(os);
+            else
+                throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
     };
 
@@ -109,10 +122,10 @@ private:
         virtual void operator()(ostream &os);
     };
 
+    bool store_dap_response(StreamDAP &writer, const std::string &key, const string &name, const string &response_name);
+
     void get_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
-    bool store_dap_response(StreamDAP &writer, const std::string &key);
-
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
 
     // Suppress the automatic generation of these ctors
@@ -123,6 +136,7 @@ private:
     static string get_cache_dir_from_config();
     static string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
+
 
     friend class GlobalMetadataStoreTest;
 
@@ -137,17 +151,19 @@ public:
     }
 
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
+    virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
 
     virtual void get_dds_response(const std::string &name, ostream &os);
     virtual void get_das_response(const std::string &name, ostream &os);
+
+    // Add a thrid parameter to enable changing the value of xmlbase in this response.
+    // jhrg 2.28.18
     virtual void get_dmr_response(const std::string &name, ostream &os);
 
     virtual bool remove_responses(const std::string &name);
 
 #if 0
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name) { }
-
-    virtual std::string get_dmr_response(const std::string &name) { }
 
     // These 'get' methods return null or the empty string if the thing is not in the store.
     virtual libdap::DDS *get_dds_object(const std::string &name) { }
