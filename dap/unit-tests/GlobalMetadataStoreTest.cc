@@ -190,7 +190,11 @@ public:
             CPPUNIT_ASSERT(d_test_dds);
 
             // Store it - this will work if the the code is cleaning the cache.
+#if 0
             bool stored = d_mds->store_dap2_response(d_test_dds, &DDS::print, d_test_dds->get_dataset_name() + ".dds_r");
+#endif
+            GlobalMetadataStore::StreamDDS write_the_dds_response(d_test_dds);
+            bool stored = d_mds->store_dap2_response(d_test_dds, write_the_dds_response, d_test_dds->get_dataset_name() + ".dds_r");
 
             DBG(cerr << __func__ << " - stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
@@ -239,7 +243,11 @@ public:
             CPPUNIT_ASSERT(d_test_dds);
 
             // Store it - this will work if the the code is cleaning the cache.
+#if 0
             bool stored = d_mds->store_dap2_response(d_test_dds, &DDS::print_das, d_test_dds->get_dataset_name() + ".das_r");
+#endif
+            GlobalMetadataStore::StreamDAS write_the_das_response(d_test_dds);
+            bool stored = d_mds->store_dap2_response(d_test_dds, write_the_das_response, d_test_dds->get_dataset_name() + ".das_r");
 
             DBG(cerr << __func__ << " - stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
@@ -292,20 +300,14 @@ public:
             DBG(cerr << __func__ << " - stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
 
-            // FIXME, look for the files
-#if 0
-            // Now check the file
-            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.das_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
-            string test_05_dds_baseline = read_test_baseline(baseline_name);
+            // look for the files
+            string dds_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dds_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dds_cache_name: " << dds_cache_name << endl);
+            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) == 0);
 
-            string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.das_r";
-            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
-            DBG(cerr << "Reading response: " << response_name << endl);
-            string stored_response = read_test_baseline(response_name);
-
-            CPPUNIT_ASSERT(stored_response == test_05_dds_baseline);
-#endif
+            string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("das_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
+            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -402,6 +404,54 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void remove_object_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << __func__ << " - Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+            // Get a DDS to cache.
+            d_test_dds = new DDS(&d_btf);
+            DDXParser dp(&d_btf);
+            string cid; // This is an unused value-result parameter. jhrg 5/10/16
+            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
+
+            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
+            d_test_dds->filename(d_test_dds->get_dataset_name());
+            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
+            CPPUNIT_ASSERT(d_test_dds);
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
+
+            DBG(cerr << __func__ << " - stored: " << stored << endl);
+            CPPUNIT_ASSERT(stored);
+
+            // look for the files
+            string dds_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dds_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dds_cache_name: " << dds_cache_name << endl);
+            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) == 0);
+
+            string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("das_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
+            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
+
+            bool removed = d_mds->remove_object(d_test_dds->get_dataset_name());
+            CPPUNIT_ASSERT(removed);
+
+            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) != 0);
+            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) != 0);
+
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
@@ -411,6 +461,7 @@ public:
     CPPUNIT_TEST(add_object_test);
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
+    CPPUNIT_TEST(remove_object_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

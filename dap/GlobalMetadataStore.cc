@@ -25,13 +25,20 @@
 #include "config.h"
 
 #include <fcntl.h>
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <functional>
 
 #include <DDS.h>
+#include <DMR.h>
+#include <XMLWriter.h>
 
 #include "PicoSHA2/picosha2.h"
 
@@ -278,6 +285,52 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
+#if 0
+/**
+ * Specialized code to write DDS, DAS and DMR responses from a DDS object.
+ */
+//@{
+struct StreamDDS : public GlobalMetadataStore::StreamDAP {
+    StreamDDS(DDS *dds) : StreamDAP(dds) { }
+
+    virtual void operator()(ostream &os) {
+        d_dds->print(os);
+    }
+};
+
+struct StreamDAS : public GlobalMetadataStore::StreamDAP {
+    StreamDAS(DDS *dds) : StreamDAP(dds) { }
+
+    virtual void operator()(ostream &os) {
+        d_dds->print_das(os);
+    }
+};
+
+struct StreamDMR : public GlobalMetadataStore::StreamDAP {
+    StreamDMR(DDS *dds) : StreamDAP(dds) { }
+
+    virtual void operator()(ostream &os) {
+        DMR *dmr = new DMR();
+        dmr->build_using_dds(*d_dds);
+        XMLWriter xml;
+        dmr->print_dap4(xml);
+
+        os << xml.get_doc();
+    }
+};
+//@}
+#endif
+
+void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
+{
+    DMR *dmr = new DMR();
+    dmr->build_using_dds(*d_dds);
+    XMLWriter xml;
+    dmr->print_dap4(xml);
+
+    os << xml.get_doc();
+}
+
 /**
  * @brief store the DDS response
  *
@@ -288,7 +341,7 @@ GlobalMetadataStore::get_hash(const string &name)
  * @throw BESInternalError If ...
  */
 bool
-GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, const string &key)
+GlobalMetadataStore::store_dap2_response(DDS *dds, StreamDAP &writer, const string &key)
 {
     BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
 
@@ -298,17 +351,15 @@ GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, 
     if (create_and_lock(item_name, fd)) {
         // If here, the cache_file_name could not be locked for read access;
         // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << item_name << endl);
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Storing " << item_name << endl);
 
         // Get an output stream directed at the locked cache file
         ofstream response(item_name.c_str(), ios::out|ios::app);
         if (!response.is_open())
-            throw BESInternalError("Could not open '" + key + "' to write the DDS response.", __FILE__, __LINE__);
+            throw BESInternalError("Could not open '" + key + "' to write the response.", __FILE__, __LINE__);
 
         try {
-            // Write the DDS response to the cache
-            // dds->print(response);
-            (dds->*print_method)(response);
+            writer(response);   // different writers can write the DDS, DAS or DMR
 
             // Leave this in place so that sites can make a metadata store of limited size.
             // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
@@ -340,6 +391,66 @@ GlobalMetadataStore::store_dap2_response(DDS *dds, print_method_t print_method, 
     }
 }
 
+#if 0
+bool
+GlobalMetadataStore::store_dap4_response(DDS *dds, const string &key)
+{
+    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
+
+    string item_name = get_cache_file_name(key, false /*mangle*/);
+
+    int fd;
+    if (create_and_lock(item_name, fd)) {
+        // If here, the cache_file_name could not be locked for read access;
+        // try to build it. First make an empty files and get an exclusive lock on them.
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Storing " << item_name << endl);
+
+        // Get an output stream directed at the locked cache file
+        ofstream response(item_name.c_str(), ios::out|ios::app);
+        if (!response.is_open())
+            throw BESInternalError("Could not open '" + key + "' to write the response.", __FILE__, __LINE__);
+
+        try {
+            // Write the DMR response to the cache
+            // TODO
+            DMR *dmr = new DMR();
+            dmr->build_using_dds(dds);
+            XMLWriter xml;
+            dmr->print_dap4(xml);
+
+            response << xml.get_doc();
+
+            // Leave this in place so that sites can make a metadata store of limited size.
+            // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
+            exclusive_to_shared_lock(fd);
+
+            unsigned long long size = update_cache_info(item_name);
+            if (cache_too_big(size)) update_and_purge(item_name);
+
+            unlock_and_close(item_name);
+        }
+        catch (...) {
+            // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
+            response.close();
+            this->purge_file(item_name);
+            unlock_and_close(item_name);
+            throw;
+        }
+
+        return true;
+    }
+    else if (get_read_lock(item_name, fd)) {
+        // We found the key; didn't add this because it was already here
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
+        unlock_and_close(item_name);
+        return false;
+    }
+    else {
+        throw BESInternalError("Could neither create or open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+    }
+}
+#endif
+
 /**
  * @brief Add the DDS object to the Metadata store
  *
@@ -357,7 +468,12 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     string dds_r_hash = get_hash(name + "dds_r");
+#if 0
     bool stored_dds = store_dap2_response(dds, &DDS::print, dds_r_hash);
+#endif
+
+    StreamDDS write_the_dds_response(dds);
+    bool stored_dds = store_dap2_response(dds, write_the_dds_response, dds_r_hash);
     if (stored_dds) {
         VERBOSE("Metadata store: Wrote DDS response for '" << name << "'." << endl);
         d_inventory_entry.append(",").append(dds_r_hash);
@@ -367,7 +483,8 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
     }
 
     string das_r_hash = get_hash(name + "das_r");
-    bool stored_das = store_dap2_response(dds, &DDS::print_das, das_r_hash);
+    StreamDAS write_the_das_response(dds);
+    bool stored_das = store_dap2_response(dds, write_the_das_response/*&DDS::print_das*/, das_r_hash);
     if (stored_das) {
         VERBOSE("Metadata store: Wrote DAS response for '" << name << "'." << endl);
         d_inventory_entry.append(",").append(das_r_hash);
@@ -376,13 +493,9 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
         LOG("Metadata store: unable to store the DAS response for '" << name << "'." << endl);
     }
 
-    if (stored_dds && stored_das) {
-        write_inventory(); // write the index line
-        return true;
-    }
-    else {
-        return false;
-    }
+    write_inventory(); // write the index line
+
+    return (stored_dds && stored_das);
 }
 
 /**
@@ -442,43 +555,35 @@ GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
 bool
 GlobalMetadataStore::remove_object(const string &name)
 {
-#if 0
     // Start the index entry
      d_inventory_entry = string("remove,").append(name);
 
-     // I'm appending the 'dds r' string to the name before hashing so that
-     // the different hashes for the file's DDS, DAS, ..., are all very different.
-     // This will be useful if we use S3 instead of EFS for the Metadata Store.
-     string dds_r_hash = get_hash(name + "dds_r");
-     // bool stored_dds = store_dap2_response(dds, &DDS::print, dds_r_hash);
-     access(dds_r_hash.c_str())
-     if (stored_dds) {
-         VERBOSE("Metadata store: Wrote DDS response for '" << name << "'." << endl);
+     // If we can write, then we can probably unlink.
+     bool removed_dds = false;
+     string dds_r_hash = get_cache_file_name(get_hash(name + "dds_r"), false);
+     if (unlink(dds_r_hash.c_str()) == 0) {
+         VERBOSE("Metadata store: Removed DDS response for '" << name << "'." << endl);
          d_inventory_entry.append(",").append(dds_r_hash);
+         removed_dds = true;
      }
      else {
-         LOG("Metadata store: unable to store the DDS response for '" << name << "'." << endl);
+         LOG("Metadata store: unable to remove the DDS response for '" << name << "' (" << strerror(errno) << ")."<< endl);
      }
 
-     string das_r_hash = get_hash(name + "das_r");
-     bool stored_das = store_dap2_response(dds, &DDS::print_das, das_r_hash);
-     if (stored_das) {
-         VERBOSE("Metadata store: Wrote DAS response for '" << name << "'." << endl);
+     string das_r_hash = get_cache_file_name(get_hash(name + "das_r"), false);
+     bool removed_das = false;
+     if (unlink(das_r_hash.c_str()) == 0) {
+         VERBOSE("Metadata store: Removed DAS response for '" << name << "'." << endl);
          d_inventory_entry.append(",").append(das_r_hash);
+         removed_das = true;
      }
      else {
-         LOG("Metadata store: unable to store the DAS response for '" << name << "'." << endl);
+         LOG("Metadata store: unable to remove the DAS response for '" << name << "' (" << strerror(errno) << ")."<< endl);
      }
 
-     if (stored_dds && stored_das) {
-         write_inventory(); // write the index line
-         return true;
-     }
-     else {
-         return false;
-     }
-#endif
-     return false;
+     write_inventory(); // write the index line
+
+     return  (removed_dds && removed_das);
 }
 
 

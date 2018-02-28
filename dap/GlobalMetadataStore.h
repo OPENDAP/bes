@@ -26,6 +26,7 @@
 #define _global_metadata_cache_h
 
 #include <string>
+#include <functional>
 
 #include "BESFileLockingCache.h"
 
@@ -62,8 +63,54 @@ private:
 
     std::string get_hash(const std::string &name);
 
-    bool store_dap2_response(libdap::DDS *dds, print_method_t print_method, const std::string &key);
+public:
+    struct StreamDAP : public std::unary_function<libdap::DDS*, void> {
+        libdap::DDS *d_dds;
 
+        StreamDAP(libdap::DDS *dds) : d_dds(dds) { }
+
+        virtual void operator()(std::ostream &os) = 0;
+    };
+
+#if 1
+    struct StreamDDS : public StreamDAP {
+        StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
+
+        virtual void operator()(ostream &os) {
+            d_dds->print(os);
+        }
+    };
+
+    struct StreamDAS : public StreamDAP {
+        StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
+
+        virtual void operator()(ostream &os) {
+            d_dds->print_das(os);
+        }
+    };
+
+    struct StreamDMR : public StreamDAP {
+        StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
+
+        virtual void operator()(ostream &os);
+#if 0
+            libdap::DMR *dmr = new libdap::DMR();
+            dmr->build_using_dds(*d_dds);
+            libdap::XMLWriter xml;
+            dmr->print_dap4(xml);
+
+            os << xml.get_doc();
+#endif
+
+    };
+#endif
+
+private:
+    bool store_dap2_response(libdap::DDS *dds, StreamDAP &writer /*print_method_t print_method*/, const std::string &key);
+#if 0
+    bool store_dap4_response(libdap::DDS *dds, const std::string &key);
+    bool store_dap4_response(libdap::DMR *dmr, const std::string &key);
+#endif
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore();
     GlobalMetadataStore(const GlobalMetadataStore &src);
