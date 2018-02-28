@@ -306,8 +306,7 @@ static void dump_time(ostream &os, bool use_local_time)
 }
 
 /**
- * Write the current text of d_inventory_entry to the metadata
- * store inventory
+ * Write the current text of d_ledger_entry to the metadata store ledger
  */
 void
 GlobalMetadataStore::write_ledger()
@@ -317,10 +316,10 @@ GlobalMetadataStore::write_ledger()
     if (of) {
         dump_time(of, d_use_local_time);
         of << " " << d_ledger_entry << endl;
-        VERBOSE("MD Inventory name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
+        VERBOSE("MD Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
     }
     else {
-        LOG("Warning: Metadata store could not write to is inventory file.");
+        LOG("Warning: Metadata store could not write to is ledger file.");
     }
 }
 
@@ -447,92 +446,6 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
 }
 
 /**
- * @name Add responses to the GlobalMetadataStore
- * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
- *
- * These methods uses a DDS or DMR object to generate the DDS, DAS and DMR responses
- * for DAP (2 and 4). They store those in the MDS and then update the
- * MDS ledger file with the operation (add), the kind of object used
- * to build the responses (DDS or DMR), name of the granule and hashes/names
- * for each of the three files in the MDS that hold the responses.
- *
- * If verbose logging is on, the bes log also will hold information about
- * the operation. If there is an error, that will always be recorded in
- * the bes log.
- *
- * @return True if the DDS, DAS and DMR were added to the MDS
- */
-///@{
-/**
- * @brief Add the DAP responses using a DDS
- *
- * @param name The granule name or identifier
- * @param dds A DDS built from the granule
- * @return True if all of the cache/store entries were written, False if any
- * could not be written.
- */
-bool
-GlobalMetadataStore::add_responses(DDS *dds, const string &name)
-{
-    // Start the index entry
-    d_ledger_entry = string("add DDS ").append(name);
-
-    // I'm appending the 'dds r' string to the name before hashing so that
-    // the different hashes for the file's DDS, DAS, ..., are all very different.
-    // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    //
-    // The helper() also updates the inventory string.
-    StreamDDS write_the_dds_response(dds);
-    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
-
-    StreamDAS write_the_das_response(dds);
-    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
-
-    StreamDMR write_the_dmr_response(dds);
-    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
-
-    write_ledger(); // write the index line
-
-    return (stored_dds && stored_das && stored_dmr);
-}
-
-/**
- * @brief Add the DAP responses using a DMR
- *
- * @param name The granule name or identifier
- * @param dmr A DMR built from the granule
- * @return True if all of the cache/store entries were written, False if any
- * could not be written.
- */
-bool
-GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
-{
-    // Start the index entry
-    d_ledger_entry = string("add DMR ").append(name);
-
-    // I'm appending the 'dds r' string to the name before hashing so that
-    // the different hashes for the file's DDS, DAS, ..., are all very different.
-    // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    //
-    // The helper() also updates the inventory string.
-    StreamDDS write_the_dds_response(dmr);
-    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
-
-    StreamDAS write_the_das_response(dmr);
-    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
-
-    StreamDMR write_the_dmr_response(dmr);
-    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
-
-    write_ledger(); // write the index line
-
-    return (stored_dds && stored_das && stored_dmr);
-
-    return false;
-}
-///@}
-
-/**
  * Common code to copy a response to an output stream.
  *
  * @param name Granule name
@@ -637,3 +550,56 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      return  (removed_dds && removed_das && removed_dmr);
 }
+
+bool
+GlobalMetadataStore::add_responses(DDS *dds, const string &name)
+{
+    // Start the index entry
+    d_ledger_entry = string("add DDS ").append(name);
+
+    // I'm appending the 'dds r' string to the name before hashing so that
+    // the different hashes for the file's DDS, DAS, ..., are all very different.
+    // This will be useful if we use S3 instead of EFS for the Metadata Store.
+    //
+    // The helper() also updates the ledger string.
+    StreamDDS write_the_dds_response(dds);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
+
+    StreamDAS write_the_das_response(dds);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+
+    StreamDMR write_the_dmr_response(dds);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+    write_ledger(); // write the index line
+
+    return (stored_dds && stored_das && stored_dmr);
+}
+
+bool
+GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
+{
+    // Start the index entry
+    d_ledger_entry = string("add DMR ").append(name);
+
+    // I'm appending the 'dds r' string to the name before hashing so that
+    // the different hashes for the file's DDS, DAS, ..., are all very different.
+    // This will be useful if we use S3 instead of EFS for the Metadata Store.
+    //
+    // The helper() also updates the ledger string.
+    StreamDDS write_the_dds_response(dmr);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
+
+    StreamDAS write_the_das_response(dmr);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+
+    StreamDMR write_the_dmr_response(dmr);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+    write_ledger(); // write the index line
+
+    return (stored_dds && stored_das && stored_dmr);
+
+    return false;
+}
+///@}

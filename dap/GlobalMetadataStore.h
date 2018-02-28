@@ -42,7 +42,25 @@ namespace bes {
 /**
  * @brief Store the DAP metadata responses.
  *
- * Provide a global persistent store for the DAP metadata responses.
+ * Provide a global persistent store for the DAP metadata responses. Using either
+ * a DDS or a DMR, write the three DAP metadata responses to the global metadata
+ * store. This class also provides methods to get those responses and write them
+ * to an output stream and a method to remove the responses.
+ *
+ * The class maintains a ledger of 'add' and 'remove' operations.
+ *
+ * The class is implemented as a singleton; use the get_instance() methods to
+ * get an instance of the metadata store.
+ *
+ * BES Keys used:
+ * - _DAP.GlobalMetadataStore.path_: store root directory (assumes the store is
+ *   using a POSIX file system)
+ * - _DAP.GlobalMetadataStore.prefix_: prefix for the names of items in the store
+ * - _DAP.GlobalMetadataStore.size_: Maximum size of the store. Zero indicates
+ *   unlimited size.
+ * - _DAP.GlobalMetadataStore.ledger_: Name of the ledger. A relative pathname
+ *   will be interpreted as relative to the directory where the BES was started
+ * - _BES.LogTimeLocal_: Use local or GMT time for the ledger entries
  *
  * @todo Add support for altering the xml:base attribute in the DMR response
  * when it is extracted from the MDS.
@@ -55,9 +73,9 @@ namespace bes {
  */
 class GlobalMetadataStore: public BESFileLockingCache {
 private:
-    bool d_use_local_time;      ///> Base on BES.LogTimeLocal
-    std::string d_ledger_name;  ///> Name of the ledger file
-    std::string d_ledger_entry; ///> Built up as info is added, written on success
+    bool d_use_local_time;      // Base on BES.LogTimeLocal
+    std::string d_ledger_name;  // Name of the ledger file
+    std::string d_ledger_entry; // Built up as info is added, written on success
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
@@ -148,9 +166,9 @@ private:
     GlobalMetadataStore(const GlobalMetadataStore &src);
 
     // Only get_instance() should be used to instantiate this class
-    GlobalMetadataStore(const string &cache_dir, const string &prefix, unsigned long long size);
+    GlobalMetadataStore(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
-   // these are static because they are called by the static method get_instance()
+    // these are static because they are called by the static method get_instance()
     static string get_cache_dir_from_config();
     static string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
@@ -158,22 +176,62 @@ private:
     friend class GlobalMetadataStoreTest;
 
 public:
-    static GlobalMetadataStore *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
+    static GlobalMetadataStore *get_instance(const std::string &cache_dir, const std::string &prefix,
+        unsigned long long size);
     static GlobalMetadataStore *get_instance();
 
     virtual ~GlobalMetadataStore()
     {
     }
 
-    virtual bool add_responses(libdap::DDS *dds, const std::string &name);
-    virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
+    // I moved this from the .cc file where it really belongs to here because
+    // the docs were not getting built when the comments were in the the .cc
+    // file (only these two methods).
+    /**
+     * @name Add responses to the GlobalMetadataStore
+     * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
+     *
+     * These methods uses a DDS or DMR object to generate the DDS, DAS and DMR responses
+     * for DAP (2 and 4). They store those in the MDS and then update the
+     * MDS ledger file with the operation (add), the kind of object used
+     * to build the responses (DDS or DMR), name of the granule and hashes/names
+     * for each of the three files in the MDS that hold the responses.
+     *
+     * If verbose logging is on, the bes log also will hold information about
+     * the operation. If there is an error, that will always be recorded in
+     * the bes log.
+     *
+     * @return True if the DDS, DAS and DMR were added to the MDS
+     */
+    ///@{
 
-    virtual void get_dds_response(const std::string &name, ostream &os);
-    virtual void get_das_response(const std::string &name, ostream &os);
+    /**
+     * @brief Add the DAP responses using a DDS
+     *
+     * @param name The granule name or identifier
+     * @param dds A DDS built from the granule
+     * @return True if all of the cache/store entries were written, False if any
+     * could not be written.
+     */
+    virtual bool add_responses(libdap::DDS *dds, const std::string &name);
+
+    /**
+     * @brief Add the DAP responses using a DMR
+     *
+     * @param name The granule name or identifier
+     * @param dmr A DMR built from the granule
+     * @return True if all of the cache/store entries were written, False if any
+     * could not be written.
+     */
+    virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
+    ///@}
+
+    virtual void get_dds_response(const std::string &name, std::ostream &os);
+    virtual void get_das_response(const std::string &name, std::ostream &os);
 
     // Add a third parameter to enable changing the value of xmlbase in this response.
     // jhrg 2.28.18
-    virtual void get_dmr_response(const std::string &name, ostream &os);
+    virtual void get_dmr_response(const std::string &name, std::ostream &os);
 
     virtual bool remove_responses(const std::string &name);
 
