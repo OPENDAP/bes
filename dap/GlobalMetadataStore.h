@@ -107,9 +107,15 @@ private:
      */
     struct StreamDAS : public StreamDAP {
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
+        StreamDAS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
         virtual void operator()(ostream &os) {
-            d_dds->print_das(os);
+            if (d_dds)
+                d_dds->print_das(os);
+            else if (d_dmr)
+                d_dmr->getDDS()->print_das(os);
+            else
+                throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
     };
 
@@ -118,6 +124,7 @@ private:
      */
     struct StreamDMR : public StreamDAP {
         StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
+        StreamDMR(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
         virtual void operator()(ostream &os);
     };

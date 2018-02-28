@@ -288,17 +288,6 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
-#if 0
-/**
- * Constructor for the abstract class StreamDAP. This ctor handles the degenerate
- * case where, for some reason the ctor was not called with a DDS or DMR.
- */
-GlobalMetadataStore::StreamDAP GlobalMetadataStore::StreamDAP()
-{
-    throw BESInternalFatalError("StreamDap function passed invalid object.", __FILE__, __LINE__);
-}
-#endif
-
 /**
  * Specialization of StreamDAP that prints a DMR using the information
  * in a DDS instance.
@@ -307,8 +296,9 @@ GlobalMetadataStore::StreamDAP GlobalMetadataStore::StreamDAP()
  * functor is used to parameterize writing the DAP metadata response for the
  * store_dap_response() method.
  *
- * Most of the three three child classes are defined in the GlobalMetadataStore
- * header; only this one method is defined here.
+ * @note Most of the three three child classes are defined in the GlobalMetadataStore
+ * header; only this one method is defined in the implementation file to keep
+ * the libdap headers out of GlobalMetadataStore.h
  *
  * @param os Write the DMR to this stream
  * @see StreamDAP
@@ -317,12 +307,21 @@ GlobalMetadataStore::StreamDAP GlobalMetadataStore::StreamDAP()
  */
 void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
 {
-    D4BaseTypeFactory factory;
-    DMR dmr(&factory, *d_dds);
-    XMLWriter xml;
-    dmr.print_dap4(xml);
-
-    os << xml.get_doc();
+    if (d_dds) {
+        D4BaseTypeFactory factory;
+        DMR dmr(&factory, *d_dds);
+        XMLWriter xml;
+        dmr.print_dap4(xml);
+        os << xml.get_doc();
+    }
+    else if (d_dmr) {
+        XMLWriter xml;
+        d_dmr->print_dap4(xml);
+        os << xml.get_doc();
+    }
+    else {
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
+    }
 }
 
 /**

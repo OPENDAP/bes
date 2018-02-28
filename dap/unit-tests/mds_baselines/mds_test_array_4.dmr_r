@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="input-files/test_01.dmr" dapVersion="4.0" dmrVersion="1.0" name="test_array_4">
+    <Dimension name="row" size="3"/>
+    <Dimension name="col" size="4"/>
+    <Byte name="a">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </Byte>
+    <Int16 name="b">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </Int16>
+    <Int32 name="c">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </Int32>
+    <UInt16 name="d">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </UInt16>
+    <UInt32 name="e">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </UInt32>
+    <Float32 name="f">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </Float32>
+    <Float64 name="g">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </Float64>
+    <String name="h">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </String>
+    <URL name="i">
+        <Dim name="/row"/>
+        <Dim name="/col"/>
+    </URL>
+    <Int32 name="x">
+        <Dim name="/row"/>
+        <Dim size="5"/>
+    </Int32>
+    <Int32 name="y">
+        <Dim size="5"/>
+        <Dim name="/col"/>
+    </Int32>
+</Dataset>

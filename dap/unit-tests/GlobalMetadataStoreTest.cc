@@ -550,6 +550,82 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void cache_a_das_response_dmr()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmr_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            GlobalMetadataStore::StreamDAS write_the_das_response(d_test_dmr);
+            bool stored = d_mds->store_dap_response(write_the_das_response,
+                d_test_dmr->name() + ".das_r", d_test_dmr->name(), "DAS");
+
+            DBG(cerr << __func__ << " -  stored: " << stored << endl);
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.das_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string test_01_dmr_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "test_array_4.das_r";
+            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
+            DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == test_01_dmr_baseline);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
+    void cache_a_dmr_response_dmr()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmr_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            GlobalMetadataStore::StreamDMR write_the_dmr_response(d_test_dmr);
+            bool stored = d_mds->store_dap_response(write_the_dmr_response,
+                d_test_dmr->name() + ".dmr_r", d_test_dmr->name(), "DMR");
+
+            DBG(cerr << __func__ << " -  stored: " << stored << endl);
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string test_01_dmr_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "test_array_4.dmr_r";
+            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
+            DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == test_01_dmr_baseline);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
 
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
@@ -565,6 +641,8 @@ public:
     CPPUNIT_TEST(remove_object_test);
 
     CPPUNIT_TEST(cache_a_dds_response_dmr);
+    CPPUNIT_TEST(cache_a_das_response_dmr);
+    CPPUNIT_TEST(cache_a_dmr_response_dmr);
 
     CPPUNIT_TEST_SUITE_END();
 };
