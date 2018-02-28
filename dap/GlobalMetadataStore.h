@@ -40,17 +40,24 @@ class DMR;
 namespace bes {
 
 /**
- * @brief Cache the results from server functions.
+ * @brief Store the DAP metadata responses.
+ *
+ * Provide a global persistent store for the DAP metadata responses.
+ *
+ * @todo Add support for altering the xml:base attribute in the DMR response
+ * when it is extracted from the MDS.
+ * @todo Add support for storing binary DDS and DMR objects. This will require
+ * modifications to libdap so that we can 'serialize' those and additions to
+ * some of the handlers so that they can record extra information used by their
+ * specializations of those objects.
  *
  * @author jhrg
  */
-
 class GlobalMetadataStore: public BESFileLockingCache {
 private:
-    typedef void (libdap::DDS::*print_method_t)(std::ostream &);
-
-    std::string d_inventory_name;   ///> Name of the inventory file
-    std::string d_inventory_entry;  ///> Built up as info is added, written on success
+    bool d_use_local_time;      ///> Base on BES.LogTimeLocal
+    std::string d_ledger_name;  ///> Name of the ledger file
+    std::string d_ledger_entry; ///> Built up as info is added, written on success
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
@@ -61,14 +68,14 @@ private:
         d_instance = 0;
     }
 
-    void write_inventory();
+    void write_ledger();
 
     std::string get_hash(const std::string &name);
 
     /**
-     * This class is an abstract base class that provides a way to
-     * define a functor that writes the difference DAP metadata
-     * responses using a DDS. The concrete specializations StreamDDS,
+     * This class is an abstract base class that
+     * defines a functor that writes the different DAP metadata
+     * responses using a DDS or DMR. The concrete specializations StreamDDS,
      * StreamDAS and StreamDMR are instantiated and passed to
      * store_dap_response().
      */
@@ -86,7 +93,7 @@ private:
     };
 
     /**
-     * Instantiate with a DDS and use to write the DDS response.
+     * Instantiate with a DDS or DMR and use to write the DDS response.
      */
     struct StreamDDS : public StreamDAP {
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
@@ -103,7 +110,7 @@ private:
     };
 
     /**
-     * Instantiate with a DDS and use to write the DAS response.
+     * Instantiate with a DDS or DMR and use to write the DAS response.
      */
     struct StreamDAS : public StreamDAP {
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
@@ -120,12 +127,12 @@ private:
     };
 
     /**
-     * Instantiate with a DDS and use to write the DMR response.
+     * Instantiate with a DDS or DMR and use to write the DMR response.
      */
     struct StreamDMR : public StreamDAP {
         StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDMR(libdap::DMR *dmr) : StreamDAP(dmr) { }
-
+        // Implementation in .cc since it uses libdap headers.
         virtual void operator()(ostream &os);
     };
 
@@ -133,25 +140,26 @@ private:
 
     void get_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
+
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
 
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore();
     GlobalMetadataStore(const GlobalMetadataStore &src);
 
-    // these are static because they are called by get_instance()
+    // Only get_instance() should be used to instantiate this class
+    GlobalMetadataStore(const string &cache_dir, const string &prefix, unsigned long long size);
+
+   // these are static because they are called by the static method get_instance()
     static string get_cache_dir_from_config();
     static string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
-
 
     friend class GlobalMetadataStoreTest;
 
 public:
     static GlobalMetadataStore *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
     static GlobalMetadataStore *get_instance();
-
-    GlobalMetadataStore(const string &cache_dir, const string &prefix, unsigned long long size);
 
     virtual ~GlobalMetadataStore()
     {
@@ -163,16 +171,14 @@ public:
     virtual void get_dds_response(const std::string &name, ostream &os);
     virtual void get_das_response(const std::string &name, ostream &os);
 
-    // Add a thrid parameter to enable changing the value of xmlbase in this response.
+    // Add a third parameter to enable changing the value of xmlbase in this response.
     // jhrg 2.28.18
     virtual void get_dmr_response(const std::string &name, ostream &os);
 
     virtual bool remove_responses(const std::string &name);
 
 #if 0
-    virtual bool add_responses(libdap::DMR *dmr, const std::string &name) { }
-
-    // These 'get' methods return null or the empty string if the thing is not in the store.
+    // These 'get' methods return null if the thing is not in the store.
     virtual libdap::DDS *get_dds_object(const std::string &name) { }
     virtual libdap::DMR *get_dmr_object(const std::string &name) { }
 #endif

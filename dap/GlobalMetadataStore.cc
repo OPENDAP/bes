@@ -69,12 +69,13 @@ using namespace bes;
 static const unsigned int default_cache_size = 20; // 20 GB
 static const string default_cache_prefix = "mds";
 static const string default_cache_dir = ""; // I'm making the default empty so that no key == no caching. jhrg 9.26.16
-static const string default_inventory_name = "mds_inventory.txt";   ///< In the CWD of the BES process
+static const string default_ledger_name = "mds_ledger.txt";   ///< In the CWD of the BES process
 
 static const string PATH_KEY = "DAP.GlobalMetadataStore.path";
 static const string PREFIX_KEY = "DAP.GlobalMetadataStore.prefix";
 static const string SIZE_KEY = "DAP.GlobalMetadataStore.size";
-static const string INVENTORY_KEY = "DAP.GlobalMetadataStore.inventory";
+static const string LEDGER_KEY = "DAP.GlobalMetadataStore.ledger";
+static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
 
 GlobalMetadataStore *GlobalMetadataStore::d_instance = 0;
 bool GlobalMetadataStore::d_enabled = true;
@@ -158,6 +159,13 @@ string GlobalMetadataStore::get_cache_dir_from_config()
 }
 
 /**
+ * @name Get an instance of GlobalMetadataStore
+ * @brief  There are two ways to get an instance of GlobalMetadataStore singleton.
+ *
+ * @return A pointer to a GlobalMetadataStore object; null if the cache is disabled.
+ */
+///@{
+/**
  * @brief Get an instance of the GlobalMetadataStore object.
  *
  * This class is a singleton, so the first call to any of two 'get_instance()' methods
@@ -178,10 +186,9 @@ string GlobalMetadataStore::get_cache_dir_from_config()
  * @param size_key The maximum size of the data stored in the cache, in megabytes
  *
  * @return A pointer to a GlobalMetadataStore object. If the cache is disabled (because the
- * directory is not set or does not exist, then the pointer returned will be null and
+ * directory is not set or does not exist), then the pointer returned will be null and
  * the cache will be marked as not enabled. Subsequent calls will return immediately.
  */
-//@{
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
@@ -206,6 +213,12 @@ GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix,
     return d_instance;
 }
 
+/**
+ * Get an instance of the GlobalMetadataStore using the default values for the cache directory,
+ * prefix and size.
+ *
+ * @return A pointer to a GlobalMetadataStore object; null if the cache is disabled.
+ */
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance()
 {
@@ -229,10 +242,10 @@ GlobalMetadataStore::get_instance()
 
     return d_instance;
 }
-//@}
+///@}
 
 /**
- * Protected constructor that calls BESFileLockingCache's constructor;
+ * Private constructor that calls BESFileLockingCache's constructor;
  * lookup cache directory, item prefix and max cache size in BESKeys
  *
  * @note Use the get_instance() methods to get a pointer to the singleton for
@@ -250,13 +263,46 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
 {
     bool found;
 
-    TheBESKeys::TheKeys()->get_value(INVENTORY_KEY, d_inventory_name, found);
+    TheBESKeys::TheKeys()->get_value(LEDGER_KEY, d_ledger_name, found);
     if (found) {
-        BESDEBUG(DEBUG_KEY, "Located BES key " << INVENTORY_KEY << "=" << d_inventory_name << endl);
+        BESDEBUG(DEBUG_KEY, "Located BES key " << LEDGER_KEY << "=" << d_ledger_name << endl);
     }
     else {
-        d_inventory_name = default_inventory_name;
+        d_ledger_name = default_ledger_name;
     }
+
+    // By default, use UTC in the logs.
+    string local_time;
+    TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
+    d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
+}
+
+/**
+ * Copied from BESLog, where that code writes to an internal object, not a stream.
+ * @param os
+ */
+static void dump_time(ostream &os, bool use_local_time)
+{
+    time_t now;
+    time(&now);
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+
+    if (!status)
+        LOG("Error getting time for Metadata Store ledger.");
+
+    os << buf;
 }
 
 /**
@@ -264,15 +310,17 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
  * store inventory
  */
 void
-GlobalMetadataStore::write_inventory()
+GlobalMetadataStore::write_ledger()
 {
-    ofstream of(d_inventory_name.c_str(), ios::app);
+    // TODO open just once
+    ofstream of(d_ledger_name.c_str(), ios::app);
     if (of) {
-        of << d_inventory_entry << endl;
+        dump_time(of, d_use_local_time);
+        of << " " << d_ledger_entry << endl;
+        VERBOSE("MD Inventory name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
     }
     else {
         LOG("Warning: Metadata store could not write to is inventory file.");
-        VERBOSE("MD Inventory name: '" << d_inventory_name << "', entry: '" << d_inventory_entry + "'.");
     }
 }
 
@@ -380,7 +428,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         }
 
         VERBOSE("Metadata store: Wrote " << response_name << " response for '" << name << "'." << endl);
-        d_inventory_entry.append(",").append(key);
+        d_ledger_entry.append(" ").append(key);
 
         return true;
     }
@@ -399,26 +447,35 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
 }
 
 /**
- * @brief Add the DAP responses using a DDS
+ * @name Add responses to the GlobalMetadataStore
+ * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
  *
- * This method uses a DDS object to generate the DDS, DAS and DMR responses
- * for DAP (2 and 4). It stores those in the MDS and then updates the
- * MDS inventory file with the operation (add), name of the granule and
- * hashes/names for each of files in the MDS that hold the responses.
+ * These methods uses a DDS or DMR object to generate the DDS, DAS and DMR responses
+ * for DAP (2 and 4). They store those in the MDS and then update the
+ * MDS ledger file with the operation (add), the kind of object used
+ * to build the responses (DDS or DMR), name of the granule and hashes/names
+ * for each of the three files in the MDS that hold the responses.
  *
- * If verbose loggin is on, the bes log also will hold information about
+ * If verbose logging is on, the bes log also will hold information about
  * the operation. If there is an error, that will always be recorded in
  * the bes log.
  *
+ * @return True if the DDS, DAS and DMR were added to the MDS
+ */
+///@{
+/**
+ * @brief Add the DAP responses using a DDS
+ *
  * @param name The granule name or identifier
- * @param dds The DDS built from the granule
- * @return True if all of the cache/store entries are written, False if any
+ * @param dds A DDS built from the granule
+ * @return True if all of the cache/store entries were written, False if any
  * could not be written.
  */
-bool GlobalMetadataStore::add_responses(DDS *dds, const string &name)
+bool
+GlobalMetadataStore::add_responses(DDS *dds, const string &name)
 {
     // Start the index entry
-    d_inventory_entry = string("add,").append(name);
+    d_ledger_entry = string("add DDS ").append(name);
 
     // I'm appending the 'dds r' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
@@ -434,38 +491,46 @@ bool GlobalMetadataStore::add_responses(DDS *dds, const string &name)
     StreamDMR write_the_dmr_response(dds);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
-    write_inventory(); // write the index line
+    write_ledger(); // write the index line
 
     return (stored_dds && stored_das && stored_dmr);
 }
 
-bool GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
+/**
+ * @brief Add the DAP responses using a DMR
+ *
+ * @param name The granule name or identifier
+ * @param dmr A DMR built from the granule
+ * @return True if all of the cache/store entries were written, False if any
+ * could not be written.
+ */
+bool
+GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 {
-#if 0
     // Start the index entry
-    d_inventory_entry = string("add,").append(name);
+    d_ledger_entry = string("add DMR ").append(name);
 
     // I'm appending the 'dds r' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     //
     // The helper() also updates the inventory string.
-    StreamDDS write_the_dds_response(dds);
+    StreamDDS write_the_dds_response(dmr);
     bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
 
-    StreamDAS write_the_das_response(dds);
+    StreamDAS write_the_das_response(dmr);
     bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
 
-    StreamDMR write_the_dmr_response(dds);
+    StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
-    write_inventory(); // write the index line
+    write_ledger(); // write the index line
 
     return (stored_dds && stored_das && stored_dmr);
-#endif
 
     return false;
 }
+///@}
 
 /**
  * Common code to copy a response to an output stream.
@@ -540,7 +605,7 @@ GlobalMetadataStore::remove_response_helper(const string& name, const string &su
     string hash = get_hash(name + suffix);
     if (unlink(get_cache_file_name(hash, false).c_str()) == 0) {
         VERBOSE("Metadata store: Removed " << object_name << " response for '" << hash << "'." << endl);
-        d_inventory_entry.append(",").append(hash);
+        d_ledger_entry.append(" ").append(hash);
         return true;
     }
     else {
@@ -560,7 +625,7 @@ bool
 GlobalMetadataStore::remove_responses(const string &name)
 {
     // Start the index entry
-     d_inventory_entry = string("remove,").append(name);
+     d_ledger_entry = string("remove ").append(name);
 
      bool removed_dds = remove_response_helper(name, "dds_r", "DDS");
 
@@ -568,7 +633,7 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      bool removed_dmr = remove_response_helper(name, "dmr_r", "DMR");
 
-     write_inventory(); // write the index line
+     write_ledger(); // write the index line
 
      return  (removed_dds && removed_das && removed_dmr);
 }
