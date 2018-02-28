@@ -306,6 +306,10 @@ public:
             string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("das_r")), false /*mangle*/);
             DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
             CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
+
+            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dmr_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmr_cache_name: " << das_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
