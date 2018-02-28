@@ -109,6 +109,7 @@ private:
         virtual void operator()(ostream &os);
     };
 
+    void get_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name);
     bool store_dap_response(StreamDAP &writer, const std::string &key);
 
     // Suppress the automatic generation of these ctors
@@ -132,15 +133,16 @@ public:
     {
     }
 
-    virtual bool add_object(libdap::DDS *dds, const std::string &name);
+    virtual bool add_responses(libdap::DDS *dds, const std::string &name);
 
     virtual void get_dds_response(const std::string &name, ostream &os);
     virtual void get_das_response(const std::string &name, ostream &os);
+    virtual void get_dmr_response(const std::string &name, ostream &os);
 
     virtual bool remove_object(const std::string &name);
 
 #if 0
-    virtual bool add_object(libdap::DMR *dmr, const std::string &name) { }
+    virtual bool add_responses(libdap::DMR *dmr, const std::string &name) { }
 
     virtual std::string get_dmr_response(const std::string &name) { }
 

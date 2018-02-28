@@ -293,7 +293,7 @@ public:
             init_dds_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
-            bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
+            bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
 
             DBG(cerr << __func__ << "stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
@@ -325,7 +325,7 @@ public:
              init_dds_and_mds();
 
              // Store it - this will work if the the code is cleaning the cache.
-             bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
+             bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
 
              DBG(cerr << __func__ << "stored: " << stored << endl);
              CPPUNIT_ASSERT(stored);
@@ -357,7 +357,7 @@ public:
              init_dds_and_mds();
 
              // Store it - this will work if the the code is cleaning the cache.
-             bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
+             bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
 
              DBG(cerr << __func__ << " - stored: " << stored << endl);
              CPPUNIT_ASSERT(stored);
@@ -382,6 +382,38 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void get_dmr_response_test() {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+         try {
+             init_dds_and_mds();
+
+             // Store it - this will work if the the code is cleaning the cache.
+             bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
+
+             DBG(cerr << __func__ << " - stored: " << stored << endl);
+             CPPUNIT_ASSERT(stored);
+
+             // Now lets read the object from the cache
+             ostringstream oss;
+             d_mds->get_dmr_response(d_test_dds->get_dataset_name(), oss);
+             DBG(cerr << "DMR response: " << endl << oss.str() << endl);
+
+             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dmr_r";
+             DBG(cerr << "Reading baseline: " << baseline_name << endl);
+             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+             string test_05_dmr_baseline = read_test_baseline(baseline_name);
+
+             CPPUNIT_ASSERT(test_05_dmr_baseline == oss.str());
+         }
+         catch (BESError &e) {
+             CPPUNIT_FAIL(e.get_message());
+         }
+
+         DBG(cerr << __func__ << " - END" << endl);
+    }
+
     void remove_object_test()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -390,7 +422,7 @@ public:
             init_dds_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
-            bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
+            bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
 
             DBG(cerr << __func__ << " - stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
@@ -428,6 +460,7 @@ public:
     CPPUNIT_TEST(add_object_test);
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
+    CPPUNIT_TEST(get_dmr_response_test);
     CPPUNIT_TEST(remove_object_test);
 
     CPPUNIT_TEST_SUITE_END();

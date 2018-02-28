@@ -441,7 +441,7 @@ GlobalMetadataStore::store_dap4_response(DDS *dds, const string &key)
  * @return True if all of the cache/store entries are written, False if any
  * could not be written.
  */
-bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
+bool GlobalMetadataStore::add_responses(DDS *dds, const string &name)
 {
     // Start the index entry
     d_inventory_entry = string("add,").append(name);
@@ -487,6 +487,29 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
 }
 
 /**
+ *
+ * @param name Granule name
+ * @param os Write the response to this stream
+ * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
+ * @param object_name One of DDS, DAS or DMR
+ */
+void
+GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
+{
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Read " << object_name << " response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        transfer_bytes(fd, os);
+        unlock_and_close(item_name); // closes fd
+    }
+    else {
+        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+    }
+}
+
+/**
  * @brief Write the stored DDS response to a stream
  *
  * @param name The (path)name of the granule
@@ -495,19 +518,7 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
 void
 GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
 {
-    string item_name = get_cache_file_name(get_hash(name + "dds_r"), false /*mangle*/);
-    int fd; // value-result parameter;
-    if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Read DDS response for '" << name << "'." << endl);
-        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
-
-        transfer_bytes(fd, os);
-
-        unlock_and_close(item_name);    // closes fd
-    }
-    else {
-        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
-    }
+    get_response_helper(name, os, "dds_r", "DDS");
 }
 
 /**
@@ -519,19 +530,13 @@ GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
 void
 GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
 {
-    string item_name = get_cache_file_name(get_hash(name + "das_r"), false /*mangle*/);
-    int fd; // value-result parameter;
-    if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Read DAS response for '" << name << "'." << endl);
-        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+    get_response_helper(name, os, "das_r", "DAS");
+}
 
-        transfer_bytes(fd, os);
-
-        unlock_and_close(item_name);    // closes fd
-    }
-    else {
-        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
-    }
+void
+GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
+{
+    get_response_helper(name, os, "dmr_r", "DMR");
 }
 
 /**
