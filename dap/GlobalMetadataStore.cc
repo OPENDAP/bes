@@ -433,6 +433,55 @@ GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
     }
 }
 
+/**
+ * @brief Remove all cached responses and objects for a granule
+ *
+ * @param name
+ * @return
+ */
+bool
+GlobalMetadataStore::remove_object(const string &name)
+{
+#if 0
+    // Start the index entry
+     d_inventory_entry = string("remove,").append(name);
+
+     // I'm appending the 'dds r' string to the name before hashing so that
+     // the different hashes for the file's DDS, DAS, ..., are all very different.
+     // This will be useful if we use S3 instead of EFS for the Metadata Store.
+     string dds_r_hash = get_hash(name + "dds_r");
+     // bool stored_dds = store_dap2_response(dds, &DDS::print, dds_r_hash);
+     access(dds_r_hash.c_str())
+     if (stored_dds) {
+         VERBOSE("Metadata store: Wrote DDS response for '" << name << "'." << endl);
+         d_inventory_entry.append(",").append(dds_r_hash);
+     }
+     else {
+         LOG("Metadata store: unable to store the DDS response for '" << name << "'." << endl);
+     }
+
+     string das_r_hash = get_hash(name + "das_r");
+     bool stored_das = store_dap2_response(dds, &DDS::print_das, das_r_hash);
+     if (stored_das) {
+         VERBOSE("Metadata store: Wrote DAS response for '" << name << "'." << endl);
+         d_inventory_entry.append(",").append(das_r_hash);
+     }
+     else {
+         LOG("Metadata store: unable to store the DAS response for '" << name << "'." << endl);
+     }
+
+     if (stored_dds && stored_das) {
+         write_inventory(); // write the index line
+         return true;
+     }
+     else {
+         return false;
+     }
+#endif
+     return false;
+}
+
+
 #if 0
 /**
  * Is the item named by cache_entry_name valid? This code tests that the

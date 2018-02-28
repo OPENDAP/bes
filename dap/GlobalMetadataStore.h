@@ -86,13 +86,13 @@ public:
     }
 
     virtual bool add_object(libdap::DDS *dds, const std::string &name);
+
     virtual void get_dds_response(const std::string &name, ostream &os);
     virtual void get_das_response(const std::string &name, ostream &os);
 
-#if 0
-    virtual std::string get_dds_response(const std::string &name) { }
-    virtual std::string get_das_response(const std::string &name) { }
+    virtual bool remove_object(const std::string &name);
 
+#if 0
     virtual bool add_object(libdap::DMR *dmr, const std::string &name) { }
 
     virtual std::string get_dmr_response(const std::string &name) { }

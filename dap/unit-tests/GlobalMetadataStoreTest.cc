@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#include <unistd.h>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -68,7 +70,7 @@ namespace bes {
 // Move this into the class when we goto C++-11
 static const string c_mds_prefix = "mds_"; // used when cleaning the cache, etc.
 static const string c_mds_name = "/mds";
-static const string c_mds_baseline = string(TEST_SRC_DIR) + "/mds_baseline";
+static const string c_mds_baselines = string(TEST_SRC_DIR) + "/mds_baselines";
 
 
 class GlobalMetadataStoreTest: public TestFixture {
@@ -194,13 +196,17 @@ public:
             CPPUNIT_ASSERT(stored);
 
             // Now check the file
-            string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.dds_r";
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dds_r";
             DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
             string test_05_dds_baseline = read_test_baseline(baseline_name);
 
             string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.dds_r";
             // read_test_baseline() just reads stuff from a file - it will work for the response, too.
             DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
             string stored_response = read_test_baseline(response_name);
 
             CPPUNIT_ASSERT(stored_response == test_05_dds_baseline);
@@ -239,13 +245,17 @@ public:
             CPPUNIT_ASSERT(stored);
 
             // Now check the file
-            string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.das_r";
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.das_r";
             DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
             string test_05_dds_baseline = read_test_baseline(baseline_name);
 
             string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.das_r";
             // read_test_baseline() just reads stuff from a file - it will work for the response, too.
             DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
             string stored_response = read_test_baseline(response_name);
 
             CPPUNIT_ASSERT(stored_response == test_05_dds_baseline);
@@ -285,7 +295,7 @@ public:
             // FIXME, look for the files
 #if 0
             // Now check the file
-            string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.das_r";
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.das_r";
             DBG(cerr << "Reading baseline: " << baseline_name << endl);
             string test_05_dds_baseline = read_test_baseline(baseline_name);
 
@@ -333,8 +343,10 @@ public:
              d_mds->get_dds_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DDS response: " << endl << oss.str() << endl);
 
-             string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.dds_r";
+             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dds_r";
              DBG(cerr << "Reading baseline: " << baseline_name << endl);
+             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
              string test_05_dds_baseline = read_test_baseline(baseline_name);
 
              CPPUNIT_ASSERT(test_05_dds_baseline == oss.str());
@@ -375,8 +387,10 @@ public:
              d_mds->get_das_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DAS response: " << endl << oss.str() << endl);
 
-             string baseline_name = c_mds_baseline + "/" + c_mds_prefix + "SimpleTypes.das_r";
+             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.das_r";
              DBG(cerr << "Reading baseline: " << baseline_name << endl);
+             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
              string test_05_das_baseline = read_test_baseline(baseline_name);
 
              CPPUNIT_ASSERT(test_05_das_baseline == oss.str());
