@@ -39,6 +39,7 @@
 #include <DDS.h>
 #include <DMR.h>
 #include <XMLWriter.h>
+#include <D4BaseTypeFactory.h>
 
 #include "PicoSHA2/picosha2.h"
 
@@ -285,48 +286,28 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
-#if 0
 /**
- * Specialized code to write DDS, DAS and DMR responses from a DDS object.
+ * Specialization of StreamDAP that prints a DMR using the information
+ * in a DDS instance.
+ *
+ * Look at the GlobalMetadataStore class definition to see how the StreamDAP
+ * functor is used to parameterize writing the DAP metadata response for the
+ * store_dap_response() method.
+ *
+ * Most of the three three child classes are defined in the GlobalMetadataStore
+ * header; only this one method is defined here.
+ *
+ * @param os Write the DMR to this stream
+ * @see StreamDAP
+ * @see StreamDDS
+ * @see StreamDAS
  */
-//@{
-struct StreamDDS : public GlobalMetadataStore::StreamDAP {
-    StreamDDS(DDS *dds) : StreamDAP(dds) { }
-
-    virtual void operator()(ostream &os) {
-        d_dds->print(os);
-    }
-};
-
-struct StreamDAS : public GlobalMetadataStore::StreamDAP {
-    StreamDAS(DDS *dds) : StreamDAP(dds) { }
-
-    virtual void operator()(ostream &os) {
-        d_dds->print_das(os);
-    }
-};
-
-struct StreamDMR : public GlobalMetadataStore::StreamDAP {
-    StreamDMR(DDS *dds) : StreamDAP(dds) { }
-
-    virtual void operator()(ostream &os) {
-        DMR *dmr = new DMR();
-        dmr->build_using_dds(*d_dds);
-        XMLWriter xml;
-        dmr->print_dap4(xml);
-
-        os << xml.get_doc();
-    }
-};
-//@}
-#endif
-
 void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
 {
-    DMR *dmr = new DMR();
-    dmr->build_using_dds(*d_dds);
+    D4BaseTypeFactory factory;
+    DMR dmr(&factory, *d_dds);
     XMLWriter xml;
-    dmr->print_dap4(xml);
+    dmr.print_dap4(xml);
 
     os << xml.get_doc();
 }
@@ -334,14 +315,15 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
 /**
  * @brief store the DDS response
  *
- * @param dds DDS object used to build the two DAP2 responses
- * @param print_method Either &DDS::print (for the DDS) or &DDS:print_das.
+ * @param writer A child instance of StreamDAP, instantiated using a DDS.
+ * An instance of StreamDDS will write a DDS response, StreamDAS a DAS
+ * response and StreamDMR a DMR response.
  * @param key Unique Id for this response
  * @return True if the operation succeeded, False if the key is in use.
  * @throw BESInternalError If ...
  */
 bool
-GlobalMetadataStore::store_dap2_response(DDS *dds, StreamDAP &writer, const string &key)
+GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key)
 {
     BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
 
@@ -468,12 +450,8 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     string dds_r_hash = get_hash(name + "dds_r");
-#if 0
-    bool stored_dds = store_dap2_response(dds, &DDS::print, dds_r_hash);
-#endif
-
     StreamDDS write_the_dds_response(dds);
-    bool stored_dds = store_dap2_response(dds, write_the_dds_response, dds_r_hash);
+    bool stored_dds = store_dap_response(write_the_dds_response, dds_r_hash);
     if (stored_dds) {
         VERBOSE("Metadata store: Wrote DDS response for '" << name << "'." << endl);
         d_inventory_entry.append(",").append(dds_r_hash);
@@ -484,7 +462,7 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
 
     string das_r_hash = get_hash(name + "das_r");
     StreamDAS write_the_das_response(dds);
-    bool stored_das = store_dap2_response(dds, write_the_das_response/*&DDS::print_das*/, das_r_hash);
+    bool stored_das = store_dap_response(write_the_das_response, das_r_hash);
     if (stored_das) {
         VERBOSE("Metadata store: Wrote DAS response for '" << name << "'." << endl);
         d_inventory_entry.append(",").append(das_r_hash);
@@ -493,9 +471,19 @@ bool GlobalMetadataStore::add_object(DDS *dds, const string &name)
         LOG("Metadata store: unable to store the DAS response for '" << name << "'." << endl);
     }
 
+    string dmr_r_hash = get_hash(name + "dmr_r");
+    StreamDMR write_the_dmr_response(dds);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, dmr_r_hash);
+    if (stored_dmr) {
+        VERBOSE("Metadata store: Wrote DMR response for '" << name << "'." << endl);
+        d_inventory_entry.append(",").append(dmr_r_hash);
+    }
+    else {
+        LOG("Metadata store: unable to store the DMR response for '" << name << "'." << endl);
+    }
     write_inventory(); // write the index line
 
-    return (stored_dds && stored_das);
+    return (stored_dds && stored_das && stored_dmr);
 }
 
 /**

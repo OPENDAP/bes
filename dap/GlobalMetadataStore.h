@@ -63,7 +63,13 @@ private:
 
     std::string get_hash(const std::string &name);
 
-public:
+    /**
+     * This class is an abstract base class that provides a way to
+     * define a functor that writes the difference DAP metadata
+     * responses using a DDS. The concrete specializations StreamDDS,
+     * StreamDAS and StreamDMR are instantiated and passed to
+     * store_dap_response().
+     */
     struct StreamDAP : public std::unary_function<libdap::DDS*, void> {
         libdap::DDS *d_dds;
 
@@ -72,7 +78,9 @@ public:
         virtual void operator()(std::ostream &os) = 0;
     };
 
-#if 1
+    /**
+     * Instantiate with a DDS and use to write the DDS response.
+     */
     struct StreamDDS : public StreamDAP {
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
 
@@ -81,6 +89,9 @@ public:
         }
     };
 
+    /**
+     * Instantiate with a DDS and use to write the DAS response.
+     */
     struct StreamDAS : public StreamDAP {
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
 
@@ -89,28 +100,17 @@ public:
         }
     };
 
+    /**
+     * Instantiate with a DDS and use to write the DMR response.
+     */
     struct StreamDMR : public StreamDAP {
         StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
 
         virtual void operator()(ostream &os);
-#if 0
-            libdap::DMR *dmr = new libdap::DMR();
-            dmr->build_using_dds(*d_dds);
-            libdap::XMLWriter xml;
-            dmr->print_dap4(xml);
-
-            os << xml.get_doc();
-#endif
-
     };
-#endif
 
-private:
-    bool store_dap2_response(libdap::DDS *dds, StreamDAP &writer /*print_method_t print_method*/, const std::string &key);
-#if 0
-    bool store_dap4_response(libdap::DDS *dds, const std::string &key);
-    bool store_dap4_response(libdap::DMR *dmr, const std::string &key);
-#endif
+    bool store_dap_response(StreamDAP &writer, const std::string &key);
+
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore();
     GlobalMetadataStore(const GlobalMetadataStore &src);

@@ -81,6 +81,29 @@ private:
     string d_mds_dir;
     GlobalMetadataStore *d_mds;
 
+    /**
+     * This is like SetUp() but is run selectively by tests. It won't work
+     * for all of the tests (like test_ctor_1, where get_instance() should not
+     * return).
+     */
+    void init_dds_and_mds() {
+        // Stock code to get the d_test_dds and d_mds objects used by many
+        // of the tests.
+        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+        DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+        // Get a DDS to cache.
+        d_test_dds = new DDS(&d_btf);
+        DDXParser dp(&d_btf);
+        string cid; // This is an unused value-result parameter. jhrg 5/10/16
+        dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
+
+        // for these tests, set the filename to the dataset_name. ...keeps the cache names short
+        d_test_dds->filename(d_test_dds->get_dataset_name());
+        DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
+        CPPUNIT_ASSERT(d_test_dds);
+    }
+
 public:
     GlobalMetadataStoreTest() :
         d_test_dds(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
@@ -109,30 +132,12 @@ public:
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
-        delete d_test_dds;
+        delete d_test_dds; d_test_dds = 0;
 
         if (clean) clean_cache_dir(d_mds_dir);
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-
-#if 0
-    bool re_match(Regex &r, const string &s)
-    {
-        DBG(cerr << "s.length(): " << s.length() << endl);
-        int pos = r.match(s.c_str(), s.length());
-        DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0 && static_cast<unsigned>(pos) == s.length();
-    }
-
-    bool re_match_binary(Regex &r, const string &s)
-    {
-        DBG(cerr << "s.length(): " << s.length() << endl);
-        int pos = r.match(s.c_str(), s.length());
-        DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0;
-    }
-#endif
 
     void ctor_test_1()
     {
@@ -170,33 +175,18 @@ public:
     }
 
     // This test may fail if the -k option is used.
-    void cache_a_dap2_dds_response()
+    void cache_a_dds_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << d_mds << endl);
-
-            // Get a DDS to cache.
-            d_test_dds = new DDS(&d_btf);
-            DDXParser dp(&d_btf);
-            string cid; // This is an unused value-result parameter. jhrg 5/10/16
-            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
-
-            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-            d_test_dds->filename(d_test_dds->get_dataset_name());
-            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-            CPPUNIT_ASSERT(d_test_dds);
+            init_dds_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
-#if 0
-            bool stored = d_mds->store_dap2_response(d_test_dds, &DDS::print, d_test_dds->get_dataset_name() + ".dds_r");
-#endif
             GlobalMetadataStore::StreamDDS write_the_dds_response(d_test_dds);
-            bool stored = d_mds->store_dap2_response(d_test_dds, write_the_dds_response, d_test_dds->get_dataset_name() + ".dds_r");
+            bool stored = d_mds->store_dap_response(write_the_dds_response, d_test_dds->get_dataset_name() + ".dds_r");
 
-            DBG(cerr << __func__ << " - stored: " << stored << endl);
+            DBG(cerr << __func__ << "stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
 
             // Now check the file
@@ -223,33 +213,18 @@ public:
     }
 
     // This test may fail if the -k option is used.
-    void cache_a_dap2_das_response()
+    void cache_a_das_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << "cache_a_response() - Retrieved GlobalMetadataStore object: " << d_mds << endl);
-
-            // Get a DDS to cache.
-            d_test_dds = new DDS(&d_btf);
-            DDXParser dp(&d_btf);
-            string cid; // This is an unused value-result parameter. jhrg 5/10/16
-            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
-
-            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-            d_test_dds->filename(d_test_dds->get_dataset_name());
-            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-            CPPUNIT_ASSERT(d_test_dds);
+            init_dds_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
-#if 0
-            bool stored = d_mds->store_dap2_response(d_test_dds, &DDS::print_das, d_test_dds->get_dataset_name() + ".das_r");
-#endif
             GlobalMetadataStore::StreamDAS write_the_das_response(d_test_dds);
-            bool stored = d_mds->store_dap2_response(d_test_dds, write_the_das_response, d_test_dds->get_dataset_name() + ".das_r");
+            bool stored = d_mds->store_dap_response(write_the_das_response, d_test_dds->get_dataset_name() + ".das_r");
 
-            DBG(cerr << __func__ << " - stored: " << stored << endl);
+            DBG(cerr << __func__ << "stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
 
             // Now check the file
@@ -275,29 +250,52 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
-    void add_object_test()
+    void cache_a_dmr_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << __func__ << " - Retrieved GlobalMetadataStore object: " << d_mds << endl);
+            init_dds_and_mds();
 
-            // Get a DDS to cache.
-            d_test_dds = new DDS(&d_btf);
-            DDXParser dp(&d_btf);
-            string cid; // This is an unused value-result parameter. jhrg 5/10/16
-            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
+            // Store it - this will work if the the code is cleaning the cache.
+            GlobalMetadataStore::StreamDMR write_the_dmr_response(d_test_dds);
+            bool stored = d_mds->store_dap_response(write_the_dmr_response, d_test_dds->get_dataset_name() + ".dmr_r");
 
-            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-            d_test_dds->filename(d_test_dds->get_dataset_name());
-            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-            CPPUNIT_ASSERT(d_test_dds);
+            DBG(cerr << __func__ << "stored: " << stored << endl);
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dmr_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string test_05_dmr_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.dmr_r";
+            DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == test_05_dmr_baseline);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+   void add_object_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dds_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
             bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
 
-            DBG(cerr << __func__ << " - stored: " << stored << endl);
+            DBG(cerr << __func__ << "stored: " << stored << endl);
             CPPUNIT_ASSERT(stored);
 
             // look for the files
@@ -320,24 +318,12 @@ public:
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
          try {
-             d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-             DBG(cerr << __func__ << " - Retrieved GlobalMetadataStore object: " << d_mds << endl);
-
-             // Get a DDS to cache.
-             d_test_dds = new DDS(&d_btf);
-             DDXParser dp(&d_btf);
-             string cid; // This is an unused value-result parameter. jhrg 5/10/16
-             dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
-
-             // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-             d_test_dds->filename(d_test_dds->get_dataset_name());
-             DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-             CPPUNIT_ASSERT(d_test_dds);
+             init_dds_and_mds();
 
              // Store it - this will work if the the code is cleaning the cache.
              bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
 
-             DBG(cerr << __func__ << " - stored: " << stored << endl);
+             DBG(cerr << __func__ << "stored: " << stored << endl);
              CPPUNIT_ASSERT(stored);
 
              // Now lets read the object from the cache
@@ -364,19 +350,7 @@ public:
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
          try {
-             d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-             DBG(cerr << __func__ << " - Retrieved GlobalMetadataStore object: " << d_mds << endl);
-
-             // Get a DDS to cache.
-             d_test_dds = new DDS(&d_btf);
-             DDXParser dp(&d_btf);
-             string cid; // This is an unused value-result parameter. jhrg 5/10/16
-             dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
-
-             // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-             d_test_dds->filename(d_test_dds->get_dataset_name());
-             DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-             CPPUNIT_ASSERT(d_test_dds);
+             init_dds_and_mds();
 
              // Store it - this will work if the the code is cleaning the cache.
              bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
@@ -409,19 +383,7 @@ public:
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << __func__ << " - Retrieved GlobalMetadataStore object: " << d_mds << endl);
-
-            // Get a DDS to cache.
-            d_test_dds = new DDS(&d_btf);
-            DDXParser dp(&d_btf);
-            string cid; // This is an unused value-result parameter. jhrg 5/10/16
-            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
-
-            // for these tests, set the filename to the dataset_name. ...keeps the cache names short
-            d_test_dds->filename(d_test_dds->get_dataset_name());
-            DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
-            CPPUNIT_ASSERT(d_test_dds);
+            init_dds_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
             bool stored = d_mds->add_object(d_test_dds, d_test_dds->get_dataset_name());
@@ -456,8 +418,9 @@ public:
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
-    CPPUNIT_TEST(cache_a_dap2_dds_response);
-    CPPUNIT_TEST(cache_a_dap2_das_response);
+    CPPUNIT_TEST(cache_a_dds_response);
+    CPPUNIT_TEST(cache_a_das_response);
+    CPPUNIT_TEST(cache_a_dmr_response);
     CPPUNIT_TEST(add_object_test);
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
