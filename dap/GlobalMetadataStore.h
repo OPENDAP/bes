@@ -139,7 +139,7 @@ public:
     virtual void get_das_response(const std::string &name, ostream &os);
     virtual void get_dmr_response(const std::string &name, ostream &os);
 
-    virtual bool remove_object(const std::string &name);
+    virtual bool remove_responses(const std::string &name);
 
 #if 0
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name) { }

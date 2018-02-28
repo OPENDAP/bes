@@ -264,7 +264,7 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
 void
 GlobalMetadataStore::write_inventory()
 {
-    ofstream of(d_inventory_name.c_str());
+    ofstream of(d_inventory_name.c_str(), ios::app);
     if (of) {
         of << d_inventory_entry << endl;
     }
@@ -533,6 +533,12 @@ GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
     get_response_helper(name, os, "das_r", "DAS");
 }
 
+/**
+ * @brief Write the stored DMR response to a stream
+ *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
+ */
 void
 GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
 {
@@ -546,16 +552,16 @@ GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
  * @return
  */
 bool
-GlobalMetadataStore::remove_object(const string &name)
+GlobalMetadataStore::remove_responses(const string &name)
 {
     // Start the index entry
      d_inventory_entry = string("remove,").append(name);
 
      // If we can write, then we can probably unlink.
      bool removed_dds = false;
-     string dds_r_hash = get_cache_file_name(get_hash(name + "dds_r"), false);
-     if (unlink(dds_r_hash.c_str()) == 0) {
-         VERBOSE("Metadata store: Removed DDS response for '" << name << "'." << endl);
+     string dds_r_hash = get_hash(name + "dds_r"); ;
+     if (unlink(get_cache_file_name(dds_r_hash, false).c_str()) == 0) {
+         VERBOSE("Metadata store: Removed DDS response for '" << dds_r_hash << "'." << endl);
          d_inventory_entry.append(",").append(dds_r_hash);
          removed_dds = true;
      }
@@ -563,10 +569,10 @@ GlobalMetadataStore::remove_object(const string &name)
          LOG("Metadata store: unable to remove the DDS response for '" << name << "' (" << strerror(errno) << ")."<< endl);
      }
 
-     string das_r_hash = get_cache_file_name(get_hash(name + "das_r"), false);
+     string das_r_hash = get_hash(name + "das_r");
      bool removed_das = false;
-     if (unlink(das_r_hash.c_str()) == 0) {
-         VERBOSE("Metadata store: Removed DAS response for '" << name << "'." << endl);
+     if (unlink(get_cache_file_name(das_r_hash, false).c_str()) == 0) {
+         VERBOSE("Metadata store: Removed DAS response for '" << das_r_hash << "'." << endl);
          d_inventory_entry.append(",").append(das_r_hash);
          removed_das = true;
      }
@@ -574,9 +580,20 @@ GlobalMetadataStore::remove_object(const string &name)
          LOG("Metadata store: unable to remove the DAS response for '" << name << "' (" << strerror(errno) << ")."<< endl);
      }
 
+     string dmr_r_hash = get_hash(name + "dmr_r");
+     bool removed_dmr = false;
+     if (unlink(get_cache_file_name(dmr_r_hash, false).c_str()) == 0) {
+         VERBOSE("Metadata store: Removed DMR response for '" << dmr_r_hash << "'." << endl);
+         d_inventory_entry.append(",").append(dmr_r_hash);
+         removed_dmr = true;
+     }
+     else {
+         LOG("Metadata store: unable to remove the DMR response for '" << name << "' (" << strerror(errno) << ")."<< endl);
+     }
+
      write_inventory(); // write the index line
 
-     return  (removed_dds && removed_das);
+     return  (removed_dds && removed_das && removed_dmr);
 }
 
 
