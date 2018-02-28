@@ -109,8 +109,11 @@ private:
         virtual void operator()(ostream &os);
     };
 
-    void get_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name);
+    void get_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
+        const std::string &object_name);
     bool store_dap_response(StreamDAP &writer, const std::string &key);
+
+    bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
 
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore();
