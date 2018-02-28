@@ -341,6 +341,8 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key)
             throw BESInternalError("Could not open '" + key + "' to write the response.", __FILE__, __LINE__);
 
         try {
+            // for the different writers, look at the StreamDAP struct in the class
+            // definition. jhrg 2.27.18
             writer(response);   // different writers can write the DDS, DAS or DMR
 
             // Leave this in place so that sites can make a metadata store of limited size.
@@ -487,6 +489,7 @@ bool GlobalMetadataStore::add_responses(DDS *dds, const string &name)
 }
 
 /**
+ * Common code to copy a response to an output stream.
  *
  * @param name Granule name
  * @param os Write the response to this stream
@@ -546,6 +549,7 @@ GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
 }
 
 /**
+ * Common code to remove a stored response.
  *
  * @param name Granule name
  * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
@@ -554,14 +558,14 @@ GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
 bool
 GlobalMetadataStore::remove_response_helper(const string& name, const string &suffix, const string &object_name)
 {
-    string dds_r_hash = get_hash(name + suffix);
-    if (unlink(get_cache_file_name(dds_r_hash, false).c_str()) == 0) {
-        VERBOSE("Metadata store: Removed " << object_name << " response for '" << dds_r_hash << "'." << endl);
-        d_inventory_entry.append(",").append(dds_r_hash);
+    string hash = get_hash(name + suffix);
+    if (unlink(get_cache_file_name(hash, false).c_str()) == 0) {
+        VERBOSE("Metadata store: Removed " << object_name << " response for '" << hash << "'." << endl);
+        d_inventory_entry.append(",").append(hash);
         return true;
     }
     else {
-        LOG("Metadata store: unable to remove the DDS response for '" << name << "' (" << strerror(errno) << ")."<< endl);
+        LOG("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
     }
 
     return false;
