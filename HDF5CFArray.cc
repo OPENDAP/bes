@@ -673,11 +673,11 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             
             // Check if we should drop the long string
 
-            // If the string size is longer than the current netCDF JAVA
+            // If the size of an individual element is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
             if ((true == HDF5RequestHandler::get_drop_long_string()) &&
-                total_string.size() > NC_JAVA_STR_SIZE_LIMIT) {
+                ty_size > NC_JAVA_STR_SIZE_LIMIT) {
                 for (int i = 0; i<nelms; i++)
                     finstrval[i] = "";
             }
@@ -751,14 +751,18 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                 }
             }
 
-            // If the string size is longer than the current netCDF JAVA
+            // If the size of one string element is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
             if (true == HDF5RequestHandler::get_drop_long_string()) {
-                size_t total_str_size = 0;
-                for (int i =0;i<nelms;i++) 
-                    total_str_size += finstrval[i].size();
-                if (total_str_size  > NC_JAVA_STR_SIZE_LIMIT) {
+                bool drop_long_str = false;
+                for (int i =0;i<nelms;i++) {
+                    if(finstrval[i].size() >NC_JAVA_STR_SIZE_LIMIT){
+                        drop_long_str = true;
+                        break;
+                    }
+                }
+                if (drop_long_str == true) {
                     for (int i =0;i<nelms;i++)
                         finstrval[i] = "";
                 }

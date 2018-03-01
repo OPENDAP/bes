@@ -1298,6 +1298,8 @@ void File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
 
         if (true == HDF5RequestHandler::get_drop_long_string()) {
 
+            // netCDF java doesn't have  limitation for attributes
+#if 0
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
                 if (H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {
                     if ((*ira)->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
@@ -1317,17 +1319,21 @@ void File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
                     }
                 }
             }
+#endif
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if (true == Check_DropLongStr((*irv), NULL)) {
                     this->add_ignored_droplongstr_hdr();
                     this->add_ignored_var_longstr_info((*irv), NULL);
                 }
+                // netCDF java doesn't have  limitation for attributes
+#if 0
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     if (true == Check_DropLongStr((*irv), (*ira))) {
                         this->add_ignored_droplongstr_hdr();
                         this->add_ignored_var_longstr_info((*irv), (*ira));
                     }
                 }
+#endif
             }
         }
     }
@@ -2478,6 +2484,8 @@ bool File::Check_DropLongStr(Var *var, Attribute * attr) throw (Exception)
             }
         }
     }
+    // No limitation for the attributes. KY 2018-02-26
+#if 0
     else {
         if (H5FSTRING == attr->dtype || H5VSTRING == attr->dtype) {
             if (attr->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
@@ -2486,11 +2494,103 @@ bool File::Check_DropLongStr(Var *var, Attribute * attr) throw (Exception)
         }
 
     }
+#endif
     return drop_longstr;
 }
 
 // Check if a long string dataset should be dropped. Users can turn on a BES key not to drop the long string.
 // However, the Java clients may not access.
+//
+bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype)
+    throw (Exception)
+{
+
+    bool drop_longstr = false;
+
+    hid_t dset_id = H5Dopen2(this->fileid, varpath.c_str(), H5P_DEFAULT);
+    if (dset_id < 0)
+        throw2("Cannot open the dataset  ", varpath);
+
+    hid_t dtype_id = -1;
+    if ((dtype_id = H5Dget_type(dset_id)) < 0) {
+        H5Dclose(dset_id);
+        throw2("Cannot obtain the datatype of the dataset  ", varpath);
+    }
+
+    size_t ty_size = H5Tget_size(dtype_id);
+    if (ty_size == 0) {
+        H5Tclose(dtype_id);
+        H5Dclose(dset_id);
+        throw2("Cannot obtain the datatype size of the dataset  ", varpath);
+    }
+
+    if (H5FSTRING == dtype) { // Fixed-size, just check the number of elements.
+        if (ty_size > NC_JAVA_STR_SIZE_LIMIT) drop_longstr = true;
+    }
+    else if (H5VSTRING == dtype) {
+
+        unsigned long long total_elms = 1;
+        if (dims.size() != 0) {
+            for (unsigned int i = 0; i < dims.size(); i++)
+                total_elms = total_elms * ((dims[i])->size);
+        }
+        vector<char> strval;
+        strval.resize(total_elms * ty_size);
+        hid_t read_ret = H5Dread(dset_id, dtype_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void*) &strval[0]);
+        if (read_ret < 0) {
+            H5Tclose(dtype_id);
+            H5Dclose(dset_id);
+            throw2("Cannot read the data of the dataset  ", varpath);
+        }
+
+        vector<string> finstrval;
+        finstrval.resize(total_elms);
+        char*temp_bp = &strval[0];
+        char*onestring = NULL;
+        for (unsigned long long i = 0; i < total_elms; i++) {
+            onestring = *(char**) temp_bp;
+            if (onestring != NULL) {
+                finstrval[i] = string(onestring);
+                if(finstrval[i].size()>NC_JAVA_STR_SIZE_LIMIT) {
+                    drop_longstr = true;
+                    break;
+                }
+            }
+            temp_bp += ty_size;
+        }
+
+        if (false == strval.empty()) {
+            herr_t ret_vlen_claim;
+            hid_t dspace_id = H5Dget_space(dset_id);
+            if (dspace_id < 0) {
+                H5Tclose(dtype_id);
+                H5Dclose(dset_id);
+                throw2("Cannot obtain the dataspace id.", varpath);
+            }
+            ret_vlen_claim = H5Dvlen_reclaim(dtype_id, dspace_id, H5P_DEFAULT, (void*) &strval[0]);
+            if (ret_vlen_claim < 0) {
+                H5Tclose(dtype_id);
+                H5Sclose(dspace_id);
+                H5Dclose(dset_id);
+                throw2("Cannot reclaim the vlen space  ", varpath);
+            }
+            if (H5Sclose(dspace_id) < 0) {
+                H5Tclose(dtype_id);
+                H5Dclose(dset_id);
+                throw2("Cannot close the HDF5 data space.", varpath);
+            }
+        }
+    }
+    if (H5Tclose(dtype_id) < 0) {
+        H5Dclose(dset_id);
+        throw2("Cannot close the HDF5 data type.", varpath);
+    }
+    if (H5Dclose(dset_id) < 0)
+        throw2("Cannot close the HDF5 data type.", varpath);
+    
+    return drop_longstr;
+}
+#if 0
 bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype)
     throw (Exception)
 {
@@ -2592,6 +2692,8 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
     }
     return drop_longstr;
 }
+#endif
+
 
 // Provide if the long string is dropped.
 void File::add_ignored_grp_longstr_info(const string& grp_path, const string & attr_name)

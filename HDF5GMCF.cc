@@ -766,6 +766,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
             }
         }
     }
+#if 0
     if(true == this->check_ignored && true == include_attr) {
         if(true == HDF5RequestHandler::get_drop_long_string()){
             for (vector<GMCVar *>::iterator irv = this->cvars.begin();
@@ -792,6 +793,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
             }
         }
     }
+#endif
 
     if(false == this->have_ignored)
         this->add_no_ignored_info();

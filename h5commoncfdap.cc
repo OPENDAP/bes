@@ -465,12 +465,14 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
-            //if (false == is_droplongstr || 
-            if (false == HDF5RequestHandler::get_drop_long_string() || tempstring.size() <= NC_JAVA_STR_SIZE_LIMIT) {
+            // The above statement is no longer true. The netCDF Java can handle long string
+            // attributes. The long string can be kept and I do think the
+            // performance penalty should be small. KY 2018-02-26
+            //if (false == HDF5RequestHandler::get_drop_long_string() || tempstring.size() <= NC_JAVA_STR_SIZE_LIMIT) {
                 if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) tempstring =
                     HDF5CFDAPUtil::escattr(tempstring);
                 at->append_attr(attr->getNewName(), "String", tempstring);
-            }
+            //}
         }
     }
 }

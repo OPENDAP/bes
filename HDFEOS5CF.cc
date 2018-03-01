@@ -457,6 +457,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
     if (true == this->check_ignored && true == include_attr) {
 
         if (true == HDF5RequestHandler::get_drop_long_string()) {
+#if 0
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
                 if (H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {
                     if ((*ira)->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
@@ -477,6 +478,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
 
                 }
             }
+#endif
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if (true == Check_DropLongStr((*irv), NULL)) {
                     string ecsmeta_grp = "/HDFEOS INFORMATION";
@@ -487,13 +489,16 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
                         this->add_ignored_var_longstr_info((*irv), NULL);
                     }
                 }
+#if 0
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     if (true == Check_DropLongStr((*irv), (*ira))) {
                         this->add_ignored_droplongstr_hdr();
                         this->add_ignored_var_longstr_info((*irv), (*ira));
                     }
                 }
+#endif
             }
+#if 0
             for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     if (true == Check_DropLongStr((*irv), (*ira))) {
@@ -502,6 +507,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
                     }
                 }
             }
+#endif
         }
     }
 
