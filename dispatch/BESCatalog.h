@@ -77,7 +77,7 @@ public:
         return d_catalog_name;
     }
 
-    virtual BESCatalogEntry * show_catalog(const string &container, const string &coi, BESCatalogEntry *entry) = 0;
+    virtual BESCatalogEntry * show_catalog(const string &container, /*const string &coi,*/ BESCatalogEntry *entry) = 0;
 
     virtual void dump(ostream &strm) const = 0;
 };

@@ -176,8 +176,8 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 
         // Get the catalog entry.
         BESCatalogEntry *entry = 0;
-        string coi = dhi.data[CATALOG];
-        entry = defcat->show_catalog(validPath, coi, entry);
+        //string coi = dhi.data[CATALOG];
+        entry = defcat->show_catalog(validPath, /*coi,*/ entry);
         if (!entry) {
             string err = (string) "Failed to find the validPath node " + validPath
                 + " this should not be possible. Some thing BAD is happening.";

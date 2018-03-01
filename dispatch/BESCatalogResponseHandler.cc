@@ -123,12 +123,12 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     BESCatalogEntry *entry = 0;
     if (catobj) {
-        entry = catobj->show_catalog(container, coi, entry);
+        entry = catobj->show_catalog(container, /*coi,*/ entry);
     }
     else {
         // we always want to get the container information from the
         // default catalog, whether the node is / or not
-        entry = defcat->show_catalog(container, coi, entry);
+        entry = defcat->show_catalog(container, /*coi,*/ entry);
 
         // we only care to get the list of catalogs if the container is
         // slash (/)

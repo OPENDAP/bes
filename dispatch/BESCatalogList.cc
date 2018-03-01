@@ -285,7 +285,7 @@ BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
         // then display
         if (show_default || (*i).first != default_catalog()) {
             BESCatalog *catalog = (*i).second;
-            catalog->show_catalog("", SHOW_INFO_RESPONSE, myentry);
+            catalog->show_catalog("", /*SHOW_INFO_RESPONSE,*/ myentry);
         }
     }
 

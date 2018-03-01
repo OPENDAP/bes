@@ -86,7 +86,7 @@ BESCatalogDirectory::~BESCatalogDirectory()
  * @return
  */
 BESCatalogEntry *
-BESCatalogDirectory::show_catalog(const string &node, const string &/*coi*/, BESCatalogEntry *entry)
+BESCatalogDirectory::show_catalog(const string &node, /*const string &coi,*/ BESCatalogEntry *entry)
 {
     string use_node = node;
     // use_node should only end in '/' if that's the only character in which

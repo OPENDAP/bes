@@ -54,7 +54,7 @@ public:
     BESCatalogDirectory(const string &name);
     virtual ~BESCatalogDirectory(void);
 
-    virtual BESCatalogEntry * show_catalog(const string &container, const string &coi, BESCatalogEntry *entry);
+    virtual BESCatalogEntry * show_catalog(const string &container, /*const string &coi,*/ BESCatalogEntry *entry);
 
     virtual void dump(ostream &strm) const;
 };

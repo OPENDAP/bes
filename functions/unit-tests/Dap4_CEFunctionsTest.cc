@@ -92,12 +92,12 @@ public:
         two_arrays_dmr(0), d4_parser(0), d4_btf(0)
     {
     }
+
     ~Dap4_CEFunctionsTest()
     {
     }
-    string
 
-    readTestBaseline(const string &fn)
+    string readTestBaseline(const string &fn)
     {
         int length;
 
@@ -154,12 +154,18 @@ public:
             Array & a = dynamic_cast<Array &>(*a_var);
             Array & b = dynamic_cast<Array &>(*b_var);
 
-            dods_float64 first_a[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            a.val2buf(first_a);
+            dods_float64 first_a[30] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+#if 0
+            /* a.val2buf(first_a);*/
+#endif
+            a.set_value(first_a, 30);
             a.set_read_p(true);
 
-            dods_float64 first_b[10] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            dods_float64 first_b[30] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+#if 0
             b.val2buf(first_b);
+#endif
+            b.set_value(first_b, 30);
             b.set_read_p(true);
             DBG(cerr << "setup() - Values loaded into " << two_arrays_dmr->name() << endl);
 
@@ -518,7 +524,7 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
         try {
 
             long int num_dims = 3;
-            unsigned int dims[3] = { 5, 2, 3 };
+            unsigned long dims[3] = { 5, 2, 3 };
             string shape = "";
 
             Array & array = dynamic_cast<Array &>(*two_arrays_dmr->root()->var("a"));
@@ -547,10 +553,7 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
             CPPUNIT_ASSERT(result->type() == dods_array_c);
 
             Array *resultArray = dynamic_cast<Array*>(result);
-            DBG(
-                cerr
-                    << "bind_shape_test() - resultArray has " + long_to_string(resultArray->dimensions(true))
-                        + " dimensions " << endl);
+            DBG(cerr << "bind_shape_test() - resultArray has " << resultArray->dimensions(true) << " dimensions " << endl);
 
             CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
 
@@ -559,9 +562,7 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
             int i = 0;
             while (p != resultArray->dim_end()) {
                 CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
-                DBG(
-                    cerr << "bind_shape_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i])
-                        << endl);
+                DBG(cerr << "bind_shape_test() - dimension[" << long_to_string(i) << "]=" << long_to_string(dims[i]) << endl);
                 ++p;
                 i++;
             }
@@ -590,7 +591,7 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
         }
         catch (Error &e) {
             DBG(cerr << e.get_error_message() << endl);
-            CPPUNIT_ASSERT(!"Error in bind_shape_test()");
+            CPPUNIT_FAIL("Error in bind_shape_test()");
         }
         DBG(cerr << "bind_shape_test() - END" << endl);
     }
@@ -774,6 +775,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = Dap4_CEFunctionsTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
         }
     }
 
