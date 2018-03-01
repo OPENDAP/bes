@@ -393,6 +393,12 @@ AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.dds.bescmd])
 
+#big string not ignored(Attributes and < netCDF java limit)
+AT_BESCMD_RESPONSE_TEST([t_big_str.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_big_str.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_big_str.h5.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_big_str_dset.h5.data.bescmd])
+
 # Test subsetting.
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_0.bescmd])
@@ -527,3 +533,5 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
+
+
