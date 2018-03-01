@@ -6,8 +6,7 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types \
-$(DAP_LIBS) $(LIBS)
+AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -41,13 +40,14 @@ response_cache:
 	test -d response_cache  || mkdir response_cache 
 	
 clean-local:
-	-rm -rf tmp response_cache
+	-rm -rf mds pathinfo_files response_cache tmp
 	
-EXTRA_DIST = input-files test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
+EXTRA_DIST = input-files mds_baselines test_utils.cc test_utils.h TestFunction.h \
+test_config.h.in bes.conf.in
 
 CLEANFILES = testout test_config.h bes.conf .dodsrc 
 
-DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log mds_ledger.txt
 
 BES_CONF_IN = bes.conf.in
 
@@ -71,7 +71,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 if CPPUNIT
 UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
-TemporaryFileTest
+TemporaryFileTest GlobalMetadataStoreTest
 
 else
 UNIT_TESTS =
@@ -106,6 +106,10 @@ ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
 TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
+
+GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
+GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(AM_LDADD)

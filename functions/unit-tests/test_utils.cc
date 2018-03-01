@@ -40,7 +40,7 @@ using namespace std;
 using namespace libdap;
 
 string
-readTestBaseline(const string &fn)
+read_test_baseline(const string &fn)
 {
     int length;
 

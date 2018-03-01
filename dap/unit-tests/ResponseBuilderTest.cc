@@ -266,7 +266,7 @@ public:
 
         string dmr_filename = (string) TEST_SRC_DIR + "/input-files/test_01.dmr";
         DBG2(cerr << "Parsing DMR file " << dmr_filename << endl);
-        d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
+        d4_parser->intern(read_test_baseline(dmr_filename), test_01_dmr, parser_debug);
         DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY,
@@ -332,7 +332,7 @@ public:
     void send_das_test()
     {
         try {
-            string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
+            string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
             DBG(cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
             Regex r1(baseline.c_str());
 
@@ -351,7 +351,7 @@ public:
     void send_dds_test()
     {
         try {
-            string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
+            string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
             DBG(cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
             Regex r1(baseline.c_str());
 
@@ -371,7 +371,7 @@ public:
 
     void send_ddx_test()
     {
-        string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_send_ddx_test.xml");
+        string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/response_builder_send_ddx_test.xml");
         Regex r1(baseline.c_str());
         ConstraintEvaluator ce;
 
@@ -412,7 +412,7 @@ public:
             cerr << "store_dap2_result_test() - Checking stored result request where async_accpeted is NOT set."
             << endl);
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
@@ -439,7 +439,7 @@ public:
         drb->set_async_accepted("0");
         DBG(cerr << "store_dap2_result_test() - async_accepted is set to: " << drb->get_async_accepted() << endl);
 
-        baseline = readTestBaseline(
+        baseline = read_test_baseline(
             (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_accepted.xml");
 
         try {
@@ -522,7 +522,7 @@ public:
                 << endl);
 
         string baseline_file = (string) TEST_SRC_DIR + "/input-files/response_builder_store_result_not_available.xml";
-        string baseline = readTestBaseline(baseline_file);
+        string baseline = read_test_baseline(baseline_file);
         DBG(cerr << "store_dap4_result_test() - Response baseline read from " << baseline_file << endl);
 
         try {
@@ -561,7 +561,7 @@ public:
                 << endl);
 
         baseline_file = (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_required.xml";
-        baseline = readTestBaseline(baseline_file);
+        baseline = read_test_baseline(baseline_file);
         DBG(cerr << "store_dap4_result_test() - Response baseline read from " << baseline_file << endl);
 
         try {
@@ -591,7 +591,7 @@ public:
         DBG(cerr << "store_dap4_result_test() - async_accepted is set to: " << drb->get_async_accepted() << endl);
 
         baseline_file = (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_accepted.xml";
-        baseline = readTestBaseline(baseline_file);
+        baseline = read_test_baseline(baseline_file);
         DBG(cerr << "store_dap4_result_test() - Response baseline read from " << baseline_file << endl);
 
         try {
@@ -610,7 +610,7 @@ public:
             DBG(
                 cerr << "store_dap4_result_test() - Stored Object Baseline File: " << endl
                     << stored_object_baseline_file << endl);
-            baseline = readTestBaseline(stored_object_baseline_file);
+            baseline = read_test_baseline(stored_object_baseline_file);
 
             string stored_object_response_file = (string) TEST_BUILD_DIR + d_stored_result_subdir
                 + "/my_result_9619561608535196802.dap";
@@ -700,7 +700,7 @@ public:
         DBG(cerr << "invoke_server_side_function_test() - BEGIN" << endl);
 
         try {
-            string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
+            string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
             Regex r1(baseline.c_str());
 
             DBG(cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);

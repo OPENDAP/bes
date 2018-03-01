@@ -24,48 +24,23 @@
 
 #include "config.h"
 
-//#define DODS_DEBUG
-#if 0
-#include <cstdio>
+#include <fcntl.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#endif
+
+#include <cerrno>
+#include <cstring>
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <functional>
 
-#if 0
-#ifdef HAVE_TR1_FUNCTIONAL
-#include <tr1/functional>
-#endif
-#endif
-
+#include <DapObj.h>
 #include <DDS.h>
-#if 0
-#include <ConstraintEvaluator.h>
-#include <DDXParserSAX2.h>
-
-#include <XDRStreamMarshaller.h>
-#include <XDRStreamUnMarshaller.h>
-#include <XDRFileUnMarshaller.h>
-
-#include <D4StreamMarshaller.h>
-#include <D4StreamUnMarshaller.h>
-
-#include <Sequence.h>   // We have to special-case these; see read_data_ddx()
-
-#include <debug.h>
-#include <mime_util.h>	// for last_modified_time() and rfc_822_date()
-#include <util.h>
-
-#include "CacheTypeFactory.h"
-#include "CacheMarshaller.h"
-#include "CacheUnMarshaller.h"
-#endif
-
-#include "BESInternalError.h"
+#include <DMR.h>
+#include <XMLWriter.h>
+#include <D4BaseTypeFactory.h>
 
 #include "PicoSHA2/picosha2.h"
 
@@ -74,17 +49,13 @@
 #include "BESLog.h"
 #include "BESDebug.h"
 
+#include "BESInternalError.h"
+#include "BESInternalFatalError.h"
+
 #include "GlobalMetadataStore.h"
 
 #define DEBUG_KEY "metadata_store"
-
-#if 0
-#ifdef HAVE_TR1_FUNCTIONAL
-#define HASH_OBJ std::tr1::hash
-#else
-#define HASH_OBJ std::hash
-#endif
-#endif
+#define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
 
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
@@ -96,24 +67,52 @@ using namespace std;
 using namespace libdap;
 using namespace bes;
 
-#if 0
-const string DATA_MARK = "--DATA:";
+static const unsigned int default_cache_size = 20; // 20 GB
+static const string default_cache_prefix = "mds";
+static const string default_cache_dir = ""; // I'm making the default empty so that no key == no caching. jhrg 9.26.16
+static const string default_ledger_name = "mds_ledger.txt";   ///< In the CWD of the BES process
 
-// If the size of the constraint is larger then this value, don't cache the response.
-const unsigned int max_cacheable_ce_len = 4096;
-const unsigned int max_collisions = 50; // It's hard to believe this could happen
-#endif
-
-const unsigned int default_cache_size = 20; // 20 GB
-const string default_cache_prefix = "mds";
-const string default_cache_dir = ""; // I'm making the default empty so that no key == no caching. jhrg 9.26.16
-
-const string GlobalMetadataStore::PATH_KEY = "DAP.GlobalMetadataStore.path";
-const string GlobalMetadataStore::PREFIX_KEY = "DAP.GlobalMetadataStore.prefix";
-const string GlobalMetadataStore::SIZE_KEY = "DAP.GlobalMetadataStore.size";
+static const string PATH_KEY = "DAP.GlobalMetadataStore.path";
+static const string PREFIX_KEY = "DAP.GlobalMetadataStore.prefix";
+static const string SIZE_KEY = "DAP.GlobalMetadataStore.size";
+static const string LEDGER_KEY = "DAP.GlobalMetadataStore.ledger";
+static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
 
 GlobalMetadataStore *GlobalMetadataStore::d_instance = 0;
 bool GlobalMetadataStore::d_enabled = true;
+
+/**
+ * Hacked from GNU wc (in coreutils). This was found to be
+ * faster than a memory mapped file read.
+ *
+ * https://stackoverflow.com/questions/17925051/fast-textfile-reading-in-c
+ *
+ * @param fd Open file descriptor to read from; assumed open and
+ * positioned at the start of the file.
+ * @param os C++ stream to write to
+ * @exception BESInternalError Thrown if there's a problem reading or writing.
+ */
+static void transfer_bytes(int fd, ostream &os)
+{
+    static const int BUFFER_SIZE = 16*1024;
+
+#if _POSIX_C_SOURCE >= 200112L
+    /* Advise the kernel of our access pattern.  */
+    posix_fadvise(fd, 0, 0, 1);  // FDADVICE_SEQUENTIAL
+#endif
+
+    char buf[BUFFER_SIZE + 1];
+
+    while(size_t bytes_read = read(fd, buf, BUFFER_SIZE))
+    {
+        if(bytes_read == (size_t)-1)
+            throw BESInternalError("Could not read dds from the metadata store.", __FILE__, __LINE__);
+        if (!bytes_read)
+            break;
+
+        os.write(buf, bytes_read);
+    }
+}
 
 unsigned long GlobalMetadataStore::get_cache_size_from_config()
 {
@@ -161,6 +160,13 @@ string GlobalMetadataStore::get_cache_dir_from_config()
 }
 
 /**
+ * @name Get an instance of GlobalMetadataStore
+ * @brief  There are two ways to get an instance of GlobalMetadataStore singleton.
+ *
+ * @return A pointer to a GlobalMetadataStore object; null if the cache is disabled.
+ */
+///@{
+/**
  * @brief Get an instance of the GlobalMetadataStore object.
  *
  * This class is a singleton, so the first call to any of two 'get_instance()' methods
@@ -181,10 +187,9 @@ string GlobalMetadataStore::get_cache_dir_from_config()
  * @param size_key The maximum size of the data stored in the cache, in megabytes
  *
  * @return A pointer to a GlobalMetadataStore object. If the cache is disabled (because the
- * directory is not set or does not exist, then the pointer returned will be null and
+ * directory is not set or does not exist), then the pointer returned will be null and
  * the cache will be marked as not enabled. Subsequent calls will return immediately.
  */
-//@{
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
@@ -209,6 +214,12 @@ GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix,
     return d_instance;
 }
 
+/**
+ * Get an instance of the GlobalMetadataStore using the default values for the cache directory,
+ * prefix and size.
+ *
+ * @return A pointer to a GlobalMetadataStore object; null if the cache is disabled.
+ */
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance()
 {
@@ -232,7 +243,86 @@ GlobalMetadataStore::get_instance()
 
     return d_instance;
 }
-//@}
+///@}
+
+/**
+ * Private constructor that calls BESFileLockingCache's constructor;
+ * lookup cache directory, item prefix and max cache size in BESKeys
+ *
+ * @note Use the get_instance() methods to get a pointer to the singleton for
+ * this class. Do not use this method except in derived classes. This method
+ * either builds a valid object or throws an exception.
+ *
+ * @param cache_dir key to find cache dir
+ * @param prefix key to find the cache prefix
+ * @param size key to find the cache size (in MBytes)
+ * @throws BESSyntaxUserError if the keys are not set in the BESKeys, if the key
+ * are either the empty string or zero, respectively, or if the cache directory does not exist.
+ */
+GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &prefix,
+    unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
+{
+    bool found;
+
+    TheBESKeys::TheKeys()->get_value(LEDGER_KEY, d_ledger_name, found);
+    if (found) {
+        BESDEBUG(DEBUG_KEY, "Located BES key " << LEDGER_KEY << "=" << d_ledger_name << endl);
+    }
+    else {
+        d_ledger_name = default_ledger_name;
+    }
+
+    // By default, use UTC in the logs.
+    string local_time = "no";
+    TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
+    d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
+}
+
+/**
+ * Copied from BESLog, where that code writes to an internal object, not a stream.
+ * @param os
+ */
+static void dump_time(ostream &os, bool use_local_time)
+{
+    time_t now;
+    time(&now);
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+
+    if (!status)
+        LOG("Error getting time for Metadata Store ledger.");
+
+    os << buf;
+}
+
+/**
+ * Write the current text of d_ledger_entry to the metadata store ledger
+ */
+void
+GlobalMetadataStore::write_ledger()
+{
+    // TODO open just once
+    ofstream of(d_ledger_name.c_str(), ios::app);
+    if (of) {
+        dump_time(of, d_use_local_time);
+        of << " " << d_ledger_entry << endl;
+        VERBOSE("MD Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
+    }
+    else {
+        LOG("Warning: Metadata store could not write to is ledger file.");
+    }
+}
 
 /**
  * Compute the SHA256 hash for the item name
@@ -247,509 +337,274 @@ GlobalMetadataStore::get_hash(const string &name)
 }
 
 /**
- * @brief store the DDS response
+ * Specialization of StreamDAP that prints a DMR using the information
+ * in a DDS instance.
  *
- * @param dds
- * @param key
- * @return True if the operation succeeded, False if the key is in use.
- * @throw BESInternalError If ...
+ * Look at the GlobalMetadataStore class definition to see how the StreamDAP
+ * functor is used to parameterize writing the DAP metadata response for the
+ * store_dap_response() method.
+ *
+ * @note Most of the three three child classes are defined in the GlobalMetadataStore
+ * header; only this one method is defined in the implementation file to keep
+ * the libdap headers out of GlobalMetadataStore.h
+ *
+ * @param os Write the DMR to this stream
+ * @see StreamDAP
+ * @see StreamDDS
+ * @see StreamDAS
  */
-bool
-GlobalMetadataStore::store_dds_response(DDS *dds, const string &key)
+void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
 {
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
-
-    int fd;
-    if (create_and_lock(key, fd)) {
-        // If here, the cache_file_name could not be locked for read access;
-        // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << key << endl);
-
-        // Get an output stream directed at the locked cache file
-        ofstream response(key.c_str(), ios::out|ios::app);
-        if (!response.is_open())
-            throw BESInternalError("Could not open '" + key + "' to write the DDS response.", __FILE__, __LINE__);
-
-        try {
-            // Write the DDS response to the cache
-            dds->print(response);
-
-            // Leave this in place so that sites can make a metadata store of limited size.
-            // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
-            exclusive_to_shared_lock(fd);
-
-            unsigned long long size = update_cache_info(key);
-            if (cache_too_big(size)) update_and_purge(key);
-
-            unlock_and_close(key);
-        }
-        catch (...) {
-            // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
-            response.close();
-            this->purge_file(key);
-            unlock_and_close(key);
-            throw;
-        }
-
-        return true;
+    if (d_dds) {
+        D4BaseTypeFactory factory;
+        DMR dmr(&factory, *d_dds);
+        XMLWriter xml;
+        dmr.print_dap4(xml);
+        os << xml.get_doc();
     }
-    else if (get_read_lock(key, fd)) {
-        // We found the key; didn't add this because it was already here
-        unlock_and_close(key);
-        return false;
+    else if (d_dmr) {
+        XMLWriter xml;
+        d_dmr->print_dap4(xml);
+        os << xml.get_doc();
     }
     else {
-        throw BESInternalError("Could neither create or open '" + key + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
     }
 }
 
 /**
- * @brief store the DDS's DAS response
+ * Store the DAP metadata responses
  *
- * @param dds
- * @param key
+ * @param writer A child instance of StreamDAP, instantiated using a DDS.
+ * An instance of StreamDDS will write a DDS response, StreamDAS a DAS
+ * response and StreamDMR a DMR response.
+ * @param key Unique Id for this response; used to store the response in the
+ * MDS.
+ * @param name The granule/file name or pathname
+ * @param response_name The name of the particular response (DDS, DAS, DMR).
+ * Used for log messages.
  * @return True if the operation succeeded, False if the key is in use.
  * @throw BESInternalError If ...
  */
 bool
-GlobalMetadataStore::store_das_response(DDS *dds, const string &key)
+GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, const string &name,
+    const string &response_name)
 {
     BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << key << endl);
 
+    string item_name = get_cache_file_name(key, false /*mangle*/);
+
     int fd;
-    if (create_and_lock(key, fd)) {
+    if (create_and_lock(item_name, fd)) {
         // If here, the cache_file_name could not be locked for read access;
         // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << key << endl);
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Storing " << item_name << endl);
 
         // Get an output stream directed at the locked cache file
-        ofstream response(key.c_str(), ios::out|ios::app);
+        ofstream response(item_name.c_str(), ios::out|ios::app);
         if (!response.is_open())
-            throw BESInternalError("Could not open '" + key + "' to write the DDS response.", __FILE__, __LINE__);
+            throw BESInternalError("Could not open '" + key + "' to write the response.", __FILE__, __LINE__);
 
         try {
-            // Write the DAS response to the cache
-            dds->print_das(response);
+            // for the different writers, look at the StreamDAP struct in the class
+            // definition. jhrg 2.27.18
+            writer(response);   // different writers can write the DDS, DAS or DMR
 
-            // Leave this in place so that sites can make a metadata store of limited size.
-            // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
-            exclusive_to_shared_lock(fd);
+            // Compute/update/maintain the cache size? This is extra work
+            // that might never be used. It also locks the cache...
+            if (!is_unlimited() || MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED) {
+                // This enables the call to update_cache_info() below.
+                exclusive_to_shared_lock(fd);
 
-            unsigned long long size = update_cache_info(key);
-            if (cache_too_big(size)) update_and_purge(key);
+                unsigned long long size = update_cache_info(item_name);
+                if (!is_unlimited() && cache_too_big(size)) update_and_purge(item_name);
+            }
 
-            unlock_and_close(key);
+            unlock_and_close(item_name);
         }
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
             response.close();
-            this->purge_file(key);
-            unlock_and_close(key);
+            this->purge_file(item_name);
+            unlock_and_close(item_name);
             throw;
         }
 
+        VERBOSE("Metadata store: Wrote " << response_name << " response for '" << name << "'." << endl);
+        d_ledger_entry.append(" ").append(key);
+
         return true;
     }
-    else if (get_read_lock(key, fd)) {
+    else if (get_read_lock(item_name, fd)) {
         // We found the key; didn't add this because it was already here
-        unlock_and_close(key);
+        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
+        unlock_and_close(item_name);
+
+        LOG("Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
+
         return false;
     }
     else {
-        throw BESInternalError("Could neither create or open '" + key + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalError("Could neither create or open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
     }
 }
 
-/**
- * @brief Add the DDS object to the Metadata store
- *
- * @param name
- * @param dds
- */
-void GlobalMetadataStore::add_object(const string &name, DDS *dds)
+// Documented in the header file - I could not get doxygen comments to work
+// for these two methods in ths file (but al the others are fine). jhrg 2.28.18
+bool
+GlobalMetadataStore::add_responses(DDS *dds, const string &name)
 {
-    // I'm appending the 'dds response' string to the name before hashing so that
+    // Start the index entry
+    d_ledger_entry = string("add DDS ").append(name);
+
+    // I'm appending the 'dds r' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    bool stored = store_dds_response(dds, get_hash(name + "dds_r"));
-    if (!stored) {
-        LOG("Metadata store: unable to store the DDS response for '" << name << "'.");
-    }
+    //
+    // The helper() also updates the ledger string.
+    StreamDDS write_the_dds_response(dds);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
 
-    stored = store_das_response(dds, get_hash(name + "das_r"));
-    if (!stored) {
-        LOG("Metadata store: unable to store the DAS response for '" << name << "'.");
-    }
+    StreamDAS write_the_das_response(dds);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
 
+    StreamDMR write_the_dmr_response(dds);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+    write_ledger(); // write the index line
+
+    return (stored_dds && stored_das && stored_dmr);
 }
 
-#if 0
-/**
- * Is the item named by cache_entry_name valid? This code tests that the
- * cache entry is non-zero in size (returns false if that is the case, although
- * that might not be correct) and that the dataset associated with this
- * ResponseBulder instance is at least as old as the cached entry.
- *
- * @param cache_file_name File name of the cached entry
- * @return True if the thing is valid, false otherwise.
- */
-bool GlobalMetadataStore::is_valid(const string &cache_file_name, const string &dataset)
+bool
+GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 {
-    // If the cached response is zero bytes in size, it's not valid. This is true
-    // because a DAP data object, even if it has no data still has a metadata part.
-    // jhrg 10/20/15
+    // Start the index entry
+    d_ledger_entry = string("add DMR ").append(name);
 
-    off_t entry_size = 0;
-    time_t entry_time = 0;
-    struct stat buf;
-    if (stat(cache_file_name.c_str(), &buf) == 0) {
-        entry_size = buf.st_size;
-        entry_time = buf.st_mtime;
+    // I'm appending the 'dds r' string to the name before hashing so that
+    // the different hashes for the file's DDS, DAS, ..., are all very different.
+    // This will be useful if we use S3 instead of EFS for the Metadata Store.
+    //
+    // The helper() also updates the ledger string.
+    StreamDDS write_the_dds_response(dmr);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
+
+    StreamDAS write_the_das_response(dmr);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+
+    StreamDMR write_the_dmr_response(dmr);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+    write_ledger(); // write the index line
+
+    return (stored_dds && stored_das && stored_dmr);
+
+    return false;
+}
+/**
+ * Common code to copy a response to an output stream.
+ *
+ * @param name Granule name
+ * @param os Write the response to this stream
+ * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
+ * @param object_name One of DDS, DAS or DMR
+ */
+void
+GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
+{
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Read " << object_name << " response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        transfer_bytes(fd, os);
+        unlock_and_close(item_name); // closes fd
     }
     else {
-        return false;
+        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
     }
-
-    if (entry_size == 0) return false;
-
-    time_t dataset_time = entry_time;
-    if (stat(dataset.c_str(), &buf) == 0) {
-        dataset_time = buf.st_mtime;
-    }
-
-    // Trick: if the d_dataset is not a file, stat() returns error and
-    // the times stay equal and the code uses the cache entry.
-
-    // TODO Fix this so that the code can get a LMT from the correct handler.
-    if (dataset_time > entry_time) return false;
-
-    return true;
-}
-
-string GlobalMetadataStore::get_resource_id(DDS *dds, const string &constraint)
-{
-    return dds->filename() + "#" + constraint;
 }
 
 /**
- * Return the base pathname for the resource_id in the cache.
+ * @brief Write the stored DDS response to a stream
  *
- * @param resource_id The resource ID from get_resource_id()
- * @return The base pathname to that resource ID - a hashed pathname
- * where collisions are avoided by appending an underscore and an int.
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
  */
-string GlobalMetadataStore::get_hash_basename(const string &resource_id)
+void
+GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
 {
-    // Get a hash function for strings
-    HASH_OBJ<string> str_hash;
-    size_t hashValue = str_hash(resource_id);
-    stringstream hashed_id;
-    hashed_id << hashValue;
-    string cache_file_name = get_cache_directory();
-    cache_file_name.append("/").append(get_cache_file_prefix()).append(hashed_id.str());
-
-    return cache_file_name;
+    get_response_helper(name, os, "dds_r", "DDS");
 }
 
 /**
- * @brief Look for a cache hit; load a DDS and its associated data
+ * @brief Write the stored DAS response to a stream
  *
- * This private method compares the 'resource_id' value with the resource id
- * in the named cache file. If they match, then this cache file contains
- * the data we're after. In that case this code calls read_data_ddx() which
- * allocates a new DDS object and reads its data from the cache file. If
- * the two resource ids don't match, this method returns null.
- *
- * @param resourceId The resource id is a combination of the filename and the
- * function call part of the CE that built the cached response.
- * @param cache_file_name Value-result parameter: The basename of a cache
- * file that _may_ contain the correct response.
- * @return A pointer to a newly allocated DDS that contains data if the cache file
- * held the correct response, null otherwise.
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
  */
-DDS *
-GlobalMetadataStore::load_from_cache(const string &resource_id, string &cache_file_name)
+void
+GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
 {
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " resource_id: " << resource_id << endl);
-
-    DDS *cached_dds = 0;   // nullptr
-
-    unsigned long suffix_counter = 0;
-    bool keep_looking = true;
-    do {
-        if (suffix_counter > max_collisions) {
-            stringstream ss;
-            ss << "Cache error! There are " << suffix_counter << " hash collisions for the resource '" << resource_id
-                << "' And that is a bad bad thing.";
-            throw BESInternalError(ss.str(), __FILE__, __LINE__);
-        }
-
-        // Build cache_file_name and cache_id_file_name from baseName
-        stringstream cfname;
-        cfname << cache_file_name << "_" << suffix_counter++;
-
-        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " candidate cache_file_name: " << cfname.str() << endl);
-
-        int fd; // unused
-         if (!get_read_lock(cfname.str(), fd)) {
-             BESDEBUG(DEBUG_KEY, __FUNCTION__ << " !get_read_lock(cfname.str(), fd): " << fd << endl);
-             // If get_read_lock() returns false, that means the cache file doesn't exist.
-             // Set keep_looking to false and exit the loop.
-             keep_looking = false;
-             // Set the cache file name to the current value of cfname.str() - this is
-             // the name that does not exist and should be used by write_dataset_to_cache()
-             cache_file_name = cfname.str();
-         }
-         else {
-             // If get_read_lock() returns true, the cache file exists; look and see if
-            // it's the correct one. If so, cached_dds will be true and we exit.
-
-            // Read the first line from the cache file and see if it matches the resource id
-            ifstream cache_file_istream(cfname.str().c_str());
-            char line[max_cacheable_ce_len];
-            cache_file_istream.getline(line, max_cacheable_ce_len);
-            string cached_resource_id;
-            cached_resource_id.assign(line);
-
-            BESDEBUG(DEBUG_KEY, __FUNCTION__ << " cached_resource_id: " << cached_resource_id << endl);
-
-            if (cached_resource_id.compare(resource_id) == 0) {
-                // WooHoo Cache Hit!
-                BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::load_from_cache() - Cache Hit!" << endl);
-
-                // non-null value value for cached_dds will exit the loop
-                cached_dds = read_cached_data(cache_file_istream);
-            }
-
-            unlock_and_close(cfname.str());
-        }
-    } while (!cached_dds && keep_looking);
-
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Cache " << (cached_dds!=0?"HIT":"MISS") << " for: " << cache_file_name << endl);
-
-    return cached_dds;
+    get_response_helper(name, os, "das_r", "DAS");
 }
 
 /**
- * Read data from cache. Allocates a new DDS using the given factory.
+ * @brief Write the stored DMR response to a stream
  *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
  */
-DDS *
-GlobalMetadataStore::read_cached_data(istream &cached_data)
+void
+GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
 {
-    // Build a CachedSequence; all other types are as BaseTypeFactory builds
-    CacheTypeFactory factory;
-    DDS *fdds = new DDS(&factory);
-
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " - BEGIN" << endl);
-
-    // Parse the DDX; throw an exception on error.
-    DDXParser ddx_parser(fdds->get_factory());
-
-    // Parse the DDX, reading up to and including the next boundary.
-    // Return the CID for the matching data part
-    string data_cid; // Not used. jhrg 5/5/16
-    try {
-        ddx_parser.intern_stream(cached_data, fdds, data_cid, DATA_MARK);
-    }
-    catch (Error &e) { // Catch the libdap::Error and throw BESInternalError
-        throw BESInternalError(e.get_error_message(), __FILE__, __LINE__);
-    }
-
-    CacheUnMarshaller um(cached_data);
-
-    for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
-        (*i)->deserialize(um, fdds);
-    }
-
-    // mark everything as read. And 'to send.' That is, make sure that when a response
-    // is retrieved from the cache, all of the variables are marked as 'to be sent.'
-    for (DDS::Vars_iter i = fdds->var_begin(), e = fdds->var_end(); i != e; ++i) {
-        (*i)->set_read_p(true);
-        (*i)->set_send_p(true);
-
-        // For Sequences, deserialize() will update the 'current row number,' which
-        // is the correct behavior but which will also confuse serialize(). Reset the
-        // current row number here so serialize() can start working from row 0. jhrg 5/13/16
-        // Note: Now uses the recursive version of reset_row_number. jhrg 5/16/16
-        if ((*i)->type() == dods_sequence_c) {
-            static_cast<Sequence*>(*i)->reset_row_number(true);
-        }
-    }
-
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " - END." << endl);
-
-    fdds->set_factory(0);   // Make sure there is no left-over cruft in the returned DDS
-
-    return fdds;
+    get_response_helper(name, os, "dmr_r", "DMR");
 }
 
 /**
- * @brief Evaluate the CE function(s) with the DDS and write and return the result
+ * Common code to remove a stored response.
  *
- * This code assumes that the cache has already been searched for a given
- * cache result and none found. It computes the new result, evaluating the
- * CE function(s) and stores that result in the cache. The result is then
- * returned.
- *
- * @param dds Evaluate the CE function(s) in the context of this DDS.
- * @param resource_id
- * @param func_ce projection function(s) from constraint sent by client.
- * @param eval Is this necessary? Could it be a local object?
- * @param cache_file_name Use this name to store the cached result
- * @return The new DDS.
+ * @param name Granule name
+ * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
+ * @param object_name One of DDS, DAS or DMR
  */
-DDS *
-GlobalMetadataStore::write_dataset_to_cache(DDS *dds, const string &resource_id, const string &func_ce,
-    const string &cache_file_name)
+bool
+GlobalMetadataStore::remove_response_helper(const string& name, const string &suffix, const string &object_name)
 {
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " BEGIN " << resource_id << ": "
-        << func_ce << ": " << cache_file_name << endl);
-
-    DDS *fdds = 0;  // will hold the return value
-
-    int fd;
-    if (create_and_lock(cache_file_name, fd)) {
-        // If here, the cache_file_name could not be locked for read access;
-        // try to build it. First make an empty files and get an exclusive lock on them.
-        BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Caching " << resource_id << ", func_ce: " << func_ce << endl);
-
-        // Get an output stream directed at the locked cache file
-        ofstream cache_file_ostream(cache_file_name.c_str(), ios::out|ios::app|ios::binary);
-        if (!cache_file_ostream.is_open())
-            throw BESInternalError("Could not open '" + cache_file_name + "' to write cached response.", __FILE__, __LINE__);
-
-        try {
-            // Write the resource_id to the first line of the cache file
-            cache_file_ostream << resource_id << endl;
-
-            // Evaluate the function
-            ConstraintEvaluator func_eval;
-            func_eval.parse_constraint(func_ce, *dds);
-            fdds = func_eval.eval_function_clauses(*dds);
-
-            fdds->print_xml_writer(cache_file_ostream, true, "");
-
-            cache_file_ostream << DATA_MARK << endl;
-
-            // Define the scope of the StreamMarshaller because for some types it will use
-            // a child thread to send data and it's dtor will wait for that thread to complete.
-            // We want that before we close the output stream (cache_file_stream) jhrg 5/6/16
-            {
-                ConstraintEvaluator new_ce;
-                CacheMarshaller m(cache_file_ostream);
-
-                for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
-                    if ((*i)->send_p()) {
-                        (*i)->serialize(new_ce, *fdds, m, false);
-                    }
-                }
-            }
-
-            // Change the exclusive locks on the new file to a shared lock. This keeps
-            // other processes from purging the new file and ensures that the reading
-            // process can use it.
-            exclusive_to_shared_lock(fd);
-
-            // Now update the total cache size info and purge if needed. The new file's
-            // name is passed into the purge method because this process cannot detect its
-            // own lock on the file.
-            unsigned long long size = update_cache_info(cache_file_name);
-            if (cache_too_big(size)) update_and_purge(cache_file_name);
-
-            unlock_and_close(cache_file_name);
-        }
-        catch (...) {
-            // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
-            cache_file_ostream.close();
-            this->purge_file(cache_file_name);
-            unlock_and_close(cache_file_name);
-            throw;
-        }
+    string hash = get_hash(name + suffix);
+    if (unlink(get_cache_file_name(hash, false).c_str()) == 0) {
+        VERBOSE("Metadata store: Removed " << object_name << " response for '" << hash << "'." << endl);
+        d_ledger_entry.append(" ").append(hash);
+        return true;
+    }
+    else {
+        LOG("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
     }
 
-    return fdds;
+    return false;
 }
-#endif
 
-#if 0
 /**
- * @brief Return a DDS loaded with data that can be serialized back to a client
+ * @brief Remove all cached responses and objects for a granule
  *
- * Given a DDS and a DAP2 constraint expression that contains only projection function
- * calls, either pull a cached DDS* that is the result of evaluating those functions,
- * or evaluate, cache and return the result. This is the main API cacll for this
- * class.
- *
- * @note This method controls the cache lock, ensuring that the cache is
- * unlocked when it returns.
- *
- * @note The code that evaluates the function expression (when needed) could be
- * sped up by using a thread to handle the process of writing the DDS to the cache,
- * but this will be complicated until we have shared pointers (because the DDS*
- * could be deleted while the cache code is still writing it).
- *
- * @param dds
- * @param constraint
- * @param eval
+ * @param name
  * @return
  */
-DDS *
-GlobalMetadataStore::get_or_cache_dataset(DDS *dds, const string &constraint)
+bool
+GlobalMetadataStore::remove_responses(const string &name)
 {
-    // Build the response_id. Since the response content is a function of both the dataset AND the constraint,
-    // glue them together to get a unique id for the response.
-    string resourceId = dds->filename() + "#" + constraint;
+    // Start the index entry
+     d_ledger_entry = string("remove ").append(name);
 
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " resourceId: '" << resourceId << "'" << endl);
+     bool removed_dds = remove_response_helper(name, "dds_r", "DDS");
 
-    // Get a hash function for strings
-    HASH_OBJ<string> str_hash;
+     bool removed_das = remove_response_helper(name, "das_r", "DAS");
 
-    // Use the hash function to hash the resourceId.
-    size_t hashValue = str_hash(resourceId);
-    stringstream hashed_id;
-    hashed_id << hashValue;
+     bool removed_dmr = remove_response_helper(name, "dmr_r", "DMR");
 
-    BESDEBUG(DEBUG_KEY,  __FUNCTION__ << " hashed_id: '" << hashed_id.str() << "'" << endl);
+     write_ledger(); // write the index line
 
-    // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
-    // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
-    string cache_file_name = BESFileLockingCache::get_cache_file_name(hashed_id.str(), false);
-
-    BESDEBUG(DEBUG_KEY,  __FUNCTION__ << " cache_file_name: '" << cache_file_name << "'" << endl);
-
-    // Does the cached dataset exist? if yes, ret_dds points to it. If no,
-    // cache_file_name is updated to be the correct name for write_dataset_
-    // to_cache().
-    DDS *ret_dds = 0;
-    if ((ret_dds = load_from_cache(resourceId, cache_file_name))) {
-        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Data loaded from cache file: " << cache_file_name << endl);
-        ret_dds->filename(dds->filename());
-    }
-    else if ((ret_dds = write_dataset_to_cache(dds, resourceId, constraint, cache_file_name))) {
-        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Data written to cache file: " << cache_file_name << endl);
-    }
-    // get_read_lock() returns immediately if the file does not exist,
-    // but blocks waiting to get a shared lock if the file does exist.
-    else if ((ret_dds = load_from_cache(resourceId, cache_file_name))) {
-        BESDEBUG(DEBUG_KEY,  __FUNCTION__ << " Data loaded from cache file (2nd try): " << cache_file_name << endl);
-        ret_dds->filename(dds->filename());
-    }
-
-    BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Used cache_file_name: " << cache_file_name << " for resource ID: " << resourceId << endl);
-
-    return ret_dds;
+     return  (removed_dds && removed_das && removed_dmr);
 }
-#endif
-
-#if 0
-bool GlobalMetadataStore::can_be_cached(DDS *dds, const string &constraint)
-{
-    BESDEBUG(DEBUG_KEY, __FUNCTION__ << " constraint + dds->filename() length: "
-        << constraint.length() + dds->filename().size() << endl);
-
-    return (constraint.length() + dds->filename().size() <= max_cacheable_ce_len);
-}
-#endif
 

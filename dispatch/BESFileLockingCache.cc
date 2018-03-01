@@ -275,7 +275,7 @@ bool BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
-    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " << "d_cache_dir: '" << d_cache_dir << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - BEGIN" << endl);
 
     if (d_cache_dir.empty()) {
         BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
@@ -298,17 +298,24 @@ bool BESFileLockingCache::m_check_ctor_params()
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
-    if (d_max_cache_size_in_bytes <= 0) {
+    // I changed this from '<=' to '<' since the code now uses a cache size
+    // of zero to indicate that the cache will never be purged. The other
+    // size-related methods all still work. Since the field is unsigned,
+    // testing for '< 0' is pointless. Later on in this code the value is capped
+    // at MAX_CACHE_SIZE_IN_MEGABYTES (set in this file), which is 2^44.
+    // jhrg 2.28.18
+#if 0
+    if (d_max_cache_size_in_bytes < 0) {
         string err = "The cache size was not specified, must be greater than zero";
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
+#endif
 
     BESDEBUG("cache",
         "BESFileLockingCache::" << __func__ << "() -" <<
         " d_cache_dir: " << d_cache_dir <<
         " d_prefix: " << d_prefix <<
-        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes <<
-        " (The cache has been " << (cache_enabled()?"enabled)":"disabled)") << endl);
+        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << endl);
 
     enable();
     return true;
@@ -374,7 +381,8 @@ bool BESFileLockingCache::m_initialize_cache_info()
     d_target_size = d_max_cache_size_in_bytes * 0.8;
 
     BESDEBUG("cache",
-        "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
+        "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: "
+        << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
     bool status = m_check_ctor_params(); // Throws BESError on error; otherwise sets the cache_enabled() property
     if (status) {
@@ -468,8 +476,9 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  failure (false), otherwise block until a shared read-lock can be
  obtained and then return true.
 
- @exception Error is thrown to indicate a number of untoward
- events. */
+ @exception BESInternalError Thrown to indicate a number of untoward
+ events.
+ */
 static bool getSharedLock(const string &file_name, int &ref_fd)
 {
     BESDEBUG("cache2", "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
@@ -761,9 +770,9 @@ bool BESFileLockingCache::cache_too_big(unsigned long long current_size) const
 }
 
 /** @brief Get the cache size.
+ *
  * Read the size information from the cache info file and return it.
  * This methods locks the cache.
- *
  *
  * @return The size of the cache.
  */
@@ -900,6 +909,10 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
  * size of the cache specified in the constructor. This method uses an exclusive
  * lock on the cache for the duration of the purge process.
  *
+ * @note If the cache size in bytes is zero, calling this method has no affect
+ * (the cache is unlimited in size). Other public methods like update_cache_info()
+ * and get_cache_size() still work, however.
+ *
  * @param new_file Do not delete this file. The name of a file this process just
  * added to the cache. Using fcntl(2) locking there is no way this process can
  * detect its own lock, so the shared read lock on the new file won't keep this
@@ -908,6 +921,11 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
 void BESFileLockingCache::update_and_purge(const string &new_file)
 {
     BESDEBUG("cache", "purge - starting the purge" << endl);
+
+    if (is_unlimited()) {
+        BESDEBUG("cache", "purge - unlimited so no need to purge." << endl);
+        return;
+    }
 
     try {
         lock_cache_write();
