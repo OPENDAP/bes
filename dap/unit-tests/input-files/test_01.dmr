@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Dataset name="test_array_4" dapVersion="4.0" dmrVersion="1.0" xml:base="file:dap4/test_array_4.xml"
+<Dataset name="test_array_4" dapVersion="4.0" dmrVersion="1.0" xml:base="input-files/test_01.dmr"
   xmlns="http://xml.opendap.org/ns/DAP/4.0#"
   xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
 

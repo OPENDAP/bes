@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SimpleTypes">
+    <Byte name="b">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </Byte>
+    <Int32 name="i32">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </Int32>
+    <UInt32 name="ui32">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </UInt32>
+    <Int16 name="i16">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </Int16>
+    <UInt16 name="ui16">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </UInt16>
+    <Float32 name="f32">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </Float32>
+    <Float64 name="f64">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </Float64>
+    <String name="s">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </String>
+    <URL name="u">
+        <Attribute name="Description" type="String">
+            <Value>&quot;A test byte&quot;</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>unknown</Value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <Value>&quot;Mark Abbott&quot;</Value>
+                <Value>&quot;Ph.D&quot;</Value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <Value>&quot;COAS Environmental Computer Facility&quot;</Value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <Value>&quot;MetOcean WOCE/OCM&quot;</Value>
+            </Attribute>
+        </Attribute>
+    </URL>
+</Dataset>

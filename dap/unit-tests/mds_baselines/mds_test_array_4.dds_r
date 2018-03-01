@@ -1,0 +1,13 @@
+Dataset {
+    Byte a[row = 3][col = 4];
+    Int16 b[row = 3][col = 4];
+    Int32 c[row = 3][col = 4];
+    UInt16 d[row = 3][col = 4];
+    UInt32 e[row = 3][col = 4];
+    Float32 f[row = 3][col = 4];
+    Float64 g[row = 3][col = 4];
+    String h[row = 3][col = 4];
+    URL i[row = 3][col = 4];
+    Int32 x[row = 3][5];
+    Int32 y[5][col = 4];
+} test_array_4;
