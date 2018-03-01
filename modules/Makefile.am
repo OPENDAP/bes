@@ -4,8 +4,6 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = netcdf_handler fileout_json w10n_handler
-
 SUBDIRS = csv_handler usage asciival www-interface freeform_handler
 
 if BES_DEVELOPER

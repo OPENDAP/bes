@@ -668,7 +668,7 @@ void BESFileLockingCache::lock_cache_read()
 
 /** Unlock the cache info file.
  *
- * @note This is intended to be used internally only bt might be useful in
+ * @note This is intended to be used internally only but might be useful in
  * some settings.
  */
 void BESFileLockingCache::unlock_cache()
