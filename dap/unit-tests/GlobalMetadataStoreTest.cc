@@ -62,7 +62,7 @@ static bool clean = true;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-#define DEBUG_KEY "metadata_store,cache,cache2"
+#define DEBUG_KEY "metadata_store,cache"
 
 using namespace CppUnit;
 using namespace std;
@@ -74,7 +74,6 @@ namespace bes {
 static const string c_mds_prefix = "mds_"; // used when cleaning the cache, etc.
 static const string c_mds_name = "/mds";
 static const string c_mds_baselines = string(TEST_SRC_DIR) + "/mds_baselines";
-
 
 class GlobalMetadataStoreTest: public TestFixture {
 private:
@@ -188,6 +187,8 @@ public:
 
         delete d_test_dmr; d_test_dmr = 0;
 
+        d_mds->delete_instance();
+
         if (clean) clean_cache_dir(d_mds_dir);
 
         DBG(cerr << __func__ << " - END" << endl);
@@ -220,6 +221,9 @@ public:
             d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
             DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
             CPPUNIT_ASSERT(d_mds);
+            CPPUNIT_ASSERT(!d_mds->is_unlimited());
+
+            d_mds->update_and_purge("no_name"); //cheesy test - use -b to read BES debug info
         }
         catch (BESError &e) {
             CPPUNIT_FAIL("Caught exception: " + e.get_message());
@@ -228,6 +232,25 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void ctor_test_3()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            // This one should work and will make the directory
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
+            DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
+            CPPUNIT_ASSERT(d_mds);
+            CPPUNIT_ASSERT(d_mds->is_unlimited());
+
+            d_mds->update_and_purge("no_name");
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught exception: " + e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
     // This test may fail if the -k option is used.
     void cache_a_dds_response()
     {
@@ -651,6 +674,8 @@ public:
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
+    CPPUNIT_TEST(ctor_test_3);
+
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);

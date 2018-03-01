@@ -98,7 +98,8 @@ private:
     // tack this on the front of each cache file name
     std::string d_prefix;
 
-    /// How many bytes can the cache hold before we have to purge
+    /// How many bytes can the cache hold before we have to purge?
+    /// A value of zero indicates a cache of unlimited size.
     unsigned long long d_max_cache_size_in_bytes;
 
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
@@ -159,6 +160,19 @@ public:
     virtual unsigned long long get_cache_size();
     virtual void update_and_purge(const std::string &new_file);
     virtual void purge_file(const std::string &file);
+
+    /**
+     * @brief Is this cache allowed to store as much as it wants?
+     *
+     * If the size of the cache is zero bytes, then it is allowed to
+     * grow with out bounds.
+     *
+     * @return True if the cache is unlimited in size, false if values
+     * will be purged after a preset size is exceeded.
+     */
+    bool is_unlimited() const {
+        return d_max_cache_size_in_bytes == 0;
+    }
 
     /// @return The prefix used for items in an instance of BESFileLockingCache
     const std::string get_cache_file_prefix()

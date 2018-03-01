@@ -40,7 +40,7 @@ response_cache:
 	test -d response_cache  || mkdir response_cache 
 	
 clean-local:
-	-rm -rf tmp response_cache
+	-rm -rf mds pathinfo_files response_cache tmp
 	
 EXTRA_DIST = input-files test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
 

@@ -55,6 +55,7 @@
 #include "GlobalMetadataStore.h"
 
 #define DEBUG_KEY "metadata_store"
+#define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
 
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
@@ -272,7 +273,7 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
     }
 
     // By default, use UTC in the logs.
-    string local_time;
+    string local_time = "no";
     TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
     d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
 }
@@ -409,12 +410,15 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
             // definition. jhrg 2.27.18
             writer(response);   // different writers can write the DDS, DAS or DMR
 
-            // Leave this in place so that sites can make a metadata store of limited size.
-            // For the NASA MetadataStore, cache size will be zero and will thus be unbounded.
-            exclusive_to_shared_lock(fd);
+            // Compute/update/maintain the cache size? This is extra work
+            // that might never be used. It also locks the cache...
+            if (!is_unlimited() || MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED) {
+                // This enables the call to update_cache_info() below.
+                exclusive_to_shared_lock(fd);
 
-            unsigned long long size = update_cache_info(item_name);
-            if (cache_too_big(size)) update_and_purge(item_name);
+                unsigned long long size = update_cache_info(item_name);
+                if (!is_unlimited() && cache_too_big(size)) update_and_purge(item_name);
+            }
 
             unlock_and_close(item_name);
         }
@@ -445,6 +449,59 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
     }
 }
 
+// Documented in the header file - I could not get doxygen comments to work
+// for these two methods in ths file (but al the others are fine). jhrg 2.28.18
+bool
+GlobalMetadataStore::add_responses(DDS *dds, const string &name)
+{
+    // Start the index entry
+    d_ledger_entry = string("add DDS ").append(name);
+
+    // I'm appending the 'dds r' string to the name before hashing so that
+    // the different hashes for the file's DDS, DAS, ..., are all very different.
+    // This will be useful if we use S3 instead of EFS for the Metadata Store.
+    //
+    // The helper() also updates the ledger string.
+    StreamDDS write_the_dds_response(dds);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
+
+    StreamDAS write_the_das_response(dds);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+
+    StreamDMR write_the_dmr_response(dds);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+    write_ledger(); // write the index line
+
+    return (stored_dds && stored_das && stored_dmr);
+}
+
+bool
+GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
+{
+    // Start the index entry
+    d_ledger_entry = string("add DMR ").append(name);
+
+    // I'm appending the 'dds r' string to the name before hashing so that
+    // the different hashes for the file's DDS, DAS, ..., are all very different.
+    // This will be useful if we use S3 instead of EFS for the Metadata Store.
+    //
+    // The helper() also updates the ledger string.
+    StreamDDS write_the_dds_response(dmr);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
+
+    StreamDAS write_the_das_response(dmr);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+
+    StreamDMR write_the_dmr_response(dmr);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+    write_ledger(); // write the index line
+
+    return (stored_dds && stored_das && stored_dmr);
+
+    return false;
+}
 /**
  * Common code to copy a response to an output stream.
  *
@@ -551,55 +608,3 @@ GlobalMetadataStore::remove_responses(const string &name)
      return  (removed_dds && removed_das && removed_dmr);
 }
 
-bool
-GlobalMetadataStore::add_responses(DDS *dds, const string &name)
-{
-    // Start the index entry
-    d_ledger_entry = string("add DDS ").append(name);
-
-    // I'm appending the 'dds r' string to the name before hashing so that
-    // the different hashes for the file's DDS, DAS, ..., are all very different.
-    // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    //
-    // The helper() also updates the ledger string.
-    StreamDDS write_the_dds_response(dds);
-    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
-
-    StreamDAS write_the_das_response(dds);
-    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
-
-    StreamDMR write_the_dmr_response(dds);
-    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
-
-    write_ledger(); // write the index line
-
-    return (stored_dds && stored_das && stored_dmr);
-}
-
-bool
-GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
-{
-    // Start the index entry
-    d_ledger_entry = string("add DMR ").append(name);
-
-    // I'm appending the 'dds r' string to the name before hashing so that
-    // the different hashes for the file's DDS, DAS, ..., are all very different.
-    // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    //
-    // The helper() also updates the ledger string.
-    StreamDDS write_the_dds_response(dmr);
-    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
-
-    StreamDAS write_the_das_response(dmr);
-    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
-
-    StreamDMR write_the_dmr_response(dmr);
-    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
-
-    write_ledger(); // write the index line
-
-    return (stored_dds && stored_das && stored_dmr);
-
-    return false;
-}
-///@}

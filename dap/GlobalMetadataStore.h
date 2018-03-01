@@ -55,12 +55,18 @@ namespace bes {
  * BES Keys used:
  * - _DAP.GlobalMetadataStore.path_: store root directory (assumes the store is
  *   using a POSIX file system)
+ *
  * - _DAP.GlobalMetadataStore.prefix_: prefix for the names of items in the store
+ *
  * - _DAP.GlobalMetadataStore.size_: Maximum size of the store. Zero indicates
  *   unlimited size.
- * - _DAP.GlobalMetadataStore.ledger_: Name of the ledger. A relative pathname
- *   will be interpreted as relative to the directory where the BES was started
- * - _BES.LogTimeLocal_: Use local or GMT time for the ledger entries
+ *
+ * - _DAP.GlobalMetadataStore.ledger_: Name of the ledger. A relative pathname.
+ *   will be interpreted as relative to the directory where the BES was started.
+ *   The default name mds_ledger.txt
+ *
+ * - _BES.LogTimeLocal_: Use local or GMT time for the ledger entries; default is
+ *   to use GMT
  *
  * @todo Add support for altering the xml:base attribute in the DMR response
  * when it is extracted from the MDS.
