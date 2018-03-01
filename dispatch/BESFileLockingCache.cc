@@ -275,7 +275,7 @@ bool BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
-    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " << "d_cache_dir: '" << d_cache_dir << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - BEGIN" << endl);
 
     if (d_cache_dir.empty()) {
         BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
@@ -315,8 +315,7 @@ bool BESFileLockingCache::m_check_ctor_params()
         "BESFileLockingCache::" << __func__ << "() -" <<
         " d_cache_dir: " << d_cache_dir <<
         " d_prefix: " << d_prefix <<
-        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes <<
-        " (The cache has been " << (cache_enabled()?"enabled)":"disabled)") << endl);
+        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << endl);
 
     enable();
     return true;

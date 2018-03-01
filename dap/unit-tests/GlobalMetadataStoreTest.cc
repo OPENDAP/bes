@@ -103,7 +103,7 @@ private:
             d_test_dds = new DDS(&d_btf);
             DDXParser dp(&d_btf);
             string cid; // This is an unused value-result parameter. jhrg 5/10/16
-            dp.intern(string(TEST_SRC_DIR) + "/input-files/test.05.ddx", d_test_dds, cid);
+            dp.intern(string(TEST_SRC_DIR).append("/input-files/test.05.ddx"), d_test_dds, cid);
 
             // for these tests, set the filename to the dataset_name. ...keeps the cache names short
             d_test_dds->filename(d_test_dds->get_dataset_name());
@@ -133,7 +133,7 @@ private:
             DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
 
             // Get a DMR to cache.
-            string file_name = string(TEST_SRC_DIR) + "/input-files/test_01.dmr";
+            string file_name = string(TEST_SRC_DIR).append("/input-files/test_01.dmr");
 
             d_test_dmr = new DMR(&d_d4f);
             D4ParserSax2 dp;
@@ -157,7 +157,7 @@ private:
 
 public:
     GlobalMetadataStoreTest() :
-        d_test_dds(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
+        d_test_dds(0), d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
     {
     }
 
@@ -169,12 +169,12 @@ public:
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
-        if (bes_debug) BESDebug::SetUp(string("cerr,") + DEBUG_KEY);
+        if (bes_debug) BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
 
         if (clean) clean_cache_dir(c_mds_name);
 
         // Contains BES Log parameters but not cache names
-        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/bes.conf";
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
         DBG(cerr << __func__ << " - END" << endl);
     }
@@ -362,6 +362,7 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
+
     void add_response_test()
      {
          DBG(cerr << __func__ << " - BEGIN" << endl);

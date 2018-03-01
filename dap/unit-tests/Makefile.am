@@ -42,11 +42,12 @@ response_cache:
 clean-local:
 	-rm -rf mds pathinfo_files response_cache tmp
 	
-EXTRA_DIST = input-files test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
+EXTRA_DIST = input-files mds_baselines test_utils.cc test_utils.h TestFunction.h \
+test_config.h.in bes.conf.in
 
 CLEANFILES = testout test_config.h bes.conf .dodsrc 
 
-DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log mds_ledger.txt
 
 BES_CONF_IN = bes.conf.in
 
