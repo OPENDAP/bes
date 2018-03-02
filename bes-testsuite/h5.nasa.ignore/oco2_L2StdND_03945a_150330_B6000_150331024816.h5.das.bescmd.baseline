@@ -11,24 +11,13 @@ Attributes {
  Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable length(excluding variable length string), HDF5 reference, HDF5 enum, HDF5 opaque , HDF5 bitfield, HDF5 Array and HDF5 Time datatypes.
  
  The HDF5 datasets(variables in the CF term) and attributes associated with the following dimensions are ignored: 
- 1) non-string datatype scalar variables
- 2) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)
- 3) variables that have any zero size dimensions
+ 1) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)
+ 2) attributes that have any zero size dimensions(not reported due to extreme rarity and non-trivial coding)
 
 
 ******WARNING******
  IGNORED variables due to unsupported datatypes:
  Variable path: /L1bScSoundingReference/sounding_qual_flag
-
-
- The value of the following string variables or attributes are set to empty because the string size exceeds netCDF Java string limit(32767 bytes).
- Note: for string datasets, if the DAP subset feature is applied and the total subsetted string doesn't exceed the netCDF Java string limit, the string value should still return.
-To obtain the string value, change the BES key H5.EnableDropLongString=true at the handler BES configuration file(h5.conf)
-to H5.EnableDropLongString=false.
-
-String variable: /AerosolResults/aerosol_types value is set to empty.
-String variable: /RetrievalHeader/retrieval_time_string value is set to empty.
-String variable: /RetrievalResults/surface_type value is set to empty.
 ";
     }
 }

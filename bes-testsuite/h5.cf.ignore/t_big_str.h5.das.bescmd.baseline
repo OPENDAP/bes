@@ -1,0 +1,8 @@
+Attributes {
+    Ignored_Object_Info {
+        String Message " 
+ This page is for HDF5 CF hyrax data providers or distributors to check if any HDF5 object or attribute information are ignored during the mapping. 
+
+There are no ignored HDF5 objects or attributes.";
+    }
+}

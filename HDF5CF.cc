@@ -1278,6 +1278,8 @@ void File::Gen_Unsupported_Dspace_Info() throw (Exception)
     // Notice in this function, we deliberately don't put the case when an attribute dimension has 0 length.
     // Since doing this requires non-trivial change of the source code and the 0-size attribute case is really, really rare,
     // so we just "ignore" this case in the "ignored" information.
+    // In fact, the zero size variable is allowed in both HDF5 and DAP2. So we don't ignore 0-size HDF5 dataset. So
+    // the only case this function checks is the H5S_NULL case.
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
@@ -2276,9 +2278,8 @@ void File::add_ignored_info_obj_header()
 
     ignored_msg +=
         " \n The HDF5 datasets(variables in the CF term) and attributes associated with the following dimensions are ignored: \n";
-    ignored_msg += " 1) non-string datatype scalar variables\n";
-    ignored_msg += " 2) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)\n";
-    ignored_msg += " 3) variables that have any zero size dimensions\n\n";
+    ignored_msg += " 1) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)\n";
+    ignored_msg += " 2) attributes that have any zero size dimensions(not reported due to extreme rarity and non-trivial coding)\n\n";
 
 }
 
@@ -2316,9 +2317,8 @@ File:: add_ignored_info_obj_dspace_header() {
     // Add ignored dataspace header.
     ignored_msg += " \n Variables and attributes ignored due to the unsupported dimensions. \n";
     ignored_msg += " In general, the unsupported dimensions include: \n";
-    ignored_msg += " 1) non-string datatype scalar variables\n";
-    ignored_msg += " 2) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)\n";
-    ignored_msg += " 3) variables that have any zero size dimensions\n";
+    ignored_msg += " 1) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)\n";
+    ignored_msg += " 2) variables that have any zero size dimensions\n";
 
 }
 #endif
@@ -2722,11 +2722,9 @@ void File::add_ignored_droplongstr_hdr()
 {
 
     if (false == this->have_ignored) this->have_ignored = true;
-    string hdr = "\n\n The value of the following string variables or attributes";
-    hdr += " are set to empty because the string size exceeds netCDF Java string limit(32767 bytes).\n";
-    hdr += " Note: for string datasets, if the DAP subset feature is applied and the total subsetted";
-    hdr += " string doesn't exceed the netCDF Java string limit, the string value should still return.\n";
-    hdr += "To obtain the string value, change the BES key H5.EnableDropLongString=true at the handler BES";
+    string hdr = "\n\n The values of the following string variables ";
+    hdr += " are set to empty because at least one string size in this variable exceeds netCDF Java string limit(32767 bytes).\n";
+    hdr += "To obtain the values, change the BES key H5.EnableDropLongString=true at the handler BES";
     hdr += " configuration file(h5.conf)\nto H5.EnableDropLongString=false.\n\n";
 
     if (ignored_msg.rfind(hdr) == string::npos) ignored_msg += hdr;

@@ -53,6 +53,10 @@ AT_BESCMD_RESPONSE_TEST([t_2d_2dll.nc4.h5.das.bescmd])
 # The current handler doesn't support scalar.
 # The handler supports the scalar since Hyrax 1.13.1. Comment out this test.
 #AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
+# The handler will drop long string when the EnableDropLongString key is turned on.
+# This only occurs when one element of a string dataset >32767(netcdf java limitation)
+AT_BESCMD_RESPONSE_TEST([t_big_str.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_big_str_dset.h5.das.bescmd])
 
 # Links and named datatypes
 AT_BESCMD_RESPONSE_TEST([t_link_comment.h5.das.bescmd])

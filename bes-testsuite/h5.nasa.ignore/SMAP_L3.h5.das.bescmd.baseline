@@ -14,8 +14,10 @@ Attributes {
  1) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)
  2) attributes that have any zero size dimensions(not reported due to extreme rarity and non-trivial coding)
 
+
 ******WARNING******
-IGNORED soft links or external links are: 
- Link paths: /g2/slink3 /g2/slink4 /slink1 /slink2";
+ Ignored attributes under root and groups:
+ Group path: /Metadata/GridSpatialRepresentation  Attribute names: numberOfDimensions
+";
     }
 }
