@@ -52,7 +52,7 @@
 #define AT_EXIT(x)
 #endif
 
-namespace gateway {
+using namespace gateway;
 
 GatewayCache *GatewayCache::d_instance = 0;
 bool GatewayCache::d_enabled = true;
@@ -189,5 +189,3 @@ GatewayCache::get_instance()
 
     return d_instance;
 }
-
-} /* namespace gateway */

@@ -82,7 +82,6 @@ public:
 	virtual ~GatewayCache() { }
 };
 
-
 } /* namespace gateway */
 
 #endif /* MODULES_GATEWAY_MODULE_GATEWAYCACHE_H_ */

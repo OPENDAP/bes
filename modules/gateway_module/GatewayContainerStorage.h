@@ -24,9 +24,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
@@ -36,6 +33,8 @@
 #include "BESContainerStorageVolatile.h"
 
 class BESCatalogUtils;
+
+namespace gateway {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -56,5 +55,7 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 };
+
+} // namespace gateway
 
 #endif // GatewayContainerStorage_h_
