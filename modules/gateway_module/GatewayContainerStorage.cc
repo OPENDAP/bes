@@ -30,8 +30,14 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
+#include "config.h"
+
+#include <string>
+
 #include "GatewayContainerStorage.h"
 #include "GatewayContainer.h"
+
+using namespace std;
 
 /** @brief create an instance of this persistent store with the given name.
  *

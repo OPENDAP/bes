@@ -33,10 +33,6 @@
 #ifndef GatewayContainerStorage_h_
 #define GatewayContainerStorage_h_ 1
 
-#include <list>
-
-using std::list;
-
 #include "BESContainerStorageVolatile.h"
 
 class BESCatalogUtils;
@@ -53,12 +49,12 @@ class BESCatalogUtils;
  */
 class GatewayContainerStorage: public BESContainerStorageVolatile {
 public:
-    GatewayContainerStorage(const string &n);
+    GatewayContainerStorage(const std::string &n);
     virtual ~GatewayContainerStorage();
 
-    virtual void add_container(const string &s_name, const string &r_name, const string &type);
+    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // GatewayContainerStorage_h_
