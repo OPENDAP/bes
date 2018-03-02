@@ -188,10 +188,4 @@ GatewayCache::get_instance()
     return d_instance;
 }
 
-#if 0
-GatewayCache::~GatewayCache()
-{
-    delete_instance();
-}
-#endif
 } /* namespace gateway */
