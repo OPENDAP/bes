@@ -291,7 +291,7 @@ public:
 
         DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
@@ -338,7 +338,7 @@ public:
 
         DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
@@ -408,7 +408,7 @@ public:
 
         DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 

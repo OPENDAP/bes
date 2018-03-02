@@ -144,7 +144,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -161,7 +161,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -185,7 +185,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -202,7 +202,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -226,7 +226,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -243,7 +243,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_3.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_3.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -267,7 +267,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -285,7 +285,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_1.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_1.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -309,7 +309,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -327,7 +327,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_2.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_2.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -380,7 +380,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
+        string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -397,7 +397,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_4.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_4.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -423,7 +423,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
+        string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -440,7 +440,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_5.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_5.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -466,7 +466,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
+        string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -483,7 +483,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_6.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_6.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -509,7 +509,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -527,7 +527,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_4.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_4.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
@@ -553,7 +553,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -571,7 +571,7 @@ public:
         result_bbox->print_val(oss);
         DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_5.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_5.baseline");
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
