@@ -6,7 +6,6 @@
   <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
 </a>
 
-<a href="https://opendap.github.io/bes/html/">BES API Documentation</a>
 
 README for the OPeNDAP BES 
 ==========================
@@ -132,9 +131,12 @@ _conf_: Where the automake and autoconf configuration files live
 _docs_: Where some bes documentation resides
 
 # About the BES
+ 
+<a href="https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html"> 
+The latest and most comprehensive Hyrax documentation is here.</a>
+<br /> <br/>
+<a href="https://opendap.github.io/bes/html/">The BES API Documentation is here</a>
 
-Note see http://docs.opendap.org/index.php/Hyrax
-for the latest and most comprehensive documentation.
 
 ## Configuration
 
