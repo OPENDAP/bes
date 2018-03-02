@@ -86,6 +86,7 @@ private:
 
 public:
     BESCatalogUtils(const std::string &name);
+
     virtual ~BESCatalogUtils()
     {
     }
