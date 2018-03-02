@@ -6,6 +6,8 @@
   <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
 </a>
 
+<a href="https://opendap.github.io/bes/html/">BES API Documentation</a>
+
 README for the OPeNDAP BES 
 ==========================
 
