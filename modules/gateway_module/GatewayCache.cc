@@ -29,6 +29,8 @@
  *      Author: ndp
  */
 
+#include "config.h"
+
 #include <sys/stat.h>
 
 #include <string>

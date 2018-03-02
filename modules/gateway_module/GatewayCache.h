@@ -32,8 +32,6 @@
 #ifndef MODULES_GATEWAY_MODULE_GATEWAYCACHE_H_
 #define MODULES_GATEWAY_MODULE_GATEWAYCACHE_H_
 
-#include "config.h"
-
 #include "BESFileLockingCache.h"
 
 namespace gateway
