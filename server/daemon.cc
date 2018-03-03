@@ -1062,7 +1062,7 @@ int main(int argc, char *argv[])
         // If the -c option was not passed, but the -i option
         // was passed, then use the -i option to construct
         // the path to the config file
-        if (install_dir.empty() && !install_dir.empty()) {
+        if (config_file.empty() && !install_dir.empty()) {
             if (install_dir[install_dir.length() - 1] != '/') {
                 install_dir += '/';
             }

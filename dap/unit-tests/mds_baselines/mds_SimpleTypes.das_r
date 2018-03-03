@@ -1,0 +1,83 @@
+Attributes {
+    b {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    i32 {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    ui32 {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    i16 {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    ui16 {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    f32 {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    f64 {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    s {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+    u {
+        String Description "A test byte";
+        String units "unknown";
+        Facility {
+            String PrincipleInvestigator "Mark Abbott", "Ph.D";
+            String DataCenter "COAS Environmental Computer Facility";
+            String DrifterType "MetOcean WOCE/OCM";
+        }
+    }
+}

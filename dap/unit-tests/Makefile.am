@@ -6,12 +6,11 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types \
-$(DAP_LIBS) $(LIBS)
+LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
-AM_LDADD += $(CPPUNIT_LIBS)
+LDADD += $(CPPUNIT_LIBS)
 endif
 
 # These are not used by automake but are often useful for certain types of
@@ -32,22 +31,28 @@ BUILT_SOURCES = test_config.h
 
 # Adding this here ensures the directory is made at runtime and in the
 # build directory (I think - check this). jhrg 1/19/18
-noinst_DATA = response_cache tmp bes.conf
-
-tmp:
-	test -d tmp || mkdir tmp
+noinst_DATA = response_cache pathinfo_files bes.conf
 
 response_cache:
 	test -d response_cache  || mkdir response_cache 
 	
-clean-local:
-	-rm -rf tmp response_cache
+# If 'input-files' does not exist, replicate it here. tar (used to make
+# the source dist) dereferences symbolic links, so we make them this 
+# way to get distcheck to work.
+pathinfo_files:
+	test -d pathinfo_files || mkdir -p pathinfo_files/nc
+	(cd pathinfo_files/nc && touch testfile.txt && ln -s testfile.txt link_to_testfile.txt)
+	(cd pathinfo_files && ln -s nc link_to_nc)
 	
-EXTRA_DIST = input-files test_utils.cc test_utils.h TestFunction.h test_config.h.in bes.conf.in
+clean-local:
+	-rm -rf mds pathinfo_files response_cache tmp
+	
+EXTRA_DIST = input-files mds_baselines test_utils.cc test_utils.h TestFunction.h \
+test_config.h.in bes.conf.in
 
 CLEANFILES = testout test_config.h bes.conf .dodsrc 
 
-DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log mds_ledger.txt
 
 BES_CONF_IN = bes.conf.in
 
@@ -71,7 +76,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 if CPPUNIT
 UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
-TemporaryFileTest
+ShowPathInfoTest TemporaryFileTest GlobalMetadataStoreTest
 
 else
 UNIT_TESTS =
@@ -92,26 +97,34 @@ ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDataDDSResponse.o \
 ../BESDDSResponse.o ../BESDapResponse.o ../BESDapFunctionResponseCache.o \
 ../BESStoredDapResultCache.o ../DapFunctionUtils.o ../CachedSequence.o ../CacheTypeFactory.o \
 ../CacheMarshaller.o ../CacheUnMarshaller.o ../../dispatch/BESFileLockingCache.o
-ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(AM_LDADD) 
+ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(LDADD) 
 
 FunctionResponseCacheTest_SOURCES = FunctionResponseCacheTest.cc $(TEST_SRC)
 FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunctionUtils.o \
 ../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o 
-FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(AM_LDADD)
+FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(LDADD)
 
 ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
 ObjMemCacheTest_OBJS = ../ObjMemCache.o
-ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
+ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(LDADD)
+
+ShowPathInfoTest_SOURCES = ShowPathInfoTest.cc
+ShowPathInfoTest_OBJS = ../ShowPathInfoResponseHandler.o 
+ShowPathInfoTest_LDADD = $(ShowPathInfoTest_OBJS) $(LDADD)
 
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
 TemporaryFileTest_OBJS = ../TempFile.o
-TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(AM_LDADD)
+TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
+
+GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
+GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
-# StoredDap2ResultTest_LDADD = $(AM_LDADD)
+# StoredDap2ResultTest_LDADD = $(LDADD)
 
 # StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
-# StoredDap4ResultTest_LDADD = $(AM_LDADD)
+# StoredDap4ResultTest_LDADD = $(LDADD)
 
 # SequenceAggregationServerTest_SOURCES = SequenceAggregationServerTest.cc
-# SequenceAggregationServerTest_LDADD = $(AM_LDADD)
+# SequenceAggregationServerTest_LDADD = $(LDADD)

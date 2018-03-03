@@ -13,7 +13,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=gateway_module
 M_VER=1.2.2
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -23,21 +23,23 @@ SUBDIRS = . tests
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libgateway_module.la
 
-GATEWAY_SRCS = \
-		GatewayModule.cc GatewayRequestHandler.cc		\
-		GatewayContainer.cc GatewayContainerStorage.cc		\
-		GatewayError.cc GatewayRequest.cc GatewayUtils.cc \
-		GatewayCache.cc RemoteHttpResource.cc curl_utils.cc
+GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
+		GatewayContainer.cc GatewayContainerStorage.cc	\
+		GatewayError.cc GatewayUtils.cc GatewayCache.cc	\
+		RemoteHttpResource.cc curl_utils.cc \
+		GatewayPathInfoCommand.cc \
+		GatewayPathInfoResponseHandler.cc
 
-GATEWAY_HDRS = \
-		GatewayModule.h GatewayRequestHandler.h			\
-		GatewayResponseNames.h					\
-		GatewayContainer.h GatewayContainerStorage.h		\
-		GatewayError.h GatewayRequest.h GatewayUtils.h  \
-		GatewayCache.h RemoteHttpResource.h curl_utils.h
+# GatewayRequest.cc 
+
+GATEWAY_HDRS = GatewayModule.h GatewayRequestHandler.h			\
+		GatewayResponseNames.h GatewayContainer.h		\
+		GatewayContainerStorage.h GatewayError.h		\
+		GatewayUtils.h GatewayCache.h RemoteHttpResource.h	\
+		curl_utils.h GatewayPathInfoCommand.h			\
+		GatewayPathInfoResponseHandler.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
-# libgateway_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libgateway_module_la_LDFLAGS = -avoid-version -module 
 libgateway_module_la_LIBADD = $(LIBADD)
 

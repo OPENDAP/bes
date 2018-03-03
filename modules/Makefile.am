@@ -4,9 +4,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = netcdf_handler fileout_json w10n_handler fileout_covjson
-
-SUBDIRS += csv_handler usage asciival www-interface freeform_handler
+SUBDIRS = csv_handler usage asciival www-interface freeform_handler
 
 if BES_DEVELOPER
 SUBDIRS += debug_functions dmrpp_module

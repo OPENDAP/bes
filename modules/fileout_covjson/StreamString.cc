@@ -2,10 +2,13 @@
 //
 // StringStream.cc
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES CovJSON File Out Module
 //
-// Copyright (c) 2014 OPeNDAP, Inc.
+// Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
+// Author: Corey Hemphill <hemphilc@oregonstate.edu>
+// Author: River Hendriksen <hendriri@oregonstate.edu>
+// Author: Riley Rimer <rrimer@oregonstate.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,6 +33,5 @@
 #include "StreamString.h"
 
 namespace libdap {
-
 
 } /* namespace libdap */

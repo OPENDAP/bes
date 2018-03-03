@@ -72,7 +72,7 @@ typedef std::list<cache_entry> CacheFiles;
  * latter obtains a shared lock iff the file already exists. The unlock()
  * methods unlock a file. The lock_cache_info() and unlock_cache_info() are
  * used to control access to the whole cache - with the open + lock and
- * close + unlock operations performed atomically. Other methods that operate
+ * close + unlock operations are performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
  *
  * @note The locking mechanism uses Unix fcntl(2) and so is _per process_. That
@@ -98,7 +98,8 @@ private:
     // tack this on the front of each cache file name
     std::string d_prefix;
 
-    /// How many bytes can the cache hold before we have to purge
+    /// How many bytes can the cache hold before we have to purge?
+    /// A value of zero indicates a cache of unlimited size.
     unsigned long long d_max_cache_size_in_bytes;
 
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
@@ -126,10 +127,10 @@ private:
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
-//protected:
 public:
+    // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
     BESFileLockingCache(): d_cache_enabled(true), d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0),
-        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) {};
+        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) { }
 
     BESFileLockingCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
@@ -142,8 +143,6 @@ public:
     }
 
     void initialize(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
-
-public:
 
     virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
 
@@ -162,6 +161,19 @@ public:
     virtual void update_and_purge(const std::string &new_file);
     virtual void purge_file(const std::string &file);
 
+    /**
+     * @brief Is this cache allowed to store as much as it wants?
+     *
+     * If the size of the cache is zero bytes, then it is allowed to
+     * grow with out bounds.
+     *
+     * @return True if the cache is unlimited in size, false if values
+     * will be purged after a preset size is exceeded.
+     */
+    bool is_unlimited() const {
+        return d_max_cache_size_in_bytes == 0;
+    }
+
     /// @return The prefix used for items in an instance of BESFileLockingCache
     const std::string get_cache_file_prefix()
     {
@@ -179,7 +191,7 @@ public:
     static bool dir_exists(const std::string &dir);
 
     /// @return Is this cache enabled?
-    bool cache_enabled()
+    bool cache_enabled() const
     {
         return d_cache_enabled;
     }
@@ -190,7 +202,7 @@ public:
         d_cache_enabled = false;
     }
 
-    /// @brief Enabel the cache
+    /// @brief Enable the cache
     void enable()
     {
         d_cache_enabled = true;

@@ -82,7 +82,7 @@ const int num_dim = 2;
 const int dim_sz = 3;
 
 // Move this into the class when we goto C++-11
-const string d_cache_prefix = "rc"; // used when cleaning the cache, etc.
+const string d_mds_prefix = "rc"; // used when cleaning the cache, etc.
 
 /**
  * Server function used by the ConstraintEvalutor. This is needed because passing
@@ -238,7 +238,7 @@ public:
     void cache_a_response()
     {
         DBG(cerr << "cache_a_response() - BEGIN" << endl);
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
+        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_mds_prefix, 1000);
 
         DBG(cerr << "cache_a_response() - Retrieved BESDapFunctionResponseCache object: " << cache << endl);
 
@@ -268,7 +268,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
+        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_mds_prefix, 1000);
         try {
             const string constraint = "test(\"bar\")";
 
@@ -326,7 +326,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_cache_prefix, 1000);
+        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_mds_prefix, 1000);
         try {
             // This code is here to load the DataDDX response into the cache if it is not
             // there already. If it is there, it reads it from the cache.
@@ -424,6 +424,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = FunctionResponseCacheTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+	    ++i;
         }
     }
 

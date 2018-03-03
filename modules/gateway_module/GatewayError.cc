@@ -24,9 +24,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
@@ -34,6 +31,9 @@
 #include <cstdlib>
 
 #include "GatewayError.h"
+
+using namespace std;
+using namespace gateway;
 
 /** @brief read the target response file that contains textual error
  * information
@@ -77,4 +77,3 @@ void GatewayError::read_error(const string &filename, string &err, const string 
 
     fclose(f);
 }
-

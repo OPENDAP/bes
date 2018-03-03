@@ -1,20 +1,22 @@
-
-![build](https://travis-ci.org/OPENDAP/bes.svg?branch=master)
+<a href="https://travis-ci.org/OPENDAP/bes">
+  <img alt="TravisCI" src="https://travis-ci.org/OPENDAP/bes.svg?branch=master"/>
+</a>
 
 <a href="https://scan.coverity.com/projects/opendap-bes">
   <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
 </a>
 
+
 README for the OPeNDAP BES 
 ==========================
 
-Updated for version 3.19.1
+# Updated for version 3.19.1
 
 BESInterface/XMLInterface improved
 
 Testing/Logging Improvements
 
-Updated for version 3.19.0
+# Updated for version 3.19.0
 
 New Server function: range() This function returns the min and max
 values of a variable and, for a vector, a boolean indicating that it
@@ -24,7 +26,7 @@ GeoTiff file can now be aggregated.
 
 See NEWS for more information.
 
-Updated for version 3.18.0
+# Updated for version 3.18.0
 
 New features:
 
@@ -51,7 +53,7 @@ This release fixes a number of bugs:
 - Repaired various BES timeout issues.
     https://opendap.atlassian.net/browse/HYRAX-341
 
-Updated for version 3.17.4
+# Updated for version 3.17.4
 
 Added support for cached metadata objects.
 
@@ -81,7 +83,7 @@ Contents
 * Configuration: How to configure the BES
 * Testing: Once built and configured, how do you know it works?
 
-## DAP2 versus DAP4
+# DAP2 versus DAP4
 
 The code on the master branch now supports both DAP2 and DAP4
 responses, and the data format handlers do as well. Because of that,
@@ -95,7 +97,7 @@ Each of the handlers, which can be built as submodules within this
 code, also has DAP2 and DAP4 support on their master branch and a
 'dap2' branch for the DAP2-only code.
 
-## What's here:
+# What's here:
 
 Here there's a bes-config script which will be installing in $prefix/bin that
 can be used to determine where the libraries and their header files have been
@@ -128,10 +130,13 @@ _conf_: Where the automake and autoconf configuration files live
 
 _docs_: Where some bes documentation resides
 
-## About the BES
+# About the BES
+ 
+<a href="https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html"> 
+The latest and most comprehensive Hyrax documentation is here.</a>
+<br /> <br/>
+<a href="https://opendap.github.io/bes/html/">The BES API Documentation is here</a>
 
-Note see http://docs.opendap.org/index.php/Hyrax
-for the latest and most comprehensive documentation.
 
 ## Configuration
 
@@ -357,3 +362,19 @@ list of <container>.constraint="" clauses.
     Place, Suite 330, Boston, MA 02111-1307 USA. Older versions of the BES were
     copyrighted by the University Corporation for Atmospheric Research;
     see the file COPYRIGHT_UCAR.
+    
+    The BES uses PicoSHA2 - a library that provides an implementation of the 
+    SHA256 hashing algorithm; its copyright follows
+    
+    Copyright (C) 2017 okdshin
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+    

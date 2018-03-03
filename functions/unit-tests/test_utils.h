@@ -30,7 +30,7 @@ namespace libdap {
 class Array;
 }
 
-std::string readTestBaseline(const std::string &fn);
+std::string read_test_baseline(const std::string &fn);
 
 template<typename T> void read_data_from_file(const std::string &file, unsigned int size, T *dest);
 

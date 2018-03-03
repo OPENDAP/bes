@@ -2,10 +2,13 @@
 //
 // StringStream.h
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES CovJSON File Out Module
 //
-// Copyright (c) 2014 OPeNDAP, Inc.
+// Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
+// Author: Corey Hemphill <hemphilc@oregonstate.edu>
+// Author: River Hendriksen <hendriri@oregonstate.edu>
+// Author: Riley Rimer <rrimer@oregonstate.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,6 +29,7 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+
 #ifndef STREAMSTRING_H_
 #define STREAMSTRING_H_
 
@@ -36,32 +40,26 @@ namespace libdap {
 class StreamString: public Str{
 
 public:
+    StreamString(const string &n): Str(n) {};
+    StreamString(const string &n, const string &d): Str(n,d) {};
+    virtual ~StreamString() {};
+    StreamString(const Str &copy_from): Str(copy_from) {};
 
-	StreamString(const string &n): Str(n) {};
-	StreamString(const string &n, const string &d): Str(n,d) {}
+    friend ostream& operator<<(ostream& out, const Str& s) // output
+    {
+        out <<  s.value();
 
-    virtual ~StreamString()
-    {}
+	return out;
+    }
 
-    StreamString(const Str &copy_from): Str(copy_from){}
+    friend istream& operator>>(istream& in, Str& s) // input
+    {
+	string tmp;
+	in >> tmp;
+	s.set_value(tmp);
 
-
-	friend ostream& operator<<(ostream& out, const Str& s) // output
-	{
-		out <<  s.value();
-
-		return out;
-	}
-
-	friend istream& operator>>(istream& in, Str& s) // input
-	{
-		string tmp;
-		in >> tmp;
-		s.set_value(tmp);
-
-		return in;
-	}
-
+	return in;
+    }
 };
 
 } /* namespace libdap */

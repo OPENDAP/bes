@@ -38,8 +38,8 @@
 #include "W10NNames.h"
 #include "W10nJsonTransmitter.h"
 #include "W10nJsonRequestHandler.h"
-#include "ShowPathInfoResponseHandler.h"
-#include "ShowPathInfoCommand.h"
+#include "W10nShowPathInfoResponseHandler.h"
+#include "W10nShowPathInfoCommand.h"
 #include "w10n_utils.h"
 
 #define RETURNAS_W10N "w10n"
@@ -55,11 +55,11 @@ W10NModule::initialize( const string &modname )
 
 
 
-    BESDEBUG( W10N_DEBUG_KEY, "    adding " << SHOW_PATH_INFO_RESPONSE_STR << " command" << endl ) ;
-    BESXMLCommand::add_command( SHOW_PATH_INFO_RESPONSE_STR, ShowPathInfoCommand::CommandBuilder ) ;
+    BESDEBUG( W10N_DEBUG_KEY, "    adding " << W10N_SHOW_PATH_INFO_REQUEST << " command" << endl ) ;
+    BESXMLCommand::add_command( W10N_SHOW_PATH_INFO_REQUEST, W10nShowPathInfoCommand::CommandBuilder ) ;
 
-    BESDEBUG(W10N_DEBUG_KEY, "    adding " << SHOW_PATH_INFO_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( SHOW_PATH_INFO_RESPONSE, ShowPathInfoResponseHandler::ShowPathInfoResponseBuilder ) ;
+    BESDEBUG(W10N_DEBUG_KEY, "    adding " << W10N_SHOW_PATH_INFO_REQUEST_HANDLER_KEY << " response handler" << endl ) ;
+    BESResponseHandlerList::TheList()->add_handler( W10N_SHOW_PATH_INFO_REQUEST_HANDLER_KEY, W10nShowPathInfoResponseHandler::W10nShowPathInfoResponseBuilder ) ;
 
     BESDEBUG( W10N_DEBUG_KEY, "    adding " << RETURNAS_W10N << " transmitter" << endl );
     BESReturnManager::TheManager()->add_transmitter(RETURNAS_W10N, new W10nJsonTransmitter());
@@ -74,7 +74,7 @@ W10NModule::terminate( const string & /*modname*/ )
 {
     BESDEBUG(W10N_DEBUG_KEY, "Removing w10n Modules:" << endl ) ;
 
-    BESResponseHandlerList::TheList()->remove_handler( SHOW_PATH_INFO_RESPONSE ) ;
+   //  BESResponseHandlerList::TheList()->remove_handler( SHOW_PATH_INFO_RESPONSE ) ;
 
     BESDEBUG(W10N_DEBUG_KEY, "Done Removing w10n Modules." << endl ) ;
 }
