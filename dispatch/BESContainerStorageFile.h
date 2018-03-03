@@ -35,6 +35,7 @@
 
 #include <string>
 #include <map>
+#include <list>
 
 using std::string;
 using std::map;
@@ -88,7 +89,7 @@ public:
     virtual bool del_container(const string &s_name);
     virtual bool del_containers();
 
-    virtual bool isData(const string &inQuestion, list<string> &provides);
+    virtual bool isData(const string &inQuestion, std::list<string> &provides);
 
     virtual void show_containers(BESInfo &info);
 
