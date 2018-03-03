@@ -23,30 +23,19 @@ SUBDIRS = . tests
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libgateway_module.la
 
-GATEWAY_SRCS = \
-		GatewayModule.cc GatewayRequestHandler.cc		\
-		GatewayContainer.cc GatewayContainerStorage.cc		\
-<<<<<<< HEAD
-		GatewayError.cc GatewayRequest.cc GatewayUtils.cc \
-		GatewayPathInfoCommand.cc GatewayPathInfoResponseHandler.cc \
-=======
-		GatewayError.cc GatewayUtils.cc \
->>>>>>> master
-		GatewayCache.cc RemoteHttpResource.cc curl_utils.cc
+GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
+		GatewayContainer.cc GatewayContainerStorage.cc	\
+		GatewayError.cc GatewayUtils.cc GatewayCache.cc	\
+		RemoteHttpResource.cc curl_utils.cc \
+		GatewayPathInfoCommand.cc \
+		GatewayPathInfoResponseHandler.cc
 
-# GatewayRequest.cc 
-
-GATEWAY_HDRS = \
-		GatewayModule.h GatewayRequestHandler.h			\
-		GatewayResponseNames.h					\
-		GatewayContainer.h GatewayContainerStorage.h		\
-<<<<<<< HEAD
-		GatewayError.h GatewayRequest.h GatewayUtils.h  \
-		GatewayPathInfoCommand.h GatewayPathInfoResponseHandler.h \
-=======
-		GatewayError.h GatewayUtils.h  \
->>>>>>> master
-		GatewayCache.h RemoteHttpResource.h curl_utils.h
+GATEWAY_HDRS = GatewayModule.h GatewayRequestHandler.h			\
+		GatewayResponseNames.h GatewayContainer.h		\
+		GatewayContainerStorage.h GatewayError.h		\
+		GatewayUtils.h GatewayCache.h RemoteHttpResource.h	\
+		curl_utils.h GatewayPathInfoCommand.h			\
+		GatewayPathInfoResponseHandler.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
 libgateway_module_la_LDFLAGS = -avoid-version -module 
