@@ -88,7 +88,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
 
-    // TODO access() would test for existence faster. jhrg 2.25.18
+    // TODO access() or stat() would test for existence faster. jhrg 2.25.18
     DIR *dip = opendir(_root_dir.c_str());
     if (dip == NULL) {
         string serr = "BESCatalogDirectory - root directory " + _root_dir + " does not exist";
@@ -265,7 +265,7 @@ BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
  * @return
  */
 unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, const string &use_node,
-    /*const string &coi,*/ BESCatalogEntry *entry, bool dirs_only)
+    BESCatalogEntry *entry, bool dirs_only)
 {
     unsigned int cnt = 0;
 

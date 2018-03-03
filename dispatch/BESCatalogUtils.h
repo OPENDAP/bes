@@ -114,7 +114,7 @@ public:
     BESCatalogUtils::match_citer match_list_end() const;
 
     virtual unsigned int get_entries(DIR *dip, const std::string &fullnode, const std::string &use_node,
-        /*const std::string &coi,*/ BESCatalogEntry *entry, bool dirs_only);
+        BESCatalogEntry *entry, bool dirs_only);
 
     static void display_entry(BESCatalogEntry *entry, BESInfo *info);
 
