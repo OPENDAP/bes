@@ -338,7 +338,7 @@ public:
             entry->dump(strm);
             string str = strm.str();
             str = remove_ptr(str);
-            string empty_response = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/empty_response.txt");
+            string empty_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/empty_response.txt");
 
             DBG(cerr << "baseline: " << empty_response << endl);
             DBG(cerr << "response: " << str << endl);
@@ -427,7 +427,7 @@ public:
             str = remove_ptr(str);
             str = remove_stuff(str);
 
-            string one_response = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/one_response.txt");
+            string one_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/one_response.txt");
 
             DBG(cerr << "baseline: " << one_response << endl);
             DBG(cerr << "response: " << str << endl);
@@ -455,7 +455,7 @@ public:
             string str = remove(strm_s, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string cat_root = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/cat_root.txt");
+            string cat_root = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/cat_root.txt");
 
             DBG(cerr << "baseline: " << cat_root << endl);
             DBG(cerr << "response: " << str << endl);
@@ -507,7 +507,7 @@ public:
             string str = remove(strm_s, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string two_response = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/two_response.txt");
+            string two_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/two_response.txt");
             DBG(cerr << "baseline: " << two_response << endl);
             DBG(cerr << "response: " << str << endl);
 
@@ -534,7 +534,7 @@ public:
             string str = remove(strm_s, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string other_root = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/other_root.txt");
+            string other_root = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/other_root.txt");
             DBG(cerr << "baseline: " << other_root << endl);
             DBG(cerr << "response: " << str << endl);
 
@@ -561,7 +561,7 @@ public:
             string str = remove(strm_s, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string other_root_info = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/other_root_info.txt");
+            string other_root_info = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/other_root_info.txt");
             DBG(cerr << "baseline: " << other_root_info << endl);
             DBG(cerr << "response: " << str << endl);
 
@@ -589,7 +589,7 @@ public:
             str = remove(str, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string spec_node = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/spec_node.txt");
+            string spec_node = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/spec_node.txt");
             DBG(cerr << "baseline: " << spec_node << endl);
             DBG(cerr << "response: " << str << endl);
 
@@ -617,7 +617,7 @@ public:
             str = remove(str, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string spec_info = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/spec_info.txt");
+            string spec_info = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/spec_info.txt");
             DBG(cerr << "baseline: " << spec_info << endl);
             DBG(cerr << "response: " << str << endl);
 
@@ -644,7 +644,7 @@ public:
             string str = remove(strm_s, "lastModified", 0);
             str = remove(str, "size", 0);
 
-            string default_node = readTestBaseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/default_node.txt");
+            string default_node = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/default_node.txt");
             DBG(cerr << "baseline: " << default_node << endl);
             DBG(cerr << "response: " << str << endl);
 
