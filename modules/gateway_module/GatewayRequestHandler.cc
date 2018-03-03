@@ -1,5 +1,29 @@
 // GatewayRequestHandler.cc
 
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of gateway_module, A C++ module that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+
+// Copyright (c) 2002,2003 OPeNDAP, Inc.
+// Author: Patrick West <pwest@ucar.edu>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
 #include "config.h"
 
 #include <InternalErr.h>
@@ -20,9 +44,10 @@
 #include "GatewayResponseNames.h"
 
 using namespace libdap;
+using namespace gateway;
 
 GatewayRequestHandler::GatewayRequestHandler(const string &name) :
-        BESRequestHandler(name)
+    BESRequestHandler(name)
 {
     add_handler(VERS_RESPONSE, GatewayRequestHandler::gateway_build_vers);
     add_handler(HELP_RESPONSE, GatewayRequestHandler::gateway_build_help);
@@ -36,8 +61,7 @@ bool GatewayRequestHandler::gateway_build_vers(BESDataHandlerInterface &dhi)
 {
     bool ret = true;
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
-    if (!info)
-        throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
+    if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
 #if 0
     info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
 #endif
@@ -49,19 +73,18 @@ bool GatewayRequestHandler::gateway_build_help(BESDataHandlerInterface &dhi)
 {
     bool ret = true;
     BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
-    if (!info)
-        throw InternalErr(__FILE__, __LINE__, "Expected a BESInfo instance");
+    if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESInfo instance");
 
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
-    map < string, string > attrs;
-    attrs["name"] = MODULE_NAME ;
-    attrs["version"] = MODULE_VERSION ;
+    map<string, string> attrs;
+    attrs["name"] = MODULE_NAME;
+    attrs["version"] = MODULE_VERSION;
 #if 0
     attrs["name"] = PACKAGE_NAME;
     attrs["version"] = PACKAGE_VERSION;
 #endif
-    list < string > services;
+    list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(Gateway_NAME, services);
     if (services.size() > 0) {
         string handles = BESUtil::implode(services, ',');
@@ -81,4 +104,3 @@ void GatewayRequestHandler::dump(ostream &strm) const
     BESRequestHandler::dump(strm);
     BESIndent::UnIndent();
 }
-
