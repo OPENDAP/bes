@@ -9,34 +9,75 @@ AT_INIT([bes.conf besstandalone getdap])
 
 AT_TESTED([besstandalone])
 
+AT_ARG_OPTION_ARG([baselines],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
+
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
-m4_define([_AT_BESCMD_TEST],   
-[AT_SETUP([BESCMD $1])
-AT_KEYWORDS([bescmd])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_CLEANUP])
-
-m4_define([_AT_BESCMD_PATTERN_TEST],   
-[AT_SETUP([BESCMD $1])
-AT_KEYWORDS([bescmd])
-
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([grep "`cat $2`" stdout], [], [ignore], [], [])
-
-AT_CLEANUP])
-
-m4_define([AT_BESCMD_RESPONSE_TEST],
-[_AT_BESCMD_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline])
+m4_define([_AT_BESCMD_TEST], [dnl
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+    AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+    AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+    AT_CLEANUP
 ])
 
-m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST],
-[_AT_BESCMD_PATTERN_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline])
+m4_define([_AT_BESCMD_PATTERN_TEST], [dnl
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+    AT_CHECK([grep "`cat $2`" stdout], [], [ignore], [], [])
+
+    AT_CLEANUP
 ])
 
-AT_BESCMD_RESPONSE_TEST([ShowPathInfo_01.bescmd])
-AT_BESCMD_RESPONSE_TEST([ShowPathInfo_02.bescmd])
+m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
+    _AT_BESCMD_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline])
+])
+
+m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
+    _AT_BESCMD_PATTERN_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline])
+])
+
+m4_define([AT_BESCMD_SHOW_RESPONSE_TEST], [dnl
+    _AT_BESCMD_SHOW_RESPONSE_TEST([$abs_srcdir/baselines/$1], [$abs_srcdir/baselines/$1.baseline], [$2])
+])
+
+m4_define([_AT_BESCMD_SHOW_RESPONSE_TEST], [dnl
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([show])
+
+    input=$1
+    baseline=$2
+    pass=$3
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+    AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input |
+              sed 's/\(.*\)\(lastModified="[[0-9]]*"\)\(.*\)/\1lastModified="elided"\3/g' |
+              sed 's/\(.*\)\(size="[[0-9]]*"\)\(.*\)/\1size="elided"\3/g' |
+              sed 's/\(.*\)\(count="[[0-9]]*"\)\(.*\)/\1count="elided"\3/g'
+              ], [], [stdout])
+    AT_CHECK([mv stdout $baseline.tmp])
+    ],
+    [
+    AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | 
+              sed 's/\(.*\)\(lastModified="[[0-9]]*"\)\(.*\)/\1lastModified="elided"\3/g' |
+              sed 's/\(.*\)\(size="[[0-9]]*"\)\(.*\)/\1size="elided"\3/g' |
+              sed 's/\(.*\)\(count="[[0-9]]*"\)\(.*\)/\1count="elided"\3/g'
+              ], [], [stdout])
+    AT_CHECK([diff -b -B $baseline stdout])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    ])
+
+    AT_CLEANUP
+])
+
+AT_BESCMD_SHOW_RESPONSE_TEST([ShowPathInfo_01.bescmd])
+AT_BESCMD_SHOW_RESPONSE_TEST([ShowPathInfo_02.bescmd])
 
 AT_BESCMD_RESPONSE_TEST([atomicTypes_meta.bescmd])
 AT_BESCMD_RESPONSE_TEST([atomicTypes_varByte_meta.bescmd])
