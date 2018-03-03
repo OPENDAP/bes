@@ -24,13 +24,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
-
-#include "GatewayContainer.h"
 
 #include <BESSyntaxUserError.h>
 #include <BESInternalError.h>
@@ -38,10 +33,13 @@
 #include <BESUtil.h>
 #include <TheBESKeys.h>
 
-#include "GatewayRequest.h"
+#include "GatewayContainer.h"
 #include "GatewayUtils.h"
 #include "GatewayResponseNames.h"
 #include "RemoteHttpResource.h"
+
+using namespace std;
+using namespace gateway;
 
 /** @brief Creates an instances of GatewayContainer with symbolic name and real
  * name, which is the remote request.
@@ -55,7 +53,8 @@
  */
 GatewayContainer::GatewayContainer(const string &sym_name,
         const string &real_name, const string &type) :
-        BESContainer(sym_name, real_name, type), _remoteResource(0) {
+        BESContainer(sym_name, real_name, type), d_remoteResource(0) {
+
     if (type.empty())
         set_container_type("gateway");
 
@@ -84,10 +83,10 @@ GatewayContainer::GatewayContainer(const string &sym_name,
 }
 
 GatewayContainer::GatewayContainer(const GatewayContainer &copy_from) :
-        BESContainer(copy_from), _remoteResource(copy_from._remoteResource) {
+        BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
     // we can not make a copy of this container once the request has
     // been made
-    if (_remoteResource) {
+    if (d_remoteResource) {
         string err = (string) "The Container has already been accessed, "
                 + "can not create a copy of this container.";
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -95,12 +94,12 @@ GatewayContainer::GatewayContainer(const GatewayContainer &copy_from) :
 }
 
 void GatewayContainer::_duplicate(GatewayContainer &copy_to) {
-    if (copy_to._remoteResource) {
+    if (copy_to.d_remoteResource) {
         string err = (string) "The Container has already been accessed, "
                 + "can not duplicate this resource.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-    copy_to._remoteResource = _remoteResource;
+    copy_to.d_remoteResource = d_remoteResource;
     BESContainer::_duplicate(copy_to);
 }
 
@@ -112,7 +111,7 @@ GatewayContainer::ptr_duplicate() {
 }
 
 GatewayContainer::~GatewayContainer() {
-    if (_remoteResource) {
+    if (d_remoteResource) {
         release();
     }
 }
@@ -135,18 +134,18 @@ string GatewayContainer::access() {
     if (type == "gateway")
         type = "";
 
-    if(!_remoteResource) {
+    if(!d_remoteResource) {
         BESDEBUG( "gateway", "GatewayContainer::access() - Building new RemoteResource." << endl );
-        _remoteResource = new gateway::RemoteHttpResource(url);
-        _remoteResource->retrieveResource();
+        d_remoteResource = new gateway::RemoteHttpResource(url);
+        d_remoteResource->retrieveResource();
     }
     BESDEBUG( "gateway", "GatewayContainer::access() - Located remote resource." << endl );
 
 
-    string cachedResource = _remoteResource->getCacheFileName();
+    string cachedResource = d_remoteResource->getCacheFileName();
     BESDEBUG( "gateway", "GatewayContainer::access() - Using local cache file: " << cachedResource << endl );
 
-    type = _remoteResource->getType();
+    type = d_remoteResource->getType();
     set_container_type(type);
     BESDEBUG( "gateway", "GatewayContainer::access() - Type: " << type << endl );
 
@@ -167,10 +166,10 @@ string GatewayContainer::access() {
  * @return true if the resource is released successfully and false otherwise
  */
 bool GatewayContainer::release() {
-    if (_remoteResource) {
+    if (d_remoteResource) {
         BESDEBUG( "gateway", "GatewayContainer::release() - Releasing RemoteResource" << endl);
-        delete _remoteResource;
-        _remoteResource = 0;
+        delete d_remoteResource;
+        d_remoteResource = 0;
     }
 
     BESDEBUG( "gateway", "done releasing gateway response" << endl);
@@ -189,11 +188,11 @@ void GatewayContainer::dump(ostream &strm) const {
             << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
-    if (_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << _remoteResource->getCacheFileName()
+    if (d_remoteResource) {
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
                 << endl;
         strm << BESIndent::LMarg << "response headers: ";
-        vector<string> *hdrs = _remoteResource->getResponseHeaders();
+        vector<string> *hdrs = d_remoteResource->getResponseHeaders();
         if (hdrs) {
             strm << endl;
             BESIndent::Indent();
@@ -212,4 +211,3 @@ void GatewayContainer::dump(ostream &strm) const {
     }
     BESIndent::UnIndent();
 }
-
