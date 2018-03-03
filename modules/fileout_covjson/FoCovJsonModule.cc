@@ -48,7 +48,7 @@ using std::endl;
 #include <BESDebug.h>
 
 #define RETURNAS_COVJSON "covjson"
-#define RETURNAS_ICOVJSON "icovjson"
+#define RETURNAS_ICOVJSON "covjson"
 
 
 
