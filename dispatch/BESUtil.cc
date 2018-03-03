@@ -779,17 +779,13 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 #endif
 
 #if 1
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart:  '" << firstPart  << "'" << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: '" << secondPart << "'" << endl);
 
-    assert(!firstPart.empty());
+    // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
 
     string first = firstPart;
     string second = secondPart;
-
-    if (ensureLeadingSlash) {
-        if (first[0] != '/') first = "/" + first;
-    }
 
     // make sure there are not multiple slashes at the end of the first part...
     // Note that this removes all of the slashes. jhrg 9/27/16
@@ -804,7 +800,27 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         second.erase(0, 1);
     }
 
-    string newPath = first.append("/").append(second);
+    string newPath;
+
+    if(first.empty()){
+        newPath = second;
+    }
+    else if(second.empty()){
+        newPath = first;
+    }
+    else {
+        newPath = first.append("/").append(second);
+    }
+
+    if (ensureLeadingSlash) {
+        if(newPath.empty()){
+            newPath = "/";
+        }
+        else if(newPath.compare(0,1,"/")){
+            newPath = "/" + newPath;
+        }
+    }
+
 
     BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
 
