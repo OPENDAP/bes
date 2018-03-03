@@ -22,28 +22,17 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#include <unistd.h>
+#include "config.h"
 
 #include <sstream>
-#include <GNURegex.h>
 
-#include "util.h"
-#include "debug.h"
-#include "Error.h"
-
-#include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
-#include "BESError.h"
 
-#include "BESRegex.h"
-#include "TheBESKeys.h"
-#include <BESUtil.h>
+#include "BESDebug.h"
+#include "BESUtil.h"
 
 #include "GatewayCache.h"
 #include "GatewayUtils.h"
@@ -51,8 +40,7 @@
 #include "RemoteHttpResource.h"
 
 using namespace std;
-
-namespace gateway {
+using namespace gateway;
 
 /**
  * Builds a RemoteHttpResource object associated with the passed \c url parameter.
@@ -61,7 +49,7 @@ namespace gateway {
  */
 RemoteHttpResource::RemoteHttpResource(const string &url)
 {
-    _initialized = false;
+    d_initialized = false;
 
     d_fd = 0;
     d_curl = 0;
@@ -73,27 +61,23 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
         string err = "RemoteHttpResource(): Remote resource URL is empty";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
+
     d_remoteResourceUrl = url;
+
     BESDEBUG("gateway", "RemoteHttpResource() - URL: " << d_remoteResourceUrl << endl);
 
-    /*
-     *
-     *
-     * EXAMPLE: returned value parameter for CURL *
-     *
-     CURL *www_lib_init(CURL **curl); // function type signature
+    // EXAMPLE: returned value parameter for CURL *
+    //
+    // CURL *www_lib_init(CURL **curl); // function type signature
+    //
+    // CURL *pvparam = 0;               // passed value parameter
+    // result = www_lib_init(&pvparam); // the call to the method
 
+    d_curl = init(d_error_buffer);  // This may throw either Error or InternalErr
 
-     CURL *pvparam = 0;               // passed value parameter
-     result = www_lib_init(&pvparam);  // the call to the method
-     */
-
-    d_curl = libcurl::init(d_error_buffer);  // This may throw either Error or InternalErr
-
-    libcurl::configureProxy(d_curl, d_remoteResourceUrl);     // Configure the a proxy for this url (if appropriate).
+    configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
 
     BESDEBUG("gateway", "RemoteHttpResource() - d_curl: " << d_curl << endl);
-
 }
 
 /**
@@ -112,8 +96,8 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
-        GatewayCache *cache= GatewayCache::get_instance();
-        if(cache){
+        GatewayCache *cache = GatewayCache::get_instance();
+        if (cache) {
             cache->unlock_and_close(d_resourceCacheFileName);
             BESDEBUG("gateway", "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
             d_resourceCacheFileName.clear();
@@ -128,7 +112,6 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
 
     BESDEBUG("gateway", "~RemoteHttpResource() - END   resourceURL: " << d_remoteResourceUrl << endl);
     d_remoteResourceUrl.clear();
-
 }
 
 /**
@@ -143,22 +126,21 @@ void RemoteHttpResource::retrieveResource()
     BESDEBUG("gateway",
         "RemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
-    if (_initialized) {
+    if (d_initialized) {
         BESDEBUG("gateway", "RemoteHttpResource::retrieveResource() - END  Already initialized." << endl);
         return;
     }
 
     // Get a pointer to the singleton cache instance for this process.
     GatewayCache *cache = GatewayCache::get_instance();
-    if(!cache){
+    if (!cache) {
         ostringstream oss;
         oss << __func__ << "() - FAILED to get local cache."
-            " Unable to proceed with request for " << this->d_remoteResourceUrl <<
-            " The gateway_module MUST have a valid cache configuration to operate." << endl;
+            " Unable to proceed with request for " << this->d_remoteResourceUrl
+            << " The gateway_module MUST have a valid cache configuration to operate." << endl;
         BESDEBUG("gateway", oss.str());
-        throw BESInternalError(oss.str(), __FILE__,__LINE__);
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
-
 
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).
@@ -180,7 +162,7 @@ void RemoteHttpResource::retrieveResource()
         if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
             BESDEBUG("gateway",
                 "RemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName << endl);
-            _initialized = true;
+            d_initialized = true;
             return;
         }
 
@@ -217,7 +199,7 @@ void RemoteHttpResource::retrieveResource()
 
             BESDEBUG("gateway", "RemoteHttpResource::retrieveResource() - END" << endl);
 
-            _initialized = true;
+            d_initialized = true;
 
             return;
         }
@@ -225,7 +207,7 @@ void RemoteHttpResource::retrieveResource()
             if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG("gateway",
                     "RemoteHttpResource::retrieveResource() - Remote resource is in cache. cache_file_name: " << d_resourceCacheFileName << endl);
-                _initialized = true;
+                d_initialized = true;
                 return;
             }
         }
@@ -260,7 +242,7 @@ void RemoteHttpResource::writeResourceToFile(int fd)
     try {
         BESDEBUG("gateway",
             "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-        status = libcurl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
+        status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
             d_error_buffer); // Throws Error.
         if (status >= 400) {
             BESDEBUG("gateway",
@@ -269,13 +251,16 @@ void RemoteHttpResource::writeResourceToFile(int fd)
             string msg = "Error while reading the URL: '";
             msg += d_remoteResourceUrl;
             msg += "'The HTTP request returned a status of " + libdap::long_to_string(status) + " which means '";
-            msg += libcurl::http_status_to_string(status) + "' \n";
+            msg += http_status_to_string(status) + "' \n";
             throw libdap::Error(msg);
         }
         BESDEBUG("gateway",
             "RemoteHttpResource::writeResourceToFile() - Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 
         // rewind the file
+        // FIXME I think the idea here is that we have the file open and we should just keep
+        // reading from it. But the container mechanism works with file names, so we will
+        // likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
         int status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
@@ -337,30 +322,29 @@ void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
         // Content disposition exists, grab the filename
         // attribute
         GatewayUtils::Get_type_from_disposition(disp, type);
-        BESDEBUG( "gateway", "RemoteHttpResource::setType() - Evaluated content-disposition '" << disp
-            << "' matched type: \"" << type
-            << "\"" << endl );
-        }
+        BESDEBUG("gateway",
+            "RemoteHttpResource::setType() - Evaluated content-disposition '" << disp << "' matched type: \"" << type << "\"" << endl);
+    }
 
-        // still haven't figured out the type. Check the content-type
-        // next, translate to the BES module name. It's also possible
-        // that even though Content-disposition was available, we could
-        // not determine the type of the file.
+    // still haven't figured out the type. Check the content-type
+    // next, translate to the BES module name. It's also possible
+    // that even though Content-disposition was available, we could
+    // not determine the type of the file.
     if (type.empty() && !ctype.empty()) {
         GatewayUtils::Get_type_from_content_type(ctype, type);
-        BESDEBUG( "gateway", "RemoteHttpResource::setType() - Evaluated content-type '" << ctype << "' matched type \"" << type << "\"" << endl );
-        }
+        BESDEBUG("gateway",
+            "RemoteHttpResource::setType() - Evaluated content-type '" << ctype << "' matched type \"" << type << "\"" << endl);
+    }
 
-        // still haven't figured out the type. Now check the actual URL
-        // and see if we can't match the URL to a module name
+    // still haven't figured out the type. Now check the actual URL
+    // and see if we can't match the URL to a module name
     if (type.empty()) {
         GatewayUtils::Get_type_from_url(d_remoteResourceUrl, type);
-        BESDEBUG( "gateway", "RemoteHttpResource::setType() - Evaluated url '" << d_remoteResourceUrl
-            << "' matched type: \"" << type
-            << "\"" << endl );
-        }
+        BESDEBUG("gateway",
+            "RemoteHttpResource::setType() - Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
+    }
 
-        // still couldn't figure it out, punt
+    // still couldn't figure it out, punt
     if (type.empty()) {
         string err = (string) "RemoteHttpResource::setType() - Unable to determine the type of data"
             + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
@@ -377,5 +361,3 @@ void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
     BESDEBUG("gateway", "RemoteHttpResource::setType() - END" << endl);
 
 }
-
-} /* namespace gateway */

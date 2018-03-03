@@ -61,7 +61,7 @@ class BESInfo ;
  * @see BESDefine
  * @see BESDefinitionStorageList
  */
-class BESDefinitionStorage : BESObj
+class BESDefinitionStorage : public BESObj
 {
 protected:
     string		_my_name ;

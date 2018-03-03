@@ -35,10 +35,14 @@
 #define BESContainerStorageVolatile_h_ 1
 
 #include <map>
+#include <list>
 #include <string>
+#include <ostream>
 
+#if 0
 using std::map;
 using std::string;
+#endif
 
 #include "BESContainerStorage.h"
 
@@ -57,28 +61,30 @@ using std::string;
  */
 class BESContainerStorageVolatile: public BESContainerStorage {
 private:
-    map<string, BESContainer *> _container_list;
+    std::map<std::string, BESContainer *> _container_list;
+
 protected:
-    string _root_dir;
+    std::string _root_dir;
     bool _follow_sym_links;
 
     virtual void add_container(BESContainer *c);
 public:
-    BESContainerStorageVolatile(const string &n);
+    BESContainerStorageVolatile(const std::string &n);
     virtual ~BESContainerStorageVolatile();
 
-    typedef map<string, BESContainer *>::const_iterator Container_citer;
-    typedef map<string, BESContainer *>::iterator Container_iter;
-    virtual BESContainer * look_for(const string &sym_name);
-    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
-    virtual bool del_container(const string &s_name);
+    typedef std::map<std::string, BESContainer *>::const_iterator Container_citer;
+    typedef std::map<std::string, BESContainer *>::iterator Container_iter;
+
+    virtual BESContainer * look_for(const std::string &sym_name);
+    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    virtual bool del_container(const std::string &s_name);
     virtual bool del_containers();
 
-    virtual bool isData(const string &inQuestion, list<string> &provides);
+    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
 
     virtual void show_containers(BESInfo &info);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESContainerStorageVolatile_h_

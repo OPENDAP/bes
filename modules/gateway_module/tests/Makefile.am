@@ -36,7 +36,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/gateway_handlerTest
+TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -46,7 +46,8 @@ clean-local:
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
+
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 

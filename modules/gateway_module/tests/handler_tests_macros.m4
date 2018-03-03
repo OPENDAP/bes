@@ -126,10 +126,13 @@ m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
+        REMOVE_DATE_TIME([$baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
-        AT_CHECK([diff -b -B $baseline stdout])
+        AT_CHECK([mv stdout result.tmp])
+        REMOVE_DATE_TIME([result.tmp])
+        AT_CHECK([diff -b -B $baseline result.tmp])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
 
@@ -149,7 +152,7 @@ dnl jhrg 6/3/16
  
 m4_define([REMOVE_DATE_TIME], [dnl
     sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}\( GMT\)*\( Hyrax-[[-0-9a-zA-Z.]]*\)*@removed date-time@g' < $1 > $1.sed
-    dnl sed 's@Hyrax@server@g' < $1.sed > $1
+    dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
     mv $1.sed $1
 ])
 
