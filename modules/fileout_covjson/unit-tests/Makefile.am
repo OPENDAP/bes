@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/fileout_json $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) 
+LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -63,7 +63,7 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../FoDapJsonTransform.o ../fojson_utils.o ../FoInstanceJsonTransform.o 
+OBJS = ../FoDapJsonTransform.o ../fojson_utils.o
 
 FoJsonTest_SOURCES = FoJsonTest.cc
 FoJsonTest_LDADD = $(OBJS) $(LIBADD)

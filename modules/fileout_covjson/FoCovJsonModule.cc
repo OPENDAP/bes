@@ -39,7 +39,6 @@ using std::endl;
 
 #include "FoCovJsonModule.h"
 #include "FoDapCovJsonTransmitter.h"
-#include "FoInstanceCovJsonTransmitter.h"
 #include "FoCovJsonRequestHandler.h"
 #include "BESRequestHandlerList.h"
 
@@ -75,10 +74,6 @@ void FoCovJsonModule::initialize(const string &modname)
 
     BESDEBUG( "focovjson", "    adding " << RETURNAS_COVJSON << " transmitter" << endl );
     BESReturnManager::TheManager()->add_transmitter(RETURNAS_COVJSON, new FoDapCovJsonTransmitter());
-
-
-    BESDEBUG( "focovjson", "    adding " << RETURNAS_ICOVJSON << " transmitter" << endl );
-    BESReturnManager::TheManager()->add_transmitter(RETURNAS_ICOVJSON, new FoInstanceCovJsonTransmitter());
 
 
     BESDebug::Register("focovjson");
