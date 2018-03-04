@@ -24,9 +24,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
@@ -34,8 +31,6 @@
 #define I_GatewayRequest_H 1
 
 #include <string>
-
-using std::string;
 
 #include <HTTPResponse.h>
 
@@ -52,7 +47,7 @@ public:
     {
     }
     ;
-    HTTPResponse * make_request(const string &url, string &type);
+    HTTPResponse * make_request(const std::string &url, std::string &type);
 };
 
 #endif // I_GatewayRequest_H

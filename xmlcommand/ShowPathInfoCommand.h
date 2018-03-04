@@ -1,9 +1,12 @@
 
-#ifndef A_W10NXMLCatalogCommand_h
-#define A_W10NXMLCatalogCommand_h 1
+#ifndef A_ShowPathInfoCommand_h
+#define A_ShowPathInfoCommand_h 1
 
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
+
+#define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
+
 
 class ShowPathInfoCommand: public BESXMLCommand {
 public:
@@ -24,4 +27,4 @@ public:
     static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };
 
-#endif // A_W10NXMLCatalogCommand_h
+#endif // A_ShowPathInfoCommand_h

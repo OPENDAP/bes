@@ -242,7 +242,7 @@ string getAttributeValue(BaseType *bt, string aName)
  */
 bool matchesCfRoleOrStandardName(BaseType *bt, string aValue)
 {
-    // Confirm that submitted variable has a 'location' attribute whose value is "node".
+    // Confirm that submitted variable has a 'cf_role' attribute whose value is "aValue".
     if (!checkAttributeValue(bt, CF_ROLE, aValue)) {
         // Missing the 'cf_role' attribute? Check for a 'standard_name' attribute whose value is "aValue".
         if (!checkAttributeValue(bt, CF_STANDARD_NAME, aValue)) {

@@ -49,6 +49,7 @@
 #include "BESXMLDeleteContainersCommand.h"
 #include "BESXMLDeleteDefinitionCommand.h"
 #include "BESXMLDeleteDefinitionsCommand.h"
+#include "ShowPathInfoCommand.h"
 
 #include "SetContextsNames.h"
 #include "XMLSetContextsCommand.h"
@@ -100,6 +101,10 @@ int BESXMLDefaultCommands::initialize(int, char**)
 
     BESXMLCommand::add_command( DELETE_DEFINITION_STR, BESXMLDeleteDefinitionCommand::CommandBuilder);
     BESXMLCommand::add_command( DELETE_DEFINITIONS_STR, BESXMLDeleteDefinitionsCommand::CommandBuilder);
+
+    BESDEBUG( "besxml", "    adding " << SHOW_PATH_INFO_RESPONSE_STR << " command" << endl ) ;
+    BESXMLCommand::add_command( SHOW_PATH_INFO_RESPONSE_STR, ShowPathInfoCommand::CommandBuilder ) ;
+
 
     BESDEBUG("besxml", "Done Initializing default commands:" << endl);
 

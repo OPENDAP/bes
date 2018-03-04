@@ -441,7 +441,7 @@ void *pthread_multi_worker(void *muh_pointer)
  */
 void get_shards_no_curl_handle_reuse(vector<Shard*>*shards, unsigned int max_easy_handles){
 
-    cerr << __func__ << "() - Curl easy handles will NOT be recycled. keep_alive: true " << endl;
+    cerr << __func__ << "() - Curl easy handles will NOT be recycled." << endl;
     if(dry_run) return;
 
     vector<vector<Shard*>*> shard_bundles;

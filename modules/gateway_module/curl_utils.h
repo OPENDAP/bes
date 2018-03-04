@@ -31,35 +31,23 @@
 #ifndef CURL_UTILS_H_
 #define CURL_UTILS_H_
 
-
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#include "util.h"
-#include "BESDebug.h"
+#include <string>
+#include <vector>
 
-
-
-using std::vector;
-
-
-
-namespace libcurl {
-
+namespace gateway {
 
 CURL *init(char *error_buffer);
 
-bool configureProxy(CURL *curl, const string &url);
+bool configureProxy(CURL *curl, const std::string &url);
 
-long read_url(CURL *curl,
-              const string &url,
-              int fd,
-              vector<string> *resp_hdrs,
-              const vector<string> *headers,
-              char error_buffer[]);
+long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
+    const std::vector<std::string> *headers, char error_buffer[]);
 
-string http_status_to_string(int status);
+std::string http_status_to_string(int status);
 
+} // namespace gateway
 
-} /* namespace libcurl */
 #endif /* CURL_UTILS_H_ */

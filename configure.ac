@@ -859,6 +859,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/fileout_json/unit-tests/Makefile 
     modules/fileout_json/tests/Makefile 
     modules/fileout_json/tests/atlocal
+
+    modules/fileout_covjson/Makefile
+    modules/fileout_covjson/unit-tests/Makefile 
+    modules/fileout_covjson/tests/Makefile 
+    modules/fileout_covjson/tests/atlocal
     
     modules/freeform_handler/Makefile
     modules/freeform_handler/tests/Makefile
