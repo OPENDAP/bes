@@ -128,8 +128,6 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
     CPPUNIT_TEST(test_abstract_object_metadata_representation);
     CPPUNIT_TEST(test_abstract_object_data_representation);
-    CPPUNIT_TEST(test_instance_object_metadata_representation);
-    CPPUNIT_TEST(test_instance_object_data_representation);
 
     CPPUNIT_TEST_SUITE_END();
 
