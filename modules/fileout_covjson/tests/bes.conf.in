@@ -1,17 +1,17 @@
 
-BES.ServerAdministrator=admin.email.address@your.domain.name
+BES.ServerAdministrator=support@opendap.org
 
-BES.User=user_name
-BES.Group=group_name
+BES.User=bes
+BES.Group=bes_group
 
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader,json
+BES.modules=dap,cmd,dapreader,covjson
 BES.module.dap=@modulesdir@/libdap_module.so
 BES.module.cmd=@modulesdir@/libdap_xml_module.so
 BES.module.dapreader=@modulesdir@/libdapreader_module.so
-BES.module.json=@abs_top_builddir@/.libs/libfojson_module.so
+BES.module.covjson=@abs_top_builddir@/.libs/libfocovjson_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
@@ -66,4 +66,3 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-

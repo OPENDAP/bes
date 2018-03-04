@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
--I$(top_srcdir)/modules/fileout_json $(DAP_CFLAGS)
+-I$(top_srcdir)/modules/fileout_covjson $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
 
 if CPPUNIT
@@ -50,7 +50,7 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = FoJsonTest
+UNIT_TESTS = FoCovJsonTest
 else
 UNIT_TESTS =
 
@@ -63,7 +63,7 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../FoDapJsonTransform.o ../fojson_utils.o
+OBJS = ../FoDapCovJsonTransform.o ../focovjson_utils.o
 
-FoJsonTest_SOURCES = FoJsonTest.cc
-FoJsonTest_LDADD = $(OBJS) $(LIBADD)
+FoCovJsonTest_SOURCES = FoCovJsonTest.cc
+FoCovJsonTest_LDADD = $(OBJS) $(LIBADD)
