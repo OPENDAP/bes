@@ -23,14 +23,14 @@ lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfocovjson_module.la
 
 libfocovjson_module_la_SOURCES = $(FOCOVJSON_SRC) $(FOCOVJSON_HDR)
-libfocovjson_module_la_LDFLAGS = -avoid-version -module 
+libfocovjson_module_la_LDFLAGS = -avoid-version -module
 libfocovjson_module_la_LIBADD = $(LIBADD)
 
-FOCOVJSON_SRC = FoInstanceCovJsonTransform.cc FoInstanceCovJsonTransmitter.cc FoCovJsonRequestHandler.cc FoCovJsonModule.cc \
-	FoDapCovJsonTransmitter.cc FoDapCovJsonTransform.cc StreamString.cc focovjson_utils.cc
+FOCOVJSON_SRC = FoCovJsonRequestHandler.cc FoCovJsonModule.cc FoDapCovJsonTransmitter.cc FoDapCovJsonTransform.cc \
+	StreamString.cc focovjson_utils.cc
 
-FOCOVJSON_HDR = FoInstanceCovJsonTransform.h FoInstanceCovJsonTransmitter.h FoCovJsonRequestHandler.h FoCovJsonModule.h \
-	FoDapCovJsonTransmitter.h FoDapCovJsonTransform.h StreamString.h focovjson_utils.h
+FOCOVJSON_HDR = FoCovJsonRequestHandler.h FoCovJsonModule.h FoDapCovJsonTransmitter.h FoDapCovJsonTransform.h \
+	StreamString.h focovjson_utils.h
 
 EXTRA_DIST = data focovjson.conf.in
 
@@ -52,7 +52,5 @@ focovjson.conf: focovjson.conf.in $(top_srcdir)/config.status
 
 C4_DIR=./cccc
 .PHONY: cccc
-cccc:	
+cccc:
 	cccc --outdir=$(C4_DIR) $(FONC_SRC) $(FONC_HDR)
-
-
