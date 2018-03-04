@@ -1,21 +1,21 @@
 
-BES.ServerAdministrator=admin.email.address@your.domain.name
+BES.ServerAdministrator=support@opendap.org
 
-BES.User=user_name
-BES.Group=group_name
+BES.User=bes
+BES.Group=bes_group
 
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader,json,nc
+BES.modules=dap,cmd,dapreader,covjson,nc
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 
-BES.module.json=@abs_top_builddir@/modules/fileout_json/.libs/libfojson_module.so
+BES.module.covjson=@abs_top_builddir@/modules/fileout_covjson/.libs/libfocovjson_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_json
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_covjson
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc$
@@ -66,4 +66,3 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-

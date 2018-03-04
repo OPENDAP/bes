@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
--I$(top_srcdir)/modules/fileout_json $(DAP_CFLAGS)
+-I$(top_srcdir)/modules/fileout_covjson $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 # These are not used by automake but are often useful for certain types of
@@ -16,7 +16,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-EXTRA_DIST = json $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+EXTRA_DIST = covjson $(TESTSUITE).at $(TESTSUITE) atlocal.in \
 $(srcdir)/package.m4 $(BES_CONF_IN)
 
 DISTCLEANFILES = atconfig
@@ -24,7 +24,7 @@ DISTCLEANFILES = atconfig
 BES_CONF_IN = bes.conf.modules.in
 
 # Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
@@ -36,7 +36,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/fileout_jsonTest
+TESTSUITE = $(srcdir)/fileout_covjsonTest
 TESTSUITEFLAGS =
 # -j9
 
@@ -45,10 +45,10 @@ check-local: atlocal $(srcdir)/package.m4 $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/fileout_jsonTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(srcdir)/fileout_covjsonTest.at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
@@ -62,5 +62,3 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-
-
