@@ -5,5 +5,5 @@
     <define name="d">
 	<container name="c" />
     </define>
-    <get type="ddx" definition="d"  returnAs="json" />
+    <get type="ddx" definition="d"  returnAs="covjson" />
 </request>

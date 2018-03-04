@@ -11,6 +11,5 @@
       <bes:constraint>wrapitup()</bes:constraint>
     </bes:container>
   </bes:define>
-  <bes:get type="dods" definition="d1" returnAs="json" />
+  <bes:get type="dods" definition="d1" returnAs="covjson" />
 </bes:request>
-
