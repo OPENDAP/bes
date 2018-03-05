@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,29 +36,54 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
-
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
-class BESCatalog ;
-class BESCatalogEntry ;
+class BESCatalog;
+class BESCatalogEntry;
 
 #define BES_DEFAULT_CATALOG "catalog"
 
+// TODO Oddly, users of this class must register the default catalog
+// just like any other catalog. I think this is a design bug - since
+// the default is _required_ it should be registered by the BESCatalogList
+// constructor. If that change is made, then handlers that call add_catlog()
+// and ref_catalog() should be examined and all those that do so should be
+// modified.
+//
+// One way to make this change and not leave the whole ref/deref model
+// looking odd would be to make a single BESCatalog instance that is
+// the default catalog and have that be separate from the list of added
+// catalog. jhrg 2.25.18
+
+
 /** @brief List of all registered catalogs
  *
- * BESCatalog objecgts can be registered with this list. The BES
- * allows for multiple catalogs. Most installations will have a 
- * single catalog registered.
+ * Catalogs are a way of organizing data into a tree.
+ * Every BES daemon has at least one catalog, the default catalog
+ * (confusingly named 'catalog.') In general, this is the
+ * daemon's local file system. Nodes or leaves in this tree are
+ * represented using CatalogEntry instances.
  *
- * Catalogs have a uniq name
+ * Multiple BESCatalog objects can be registered with this list.
+ * However, most installations have a  single catalog registered
+ * (the default catalog) which provides access to files on the host
+ * computer's local file system.
  *
- * If there is only one catalog then the display of the root will
+ * Each catalog in the list must have a unique name.
+ *
+ * The BESCatalogList class is a singleton. The catalogs (represented
+ * by specializations of the BESCatalog class) are held in a
+ * reference-counted list. Handlers typically try to add the catalog
+ * they use, and if that fails because the catalog is already in the
+ * list, they increment its reference. See add_catalog() and ref_catalog().
+ * When the singleton's instance is deleted, so are all of the catalogs,
+ * regardless of their reference count.
+ *
+ * I don't know if the following paragraph is true:
+ * If there is only one catalog, then the display of the root will
  * be the display of that catalogs root.
- *
- * If there are more than one catalogs registered then the view of
+ * If there is more than one catalog registered, then the view of
  * the root will display the list of catalogs registered. To view
  * the contents of a specific catalog begin each container name with
  * the name of the catalog followed by a colon.
@@ -67,48 +92,56 @@ class BESCatalogEntry ;
  *
  * @see BESCatalog
  */
-class BESCatalogList : public BESObj
-{
+class BESCatalogList: public BESObj {
 private:
-    map<string, BESCatalog *>	_catalogs ;
-    string			_default_catalog ;
-    static BESCatalogList *	_instance ;
+    std::map<std::string, BESCatalog *> d_catalogs;
+    std::string d_default_catalog;
+    static BESCatalogList * d_instance;
 
     static void initialize_instance();
     static void delete_instance();
 
-    virtual ~BESCatalogList();
-
     friend class BESCatalogListUnitTest;
 
-protected:
-    BESCatalogList();
-
-
 public:
-    typedef map<string,BESCatalog *>::iterator catalog_iter ;
-    typedef map<string,BESCatalog *>::const_iterator catalog_citer ;
+    typedef std::map<std::string, BESCatalog *>::iterator catalog_iter;
+    typedef std::map<std::string, BESCatalog *>::const_iterator catalog_citer;
 
-    static BESCatalogList * TheCatalogList() ;
+    static BESCatalogList * TheCatalogList();
 
+    BESCatalogList();
+    virtual ~BESCatalogList();
 
-    virtual int			num_catalogs() { return _catalogs.size() ; }
-    virtual string		default_catalog() { return _default_catalog ; }
+    virtual int num_catalogs()
+    {
+        return d_catalogs.size();
+    }
 
-    virtual bool		add_catalog( BESCatalog *catalog ) ;
-    virtual bool		ref_catalog( const string &catalog_name ) ;
-    virtual bool		deref_catalog( const string &catalog_name );
-    virtual BESCatalog *	find_catalog( const string &catalog_name ) ;
-    virtual BESCatalogEntry *	show_catalogs( BESDataHandlerInterface &dhi,
-					       BESCatalogEntry *entry,
-					       bool show_default = true ) ;
+    virtual std::string default_catalog()
+    {
+        return d_default_catalog;
+    }
+
+    virtual bool add_catalog(BESCatalog *catalog);
+    virtual bool ref_catalog(const std::string &catalog_name);
+    virtual bool deref_catalog(const std::string &catalog_name);
+
+    virtual BESCatalog * find_catalog(const std::string &catalog_name);
+
+    virtual BESCatalogEntry * show_catalogs(BESCatalogEntry *entry, bool show_default = true);
+
+    virtual catalog_iter first_catalog()
+    {
+        return d_catalogs.begin();
+    }
     
-    virtual catalog_iter	first_catalog() { return _catalogs.begin() ; }
-    virtual catalog_iter	end_catalog() { return _catalogs.end() ; }
+    virtual catalog_iter end_catalog()
+    {
+        return d_catalogs.end();
+    }
 
-    virtual void		dump( ostream &strm ) const ;
-
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // BESCatalogList_h_
 

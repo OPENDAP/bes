@@ -85,10 +85,10 @@ static string print_attr(nc_type type, int loc, void *vals)
     union {
         char *cp;
         char **stringp;
-        short *sp;
-        unsigned short *usp;
-        int *i;
-        unsigned int *ui;
+        int16_t *sp;
+        uint16_t *usp;
+        int32_t *i;
+        uint32_t *ui;
         float *fp;
         double *dp;
     } gp;
@@ -96,12 +96,12 @@ static string print_attr(nc_type type, int loc, void *vals)
     switch (type) {
 #if NETCDF_VERSION >= 4
     case NC_UBYTE:
-    unsigned char uc;
-    gp.cp = (char *) vals;
+        unsigned char uc;
+        gp.cp = (char *) vals;
 
-    uc = *(gp.cp + loc);
-    rep << (int) uc;
-    return rep.str();
+        uc = *(gp.cp + loc);
+        rep << (int) uc;
+        return rep.str();
 #endif
 
     case NC_BYTE:
@@ -131,7 +131,7 @@ static string print_attr(nc_type type, int loc, void *vals)
 #endif
 
 #if NETCDF_VERSION >= 4
-        case NC_STRING:
+    case NC_STRING:
         gp.stringp = (char **) vals;
         rep << *(gp.stringp + loc);
         return rep.str();
@@ -143,20 +143,20 @@ static string print_attr(nc_type type, int loc, void *vals)
         return rep.str();
 
 #if NETCDF_VERSION >= 4
-        case NC_USHORT:
-        gp.usp = (unsigned short *) vals;
+    case NC_USHORT:
+        gp.usp = (uint16_t *) vals;
         rep << *(gp.usp + loc);
         return rep.str();
 #endif
 
     case NC_INT:
-        gp.i = (int *) vals; // warning: long int format, int arg (arg 3)
+        gp.i = (int32_t *) vals; // warning: long int format, int arg (arg 3)
         rep << *(gp.i + loc);
         return rep.str();
 
 #if NETCDF_VERSION >= 4
-        case NC_UINT:
-        gp.ui = (unsigned int *) vals;
+    case NC_UINT:
+        gp.ui = (uint32_t *) vals;
         rep << *(gp.ui + loc);
         return rep.str();
 #endif

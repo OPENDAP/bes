@@ -66,6 +66,7 @@ private:
     string _dap4_constraint;
     string _dap4_function;
     string _attributes;
+
 protected:
     BESContainer()
     {

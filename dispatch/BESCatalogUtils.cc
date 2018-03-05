@@ -60,6 +60,23 @@ using namespace std;
 
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
 
+/**
+ * @brief Initialize the file system catalog utilities
+ *
+ * Use parameters in the bes.conf file to configure a BES catalog
+ * that reads data from a file system. This will set the root directory
+ * of the catalog, regular expressions to exclude and include entries,
+ * regular expressions to identify data, and whether the catalog should
+ * follow symbolic links. The bes.conf key names are (N == catalog name):
+ *
+ * BES.Catalog.N.RootDirectory
+ * BES.Catalog.N.Exclude
+ * BES.Catalog.N.Include
+ * BES.Catalog.N.TypeMatch
+ * BES.Catalog.N.FollowSymLinks
+ *
+ * @param n The name of the catalog.
+ */
 BESCatalogUtils::BESCatalogUtils(const string &n) :
     _name(n), _follow_syms(false)
 {
@@ -70,6 +87,8 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
+
+    // TODO access() or stat() would test for existence faster. jhrg 2.25.18
     DIR *dip = opendir(_root_dir.c_str());
     if (dip == NULL) {
         string serr = "BESCatalogDirectory - root directory " + _root_dir + " does not exist";
@@ -140,6 +159,17 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     }
 }
 
+/**
+ * @brief Should this file/directory be included in the catalog?
+ *
+ * First check if the file should be included (matches at least one
+ * regex on the include list). If there are no regexes on the include
+ * list, that means include everything. Then test the exclude list.
+ * If there are no regexes on the exclude list, exclude nothing.
+ *
+ * @param inQuestion File or directory in question
+ * @return True if it should be included, false if not.
+ */
 bool BESCatalogUtils::include(const string &inQuestion) const
 {
     bool toInclude = false;
@@ -184,6 +214,13 @@ bool BESCatalogUtils::include(const string &inQuestion) const
     return toInclude;
 }
 
+/**
+ * @brief Should this file/directory be excluded in the catalog?
+ *
+ * @see BESCatalogUtils::include
+ * @param inQuestion The file or directory name in question
+ * @return True if the file/directory should be excluded, false if not.
+ */
 bool BESCatalogUtils::exclude(const string &inQuestion) const
 {
     list<string>::const_iterator e_iter = _exclude.begin();
@@ -217,98 +254,93 @@ BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
     return _match_list.end();
 }
 
+/**
+ *
+ * @param dip
+ * @param fullnode
+ * @param use_node
+ * @param
+ * @param entry
+ * @param dirs_only
+ * @return
+ */
 unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, const string &use_node,
-    const string &/*coi*/, BESCatalogEntry *entry, bool dirs_only)
+    BESCatalogEntry *entry, bool dirs_only)
 {
     unsigned int cnt = 0;
+
     struct stat cbuf;
     int statret = stat(fullnode.c_str(), &cbuf);
-    int my_errno = errno;
-    if (statret == 0) {
-        struct dirent *dit;
-        struct stat buf;
-        struct stat lbuf;
-
-        while ((dit = readdir(dip)) != NULL) {
-            string dirEntry = dit->d_name;
-            if (dirEntry != "." && dirEntry != "..") {
-                string fullPath = fullnode + "/" + dirEntry;
-
-                // if follow_sym_links is true then continue with
-                // the checking. If false, first see if the entry is
-                // a symbolic link. If it is, do not include in the
-                // listing for this node. If not, then continue
-                // checking the entry.
-                bool continue_checking = true;
-                if (follow_sym_links() == false) {
-#if 0
-                    int lstatret = lstat( fullPath.c_str(), &lbuf );
-#endif
-                    (void) lstat(fullPath.c_str(), &lbuf);
-                    if (S_ISLNK(lbuf.st_mode)) {
-                        continue_checking = false;
-                    }
-                }
-
-                if (continue_checking) {
-                    // look at the mode and determine if this is a
-                    // directory or a regular file. If it is not
-                    // accessible, the stat fails, is not a directory
-                    // or regular file, then simply do not include it.
-                    statret = stat(fullPath.c_str(), &buf);
-                    if (statret == 0 && S_ISDIR(buf.st_mode)) {
-                        if (exclude(dirEntry) == false) {
-                            BESCatalogEntry *curr_entry = new BESCatalogEntry(dirEntry, entry->get_catalog());
-
-                            bes_get_stat_info(curr_entry, buf);
-
-                            entry->add_entry(curr_entry);
-
-                            // we don't go further then this, so we need
-                            // to add a blank node here so that we know
-                            // it's a node (collection)
-                            BESCatalogEntry *blank_entry = new BESCatalogEntry(".blank", entry->get_catalog());
-                            curr_entry->add_entry(blank_entry);
-                        }
-                    }
-                    else if (statret == 0 && S_ISREG(buf.st_mode)) {
-                        if (!dirs_only && include(dirEntry)) {
-                            BESCatalogEntry *curr_entry = new BESCatalogEntry(dirEntry, entry->get_catalog());
-                            bes_get_stat_info(curr_entry, buf);
-
-                            list<string> services;
-                            isData(fullPath, _name, services);
-                            curr_entry->set_service_list(services);
-
-                            bes_get_stat_info(curr_entry, buf);
-
-                            entry->add_entry(curr_entry);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else {
-        // ENOENT means that the path or part of the path does not exist
-        if (my_errno == ENOENT) {
-            string error = "Node " + use_node + " does not exist";
-            char *s_err = strerror(my_errno);
-            if (s_err) {
-                error = s_err;
-            }
-            throw BESNotFoundError(error, __FILE__, __LINE__);
+    if (statret != 0) {
+        if (errno == ENOENT) { // ENOENT means that the path or part of the path does not exist
+            char *s_err = strerror(errno);
+            throw BESNotFoundError((s_err) ? string(s_err) : string("Node ") + use_node + " does not exist", __FILE__,
+                __LINE__);
         }
         // any other error means that access is denied for some reason
         else {
-            string error = "Access denied for node " + use_node;
-            char *s_err = strerror(my_errno);
-            if (s_err) {
-                error = error + s_err;
-            }
-            throw BESNotFoundError(error, __FILE__, __LINE__);
+            char *s_err = strerror(errno);
+            throw BESNotFoundError((s_err) ? string(s_err) : string("Access denied for node ") + use_node, __FILE__,
+                __LINE__);
         }
     }
+
+    struct dirent *dit;
+    while ((dit = readdir(dip)) != NULL) {
+        string dirEntry = dit->d_name;
+        if (dirEntry == "." || dirEntry == "..") {
+            continue;
+        }
+
+        string fullPath = fullnode + "/" + dirEntry;
+
+        // Skip this dir entry if it is a sym link and follow links is false
+         if (follow_sym_links() == false) {
+            struct stat lbuf;
+            (void) lstat(fullPath.c_str(), &lbuf);
+            if (S_ISLNK(lbuf.st_mode))
+                 continue;
+         }
+
+        // look at the mode and determine if this is a
+        // directory or a regular file. If it is not
+        // accessible, the stat fails, is not a directory
+        // or regular file, then simply do not include it.
+        struct stat buf;
+        statret = stat(fullPath.c_str(), &buf);
+        if (statret == 0 && S_ISDIR(buf.st_mode)) {
+            if (exclude(dirEntry) == false) {
+                BESCatalogEntry *curr_entry = new BESCatalogEntry(dirEntry, entry->get_catalog());
+
+                bes_add_stat_info(curr_entry, buf);
+
+                entry->add_entry(curr_entry);
+
+                // we don't go further than this, so we need
+                // to add a blank node here so that we know
+                // it's a node (collection)
+                BESCatalogEntry *blank_entry = new BESCatalogEntry(".blank", entry->get_catalog());
+                curr_entry->add_entry(blank_entry);
+            }
+        }
+        else if (statret == 0 && S_ISREG(buf.st_mode)) {
+            if (!dirs_only && include(dirEntry)) {
+                BESCatalogEntry *curr_entry = new BESCatalogEntry(dirEntry, entry->get_catalog());
+                bes_add_stat_info(curr_entry, buf);
+
+                list<string> services;
+                // TODO use the d_utils object? jhrg 2.26.18
+                isData(fullPath, _name, services);
+                curr_entry->set_service_list(services);
+
+                bes_add_stat_info(curr_entry, buf);
+
+                entry->add_entry(curr_entry);
+            }
+        }
+    } // end of the while loop
+
+    // TODO this always return zero. FIXME jhrg 2.26.18
     return cnt;
 }
 
@@ -357,11 +389,11 @@ void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fu
     struct stat cbuf;
     int statret = stat(fullnode.c_str(), &cbuf);
     if (statret == 0) {
-        bes_get_stat_info(entry, cbuf);
+        bes_add_stat_info(entry, cbuf);
     }
 }
 
-void BESCatalogUtils::bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf)
+void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf)
 {
     off_t sz = buf.st_size;
     entry->set_size(sz);

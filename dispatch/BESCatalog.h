@@ -41,45 +41,43 @@ using std::string;
 
 class BESCatalogEntry;
 
-/** @brief abstract base class catalog object. Derived classes know how to
- * show nodes and leaves in a catalog.
+/** @brief Catalogs provide a hierarchical organization for data.
+ *
  */
 class BESCatalog: public BESObj {
 private:
-    string _catalog_name;
-    unsigned int _reference;
+    string d_catalog_name;
+    unsigned int d_reference;
 
     BESCatalog();
 
-protected:
-    BESCatalog(const string &catalog_name) :
-            _catalog_name(catalog_name), _reference(0)
+public:
+    BESCatalog(const string &catalog_name) : d_catalog_name(catalog_name), d_reference(0)
     {
     }
 
-public:
     virtual ~BESCatalog(void)
     {
     }
 
     virtual void reference_catalog()
     {
-        _reference++;
+        d_reference++;
     }
 
     virtual unsigned int dereference_catalog()
     {
-        if (!_reference)
-            return _reference;
-        return --_reference;
+        if (!d_reference)
+            return d_reference;
+        return --d_reference;
     }
 
     virtual string get_catalog_name()
     {
-        return _catalog_name;
+        return d_catalog_name;
     }
 
-    virtual BESCatalogEntry * show_catalog(const string &container, const string &coi, BESCatalogEntry *entry) = 0;
+    virtual BESCatalogEntry * show_catalog(const string &container, /*const string &coi,*/ BESCatalogEntry *entry) = 0;
 
     virtual void dump(ostream &strm) const = 0;
 };

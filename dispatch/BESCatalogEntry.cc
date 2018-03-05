@@ -34,10 +34,9 @@
 
 #include <sstream>
 
-using std::ostringstream;
-
 #include "BESCatalogEntry.h"
-#include "BESInfo.h"
+
+using namespace std;
 
 BESCatalogEntry::BESCatalogEntry(const string &name, const string &catalog) :
         _name(name), _catalog(catalog)

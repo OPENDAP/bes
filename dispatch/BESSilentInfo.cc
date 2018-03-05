@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,8 +35,8 @@
 /** @brief constructs an informational object that doesn't
  *         write any output to the stream
  */
-BESSilentInfo::BESSilentInfo( )
-    : BESInfo( )
+BESSilentInfo::BESSilentInfo() :
+    BESInfo()
 {
 }
 
@@ -51,11 +51,9 @@ BESSilentInfo::~BESSilentInfo()
  * @param response_name name of the response represented by the information
  * @param dhi information about the request and response
  */
-void
-BESSilentInfo::begin_response( const string &response_name,
-			       BESDataHandlerInterface &dhi )
+void BESSilentInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
 {
-    BESInfo::begin_response( response_name, dhi ) ;
+    BESInfo::begin_response(response_name, dhi);
 }
 
 /** @brief add tagged information to the inforamtional response
@@ -64,10 +62,7 @@ BESSilentInfo::begin_response( const string &response_name,
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void
-BESSilentInfo::add_tag( const string &/*tag_name*/,
-			const string &/*tag_data*/,
-			map<string,string> */*attrs*/ )
+void BESSilentInfo::add_tag(const string &/*tag_name*/, const string &/*tag_data*/, map<string, string> */*attrs*/)
 {
 }
 
@@ -76,11 +71,9 @@ BESSilentInfo::add_tag( const string &/*tag_name*/,
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void
-BESSilentInfo::begin_tag( const string &tag_name ,
-			  map<string,string> */*attrs*/ )
+void BESSilentInfo::begin_tag(const string &tag_name, map<string, string> */*attrs*/)
 {
-    BESInfo::begin_tag( tag_name ) ;
+    BESInfo::begin_tag(tag_name);
 }
 
 /** @brief end a tagged part of the informational response
@@ -89,10 +82,9 @@ BESSilentInfo::begin_tag( const string &tag_name ,
  *
  * @param tag_name name of the tag to end
  */
-void
-BESSilentInfo::end_tag( const string &tag_name )
+void BESSilentInfo::end_tag(const string &tag_name)
 {
-    BESInfo::end_tag( tag_name ) ;
+    BESInfo::end_tag(tag_name);
 }
 
 /** @brief add data to the inforamtional object
@@ -101,8 +93,7 @@ BESSilentInfo::end_tag( const string &tag_name )
  *
  * @param s information to be ignored
  */
-void
-BESSilentInfo::add_data( const string &/*s*/ )
+void BESSilentInfo::add_data(const string &/*s*/)
 {
 }
 
@@ -112,8 +103,7 @@ BESSilentInfo::add_data( const string &/*s*/ )
  *
  * @param num_spaces number of spaces to add
  */
-void
-BESSilentInfo::add_space( unsigned long /*num_spaces*/ )
+void BESSilentInfo::add_space(unsigned long /*num_spaces*/)
 {
 }
 
@@ -123,8 +113,7 @@ BESSilentInfo::add_space( unsigned long /*num_spaces*/ )
  *
  * @param num_breaks number of breaks to be added
  */
-void
-BESSilentInfo::add_break( unsigned long /*num_breaks*/ )
+void BESSilentInfo::add_break(unsigned long /*num_breaks*/)
 {
 }
 
@@ -134,8 +123,7 @@ BESSilentInfo::add_break( unsigned long /*num_breaks*/ )
  * @param name naem information to add to error messages
  * loaded.
  */
-void
-BESSilentInfo::add_data_from_file( const string &/*key*/, const string &/*name*/ )
+void BESSilentInfo::add_data_from_file(const string &/*key*/, const string &/*name*/)
 {
 }
 
@@ -147,8 +135,7 @@ BESSilentInfo::add_data_from_file( const string &/*key*/, const string &/*name*/
  * this error
  * @see BESError
  */
-void
-BESSilentInfo::add_exception( BESError &, const string & )
+void BESSilentInfo::add_exception(BESError &, const string &)
 {
 }
 
@@ -159,9 +146,7 @@ BESSilentInfo::add_exception( BESError &, const string & )
  * @param transmitter The type of transmitter to use to transmit the info
  * @param dhi information to help with the transmission
  */
-void
-BESSilentInfo::transmit( BESTransmitter */*transmitter*/,
-		         BESDataHandlerInterface &/*dhi*/ )
+void BESSilentInfo::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 }
 
@@ -171,8 +156,7 @@ BESSilentInfo::transmit( BESTransmitter */*transmitter*/,
  *
  * @param strm stream to send output to if not ignored.
  */
-void
-BESSilentInfo::print( ostream &/*strm*/ )
+void BESSilentInfo::print(ostream &/*strm*/)
 {
 }
 
@@ -182,13 +166,11 @@ BESSilentInfo::print( ostream &/*strm*/ )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESSilentInfo::dump( ostream &strm ) const
+void BESSilentInfo::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESSilentInfo::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESInfo::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESSilentInfo::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESInfo::dump(strm);
+    BESIndent::UnIndent();
 }
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,36 +36,34 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESObj.h"
 
-class BESInfo ;
+class BESInfo;
 
-typedef BESInfo * (*p_info_builder)( const string &info_type ) ;
+typedef BESInfo * (*p_info_builder)(const string &info_type);
 
-class BESInfoList : public BESObj
-{
+class BESInfoList: public BESObj {
 private:
-    static BESInfoList *	_instance ;
-    map< string, p_info_builder >_info_list ;
+    static BESInfoList * _instance;
+    map<string, p_info_builder> _info_list;
 
-    typedef map< string, p_info_builder >::const_iterator Info_citer ;
-    typedef map< string, p_info_builder >::iterator Info_iter ;
+    typedef map<string, p_info_builder>::const_iterator Info_citer;
+    typedef map<string, p_info_builder>::iterator Info_iter;
 protected:
-				BESInfoList(void) ;
+    BESInfoList(void);
 public:
-    virtual			~BESInfoList(void) ;
+    virtual ~BESInfoList(void);
 
-    virtual bool		add_info_builder( const string &info_type,
-					   p_info_builder info_builder ) ;
-    virtual bool		rem_info_builder( const string &info_type ) ;
-    virtual BESInfo *		build_info( ) ;
+    virtual bool add_info_builder(const string &info_type, p_info_builder info_builder);
+    virtual bool rem_info_builder(const string &info_type);
+    virtual BESInfo * build_info();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESInfoList *	TheList() ;
+    static BESInfoList * TheList();
 };
 
 #endif // I_BESInfoList_h

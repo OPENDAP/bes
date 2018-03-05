@@ -1,10 +1,10 @@
-// catT.C
+// complete_catalog_lister.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: James Gallagher jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,15 +20,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
 
@@ -78,89 +70,14 @@ using std::ostringstream;
 
 const string root_dir = "/catalog_test";
 
-class catT: public TestFixture {
+class complete_catalog_lister: public TestFixture {
 private:
-    string remove(string &str, string attr, string::size_type s)
-    {
-        string::size_type apos = str.find(attr, s);
-        if (apos == string::npos) return str;
-        apos = str.find("\"", apos + 1);
-        if (apos == string::npos) return str;
-        string::size_type qpos = str.find("\"", apos + 1);
-        if (qpos == string::npos) return str;
-        str = str.substr(0, apos + 1) + str.substr(qpos);
-        return remove(str, attr, qpos + 1);
-    }
-
-    // I think this removes all text enclosed in parentheses. jhrg 2.25.18
-    string remove_ptr(string &str, string::size_type pos = 0)
-    {
-        string ret;
-        string::size_type lparen = str.find("(", pos);
-        if (lparen != string::npos) {
-            string::size_type rparen = str.find(")", lparen);
-            if (rparen != string::npos) {
-                ret = str.substr(0, lparen + 1) + str.substr(rparen);
-                ret = remove_ptr(ret, rparen + 1);
-            }
-            else {
-                ret = str;
-            }
-        }
-        else {
-            ret = str;
-        }
-        return ret;
-    }
-
-    string remove_attr(string &str, string &attr, string::size_type pos = 0)
-    {
-        string ret;
-        string::size_type apos = str.find(attr, pos);
-        if (apos != string::npos) {
-            string::size_type colon = str.find(":", apos);
-            if (colon != string::npos) {
-                string::size_type end = str.find("\n", colon);
-                if (end != string::npos) {
-                    ret = str.substr(0, colon + 1) + str.substr(end);
-                    ret = remove_attr(ret, attr, end);
-                }
-                else {
-                    ret = str;
-                }
-            }
-            else {
-                ret = str;
-            }
-        }
-        else {
-            ret = str;
-        }
-        return ret;
-    }
-
-    /**
-     * Remove the size, mod date and mod time 'attributes' from a string
-     * @param str
-     * @return The pruned string
-     */
-    string remove_stuff(string &str)
-    {
-        string ret;
-        string attr = "size";
-        ret = remove_attr(str, attr);
-        attr = "modification date";
-        ret = remove_attr(ret, attr);
-        attr = "modification time";
-        ret = remove_attr(ret, attr);
-        return ret;
-    }
 
 public:
-    catT()
+    complete_catalog_lister()
     {
     }
-    ~catT()
+    ~complete_catalog_lister()
     {
     }
 
@@ -184,142 +101,61 @@ public:
     {
     }
 
-    CPPUNIT_TEST_SUITE( catT );
+    CPPUNIT_TEST_SUITE( complete_catalog_lister );
 
-    CPPUNIT_TEST(default_test);
-    CPPUNIT_TEST(no_default_test);
     CPPUNIT_TEST(root_dir_test1);
 
     CPPUNIT_TEST_SUITE_END();
 
-
-    void default_test()
-    {
-        DBG(cerr << __func__ << endl);
-
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
-        string defcat = BESCatalogList::TheCatalogList()->default_catalog();
-        CPPUNIT_ASSERT(defcat == "default");
-
-        int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        CPPUNIT_ASSERT(numcats == 0);
-
-        try {
-            // show_catalogs(...) the false value for show_default will suppress
-            // showing anything for the default catalog. Since there's no other
-            // catalog, there's nothing to show. jhrg 2.25.18
-            BESCatalogEntry *entry = 0;
-            entry = BESCatalogList::TheCatalogList()->show_catalogs(0, false);
-            ostringstream strm;
-            entry->dump(strm);
-            DBG(cerr << "Entry before remove_ptr: ");
-            DBG(entry->dump(cerr));
-            DBG(cerr <<endl);
-
-            string str = strm.str();
-            str = remove_ptr(str);
-            string empty_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/empty_response.txt");
-
-            DBG(cerr << "baseline: " << empty_response << endl);
-            DBG(cerr << "response: " << str << endl);
-
-            CPPUNIT_ASSERT(str == empty_response);
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to show catalogs");
-        }
-    }
-
-    // This is really three different tests. jhrg 2.25.18
-    void no_default_test() {
-        DBG(cerr << __func__ << endl);
-        try {
-            BESDataHandlerInterface dhi;
-            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
-            BESCatalogResponseHandler handler("catalog");
-            handler.execute(dhi);
-            CPPUNIT_FAIL("Should have failed, no default catalog");
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_ASSERT("Correctly caught exception");
-        }
-
-        DBG(cerr << "manipulate non-existent catalog" << endl);
-        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("dummy");
-        CPPUNIT_ASSERT(catobj == 0);
-
-        CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->add_catalog(0) == false);
-        CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->ref_catalog("dummy") == false);
-        CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->deref_catalog("dummy") == false);
-
-        DBG(cerr << "add a catalog with no settings" << endl);
-        try {
-            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
-            CPPUNIT_FAIL("Succeeded in adding catalog, should not have");
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_ASSERT("Correctly caught exception");
-        }
-    }
-
     // This test should be broken up into smaller pieces. jhrg 8/23/17
     void root_dir_test1() {
-        string var = (string) "BES.Catalog.default.RootDirectory=" + TEST_SRC_DIR + root_dir;
-        TheBESKeys::TheKeys()->set_key(var);
-        try {
-            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
-            CPPUNIT_FAIL("Succeeded in adding catalog, should not have");
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_ASSERT("Correctly caught exception");
-        }
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=").append(TEST_SRC_DIR).append(root_dir));
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
+#if 0
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
+#endif
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=.*\\.ini$;");
 
-        DBG(cerr << "add good catalog" << endl);
-        var = (string) "BES.Catalog.default.TypeMatch=conf:conf&;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.default.Include=.*file.*$;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.default.Exclude=README;";
-        TheBESKeys::TheKeys()->set_key(var);
-
-        try {
-            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to add catalog");
-        }
+        BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
 
         BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("default");
-        CPPUNIT_ASSERT(catobj);
-        int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        CPPUNIT_ASSERT(numcats == 1);
+        cerr << "The default catalog: ";
+        catobj->dump(cerr);
 
-        try {
-            BESDataHandlerInterface dhi;
-            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0);
-            ostringstream strm;
-            entry->dump(strm);
-            string str = strm.str();
-            str = remove_ptr(str);
-            str = remove_stuff(str);
+        cerr << "Number of catalogs: " << BESCatalogList::TheCatalogList()->num_catalogs() << endl;
+#if 0
+        BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0);
 
-            string one_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/one_response.txt");
+        cerr << "The root node of the BES catalogs: ";
+        entry->dump(cerr);
+#endif
 
-            DBG(cerr << "baseline: " << one_response << endl);
-            DBG(cerr << "response: " << str << endl);
+        string pathname = "/";
+        BESCatalogEntry *entry = catobj->show_catalog(pathname, 0);
+        cerr << "The root node of the default catalog: ";
+        entry->dump(cerr);
 
-            CPPUNIT_ASSERT(str == one_response);
+        // Use this to find child nodes and build the tree
+        BESCatalogEntry::catalog_citer i = entry->get_beginning_entry();
+        BESCatalogEntry::catalog_citer e = entry->get_ending_entry();
+        for (; i != e; ++i) {
+            BESCatalogEntry *e = (*i).second;
+            if (e->is_collection()) {
+                cerr << "Found collection: " << e->get_name() << endl;
+                (void) catobj->show_catalog(pathname.append(e->get_name()), e);
+            }
+            else {
+                cerr << "Leaf: " << e->get_name() << ", dumping:"<< endl;
+                e->dump(cerr);
+            }
         }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to show catalogs");
-        }
 
+        cerr << "After traversal, the default catalog:";
+        entry->dump(cerr);
+
+    }
+
+#if 0
         DBG(cerr << "now try it with BESCatalogResponseHandler" << endl);
         try {
             BESDataHandlerInterface dhi;
@@ -567,9 +403,10 @@ public:
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "Returning from catT::run" << endl);
     }
+#endif
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(catT);
+CPPUNIT_TEST_SUITE_REGISTRATION(complete_catalog_lister);
 
 int main(int argc, char*argv[])
 {
@@ -583,8 +420,8 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: catT has the following tests:" << endl;
-            const std::vector<Test*> &tests = catT::suite()->getTests();
-            unsigned int prefix_len = catT::suite()->getName().append("::").length();
+            const std::vector<Test*> &tests = complete_catalog_lister::suite()->getTests();
+            unsigned int prefix_len = complete_catalog_lister::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -607,8 +444,10 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = catT::suite()->getName().append("::").append(argv[i++]);
+            test = complete_catalog_lister::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+
+            ++i;
         }
     }
 

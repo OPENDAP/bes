@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -40,55 +40,45 @@
  * @see BESXMLInfo
  * @see BESResponseObject
  */
-BESVersionInfo::BESVersionInfo()
-    : BESInfo(),
-      _inbes( false ),
-      _inhandler( false ),
-      _info( 0 )
+BESVersionInfo::BESVersionInfo() :
+    BESInfo(), _inbes(false), _inhandler(false), _info(0)
 {
-    _info = BESInfoList::TheList()->build_info() ;
+    _info = BESInfoList::TheList()->build_info();
 }
 
 BESVersionInfo::~BESVersionInfo()
 {
-    if( _info ) delete _info ;
+    if (_info) delete _info;
 }
 
-void
-BESVersionInfo::add_library( const string &name, const string &vers )
+void BESVersionInfo::add_library(const string &name, const string &vers)
 {
-    add_version( "library", name, vers ) ;
+    add_version("library", name, vers);
 }
 
-void
-BESVersionInfo::add_module( const string &name, const string &vers )
+void BESVersionInfo::add_module(const string &name, const string &vers)
 {
-    add_version( "module", name, vers ) ;
+    add_version("module", name, vers);
 }
 
-void
-BESVersionInfo::add_service( const string &name, const list<string> &vers )
+void BESVersionInfo::add_service(const string &name, const list<string> &vers)
 {
-    map<string,string> props ;
-    props["name"] = name ;
-    begin_tag( "serviceVersion", &props ) ;
-    list<string>::const_iterator i = vers.begin() ;
-    list<string>::const_iterator e = vers.end() ;
-    for( ; i != e; i++ )
-    {
-	add_tag( "version", (*i) ) ;
+    map<string, string> props;
+    props["name"] = name;
+    begin_tag("serviceVersion", &props);
+    list<string>::const_iterator i = vers.begin();
+    list<string>::const_iterator e = vers.end();
+    for (; i != e; i++) {
+        add_tag("version", (*i));
     }
-    end_tag( "serviceVersion" ) ;
+    end_tag("serviceVersion");
 }
 
-void
-BESVersionInfo::add_version( const string &type,
-			     const string &name,
-			     const string &vers )
+void BESVersionInfo::add_version(const string &type, const string &name, const string &vers)
 {
-    map<string,string> attrs ;
-    attrs["name"] = name ;
-    add_tag( type, vers, &attrs ) ;
+    map<string, string> attrs;
+    attrs["name"] = name;
+    add_tag(type, vers, &attrs);
 }
 
 /** @brief dumps information about this object
@@ -98,26 +88,22 @@ BESVersionInfo::add_version( const string &type,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESVersionInfo::dump( ostream &strm ) const
+void BESVersionInfo::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESVersionInfo::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "in BES version? " << _inbes << endl ;
-    strm << BESIndent::LMarg << "in Handler version? " << _inhandler << endl ;
-    if( _info )
-    {
-	strm << BESIndent::LMarg << "redirection info object:" << endl ;
-	BESIndent::Indent() ;
-	_info->dump( strm ) ;
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESVersionInfo::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "in BES version? " << _inbes << endl;
+    strm << BESIndent::LMarg << "in Handler version? " << _inhandler << endl;
+    if (_info) {
+        strm << BESIndent::LMarg << "redirection info object:" << endl;
+        BESIndent::Indent();
+        _info->dump(strm);
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "redirection info object: null" << endl ;
+    else {
+        strm << BESIndent::LMarg << "redirection info object: null" << endl;
     }
-    BESInfo::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    BESInfo::dump(strm);
+    BESIndent::UnIndent();
 }
 
