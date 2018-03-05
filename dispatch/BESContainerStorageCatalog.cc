@@ -96,6 +96,7 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  * @param real_name real name (path to the file relative to the root
  * catalog's root directory)
  * @param type type of data represented by this container
+ *
  * @throws BESForbiddenError if the resources requested is not accessible
  * @throws BESNotFoundError if the resources requested is not found
  * @throws BESInternalError if there is a problem determining the resource
@@ -103,7 +104,7 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  */
 void BESContainerStorageCatalog::add_container(const string &sym_name, const string &real_name, const string &type)
 {
-    // make sure that the real name passed in is not oon the exclude list
+    // make sure that the real name passed in is not on the exclude list
     // for the catalog. First, remove any trailing slashes. Then find the
     // basename of the remaining real name. The make sure it's not on the
     // exclude list.
@@ -160,7 +161,7 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
  *
  * @param inQuestion node to look up
  * @param provides what is provided for the node by the node types request handler
- * return true if a request hanlder serves the specified node, false otherwise
+ * return true if a request handler serves the specified node, false otherwise
  */
 bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &provides)
 {

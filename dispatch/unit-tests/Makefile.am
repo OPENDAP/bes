@@ -32,7 +32,7 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
 scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
-uncompressT cacheT 
+uncompressT cacheT  complete_catalog_lister
 
 if LIBDAP
 TESTS += catT
@@ -147,6 +147,12 @@ catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
 
-# Added Unit test for singleton class BESCatalogList.ndp 5/6/2013
+# Added Unit test for singleton class BESCatalogList. ndp 5/6/2013
 BESCatalogListUnitTest_SOURCES  = BESCatalogListUnitTest.cc
 BESCatalogListUnitTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
+
+complete_catalog_lister_SOURCES = complete_catalog_lister.cc
+complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
+complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
+complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
+
