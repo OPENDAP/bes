@@ -280,6 +280,7 @@ GatewayUtils::Get_tempfile_template( char *file_template )
     return temp;
 }
 #endif
+
 void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
 {
     size_t fnpos = disp.find("filename");

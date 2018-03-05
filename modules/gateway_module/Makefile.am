@@ -30,8 +30,6 @@ GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
 		GatewayPathInfoCommand.cc \
 		GatewayPathInfoResponseHandler.cc
 
-# GatewayRequest.cc 
-
 GATEWAY_HDRS = GatewayModule.h GatewayRequestHandler.h			\
 		GatewayResponseNames.h GatewayContainer.h		\
 		GatewayContainerStorage.h GatewayError.h		\

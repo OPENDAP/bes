@@ -56,21 +56,40 @@ using std::endl;
 #include "BESNotFoundError.h"
 #include "BESDebug.h"
 
+/**
+ * @brief A catalog for POSIX file systems
+ *
+ * BESCatalgDirectory is BESCatalog specialized for POSIX file systems.
+ * The default catalog is an instance of this class.
+ *
+ * @note Access to the host's file system is made using BESCatalogUtils,
+ * which is initialized using the catalog name.
+ *
+ * @param name The name of the catalog.
+ * @see BESCatalogUtils
+ */
 BESCatalogDirectory::BESCatalogDirectory(const string &name) :
         BESCatalog(name)
 {
-    _utils = BESCatalogUtils::Utils(name);
+    d_utils = BESCatalogUtils::Utils(name);
 }
 
 BESCatalogDirectory::~BESCatalogDirectory()
 {
 }
 
+/**
+ *
+ * @param node
+ * @param coi Either the string "show.Info" or "show.Catalog"
+ * @param entry
+ * @return
+ */
 BESCatalogEntry *
-BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCatalogEntry *entry)
+BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 {
     string use_node = node;
-    // use_node should only end in '/' is that's the only character in which
+    // use_node should only end in '/' if that's the only character in which
     // case there's no need to call find()
     if (!node.empty() && node != "/") {
         string::size_type pos = use_node.find_last_not_of("/");
@@ -82,9 +101,14 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     if (use_node.empty())
         use_node = "/";
 
-    string rootdir = _utils->get_root_dir();
+    string rootdir = d_utils->get_root_dir();
     string fullnode = rootdir;
     if (!use_node.empty()) {
+        // TODO It's hard to know just what this code is supposed to do, but I
+        // think the following can be an error. Above, if use_node is empty(), the use_node becomes
+        // "/" and then it's not empty() and fullnode becomes "<stuff>//" but we just
+        // jumped through all kinds of hoops to make sure there was either zero
+        // or one trailing slash. jhrg 2.26.18
         fullnode = fullnode + "/" + use_node;
     }
 
@@ -97,6 +121,9 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
         basename = fullnode;
     }
 
+    // fullnode is the full pathname of the node, including the 'root' pathanme
+    // basename is the last component of fullnode
+
     BESDEBUG( "bes", "BESCatalogDirectory::show_catalog: "
             << "use_node = " << use_node << endl
             << "rootdir = " << rootdir << endl
@@ -107,8 +134,11 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    BESUtil::check_path(use_node, rootdir, _utils->follow_sym_links());
+    // TODO Move up; this canbe done once use_node is set. jhrg 2.26.18
+    BESUtil::check_path(use_node, rootdir, d_utils->follow_sym_links());
 
+    // If null is passed in, then return the new entry, else add the new entry to the
+    // existing Entry object. jhrg 2.26.18
     BESCatalogEntry *myentry = new BESCatalogEntry(use_node, get_catalog_name());
     if (entry) {
         // if an entry was passed, then add this one to it
@@ -120,6 +150,7 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
     }
 
     // Is this node a directory?
+    // TODO use stat() instead. jhrg 2.26.18
     DIR *dip = opendir(fullnode.c_str());
     if (dip != NULL) {
         try {
@@ -127,7 +158,7 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
 
             // if the directory requested is in the exclude list then we won't
             // let the user see it.
-            if (_utils->exclude(basename)) {
+            if (d_utils->exclude(basename)) {
                 string error = "You do not have permission to view the node " + use_node;
                 throw BESForbiddenError(error, __FILE__, __LINE__);
             }
@@ -137,22 +168,26 @@ BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCata
             BESUtil::conditional_timeout_cancel();
 
             bool dirs_only = false;
-            _utils->get_entries(dip, fullnode, use_node, coi, myentry, dirs_only);
+            // TODO This is the only place in the code where get_entries() is called
+            // jhrg 2.26.18
+            d_utils->get_entries(dip, fullnode, use_node, myentry, dirs_only);
         } catch (... /*BESError &e */) {
             closedir(dip);
             throw /* e */;
         }
         closedir(dip);
 
+        // TODO This is the only place this method is called. replace the static method
+        // with an object call (i.e., d_utils)? jhrg 2.26.18
         BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
     }
     else {
         // if the node is not in the include list then the requester does
         // not have access to that node
-        if (_utils->include(basename)) {
+        if (d_utils->include(basename)) {
             struct stat buf;
             int statret = 0;
-            if (_utils->follow_sym_links() == false) {
+            if (d_utils->follow_sym_links() == false) {
                 /*statret =*/(void) lstat(fullnode.c_str(), &buf);
                 if (S_ISLNK(buf.st_mode)) {
                     string error = "You do not have permission to access node " + use_node;
@@ -216,7 +251,7 @@ void BESCatalogDirectory::dump(ostream &strm) const
 
     strm << BESIndent::LMarg << "catalog utilities: " << endl;
     BESIndent::Indent();
-    _utils->dump(strm);
+    d_utils->dump(strm);
     BESIndent::UnIndent();
     BESIndent::UnIndent();
 }

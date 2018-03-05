@@ -67,39 +67,11 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( BESCatalogListUnitTest );
+    CPPUNIT_TEST_SUITE( BESCatalogListUnitTest );
 
     CPPUNIT_TEST(bclut_test);
-    //CPPUNIT_TEST(always_pass);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
-
-    void printCatalogNames()
-    {
-        vector<string> *names = new vector<string>();
-        printCatalogNames(names);
-        delete names;
-    }
-
-    void printCatalogNames(vector<string> *names)
-    {
-        DBG(
-            cerr << "Server_Function_List_Unit_Test::printFunctionNames() - ServerFunctionList::getFunctionNames(): "
-                << endl);
-        if (names->empty()) {
-            DBG(cerr << "     Function list is empty." << endl);
-            return;
-        }
-
-        for (unsigned int i = 0; i < names->size(); i++) {
-            DBG(cerr << "   name[" << i << "]: " << (*names)[i] << endl);
-        }
-    }
-    void always_pass()
-    {
-        CPPUNIT_ASSERT(true);
-    }
+    CPPUNIT_TEST_SUITE_END();
 
     void bclut_test()
     {
@@ -186,6 +158,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = BESCatalogListUnitTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
         }
     }
 

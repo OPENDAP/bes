@@ -35,7 +35,7 @@ noinst_DATA = response_cache pathinfo_files bes.conf
 
 response_cache:
 	test -d response_cache  || mkdir response_cache 
-	
+
 # If 'input-files' does not exist, replicate it here. tar (used to make
 # the source dist) dereferences symbolic links, so we make them this 
 # way to get distcheck to work.
@@ -43,10 +43,10 @@ pathinfo_files:
 	test -d pathinfo_files || mkdir -p pathinfo_files/nc
 	(cd pathinfo_files/nc && touch testfile.txt && ln -s testfile.txt link_to_testfile.txt)
 	(cd pathinfo_files && ln -s nc link_to_nc)
-	
+
 clean-local:
 	-rm -rf mds pathinfo_files response_cache tmp
-	
+
 EXTRA_DIST = input-files mds_baselines test_utils.cc test_utils.h TestFunction.h \
 test_config.h.in bes.conf.in
 
