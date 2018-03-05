@@ -32,7 +32,10 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
 scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
-uncompressT cacheT  complete_catalog_lister
+uncompressT cacheT
+
+# This is tool to look at CatalogEntry objects. jhrg 3.5.18
+# complete_catalog_lister
 
 if LIBDAP
 TESTS += catT
@@ -151,8 +154,8 @@ endif
 BESCatalogListUnitTest_SOURCES  = BESCatalogListUnitTest.cc
 BESCatalogListUnitTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 
-complete_catalog_lister_SOURCES = complete_catalog_lister.cc
-complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
-complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
-complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
+# complete_catalog_lister_SOURCES = complete_catalog_lister.cc
+# complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
+# complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
+# complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
 
