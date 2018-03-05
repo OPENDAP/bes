@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,7 +35,7 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include "BESInfo.h"
 
@@ -46,34 +46,27 @@ using std::string ;
  *
  * @see BESResponseObject
  */
-class BESSilentInfo :public BESInfo
-{
+class BESSilentInfo: public BESInfo {
 public:
-    			BESSilentInfo() ;
-    virtual		~BESSilentInfo() ;
+    BESSilentInfo();
+    virtual ~BESSilentInfo();
 
-    virtual void	begin_response( const string &response_name,
-					BESDataHandlerInterface &dhi ) ;
+    virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi);
 
-    virtual void	add_tag( const string &tag_name,
-                                 const string &tag_data,
-				 map<string,string> *attrs = 0 ) ;
-    virtual void	begin_tag( const string &tag_name,
-                                   map<string,string> *attrs = 0 ) ;
-    virtual void	end_tag( const string &tag_name ) ;
+    virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0);
+    virtual void begin_tag(const string &tag_name, map<string, string> *attrs = 0);
+    virtual void end_tag(const string &tag_name);
 
-    virtual void 	add_data( const string &s ) ;
-    virtual void	add_space( unsigned long num_spaces ) ;
-    virtual void	add_break( unsigned long num_breaks ) ;
+    virtual void add_data(const string &s);
+    virtual void add_space(unsigned long num_spaces);
+    virtual void add_break(unsigned long num_breaks);
 
-    virtual void 	add_data_from_file( const string &key,
-                                            const string &name ) ;
-    virtual void	add_exception( BESError &e, const string &admin ) ;
-    virtual void	transmit( BESTransmitter *transmitter,
-				  BESDataHandlerInterface &dhi ) ;
-    virtual void 	print( ostream &strm ) ;
+    virtual void add_data_from_file(const string &key, const string &name);
+    virtual void add_exception(BESError &e, const string &admin);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    virtual void print(ostream &strm);
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESSilentInfo_h_

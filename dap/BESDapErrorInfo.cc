@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,10 +35,8 @@
 /** @brief constructs an informational object that doesn't
  *         write any output to the stream
  */
-BESDapErrorInfo::BESDapErrorInfo( ErrorCode ec, const string &msg )
-    :BESInfo( ),
-    _error_code( ec ),
-    _error_msg( msg )
+BESDapErrorInfo::BESDapErrorInfo(ErrorCode ec, const string &msg) :
+    BESInfo(), _error_code(ec), _error_msg(msg)
 {
 }
 
@@ -53,11 +51,9 @@ BESDapErrorInfo::~BESDapErrorInfo()
  * @param response_name name of the response represented by the information
  * @param dhi information about the request and response
  */
-void
-BESDapErrorInfo::begin_response( const string &response_name,
-				 BESDataHandlerInterface &dhi )
+void BESDapErrorInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
 {
-    BESInfo::begin_response( response_name, dhi ) ;
+    BESInfo::begin_response(response_name, dhi);
 }
 
 /** @brief add tagged information to the informational response
@@ -66,10 +62,7 @@ BESDapErrorInfo::begin_response( const string &response_name,
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void
-BESDapErrorInfo::add_tag( const string & /*tag_name*/,
-			  const string & /*tag_data*/,
-			  map<string,string> * /*attrs*/ )
+void BESDapErrorInfo::add_tag(const string & /*tag_name*/, const string & /*tag_data*/, map<string, string> * /*attrs*/)
 {
 }
 
@@ -78,11 +71,9 @@ BESDapErrorInfo::add_tag( const string & /*tag_name*/,
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void
-BESDapErrorInfo::begin_tag( const string &tag_name ,
-			    map<string,string> * /*attrs*/ )
+void BESDapErrorInfo::begin_tag(const string &tag_name, map<string, string> * /*attrs*/)
 {
-    BESInfo::begin_tag( tag_name ) ;
+    BESInfo::begin_tag(tag_name);
 }
 
 /** @brief end a tagged part of the informational response
@@ -91,10 +82,9 @@ BESDapErrorInfo::begin_tag( const string &tag_name ,
  *
  * @param tag_name name of the tag to end
  */
-void
-BESDapErrorInfo::end_tag( const string &tag_name )
+void BESDapErrorInfo::end_tag(const string &tag_name)
 {
-    BESInfo::end_tag( tag_name ) ;
+    BESInfo::end_tag(tag_name);
 }
 
 /** @brief add data to the informational object
@@ -103,8 +93,7 @@ BESDapErrorInfo::end_tag( const string &tag_name )
  *
  * @param s information to be ignored
  */
-void
-BESDapErrorInfo::add_data( const string & /*s*/ )
+void BESDapErrorInfo::add_data(const string & /*s*/)
 {
 }
 
@@ -114,8 +103,7 @@ BESDapErrorInfo::add_data( const string & /*s*/ )
  *
  * @param num_spaces number of spaces to add
  */
-void
-BESDapErrorInfo::add_space( unsigned long /*num_spaces*/ )
+void BESDapErrorInfo::add_space(unsigned long /*num_spaces*/)
 {
 }
 
@@ -125,8 +113,7 @@ BESDapErrorInfo::add_space( unsigned long /*num_spaces*/ )
  *
  * @param num_breaks number of line breaks to add
  */
-void
-BESDapErrorInfo::add_break( unsigned long /*num_breaks*/ )
+void BESDapErrorInfo::add_break(unsigned long /*num_breaks*/)
 {
 }
 
@@ -136,9 +123,7 @@ BESDapErrorInfo::add_break( unsigned long /*num_breaks*/ )
  * @param name naem information to add to error messages
  * loaded.
  */
-void
-BESDapErrorInfo::add_data_from_file( const string & /*key*/,
-                                     const string & /*name*/ )
+void BESDapErrorInfo::add_data_from_file(const string & /*key*/, const string & /*name*/)
 {
 }
 
@@ -148,8 +133,7 @@ BESDapErrorInfo::add_data_from_file( const string & /*key*/,
  * @param admin The contact information for the person
  * responsible for this error
  */
-void
-BESDapErrorInfo::add_exception( BESError & /*e*/, const string & /*admin*/  )
+void BESDapErrorInfo::add_exception(BESError & /*e*/, const string & /*admin*/)
 {
 }
 
@@ -160,22 +144,19 @@ BESDapErrorInfo::add_exception( BESError & /*e*/, const string & /*admin*/  )
  * @param transmitter The type of transmitter to use to transmit the info
  * @param dhi information to help with the transmission
  */
-void
-BESDapErrorInfo::transmit( BESTransmitter *transmitter,
-		           BESDataHandlerInterface &dhi )
+void BESDapErrorInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    transmitter->send_text( *this, dhi ) ;
+    transmitter->send_text(*this, dhi);
 }
 
 /** @brief ignore printing the information
  *
  * @param strm stream to send output to if not ignored.
  */
-void
-BESDapErrorInfo::print( ostream &strm )
+void BESDapErrorInfo::print(ostream &strm)
 {
-    Error new_e( _error_code, _error_msg ) ;
-    new_e.print( strm ) ;
+    Error new_e(_error_code, _error_msg);
+    new_e.print(strm);
 }
 
 /** @brief dumps information about this object
@@ -185,13 +166,11 @@ BESDapErrorInfo::print( ostream &strm )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDapErrorInfo::dump( ostream &strm ) const
+void BESDapErrorInfo::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDapErrorInfo::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESInfo::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDapErrorInfo::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESInfo::dump(strm);
+    BESIndent::UnIndent();
 }
 

@@ -170,7 +170,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
             bool dirs_only = false;
             // TODO This is the only place in the code where get_entries() is called
             // jhrg 2.26.18
-            d_utils->get_entries(dip, fullnode, use_node, /*coi not used,*/ myentry, dirs_only);
+            d_utils->get_entries(dip, fullnode, use_node, myentry, dirs_only);
         } catch (... /*BESError &e */) {
             closedir(dip);
             throw /* e */;
