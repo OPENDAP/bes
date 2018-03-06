@@ -1,0 +1,137 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the OPeNDAP Back-End Server (BES)
+
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: James Gallagehr <jgallagehr@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+#ifndef I_CatalogItem_h
+#define I_CatalogItem_h 1
+
+#include <string>
+#include <ostream>
+
+#include "BESObj.h"
+
+namespace bes {
+
+#if 0
+Class Node {
+    Name
+    LMT
+    Item_count (number of nodes or leaves it holds)
+    Items (zero or more Item instances)
+
+    Class Item {
+        Name
+        Size
+        Type (node or leaf)
+        Is_data
+        LMT
+    }
+}
+#endif
+
+/**
+ * An item that is part of a BES Catalog. Catalogs are a simple abstraction
+ * for a hierarchical organization of data, equivalent to a tree where a node
+ * can have zero or more leaves and zero or more child nodes. in that model,
+ * the CatalogItem is a leaf or a node. However, the CatalogItem class does
+ * not support building a tree. It will return information about the contents
+ * of a node, but not about the _contents_ of that nodes child nodes. See
+ * CatalogNode and BESCatalog for a more complete picture of how this class
+ * is used.
+ *
+ * In the Catalog abstraction, a leaf may be either a simple file that the
+ * BES will not process other than to stream its bytes to the client, or it
+ * may be a data file that the BES can open, read, and interpret. A node is
+ * always just a node. It may be empty, have only other nodes, have only
+ * leaves or have a combination of the two.
+ *
+ * @see CatalogNode
+ * @see BESCatalog
+ */
+class CatalogItem: public BESObj {
+public:
+    typedef enum {unknown, node, leaf} item_type_t;
+
+private:
+    std::string d_name;
+    size_t d_size;
+    std::string d_lmt;
+    bool d_is_data;
+    item_type_t d_type;
+
+    CatalogItem(const CatalogItem &rhs);
+    CatalogItem &operator=(const CatalogItem &rhs);
+
+public:
+    /// @brief Make an empty instance.
+    CatalogItem() : d_name(""), d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown){ }
+
+    /**
+     * @brief Hold information about an item in a BES Catalog
+     *
+     * Store information about an item. Sets the id_data() property to false.
+     *
+     * To determine if a leaf item is data, the name must match a regular
+     * expression that is used to identify data objects (typically files).
+     * See BESCatalogUtils for help in doing that.
+     *
+     * @param name
+     * @param size
+     * @param lmt
+     * @param type
+     */
+    CatalogItem(const string &name, size_t size, const string &lmt, item_type_t type)
+        : d_name(name), d_size(size), d_lmt(lmt), d_is_data(false), d_type(type) { }
+
+    virtual ~CatalogItem() { }
+
+    /// @brief The name of this item in the node
+    std::string get_name() const { return d_name; }
+    /// @brief Set the name of the item
+    void set_name(std::string n) { d_name = n; }
+
+    /// @brief The size (bytes) of the item
+    size_t get_size() const { return d_size; }
+    /// @brief Set the size of the item
+    void set_size(size_t s) { d_size = s; }
+
+    /// @brief Get the last modified time for this item
+    std::string get_lmt() const { return d_lmt; }
+    /// @brief Set the LMT for this item.
+    void set_lmt(std::string lmt) { d_lmt = lmt; }
+
+    /// @brief Is this item recognized as data?
+    bool is_data() const { return d_is_data; }
+    /// @brief Is this item data that the BES should interpret?
+    void set_is_data(bool id) { d_is_data = id; }
+
+    /// @brief Get the type of this item (unknown, node or leaf)
+    item_type_t get_type() const { return d_type; }
+    /// @brief Set the type for this item
+    void set_type(item_type_t t) { d_type = t; }
+
+    virtual void dump(ostream &strm) const;
+};
+
+} // namespace bes
+
+#endif // I_BESCatalogItem_h

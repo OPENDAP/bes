@@ -242,6 +242,33 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     return entry;
 }
 
+/**
+ * Copied from BESLog, where that code writes to an internal object, not a string.
+ * @param the_time
+ * @param use_local_time True to use the local time, false (default) to use GMT
+ */
+static string get_time(time_t the_time, bool use_local_time = false)
+{
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+
+    if (!status)
+        LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
+
+    return buf;
+}
+
 // path must start with a '/'. By this class it will be interpreted as a
 // starting at the CatalogDirectory instance's root directory. It may either
 // end in a '/' or not.
@@ -311,7 +338,8 @@ BESCatalogDirectory::get_node(const string &path)
             int statret = stat(item_path.c_str(), &buf);
             if (statret == 0 && S_ISDIR(buf.st_mode)) {
                 if (!d_utils->exclude(item)) {
-                    // TODO Add a new CatalogItem that is a node
+                    // (const string &name, size_t size, const string &lmt, item_type_t type)
+                    node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime), leaf));
                 }
             }
             else if (statret == 0 && S_ISREG(buf.st_mode)) {
