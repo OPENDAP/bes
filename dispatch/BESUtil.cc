@@ -284,7 +284,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     }
 
     // path checked so far
-    string checked;
+    //string checked;
     while (!done) {
         size_t slash = rem.find('/');
         if (slash == string::npos) {
@@ -301,7 +301,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             rem = rem.substr(slash + 1, rem.length() - slash);
         }
 
-        checked = fullpath;
+        //checked = fullpath;
 
         struct stat buf;
         int statret = ye_old_stat_function(fullpath.c_str(), &buf);
@@ -310,13 +310,12 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             // stat failed, so not accessible. Get the error string,
             // store in error, and throw exception
             char *s_err = strerror(errsv);
-            string error = "Unable to access node " + checked + ": ";
-            if (s_err) {
-                error = error + s_err;
-            }
-            else {
-                error = error + "unknown access error";
-            }
+            //string error = "Unable to access node " + checked + ": ";
+            string error = "Unable to access node " + fullpath + ": ";
+            if (s_err)
+                error.append(s_err);
+            else
+                error.append("unknown error");
 
             BESDEBUG(debug_key, "check_path() - error: "<< error << "   errno: " << errno << endl);
 

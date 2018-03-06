@@ -81,6 +81,8 @@ public:
 
     virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
 
+    // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
+    // a directory, but BESCatalogUtils::include() on a file.
     virtual bes::CatalogNode *get_node(const std::string &path) = 0;
 
     virtual void dump(ostream &strm) const = 0;
