@@ -571,7 +571,6 @@ public:
 
     void get_node_test()
     {
-#if 1
         TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
@@ -595,12 +594,21 @@ public:
 
             DBG(cerr << "Node for /: ");
             node->dump(cerr);
+#if 0
+            if (node->get_item_count() > 0) {
+                strm << endl;
+                BESIndent::Indent();
+                vector<CatalogItem*>::const_iterator i = d_items.begin();
+                vector<CatalogItem*>::const_iterator e = d_items.end();
+                for (; i != e; ++i) {
+                    strm << BESIndent::LMarg << (*i) << endl;
+                }
+#endif
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
-#endif
     }
 };
 
