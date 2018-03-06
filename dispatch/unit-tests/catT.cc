@@ -36,6 +36,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -53,6 +54,8 @@
 #include "BESCatalog.h"
 #include "BESCatalogEntry.h"
 #include "BESCatalogDirectory.h"
+#include "CatalogNode.h"
+
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESXMLInfo.h"
@@ -69,12 +72,9 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+using namespace bes;
 using namespace CppUnit;
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ostringstream;
+using namespace std;
 
 const string root_dir = "/catalog_test";
 
@@ -189,7 +189,7 @@ public:
     CPPUNIT_TEST(default_test);
     CPPUNIT_TEST(no_default_test);
     CPPUNIT_TEST(root_dir_test1);
-
+    CPPUNIT_TEST(get_node_test);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -569,15 +569,13 @@ public:
         DBG(cerr << "Returning from catT::run" << endl);
     }
 
-    void get_node_test() {
-#if 0
-        DBG(cerr << "add good catalog" << endl);
-        var = (string) "BES.Catalog.default.TypeMatch=conf:conf&;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.default.Include=.*file.*$;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.default.Exclude=README;";
-        TheBESKeys::TheKeys()->set_key(var);
+    void get_node_test()
+    {
+#if 1
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
 
         try {
             BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
@@ -587,26 +585,16 @@ public:
             CPPUNIT_FAIL("Failed to add catalog");
         }
 
-        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("default");
-        CPPUNIT_ASSERT(catobj);
+        BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog("default");
+        CPPUNIT_ASSERT(catalog);
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
         CPPUNIT_ASSERT(numcats == 1);
 
         try {
-            BESDataHandlerInterface dhi;
-            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0);
-            ostringstream strm;
-            entry->dump(strm);
-            string str = strm.str();
-            str = remove_ptr(str);
-            str = remove_stuff(str);
+            auto_ptr < bes::CatalogNode > node(catalog->get_node("/"));
 
-            string one_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/one_response.txt");
-
-            DBG(cerr << "baseline: " << one_response << endl);
-            DBG(cerr << "response: " << str << endl);
-
-            CPPUNIT_ASSERT(str == one_response);
+            DBG(cerr << "Node for /: ");
+            node->dump(cerr);
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);

@@ -315,7 +315,13 @@ BESCatalogDirectory::get_node(const string &path)
                 string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
                 __FILE__, __LINE__);
 
-        CatalogNode *node = new CatalogNode();
+        CatalogNode *node = new CatalogNode(path);
+
+        node->set_catalog_name(get_catalog_name());
+        struct stat buf;
+        int statret = stat(fullpath.c_str(), &buf);
+        if (statret == 0 /* && S_ISDIR(buf.st_mode) */)
+            node->set_lmt(get_time(buf.st_mtime));
 
         struct dirent *dit;
         while ((dit = readdir(dip)) != NULL) {
@@ -332,8 +338,7 @@ BESCatalogDirectory::get_node(const string &path)
             }
 
             // Is this a directory or a file? Should it be excluded or included?
-            struct stat buf;
-            int statret = stat(item_path.c_str(), &buf);
+            statret = stat(item_path.c_str(), &buf);
             if (statret == 0 && S_ISDIR(buf.st_mode) && !d_utils->exclude(item)) {
                 // Add a new node; set the size to zero.
                 node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
