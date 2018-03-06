@@ -44,6 +44,10 @@ using std::string;
 class BESCatalogEntry;
 class BESCatalogUtils;
 
+namespace bes {
+    class CatalogNode;
+}
+
 /** @brief builds catalogs from a directory structure
  */
 class BESCatalogDirectory: public BESCatalog {
@@ -52,9 +56,11 @@ private:
 
 public:
     BESCatalogDirectory(const string &name);
-    virtual ~BESCatalogDirectory(void);
+    virtual ~BESCatalogDirectory();
 
-    virtual BESCatalogEntry * show_catalog(const string &container, /*const string &coi,*/ BESCatalogEntry *entry);
+    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry *entry);
+
+    virtual bes::CatalogNode *get_node(const std::string &path);
 
     virtual void dump(ostream &strm) const;
 };

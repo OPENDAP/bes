@@ -40,21 +40,26 @@
 #include <cerrno>
 #include <sstream>
 
-using std::stringstream;
-using std::endl;
-
 #include "BESUtil.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogUtils.h"
 #include "BESCatalogEntry.h"
+
+#include "CatalogNode.h"
+
 #include "BESInfo.h"
-#include "BESCatalogUtils.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorageCatalog.h"
 #include "BESLog.h"
+
+#include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+
 #include "BESDebug.h"
+
+using namespace bes;
+using namespace std;
 
 /**
  * @brief A catalog for POSIX file systems
@@ -235,6 +240,180 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     }
 
     return entry;
+}
+
+// path must start with a '/'. By this class it will be interpreted as a
+// starting at the CatalogDirectory instance's root directory. It may either
+// end in a '/' or not.
+//
+// If it is not a directory - that is an error. (return null or throw?)
+
+/**
+ * @brief Build a CatalogNode for the given path in the current catalog
+ *
+ * @param path
+ * @param catalog_name
+ * @return A CatalogNode instance or null if there is no such path in the
+ * current catalog.
+ */
+CatalogNode *
+BESCatalogDirectory::get_node(const string &path)
+{
+    if (path[0] != '/')
+        throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
+#if 0
+    string use_node = node;
+    // use_node should only end in '/' if that's the only character in which
+    // case there's no need to call find()
+    if (!node.empty() && node != "/") {
+        string::size_type pos = use_node.find_last_not_of("/");
+        use_node = use_node.substr(0, pos + 1);
+    }
+
+    // This takes care of bizarre cases like "///" where use_node would be
+    // empty after the substring call.
+    if (use_node.empty())
+        use_node = "/";
+#endif
+    string rootdir = d_utils->get_root_dir();
+#if 0
+    string fullnode = rootdir;
+    if (!use_node.empty()) {
+        // TODO It's hard to know just what this code is supposed to do, but I
+        // think the following can be an error. Above, if use_node is empty(), the use_node becomes
+        // "/" and then it's not empty() and fullnode becomes "<stuff>//" but we just
+        // jumped through all kinds of hoops to make sure there was either zero
+        // or one trailing slash. jhrg 2.26.18
+        fullnode = fullnode + "/" + use_node;
+    }
+
+    string basename;
+    string::size_type slash = fullnode.rfind("/");
+    if (slash != string::npos) {
+        basename = fullnode.substr(slash + 1, fullnode.length() - slash);
+    }
+    else {
+        basename = fullnode;
+    }
+
+    // fullnode is the full pathname of the node, including the 'root' pathanme
+    // basename is the last component of fullnode
+
+    BESDEBUG( "bes", "BESCatalogDirectory::show_catalog: "
+            << "use_node = " << use_node << endl
+            << "rootdir = " << rootdir << endl
+            << "fullnode = " << fullnode << endl
+            << "basename = " << basename << endl );
+#endif
+    // This will throw the appropriate exception (Forbidden or Not Found).
+    // Checks to make sure the different elements of the path are not
+    // symbolic links if follow_sym_links is set to false, and checks to
+    // make sure have permission to access node and the node exists.
+    // TODO Move up; this can be done once use_node is set. jhrg 2.26.18
+    BESUtil::check_path(path, rootdir, d_utils->follow_sym_links());
+
+#if 0
+    // If null is passed in, then return the new entry, else add the new entry to the
+    // existing Entry object. jhrg 2.26.18
+    BESCatalogEntry *myentry = new BESCatalogEntry(use_node, get_catalog_name());
+    if (entry) {
+        // if an entry was passed, then add this one to it
+        entry->add_entry(myentry);
+    }
+    else {
+        // else we want to return the new entry created
+        entry = myentry;
+    }
+
+    // Is this node a directory?
+    // TODO use stat() instead. jhrg 2.26.18
+    DIR *dip = opendir(fullnode.c_str());
+    if (dip != NULL) {
+        try {
+            // The node is a directory
+
+            // if the directory requested is in the exclude list then we won't
+            // let the user see it.
+            if (d_utils->exclude(basename)) {
+                string error = "You do not have permission to view the node " + use_node;
+                throw BESForbiddenError(error, __FILE__, __LINE__);
+            }
+
+            // Now that we are ready to start building the response data we
+            // cancel any pending timeout alarm according to the configuration.
+            BESUtil::conditional_timeout_cancel();
+
+            bool dirs_only = false;
+            // TODO This is the only place in the code where get_entries() is called
+            // jhrg 2.26.18
+            d_utils->get_entries(dip, fullnode, use_node, myentry, dirs_only);
+        } catch (... /*BESError &e */) {
+            closedir(dip);
+            throw /* e */;
+        }
+        closedir(dip);
+
+        // TODO This is the only place this method is called. replace the static method
+        // with an object call (i.e., d_utils)? jhrg 2.26.18
+        BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
+    }
+    else {
+        // if the node is not in the include list then the requester does
+        // not have access to that node
+        if (d_utils->include(basename)) {
+            struct stat buf;
+            int statret = 0;
+            if (d_utils->follow_sym_links() == false) {
+                /*statret =*/(void) lstat(fullnode.c_str(), &buf);
+                if (S_ISLNK(buf.st_mode)) {
+                    string error = "You do not have permission to access node " + use_node;
+                    throw BESForbiddenError(error, __FILE__, __LINE__);
+                }
+            }
+            statret = stat(fullnode.c_str(), &buf);
+            if (statret == 0 && S_ISREG(buf.st_mode)) {
+                BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
+
+                list < string > services;
+                BESCatalogUtils::isData(node, get_catalog_name(), services);
+                myentry->set_service_list(services);
+            }
+            else if (statret == 0) {
+                string error = "You do not have permission to access " + use_node;
+                throw BESForbiddenError(error, __FILE__, __LINE__);
+            }
+            else {
+                // ENOENT means that the path or part of the path does not
+                // exist
+                if (errno == ENOENT) {
+                    string error = "Node " + use_node + " does not exist";
+                    char *s_err = strerror(errno);
+                    if (s_err) {
+                        error = s_err;
+                    }
+                    throw BESNotFoundError(error, __FILE__, __LINE__);
+                }
+                // any other error means that access is denied for some reason
+                else {
+                    string error = "Access denied for node " + use_node;
+                    char *s_err = strerror(errno);
+                    if (s_err) {
+                        error = error + s_err;
+                    }
+                    throw BESNotFoundError(error, __FILE__, __LINE__);
+                }
+            }
+        }
+        else {
+            string error = "You do not have permission to access " + use_node;
+            throw BESForbiddenError(error, __FILE__, __LINE__);
+        }
+    }
+
+    return entry;
+#endif
+
+    return 0;
 }
 
 /** @brief dumps information about this object
