@@ -55,6 +55,7 @@
 #include "BESCatalogEntry.h"
 #include "BESCatalogDirectory.h"
 #include "CatalogNode.h"
+#include "CatalogItem.h"
 
 #include "BESError.h"
 #include "TheBESKeys.h"
@@ -80,67 +81,87 @@ const string root_dir = "/catalog_test";
 
 class catT: public TestFixture {
 private:
-    string remove(string &str, string attr, string::size_type s)
+    /**
+     * Like remove_attr, remove the value of an attribute. This function
+     * looks for quoted values and removes those (while remove_attr()
+     * expects values to be separated by a colon).
+     *
+     * @param str Operate on this string
+     * @param attr Look for this attribute
+     * @param pos Start working at this position
+     * @return The modified string
+     */
+    string remove(string &str, const string &attr, string::size_type pos)
     {
-        string::size_type apos = str.find(attr, s);
+        string::size_type apos = str.find(attr, pos);
         if (apos == string::npos) return str;
+
         apos = str.find("\"", apos + 1);
         if (apos == string::npos) return str;
+
         string::size_type qpos = str.find("\"", apos + 1);
         if (qpos == string::npos) return str;
-        str = str.substr(0, apos + 1) + str.substr(qpos);
-        return remove(str, attr, qpos + 1);
-    }
 
-    // I think this removes all text enclosed in parentheses. jhrg 2.25.18
-    string remove_ptr(string &str, string::size_type pos = 0)
-    {
-        string ret;
-        string::size_type lparen = str.find("(", pos);
-        if (lparen != string::npos) {
-            string::size_type rparen = str.find(")", lparen);
-            if (rparen != string::npos) {
-                ret = str.substr(0, lparen + 1) + str.substr(rparen);
-                ret = remove_ptr(ret, rparen + 1);
-            }
-            else {
-                ret = str;
-            }
-        }
-        else {
-            ret = str;
-        }
-        return ret;
-    }
-
-    string remove_attr(string &str, string &attr, string::size_type pos = 0)
-    {
-        string ret;
-        string::size_type apos = str.find(attr, pos);
-        if (apos != string::npos) {
-            string::size_type colon = str.find(":", apos);
-            if (colon != string::npos) {
-                string::size_type end = str.find("\n", colon);
-                if (end != string::npos) {
-                    ret = str.substr(0, colon + 1) + str.substr(end);
-                    ret = remove_attr(ret, attr, end);
-                }
-                else {
-                    ret = str;
-                }
-            }
-            else {
-                ret = str;
-            }
-        }
-        else {
-            ret = str;
-        }
-        return ret;
+        // str = str.substr(0, apos + 1) + str.substr(qpos);
+        // instead of using substr(), use erase
+        str.erase(apos + 1, qpos - apos -1);
+        // for the recursive call, start looking past the chars just removed.
+        // There's no sense checking from the start of the string.
+        return remove(str, attr, apos + 1);
     }
 
     /**
-     * Remove the size, mod date and mod time 'attributes' from a string
+     * Return the \arg str with all the pointer items removed.
+     * Used to remove the pointer information printed by the dump()
+     * methods (which are usually different and thus break the
+     * baselines).
+     *
+     * @param str Hack this string
+     * @param pos Look starting at this position
+     * @return The modified string.
+     */
+    string remove_ptr(string &str, string::size_type pos = 0)
+    {
+        string::size_type start = str.find("0x", pos);
+        if (start == string::npos) return str;
+
+        string::size_type end = str.find_first_not_of("0123456789abcdef", start + 2);
+        if (end == string::npos) return str;
+
+        // Cut out the '0x0000...0000' stuff
+        str.erase(start, end - start);
+        return remove_ptr(str, start);
+    }
+
+
+    /**
+     * Return the \arg str with all attributes' \arg attr values removed. An
+     * attribute is a _string_ : _value_. These are often things like dates
+     * and sizes that can vary between OSs, machines, et cetera.
+     *
+     * @param str Hack this string
+     * @param attr Look for this attribute
+     * @param pos start looking at this position.
+     * @return The modified string
+     */
+    string remove_attr(string &str, const string &attr, string::size_type pos = 0)
+    {
+        string::size_type apos = str.find(attr, pos);
+        if (apos == string::npos) return str;
+
+        string::size_type colon = str.find(":", apos);
+        if (colon == string::npos) return str;
+
+        string::size_type end = str.find("\n", colon);
+        if (end == string::npos) return str;
+
+        str.erase(colon + 1, end - colon - 1);
+        return remove_attr(str, attr, colon + 1);
+    }
+
+    /**
+     * Remove the _size_, _modification date_ and _time_ 'attributes' from a string
+     *
      * @param str
      * @return The pruned string
      */
@@ -193,13 +214,12 @@ public:
 
     CPPUNIT_TEST_SUITE_END();
 
-
     void default_test()
     {
         DBG(cerr << __func__ << endl);
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
-        string defcat = BESCatalogList::TheCatalogList()->default_catalog();
+        string defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
         CPPUNIT_ASSERT(defcat == "default");
 
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
@@ -213,10 +233,6 @@ public:
             entry = BESCatalogList::TheCatalogList()->show_catalogs(0, false);
             ostringstream strm;
             entry->dump(strm);
-            DBG(cerr << "Entry before remove_ptr: ");
-            DBG(entry->dump(cerr));
-            DBG(cerr <<endl);
-
             string str = strm.str();
             str = remove_ptr(str);
             string empty_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/empty_response.txt");
@@ -268,9 +284,8 @@ public:
 
     // This test should be broken up into smaller pieces. jhrg 8/23/17
     void root_dir_test1() {
-        string var = (string) "BES.Catalog.default.RootDirectory=" + TEST_SRC_DIR + root_dir;
-        TheBESKeys::TheKeys()->set_key(var);
-        try {
+       TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
+       try {
             BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
             CPPUNIT_FAIL("Succeeded in adding catalog, should not have");
         }
@@ -279,13 +294,9 @@ public:
             CPPUNIT_ASSERT("Correctly caught exception");
         }
 
-        DBG(cerr << "add good catalog" << endl);
-        var = (string) "BES.Catalog.default.TypeMatch=conf:conf&;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.default.Include=.*file.*$;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.default.Exclude=README;";
-        TheBESKeys::TheKeys()->set_key(var);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
 
         try {
             BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
@@ -350,14 +361,12 @@ public:
         }
 
         DBG(cerr << "add good catalog" << endl);
-        var = (string) "BES.Catalog.other.RootDirectory=" + TEST_SRC_DIR + root_dir;
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.other.TypeMatch=info:info&;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.other.Include=.*file.*$;";
-        TheBESKeys::TheKeys()->set_key(var);
-        var = (string) "BES.Catalog.other.Exclude=\\..*;README;";
-        TheBESKeys::TheKeys()->set_key(var);
+
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.other.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.other.TypeMatch=conf:conf&;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.other.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.other.Exclude=README;");
+
         BESCatalog *other = 0;
         try {
             other = new BESCatalogDirectory("other");
@@ -587,23 +596,34 @@ public:
         BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog("default");
         CPPUNIT_ASSERT(catalog);
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        CPPUNIT_ASSERT(numcats == 1);
+        DBG(cerr << "number of catalogs: " << numcats << endl);
+        CPPUNIT_ASSERT(numcats == 1 || numcats == 2);
 
         try {
-            auto_ptr < bes::CatalogNode > node(catalog->get_node("/"));
+            auto_ptr<CatalogNode> node(catalog->get_node("/"));
 
-            DBG(cerr << "Node for /: ");
-            node->dump(cerr);
-#if 0
+            ostringstream oss;
+            node->dump(oss);
+
             if (node->get_item_count() > 0) {
-                strm << endl;
-                BESIndent::Indent();
-                vector<CatalogItem*>::const_iterator i = d_items.begin();
-                vector<CatalogItem*>::const_iterator e = d_items.end();
-                for (; i != e; ++i) {
-                    strm << BESIndent::LMarg << (*i) << endl;
+                int n = 0;
+                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
+                    oss << "Item " << n++ << ": " << endl;
+                    (*i)->dump(oss);
                 }
-#endif
+            }
+
+            string str = oss.str();
+
+            str = remove_ptr(str);
+            str = remove_attr(str, "last modified time");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_1.txt");
+
+            DBG(cerr << "Baseline: " << baseline << endl);
+            DBG(cerr << "response: " << str << endl);
+
+            CPPUNIT_ASSERT(str == baseline);
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);

@@ -237,14 +237,13 @@ bool BESCatalogList::deref_catalog(const string &catalog_name) {
  * @see BESCatalog
  */
 BESCatalog *
-BESCatalogList::find_catalog(const string &catalog_name) {
-    BESCatalog *ret = 0;
-    BESCatalogList::catalog_citer i;
-    i = d_catalogs.find(catalog_name);
+BESCatalogList::find_catalog(const string &catalog_name) const
+{
+    BESCatalogList::catalog_citer i = d_catalogs.find(catalog_name);
     if (i != d_catalogs.end()) {
-        ret = (*i).second;
+        return (*i).second;
     }
-    return ret;
+    return 0;
 }
 
 /**
@@ -283,7 +282,7 @@ BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
         // if show_default is true then display all catalogs
         // if !show_default but this current catalog is not the default
         // then display
-        if (show_default || (*i).first != default_catalog()) {
+        if (show_default || (*i).first != default_catalog_name()) {
             BESCatalog *catalog = (*i).second;
             catalog->show_catalog("", myentry);
         }

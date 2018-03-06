@@ -80,7 +80,7 @@ public:
             DBG(cerr << endl);
             DBG(cerr << "bclut_test() - BEGIN." << endl);
 
-            string defcat = BESCatalogList::TheCatalogList()->default_catalog();
+            string defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
             DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
             CPPUNIT_ASSERT(defcat == "catalog");
 
@@ -93,7 +93,7 @@ public:
             DBG(cerr << "bclut_test() - Calling  BESCatalogList::initialize_instance()" << endl);
             BESCatalogList::initialize_instance();
 
-            defcat = BESCatalogList::TheCatalogList()->default_catalog();
+            defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
             DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
             CPPUNIT_ASSERT(defcat == "catalog");
 

@@ -914,7 +914,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->debug()) cerr << "xml:base does NOT start with '" << http << "' or with '" << https << "'. "
                     "Retrieving default catalog root directory" << endl;
                 // Now we try to find the default catalog. If we can't find it we punt and leave it be.
-                string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+                string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
                 if (parser->debug()) cerr << "default_catalog name '" << defcatname << "'" << endl;
                 BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
                 if (!defcat) {

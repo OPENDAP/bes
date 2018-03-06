@@ -346,7 +346,7 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
 
 void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
 {
-    string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+    string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
 
     // start with the external entry
     map<string, string> props;

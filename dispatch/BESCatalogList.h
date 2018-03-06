@@ -112,33 +112,26 @@ public:
     BESCatalogList();
     virtual ~BESCatalogList();
 
-    virtual int num_catalogs()
-    {
-        return d_catalogs.size();
-    }
+    /// @brief The number of non-default catalogs
+    /// @todo Change this to include the default!
+    virtual int num_catalogs() const { return d_catalogs.size();  }
 
-    virtual std::string default_catalog()
-    {
-        return d_default_catalog;
-    }
+    /// @brief The name of the default catlog
+    virtual std::string default_catalog_name() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);
     virtual bool ref_catalog(const std::string &catalog_name);
     virtual bool deref_catalog(const std::string &catalog_name);
 
-    virtual BESCatalog * find_catalog(const std::string &catalog_name);
+    virtual BESCatalog * find_catalog(const std::string &catalog_name) const;
 
     virtual BESCatalogEntry * show_catalogs(BESCatalogEntry *entry, bool show_default = true);
 
-    virtual catalog_iter first_catalog()
-    {
-        return d_catalogs.begin();
-    }
+    /// @brief Iterator to the first catalog
+    virtual catalog_citer first_catalog() const { return d_catalogs.begin(); }
     
-    virtual catalog_iter end_catalog()
-    {
-        return d_catalogs.end();
-    }
+    /// @brief Iterator to the last catalog
+    virtual catalog_citer end_catalog() const { return d_catalogs.end();  }
 
     virtual void dump(ostream &strm) const;
 };

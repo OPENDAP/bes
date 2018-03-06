@@ -73,6 +73,10 @@ public:
     /// @brief Add information about an item that is in  this node of the catalog
     void add_item(CatalogItem *item) { d_items.push_back(item); }
 
+    typedef std::vector<CatalogItem*>::const_iterator item_citer;
+    item_citer items_begin() { return d_items.begin(); }
+    item_citer items_end() { return d_items.end(); }
+
     virtual void dump(ostream &strm) const;
 };
 
