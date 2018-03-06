@@ -190,6 +190,7 @@ public:
     CPPUNIT_TEST(no_default_test);
     CPPUNIT_TEST(root_dir_test1);
 
+
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -566,6 +567,52 @@ public:
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "Returning from catT::run" << endl);
+    }
+
+    void get_node_test() {
+#if 0
+        DBG(cerr << "add good catalog" << endl);
+        var = (string) "BES.Catalog.default.TypeMatch=conf:conf&;";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.default.Include=.*file.*$;";
+        TheBESKeys::TheKeys()->set_key(var);
+        var = (string) "BES.Catalog.default.Exclude=README;";
+        TheBESKeys::TheKeys()->set_key(var);
+
+        try {
+            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to add catalog");
+        }
+
+        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("default");
+        CPPUNIT_ASSERT(catobj);
+        int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
+        CPPUNIT_ASSERT(numcats == 1);
+
+        try {
+            BESDataHandlerInterface dhi;
+            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0);
+            ostringstream strm;
+            entry->dump(strm);
+            string str = strm.str();
+            str = remove_ptr(str);
+            str = remove_stuff(str);
+
+            string one_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/one_response.txt");
+
+            DBG(cerr << "baseline: " << one_response << endl);
+            DBG(cerr << "response: " << str << endl);
+
+            CPPUNIT_ASSERT(str == one_response);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to show catalogs");
+        }
+#endif
     }
 };
 

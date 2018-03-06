@@ -46,6 +46,7 @@
 #include "BESCatalogEntry.h"
 
 #include "CatalogNode.h"
+#include "CatalogItem.h"
 
 #include "BESInfo.h"
 #include "BESContainerStorageList.h"
@@ -74,7 +75,7 @@ using namespace std;
  * @see BESCatalogUtils
  */
 BESCatalogDirectory::BESCatalogDirectory(const string &name) :
-        BESCatalog(name)
+    BESCatalog(name)
 {
     d_utils = BESCatalogUtils::Utils(name);
 }
@@ -103,8 +104,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 
     // This takes care of bizarre cases like "///" where use_node would be
     // empty after the substring call.
-    if (use_node.empty())
-        use_node = "/";
+    if (use_node.empty()) use_node = "/";
 
     string rootdir = d_utils->get_root_dir();
     string fullnode = rootdir;
@@ -129,11 +129,8 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // fullnode is the full pathname of the node, including the 'root' pathanme
     // basename is the last component of fullnode
 
-    BESDEBUG( "bes", "BESCatalogDirectory::show_catalog: "
-            << "use_node = " << use_node << endl
-            << "rootdir = " << rootdir << endl
-            << "fullnode = " << fullnode << endl
-            << "basename = " << basename << endl );
+    BESDEBUG("bes",
+        "BESCatalogDirectory::show_catalog: " << "use_node = " << use_node << endl << "rootdir = " << rootdir << endl << "fullnode = " << fullnode << endl << "basename = " << basename << endl);
 
     // This will throw the appropriate exception (Forbidden or Not Found).
     // Checks to make sure the different elements of the path are not
@@ -176,7 +173,8 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
             // TODO This is the only place in the code where get_entries() is called
             // jhrg 2.26.18
             d_utils->get_entries(dip, fullnode, use_node, myentry, dirs_only);
-        } catch (... /*BESError &e */) {
+        }
+        catch (... /*BESError &e */) {
             closedir(dip);
             throw /* e */;
         }
@@ -203,7 +201,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
             if (statret == 0 && S_ISREG(buf.st_mode)) {
                 BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
 
-                list < string > services;
+                list<string> services;
                 BESCatalogUtils::isData(node, get_catalog_name(), services);
                 myentry->set_service_list(services);
             }
@@ -264,7 +262,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
     if (!status)
-        LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
+    LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
 
     return buf;
 }
@@ -274,6 +272,8 @@ static string get_time(time_t the_time, bool use_local_time = false)
 // end in a '/' or not.
 //
 // If it is not a directory - that is an error. (return null or throw?)
+//
+// Item names are relative
 
 /**
  * @brief Build a CatalogNode for the given path in the current catalog
@@ -286,8 +286,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path)
 {
-    if (path[0] != '/')
-        throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
+    if (path[0] != '/') throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = d_utils->get_root_dir();
 
@@ -302,8 +301,9 @@ BESCatalogDirectory::get_node(const string &path)
 
     DIR *dip = opendir(fullpath.c_str());
     if (!dip)
-        throw BESInternalError("A BESCatalogDirectory can only return nodes for directory. The path '"
-            + path + "' is not a directory for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
+        throw BESInternalError(
+            "A BESCatalogDirectory can only return nodes for directory. The path '" + path
+                + "' is not a directory for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
 
     try {
         // The node is a directory
@@ -311,42 +311,37 @@ BESCatalogDirectory::get_node(const string &path)
         // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
         // a directory, but BESCatalogUtils::include() on a file.
         if (d_utils->exclude(path))
-            throw BESForbiddenError(string("The path '") + path + "' is not included in the catalog '"
-                + get_catalog_name() + "'.", __FILE__, __LINE__);
+            throw BESForbiddenError(
+                string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
+                __FILE__, __LINE__);
 
         CatalogNode *node = new CatalogNode();
 
         struct dirent *dit;
         while ((dit = readdir(dip)) != NULL) {
             string item = dit->d_name;
-            if (item == "." || item == "..") {
-                continue;
-            }
+            if (item == "." || item == "..") continue;
 
             string item_path = fullpath + "/" + item;
 
             // Skip this dir entry if it is a sym link and follow links is false
-             if (d_utils->follow_sym_links() == false) {
+            if (d_utils->follow_sym_links() == false) {
                 struct stat lbuf;
                 (void) lstat(item_path.c_str(), &lbuf);
-                if (S_ISLNK(lbuf.st_mode))
-                     continue;
-             }
+                if (S_ISLNK(lbuf.st_mode)) continue;
+            }
 
             // Is this a directory or a file? Should it be excluded or included?
             struct stat buf;
             int statret = stat(item_path.c_str(), &buf);
-            if (statret == 0 && S_ISDIR(buf.st_mode)) {
-                if (!d_utils->exclude(item)) {
-                    // (const string &name, size_t size, const string &lmt, item_type_t type)
-                    node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime), leaf));
-                }
+            if (statret == 0 && S_ISDIR(buf.st_mode) && !d_utils->exclude(item)) {
+                // Add a new node; set the size to zero.
+                node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
             }
-            else if (statret == 0 && S_ISREG(buf.st_mode)) {
-                if (d_utils->include(item)) {
-                    // TODO Add a new leaf.
-                    // TODO Sort out the is_data() issue: should that be set here or not?
-                }
+            else if (statret == 0 && S_ISREG(buf.st_mode) && d_utils->include(item)) {
+                // Add a new leaf.
+                node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime), CatalogItem::leaf));
+                // TODO Sort out the is_data() issue: should that be set here or not?
             }
         } // end of the while loop
 

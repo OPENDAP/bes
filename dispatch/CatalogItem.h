@@ -69,14 +69,14 @@ Class Node {
  */
 class CatalogItem: public BESObj {
 public:
-    typedef enum {unknown, node, leaf} item_type_t;
+    enum item_type {unknown, node, leaf};
 
 private:
     std::string d_name;
     size_t d_size;
     std::string d_lmt;
     bool d_is_data;
-    item_type_t d_type;
+    item_type d_type;
 
     CatalogItem(const CatalogItem &rhs);
     CatalogItem &operator=(const CatalogItem &rhs);
@@ -99,7 +99,7 @@ public:
      * @param lmt
      * @param type
      */
-    CatalogItem(const string &name, size_t size, const string &lmt, item_type_t type)
+    CatalogItem(const string &name, size_t size, const string &lmt, item_type type)
         : d_name(name), d_size(size), d_lmt(lmt), d_is_data(false), d_type(type) { }
 
     virtual ~CatalogItem() { }
@@ -125,9 +125,9 @@ public:
     void set_is_data(bool id) { d_is_data = id; }
 
     /// @brief Get the type of this item (unknown, node or leaf)
-    item_type_t get_type() const { return d_type; }
+    item_type get_type() const { return d_type; }
     /// @brief Set the type for this item
-    void set_type(item_type_t t) { d_type = t; }
+    void set_type(item_type t) { d_type = t; }
 
     virtual void dump(ostream &strm) const;
 };
