@@ -97,7 +97,8 @@ SRCS = BESInterface.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
-	BESCatalogResponseHandler.cc
+	BESCatalogResponseHandler.cc \
+	CatalogNode.cc CatalogItem.cc
 	
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
@@ -152,7 +153,8 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogUtils.h \
 	BESCatalogList.h \
 	BESCatalogEntry.h \
-	BESCatalogResponseHandler.h
+	BESCatalogResponseHandler.h \
+	CatalogNode.h CatalogItem.h
 	
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html

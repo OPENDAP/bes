@@ -126,8 +126,10 @@ BESCatalogList::~BESCatalogList() {
     catalog_iter e = d_catalogs.end();
     for (; i != e; i++) {
         BESCatalog *catalog = (*i).second;
-        if (catalog) delete catalog;
+        delete catalog;
     }
+
+    d_catalogs.clear();
 }
 
 /** @brief adds the specified catalog to the list
@@ -164,11 +166,23 @@ bool BESCatalogList::add_catalog(BESCatalog * catalog) {
 // Modules that call ref_catalog: csv, dap, dmrpp, ff, fits, gdal, hdf4,
 // hdf5, ncml, nc, sql. jhrg 2.25.18
 
-/** @brief reference the specified catalog
+/**
+ *  @brief reference the specified catalog
  *
  * Search the list for the catalog with the given name. If the
  * catalog exists, reference it and return true. If not found then
  * return false.
+ *
+ * @note The general use pattern for this method is:
+ * <pre>
+ *  if (!BESCatalogList::TheCatalogList()->ref_catalog("catalog")) {
+ *      BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
+ *  }
+ *  <pre>
+ *  If "catalog" cannot be found, it's added. If it is found, its reference
+ *  count is incremented. This call is generally made in a Module::initialize()
+ *  method (and the matching deref_catalog() call is made in the Module::terminate()
+ *  method.
  *
  * @note This is part of a system that lets modules 'reference' a particular
  * catalog so that when all references to it are gone, it can be deleted.
@@ -201,7 +215,8 @@ bool BESCatalogList::ref_catalog(const string &catalog_name) {
 // Modules that call deref_catalog: csv, dap, dmrpp, ff, fits, gdal, hdf4,
 // hdf5, ncml, nc, sql. jhrg 2.25.18
 
-/** @brief de-reference the specified catalog and remove from list
+/**
+ * @brief de-reference the specified catalog and remove from list
  * if no longer referenced
  *
  * Search the list for the catalog with the given name. If the
@@ -237,14 +252,13 @@ bool BESCatalogList::deref_catalog(const string &catalog_name) {
  * @see BESCatalog
  */
 BESCatalog *
-BESCatalogList::find_catalog(const string &catalog_name) {
-    BESCatalog *ret = 0;
-    BESCatalogList::catalog_citer i;
-    i = d_catalogs.find(catalog_name);
+BESCatalogList::find_catalog(const string &catalog_name) const
+{
+    BESCatalogList::catalog_citer i = d_catalogs.find(catalog_name);
     if (i != d_catalogs.end()) {
-        ret = (*i).second;
+        return (*i).second;
     }
-    return ret;
+    return 0;
 }
 
 /**
@@ -283,7 +297,7 @@ BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
         // if show_default is true then display all catalogs
         // if !show_default but this current catalog is not the default
         // then display
-        if (show_default || (*i).first != default_catalog()) {
+        if (show_default || (*i).first != default_catalog_name()) {
             BESCatalog *catalog = (*i).second;
             catalog->show_catalog("", myentry);
         }

@@ -101,12 +101,12 @@ DmrppD4Group::read()
 
 void DmrppD4Group::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     D4Group::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

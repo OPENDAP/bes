@@ -314,7 +314,7 @@ bool TheBESKeys::only_blanks(const char *line)
  *
  * This method allows users of BESKeys to set key/value pairs from within the
  * application, such as for testing purposes, key/value pairs from the command
- * line, etc...
+ * line, etc.
  *
  * If addto is set to true then the value is added to the list of values for key
  *

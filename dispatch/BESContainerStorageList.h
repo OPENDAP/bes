@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,13 +35,13 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include "BESObj.h"
 
-class BESContainerStorage ;
-class BESContainer ;
-class BESInfo ;
+class BESContainerStorage;
+class BESContainer;
+class BESInfo;
 
 #define PERSISTENCE_VOLATILE "default"
 
@@ -64,39 +64,37 @@ class BESInfo ;
  * @see BESContainer
  * @see BESContainerStorageException
  */
-class BESContainerStorageList : public BESObj
-{
+class BESContainerStorageList: public BESObj {
 private:
-    static BESContainerStorageList * _instance ;
+    static BESContainerStorageList * _instance;
 
-    typedef struct _persistence_list
-    {
-	BESContainerStorage *_persistence_obj ;
-	unsigned int _reference ;
-	BESContainerStorageList::_persistence_list *_next ;
-    } persistence_list ;
+    typedef struct _persistence_list {
+        BESContainerStorage *_persistence_obj;
+        unsigned int _reference;
+        BESContainerStorageList::_persistence_list *_next;
+    } persistence_list;
 
-    BESContainerStorageList::persistence_list *_first ;
+    BESContainerStorageList::persistence_list *_first;
 
 protected:
-			BESContainerStorageList() ;
+    BESContainerStorageList();
 public:
-    virtual		~BESContainerStorageList() ;
+    virtual ~BESContainerStorageList();
 
-    virtual bool	add_persistence( BESContainerStorage *p ) ;
-    virtual bool	ref_persistence( const string &persist_name ) ;
-    virtual bool	deref_persistence( const string &persist_name ) ;
-    virtual BESContainerStorage *find_persistence( const string &persist_name ) ;
-    virtual bool	isnice() ;
+    virtual bool add_persistence(BESContainerStorage *p);
+    virtual bool ref_persistence(const string &persist_name);
+    virtual bool deref_persistence(const string &persist_name);
+    virtual BESContainerStorage *find_persistence(const string &persist_name);
+    virtual bool isnice();
 
-    virtual BESContainer *look_for( const string &sym_name ) ;
+    virtual BESContainer *look_for(const string &sym_name);
 
-    virtual void	show_containers( BESInfo &info ) ;
+    virtual void show_containers(BESInfo &info);
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESContainerStorageList *TheList() ;
-} ;
+    static BESContainerStorageList *TheList();
+};
 
 #endif // I_BESContainerStorageList_H
 
