@@ -387,7 +387,7 @@ void BESCatalogDirectory::get_site_map(const string &url_prefix, ostream &out, c
             out << url_prefix << path << (*i)->get_name() << ".html" << endl;
         }
         else if ((*i)->get_type() == CatalogItem::node) {
-            get_site_map(url_prefix, out, (*i)->get_name());
+            get_site_map(url_prefix, out, path + (*i)->get_name() + "/");
         }
     }
 }

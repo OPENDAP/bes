@@ -214,6 +214,8 @@ public:
     CPPUNIT_TEST(get_node_test);
     CPPUNIT_TEST(get_node_test_2);
 
+    CPPUNIT_TEST(get_site_map_test);
+
     CPPUNIT_TEST_SUITE_END();
 
     void default_test()
@@ -626,7 +628,7 @@ public:
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to show catalogs");
+            CPPUNIT_FAIL("Failed to get node listing for '/'");
         }
     }
 
@@ -668,9 +670,38 @@ public:
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to show catalogs");
+            CPPUNIT_FAIL("Failed to get node listing for '/child_dir'");
         }
     }
+
+    void get_site_map_test()
+    {
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
+
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("default"));
+        CPPUNIT_ASSERT(catalog.get());
+
+        try {
+            ostringstream oss;
+
+            catalog->get_site_map("https://machine/opendap", oss, "/");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map.txt");
+
+            DBG(cerr << "Baseline: " << baseline << endl);
+            DBG(cerr << "response: " << oss.str() << endl);
+
+            CPPUNIT_ASSERT(oss.str() == baseline);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to get site map");
+        }
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(catT);
