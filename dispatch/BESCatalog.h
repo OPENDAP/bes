@@ -83,9 +83,9 @@ public:
 
     // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
     // a directory, but BESCatalogUtils::include() on a file.
-    virtual bes::CatalogNode *get_node(const std::string &path) = 0;
+    virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
 
-    virtual std::string get_site_map() const = 0;
+    virtual void get_site_map(const string &url_prefix, ostream &out, const string &path = "/") const = 0;
 
     virtual void dump(ostream &strm) const = 0;
 };

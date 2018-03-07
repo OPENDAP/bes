@@ -276,7 +276,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
 // Item names are relative
 
 /**
- * @brief Build a CatalogNode for the given path in the current catalog
+ * @brief Get a CatalogNode for the given path in the current catalog
  *
  * This is similar to show_catalog() but returns a simpler response. The
  * \arg path must start with a slash and is used as a suffix to the Catalog's
@@ -287,7 +287,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
  * current catalog.
  */
 CatalogNode *
-BESCatalogDirectory::get_node(const string &path)
+BESCatalogDirectory::get_node(const string &path) const
 {
     if (path[0] != '/') throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
 
@@ -349,8 +349,9 @@ BESCatalogDirectory::get_node(const string &path)
                 // Add a new leaf.
                 node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
                     d_utils->is_data(item), CatalogItem::leaf));
-                // TODO Sort out the is_data() issue: should that be set here or not?
-
+            }
+            else {
+                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
             }
         } // end of the while loop
 
@@ -364,10 +365,31 @@ BESCatalogDirectory::get_node(const string &path)
     }
 }
 
-string
-BESCatalogDirectory::get_site_map() const
+/**
+ * @brief Write the site map for this catalog to the stream \arg out
+ *
+ * For any node in the catalog, write the URL for all of the data items
+ * (which must be leaves in the node named by \arg path) and write the
+ * URLs for all the leaves contained in that nodes children. This method
+ * performs a depth-first traversal of the Catalog, visiting nodes at any
+ * level in the order that BESCatalog::get_node() returns them.
+ *
+ * @param url_prefix Each item found is prefixed by this 'URL fragment.'
+ * @param out Write the site map to this stream
+ * @param path Write the data for this node in the catalog. Starts with a slash.
+ */
+void BESCatalogDirectory::get_site_map(const string &url_prefix, ostream &out, const string &path) const
 {
-    return "";
+    auto_ptr<CatalogNode> node(get_node(path));
+
+    for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
+        if ((*i)->get_type() == CatalogItem::leaf && (*i)->is_data()) {
+            out << url_prefix << path << (*i)->get_name() << ".html" << endl;
+        }
+        else if ((*i)->get_type() == CatalogItem::node) {
+            get_site_map(url_prefix, out, (*i)->get_name());
+        }
+    }
 }
 
 /** @brief dumps information about this object
