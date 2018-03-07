@@ -47,6 +47,7 @@
 #include <UnMarshaller.h>
 #include <debug.h>
 
+#include "BESIndent.h"
 #include "TabularSequence.h"
 
 using namespace std;
@@ -249,10 +250,10 @@ void TabularSequence::intern_data(ConstraintEvaluator &eval, DDS &dds)
 void
 TabularSequence::dump(ostream &strm) const
 {
-    strm << DapIndent::LMarg << "TabularSequence::dump - (" << (void *)this << ")" << endl ;
-    DapIndent::Indent() ;
+    strm << BESIndent::LMarg << "TabularSequence::dump - (" << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
     Sequence::dump(strm) ;
-    DapIndent::UnIndent() ;
+    BESIndent::UnIndent() ;
 }
 
 } // namespace functions

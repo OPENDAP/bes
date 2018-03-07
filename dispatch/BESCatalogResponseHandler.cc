@@ -76,7 +76,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     string container = dhi.data[CONTAINER];
     string catname;
-    string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+    string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
     BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
     if (!defcat) {
         string err = (string) "Not able to find the default catalog " + defcatname;

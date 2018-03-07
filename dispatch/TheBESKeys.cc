@@ -154,7 +154,7 @@ void TheBESKeys::initialize_keys()
     }
     catch (BESError &e) {
         // be sure we're throwing a fatal error, since the BES can't run
-        // within the configuration file
+        // without the configuration file
         clean();
         throw BESInternalFatalError(e.get_message(), e.get_file(), e.get_line());
     }
@@ -178,7 +178,7 @@ void TheBESKeys::clean()
     }
 }
 
-/* @brief Determine if the specified key file has been loaded yet
+/** @brief Determine if the specified key file has been loaded yet
  *
  * Given the name of the key file, determine if it has already been
  * loaded. More specifically, if started to load the file.
@@ -484,14 +484,15 @@ void TheBESKeys::dump(ostream &strm) const
         Keys_citer i = _the_keys->begin();
         Keys_citer ie = _the_keys->end();
         for (; i != ie; i++) {
-            strm << BESIndent::LMarg << (*i).first << ":" << endl;
-            BESIndent::Indent();
+            strm << BESIndent::LMarg << (*i).first << ": " /*<< endl*/;
+            // BESIndent::Indent();
             vector<string>::const_iterator v = (*i).second.begin();
             vector<string>::const_iterator ve = (*i).second.end();
             for (; v != ve; v++) {
-                strm << (*v) << endl;
+                strm << (*v) << " "; //endl;
             }
-            BESIndent::UnIndent();
+            strm << endl;
+            //BESIndent::UnIndent();
         }
         BESIndent::UnIndent();
     }

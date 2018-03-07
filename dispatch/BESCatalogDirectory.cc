@@ -39,22 +39,29 @@
 #include <cstring>
 #include <cerrno>
 #include <sstream>
-
-using std::stringstream;
-using std::endl;
+#include <memory>
 
 #include "BESUtil.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogUtils.h"
 #include "BESCatalogEntry.h"
+
+#include "CatalogNode.h"
+#include "CatalogItem.h"
+
 #include "BESInfo.h"
-#include "BESCatalogUtils.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorageCatalog.h"
 #include "BESLog.h"
+
+#include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+
 #include "BESDebug.h"
+
+using namespace bes;
+using namespace std;
 
 /**
  * @brief A catalog for POSIX file systems
@@ -69,7 +76,7 @@ using std::endl;
  * @see BESCatalogUtils
  */
 BESCatalogDirectory::BESCatalogDirectory(const string &name) :
-        BESCatalog(name)
+    BESCatalog(name)
 {
     d_utils = BESCatalogUtils::Utils(name);
 }
@@ -98,8 +105,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 
     // This takes care of bizarre cases like "///" where use_node would be
     // empty after the substring call.
-    if (use_node.empty())
-        use_node = "/";
+    if (use_node.empty()) use_node = "/";
 
     string rootdir = d_utils->get_root_dir();
     string fullnode = rootdir;
@@ -124,17 +130,14 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // fullnode is the full pathname of the node, including the 'root' pathanme
     // basename is the last component of fullnode
 
-    BESDEBUG( "bes", "BESCatalogDirectory::show_catalog: "
-            << "use_node = " << use_node << endl
-            << "rootdir = " << rootdir << endl
-            << "fullnode = " << fullnode << endl
-            << "basename = " << basename << endl );
+    BESDEBUG("bes",
+        "BESCatalogDirectory::show_catalog: " << "use_node = " << use_node << endl << "rootdir = " << rootdir << endl << "fullnode = " << fullnode << endl << "basename = " << basename << endl);
 
     // This will throw the appropriate exception (Forbidden or Not Found).
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    // TODO Move up; this canbe done once use_node is set. jhrg 2.26.18
+    // TODO Move up; this can be done once use_node is set. jhrg 2.26.18
     BESUtil::check_path(use_node, rootdir, d_utils->follow_sym_links());
 
     // If null is passed in, then return the new entry, else add the new entry to the
@@ -171,7 +174,8 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
             // TODO This is the only place in the code where get_entries() is called
             // jhrg 2.26.18
             d_utils->get_entries(dip, fullnode, use_node, myentry, dirs_only);
-        } catch (... /*BESError &e */) {
+        }
+        catch (... /*BESError &e */) {
             closedir(dip);
             throw /* e */;
         }
@@ -198,7 +202,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
             if (statret == 0 && S_ISREG(buf.st_mode)) {
                 BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
 
-                list < string > services;
+                list<string> services;
                 BESCatalogUtils::isData(node, get_catalog_name(), services);
                 myentry->set_service_list(services);
             }
@@ -235,6 +239,167 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     }
 
     return entry;
+}
+
+/**
+ * Copied from BESLog, where that code writes to an internal object, not a string.
+ *
+ * @todo Make this part of a collection of Utility functions
+ * @param the_time A time_t value
+ * @param use_local_time True to use the local time, false (default) to use GMT
+ * @return The time, either local or GMT/UTC as an ISO8601 string
+ */
+static string get_time(time_t the_time, bool use_local_time = false)
+{
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+
+    if (!status)
+    LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
+
+    return buf;
+}
+
+// path must start with a '/'. By this class it will be interpreted as a
+// starting at the CatalogDirectory instance's root directory. It may either
+// end in a '/' or not.
+//
+// If it is not a directory - that is an error. (return null or throw?)
+//
+// Item names are relative
+
+/**
+ * @brief Get a CatalogNode for the given path in the current catalog
+ *
+ * This is similar to show_catalog() but returns a simpler response. The
+ * \arg path must start with a slash and is used as a suffix to the Catalog's
+ * root directory.
+ *
+ * @param path The pathname for the node; must start with a slash
+ * @return A CatalogNode instance or null if there is no such path in the
+ * current catalog.
+ * @throw BESInternalError If the \arg path is not a directory
+ * @throw BESForbiddenError If the \arg path is explicitly excluded by the
+ * bes.conf file
+ */
+CatalogNode *
+BESCatalogDirectory::get_node(const string &path) const
+{
+    if (path[0] != '/') throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
+
+    string rootdir = d_utils->get_root_dir();
+
+    // This will throw the appropriate exception (Forbidden or Not Found).
+    // Checks to make sure the different elements of the path are not
+    // symbolic links if follow_sym_links is set to false, and checks to
+    // make sure have permission to access node and the node exists.
+    BESUtil::check_path(path, rootdir, d_utils->follow_sym_links());
+
+    string fullpath = rootdir + path;
+
+    DIR *dip = opendir(fullpath.c_str());
+    if (!dip)
+        throw BESInternalError(
+            "A BESCatalogDirectory can only return nodes for directory. The path '" + path
+                + "' is not a directory for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
+
+    try {
+        // The node is a directory
+
+        // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
+        // a directory, but BESCatalogUtils::include() on a file.
+        if (d_utils->exclude(path))
+            throw BESForbiddenError(
+                string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
+                __FILE__, __LINE__);
+
+        CatalogNode *node = new CatalogNode(path);
+
+        node->set_catalog_name(get_catalog_name());
+        struct stat buf;
+        int statret = stat(fullpath.c_str(), &buf);
+        if (statret == 0 /* && S_ISDIR(buf.st_mode) */)
+            node->set_lmt(get_time(buf.st_mtime));
+
+        struct dirent *dit;
+        while ((dit = readdir(dip)) != NULL) {
+            string item = dit->d_name;
+            if (item == "." || item == "..") continue;
+
+            string item_path = fullpath + "/" + item;
+
+            // Skip this dir entry if it is a sym link and follow links is false
+            if (d_utils->follow_sym_links() == false) {
+                struct stat lbuf;
+                (void) lstat(item_path.c_str(), &lbuf);
+                if (S_ISLNK(lbuf.st_mode)) continue;
+            }
+
+            // Is this a directory or a file? Should it be excluded or included?
+            statret = stat(item_path.c_str(), &buf);
+            if (statret == 0 && S_ISDIR(buf.st_mode) && !d_utils->exclude(item)) {
+                // Add a new node; set the size to zero.
+                node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
+            }
+            else if (statret == 0 && S_ISREG(buf.st_mode) && d_utils->include(item)) {
+                // Add a new leaf.
+                node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+                    d_utils->is_data(item), CatalogItem::leaf));
+            }
+            else {
+                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
+            }
+        } // end of the while loop
+
+        closedir(dip);
+
+        return node;
+    }
+    catch (...) {
+        closedir(dip);
+        throw;
+    }
+}
+
+/**
+ * @brief Write the site map for this catalog to the stream \arg out
+ *
+ * For any node in the catalog, write the URL for all of the data items
+ * (which must be leaves in the node named by \arg path) and write the
+ * URLs for all the leaves contained in that nodes children. This method
+ * performs a depth-first traversal of the Catalog, visiting nodes at any
+ * level in the order that BESCatalog::get_node() returns them.
+ *
+ * @param prefix Prefix for each item found. It's likely the start of a
+ * URL (https://_machine_/_service_). It should not end in a slash (/).
+ * @param suffix Appended to each item found. Likely '.html'.
+ * @param out Write the site map to this stream
+ * @param path Write the data for this node in the catalog. Starts with a slash.
+ */
+void BESCatalogDirectory::get_site_map(const string &prefix, const string &suffix, ostream &out,
+    const string &path) const
+{
+    auto_ptr<CatalogNode> node(get_node(path));
+
+    for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
+        if ((*i)->get_type() == CatalogItem::leaf && (*i)->is_data()) {
+            out << prefix << path << (*i)->get_name() << suffix << endl;
+        }
+        else if ((*i)->get_type() == CatalogItem::node) {
+            get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
+        }
+    }
 }
 
 /** @brief dumps information about this object

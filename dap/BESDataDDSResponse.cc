@@ -77,9 +77,9 @@ void BESDataDDSResponse::dump(ostream &strm) const
     if (_dds) {
         strm << BESIndent::LMarg << "DDS:" << endl;
         BESIndent::Indent();
-        DapIndent::SetIndent(BESIndent::GetIndent());
+        BESIndent::SetIndent(BESIndent::GetIndent());
         _dds->dump(strm);
-        DapIndent::Reset();
+        BESIndent::Reset();
         BESIndent::UnIndent();
     }
     else {

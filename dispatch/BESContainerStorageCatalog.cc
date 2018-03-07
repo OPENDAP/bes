@@ -141,10 +141,10 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
         BESCatalogUtils::match_citer ie = _utils->match_list_end();
         bool done = false;
         for (; i != ie && !done; i++) {
-            BESCatalogUtils::type_reg match = (*i);
-            BESRegex reg_expr(match.reg.c_str());
+            BESCatalogUtils::handler_regex match = (*i);
+            BESRegex reg_expr(match.regex.c_str());
             if (reg_expr.match(real_name.c_str(), real_name.length()) == static_cast<int>(real_name.length())) {
-                new_type = match.type;
+                new_type = match.handler;
                 done = true;
             }
 
@@ -160,8 +160,8 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
  * data) and what the request handler serves for the node
  *
  * @param inQuestion node to look up
- * @param provides what is provided for the node by the node types request handler
- * return true if a request handler serves the specified node, false otherwise
+ * @param provides what is provided for the node by the node type's request handler
+ * @return true if a request handler serves the specified node, false otherwise
  */
 bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &provides)
 {
@@ -170,10 +170,10 @@ bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &
     BESCatalogUtils::match_citer ie = _utils->match_list_end();
     bool done = false;
     for (; i != ie && !done; i++) {
-        BESCatalogUtils::type_reg match = (*i);
-        BESRegex reg_expr(match.reg.c_str());
+        BESCatalogUtils::handler_regex match = (*i);
+        BESRegex reg_expr(match.regex.c_str());
         if (reg_expr.match(inQuestion.c_str(), inQuestion.length()) == static_cast<int>(inQuestion.length())) {
-            node_type = match.type;
+            node_type = match.handler;
             done = true;
         }
     }

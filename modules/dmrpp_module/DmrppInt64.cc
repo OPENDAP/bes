@@ -129,12 +129,12 @@ DmrppInt64::read()
 
 void DmrppInt64::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppInt64::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppInt64::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     Int64::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << d_buf << endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

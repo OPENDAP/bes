@@ -133,12 +133,12 @@ DmrppD4Enum::read()
 
 void DmrppD4Enum::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppD4Enum::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppD4Enum::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     D4Enum::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << d_buf << endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

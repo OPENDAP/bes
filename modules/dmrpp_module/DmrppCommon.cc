@@ -27,14 +27,14 @@
 
 #include <cstdlib>
 
-#include <DapIndent.h>
+#include <BESIndent.h>
 #include <BESDebug.h>
 
 #include "DmrppCommon.h"
 #include "H4ByteStream.h"
 
 using namespace std;
-using namespace libdap;
+// using namespace libdap;
 
 namespace dmrpp {
 /**
@@ -112,27 +112,27 @@ unsigned long DmrppCommon::add_chunk(std::string data_url, unsigned long long si
 
 void DmrppCommon::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
-    strm << DapIndent::LMarg << "deflate_level:          " << (get_deflate_level() ? "true" : "false") << endl;
-    strm << DapIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "deflate_level:          " << (get_deflate_level() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
 
     vector<unsigned int> chunk_dim_sizes = get_chunk_dimension_sizes();
 
-    strm << DapIndent::LMarg << "chunk dimension sizes:  [";
+    strm << BESIndent::LMarg << "chunk dimension sizes:  [";
     for (unsigned int i = 0; i < chunk_dim_sizes.size(); i++) {
         strm << (i ? "][" : "") << chunk_dim_sizes[i];
     }
     strm << "]" << endl;
 
     vector<H4ByteStream> chunk_refs = get_immutable_chunks();
-    strm << DapIndent::LMarg << "H4ByteStreams (aka chunks):" << (chunk_refs.size() ? "" : "None Found.") << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "H4ByteStreams (aka chunks):" << (chunk_refs.size() ? "" : "None Found.") << endl;
+    BESIndent::Indent();
     for (unsigned int i = 0; i < chunk_refs.size(); i++) {
-        strm << DapIndent::LMarg;
+        strm << BESIndent::LMarg;
         chunk_refs[i].dump(strm);
         strm << endl;
     }
-    DapIndent::UnIndent();
+    BESIndent::UnIndent();
 }
 
 } // namepsace dmrpp

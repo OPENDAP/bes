@@ -64,19 +64,15 @@ private:
     bool _follow_syms;      ///< Follow file system symbolic links?
 
 public:
-    /**
-     * This matches regular expressions and the types they identify.
-     *
-     * @todo I think this enables the utils to identify which files
-     * are data. See BESContainerStorageCatalog::isData()
-     */
-    struct type_reg {
-        std::string type;
-        std::string reg;
+    /// This identifies handlers to the things they can read. It is used
+    /// to determine which catalog items can be treated as 'data.'
+    struct handler_regex {
+        std::string handler;
+        std::string regex;
     };
 
 private:
-    std::vector<type_reg> _match_list;  ///< The list of types & regexes
+    std::vector<handler_regex> _match_list;  ///< The list of types & regexes
 
     BESCatalogUtils()
     {
@@ -109,9 +105,12 @@ public:
     virtual bool include(const std::string &inQuestion) const;
     virtual bool exclude(const std::string &inQuestion) const;
 
-    typedef std::vector<type_reg>::const_iterator match_citer;
+    typedef std::vector<handler_regex>::const_iterator match_citer;
     BESCatalogUtils::match_citer match_list_begin() const;
     BESCatalogUtils::match_citer match_list_end() const;
+
+    std::string get_handler_name(const std::string &item) const;
+    bool is_data(const std::string &item) const;
 
     virtual unsigned int get_entries(DIR *dip, const std::string &fullnode, const std::string &use_node,
         BESCatalogEntry *entry, bool dirs_only);

@@ -65,9 +65,9 @@ void BESDMRResponse::dump(ostream &strm) const
     if (_dmr) {
         strm << BESIndent::LMarg << "DMR:" << endl;
         BESIndent::Indent();
-        DapIndent::SetIndent(BESIndent::GetIndent());
+        BESIndent::SetIndent(BESIndent::GetIndent());
         _dmr->dump(strm);
-        DapIndent::Reset();
+        BESIndent::Reset();
         BESIndent::UnIndent();
     }
     else {

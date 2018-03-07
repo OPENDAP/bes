@@ -142,10 +142,10 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
                 throw BESInternalError(s, __FILE__, __LINE__);
             }
             list<string>::iterator ami = amatch.begin();
-            type_reg newval;
-            newval.type = (*ami);
+            handler_regex newval;
+            newval.handler = (*ami);
             ami++;
-            newval.reg = (*ami);
+            newval.regex = (*ami);
             _match_list.push_back(newval);
         }
     }
@@ -346,7 +346,7 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
 
 void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
 {
-    string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+    string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
 
     // start with the external entry
     map<string, string> props;
@@ -382,6 +382,58 @@ void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
             info->add_tag("serviceRef", (*si));
         }
     }
+}
+
+/**
+ * @brief Find the handler name that will process \arg item
+ *
+ * Using the TypeMatch regular expressions for the Catalog that
+ * holds this instance of CatalogUtils, find a handler that can
+ * process \arg item.
+ *
+ * @note Use `BESServiceRegistry::TheRegistry()->services_handled(...);`
+ * to get a list of the services provided by the handler.
+ *
+ * @param item The item to be handled
+ * @return The handler name. The empty string if the item cannot be
+ * processed by any handler.
+ */
+std::string
+BESCatalogUtils::get_handler_name(const std::string &item) const
+{
+    for (BESCatalogUtils::match_citer i = match_list_begin(), e = match_list_end(); i != e; ++i) {
+        BESRegex expr((*i).regex.c_str());
+        if (expr.match(item.c_str(), item.length()) == (int)item.length()) {
+            return (*i).handler;
+        }
+    }
+
+    return "";
+}
+
+/**
+ * @brief is there a handler that can process this \arg item
+ *
+ * Using the TypeMatch regular expressions for the Catalog that
+ * holds this instance of CatalogUtils, find a handler that can
+ * process \arg item.
+ *
+ * @param item The item to be handled
+ * @return The handler name. The empty string if the item cannot be
+ * processed by any handler.
+ * @see get_handler_name()
+ */
+bool
+BESCatalogUtils::is_data(const std::string &item) const
+{
+    for (BESCatalogUtils::match_citer i = match_list_begin(), e = match_list_end(); i != e; ++i) {
+        BESRegex expr((*i).regex.c_str());
+        if (expr.match(item.c_str(), item.length()) == (int)item.length()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fullnode)
@@ -469,8 +521,8 @@ void BESCatalogUtils::dump(ostream &strm) const
         BESCatalogUtils::match_citer i = _match_list.begin();
         BESCatalogUtils::match_citer ie = _match_list.end();
         for (; i != ie; i++) {
-            type_reg match = (*i);
-            strm << BESIndent::LMarg << match.type << " : " << match.reg << endl;
+            handler_regex match = (*i);
+            strm << BESIndent::LMarg << match.handler << " : " << match.regex << endl;
         }
         BESIndent::UnIndent();
     }

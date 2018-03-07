@@ -102,12 +102,12 @@ DmrppUrl::read()
 
 void DmrppUrl::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     Url::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << d_buf << endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

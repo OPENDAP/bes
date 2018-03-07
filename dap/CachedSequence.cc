@@ -48,6 +48,7 @@
 //#include <UnMarshaller.h>
 #include <debug.h>
 
+#include "BESIndent.h"
 #include "CachedSequence.h"
 
 using namespace std;
@@ -230,10 +231,10 @@ void CachedSequence::intern_data(ConstraintEvaluator &eval, DDS &dds)
 void
 CachedSequence::dump(ostream &strm) const
 {
-    strm << DapIndent::LMarg << "CachedSequence::dump - (" << (void *)this << ")" << endl ;
-    DapIndent::Indent() ;
+    strm << BESIndent::LMarg << "CachedSequence::dump - (" << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
     Sequence::dump(strm) ;
-    DapIndent::UnIndent() ;
+    BESIndent::UnIndent() ;
 }
 
 // } // namespace bes

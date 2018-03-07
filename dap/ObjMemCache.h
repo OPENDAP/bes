@@ -34,6 +34,10 @@
 #include <string>
 #include <map>
 
+#include "BESIndent.h"
+
+using namespace std;
+
 namespace libdap {
     class DapObj;
 }

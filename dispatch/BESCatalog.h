@@ -35,28 +35,30 @@
 
 #include <string>
 
-using std::string;
-
 #include "BESObj.h"
 
 class BESCatalogEntry;
+
+namespace bes {
+    class CatalogNode;
+}
 
 /** @brief Catalogs provide a hierarchical organization for data.
  *
  */
 class BESCatalog: public BESObj {
 private:
-    string d_catalog_name;
+    std::string d_catalog_name;
     unsigned int d_reference;
 
     BESCatalog();
 
 public:
-    BESCatalog(const string &catalog_name) : d_catalog_name(catalog_name), d_reference(0)
+    BESCatalog(const std::string &catalog_name) : d_catalog_name(catalog_name), d_reference(0)
     {
     }
 
-    virtual ~BESCatalog(void)
+    virtual ~BESCatalog()
     {
     }
 
@@ -72,12 +74,19 @@ public:
         return --d_reference;
     }
 
-    virtual string get_catalog_name()
+    virtual std::string get_catalog_name() const
     {
         return d_catalog_name;
     }
 
-    virtual BESCatalogEntry * show_catalog(const string &container, /*const string &coi,*/ BESCatalogEntry *entry) = 0;
+    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+
+    // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
+    // a directory, but BESCatalogUtils::include() on a file.
+    virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
+
+    virtual void get_site_map(const string &prefix, const string &suffix, ostream &out,
+        const string &path = "/") const = 0;
 
     virtual void dump(ostream &strm) const = 0;
 };
