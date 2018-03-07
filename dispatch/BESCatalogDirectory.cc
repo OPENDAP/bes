@@ -39,6 +39,7 @@
 #include <cstring>
 #include <cerrno>
 #include <sstream>
+#include <memory>
 
 #include "BESUtil.h"
 #include "BESCatalogDirectory.h"
