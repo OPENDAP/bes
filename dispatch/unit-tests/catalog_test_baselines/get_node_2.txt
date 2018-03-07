@@ -1,6 +1,6 @@
 CatalogNode::dump - ()
     name: /child_dir
-    catalog_name: default
+    catalog_name: nt2
     last modified time:
     item count: 2
     items: 

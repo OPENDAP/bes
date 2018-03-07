@@ -84,6 +84,8 @@ using std::ifstream;
 class TheBESKeys: public BESObj {
 private:
 
+    // TODO I don't think this needs to be a pointer - the code could be
+    // redesigned. jhrg 3/7/18
     ifstream * _keys_file;
     std::string _keys_file_name;
     std::map<std::string, std::vector<string> > *_the_keys;

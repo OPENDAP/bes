@@ -1,6 +1,6 @@
 CatalogNode::dump - ()
     name: /
-    catalog_name: default
+    catalog_name: nt1
     last modified time:
     item count: 3
     items: 

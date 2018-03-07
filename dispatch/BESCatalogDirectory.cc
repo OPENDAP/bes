@@ -137,7 +137,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    // TODO Move up; this canbe done once use_node is set. jhrg 2.26.18
+    // TODO Move up; this can be done once use_node is set. jhrg 2.26.18
     BESUtil::check_path(use_node, rootdir, d_utils->follow_sym_links());
 
     // If null is passed in, then return the new entry, else add the new entry to the
@@ -243,8 +243,11 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 
 /**
  * Copied from BESLog, where that code writes to an internal object, not a string.
- * @param the_time
+ *
+ * @todo Make this part of a collection of Utility functions
+ * @param the_time A time_t value
  * @param use_local_time True to use the local time, false (default) to use GMT
+ * @return The time, either local or GMT/UTC as an ISO8601 string
  */
 static string get_time(time_t the_time, bool use_local_time = false)
 {
@@ -286,6 +289,9 @@ static string get_time(time_t the_time, bool use_local_time = false)
  * @param path The pathname for the node; must start with a slash
  * @return A CatalogNode instance or null if there is no such path in the
  * current catalog.
+ * @throw BESInternalError If the \arg path is not a directory
+ * @throw BESForbiddenError If the \arg path is explicitly excluded by the
+ * bes.conf file
  */
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const

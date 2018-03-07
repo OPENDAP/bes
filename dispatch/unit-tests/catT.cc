@@ -73,6 +73,10 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+static bool debug2 = false;
+#undef DBG2
+#define DBG2(x) do { if (debug) (x); } while(false);
+
 using namespace bes;
 using namespace CppUnit;
 using namespace std;
@@ -203,18 +207,21 @@ public:
 
     void tearDown()
     {
+        delete TheBESKeys::_instance;
+        TheBESKeys::_instance = 0;
     }
 
     CPPUNIT_TEST_SUITE( catT );
-
+#if 1
     CPPUNIT_TEST(default_test);
     CPPUNIT_TEST(no_default_test);
     CPPUNIT_TEST(root_dir_test1);
 
     CPPUNIT_TEST(get_node_test);
     CPPUNIT_TEST(get_node_test_2);
-
+#endif
     CPPUNIT_TEST(get_site_map_test);
+    CPPUNIT_TEST(get_site_map_test_2);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -585,14 +592,14 @@ public:
 
     void get_node_test()
     {
-        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*\\.conf$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.nt1.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.TypeMatch=conf:.*\\.conf$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Exclude=README;");
 
         auto_ptr<BESCatalog> catalog(0);
         try {
-            catalog.reset(new BESCatalogDirectory("default"));
+            catalog.reset(new BESCatalogDirectory("nt1"));
             CPPUNIT_ASSERT(catalog.get());
         }
         catch (BESError &e) {
@@ -621,7 +628,7 @@ public:
 
             string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_1.txt");
 
-            DBG(cerr << "Baseline: " << baseline << endl);
+            DBG2(cerr << "Baseline: " << baseline << endl);
             DBG(cerr << "response: " << str << endl);
 
             CPPUNIT_ASSERT(str == baseline);
@@ -634,12 +641,12 @@ public:
 
     void get_node_test_2()
     {
-        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*\\.conf$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.nt2.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt2.TypeMatch=conf:.*\\.conf$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt2.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt2.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("default"));
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt2"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
@@ -663,7 +670,7 @@ public:
 
             string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_2.txt");
 
-            DBG(cerr << "Baseline: " << baseline << endl);
+            DBG2(cerr << "Baseline: " << baseline << endl);
             DBG(cerr << "response: " << str << endl);
 
             CPPUNIT_ASSERT(str == baseline);
@@ -676,12 +683,12 @@ public:
 
     void get_site_map_test()
     {
-        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.sm1.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm1.TypeMatch=conf:.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm1.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm1.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("default"));
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm1"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
@@ -691,10 +698,39 @@ public:
 
             string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map.txt");
 
-            DBG(cerr << "Baseline: " << baseline << endl);
+            DBG2(cerr << "Baseline: " << baseline << endl);
             DBG(cerr << "response: " << oss.str() << endl);
 
             CPPUNIT_ASSERT(oss.str() == baseline);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to get site map");
+        }
+    }
+
+    void get_site_map_test_2()
+    {
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.sm2.RootDirectory=") + TOP_SRC_DIR);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.TypeMatch=src:.*\\.cc$;src:.*\\.h$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.Include=.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.Exclude=README;.*not_used$;.*\\.o;.*\\.Po;.*\\.html;");
+
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm2"));
+        CPPUNIT_ASSERT(catalog.get());
+
+        try {
+            ostringstream oss;
+
+            catalog->get_site_map("https://machine/opendap", oss, "/");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map_2.txt");
+            string str = oss.str();
+
+            DBG2(cerr << "Baseline: " << baseline << endl);
+            DBG(cerr << "response: " << str << endl);
+
+            CPPUNIT_ASSERT(str == baseline);
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
@@ -709,12 +745,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION(catT);
 int main(int argc, char*argv[])
 {
 
-    GetOpt getopt(argc, argv, "dh");
+    GetOpt getopt(argc, argv, "dDh");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true;  // debug is a static global
+            break;
+        case 'D':
+            debug2 = true;
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: catT has the following tests:" << endl;
