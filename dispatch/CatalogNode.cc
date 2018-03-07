@@ -35,19 +35,6 @@
 using namespace bes;
 using namespace std;
 
-#if 0
-/**
- * @brief Get information about a node in the named catalog
- *
- * @param name
- * @param catalog
- */
-CatalogNode::CatalogNode(const string &name, const string &catalog) : d_name(name), d_catalog_name(catalog)
-{
-
-}
-#endif
-
 CatalogNode::~CatalogNode()
 {
     for (std::vector<CatalogItem*>::iterator i = d_items.begin(), e = d_items.end(); i != e; ++i)
@@ -79,4 +66,6 @@ void CatalogNode::dump(ostream &strm) const
         }
         BESIndent::UnIndent();
     }
+
+    BESIndent::UnIndent();
 }

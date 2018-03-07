@@ -116,7 +116,7 @@ public:
     /// @todo Change this to include the default!
     virtual int num_catalogs() const { return d_catalogs.size();  }
 
-    /// @brief The name of the default catlog
+    /// @brief The name of the default catalog
     virtual std::string default_catalog_name() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);

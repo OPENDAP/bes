@@ -1,30 +1,22 @@
 CatalogNode::dump - ()
-    name: /
+    name: /child_dir
     catalog_name: default
     last modified time:
-    item count: 3
+    item count: 2
     items: 
-        
         
         
 Item 0: 
 CatalogItem::dump - ()
-    name: file2
-    size: 500
+    name: child_file.conf
+    size: 64
     last modified time:
-    is_data: 0
+    is_data: 1
     type: 2
 Item 1: 
 CatalogItem::dump - ()
-    name: file1
-    size: 45
+    name: child_file1
+    size: 1176
     last modified time:
     is_data: 0
     type: 2
-Item 2: 
-CatalogItem::dump - ()
-    name: child_dir
-    size: 0
-    last modified time:
-    is_data: 0
-    type: 1

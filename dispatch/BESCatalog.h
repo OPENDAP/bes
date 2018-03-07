@@ -74,7 +74,7 @@ public:
         return --d_reference;
     }
 
-    virtual std::string get_catalog_name()
+    virtual std::string get_catalog_name() const
     {
         return d_catalog_name;
     }
@@ -84,6 +84,8 @@ public:
     // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
     // a directory, but BESCatalogUtils::include() on a file.
     virtual bes::CatalogNode *get_node(const std::string &path) = 0;
+
+    virtual std::string get_site_map() const = 0;
 
     virtual void dump(ostream &strm) const = 0;
 };

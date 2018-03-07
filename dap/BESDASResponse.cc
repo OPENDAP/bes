@@ -76,9 +76,9 @@ void BESDASResponse::dump(ostream &strm) const
     if (_das) {
         strm << BESIndent::LMarg << "DAS:" << endl;
         BESIndent::Indent();
-        DapIndent::SetIndent(BESIndent::GetIndent());
+        BESIndent::SetIndent(BESIndent::GetIndent());
         _das->dump(strm);
-        DapIndent::Reset();
+        BESIndent::Reset();
         BESIndent::UnIndent();
     }
     else {

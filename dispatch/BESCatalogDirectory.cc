@@ -278,8 +278,11 @@ static string get_time(time_t the_time, bool use_local_time = false)
 /**
  * @brief Build a CatalogNode for the given path in the current catalog
  *
- * @param path
- * @param catalog_name
+ * This is similar to show_catalog() but returns a simpler response. The
+ * \arg path must start with a slash and is used as a suffix to the Catalog's
+ * root directory.
+ *
+ * @param path The pathname for the node; must start with a slash
  * @return A CatalogNode instance or null if there is no such path in the
  * current catalog.
  */
@@ -294,7 +297,6 @@ BESCatalogDirectory::get_node(const string &path)
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    // TODO Move up; this can be done once use_node is set. jhrg 2.26.18
     BESUtil::check_path(path, rootdir, d_utils->follow_sym_links());
 
     string fullpath = rootdir + path;
@@ -345,8 +347,10 @@ BESCatalogDirectory::get_node(const string &path)
             }
             else if (statret == 0 && S_ISREG(buf.st_mode) && d_utils->include(item)) {
                 // Add a new leaf.
-                node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime), CatalogItem::leaf));
+                node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+                    d_utils->is_data(item), CatalogItem::leaf));
                 // TODO Sort out the is_data() issue: should that be set here or not?
+
             }
         } // end of the while loop
 
@@ -358,6 +362,12 @@ BESCatalogDirectory::get_node(const string &path)
         closedir(dip);
         throw;
     }
+}
+
+string
+BESCatalogDirectory::get_site_map() const
+{
+    return "";
 }
 
 /** @brief dumps information about this object

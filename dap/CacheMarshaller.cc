@@ -36,6 +36,7 @@
 
 #include <Vector.h>
 
+#include "BESIndent.h"
 #include "CacheMarshaller.h"
 
 using namespace std;
@@ -188,7 +189,7 @@ void CacheMarshaller::put_vector_part(char *val, unsigned int num, int width, Ty
 
 void CacheMarshaller::dump(ostream &strm) const
 {
-    strm << DapIndent::LMarg << "CacheMarshaller::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "CacheMarshaller::dump - (" << (void *) this << ")" << endl;
 }
 
 //} // namespace bes

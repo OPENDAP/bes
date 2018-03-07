@@ -102,6 +102,25 @@ public:
     CatalogItem(const string &name, size_t size, const string &lmt, item_type type)
         : d_name(name), d_size(size), d_lmt(lmt), d_is_data(false), d_type(type) { }
 
+    /**
+     * @brief Hold information about an item in a BES Catalog
+     *
+     * Store information about an item. Sets the id_data() property to false.
+     *
+     * To determine if a leaf item is data, the name must match a regular
+     * expression that is used to identify data objects (typically files).
+     * See BESCatalogUtils for help in doing that.
+     *
+     * This const
+     * @param name
+     * @param size
+     * @param lmt
+     * @param is_data
+     * @param type
+     */
+    CatalogItem(const string &name, size_t size, const string &lmt, bool is_data, item_type type)
+        : d_name(name), d_size(size), d_lmt(lmt), d_is_data(is_data), d_type(type) { }
+
     virtual ~CatalogItem() { }
 
     /// @brief The name of this item in the node

@@ -823,12 +823,12 @@ bool DmrppArray::read()
 
 void DmrppArray::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppArray::" << __func__ << "(" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppArray::" << __func__ << "(" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     Array::dump(strm);
-    strm << DapIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

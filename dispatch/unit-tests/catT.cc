@@ -210,7 +210,9 @@ public:
     CPPUNIT_TEST(default_test);
     CPPUNIT_TEST(no_default_test);
     CPPUNIT_TEST(root_dir_test1);
+
     CPPUNIT_TEST(get_node_test);
+    CPPUNIT_TEST(get_node_test_2);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -294,12 +296,13 @@ public:
             CPPUNIT_ASSERT("Correctly caught exception");
         }
 
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*\\.conf$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
 
         try {
-            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
+            if (!BESCatalogList::TheCatalogList()->ref_catalog("default"))
+                BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
@@ -581,23 +584,19 @@ public:
     void get_node_test()
     {
         TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*\\.conf$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
 
+        auto_ptr<BESCatalog> catalog(0);
         try {
-            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
+            catalog.reset(new BESCatalogDirectory("default"));
+            CPPUNIT_ASSERT(catalog.get());
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to add catalog");
         }
-
-        BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog("default");
-        CPPUNIT_ASSERT(catalog);
-        int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        DBG(cerr << "number of catalogs: " << numcats << endl);
-        CPPUNIT_ASSERT(numcats == 1 || numcats == 2);
 
         try {
             auto_ptr<CatalogNode> node(catalog->get_node("/"));
@@ -619,6 +618,48 @@ public:
             str = remove_attr(str, "last modified time");
 
             string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_1.txt");
+
+            DBG(cerr << "Baseline: " << baseline << endl);
+            DBG(cerr << "response: " << str << endl);
+
+            CPPUNIT_ASSERT(str == baseline);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to show catalogs");
+        }
+    }
+
+    void get_node_test_2()
+    {
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*\\.conf$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
+
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("default"));
+        CPPUNIT_ASSERT(catalog.get());
+
+        try {
+            auto_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
+
+            ostringstream oss;
+            node->dump(oss);
+
+            if (node->get_item_count() > 0) {
+                int n = 0;
+                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
+                    oss << "Item " << n++ << ": " << endl;
+                    (*i)->dump(oss);
+                }
+            }
+
+            string str = oss.str();
+
+            str = remove_ptr(str);
+            str = remove_attr(str, "last modified time");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_2.txt");
 
             DBG(cerr << "Baseline: " << baseline << endl);
             DBG(cerr << "response: " << str << endl);

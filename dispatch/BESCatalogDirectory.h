@@ -62,6 +62,8 @@ public:
 
     virtual bes::CatalogNode *get_node(const std::string &path);
 
+    virtual std::string get_site_map() const;
+
     virtual void dump(ostream &strm) const;
 };
 
