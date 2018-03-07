@@ -62,7 +62,8 @@ public:
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
 
-    virtual void get_site_map(const string &url_prefix, ostream &out, const string &path = "/") const;
+    virtual void get_site_map(const string &prefix, const string &suffix, ostream &out,
+        const string &path = "/") const;
 
     virtual void dump(ostream &strm) const;
 };

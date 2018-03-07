@@ -381,20 +381,23 @@ BESCatalogDirectory::get_node(const string &path) const
  * performs a depth-first traversal of the Catalog, visiting nodes at any
  * level in the order that BESCatalog::get_node() returns them.
  *
- * @param url_prefix Each item found is prefixed by this 'URL fragment.'
+ * @param prefix Prefix for each item found. It's likely the start of a
+ * URL (https://_machine_/_service_). It should not end in a slash (/).
+ * @param suffix Appended to each item found. Likely '.html'.
  * @param out Write the site map to this stream
  * @param path Write the data for this node in the catalog. Starts with a slash.
  */
-void BESCatalogDirectory::get_site_map(const string &url_prefix, ostream &out, const string &path) const
+void BESCatalogDirectory::get_site_map(const string &prefix, const string &suffix, ostream &out,
+    const string &path) const
 {
     auto_ptr<CatalogNode> node(get_node(path));
 
     for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
         if ((*i)->get_type() == CatalogItem::leaf && (*i)->is_data()) {
-            out << url_prefix << path << (*i)->get_name() << ".html" << endl;
+            out << prefix << path << (*i)->get_name() << suffix << endl;
         }
         else if ((*i)->get_type() == CatalogItem::node) {
-            get_site_map(url_prefix, out, path + (*i)->get_name() + "/");
+            get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
         }
     }
 }

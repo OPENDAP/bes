@@ -204,7 +204,7 @@ public:
 
     void setUp()
     {
-        string bes_conf = (string) TEST_ABS_SRC_DIR + "/cacheT_bes.keys";
+        string bes_conf = (string) TEST_SRC_DIR + "/cacheT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
 
         if (bes_debug) {

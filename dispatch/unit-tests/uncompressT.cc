@@ -114,7 +114,7 @@ public:
 
     void setUp()
     {
-        string bes_conf = (string) TEST_ABS_SRC_DIR + "/uncompressT_bes.keys";
+        string bes_conf = (string) TEST_SRC_DIR + "/uncompressT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
         if (bes_debug) {
             BESDebug::SetUp("cerr,cache,uncompress,uncompress2");

@@ -178,7 +178,7 @@ void TheBESKeys::clean()
     }
 }
 
-/* @brief Determine if the specified key file has been loaded yet
+/** @brief Determine if the specified key file has been loaded yet
  *
  * Given the name of the key file, determine if it has already been
  * loaded. More specifically, if started to load the file.
