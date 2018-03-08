@@ -7,10 +7,20 @@ AT_BESCMD_RESPONSE_TEST([bescmd/set_contexts.bescmd], [pass])
 
 # For the buildSiteMap command, testing is unusual since the command
 # returns nothing but writes to the local file system. The baseline
-# will be empty unless we're testing an error. Also, because distcheck
-# won't allow writing to the source tree, we will not test the default
-# behavior where the command writes to the catalog's root. We will 
-# always write to some variant of $builddir.
+# will be empty unless we're testing an error.
+
+# These tests all return errors
 
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map.bescmd], [pass])
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map2.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map3.bescmd], [pass])
+
+# These work
+
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map4.bescmd], [pass])
+
+# test that data/site_map.txt existis and is not zero length
+
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map5.bescmd], [pass])
+
+# test that data/new_site_map.txt existis and is not zero length

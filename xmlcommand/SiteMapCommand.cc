@@ -79,6 +79,8 @@ void SiteMapCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError("Build site map must include the prefix and suffix attributes.", __FILE__, __LINE__);
 
     BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(catalog_name);
+    if (!catalog)
+        throw BESSyntaxUserError(string("Build site map could not find the catalog: ") + catalog_name, __FILE__, __LINE__);
 
     filename.insert(0, catalog->get_root() + "/");
     BESDEBUG("besxml", "filename: " << filename << endl);

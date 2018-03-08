@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
 
-    <buildSiteMap prefix="http://machine/opendap" suffix=".html"/>
+    <buildSiteMap prefix="http://machine/opendap" suffix=".html" filename="new_site_map.txt"/>
     
     <!-- the catalog and filename attributes default to the following values -->
     <!-- prefix and suffix must be supplied -->

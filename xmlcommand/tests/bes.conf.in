@@ -14,19 +14,12 @@ BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/dap
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/xmlcommand/tests/data
 BES.Catalog.catalog.FollowSymLinks=No
 BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
-
-BES.Catalog.test.RootDirectory=@abs_builddir@/data
-BES.Catalog.test.FollowSymLinks=No
-BES.Catalog.test.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
-
-BES.Catalog.test.Include=;
-BES.Catalog.test.Exclude=^\..*;
 
 BES.FollowSymLinks=No
 BES.Data.RootDirectory=/dev/null
