@@ -19,8 +19,8 @@ AT_BESCMD_RESPONSE_TEST([bescmd/site_map3.bescmd], [pass])
 
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map4.bescmd], [pass])
 
-# test that data/site_map.txt existis and is not zero length
+# test that data/site_map.txt exists and is not zero length
 
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map5.bescmd], [pass])
 
-# test that data/new_site_map.txt existis and is not zero length
+# test that data/new_site_map.txt exists and is not zero length
