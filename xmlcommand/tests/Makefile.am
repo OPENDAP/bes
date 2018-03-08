@@ -13,10 +13,6 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-# Using this will result in a summary of tests while the check-local
-# target will show the individual tests. Defining both targets will
-# produce both outputs. jhrg 2/10/15
-#
 TESTS = testsuite
 
 CLEANFILES = bes.conf
@@ -29,6 +25,9 @@ bes.conf.in handler_tests_macros.m4 bescmd $(srcdir)/package.m4
 DISTCLEANFILES = atconfig
 
 BES_CONF_IN = bes.conf.in
+
+$(builddir)/data:
+	cp -r $(top_srcdir)/dapreader/data $(builddir)/data
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -47,6 +46,7 @@ TESTSUITE = $(srcdir)/testsuite
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+	-rm -rf $(builddir)/data
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
