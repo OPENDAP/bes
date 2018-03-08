@@ -17,7 +17,7 @@ noinst_DATA = bes.conf
 # target will show the individual tests. Defining both targets will
 # produce both outputs. jhrg 2/10/15
 #
-TESTS = besDapModuleTest
+TESTS = testsuite
 
 CLEANFILES = bes.conf
 
@@ -42,7 +42,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/besDapModuleTest
+TESTSUITE = $(srcdir)/testsuite
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -54,7 +54,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # since that gives better control over things like PACKAGE_NAME,
 # which will be handy in the handlers to keep their package names
 # from all being 'bes'.
-$(TESTSUITE): $(srcdir)/besDapModuleTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 

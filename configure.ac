@@ -778,18 +778,25 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/tests/atlocal
 		  
 		 docs/Makefile
+		 
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
+		 xmlcommand/tests/Makefile
+		 
 		 ppt/Makefile
 		 ppt/unit-tests/Makefile
+		 
 		 cmdln/Makefile
 		 cmdln/unit-tests/Makefile
 		 cmdln/tests/Makefile
 		 cmdln/tests/atlocal
+		 
 		 standalone/Makefile
+		 
 		 server/Makefile
 		 server/test/Makefile
 		 bin/Makefile
+		 
 		 templates/Makefile
 		 
 		 dap/Makefile
@@ -827,6 +834,7 @@ AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
+AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
 dnl Output files if building the modules too
 		 
