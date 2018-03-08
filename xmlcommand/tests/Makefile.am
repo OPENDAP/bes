@@ -11,7 +11,7 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf $(builddir)/data
 
 TESTS = testsuite
 
