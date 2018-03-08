@@ -32,10 +32,7 @@
 #include "BESCatalog.h"
 #include "BESCatalogList.h"
 
-//#include "BESNames.h"
-// #include "BESDataNames.h"
 #include "BESXMLUtils.h"
-// #include "BESUtil.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
