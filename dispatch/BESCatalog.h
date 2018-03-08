@@ -81,6 +81,16 @@ public:
 
     virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
 
+    /**
+     * The 'root prefix' for a catalog. For catalogs rooted in the file system,
+     * this is the pathname to that directory. If the idea of a 'root prefix'
+     * makes no sense for a particular kind of catalog, this should be the empty
+     * string.
+     *
+     * @return The root prefix for the catalog.
+     */
+    virtual std::string get_root() const = 0;
+
     // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
     // a directory, but BESCatalogUtils::include() on a file.
     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;

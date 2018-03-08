@@ -60,6 +60,8 @@ public:
 
     virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry *entry);
 
+    virtual std::string get_root() const;
+
     virtual bes::CatalogNode *get_node(const std::string &path) const;
 
     virtual void get_site_map(const string &prefix, const string &suffix, ostream &out,

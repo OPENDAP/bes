@@ -1,4 +1,4 @@
-// XMLSetContextsCommand.h
+// SiteMapCommand.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -22,22 +22,43 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef XMLSetContextsCommand_h
-#define XMLSetContextsCommand_h 1
+#ifndef A_SiteMapCommand_h
+#define A_SiteMapCommand_h 1
 
 #include "BESXMLCommand.h"
-#include "BESDataHandlerInterface.h"
 
-namespace bes {
+class BESDataHandlerInterface;
 
-class XMLSetContextsCommand: public BESXMLCommand {
+/**
+ * @brief Build a site map.
+ *
+ * The buildSiteMap command builds a site map for a particular BES catalog.
+ * By default the command uses the default catalog and writes the site map
+ * text file (not XML) to site_map.txt in the root directory of the catalog.
+ * The site map is not returned to the caller - it is stored by the BES and
+ * can be accessed using the OLFS and streaming access to files in the catalog.
+ *
+ * The command syntax is
+ * ~~~{.xml}
+ * <buildSiteMap prefix="..." suffix="..." catalog="..." filename="..."/>
+ * ~~~
+ * where _catalog_ defaults to the default catalog and _filename_
+ * defaults to `site_map.txt`.
+ *
+ */
+class SiteMapCommand: public BESXMLCommand {
 public:
-    XMLSetContextsCommand(const BESDataHandlerInterface &base_dhi) : BESXMLCommand(base_dhi) { }
-    virtual ~XMLSetContextsCommand() { }
+    SiteMapCommand(const BESDataHandlerInterface &base_dhi);
+
+    virtual ~SiteMapCommand()
+    {
+    }
 
     virtual void parse_request(xmlNode *node);
 
-    virtual bool has_response() {
+    /// @brief This command does not return a response, unless its an error
+    virtual bool has_response()
+    {
         return false;
     }
 
@@ -46,7 +67,5 @@ public:
     static BESXMLCommand *CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };
 
-} // namespace bes
-
-#endif // XMLSetContextsCommand_h
+#endif // A_SiteMapCommand_h
 
