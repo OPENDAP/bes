@@ -49,12 +49,17 @@
 #include "BESXMLDeleteContainersCommand.h"
 #include "BESXMLDeleteDefinitionCommand.h"
 #include "BESXMLDeleteDefinitionsCommand.h"
+
 #include "ShowPathInfoCommand.h"
 
 #include "SetContextsNames.h"
 #include "XMLSetContextsCommand.h"
+
+#if USE_CONTEXTS_RESPONSE_HANDLER
 #include "SetContextsResponseHandler.h"
+#else
 #include "NullResponseHandler.h"
+#endif
 
 #include "BESDebug.h"
 
@@ -84,12 +89,14 @@ int BESXMLDefaultCommands::initialize(int, char**)
 
     // A new command, added both for utility and to learn. jhrg 2/8/18
     BESXMLCommand::add_command(SET_CONTEXTS_STR, XMLSetContextsCommand::CommandBuilder);
-    // And we can add the ResponseHandler here too, so it can all be in the same dir. jhrg 2/9/18
+
 #if USE_CONTEXTS_RESPONSE_HANDLER
+    // And we can add the ResponseHandler here too, so it can all be in the same dir. jhrg 2/9/18
     BESResponseHandlerList::TheList()->add_handler(SET_CONTEXTS_ACTION, SetContextsResponseHandler::SetContextsResponseBuilder);
 #else
     BESResponseHandlerList::TheList()->add_handler(NULL_ACTION, NullResponseHandler::NullResponseBuilder);
 #endif
+
     BESXMLCommand::add_command( SETCONTAINER_STR, BESXMLSetContainerCommand::CommandBuilder);
 
     BESXMLCommand::add_command( DEFINE_RESPONSE_STR, BESXMLDefineCommand::CommandBuilder);

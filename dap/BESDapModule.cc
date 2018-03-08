@@ -158,12 +158,15 @@ void BESDapModule::terminate(const string &modname)
 	BESResponseHandlerList::TheList()->remove_handler(DDX_RESPONSE);
 	BESResponseHandlerList::TheList()->remove_handler(DATA_RESPONSE);
 	BESResponseHandlerList::TheList()->remove_handler(DATADDX_RESPONSE);
+
 	BESResponseHandlerList::TheList()->remove_handler(CATALOG_RESPONSE);
 
 	BESResponseHandlerList::TheList()->remove_handler(DMR_RESPONSE);
 	BESResponseHandlerList::TheList()->remove_handler(DAP4DATA_RESPONSE);
 
+#if 0
 	BESResponseHandlerList::TheList()->remove_handler(CATALOG_RESPONSE);
+#endif
 
 	BESDEBUG("dap", "    removing " << OPENDAP_SERVICE << " services" << endl);
 	BESServiceRegistry::TheRegistry()->remove_service(OPENDAP_SERVICE);

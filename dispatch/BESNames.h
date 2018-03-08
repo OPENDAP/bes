@@ -33,12 +33,14 @@
 #ifndef D_BESNames_H
 #define D_BESNames_H 1
 
-
-
 #define CATALOG_RESPONSE "show.catalog"
 #define CATALOG_RESPONSE_STR "showCatalog"
+
 #define SHOW_INFO_RESPONSE "show.info"
 #define SHOW_INFO_RESPONSE_STR "showInfo"
+
+#define SITE_MAP_STR "buildSiteMap"
+#define SITE_MAP "build.site_map"
 
 /*
  * show catalog/info data names

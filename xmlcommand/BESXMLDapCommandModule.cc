@@ -40,7 +40,8 @@ using std::cout;
 #include "BESNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
-// FIXME Remove #include "BESXMLGetDataDDXCommand.h"
+#include "SiteMapCommandNames.h"
+#include "SiteMapCommand.h"     // uses BullResponseHandler
 
 /** @brief Adds the basic DAP XML command objects to the XMLCommand list of
  * possible commands
@@ -56,8 +57,10 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
     BESDEBUG("dap", "Initializing DAP Commands:" << endl);
 
     BESXMLCommand::add_command(CATALOG_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
-
     BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
+
+    // Build a site map. Uses the Null Response Handler
+    BESXMLCommand::add_command(SITE_MAP_STR, SiteMapCommand::CommandBuilder);
 
     BESDEBUG("dap", "Done Initializing DAP Commands:" << endl);
 }
@@ -76,6 +79,7 @@ void BESXMLDapCommandModule::terminate(const string &/*modname*/)
 
     BESXMLCommand::del_command(CATALOG_RESPONSE_STR);
     BESXMLCommand::del_command(SHOW_INFO_RESPONSE_STR);
+    BESXMLCommand::del_command(SITE_MAP_STR);
 
     BESDEBUG("dap", "Done Removing DAP Commands" << endl);
 }

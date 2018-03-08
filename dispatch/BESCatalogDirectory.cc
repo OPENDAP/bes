@@ -242,6 +242,17 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 }
 
 /**
+ * @brief Get the root directory for the catalog
+ *
+ * @return The root directory for the catalog
+ */
+string
+BESCatalogDirectory::get_root() const
+{
+    return d_utils->get_root_dir();
+}
+
+/**
  * Copied from BESLog, where that code writes to an internal object, not a string.
  *
  * @todo Make this part of a collection of Utility functions

@@ -46,7 +46,7 @@ SRCS = BESXMLInterface.cc BESXMLCommand.cc BESXMLUtils.cc		\
 	BESXMLDeleteContainerCommand.cc BESXMLDeleteContainersCommand.cc\
 	BESXMLDeleteDefinitionCommand.cc BESXMLDeleteDefinitionsCommand.cc \
 	ShowPathInfoCommand.cc SetContextsResponseHandler.cc XMLSetContextsCommand.cc
-
+	
 HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefaultCommands.h BESXMLShowCommand.h			\
 	BESXMLShowErrorCommand.h					\
@@ -57,8 +57,9 @@ HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	SetContextsResponseHandler.h XMLSetContextsCommand.h NullResponseHandler.h \
 	SetContextsNames.h ShowPathInfoCommand.h
 
-DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc
-DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h
+DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc SiteMapCommand.cc
+
+DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h SiteMapCommand.h SiteMapCommandNames.h
 
 C4_DIR=./cccc
 .PHONY: cccc
