@@ -6,8 +6,8 @@
             <Message>Build site map must include the prefix and suffix attributes.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>SiteMapCommand.cc</File>
-                <Line>79</Line>
+                
+                
             </Location>
         </BESError>
     </BES>

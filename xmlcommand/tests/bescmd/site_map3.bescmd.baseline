@@ -6,8 +6,8 @@
             <Message>Build site map could not find the catalog: test</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>SiteMapCommand.cc</File>
-                <Line>83</Line>
+                
+                
             </Location>
         </BESError>
     </BES>

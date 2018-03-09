@@ -64,7 +64,7 @@ m4_define([_AT_BESCMD_PATTERN_TEST], [dnl
 m4_define([_AT_BESCMD_ERROR_TEST], [dnl
 
     AT_SETUP([BESCMD $1])
-    AT_KEYWORDS([bescmd])
+    AT_KEYWORDS([errors])
 
     input=$1
     baseline=$2
@@ -72,10 +72,13 @@ m4_define([_AT_BESCMD_ERROR_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        dnl This removed the <File> And <Line> elements from an error response.
+        REMOVE_FILE_AND_LINE([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_FILE_AND_LINE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -127,7 +130,51 @@ m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
     AT_CLEANUP
 ])
 
+m4_define([_AT_BESCMD_AND_FILE_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+    output=$abs_builddir/$3
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [ignore])
+        AT_CHECK([mv $output $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [ignore])
+        AT_CHECK([diff -b -B $baseline $output], [0], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+
 dnl AT_CHECK (commands, [status = `0'], [stdout = `'], [stderr = `'], [run-if-fail], [run-if-pass])
+
+dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss" 
+dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
+dnl more or less true to form without the obvious issue of baselines being broken 
+dnl one second after they are written.
+dnl  
+dnl Note that the macro depends on the baseline being a file.
+dnl
+dnl jhrg 6/3/16
+ 
+m4_define([REMOVE_DATE_TIME], [dnl
+    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}\( GMT\)*\( Hyrax-[[-0-9a-zA-Z.]]*\)*@removed date-time@g' < $1 > $1.sed
+    dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
+    mv $1.sed $1
+])
+
+m4_define([REMOVE_FILE_AND_LINE], [dnl
+    sed -e 's/<Line>.*$//g' -e 's/<File>.*$//g' -i "" $1  
+    dnl ' Added the preceding quote to quiet the Eclipse syntax checker.
+])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
 dnl output of besstandalone is a netcdf3 file. The binary stream is read using
@@ -189,3 +236,9 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
 [_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
+
+dnl args: test file (bescmd), output pathname, [pass|xfail] 
+dnl
+m4_define([AT_BESCMD_RESPONSE_AND_FILE_TEST],
+[_AT_BESCMD_AND_FILE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])])
+
