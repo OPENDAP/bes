@@ -185,6 +185,7 @@ m4_define([COMPARE_FILE_LINE_LENGTHS], [dnl
     length1=`wc -l $1 | tr -s [[:blank:]] | cut -d ' ' -f 2`
     length2=`wc -l $2 | tr -s [[:blank:]] | cut -d ' ' -f 2`
 
+    echo "testing: $length1 -eq $length2"
     test $length1 -eq $length2
 ])
 
@@ -254,7 +255,7 @@ dnl The 'output pathname' is the relative path to the new file made by the comma
 dnl in 'bescmd'. The optional diff | lines argumnet controls whether the baseline 
 dnl content is compared with teh new file or just the number of lines (default is diff).
 dnl
-dnl args: bescmd, output pathname, [diff|lines], [pass|xfail] 
+dnl args: bescmd, output pathname, [diff | lines], [pass | xfail] 
 dnl
 m4_define([AT_BESCMD_RESPONSE_AND_FILE_TEST],
 [_AT_BESCMD_AND_FILE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3], [$4])])
