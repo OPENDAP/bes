@@ -13,7 +13,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf $(builddir)/data
 
-TESTS = testsuite
+TESTS = $(TESTSUITE)
 
 CLEANFILES = bes.conf
 
@@ -28,6 +28,7 @@ BES_CONF_IN = bes.conf.in
 
 $(builddir)/data:
 	cp -r $(top_srcdir)/dapreader/data $(builddir)/data
+	chmod +w $(builddir)/data
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -41,7 +42,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/testsuite
+TESTSUITE = testsuite
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -55,8 +56,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # which will be handy in the handlers to keep their package names
 # from all being 'bes'.
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-	mv $@.tmp $@
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
