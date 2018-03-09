@@ -182,8 +182,8 @@ m4_define([REMOVE_FILE_AND_LINE], [dnl
 ])
 
 m4_define([COMPARE_FILE_LINE_LENGTHS], [dnl
-    length1=`wc -l $1 | tr -s [[:blank:]] | cut -d ' ' -f 2`
-    length2=`wc -l $2 | tr -s [[:blank:]] | cut -d ' ' -f 2`
+    length1=`wc -l $1 | sed 's@[[ ]s]*\([[0-9]]*\).*@\1@g'`
+    length2=`wc -l $2 | sed 's@[[ ]]*\([[0-9]]*\).*@\1@g'`
 
     echo "testing: $length1 -eq $length2"
     test $length1 -eq $length2
