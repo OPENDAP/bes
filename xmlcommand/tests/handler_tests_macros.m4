@@ -130,6 +130,7 @@ m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
     AT_CLEANUP
 ])
 
+dnl args: input bescmd, test baseline, output file, [diff|lines], [pass|xfail]
 m4_define([_AT_BESCMD_AND_FILE_TEST], [dnl
 
     AT_SETUP([BESCMD $1])
@@ -146,8 +147,12 @@ m4_define([_AT_BESCMD_AND_FILE_TEST], [dnl
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [ignore])
-        AT_CHECK([diff -b -B $baseline $output], [0], [ignore])
-        AT_XFAIL_IF([test "$3" = "xfail"])
+        
+        AS_IF([test "x$4" = "xlines"],
+            [AT_CHECK([COMPARE_FILE_LINE_LENGTHS([$baseline], [$output])], [0], [ignore])  ],
+            [AT_CHECK([diff -b -B $baseline $output], [0], [ignore])])
+
+        AT_XFAIL_IF([test "$5" = "xfail"])
         ])
 
     AT_CLEANUP
@@ -174,6 +179,13 @@ m4_define([REMOVE_DATE_TIME], [dnl
 m4_define([REMOVE_FILE_AND_LINE], [dnl
     sed -e 's/<Line>.*$//g' -e 's/<File>.*$//g' -i "" $1  
     dnl ' Added the preceding quote to quiet the Eclipse syntax checker.
+])
+
+m4_define([COMPARE_FILE_LINE_LENGTHS], [dnl
+    length1=`wc -l $1 | tr -s [[:blank:]] | cut -d ' ' -f 2`
+    length2=`wc -l $2 | tr -s [[:blank:]] | cut -d ' ' -f 2`
+
+    test $length1 -eq $length2
 ])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
@@ -237,8 +249,13 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
 [_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
-dnl args: test file (bescmd), output pathname, [pass|xfail] 
+dnl When commands write a file as a side effect, test that the file is written.
+dnl The 'output pathname' is the relative path to the new file made by the command(s)
+dnl in 'bescmd'. The optional diff | lines argumnet controls whether the baseline 
+dnl content is compared with teh new file or just the number of lines (default is diff).
+dnl
+dnl args: bescmd, output pathname, [diff|lines], [pass|xfail] 
 dnl
 m4_define([AT_BESCMD_RESPONSE_AND_FILE_TEST],
-[_AT_BESCMD_AND_FILE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])])
+[_AT_BESCMD_AND_FILE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3], [$4])])
 
