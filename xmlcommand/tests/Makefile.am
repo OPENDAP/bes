@@ -11,7 +11,7 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf $(builddir)/data
+noinst_DATA = bes.conf data
 
 TESTS = $(TESTSUITE)
 
@@ -26,9 +26,9 @@ DISTCLEANFILES = atconfig
 
 BES_CONF_IN = bes.conf.in
 
-$(builddir)/data:
-	cp -r $(top_srcdir)/dapreader/data $(builddir)/data
-	chmod +w $(builddir)/data
+data:
+	cp -r $(top_srcdir)/dapreader/data data
+	chmod a+r,a+w data
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -47,7 +47,7 @@ TESTSUITE = testsuite
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
-	-rm -rf $(builddir)/data
+	-rm -rf data
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
