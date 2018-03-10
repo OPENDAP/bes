@@ -618,8 +618,19 @@ public:
 
             if (node->get_item_count() > 0) {
                 int n = 0;
+#if 0
                 for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
                     oss << "Item " << n++ << ": " << endl;
+                    (*i)->dump(oss);
+                }
+#endif
+                for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
+                    oss << "Node " << n++ << ": " << endl;
+                    (*i)->dump(oss);
+                }
+
+                for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
+                    oss << "Leaf " << n++ << ": " << endl;
                     (*i)->dump(oss);
                 }
             }
@@ -659,12 +670,23 @@ public:
             node->dump(oss);
 
             if (node->get_item_count() > 0) {
-                int n = 0;
-                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
-                    oss << "Item " << n++ << ": " << endl;
-                    (*i)->dump(oss);
-                }
-            }
+                 int n = 0;
+ #if 0
+                 for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
+                     oss << "Item " << n++ << ": " << endl;
+                     (*i)->dump(oss);
+                 }
+ #endif
+                 for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
+                     oss << "Node " << n++ << ": " << endl;
+                     (*i)->dump(oss);
+                 }
+
+                 for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
+                     oss << "Leaf " << n++ << ": " << endl;
+                     (*i)->dump(oss);
+                 }
+             }
 
             string str = oss.str();
 

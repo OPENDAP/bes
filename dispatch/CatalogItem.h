@@ -123,6 +123,10 @@ public:
 
     virtual ~CatalogItem() { }
 
+    struct CatalogItemAscending {
+      bool operator() (CatalogItem *i,CatalogItem *j) { return (i->d_name < j->d_name); }
+    };
+
     /// @brief The name of this item in the node
     std::string get_name() const { return d_name; }
     /// @brief Set the name of the item

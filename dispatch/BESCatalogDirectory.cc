@@ -40,6 +40,8 @@
 #include <cerrno>
 
 #include <sstream>
+#include <cassert>
+
 #include <memory>
 #include <algorithm>
 
@@ -352,6 +354,13 @@ BESCatalogDirectory::get_node(const string &path) const
 
             string item_path = fullpath + "/" + item;
 
+            // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
+            // and DT_DIR and use those, if present, to determine if the name is a
+            // link, directory or regular file. These are not present on all systems.
+            // Also, since we need mtime, this is not a huge time saver. But if we
+            // decide not to use the mtime, using these macros could save lots of system
+            // calls. jhrg 3/9/18
+
             // Skip this dir entry if it is a sym link and follow links is false
             if (d_utils->follow_sym_links() == false) {
                 struct stat lbuf;
@@ -362,12 +371,19 @@ BESCatalogDirectory::get_node(const string &path) const
             // Is this a directory or a file? Should it be excluded or included?
             statret = stat(item_path.c_str(), &buf);
             if (statret == 0 && S_ISDIR(buf.st_mode) && !d_utils->exclude(item)) {
+#if 0
                 // Add a new node; set the size to zero.
                 node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
+#endif
+                node->add_node(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
             }
             else if (statret == 0 && S_ISREG(buf.st_mode) && d_utils->include(item)) {
+#if 0
                 // Add a new leaf.
                 node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+                    d_utils->is_data(item), CatalogItem::leaf));
+#endif
+                node->add_leaf(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
                     d_utils->is_data(item), CatalogItem::leaf));
             }
             else {
@@ -376,6 +392,11 @@ BESCatalogDirectory::get_node(const string &path) const
         } // end of the while loop
 
         closedir(dip);
+
+        CatalogItem::CatalogItemAscending ordering;
+
+        sort(node->nodes_begin(), node->nodes_end(), ordering);
+        sort(node->leaves_begin(), node->leaves_end(), ordering);
 
         return node;
     }
@@ -405,6 +426,7 @@ void BESCatalogDirectory::get_site_map(const string &prefix, const string &suffi
 {
     auto_ptr<CatalogNode> node(get_node(path));
 
+#if ITEMS
     for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
         if ((*i)->get_type() == CatalogItem::leaf && (*i)->is_data()) {
             out << prefix << path << (*i)->get_name() << suffix << endl;
@@ -412,6 +434,20 @@ void BESCatalogDirectory::get_site_map(const string &prefix, const string &suffi
         else if ((*i)->get_type() == CatalogItem::node) {
             get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
         }
+    }
+#endif
+
+    // Depth-first node traversal. Assume the nodes and leaves are sorted
+    for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
+        assert((*i)->get_type() == CatalogItem::node);
+        get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
+    }
+
+    // For leaves, only write the data items
+    for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
+        assert((*i)->get_type() == CatalogItem::leaf);
+        if ((*i)->is_data())
+            out << prefix << path << (*i)->get_name() << suffix << endl;
     }
 }
 
