@@ -6,14 +6,14 @@ CatalogNode::dump - ()
     items: 
         
         
-Item 0: 
+Leaf 0: 
 CatalogItem::dump - ()
     name: child_file.conf
     size: 64
     last modified time:
     is_data: 1
     type: 2
-Item 1: 
+Leaf 1: 
 CatalogItem::dump - ()
     name: child_file1
     size: 1176

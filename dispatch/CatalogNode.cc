@@ -37,9 +37,21 @@ using namespace std;
 
 CatalogNode::~CatalogNode()
 {
+#if ITEMS
     for (std::vector<CatalogItem*>::iterator i = d_items.begin(), e = d_items.end(); i != e; ++i)
         delete *i;
     d_items.clear();
+#endif
+
+#if NODES_AND_LEAVES
+    for (std::vector<CatalogItem*>::iterator i = d_nodes.begin(), e = d_nodes.end(); i != e; ++i)
+        delete *i;
+    d_nodes.clear();
+
+    for (std::vector<CatalogItem*>::iterator i = d_leaves.begin(), e = d_leaves.end(); i != e; ++i)
+        delete *i;
+    d_leaves.clear();
+#endif
 }
 
 /**
@@ -54,16 +66,38 @@ void CatalogNode::dump(ostream &strm) const
     strm << BESIndent::LMarg << "name: " << d_name << endl;
     strm << BESIndent::LMarg << "catalog_name: " << d_catalog_name << endl;
     strm << BESIndent::LMarg << "last modified time: " << d_lmt<< endl;
+#if ITEMS
     strm << BESIndent::LMarg << "item count: " << d_items.size() << endl;
+#endif
+
+#if NODES_AND_LEAVES
+    strm << BESIndent::LMarg << "item count: " << d_nodes.size() + d_leaves.size() << endl;
+#endif
+
     strm << BESIndent::LMarg << "items: ";
-    if (d_items.size()) {
+    if (d_nodes.size() + d_leaves.size()) {
         strm << endl;
         BESIndent::Indent();
+#if ITEMS
         vector<CatalogItem*>::const_iterator i = d_items.begin();
         vector<CatalogItem*>::const_iterator e = d_items.end();
         for (; i != e; ++i) {
             strm << BESIndent::LMarg << (*i) << endl;
         }
+#endif
+#if NODES_AND_LEAVES
+        vector<CatalogItem*>::const_iterator i = d_nodes.begin();
+        vector<CatalogItem*>::const_iterator e = d_nodes.end();
+        for (; i != e; ++i) {
+            strm << BESIndent::LMarg << (*i) << endl;
+        }
+
+        i = d_leaves.begin();
+        e = d_leaves.end();
+        for (; i != e; ++i) {
+            strm << BESIndent::LMarg << (*i) << endl;
+        }
+#endif
         BESIndent::UnIndent();
     }
 

@@ -30,6 +30,9 @@
 
 #include "BESObj.h"
 
+#define ITEMS 0
+#define NODES_AND_LEAVES 1
+
 namespace bes {
 
 class CatalogItem;
@@ -40,7 +43,16 @@ private:
     std::string d_catalog_name;
     std::string d_lmt;
 
+#if ITEMS
     std::vector<CatalogItem*> d_items;
+#endif
+
+#if NODES_AND_LEAVES
+    // Separate the child nodes and leaves so they can be treated as
+    // a group more easily (all the nodes listed first, e.g.).
+    std::vector<CatalogItem*> d_nodes;
+    std::vector<CatalogItem*> d_leaves;
+#endif
 
     CatalogNode(const CatalogNode &rhs);
     CatalogNode &operator=(const CatalogNode &rhs);
@@ -68,14 +80,38 @@ public:
     /// @brief Set the LMT for this node.
     void set_lmt(std::string lmt) { d_lmt = lmt; }
 
+    typedef std::vector<CatalogItem*>::const_iterator item_citer;
+    typedef std::vector<CatalogItem*>::iterator item_iter;
+
+#if ITEMS
+    item_citer items_begin() { return d_items.begin(); }
+    item_citer items_end() { return d_items.end(); }
+
     /// @brief How many items are in this node of the catalog?
     size_t get_item_count() const { return d_items.size(); }
     /// @brief Add information about an item that is in  this node of the catalog
     void add_item(CatalogItem *item) { d_items.push_back(item); }
+#endif
 
-    typedef std::vector<CatalogItem*>::const_iterator item_citer;
-    item_citer items_begin() { return d_items.begin(); }
-    item_citer items_end() { return d_items.end(); }
+#if NODES_AND_LEAVES
+    item_iter nodes_begin() { return d_nodes.begin(); }
+    item_iter nodes_end() { return d_nodes.end(); }
+
+    size_t get_item_count() const { return d_nodes.size() + d_leaves.size(); }
+
+    /// @brief How many nodes are in this node of the catalog?
+    size_t get_node_count() const { return d_nodes.size(); }
+    /// @brief Add information about an node that is in  this node of the catalog
+    void add_node(CatalogItem *node) { d_nodes.push_back(node); }
+
+    item_iter leaves_begin() { return d_leaves.begin(); }
+    item_iter leaves_end() { return d_leaves.end(); }
+
+    /// @brief How many leaves are in this node of the catalog?
+    size_t get_leaf_count() const { return d_leaves.size(); }
+    /// @brief Add information about an leaf that is in  this node of the catalog
+    void add_leaf(CatalogItem *leaf) { d_leaves.push_back(leaf); }
+#endif
 
     virtual void dump(ostream &strm) const;
 };
