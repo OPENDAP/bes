@@ -10,7 +10,7 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-SUBDIRS = . unit-tests
+SUBDIRS = . unit-tests tests
 
 lib_LTLIBRARIES = libbes_xml_command.la
 if LIBDAP
