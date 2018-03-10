@@ -28,7 +28,7 @@ BES_CONF_IN = bes.conf.in
 
 $(builddir)/data:
 	cp -r $(top_srcdir)/dapreader/data $(builddir)/data
-	chmod +w $(builddir)/data
+	chmod -R a+w $(builddir)/data
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
