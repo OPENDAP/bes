@@ -38,8 +38,10 @@
 
 #include <cstring>
 #include <cerrno>
+
 #include <sstream>
 #include <memory>
+#include <algorithm>
 
 #include "BESUtil.h"
 #include "BESCatalogDirectory.h"
