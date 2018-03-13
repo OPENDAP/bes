@@ -90,11 +90,13 @@ BESCatalogDirectory::~BESCatalogDirectory()
 }
 
 /**
+ * @brief Get the CatalogEntry for the given node.
  *
- * @param node
- * @param coi Either the string "show.Info" or "show.Catalog"
- * @param entry
- * @return
+ * @deprecated Switch to get_node(); drop use of CatalogEntry objects
+ * @param node The node within the Catalog
+ * @param entry If not null, link the newly built CatalogEntry object
+ * to \arg entry as a child node.
+ * @return The CatalogEntry for this node.
  */
 BESCatalogEntry *
 BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
@@ -299,9 +301,10 @@ static string get_time(time_t the_time, bool use_local_time = false)
  *
  * This is similar to show_catalog() but returns a simpler response. The
  * \arg path must start with a slash and is used as a suffix to the Catalog's
- * root directory.
+ * root directory. Thus, the \arg path argument is _relative_ to the catalog's
+ * root directory (even though the string starts with a slash).
  *
- * @param path The pathname for the node; must start with a slash
+ * @param path The pathname for the node; must start with a slash (/)
  * @return A CatalogNode instance or null if there is no such path in the
  * current catalog.
  * @throw BESInternalError If the \arg path is not a directory
@@ -417,37 +420,44 @@ BESCatalogDirectory::get_node(const string &path) const
  *
  * @param prefix Prefix for each item found. It's likely the start of a
  * URL (https://_machine_/_service_). It should not end in a slash (/).
- * @param suffix Appended to each item found. Likely '.html'.
+ * @param node_suffix Appended to each node item found _if not empty_. If
+ * this is the empty string, do not print information about nodes. This
+ * parameter's value should not include a leading slash (e.g., 'contents.html').
+ * @param leaf_suffix Appended to each leaf item found. Likely '.html', but
+ * _if the empty string_ do not print information about leaves.
  * @param out Write the site map to this stream
  * @param path Write the data for this node in the catalog. Starts with a slash.
  */
-void BESCatalogDirectory::get_site_map(const string &prefix, const string &suffix, ostream &out,
-    const string &path) const
+void BESCatalogDirectory::get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix,
+    ostream &out, const string &path) const
 {
     auto_ptr<CatalogNode> node(get_node(path));
 
 #if ITEMS
     for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
         if ((*i)->get_type() == CatalogItem::leaf && (*i)->is_data()) {
-            out << prefix << path << (*i)->get_name() << suffix << endl;
+            out << prefix << path << (*i)->get_name() << leaf_suffix << endl;
         }
         else if ((*i)->get_type() == CatalogItem::node) {
-            get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
+            get_site_map(prefix, leaf_suffix, out, path + (*i)->get_name() + "/");
         }
     }
 #endif
 
+    if (!node_suffix.empty())
+        out << prefix << path << node_suffix << endl;
+
     // Depth-first node traversal. Assume the nodes and leaves are sorted
     for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
         assert((*i)->get_type() == CatalogItem::node);
-        get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
+        get_site_map(prefix, node_suffix, leaf_suffix, out, path + (*i)->get_name() + "/");
     }
 
     // For leaves, only write the data items
     for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
         assert((*i)->get_type() == CatalogItem::leaf);
-        if ((*i)->is_data())
-            out << prefix << path << (*i)->get_name() << suffix << endl;
+        if ((*i)->is_data() && !leaf_suffix.empty())
+            out << prefix << path << (*i)->get_name() << leaf_suffix << endl;
     }
 }
 
