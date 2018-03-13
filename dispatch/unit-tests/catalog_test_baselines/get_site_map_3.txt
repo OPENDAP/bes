@@ -1,0 +1,2 @@
+https://machine/opendap/contents.html
+https://machine/opendap/child_dir/contents.html
