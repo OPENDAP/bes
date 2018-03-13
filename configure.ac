@@ -852,6 +852,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/tests/atlocal
     modules/asciival/unit-tests/Makefile
 
+    modules/cmr_module/Makefile
+    modules/cmr_module/tests/Makefile
+    modules/cmr_module/tests/atlocal
+    modules/cmr_module/unit-tests/Makefile
+
     modules/www-interface/Makefile
 
     modules/debug_functions/Makefile
@@ -948,6 +953,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
