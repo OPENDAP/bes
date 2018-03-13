@@ -23,3 +23,6 @@ AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map4.bescmd], [data/site_map.txt],
 
 # test that data/new_site_map.txt exists and is not zero
 AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map5.bescmd], [data/new_site_map.txt], [lines], [pass])
+
+AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map6.bescmd], [data/node_site_map.txt], [lines], [pass])
+AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map7.bescmd], [data/all_site_map.txt], [lines], [pass])

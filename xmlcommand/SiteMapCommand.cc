@@ -50,10 +50,9 @@ SiteMapCommand::SiteMapCommand(const BESDataHandlerInterface &base_dhi) :
  * @brief Parse the build site map command
  *
  * ~~~{.xml}
- * <buildSiteMap prefix="..." suffix="..." catalog="..." filename="..."/>
+ * <buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog="..." filename="..."/>
  * ~~~
- * where _catalog_ defaults to the default catalog and _filename_
- * defaults to `site_map.txt`.
+ * See the class documentation for more information
  *
  * @param node xml2 element node pointer
  */
@@ -68,28 +67,30 @@ void SiteMapCommand::parse_request(xmlNode *node)
     }
 
     string prefix = props["prefix"];
-    string suffix = props["suffix"];
+    string node_suffix = props["nodeSuffix"];
+    string leaf_suffix = props["leafSuffix"];
+
     string catalog_name = props["catalog"].empty() ? BESCatalogList::TheCatalogList()->default_catalog_name(): props["catalog"];
     string filename = props["filename"].empty() ? "site_map.txt": props["filename"];
 
     BESDEBUG("besxml", "In SiteMapCommand::parse_request, command attributes: " << prefix << ", "
-        << suffix << ", " << catalog_name << ", " << filename << endl);
+        << node_suffix << ", " << leaf_suffix << ", " << catalog_name << ", " << filename << endl);
 
-    if (prefix.empty() || suffix.empty() || catalog_name.empty() || filename.empty())
-        throw BESSyntaxUserError("Build site map must include the prefix and suffix attributes.", __FILE__, __LINE__);
+    if (prefix.empty() || catalog_name.empty() || filename.empty() || (node_suffix.empty() && leaf_suffix.empty()))
+        throw BESSyntaxUserError("Build site map must include the prefix and at least one of the nodeSuffix or leafSuffix attributes.", __FILE__, __LINE__);
 
     BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(catalog_name);
     if (!catalog)
         throw BESSyntaxUserError(string("Build site map could not find the catalog: ") + catalog_name, __FILE__, __LINE__);
 
-    filename.insert(0, catalog->get_root() + "/");
+    filename.insert(0, catalog->get_root() + "/");  // add root as a prefix to filename
     BESDEBUG("besxml", "filename: " << filename << endl);
 
     ofstream ofs(filename.c_str(), ios::trunc|ios::binary);
     if (!ofs.is_open())
         throw BESSyntaxUserError(string("Build site map could not write to the site map file: ") + filename, __FILE__, __LINE__);
 
-    catalog->get_site_map(prefix, suffix, ofs, "/");
+    catalog->get_site_map(prefix, node_suffix, leaf_suffix, ofs, "/");
 
     d_cmd_log_info = string("build site map for catalog '").append(catalog_name).append("' and write to '").append(filename);
 

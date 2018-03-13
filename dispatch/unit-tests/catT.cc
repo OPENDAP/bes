@@ -221,11 +221,14 @@ public:
     CPPUNIT_TEST(get_node_test_2);
 
     CPPUNIT_TEST(get_site_map_test);
-
 #if 0
     // This is a good test, but it's hard to get it to work with distcheck. jhrg 3/7/18
     CPPUNIT_TEST(get_site_map_test_2);
 #endif
+    CPPUNIT_TEST(get_site_map_test_3);
+    CPPUNIT_TEST(get_site_map_test_4);
+
+
     CPPUNIT_TEST_SUITE_END();
 
     void default_test()
@@ -719,7 +722,7 @@ public:
         try {
             ostringstream oss;
 
-            catalog->get_site_map("https://machine/opendap", ".html", oss, "/");
+            catalog->get_site_map("https://machine/opendap", "", ".html", oss, "/");
 
             string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map.txt");
 
@@ -751,7 +754,7 @@ public:
         try {
             ostringstream oss;
 
-            catalog->get_site_map("https://machine/opendap", ".html", oss, "/");
+            catalog->get_site_map("https://machine/opendap", "", ".html", oss, "/");
 
             string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map_2.txt");
             string str = oss.str();
@@ -767,6 +770,62 @@ public:
         }
     }
 
+
+    void get_site_map_test_3()
+    {
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.sm3.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm3.TypeMatch=conf:.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm3.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm3.Exclude=README;");
+
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm3"));
+        CPPUNIT_ASSERT(catalog.get());
+
+        try {
+            ostringstream oss;
+
+            catalog->get_site_map("https://machine/opendap", "contents.html", "", oss, "/");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map_3.txt");
+
+            DBG2(cerr << "Baseline: " << baseline << endl);
+            DBG(cerr << "response: " << oss.str() << endl);
+
+            CPPUNIT_ASSERT(oss.str() == baseline);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to get site map");
+        }
+    }
+
+    void get_site_map_test_4()
+    {
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.sm4.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm4.TypeMatch=conf:.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm4.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.sm4.Exclude=README;");
+
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm4"));
+        CPPUNIT_ASSERT(catalog.get());
+
+        try {
+            ostringstream oss;
+
+            catalog->get_site_map("https://machine/opendap", "contents.html", ".html", oss, "/");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_site_map_4.txt");
+
+            DBG2(cerr << "Baseline: " << baseline << endl);
+            DBG(cerr << "response: " << oss.str() << endl);
+
+            CPPUNIT_ASSERT(oss.str() == baseline);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to get site map");
+        }
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(catT);

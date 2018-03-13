@@ -40,11 +40,13 @@ class BESDataHandlerInterface;
  *
  * The command syntax is
  * ~~~{.xml}
- * <buildSiteMap prefix="..." suffix="..." catalog="..." filename="..."/>
+ * <buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog="..." filename="..."/>
  * ~~~
  * where _catalog_ defaults to the default catalog and _filename_
- * defaults to `site_map.txt`.
- *
+ * defaults to `site_map.txt`. If nodeSuffix or leafSuffix are the empty string,
+ * nodes or leaves will not be added to the site map (resp.). If you want these
+ * in the site map without a suffix, use a space (e.g., " ") as the attribute
+ * value.
  */
 class SiteMapCommand: public BESXMLCommand {
 public:
