@@ -57,7 +57,6 @@ env:
 before_install:
 - sudo apt-get update -qq
 - pip install --user awscli
-- ./ecr_credentials.sh
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
