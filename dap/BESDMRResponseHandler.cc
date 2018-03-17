@@ -30,6 +30,10 @@
 #include "BESDapNames.h"
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
+#include "GlobalMetadataStore.h"
+
+using namespace bes;
+
 
 BESDMRResponseHandler::BESDMRResponseHandler(const string &name) :
         BESResponseHandler(name)
@@ -40,7 +44,8 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
 {
 }
 
-/** @brief executes the command 'get dmr for def_name;' by executing
+/**
+ * @brief executes the command `<get type-"dmr" definition="..">` by executing
  * the request for each container in the specified definition.
  *
  * For each container in the specified definition go to the request
@@ -48,7 +53,11 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
  * object. The DMR response object is built within this method and passed
  * to the request handler list.
  *
+ * @note This ResponseHandler does not work for multiple containers when using
+ * the Global Metadata Store.
+ *
  * @param dhi structure that holds request and response information
+ *
  * @see BESDataHandlerInterface
  * @see BESDMRResponse
  * @see BESRequestHandlerList
@@ -56,19 +65,37 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
 void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DMR_RESPONSE_STR;
-    DMR *dmr = new DMR();
 
-    // Here we might set the dap and dmr version if they should be different from
-    // 4.0 and 1.0. jhrg 11/6/13
+    bool xml_base_found = false;
+    string xml_base = BESContextManager::TheManager()->get_context("xml:base", xml_base_found);
 
-    bool found = false;
-    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-    if (found && !xml_base.empty()) {
-        dmr->set_request_xml_base(xml_base);
+    // Look in the MDS for dhi.container.get_real_name().
+    // if found, use that response, else build it.
+    // If the MDS is disabled, don't use it.
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
+    GlobalMetadataStore::MDSReadLock lock;
+    if (mds) lock = mds->is_dmr_available(dhi.container->get_real_name());
+
+    if (mds && lock()) {
+        // send the response
+        mds->get_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
+        // suppress transmitting a ResponseObject in transmit()
+        d_response_object = 0;
     }
+    else {
+        DMR *dmr = new DMR();
 
-    d_response_object = new BESDMRResponse(dmr);
-    BESRequestHandlerList::TheList()->execute_each(dhi);
+        if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
+
+        d_response_object = new BESDMRResponse(dmr);
+
+        BESRequestHandlerList::TheList()->execute_each(dhi);
+
+        if (mds) {
+            mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
+                dhi.container->get_real_name());
+        }
+    }
 }
 
 /** @brief transmit the response object built by the execute command

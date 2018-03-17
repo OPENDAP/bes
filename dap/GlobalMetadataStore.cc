@@ -336,6 +336,26 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
+// TODO Document
+void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
+    if (d_dds)
+        d_dds->print(os);
+    else if (d_dmr)
+        d_dmr->getDDS()->print(os);
+    else
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
+}
+
+// TODO Document
+void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
+    if (d_dds)
+        d_dds->print_das(os);
+    else if (d_dmr)
+        d_dmr->getDDS()->print_das(os);
+    else
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
+}
+
 /**
  * Specialization of StreamDAP that prints a DMR using the information
  * in a DDS instance.
@@ -502,6 +522,36 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 
     return false;
 }
+
+/**
+ * Common code to acquire a read lock on a MDS item. The caller must use unlock_and_close()
+ *
+ * @param name Granule name
+ * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
+ * @param object_name One of DDS, DAS or DMR (used for verbose logging only)
+ * @return True if the object was locked, false otherwise
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suffix, const string &object_name)
+{
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd;
+    MDSReadLock lock(item_name, get_read_lock(item_name, fd));
+    if (lock()) {
+        VERBOSE("Metadata store: Lock " << object_name << " response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Locked " << item_name << " in the store." << endl);
+    }
+
+    return lock;
+ }
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmr_available(const string &name)
+{
+    return get_read_lock_helper(name, "dmr_r", "DMR");
+}
+
+
 /**
  * Common code to copy a response to an output stream.
  *

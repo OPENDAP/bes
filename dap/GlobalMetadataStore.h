@@ -68,8 +68,9 @@ namespace bes {
  * - _BES.LogTimeLocal_: Use local or GMT time for the ledger entries; default is
  *   to use GMT
  *
- * @todo Add support for altering the xml:base attribute in the DMR response
- * when it is extracted from the MDS.
+ * @note To change the xml:base attribute in the DMR response use
+ * `DMR::set_request_xml_base()`.
+ *
  * @todo Add support for storing binary DDS and DMR objects. This will require
  * modifications to libdap so that we can 'serialize' those and additions to
  * some of the handlers so that they can record extra information used by their
@@ -123,7 +124,9 @@ private:
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDDS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
-        virtual void operator()(ostream &os) {
+        virtual void operator()(ostream &os);
+#if 0
+        {
             if (d_dds)
                 d_dds->print(os);
             else if (d_dmr)
@@ -131,6 +134,7 @@ private:
             else
                 throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
+#endif
     };
 
     /**
@@ -140,7 +144,9 @@ private:
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDAS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
-        virtual void operator()(ostream &os) {
+        virtual void operator()(ostream &os);
+#if 0
+        {
             if (d_dds)
                 d_dds->print_das(os);
             else if (d_dmr)
@@ -148,6 +154,7 @@ private:
             else
                 throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
+#endif
     };
 
     /**
@@ -166,6 +173,28 @@ private:
         const std::string &object_name);
 
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
+
+public:
+    /**
+     * @brief Unlock and close the MDS item when the ReadLock goes out of scope.
+     */
+    struct MDSReadLock : public std::unary_function<std::string, bool> {
+        std::string name;
+        bool locked;
+        MDSReadLock() : name(""), locked(false) { }
+        MDSReadLock(const std::string n, bool l): name(n), locked(l) { }
+        ~MDSReadLock() {
+            if (locked) get_instance()->unlock_and_close(name);
+            locked = false;
+        }
+
+         virtual bool operator()() { return locked; }
+     };
+
+    typedef struct MDSReadLock MDSReadLock;
+
+private:
+    MDSReadLock get_read_lock_helper(const string &name, const string &suffix, const string &object_name);
 
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore();
@@ -231,6 +260,8 @@ public:
      */
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
     ///@}
+
+    virtual MDSReadLock is_dmr_available(const std::string &name);
 
     virtual void get_dds_response(const std::string &name, std::ostream &os);
     virtual void get_das_response(const std::string &name, std::ostream &os);
