@@ -4,7 +4,7 @@ BES.ServerAdministrator=root@localhost
 BES.User=user_name
 BES.Group=group_name
 
-BES.LogName=./bes.log
+BES.LogName=@abs_top_builddir@/dapreader/tests/bes.log
 BES.LogVerbose=yes
 
 BES.modules=dap,cmd,dapreader
@@ -34,7 +34,7 @@ BES.UncompressCache.size=500
 DAP.GlobalMetadataStore.path = @abs_top_builddir@/dapreader/tests/mds
 DAP.GlobalMetadataStore.prefix = md
 DAP.GlobalMetadataStore.size = 10
-DAP.GlobalMetadataStore.ledger = mds_ledger.txt
+DAP.GlobalMetadataStore.ledger = @abs_top_builddir@/dapreader/tests/mds_ledger.txt
 
 # These keys control how the DapReader handler interprets the DDS, DMR, 
 # etc., input files. By default it uses the BaseTypeFactory types - the

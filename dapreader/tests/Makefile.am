@@ -39,6 +39,8 @@ check-local: atconfig atlocal $(TESTSUITE)
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+	-rm -f $(builddir)/bes.log
+	-rm -f $(builddir)/mds_ledger.txt
 	-rm -rf $(builddir)/mds
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
