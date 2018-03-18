@@ -262,6 +262,8 @@ public:
     ///@}
 
     virtual MDSReadLock is_dmr_available(const std::string &name);
+    virtual MDSReadLock is_dds_available(const std::string &name);
+    virtual MDSReadLock is_das_available(const std::string &name);
 
     virtual void get_dds_response(const std::string &name, std::ostream &os);
     virtual void get_das_response(const std::string &name, std::ostream &os);

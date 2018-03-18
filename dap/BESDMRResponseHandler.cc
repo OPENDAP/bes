@@ -74,7 +74,6 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     // if found, use that response, else build it.
     // If the MDS is disabled, don't use it.
     GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
-    BESDEBUG("dmr", __func__ << " Got MDS: " << mds << endl);
 
     GlobalMetadataStore::MDSReadLock lock;
 

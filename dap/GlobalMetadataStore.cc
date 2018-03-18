@@ -560,7 +560,7 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
  * about cache hits, but only using VERBOSE(), so that output will not show
  * up in a normal log.
  *
- * @param name The item to look for
+ * @param name Find the DMR response for \arg name.
  * @return A MDSReadLock object. This object is true if the item was found
  * (and a read lock was obtained), false if either of those things are not
  * true. When the MDSReadLock object goes out of scope, the read lock is
@@ -572,6 +572,29 @@ GlobalMetadataStore::is_dmr_available(const string &name)
     return get_read_lock_helper(name, "dmr_r", "DMR");
 }
 
+/**
+ * @brief Is the DDS response for \arg name in the MDS?
+ * @param name Find the DDS response for \arg name.
+ * @return A MDSReadLock object.
+ * @see is_dmr_available() for more information.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dds_available(const string &name)
+{
+    return get_read_lock_helper(name, "dds_r", "DDS");
+}
+
+/**
+ * @brief Is the DAS response for \arg name in the MDS?
+ * @param name Find the DAS response for \arg name.
+ * @return A MDSReadLock object.
+ * @see is_dmr_available() for more information.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_das_available(const string &name)
+{
+    return get_read_lock_helper(name, "das_r", "DAS");
+}
 
 /**
  * Common code to copy a response to an output stream.
