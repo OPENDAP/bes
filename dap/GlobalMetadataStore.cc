@@ -537,9 +537,10 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;
     MDSReadLock lock(item_name, get_read_lock(item_name, fd));
+    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for  " << item_name << ": " << lock() <<  endl);
     if (lock()) {
         VERBOSE("Metadata store: Lock " << object_name << " response for '" << name << "'." << endl);
-        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Locked " << item_name << " in the store." << endl);
+        BESDEBUG(DEBUG_KEY, __func__ << " Locked " << item_name << " in the store." << endl);
     }
 
     return lock;

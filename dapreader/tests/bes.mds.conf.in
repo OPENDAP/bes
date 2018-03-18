@@ -1,0 +1,48 @@
+
+BES.ServerAdministrator=root@localhost
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,dapreader
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/dapreader
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|data|dmr|xml|dap)$;
+BES.Catalog.catalog.FollowSymLinks=No
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=No
+BES.Data.RootDirectory=/dev/null
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=ux
+BES.UncompressCache.size=500
+
+# Test the MDS
+
+DAP.GlobalMetadataStore.path = @abs_top_builddir@/mds
+DAP.GlobalMetadataStore.prefix = md
+DAP.GlobalMetadataStore.size = 10
+DAP.GlobalMetadataStore.ledger = mds_ledger.txt
+
+# These keys control how the DapReader handler interprets the DDS, DMR, 
+# etc., input files. By default it uses the BaseTypeFactory types - the
+# default type classes distributed with libdap - when instantiating variables.
+# By setting UseTestTypes to true, the TestByte, ..., classes are used
+# instead.  
+
+DR.UseTestTypes=true
+
+# Use the 'series values' feature of the test types
+DR.UseSeriesValues=false

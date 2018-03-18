@@ -31,9 +31,10 @@
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
 #include "GlobalMetadataStore.h"
+#include "BESDebug.h"
 
 using namespace bes;
-
+using namespace std;
 
 BESDMRResponseHandler::BESDMRResponseHandler(const string &name) :
         BESResponseHandler(name)
@@ -73,10 +74,19 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     // if found, use that response, else build it.
     // If the MDS is disabled, don't use it.
     GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
+    BESDEBUG("dmr", __func__ << " Got MDS: " << mds << endl);
+
     GlobalMetadataStore::MDSReadLock lock;
+
+    dhi.first_container();
+
+    cerr << "dhi.container->dump(cerr)" << endl;
+    dhi.container->dump(cerr);
+
     if (mds) lock = mds->is_dmr_available(dhi.container->get_real_name());
 
     if (mds && lock()) {
+        BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_real_name() << endl);
         // send the response
         mds->get_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
