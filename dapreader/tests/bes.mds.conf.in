@@ -5,7 +5,7 @@ BES.User=user_name
 BES.Group=group_name
 
 BES.LogName=./bes.log
-BES.LogVerbose=no
+BES.LogVerbose=yes
 
 BES.modules=dap,cmd,dapreader
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
@@ -31,7 +31,7 @@ BES.UncompressCache.size=500
 
 # Test the MDS
 
-DAP.GlobalMetadataStore.path = @abs_top_builddir@/mds
+DAP.GlobalMetadataStore.path = @abs_top_builddir@/dapreader/tests/mds
 DAP.GlobalMetadataStore.prefix = md
 DAP.GlobalMetadataStore.size = 10
 DAP.GlobalMetadataStore.ledger = mds_ledger.txt

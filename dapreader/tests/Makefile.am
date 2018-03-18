@@ -31,7 +31,10 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(TESTSUITE)
+	@echo "Test without the MDS"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@echo "Test using the MDS"
+	$(SHELL) '$(TESTSUITE)' --conf=bes.mds.conf $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

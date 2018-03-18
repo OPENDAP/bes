@@ -79,13 +79,10 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-
-    cerr << "dhi.container->dump(cerr)" << endl;
-    dhi.container->dump(cerr);
-
     if (mds) lock = mds->is_dmr_available(dhi.container->get_real_name());
 
-    if (mds && lock()) {
+    if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {
+        // FIXME Does not work for constrained DMR requests
         BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_real_name() << endl);
         // send the response
         mds->get_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
@@ -102,6 +99,8 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
         if (mds) {
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+            BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
             mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
                 dhi.container->get_real_name());
         }
