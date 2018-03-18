@@ -524,7 +524,9 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 }
 
 /**
- * Common code to acquire a read lock on a MDS item. The caller must use unlock_and_close()
+ * Common code to acquire a read lock on a MDS item. The caller must use unlock_and_close().
+ *
+ * This method logs (using LOG, note VERBOSE) cache hits and misses.
  *
  * @param name Granule name
  * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
@@ -547,6 +549,23 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
     return lock;
  }
 
+/**
+ * @brief Is the DMR response for \arg name in the MDS?
+ *
+ * Look in the MDS to see if the DMR response has been stored/cached for
+ * \arg name.
+ *
+ * @note This method and the matching methods for the DDS and DAS use LOG()
+ * to record cache hits and misses. Other methods also record information
+ * about cache hits, but only using VERBOSE(), so that output will not show
+ * up in a normal log.
+ *
+ * @param name The item to look for
+ * @return A MDSReadLock object. This object is true if the item was found
+ * (and a read lock was obtained), false if either of those things are not
+ * true. When the MDSReadLock object goes out of scope, the read lock is
+ * released.
+ */
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmr_available(const string &name)
 {
