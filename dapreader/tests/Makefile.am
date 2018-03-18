@@ -5,7 +5,8 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_DATA = bes.conf bes.mds.conf mds
 
-CLEANFILES = bes.conf bes.mds.conf
+CLEANFILES = bes.conf bes.mds.conf mds_ledger.txt bes.log $(srcdir)/package.m4 \
+$(TESTSUITE) $(MDS_TESTSUITE)
 
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 $(srcdir)/handler_tests_macros.m4 bes.conf.in bes.mds.conf.in \
@@ -21,32 +22,36 @@ DISTCLEANFILES = atconfig
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
+bes.conf: $(top_srcdir)/configure.ac
+
+bes.mds.conf: $(top_srcdir)/configure.ac
+
 mds:
 	test -d mds || mkdir -p mds
 	
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
+AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE = $(srcdir)/testsuite
+MDS_TESTSUITE = $(srcdir)/mds_testsuite
 
-check-local: atconfig atlocal $(TESTSUITE)
+check-local: atconfig atlocal $(TESTSUITE) $(MDS_TESTSUITE) bes.mds.conf bes.conf
 	@echo "Test without the MDS"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	@echo "Test using the MDS"
-	$(SHELL) '$(TESTSUITE)' --conf=bes.mds.conf $(TESTSUITEFLAGS)
+	$(SHELL) '$(MDS_TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes.mds.conf 
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
-	-rm -f $(builddir)/bes.log
-	-rm -f $(builddir)/mds_ledger.txt
+	test ! -f '$(MDS_TESTSUITE)' || $(SHELL) '$(MDS_TESTSUITE)' --clean
 	-rm -rf $(builddir)/mds
 
-AUTOTEST = $(AUTOM4TE) --language=autotest
-
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+%: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+	
+$(TESTSUITE): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
