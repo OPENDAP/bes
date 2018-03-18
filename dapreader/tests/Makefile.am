@@ -10,7 +10,7 @@ $(TESTSUITE) $(MDS_TESTSUITE)
 
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 $(srcdir)/handler_tests_macros.m4 bes.conf.in bes.mds.conf.in \
-$(srcdir)/package.m4
+$(srcdir)/package.m4 $(MDS_TESTSUITE) $(MDS_TESTSUITE).at
 
 DISTCLEANFILES = atconfig
 

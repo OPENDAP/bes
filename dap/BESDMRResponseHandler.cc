@@ -46,8 +46,7 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
 }
 
 /**
- * @brief executes the command `<get type-"dmr" definition="..">` by executing
- * the request for each container in the specified definition.
+ * @brief executes the command `<get type-"dmr" definition="..">`
  *
  * For each container in the specified definition go to the request
  * handler for that container and have it add to the OPeNDAP DMR response
