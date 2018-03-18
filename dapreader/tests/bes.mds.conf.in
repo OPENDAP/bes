@@ -5,7 +5,7 @@ BES.User=user_name
 BES.Group=group_name
 
 BES.LogName=@abs_top_builddir@/dapreader/tests/bes.log
-BES.LogVerbose=yes
+BES.LogVerbose=no
 
 BES.modules=dap,cmd,dapreader
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
