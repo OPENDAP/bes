@@ -538,10 +538,11 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
     int fd;
     MDSReadLock lock(item_name, get_read_lock(item_name, fd));
     BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for  " << item_name << ": " << lock() <<  endl);
-    if (lock()) {
-        VERBOSE("Metadata store: Lock " << object_name << " response for '" << name << "'." << endl);
-        BESDEBUG(DEBUG_KEY, __func__ << " Locked " << item_name << " in the store." << endl);
-    }
+
+    if (lock())
+        LOG("MDS Cache hit for " << name << " and response " << object_name << endl);
+    else
+        LOG("MDS Cache miss for " << name << " and response " << object_name << endl);
 
     return lock;
  }
@@ -567,7 +568,7 @@ GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const 
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
     if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Read " << object_name << " response for '" << name << "'." << endl);
+        VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
         transfer_bytes(fd, os);
         unlock_and_close(item_name); // closes fd
