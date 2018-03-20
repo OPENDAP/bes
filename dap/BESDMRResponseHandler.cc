@@ -22,7 +22,16 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <sstream>
+
 #include <DMR.h>
+
+#undef DMR_CE
+
+#if DMR_CE
+#include <D4BaseTypeFactory.h>
+#include <D4ParserSax2.h>
+#endif
 
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
@@ -79,7 +88,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.first_container();
     if (mds) lock = mds->is_dmr_available(dhi.container->get_real_name());
 
-    if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {
+    if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {    // no CE
         // FIXME Does not work for constrained DMR requests
         BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_real_name() << endl);
         // send the response
@@ -87,7 +96,29 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
         // suppress transmitting a ResponseObject in transmit()
         d_response_object = 0;
     }
-    else {
+#if DMR_CE
+    // this shows how to support DMR/DDS requests with CEs. I have no tests for this,
+    // however. And there are other things that are breaking still... jhrg 3/19/18
+    else if (mds && lock() && !dhi.container->get_dap4_constraint().empty()) {  // with CE
+        stringstream oss;
+        mds->get_dmr_response(dhi.container->get_real_name(), oss);
+
+        DMR *dmr = new DMR(new D4BaseTypeFactory, "mds");
+
+        if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
+
+        D4ParserSax2 parser;
+        parser.intern(oss.str(), dmr);
+
+        // Do not leak the BaseType factory
+        delete dmr->factory();
+        dmr->set_factory(0);
+
+        // The transmit() method will evaluate the CE before sending the response.
+        d_response_object = new BESDMRResponse(dmr);
+    }
+#endif
+    else {  // no MDS
         DMR *dmr = new DMR();
 
         if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
