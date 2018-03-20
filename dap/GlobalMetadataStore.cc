@@ -63,6 +63,17 @@
 #define AT_EXIT(x)
 #endif
 
+/// If SYMETRIC_ADD_RESPONSES is defined and a true value, then add_responses()
+/// will add all of DDS, DAS and DMR when called with _either_ the DDS or DMR
+/// objects. If it is not defined (or false), add_responses() called with a DDS
+/// will add only the DDS and DAS and add_responses() called with a DMR will add
+/// only a DMR.
+///
+/// There are slight differences in the DAS objects build by the DMR and DDS,
+/// especially when the underlying dataset contains types that can be encoded
+/// in the DMR (DAP4) but not the DDS (DAP2). jhrg 3/20/18
+#undef SYMETRIC_ADD_RESPONSES
+
 using namespace std;
 using namespace libdap;
 using namespace bes;
@@ -336,26 +347,6 @@ GlobalMetadataStore::get_hash(const string &name)
     return picosha2::hash256_hex_string(name);
 }
 
-// TODO Document
-void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
-    if (d_dds)
-        d_dds->print(os);
-    else if (d_dmr)
-        d_dmr->getDDS()->print(os);
-    else
-        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
-}
-
-// TODO Document
-void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
-    if (d_dds)
-        d_dds->print_das(os);
-    else if (d_dmr)
-        d_dmr->getDDS()->print_das(os);
-    else
-        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
-}
-
 /**
  * Specialization of StreamDAP that prints a DMR using the information
  * in a DDS instance.
@@ -364,9 +355,14 @@ void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
  * functor is used to parameterize writing the DAP metadata response for the
  * store_dap_response() method.
  *
- * @note Most of the three three child classes are defined in the GlobalMetadataStore
- * header; only this one method is defined in the implementation file to keep
- * the libdap headers out of GlobalMetadataStore.h
+ * @note These classes were written so that either the DDS _or_ DMR could be
+ * used to write all of the three DAP2/4 metadata responses. That feature
+ * worked for the most part, but highlighted some differences between the
+ * two protocol versions that make it hard to produce identical responses
+ * using both the DDS or DMR from the same dataset. This made testing hard
+ * and meant that the result was unpredictable for some edge cases. The symbol
+ * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
+ * is turned off.
  *
  * @param os Write the DMR to this stream
  * @see StreamDAP
@@ -390,6 +386,26 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
     else {
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
     }
+}
+
+/// @see GlobalMetadataStore::StreamDMR
+void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
+    if (d_dds)
+        d_dds->print(os);
+    else if (d_dmr)
+        d_dmr->getDDS()->print(os);
+    else
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
+}
+
+/// @see GlobalMetadataStore::StreamDMR
+void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
+    if (d_dds)
+        d_dds->print_das(os);
+    else if (d_dmr)
+        d_dmr->getDDS()->print_das(os);
+    else
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
 }
 
 /**
@@ -488,12 +504,18 @@ GlobalMetadataStore::add_responses(DDS *dds, const string &name)
     StreamDAS write_the_das_response(dds);
     bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
 
+#if SYMETRIC_ADD_RESPONSES
     StreamDMR write_the_dmr_response(dds);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+#endif
 
     write_ledger(); // write the index line
 
+#if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
+#else
+    return (stored_dds && stored_das);
+#endif
 }
 
 bool
@@ -507,20 +529,24 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     //
     // The helper() also updates the ledger string.
+#if SYMETRIC_ADD_RESPONSES
     StreamDDS write_the_dds_response(dmr);
     bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
 
     StreamDAS write_the_das_response(dmr);
     bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+#endif
 
     StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
     write_ledger(); // write the index line
 
+#if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
-
-    return false;
+#else
+    return(stored_dmr);
+#endif
 }
 
 /**

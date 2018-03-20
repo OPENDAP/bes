@@ -103,6 +103,10 @@ private:
      * responses using a DDS or DMR. The concrete specializations StreamDDS,
      * StreamDAS and StreamDMR are instantiated and passed to
      * store_dap_response().
+     *
+     * @note These classes were written to so either the DDS or DMR could be
+     * used to build all of the (three) metadata responses. See comments
+     * elsewhere about this and why it's turned off for now.
      */
     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
         libdap::DDS *d_dds;
@@ -125,16 +129,6 @@ private:
         StreamDDS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
         virtual void operator()(ostream &os);
-#if 0
-        {
-            if (d_dds)
-                d_dds->print(os);
-            else if (d_dmr)
-                d_dmr->getDDS()->print(os);
-            else
-                throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
-        }
-#endif
     };
 
     /**
@@ -145,16 +139,6 @@ private:
         StreamDAS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
         virtual void operator()(ostream &os);
-#if 0
-        {
-            if (d_dds)
-                d_dds->print_das(os);
-            else if (d_dmr)
-                d_dmr->getDDS()->print_das(os);
-            else
-                throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
-        }
-#endif
     };
 
     /**
@@ -177,6 +161,8 @@ private:
 public:
     /**
      * @brief Unlock and close the MDS item when the ReadLock goes out of scope.
+     * @note This needs to be public because software that uses the MDS needs to
+     * hold instances of the MDSReadLock.
      */
     struct MDSReadLock : public std::unary_function<std::string, bool> {
         std::string name;
@@ -236,12 +222,15 @@ public:
      * the operation. If there is an error, that will always be recorded in
      * the bes log.
      *
-     * @return True if the DDS, DAS and DMR were added to the MDS
+     * @return True if the DDS, DAS or DMR were added to the MDS
      */
     ///@{
 
     /**
-     * @brief Add the DAP responses using a DDS
+     * @brief Add the DAP2 metadata responses using a DDS
+     *
+     * This method adds only the DDS and DAS unless the code was compiled with
+     * the symbol SYMETRIC_ADD_RESPONSES defined.
      *
      * @param name The granule name or identifier
      * @param dds A DDS built from the granule
@@ -251,11 +240,14 @@ public:
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
 
     /**
-     * @brief Add the DAP responses using a DMR
+     * @brief Add the DAP4 metadata responses using a DMR
+     *
+     * This method adds only the DMR unless the code was compiled with
+     * the symbol SYMETRIC_ADD_RESPONSES defined.
      *
      * @param name The granule name or identifier
      * @param dmr A DMR built from the granule
-     * @return True if all of the cache/store entries were written, False if any
+     * @return True if all of the cache/store entry was written, False if any
      * could not be written.
      */
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
