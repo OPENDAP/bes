@@ -33,7 +33,9 @@
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESInternalError.h"
+#if 0
 #include "BESDataNames.h"
+#endif
 
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 
@@ -59,7 +61,7 @@ bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHa
  *
  * Finds, removes and returns the specified request handler. if the handler
  * exists then it is removed from the list, but not deleted. Deleting the
- * request handler is the responsability of the caller. The request handler is
+ * request handler is the responsibility of the caller. The request handler is
  * then returned to the caller. If not found, NULL is returned
  *
  * @param handler_name name of the data type request handler to be removed and
@@ -199,6 +201,7 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
     }
 }
 
+#if 0
 /** @brief Execute a single method that will fill in the response object
  * rather than iterating over the list of containers or request handlers.
  *
@@ -224,6 +227,7 @@ void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
     dhi.first_container();
     execute_current(dhi);
 }
+#endif
 
 /** @brief Execute a single method for the current container that will fill
  * in the response object rather than iterating over the list of containers
@@ -260,11 +264,9 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
         // Here's an example from the CSVRequestHandler:
         //     add_handler(DAS_RESPONSE, CSVRequestHandler::csv_build_das);
         // in the following 'p' will point to CSVRequestHandler::csv_build_das if
-        // dhi.action is the string "get.das" (the value of the symbol DAS_RESPONSE
+        // dhi.action is the string "get.das" (the value of the symbol DAS_RESPONSE)
         p_request_handler_method request_handler_method = rh->find_handler(dhi.action);
         if (!request_handler_method) {
-            // TODO This should not be an internal error - it's really a configuration error
-            // jhrg 2/20/15
             throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type()
                 + "' does not handle the response type '" + dhi.action + "'", __FILE__, __LINE__);
         }
