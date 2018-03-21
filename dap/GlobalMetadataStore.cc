@@ -725,6 +725,10 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      write_ledger(); // write the index line
 
+#if SYMETRIC_ADD_RESPONSES
+     return  (removed_dds && removed_das && removed_dmr);
+#else
      return  (removed_dds || removed_das || removed_dmr);
+#endif
 }
 
