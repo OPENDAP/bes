@@ -500,7 +500,7 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
       *iflg = (int)*iflg64;
     if ((int)*iflg64 != 0)
        return ERROR;
-    *iflg64 = sinforint(radius, center_long,false_easting,false_northing);
+    *iflg64 = sinforint(r_major,r_minor, center_long,false_easting,false_northing);
       *iflg = (int)*iflg64;
     hfor_trans[outsys] = sinfor;
     }

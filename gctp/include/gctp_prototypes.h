@@ -141,10 +141,10 @@ int gvnspinvint(double r, double h, double center_long, double center_lat,
 
 int sinfor(double lon, double lat, double *x, double *y);
 int sininv(double x, double y, double *lon, double *lat);
-int sinforint(double r, double center_long, double false_east, 
-                double false_north);
-int sininvint(double r, double center_long, double false_east, 
-                double false_north);
+int sinforint(double r_maj, double r_min, double center_long, 
+	      double false_east, double false_north);
+int sininvint(double r_maj, double r_min, double center_long, 
+	      double false_east, double false_north);
 
 int equifor(double lon, double lat, double *x, double *y);
 int equiinv(double x, double y, double *lon, double *lat);
