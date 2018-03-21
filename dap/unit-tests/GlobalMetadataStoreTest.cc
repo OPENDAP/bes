@@ -384,9 +384,16 @@ public:
              DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
              CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
 
+             /// Previously the MDS built all three metadata responses using
+             /// either the DDS or DMR. Now it only does that when SYMETRIC_ADD_RESPONSES
+             /// is defined. When that is not defined (the default) the DDS
+             /// builds only the DAP2 responses and the DMR builds only the
+             /// DAP4 responses. jhrg 3/20/18
+#if SYMETRIC_ADD_RESPONSES
              string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dmr_r")), false /*mangle*/);
              DBG(cerr << __func__ << " - dmr_cache_name: " << das_cache_name << endl);
              CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
+#endif
          }
          catch (BESError &e) {
              CPPUNIT_FAIL(e.get_message());
@@ -457,6 +464,7 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
     }
 
+#if SYMETRIC_ADD_RESPONSES
     void get_dmr_response_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
@@ -487,6 +495,7 @@ public:
 
          DBG(cerr << __func__ << " - END" << endl);
     }
+#endif
 
     void remove_object_test()
     {
@@ -509,16 +518,20 @@ public:
             DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
             CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
 
+#if SYMETRIC_ADD_RESPONSES
             string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dmr_r")), false /*mangle*/);
             DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
+#endif
 
             bool removed = d_mds->remove_responses(d_test_dds->get_dataset_name());
             CPPUNIT_ASSERT(removed);
 
             CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) != 0);
             CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) != 0);
+#if SYMETRIC_ADD_RESPONSES
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) != 0);
+#endif
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -651,6 +664,7 @@ public:
 
              CPPUNIT_ASSERT(stored);
 
+#if SYMETRIC_ADD_RESPONSES
              // look for the files
              string dds_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dds_r")), false /*mangle*/);
              DBG(cerr << __func__ << " - dds_cache_name: " << dds_cache_name << endl);
@@ -659,9 +673,9 @@ public:
              string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("das_r")), false /*mangle*/);
              DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
              CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
-
+#endif
              string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-             DBG(cerr << __func__ << " - dmr_cache_name: " << das_cache_name << endl);
+             DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
              CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
          }
          catch (BESError &e) {
@@ -683,7 +697,9 @@ public:
     CPPUNIT_TEST(add_response_test);
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
+#if SYMETRIC_ADD_RESPONSES
     CPPUNIT_TEST(get_dmr_response_test);
+#endif
     CPPUNIT_TEST(remove_object_test);
 
     CPPUNIT_TEST(cache_a_dds_response_dmr);
