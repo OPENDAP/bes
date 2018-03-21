@@ -63,6 +63,17 @@
 #define AT_EXIT(x)
 #endif
 
+/// If SYMETRIC_ADD_RESPONSES is defined and a true value, then add_responses()
+/// will add all of DDS, DAS and DMR when called with _either_ the DDS or DMR
+/// objects. If it is not defined (or false), add_responses() called with a DDS
+/// will add only the DDS and DAS and add_responses() called with a DMR will add
+/// only a DMR.
+///
+/// There are slight differences in the DAS objects build by the DMR and DDS,
+/// especially when the underlying dataset contains types that can be encoded
+/// in the DMR (DAP4) but not the DDS (DAP2). jhrg 3/20/18
+#undef SYMETRIC_ADD_RESPONSES
+
 using namespace std;
 using namespace libdap;
 using namespace bes;
@@ -344,9 +355,14 @@ GlobalMetadataStore::get_hash(const string &name)
  * functor is used to parameterize writing the DAP metadata response for the
  * store_dap_response() method.
  *
- * @note Most of the three three child classes are defined in the GlobalMetadataStore
- * header; only this one method is defined in the implementation file to keep
- * the libdap headers out of GlobalMetadataStore.h
+ * @note These classes were written so that either the DDS _or_ DMR could be
+ * used to write all of the three DAP2/4 metadata responses. That feature
+ * worked for the most part, but highlighted some differences between the
+ * two protocol versions that make it hard to produce identical responses
+ * using both the DDS or DMR from the same dataset. This made testing hard
+ * and meant that the result was unpredictable for some edge cases. The symbol
+ * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
+ * is turned off.
  *
  * @param os Write the DMR to this stream
  * @see StreamDAP
@@ -370,6 +386,26 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
     else {
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
     }
+}
+
+/// @see GlobalMetadataStore::StreamDMR
+void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
+    if (d_dds)
+        d_dds->print(os);
+    else if (d_dmr)
+        d_dmr->getDDS()->print(os);
+    else
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
+}
+
+/// @see GlobalMetadataStore::StreamDMR
+void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
+    if (d_dds)
+        d_dds->print_das(os);
+    else if (d_dmr)
+        d_dmr->getDDS()->print_das(os);
+    else
+        throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
 }
 
 /**
@@ -468,12 +504,18 @@ GlobalMetadataStore::add_responses(DDS *dds, const string &name)
     StreamDAS write_the_das_response(dds);
     bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
 
+#if SYMETRIC_ADD_RESPONSES
     StreamDMR write_the_dmr_response(dds);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+#endif
 
     write_ledger(); // write the index line
 
+#if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
+#else
+    return (stored_dds && stored_das);
+#endif
 }
 
 bool
@@ -487,21 +529,99 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     //
     // The helper() also updates the ledger string.
+#if SYMETRIC_ADD_RESPONSES
     StreamDDS write_the_dds_response(dmr);
     bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
 
     StreamDAS write_the_das_response(dmr);
     bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+#endif
 
     StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
     write_ledger(); // write the index line
 
+#if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
-
-    return false;
+#else
+    return(stored_dmr);
+#endif
 }
+
+/**
+ * Common code to acquire a read lock on a MDS item. The caller must use unlock_and_close().
+ *
+ * This method logs (using LOG, note VERBOSE) cache hits and misses.
+ *
+ * @param name Granule name
+ * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
+ * @param object_name One of DDS, DAS or DMR (used for verbose logging only)
+ * @return True if the object was locked, false otherwise
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suffix, const string &object_name)
+{
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd;
+    MDSReadLock lock(item_name, get_read_lock(item_name, fd));
+    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for  " << item_name << ": " << lock() <<  endl);
+
+    if (lock())
+        LOG("MDS Cache hit for " << name << " and response " << object_name << endl);
+    else
+        LOG("MDS Cache miss for " << name << " and response " << object_name << endl);
+
+    return lock;
+ }
+
+/**
+ * @brief Is the DMR response for \arg name in the MDS?
+ *
+ * Look in the MDS to see if the DMR response has been stored/cached for
+ * \arg name.
+ *
+ * @note This method and the matching methods for the DDS and DAS use LOG()
+ * to record cache hits and misses. Other methods also record information
+ * about cache hits, but only using VERBOSE(), so that output will not show
+ * up in a normal log.
+ *
+ * @param name Find the DMR response for \arg name.
+ * @return A MDSReadLock object. This object is true if the item was found
+ * (and a read lock was obtained), false if either of those things are not
+ * true. When the MDSReadLock object goes out of scope, the read lock is
+ * released.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmr_available(const string &name)
+{
+    return get_read_lock_helper(name, "dmr_r", "DMR");
+}
+
+/**
+ * @brief Is the DDS response for \arg name in the MDS?
+ * @param name Find the DDS response for \arg name.
+ * @return A MDSReadLock object.
+ * @see is_dmr_available() for more information.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dds_available(const string &name)
+{
+    return get_read_lock_helper(name, "dds_r", "DDS");
+}
+
+/**
+ * @brief Is the DAS response for \arg name in the MDS?
+ * @param name Find the DAS response for \arg name.
+ * @return A MDSReadLock object.
+ * @see is_dmr_available() for more information.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_das_available(const string &name)
+{
+    return get_read_lock_helper(name, "das_r", "DAS");
+}
+
 /**
  * Common code to copy a response to an output stream.
  *
@@ -516,7 +636,7 @@ GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const 
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
     if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Read " << object_name << " response for '" << name << "'." << endl);
+        VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
         transfer_bytes(fd, os);
         unlock_and_close(item_name); // closes fd
@@ -605,6 +725,10 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      write_ledger(); // write the index line
 
+#if SYMETRIC_ADD_RESPONSES
      return  (removed_dds && removed_das && removed_dmr);
+#else
+     return  (removed_dds || removed_das || removed_dmr);
+#endif
 }
 
