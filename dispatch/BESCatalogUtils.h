@@ -55,13 +55,15 @@ class BESCatalogEntry;
 
 class BESCatalogUtils: public BESObj {
 private:
-    static std::map<std::string, BESCatalogUtils *> _instances;
+#if 1
+	static std::map<std::string, BESCatalogUtils *> _instances;
+#endif
 
-    std::string _name;      ///< The name of the catalog
-    std::string _root_dir;  ///< The pathname of the root directory
-    std::list<std::string> _exclude;    ///< list of regexes; exclude matches
-    std::list<std::string> _include;    ///< include regexes
-    bool _follow_syms;      ///< Follow file system symbolic links?
+    std::string d_name;      ///< The name of the catalog
+    std::string d_root_dir;  ///< The pathname of the root directory
+    std::list<std::string> d_exclude;    ///< list of regexes; exclude matches
+    std::list<std::string> d_include;    ///< include regexes
+    bool d_follow_syms;      ///< Follow file system symbolic links?
 
 public:
     /// This identifies handlers to the things they can read. It is used
@@ -72,7 +74,7 @@ public:
     };
 
 private:
-    std::vector<handler_regex> _match_list;  ///< The list of types & regexes
+    std::vector<handler_regex> d_match_list;  ///< The list of types & regexes
 
     BESCatalogUtils()
     {
@@ -94,12 +96,12 @@ public:
      */
     const std::string & get_root_dir() const
     {
-        return _root_dir;
+        return d_root_dir;
     }
 
     bool follow_sym_links() const
     {
-        return _follow_syms;
+        return d_follow_syms;
     }
 
     virtual bool include(const std::string &inQuestion) const;

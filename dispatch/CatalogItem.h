@@ -3,7 +3,7 @@
 // This file is part of the OPeNDAP Back-End Server (BES)
 
 // Copyright (c) 2018 OPeNDAP, Inc.
-// Author: James Gallagehr <jgallagehr@opendap.org>
+// Author: James Gallagher <jgallagehr@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
