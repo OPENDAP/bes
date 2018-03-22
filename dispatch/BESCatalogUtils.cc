@@ -78,20 +78,20 @@ map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
  * @param n The name of the catalog.
  */
 BESCatalogUtils::BESCatalogUtils(const string &n) :
-    _name(n), _follow_syms(false)
+    d_name(n), d_follow_syms(false)
 {
     string key = "BES.Catalog." + n + ".RootDirectory";
     bool found = false;
-    TheBESKeys::TheKeys()->get_value(key, _root_dir, found);
-    if (!found || _root_dir == "") {
+    TheBESKeys::TheKeys()->get_value(key, d_root_dir, found);
+    if (!found || d_root_dir == "") {
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
 
     // TODO access() or stat() would test for existence faster. jhrg 2.25.18
-    DIR *dip = opendir(_root_dir.c_str());
+    DIR *dip = opendir(d_root_dir.c_str());
     if (dip == NULL) {
-        string serr = "BESCatalogDirectory - root directory " + _root_dir + " does not exist";
+        string serr = "BESCatalogDirectory - root directory " + d_root_dir + " does not exist";
         throw BESNotFoundError(serr, __FILE__, __LINE__);
     }
     closedir(dip);
@@ -104,7 +104,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     vector<string>::iterator ee = vals.end();
     for (; ei != ee; ei++) {
         string e_str = (*ei);
-        if (!e_str.empty() && e_str != ";") BESUtil::explode(';', e_str, _exclude);
+        if (!e_str.empty() && e_str != ";") BESUtil::explode(';', e_str, d_exclude);
     }
 
     key = (string) "BES.Catalog." + n + ".Include";
@@ -114,7 +114,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     vector<string>::iterator ie = vals.end();
     for (; ii != ie; ii++) {
         string i_str = (*ii);
-        if (!i_str.empty() && i_str != ";") BESUtil::explode(';', i_str, _include);
+        if (!i_str.empty() && i_str != ";") BESUtil::explode(';', i_str, d_include);
     }
 
     key = "BES.Catalog." + n + ".TypeMatch";
@@ -146,7 +146,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
             newval.handler = (*ami);
             ami++;
             newval.regex = (*ami);
-            _match_list.push_back(newval);
+            d_match_list.push_back(newval);
         }
     }
 
@@ -155,7 +155,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     TheBESKeys::TheKeys()->get_value(key, s_str, found);
     s_str = BESUtil::lowercase(s_str);
     if (s_str == "yes" || s_str == "on" || s_str == "true") {
-        _follow_syms = true;
+        d_follow_syms = true;
     }
 }
 
@@ -177,12 +177,12 @@ bool BESCatalogUtils::include(const string &inQuestion) const
     // First check the file against the include list. If the file should be
     // included then check the exclude list to see if there are exceptions
     // to the include list.
-    if (_include.size() == 0) {
+    if (d_include.size() == 0) {
         toInclude = true;
     }
     else {
-        list<string>::const_iterator i_iter = _include.begin();
-        list<string>::const_iterator i_end = _include.end();
+        list<string>::const_iterator i_iter = d_include.begin();
+        list<string>::const_iterator i_end = d_include.end();
         for (; i_iter != i_end; i_iter++) {
             string reg = *i_iter;
             if (!reg.empty()) {
@@ -223,8 +223,8 @@ bool BESCatalogUtils::include(const string &inQuestion) const
  */
 bool BESCatalogUtils::exclude(const string &inQuestion) const
 {
-    list<string>::const_iterator e_iter = _exclude.begin();
-    list<string>::const_iterator e_end = _exclude.end();
+    list<string>::const_iterator e_iter = d_exclude.begin();
+    list<string>::const_iterator e_end = d_exclude.end();
     for (; e_iter != e_end; e_iter++) {
         string reg = *e_iter;
         if (!reg.empty()) {
@@ -246,12 +246,12 @@ bool BESCatalogUtils::exclude(const string &inQuestion) const
 
 BESCatalogUtils::match_citer BESCatalogUtils::match_list_begin() const
 {
-    return _match_list.begin();
+    return d_match_list.begin();
 }
 
 BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
 {
-    return _match_list.end();
+    return d_match_list.end();
 }
 
 /**
@@ -330,7 +330,7 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
 
                 list<string> services;
                 // TODO use the d_utils object? jhrg 2.26.18
-                isData(fullPath, _name, services);
+                isData(fullPath, d_name, services);
                 curr_entry->set_service_list(services);
 
                 bes_add_stat_info(curr_entry, buf);
@@ -481,13 +481,13 @@ void BESCatalogUtils::dump(ostream &strm) const
     strm << BESIndent::LMarg << "BESCatalogUtils::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
 
-    strm << BESIndent::LMarg << "root directory: " << _root_dir << endl;
+    strm << BESIndent::LMarg << "root directory: " << d_root_dir << endl;
 
-    if (_include.size()) {
+    if (d_include.size()) {
         strm << BESIndent::LMarg << "include list:" << endl;
         BESIndent::Indent();
-        list<string>::const_iterator i_iter = _include.begin();
-        list<string>::const_iterator i_end = _include.end();
+        list<string>::const_iterator i_iter = d_include.begin();
+        list<string>::const_iterator i_end = d_include.end();
         for (; i_iter != i_end; i_iter++) {
             if (!(*i_iter).empty()) {
                 strm << BESIndent::LMarg << *i_iter << endl;
@@ -499,11 +499,11 @@ void BESCatalogUtils::dump(ostream &strm) const
         strm << BESIndent::LMarg << "include list: empty" << endl;
     }
 
-    if (_exclude.size()) {
+    if (d_exclude.size()) {
         strm << BESIndent::LMarg << "exclude list:" << endl;
         BESIndent::Indent();
-        list<string>::const_iterator e_iter = _exclude.begin();
-        list<string>::const_iterator e_end = _exclude.end();
+        list<string>::const_iterator e_iter = d_exclude.begin();
+        list<string>::const_iterator e_end = d_exclude.end();
         for (; e_iter != e_end; e_iter++) {
             if (!(*e_iter).empty()) {
                 strm << BESIndent::LMarg << *e_iter << endl;
@@ -515,11 +515,11 @@ void BESCatalogUtils::dump(ostream &strm) const
         strm << BESIndent::LMarg << "exclude list: empty" << endl;
     }
 
-    if (_match_list.size()) {
+    if (d_match_list.size()) {
         strm << BESIndent::LMarg << "type matches:" << endl;
         BESIndent::Indent();
-        BESCatalogUtils::match_citer i = _match_list.begin();
-        BESCatalogUtils::match_citer ie = _match_list.end();
+        BESCatalogUtils::match_citer i = d_match_list.begin();
+        BESCatalogUtils::match_citer ie = d_match_list.end();
         for (; i != ie; i++) {
             handler_regex match = (*i);
             strm << BESIndent::LMarg << match.handler << " : " << match.regex << endl;
@@ -530,7 +530,7 @@ void BESCatalogUtils::dump(ostream &strm) const
         strm << BESIndent::LMarg << "    type matches: empty" << endl;
     }
 
-    if (_follow_syms) {
+    if (d_follow_syms) {
         strm << BESIndent::LMarg << "    follow symbolic links: on" << endl;
     }
     else {
