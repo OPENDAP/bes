@@ -254,9 +254,10 @@ AC_ARG_WITH(libwrap,
     
 AC_HEADER_TR1_FUNCTIONAL
 
-AM_PATH_CPPUNIT(1.12.0,
-	[AM_CONDITIONAL([CPPUNIT], [true])],
-	[AM_CONDITIONAL([CPPUNIT], [false])])
+# Check for cppunit to enable unit testing.
+PKG_CHECK_MODULES([cppunit], [cppunit >= 1.12],
+                             [AM_CONDITIONAL([CPPUNIT], [true])],
+                             [AM_CONDITIONAL([CPPUNIT], [false])])
 
 dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
