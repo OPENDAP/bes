@@ -23,7 +23,6 @@ branches:
   - travis
 
 addons:
-  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -39,6 +38,8 @@ addons:
     - libicu-dev
     - sshpass
 
+#   ssh_known_hosts: www.opendap.org
+
 env:
   global:
   # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
@@ -47,24 +48,30 @@ env:
   - TESTSUITEFLAGS=-j7  
   # COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
-  # TRAVIS_AT_OO
-  - secure: "J0HEROlR4GbOB1ZSoUIo5mEUzVzmxTKSvpS/jrAWbFB5JJHxCHd/oQh5dzTK9NiDaGGPN9Y2acA8Oyuz4Hsle7+DgAWvtGr4+hFqfYx7oLsxhhb3VTRNivuSsldsbNCUO4ebtezArH4hVLYw6ScwgDpnQfVrPkBMpyf4Iu3UMYs="
   # AWS_ACCESS_KEY_ID
   - secure: "NNcSfmrBN9ctc8LoRVeLcYPzf2wYCSLUNCdNuVEsBdOMa5JLTdFMBEhfrgkLmiUSf1K+V97tw3rJuRcdwAXbwBMuJ0o8+gDG4c63clDDWYDXa08gdpKhy0FFqlUohVeMNpfCawvTm46/p6P0SlKg245by5OcVZ4HfjIGUasJHEw="
   # AWS_SECRET_ACCESS_KEY
   - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
 
+# The env var $TRAVIS_AT_OO must be made using 
+# "travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes"
+# where -r <...> is the name of the travis repo from our Travis landing page
+# and the <secret> is the 'travis' user's password on www.opendap.org.
+#
+# TRAVIS_AT_OO
+# - secure: "J0HEROlR4GbOB1ZSoUIo5mEUzVzmxTKSvpS/jrAWbFB5JJHxCHd/oQh5dzTK9NiDaGGPN9Y2acA8Oyuz4Hsle7+DgAWvtGr4+hFqfYx7oLsxhhb3VTRNivuSsldsbNCUO4ebtezArH4hVLYw6ScwgDpnQfVrPkBMpyf4Iu3UMYs="
+
 before_install:
-- sudo apt-get update -qq
-- pip install --user awscli
-- ./ecr_credentials.sh
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-- aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
+- (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-build.tar.gz) 
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-- aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
+- (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-build.tar.gz) 
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
+
+# - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
+# - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 
 before_script:
 - printenv
@@ -86,21 +93,14 @@ jobs:
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
 
-# This shows how to copy the results of running the tests to a know
-# host. We're not doing this now, but it might be useful. In addition
-# to these lines here, www.opendap.org must be a known_host. set this
-# in the 'addons' section above.
-#
-# Add sshpass using apt under addons.
-#
-# The env var $TRAVIS_AT_OO must be made using 
-# "travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes"
-# where -r <...> is the name of the travis repo from our Travis landing page
-# and the <secret> is the 'travis' user's password on www.opendap.org.
-#
-# Use S3 instead?
-
+# using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
+# the aws cli for forked PRs (where secure env vars are null). I could've used
+# an 'if' to block out the whole script, but I didn't... jhrg 3/21/18
 after_script:
-   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
-   - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
-   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
+- LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
+- tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
+- sudo apt-get update -qq
+- pip install --user awscli
+- test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp /tmp/${LOG_FILE_TGZ} s3://opendap.travis.build/
+
+# - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}

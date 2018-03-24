@@ -32,7 +32,9 @@
 
 #include "BESResponseHandler.h"
 #include "BESResponseObject.h"
+#if 0
 #include "BESRequestHandler.h"
+#endif
 
 BESResponseHandler::BESResponseHandler(const string &name) :
     d_response_name(name), d_response_object(0)

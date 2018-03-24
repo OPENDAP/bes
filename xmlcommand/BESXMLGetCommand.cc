@@ -120,7 +120,6 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
  * 'definition' or 'space' values. As a side effect, build the cmd_log_info
  * string (used to record information about this command in the BES log.
  *
- * @param name Always 'get' FIXME Remove this
  * @param type The thing to get (e.g., dds)
  * @param props Holds the definition, space, returnAs, etc., values to
  * be used with when running the command.
