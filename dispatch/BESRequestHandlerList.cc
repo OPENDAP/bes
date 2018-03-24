@@ -260,7 +260,7 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
         // Here's an example from the CSVRequestHandler:
         //     add_handler(DAS_RESPONSE, CSVRequestHandler::csv_build_das);
         // in the following 'p' will point to CSVRequestHandler::csv_build_das if
-        // dhi.action is the string "get.das" (the value of the symbol DAS_RESPONSE
+        // dhi.action is the string "get.das" (the value of the symbol DAS_RESPONSE)
         p_request_handler_method request_handler_method = rh->find_handler(dhi.action);
         if (!request_handler_method) {
             // TODO This should not be an internal error - it's really a configuration error
