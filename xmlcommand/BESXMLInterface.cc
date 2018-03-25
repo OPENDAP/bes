@@ -269,9 +269,12 @@ void BESXMLInterface::execute_data_request_plan()
 
         ///////////
 
-        // Here's where we could look at the dynamic type do something different
-        // for a new kind of XMLCommand (e.g., SimpleXMLCommand). For this, the
-        // the code now in the response_handler->execute() and ->transmit().
+        // Here's where we could look at the dynamic type to do something different
+        // for a new kind of XMLCommand (e.g., SimpleXMLCommand). for that new command,
+        // move the code now in the response_handler->execute() and ->transmit() into
+        // it. This would eliminate the ResponseHandlers. However, that might not be the
+        // best way to handle the 'get' command, which uses a different ResponseHandler
+        // for each different 'type' of thing it will 'get'. jhrg 3/14/18
 
         //////////
 
