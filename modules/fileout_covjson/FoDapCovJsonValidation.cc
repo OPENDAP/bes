@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoDapCovJsonValidation.cc 
+// FoDapCovJsonValidation.cc
 //
 // This file is part of BES CovJSON File Out Module
 //
@@ -70,17 +70,20 @@ using std::istringstream;
 void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
     ofstream tempOut;
-    string tempFileName = "temp1.csv";
+    string tempFileName = "/home/ubuntu/hyrax/dds.log";
 
-    tempOut.open(tempFileName1.c_str());
+    tempOut.open(tempFileName.c_str());
     if(tempOut.fail()) {
        cout << "Could not open " << tempFileName << endl;
         exit(EXIT_FAILURE);
     }
+
     libdap::DDS::Vars_iter vi = dds->var_begin();
     libdap::DDS::Vars_iter ve = dds->var_end();
     for (; vi != ve; vi++) {
-        tempOut << vi->print << endl;  
+        dds->print(tempOut);
+
+
         //if ((*vi)->send_p()) {
         //    libdap::BaseType *v = *vi;
         //    libdap::Type type = v->type();
