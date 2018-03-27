@@ -1073,33 +1073,33 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
                     invalid_file_msg +=" distributor.";
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
-            	}
+                }
 
-            	BaseTypeFactory factory;
-            	DDS dds(&factory, name_path(filename), "3.2");
-            	dds.filename(filename);
+                BaseTypeFactory factory;
+                DDS dds(&factory, name_path(filename), "3.2");
+                dds.filename(filename);
 
-            	DAS das;
+                DAS das;
 
-            	read_cfdds( dds,filename,cf_fileid);
-            	if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
-                	dds.print(cerr);
-                	throw InternalErr(__FILE__, __LINE__,
-                    	              "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
-            	}	
+                read_cfdds( dds,filename,cf_fileid);
+                if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
+                    dds.print(cerr);
+                    throw InternalErr(__FILE__, __LINE__,
+                              "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
+                }
 
-            	read_cfdas(das,filename,cf_fileid);
-            	Ancillary::read_ancillary_das( das, filename ) ;
+                read_cfdas(das,filename,cf_fileid);
+                Ancillary::read_ancillary_das( das, filename ) ;
 
-            	dds.transfer_attributes(&das);
+                dds.transfer_attributes(&das);
 
-            	////close the file ID.
-            	if(cf_fileid !=-1)
-                	H5Fclose(cf_fileid);
+                ////close the file ID.
+                if(cf_fileid !=-1)
+                    H5Fclose(cf_fileid);
 
-            	dmr->build_using_dds(dds);
+                dmr->build_using_dds(dds);
 
-       	    }// if(true == _usecf)	
+            }// if(true == _usecf)	
             else {// default option
 
                 // Obtain the HDF5 file ID. 
@@ -1111,14 +1111,14 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
                     invalid_file_msg +=" distributor.";
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
-            	}
+                }
 
-            	bool use_dimscale = check_dimscale(fileid);
-            	dmr->set_name(name_path(filename));
-            	dmr->set_filename(name_path(filename));
+                bool use_dimscale = check_dimscale(fileid);
+                dmr->set_name(name_path(filename));
+                dmr->set_filename(name_path(filename));
 
-            	D4Group* root_grp = dmr->root();
-            	breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
+                D4Group* root_grp = dmr->root();
+                breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
 
 #if 0
            if(true == use_dimscale) 
@@ -1129,7 +1129,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
 #endif
 
-           	close_fileid(fileid);
+                close_fileid(fileid);
 
             }// else (default option)
 

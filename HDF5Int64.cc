@@ -80,11 +80,10 @@ bool HDF5Int64::read()
     
 
     try {
-	dods_int64 buf;
-	get_data(dset_id, (void *) &buf);
-	set_read_p(true);
-	set_value(buf);
-
+        dods_int64 buf;
+        get_data(dset_id, (void *) &buf);
+        set_read_p(true);
+        set_value(buf);
         if (H5Dclose(dset_id) < 0) {
             throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
         }
