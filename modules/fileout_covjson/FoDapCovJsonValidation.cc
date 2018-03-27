@@ -69,9 +69,18 @@ using std::istringstream;
 
 void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
+    ofstream tempOut;
+    string tempFileName = "temp1.csv";
+
+    tempOut.open(tempFileName1.c_str());
+    if(tempOut.fail()) {
+       cout << "Could not open " << tempFileName << endl;
+        exit(EXIT_FAILURE);
+    }
     libdap::DDS::Vars_iter vi = dds->var_begin();
     libdap::DDS::Vars_iter ve = dds->var_end();
     for (; vi != ve; vi++) {
+        tempOut << vi->print << endl;  
         //if ((*vi)->send_p()) {
         //    libdap::BaseType *v = *vi;
         //    libdap::Type type = v->type();
