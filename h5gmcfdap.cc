@@ -366,6 +366,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
          it_v != vars.end(); ++it_v) {
         if (false == ((*it_v)->getAttributes().empty())) {
 
+            // Add 64-bit int support.
+            if(H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
+               continue;
+            }
+
             AttrTable *at = das.get_table((*it_v)->getNewName());
             if (NULL == at)
                 at = das.add_table((*it_v)->getNewName(), new AttrTable);
@@ -386,6 +391,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     for (it_cv = cvars.begin();
          it_cv != cvars.end(); ++it_cv) {
         if (false == ((*it_cv)->getAttributes().empty())) {
+
+            // Add 64-bit int support.
+            if(H5INT64 == (*it_cv)->getType() || H5UINT64 == (*it_cv)->getType()){
+               continue;
+            }
 
             AttrTable *at = das.get_table((*it_cv)->getNewName());
             if (NULL == at)
@@ -512,6 +522,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
     BESDEBUG("h5","Coming to gen_dap_onegmcvar_dds()  "<<endl);
 
+    if(cvar->getType() == H5INT64 || cvar->getType() == H5UINT64)
+        return;
     BaseType *bt = NULL;
 
     switch(cvar->getType()) {

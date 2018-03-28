@@ -194,7 +194,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 
                 hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
                 if (cgroup < 0){
-		   throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
+                     throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
 		}
 
                 string grp_name = string(oname.begin(),oname.end()-1);
@@ -236,8 +236,8 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
                 }
 
                 if (H5Gclose(cgroup) < 0){
-		   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
-		}
+                    throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+                }
                 break;
             }
 
@@ -401,7 +401,7 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
 
         H5O_type_t obj_type = oinfo.type;
 
-       if(H5O_TYPE_DATASET == obj_type) {
+        if(H5O_TYPE_DATASET == obj_type) {
 
             // Obtain the absolute path of the HDF5 dataset
             string full_path_name = string(gname) + string(oname.begin(),oname.end()-1);

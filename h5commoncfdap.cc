@@ -66,7 +66,11 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
     const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
     if (0 == dims.size()) {
-        if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
+        // Adding 64-bit integer support for DMR 
+        if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
+            return;
+        }
+        else if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
             HDF5CFStr *sca_str = NULL;
             try {
                 sca_str = new HDF5CFStr(var->getNewName(), filename, var->getFullPath());
@@ -174,6 +178,10 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
     }
 
     else {
+
+        // 64-bit integer support
+        if(var->getType() == H5INT64 || var->getType()==H5UINT64) 
+            return;
         BaseType *bt = NULL;
 
         switch (var->getType()) {
@@ -233,6 +241,8 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         delete bt;
         delete ar;
     }
+
+    return;
 
 }
 
@@ -403,7 +413,13 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
 {
 
     BESDEBUG("h5", "Coming to gen_dap_oneobj_das()  "<<endl);
-    if ((H5FSTRING == attr->getType()) || (H5VSTRING == attr->getType())) {
+    // DMR support for 64-bit integer
+    if (H5INT64 == attr->getType() || H5UINT64 == attr->getType()) {
+        // Add code to tackle DMR. 
+        return;
+
+    }
+    else if ((H5FSTRING == attr->getType()) || (H5VSTRING == attr->getType())) {
         gen_dap_str_attr(at, attr);
     }
     else {

@@ -180,8 +180,9 @@ bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const stri
 
 bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
-        || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
-        || (H5INT64 == dtype)    ||(H5UINT64 == dtype))
+        || (H5COMPOUND == dtype) || (H5ARRAY == dtype))
+        // Try to suport 64-bit integer
+        //|| (H5INT64 == dtype)    ||(H5UINT64 == dtype))
         return false;
     else 
         return true;
