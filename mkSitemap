@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# Set Defaults
+sitePrefix="http://localhost:8080/opendap"
+nodeSuffix="contents.html"
+leafSuffix=".html"
+catalog="catalog"
+filename="siteMap.txt"
+besconf="${prefix}/etc/bes/bes.conf"
+
+usage() { echo "Usage: $0 [-s <site-prefix>] [-n <node-suffix>] [-l <leaf-suffix>] [-c <catalog>] [-f <file-name>] [-b <bes-config>] [-h]" 1>&2; exit 1; }
+
+while getopts ":s:n:l:c:f:h" o; do
+    case "${o}" in
+        s)
+            sitePrefix=${OPTARG}
+            ;;
+        n)
+            nodeSuffix=${OPTARG}
+            ;;
+        l)
+            leafSuffix=${OPTARG}
+            ;;
+        c)
+            catalog=${OPTARG}
+            ;;
+        f)
+            filename=${OPTARG}
+            ;;
+        b)
+            besconf=${OPTARG}
+            ;;
+        h)
+            usage
+            ;;
+        *)
+            echo "Unknown stuff"
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+besCmd=`cat <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+    <buildSiteMap prefix="${sitePrefix}" nodeSuffix="${nodeSuffix}" leafSuffix="$leafSuffix" catalog="$catalog" filename="$filename"/>
+</request>
+EOF
+`
+
+echo "------------------------------------------------"
+echo "mkSitemap: "
+echo "  sitePrefix: ${sitePrefix}"
+echo "  nodeSuffix: ${nodeSuffix}"
+echo "  leafSuffix: ${leafSuffix}"
+echo "  catalog:    ${catalog}"
+echo "  filename:   ${filename}"
+echo "  bes.conf:   ${besconf}"
+echo ""
+
+
+BES_CMD=$(mktemp /tmp/bes_conf.XXXXXXXXXX) || { echo "Failed to create temp file"; exit 1; }
+
+echo "${besCmd}" > $BES_CMD
+
+echo "BES CMD (${BES_CMD}):"
+cat  $BES_CMD
+
+besstandalone -c "${besconf}" -i "${BES_CMD}" 
+
+
+
+
+
