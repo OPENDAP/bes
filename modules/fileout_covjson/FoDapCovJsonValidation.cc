@@ -73,7 +73,7 @@ FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds), _i
 * This method is for validating a dds to see if it is possible to convert the dataset into the coverageJson format
 */
 
-void FoDapCovJsonValidation::validateDataset()
+void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
@@ -105,3 +105,9 @@ void FoDapCovJsonValidation::validateDataset()
         //}
     }
 }
+
+void FoDapCovJsonValidation::validateDataset()
+{
+    validateDataset(_dds);
+}
+
