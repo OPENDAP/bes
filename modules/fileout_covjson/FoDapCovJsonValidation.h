@@ -53,12 +53,13 @@ class BESDataHandlerInterface;
 */
 
 class FoDapCovJsonValidation: public BESObj {
-
+private:
+	libdap::DDS *_dds;
 public:
-    libdap::DDS *_dds;
+    //libdap::DDS *_dds;
     FoDapCovJsonValidation(libdap::DDS *dds);
 
-    void validateDataset();
+    virtual void validateDataset();
 };
 
 #endif // A_FoDapCovJsonValidation_h

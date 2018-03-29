@@ -145,8 +145,8 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
 
         FoDapCovJsonTransform ft(loaded_dds);
 
-        FoDapCovJsonValidation fv();
-        fv.validateDataset(loaded_dds);
+        FoDapCovJsonValidation fv(loaded_dds);
+        fv.validateDataset();
 
         ft.transform(o_strm, true /* send data */);
     }

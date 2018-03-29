@@ -63,7 +63,7 @@ using std::istringstream;
 
 #define FoDapCovJsonValidation_debug_key "focovjson"
 
-FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) : _dds(dds), _indent_increment("  ")
+FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds), _indent_increment("  ")
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
