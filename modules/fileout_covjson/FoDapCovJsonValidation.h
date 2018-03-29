@@ -57,7 +57,7 @@ class FoDapCovJsonValidation: public BESObj {
 public:
     FoDapCovJsonValidation();
 
-    static void validateDataset(libdap::DDS *dds);
+    void validateDataset(libdap::DDS *dds);
 };
 
 #endif // A_FoDapCovJsonValidation_h

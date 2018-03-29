@@ -65,6 +65,7 @@
 
 #include "FoDapCovJsonTransmitter.h"
 #include "FoDapCovJsonTransform.h"
+#include "FoDapCovJsonValidation.h"
 
 using namespace ::libdap;
 
@@ -143,6 +144,9 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
             throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
 
         FoDapCovJsonTransform ft(loaded_dds);
+
+        FoDapCovJsonValidation fv();
+        fv.validateDataset(loaded_dds);
 
         ft.transform(o_strm, true /* send data */);
     }
