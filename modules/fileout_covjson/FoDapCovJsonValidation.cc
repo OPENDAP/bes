@@ -63,11 +63,17 @@ using std::istringstream;
 
 #define FoDapCovJsonValidation_debug_key "focovjson"
 
+FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) : _dds(dds), _indent_increment("  ")
+{
+    if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
+}
+
+
 /*
 * This method is for validating a dds to see if it is possible to convert the dataset into the coverageJson format
 */
 
-void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
+void FoDapCovJsonValidation::validateDataset()
 {
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
@@ -78,10 +84,10 @@ void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
         exit(EXIT_FAILURE);
     }
 
-    libdap::DDS::Vars_iter vi = dds->var_begin();
-    libdap::DDS::Vars_iter ve = dds->var_end();
+    libdap::DDS::Vars_iter vi = _dds->var_begin();
+    libdap::DDS::Vars_iter ve = _dds->var_end();
     for (; vi != ve; vi++) {
-        dds->print(tempOut);
+        _dds->print(tempOut);
 
 
         //if ((*vi)->send_p()) {
