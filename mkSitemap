@@ -31,7 +31,7 @@ sitePrefix="http:#localhost:8080/opendap"
 nodeSuffix="contents.html"
 leafSuffix=".html"
 catalog="catalog"
-filename="siteMap.txt"
+filename="site_map.txt"
 besconf="${prefix}/etc/bes/bes.conf"
 
 # usage function
