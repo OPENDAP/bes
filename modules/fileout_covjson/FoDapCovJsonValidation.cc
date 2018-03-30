@@ -63,51 +63,56 @@ using std::istringstream;
 
 #define FoDapCovJsonValidation_debug_key "focovjson"
 
-FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds), _indent_increment("  ")
+/** @brief dumps information about this transformation object for debugging
+ * purposes
+ *
+ * Displays the pointer value of this instance plus instance data,
+ * including all of the FoJson objects converted from DAP objects that are
+ * to be sent to the netcdf file.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void FoDapCovJsonValidation::dump(ostream &strm) const
+{
+    strm << BESIndent::LMarg << "FoDapCovJsonValidate::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_dds != 0) {
+        _dds->print(strm);
+    }
+    BESIndent::UnIndent();
+}
+
+FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
-
-
 /*
 * This method is for validating a dds to see if it is possible to convert the dataset into the coverageJson format
 */
+void FoDapCovJsonValidation::validateDataset()
+{
+    validateDataset(_dds);
+}
 
 void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
 
-    tempOut.open(tempFileName.c_str());
+    // Open/truncate for a new log file
+    tempOut.open(tempFileName.c_str(), ios::trunc);
+    // Append to the existing log file
+    //tempOut.open(tempFileName.c_str(), ios::app);
     if(tempOut.fail()) {
        cout << "Could not open " << tempFileName << endl;
         exit(EXIT_FAILURE);
     }
 
-    libdap::DDS::Vars_iter vi = _dds->var_begin();
-    libdap::DDS::Vars_iter ve = _dds->var_end();
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
     for (; vi != ve; vi++) {
-        _dds->print(tempOut);
-
-
-        //if ((*vi)->send_p()) {
-        //    libdap::BaseType *v = *vi;
-        //    libdap::Type type = v->type();
-        //    if (type == libdap::dods_array_c) {
-        //       type = v->var()->type();
-        //    }
-        //    if (v->is_constructor_type() || (v->is_vector_type() && v->var()->is_constructor_type())) {
-        //        nodes.push_back(v);
-        //    }
-        //    else {
-        //        leaves.push_back(v);
-        //    }
-        //}
+        dds->print(tempOut);
     }
-}
 
-void FoDapCovJsonValidation::validateDataset()
-{
-    validateDataset(_dds);
+    tempOut.close();
 }
-
