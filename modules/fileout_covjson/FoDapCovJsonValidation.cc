@@ -103,16 +103,13 @@ void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
     tempOut.open(tempFileName.c_str(), ios::trunc);
     // Append to the existing log file
     //tempOut.open(tempFileName.c_str(), ios::app);
+
     if(tempOut.fail()) {
        cout << "Could not open " << tempFileName << endl;
-        exit(EXIT_FAILURE);
+       exit(EXIT_FAILURE);
     }
 
-    libdap::DDS::Vars_iter vi = dds->var_begin();
-    libdap::DDS::Vars_iter ve = dds->var_end();
-    for (; vi != ve; vi++) {
-        dds->print(tempOut);
-    }
+    dds->print(tempOut);
 
     tempOut.close();
 }
