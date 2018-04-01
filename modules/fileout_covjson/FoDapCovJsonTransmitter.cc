@@ -147,8 +147,11 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
 
         FoDapCovJsonValidation fv(loaded_dds);
         fv.validateDataset();
+        if(fv.canConvert()){
+            //means we can convert, found x, y and time
+            ft.transform(o_strm, true /* send data */);
+        }
 
-        ft.transform(o_strm, true /* send data */);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);

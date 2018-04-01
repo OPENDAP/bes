@@ -92,6 +92,9 @@ FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds)
 */
 void FoDapCovJsonValidation::validateDataset()
 {
+    hasX = false;
+    hasY = false;
+    hasTime = false;
     validateDataset(_dds);
 }
 
@@ -177,7 +180,6 @@ void FoDapCovJsonValidation::validateDataset(libdap::BaseType *bt)
         break;
 
     case libdap::dods_grid_c:
-    	cout << bt->type() << "here bish";
         validateDataset((libdap::Grid *) bt);
         break;
 
@@ -290,7 +292,7 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
         break;
 
     case libdap::dods_str_c: {
-    	validateDataset(a->get_attr_table());
+        validateDataset(a->get_attr_table());
         break;
     }
 
@@ -339,12 +341,12 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
 
 template<typename T>
 void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a){
-	validateDataset(a->get_attr_table());
+    validateDataset(a->get_attr_table());
 }
 
 void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 {
-	if (attr_table.get_size() != 0) {
+    if (attr_table.get_size() != 0) {
         //*strm << endl;
         libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
         libdap::AttrTable::Attr_iter end = attr_table.attr_end();
@@ -374,22 +376,26 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
                 // write values
                 for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
 
-            	    ofstream tempOut;
-				    string tempFileName = "/home/ubuntu/hyrax/dds.log";
+                    ofstream tempOut;
+                    string tempFileName = "/home/ubuntu/hyrax/dds.log";
 
-				    // Open/truncate for a new log file
-				    //tempOut.open(tempFileName.c_str(), ios::trunc);
-				    // Append to the existing log file
-				    tempOut.open(tempFileName.c_str(), ios::app);
+                    // Open/truncate for a new log file
+                    //tempOut.open(tempFileName.c_str(), ios::trunc);
+                    // Append to the existing log file
+                    tempOut.open(tempFileName.c_str(), ios::app);
 
-				    if(tempOut.fail()) {
-				       cout << "Could not open " << tempFileName << endl;
-				       exit(EXIT_FAILURE);
-				    }
+                    if(tempOut.fail()) {
+                       cout << "Could not open " << tempFileName << endl;
+                       exit(EXIT_FAILURE);
+                    }
 
-				    tempOut << (*values)[i].c_str() << endl;
-				    tempOut.close();
-                	printf("\n\n\n%s\n\n\n\n", (*values)[i].c_str());
+                    tempOut << attr_table.get_name(at_iter) << endl;
+                    tempOut << (*values)[i].c_str() << endl;
+                    tempOut.close();
+
+                    checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
+
+                    printf("\n\n\n%s\n\n\n\n", (*values)[i].c_str());
                     // not first thing? better use a comma...
                    // if (i > 0) *strm << ",";
 
@@ -414,4 +420,33 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 
         //*strm << endl << indent;
     }
+}
+
+/*
+This function checks the passed in attribute to see if it is one of the required attributes for covjson
+*/
+void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value){
+    if(value == "lon" || value == "longitude"|| value == "LONGITUDE"|| value == "Longitude"|| value == "x"){
+        hasX = true;
+    } else if(name=="units" && value == "degrees_east"){
+        hasX = true;
+    }
+    if(value == "lat" || value == "latitude" || value == "LATITUDE" || value == "Latitude" || value == "y"){
+        hasY = true;
+    } else if(name == "units" && value =="degrees_north"){
+        hasY = true;
+    }
+    if (value == "t" || value == "TIME" || value == "time" || value == "s" || value == "seconds" || value == "Seconds"){
+        hasTime = true;
+    }    
+}
+
+/*
+This function checks to see if the attributes needed to create covjson have been found
+*/
+bool FoDapCovJsonValidation::canConvert(){
+    if(hasX && hasY && hasTime){
+        return true;
+    }
+    return false;
 }

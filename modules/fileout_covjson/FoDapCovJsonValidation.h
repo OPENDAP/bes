@@ -55,6 +55,14 @@ class FoDapCovJsonValidation: public BESObj {
 private:
     libdap::DDS *_dds;
     
+    bool hasX;
+
+    bool hasY;
+
+    bool hasTime;
+
+    void checkAttribute(std::string name, std::string value);
+
     void validateDataset(libdap::DDS *dds);
 
     void validateDataset(libdap::AttrTable &attr_table);
@@ -79,6 +87,8 @@ public:
       virtual void validateDataset();
 
       virtual void dump(std::ostream &strm) const;
+
+      bool canConvert();
 };
 
 #endif // A_FoDapCovJsonValidation_h
