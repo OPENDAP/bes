@@ -57,6 +57,19 @@ private:
     
     void validateDataset(libdap::DDS *dds);
 
+    void validateDataset(libdap::AttrTable &attr_table);
+
+    void transform_node_worker(std::vector<libdap::BaseType *> leaves, std::vector<libdap::BaseType *> nodes);
+
+    void validateDataset(libdap::BaseType *bt);
+
+    void validateDataset(libdap::Array *a);
+
+    void validateDataset(libdap::Constructor *cnstrctr);
+
+    template<typename T>
+    void covjson_simple_type_array(libdap::Array *a);
+
 public:
      //libdap::DDS *_dds;
     	FoDapCovJsonValidation(libdap::DDS *dds);
