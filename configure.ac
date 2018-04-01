@@ -114,6 +114,14 @@ dnl Use libtool instead?
 dnl AC_PROG_RANLIB
 AM_PROG_LIBTOOL
 
+dnl Check that libdap4 library is available.
+AC_LANG_PUSH([C++])
+AX_CXX_CHECK_LIB(dap, [libdap::AttrTable])
+AC_LANG_POP([C++])
+if test x"$ac_cv_lib_dap_libdap__AttrTable" != xyes; then
+   AC_MSG_ERROR(libdap not found)
+fi
+
 AC_SEARCH_LIBS([uuid_generate], [uuid],
     [],
     [AC_MSG_ERROR([I could not find a library with uuid_generate])])
