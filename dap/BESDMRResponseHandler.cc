@@ -22,7 +22,16 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <sstream>
+
 #include <DMR.h>
+
+#undef DMR_CE
+
+#if DMR_CE
+#include <D4BaseTypeFactory.h>
+#include <D4ParserSax2.h>
+#endif
 
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
@@ -30,6 +39,11 @@
 #include "BESDapNames.h"
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
+#include "GlobalMetadataStore.h"
+#include "BESDebug.h"
+
+using namespace bes;
+using namespace std;
 
 BESDMRResponseHandler::BESDMRResponseHandler(const string &name) :
         BESResponseHandler(name)
@@ -40,15 +54,19 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
 {
 }
 
-/** @brief executes the command 'get dmr for def_name;' by executing
- * the request for each container in the specified definition.
+/**
+ * @brief executes the command `<get type-"dmr" definition="..">`
  *
  * For each container in the specified definition go to the request
  * handler for that container and have it add to the OPeNDAP DMR response
  * object. The DMR response object is built within this method and passed
  * to the request handler list.
  *
+ * @note This ResponseHandler does not work for multiple containers when using
+ * the Global Metadata Store.
+ *
  * @param dhi structure that holds request and response information
+ *
  * @see BESDataHandlerInterface
  * @see BESDMRResponse
  * @see BESRequestHandlerList
@@ -56,19 +74,66 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
 void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DMR_RESPONSE_STR;
-    DMR *dmr = new DMR();
 
-    // Here we might set the dap and dmr version if they should be different from
-    // 4.0 and 1.0. jhrg 11/6/13
+    bool xml_base_found = false;
+    string xml_base = BESContextManager::TheManager()->get_context("xml:base", xml_base_found);
 
-    bool found = false;
-    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-    if (found && !xml_base.empty()) {
-        dmr->set_request_xml_base(xml_base);
+    // Look in the MDS for dhi.container.get_real_name().
+    // if found, use that response, else build it.
+    // If the MDS is disabled, don't use it.
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
+
+    GlobalMetadataStore::MDSReadLock lock;
+
+    dhi.first_container();
+    if (mds) lock = mds->is_dmr_available(dhi.container->get_real_name());
+
+    if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {    // no CE
+        // FIXME Does not work for constrained DMR requests
+        BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_real_name() << endl);
+        // send the response
+        mds->get_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
+        // suppress transmitting a ResponseObject in transmit()
+        d_response_object = 0;
     }
+#if DMR_CE
+    // this shows how to support DMR/DDS requests with CEs. I have no tests for this,
+    // however. And there are other things that are breaking still... jhrg 3/19/18
+    else if (mds && lock() && !dhi.container->get_dap4_constraint().empty()) {  // with CE
+        stringstream oss;
+        mds->get_dmr_response(dhi.container->get_real_name(), oss);
 
-    d_response_object = new BESDMRResponse(dmr);
-    BESRequestHandlerList::TheList()->execute_each(dhi);
+        DMR *dmr = new DMR(new D4BaseTypeFactory, "mds");
+
+        if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
+
+        D4ParserSax2 parser;
+        parser.intern(oss.str(), dmr);
+
+        // Do not leak the BaseType factory
+        delete dmr->factory();
+        dmr->set_factory(0);
+
+        // The transmit() method will evaluate the CE before sending the response.
+        d_response_object = new BESDMRResponse(dmr);
+    }
+#endif
+    else {  // no MDS
+        DMR *dmr = new DMR();
+
+        if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
+
+        d_response_object = new BESDMRResponse(dmr);
+
+        BESRequestHandlerList::TheList()->execute_each(dhi);
+
+        if (mds) {
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+            BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
+            mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
+                dhi.container->get_real_name());
+        }
+    }
 }
 
 /** @brief transmit the response object built by the execute command

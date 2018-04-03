@@ -86,6 +86,8 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
         string err = name + " command: Must specify data product type";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
+
+    // TODO I don't think this is ever used. jhrg 3/13/18
     string new_cmd = (string) GET_RESPONSE + "." + type;
     p_xmlcmd_builder bldr = BESXMLCommand::find_command(new_cmd);
     if (bldr) {
@@ -106,8 +108,7 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
     parse_basic_get(type, props);
     d_cmd_log_info += ";";
 
-    // now that we've set the action, go get the response handler for the
-    // action
+    // Now that we've set the action, get the response handler for the action
     BESXMLCommand::set_response();
 }
 
@@ -119,7 +120,6 @@ void BESXMLGetCommand::parse_request(xmlNode *node)
  * 'definition' or 'space' values. As a side effect, build the cmd_log_info
  * string (used to record information about this command in the BES log.
  *
- * @param name Always 'get' FIXME Remove this
  * @param type The thing to get (e.g., dds)
  * @param props Holds the definition, space, returnAs, etc., values to
  * be used with when running the command.
@@ -183,6 +183,7 @@ BESXMLGetCommand::get_xmlcmd_dhi()
 void BESXMLGetCommand::prep_request()
 {
     // if there is a sub command then execute the prep request on it
+    // TODO I don't think this is ever used. jhrg 3/13/18
     if (_sub_cmd) {
         _sub_cmd->prep_request();
         return;
@@ -212,6 +213,7 @@ void BESXMLGetCommand::prep_request()
         i++;
     }
 
+    // TODO Not ever used. jhrg 3/13/18
     d_xmlcmd_dhi.data[AGG_CMD] = d->get_agg_cmd();
     d_xmlcmd_dhi.data[AGG_HANDLER] = d->get_agg_handler();
 }
