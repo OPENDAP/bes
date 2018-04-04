@@ -27,11 +27,19 @@
 
 #include <curl/curl.h>
 
+
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
+#include <BESDapNames.h>
+#include <BESDataNames.h>
+#include <BESDASResponse.h>
+#include <BESDDSResponse.h>
+#include <BESDataDDSResponse.h>
 #include <BESVersionInfo.h>
 #include <BESTextInfo.h>
-#include <BESDapNames.h>
+
+#include <Ancillary.h>
+#include <ObjMemCache.h>
 
 #include <BESDMRResponse.h>
 
@@ -43,9 +51,11 @@
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
+#include <BESStopWatch.h>
 
 #include <DMR.h>
 #include <D4Group.h>
+#include <DAS.h>
 
 #include <InternalErr.h>
 #include <mime_util.h>  // for name_path
@@ -57,10 +67,17 @@
 using namespace libdap;
 using namespace std;
 
+#define NC_NAME "nc"
+
 
 namespace dmrpp {
 
 const string module = "dmrpp";
+
+ObjMemCache *DmrppRequestHandler::das_cache = 0;
+ObjMemCache *DmrppRequestHandler::dds_cache = 0;
+ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
+
 
 #if 0
 static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
@@ -101,6 +118,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     add_handler(DMR_RESPONSE, dap_build_dmr);
     add_handler(DAP4DATA_RESPONSE, dap_build_dap4data);
+    add_handler(DAS_RESPONSE, dap_build_das);
 
     add_handler(VERS_RESPONSE, dap_build_vers);
     add_handler(HELP_RESPONSE, dap_build_help);
@@ -218,6 +236,80 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     BESDEBUG(module, "Leaving dap_build_dap4data..." << endl);
 
     return false;
+}
+
+
+bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG))
+        sw.start("DmrppRequestHandler::dap_build_das()", dhi.data[REQUEST_ID]);
+
+    BESDEBUG(module, "dap_build_das() - BEGIN()" << endl);
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(response);
+    if (!bdas)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    try {
+        string container_name_str =
+                bdas->get_explicit_containers() ?
+                        dhi.container->get_symbolic_name() : "";
+
+        DAS *das = bdas->get_das();
+        if (!container_name_str.empty())
+            das->container_name(container_name_str);
+        string accessed = dhi.container->access();
+
+        // Look in memory cache if it's initialized
+        DAS *cached_das_ptr = 0;
+        if (das_cache
+                && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
+            // copy the cached DAS into the BES response object
+            BESDEBUG(module, "DAS Cached hit for : " << accessed << endl);
+            *das = *cached_das_ptr;
+        }
+        else {
+
+            // Not doing this not in nc handler..
+           // nc_read_dataset_attributes(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+            if (das_cache) {
+                // add a copy
+                BESDEBUG(module,
+                        "DAS added to the cache for : " << accessed << endl);
+                das_cache->add(new DAS(*das), accessed);
+            }
+        }
+
+        bdas->clear_container();
+    }
+    catch (BESError &e) {
+        throw;
+    }
+    catch (InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (Error & e) {
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (...) {
+        string s = "unknown exception caught building DAS";
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
+        throw ex;
+    }
+
+    BESDEBUG(module, "Exiting NCRequestHandler::nc_build_das" << endl);
+    return true;
 }
 
 #if DAP2
