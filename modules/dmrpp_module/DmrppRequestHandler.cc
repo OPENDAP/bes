@@ -119,6 +119,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_handler(DMR_RESPONSE, dap_build_dmr);
     add_handler(DAP4DATA_RESPONSE, dap_build_dap4data);
     add_handler(DAS_RESPONSE, dap_build_das);
+    add_handler(DDS_RESPONSE, dap_build_dds);
 
     add_handler(VERS_RESPONSE, dap_build_vers);
     add_handler(HELP_RESPONSE, dap_build_help);
@@ -239,6 +240,88 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 }
 
 
+/**
+ * Produce a DAP2 DDS response from a DMRPP file.
+ */
+bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi) {
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG))
+        sw.start("DmrppRequestHandler::dap_build_dds()", dhi.data[REQUEST_ID]);
+
+    BESDEBUG(module, __func__ << "() - BEGIN()" << endl);
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    try {
+        string container_name_str =
+                bdds->get_explicit_containers() ?
+                        dhi.container->get_symbolic_name() : "";
+
+        DDS *dds = bdds->get_dds();
+        if (!container_name_str.empty())
+            dds->container_name(container_name_str);
+        string accessed = dhi.container->access();
+
+        // Look in memory cache if it's initialized
+        DDS *cached_dds_ptr = 0;
+        if (dds_cache
+                && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
+            // copy the cached DAS into the BES response object
+            BESDEBUG(module, "DDS Cached hit for : " << accessed << endl);
+            *dds = *cached_dds_ptr;
+        }
+        else {
+            DMR *dmr = new DMR();
+            build_dmr_from_file(dhi.container->access(), true, dmr);
+            delete dds;
+            dds = 0;
+            dds = dmr->getDDS();
+            bdds->set_dds(dds);
+            if (dds_cache) {
+                // add a copy
+                BESDEBUG(module, __func__ << "() - " <<
+                        "DDS added to the cache for : " << accessed << endl);
+                dds_cache->add(new DDS(*dds), accessed);
+            }
+        }
+        bdds->clear_container();
+    }
+    catch (BESError &e) {
+        throw;
+    }
+    catch (InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (Error & e) {
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (...) {
+        string s = "unknown exception caught building DAS";
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
+        throw ex;
+    }
+
+    BESDEBUG(module, "DmrppRequestHandler::dap_build_dds() - END" << endl);
+    return true;
+}
+
+
+/**
+ * Produce a DAP2 DAS response from a DMRPP data set.
+ *
+ */
 bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG))
@@ -260,6 +343,30 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
         if (!container_name_str.empty())
             das->container_name(container_name_str);
         string accessed = dhi.container->access();
+
+
+        DMR *dmr = new DMR();
+
+        build_dmr_from_file(dhi.container->access(), true, dmr);
+        DDS *dds = dmr->getDDS();
+
+
+        /*
+
+        ostringstream oss;
+        dds->print_das(oss);
+
+        FILE * pFile;
+        pFile = tmpfile ();
+
+        pFile->
+
+        libdap::DAS::parse()
+
+
+        mktemp();
+
+        */
 
         // Look in memory cache if it's initialized
         DAS *cached_das_ptr = 0;
@@ -311,6 +418,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
     BESDEBUG(module, "Exiting NCRequestHandler::nc_build_das" << endl);
     return true;
 }
+
 
 #if DAP2
 /**
