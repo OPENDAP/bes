@@ -274,12 +274,15 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi) {
             *dds = *cached_dds_ptr;
         }
         else {
+            // Not in cache, make one!
             DMR *dmr = new DMR();
             build_dmr_from_file(dhi.container->access(), true, dmr);
             delete dds;
             dds = 0;
             dds = dmr->getDDS();
             bdds->set_dds(dds);
+
+            // Cache it if cache is active.
             if (dds_cache) {
                 // add a copy
                 BESDEBUG(module, __func__ << "() - " <<
@@ -344,31 +347,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             das->container_name(container_name_str);
         string accessed = dhi.container->access();
 
-
-        DMR *dmr = new DMR();
-
-        build_dmr_from_file(dhi.container->access(), true, dmr);
-        DDS *dds = dmr->getDDS();
-
-
-        /*
-
-        ostringstream oss;
-        dds->print_das(oss);
-
-        FILE * pFile;
-        pFile = tmpfile ();
-
-        pFile->
-
-        libdap::DAS::parse()
-
-
-        mktemp();
-
-        */
-
-        // Look in memory cache if it's initialized
+        // Look in memory cache (if it's initialized)
         DAS *cached_das_ptr = 0;
         if (das_cache
                 && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
@@ -377,10 +356,40 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             *das = *cached_das_ptr;
         }
         else {
+            // Not in cache, better make one!
+            // 1) Build a DMR
+            DMR *dmr = new DMR();
+            build_dmr_from_file(dhi.container->access(), true, dmr);
 
-            // Not doing this not in nc handler..
-           // nc_read_dataset_attributes(*das, accessed);
+            // Get a DDS from the DMR
+            DDS *dds = dmr->getDDS();
+
+            // Make a temp file for the DAS
+            char dasFile[L_tmpnam];
+            char *dasTmpFile = tmpnam(dasFile);
+            BESDEBUG(module, __func__ << "() -  " << "dasFile: "<< dasFile << "  dasTmpFile: " << dasTmpFile << endl);
+
+            // Write the DAS to the file.
+            ofstream fos;
+            fos.open(dasTmpFile);
+            dds->print_das(fos);
+            fos.close();
+
+            // Parse the DAS (oy, round and round we go)
+            das->parse(dasTmpFile);
+
+            // Dump the temp file
+            unlink(dasTmpFile);
+
+            // Print the DAS
+            if(BESDebug::IsSet(module)){
+                BESDEBUG(module, __func__ << "() -  " << "DAS: " << endl);
+                das->print(*BESDebug::GetStrm(), true);
+            }
+
             Ancillary::read_ancillary_das(*das, accessed);
+
+            // Add to cache if cache is active
             if (das_cache) {
                 // add a copy
                 BESDEBUG(module,
