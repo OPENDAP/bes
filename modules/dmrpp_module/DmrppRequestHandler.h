@@ -63,6 +63,7 @@ public:
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);
     static bool dap_build_das(BESDataHandlerInterface &dhi);
     static bool dap_build_dds(BESDataHandlerInterface &dhi);
+    static bool dap_build_dap2data(BESDataHandlerInterface &dhi);
 
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
