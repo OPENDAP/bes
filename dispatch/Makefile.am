@@ -76,7 +76,7 @@ SRCS = BESInterface.cc \
 	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc	\
 	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc			\
 	BESRequestHandler.cc BESRequestHandlerList.cc			\
-	BESTransmitter.cc BESBasicHttpTransmitter.cc \
+	BESTransmitter.cc \
 	BESReporterList.cc BESConstraintFuncs.cc			\
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
 	BESMemoryGlobalArea.cc						\
@@ -99,6 +99,8 @@ SRCS = BESInterface.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc
+	
+# BESBasicHttpTransmitter.cc 
 	
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
@@ -126,7 +128,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESInfoNames.h 							\
 	BESRequestHandler.h BESRequestHandlerList.h 			\
 	BESDataHandlerInterface.h BESDataRequestInterface.h 		\
-	BESTransmitter.h BESBasicHttpTransmitter.h \
+	BESTransmitter.h \
 	BESReporter.h BESReporterList.h 				\
 	BESServiceRegistry.h BESServicesResponseHandler.h 		\
 	BESError.h BESInternalError.h BESInternalFatalError.h 		\
@@ -155,6 +157,8 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h \
 	CatalogNode.h CatalogItem.h
+	
+# BESBasicHttpTransmitter.h
 	
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
