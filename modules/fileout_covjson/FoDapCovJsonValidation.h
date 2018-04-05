@@ -61,6 +61,14 @@ private:
 
     bool hasTime;
 
+    int isX;
+
+    int isY;
+
+    int isZ;
+
+    std::vector<int> shape;
+
     void checkAttribute(std::string name, std::string value);
 
     void validateDataset(libdap::DDS *dds);
@@ -75,11 +83,16 @@ private:
 
     void validateDataset(libdap::Constructor *cnstrctr);
 
+    void covjson_string_array(libdap::Array *a);
+
     template<typename T>
     void covjson_simple_type_array(libdap::Array *a);
 
+
 public:
-     //libdap::DDS *_dds;
+     //TODO: Add public variable that can be pushed to transform that is a string of the domain type
+     //TODO: push arrays for each x, y,z
+    
     	FoDapCovJsonValidation(libdap::DDS *dds);
 
       virtual ~FoDapCovJsonValidation(){ }
