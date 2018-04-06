@@ -473,15 +473,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
                 dds->print(*BESDebug::GetStrm());
             }
 
-            DAS *tmpdas;
-            tmpdas = das;
-            dds->get_das(tmpdas);
-            // delete tmpdas;
-            // bdas->set_das(das);
-
-            BESDEBUG(module, __func__ << "() - das:             " << (void **)das << endl);
-            BESDEBUG(module, __func__ << "() - bdas->get_das(): " << (void **)bdas->get_das() << endl);
-
+            dds->get_das(das);
 
             // Print the DAS
             if(BESDebug::IsSet(module)){
