@@ -475,8 +475,10 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
 
             DAS *tmpdas;
             tmpdas = das;
-            das = dds->get_das();
-            delete tmpdas;
+            dds->get_das(tmpdas);
+            // delete tmpdas;
+            // bdas->set_das(das);
+
             BESDEBUG(module, __func__ << "() - das:             " << (void **)das << endl);
             BESDEBUG(module, __func__ << "() - bdas->get_das(): " << (void **)bdas->get_das() << endl);
 
@@ -484,8 +486,15 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             // Print the DAS
             if(BESDebug::IsSet(module)){
                 BESDEBUG(module, __func__ << "() -  " << "DAS: " << endl);
-                das->print(*BESDebug::GetStrm(), true);
+                das->print(*(BESDebug::GetStrm()), false);
             }
+
+            BESDEBUG(module, __func__ << "() -  " << "DDS get_attr_table()" << endl);
+            AttrTable at = dds->get_attr_table();
+            for(AttrTable::Attr_iter i = at.attr_begin(); i!=at.attr_end() ; ++i){
+                BESDEBUG(module, __func__ << "() - at.get_name(i): " << at.get_name(i)<< endl);
+            }
+            BESDEBUG(module, __func__ << "() -  " << "Reading Ancillary DAS..." << endl);
 
             Ancillary::read_ancillary_das(*das, accessed);
 
@@ -496,6 +505,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
                         "DAS added to the cache for : " << accessed << endl);
                 das_cache->add(new DAS(*das), accessed);
             }
+
         }
         bdas->clear_container();
     }
