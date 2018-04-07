@@ -435,6 +435,9 @@ bool DmrppArray::read_chunks()
     }
     //##############################################################################
 
+    set_read_p(true);
+
+    BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " END"<< endl);
     return true;
 }
 
