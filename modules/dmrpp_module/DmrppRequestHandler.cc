@@ -467,29 +467,24 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             // Get a DDS from the DMR
             DDS *dds = dmr->getDDS();
             BESDEBUG(module, __func__ << "() - DDS retrieved from DMR." << endl);
-
+            // Print the DDS
             if(BESDebug::IsSet(module)){
                 BESDEBUG(module, __func__ << "() - DDS: " << endl);
                 dds->print(*BESDebug::GetStrm());
             }
 
+            // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);
-
             // Print the DAS
             if(BESDebug::IsSet(module)){
                 BESDEBUG(module, __func__ << "() -  " << "DAS: " << endl);
                 das->print(*(BESDebug::GetStrm()), false);
             }
 
-            BESDEBUG(module, __func__ << "() -  " << "DDS get_attr_table()" << endl);
-            AttrTable at = dds->get_attr_table();
-            for(AttrTable::Attr_iter i = at.attr_begin(); i!=at.attr_end() ; ++i){
-                BESDEBUG(module, __func__ << "() - at.get_name(i): " << at.get_name(i)<< endl);
-            }
-            BESDEBUG(module, __func__ << "() -  " << "Reading Ancillary DAS..." << endl);
+            delete dds;
+            delete dmr;
 
             Ancillary::read_ancillary_das(*das, accessed);
-
             // Add to cache if cache is active
             if (das_cache) {
                 // add a copy
@@ -497,7 +492,6 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
                         "DAS added to the cache for : " << accessed << endl);
                 das_cache->add(new DAS(*das), accessed);
             }
-
         }
         bdas->clear_container();
     }
