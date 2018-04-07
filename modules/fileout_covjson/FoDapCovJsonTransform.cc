@@ -436,7 +436,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     string child_indent = indent + _indent_increment;
 
     // Write this node's metadata (name & attributes)
-    writeDatasetMetadata(strm, dds, child_indent);
+    //writeDatasetMetadata(strm, dds, child_indent);
 
     transform_node_worker(strm, leaves, nodes, child_indent, sendData);
 
@@ -710,4 +710,3 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_tab
 
     *strm << "]";
 }
-

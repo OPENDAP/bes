@@ -61,13 +61,22 @@ private:
 
     bool hasTime;
 
-    int isX;
+    long int shapex;
 
-    int isY;
+    long int shapey;
 
-    int isZ;
+    long int shapet;
 
-    std::vector<int> shape;
+    long int shapeorig;
+
+    /*
+    * if:
+    * 0 grid
+    * 1 vertical profile
+    * 2 pointseries
+    * 3 point 
+    */
+    int domaintype;
 
     void checkAttribute(std::string name, std::string value);
 
@@ -85,8 +94,15 @@ private:
 
     void covjson_string_array(libdap::Array *a);
 
+    void writeLeafMetadata(libdap::BaseType *bt);
+
     template<typename T>
     void covjson_simple_type_array(libdap::Array *a);
+
+    template<typename T>
+    unsigned int covjson_simple_type_array_worker(T *values, unsigned int indx,
+        std::vector<unsigned int> *shape, unsigned int currentDim);
+
 
 
 public:

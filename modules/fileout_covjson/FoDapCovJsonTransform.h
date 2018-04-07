@@ -57,6 +57,11 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
+    std::vector<double> axis_x;
+    std::vector<double> axis_y;
+    std::vector<double> axis_t;
+    std::map<std::string, std::string> m;
+
 
     void writeNodeMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeLeafMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
