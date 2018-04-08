@@ -95,11 +95,11 @@ FoDapCovJsonTransmitter::FoDapCovJsonTransmitter() : BESTransmitter()
         string key = "FoCovJson.Tempdir";
         TheBESKeys::TheKeys()->get_value(key, FoDapCovJsonTransmitter::temp_dir, found);
         if (!found || FoDapCovJsonTransmitter::temp_dir.empty()) {
-        	FoDapCovJsonTransmitter::temp_dir = FO_COVJSON_TEMP_DIR;
+            FoDapCovJsonTransmitter::temp_dir = FO_COVJSON_TEMP_DIR;
         }
         string::size_type len = FoDapCovJsonTransmitter::temp_dir.length();
         if (FoDapCovJsonTransmitter::temp_dir[len - 1] == '/') {
-        	FoDapCovJsonTransmitter::temp_dir = FoDapCovJsonTransmitter::temp_dir.substr(0, len - 1);
+            FoDapCovJsonTransmitter::temp_dir = FoDapCovJsonTransmitter::temp_dir.substr(0, len - 1);
         }
     }
 }
@@ -147,6 +147,13 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
 
         FoDapCovJsonValidation fv(loaded_dds);
         fv.validateDataset();
+        cout << "hasX-" << fv.hasX << endl;
+        cout << "hasY-" << fv.hasY << endl;
+        cout << "hasT-" << fv.hasT << endl;
+        cout << "shapeX-" << fv.shapeX << endl;
+        cout << "shapeY-" << fv.shapeY << endl;
+        cout << "shapeT-" << fv.shapeT << endl;
+
         if(fv.canConvert()){
             //means we can convert, found x, y and time
             ft.transform(o_strm, true /* send data */);

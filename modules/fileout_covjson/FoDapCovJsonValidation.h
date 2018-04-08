@@ -54,20 +54,6 @@ class BESDataHandlerInterface;
 class FoDapCovJsonValidation: public BESObj {
 private:
     libdap::DDS *_dds;
-    
-    bool hasX;
-
-    bool hasY;
-
-    bool hasTime;
-
-    long int shapex;
-
-    long int shapey;
-
-    long int shapet;
-
-    long int shapeorig;
 
     /*
     * if:
@@ -106,18 +92,24 @@ private:
 
 
 public:
-     //TODO: Add public variable that can be pushed to transform that is a string of the domain type
-     //TODO: push arrays for each x, y,z
-    
-    	FoDapCovJsonValidation(libdap::DDS *dds);
+    bool hasX;
+    bool hasY;
+    bool hasT;
 
-      virtual ~FoDapCovJsonValidation(){ }
+    long int shapeX;
+    long int shapeY;
+    long int shapeT;
+    long int shapeOrig;
 
-      virtual void validateDataset();
+    FoDapCovJsonValidation(libdap::DDS *dds);
 
-      virtual void dump(std::ostream &strm) const;
+    virtual ~FoDapCovJsonValidation(){ }
 
-      bool canConvert();
+    virtual void validateDataset();
+
+    virtual void dump(std::ostream &strm) const;
+
+    bool canConvert();
 };
 
 #endif // A_FoDapCovJsonValidation_h

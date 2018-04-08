@@ -94,47 +94,34 @@ void FoDapCovJsonValidation::validateDataset()
 {
     hasX = false;
     hasY = false;
-    hasTime = false;
-    //shape = NULL;
+    hasT = false;
+
+    // This is just here to clear out the log file
+    ofstream tempOut;
+    string tempFileName = "/home/ubuntu/hyrax/dds.log";
+    tempOut.open(tempFileName.c_str(), ios::trunc);
+    if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
+    tempOut.close();
+
     validateDataset(_dds);
 }
+
 /**
  * Writes json opener for a DAP object that is seen as a "leaf" in w10n semantics.
  * Header includes object name. attributes, and  type.
  */
 void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
 {
-
-    // Name
-    //*strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
-
-    // Open/truncate for a new log file
-    //tempOut.open(tempFileName.c_str(), ios::trunc);
-    // Append to the existing log file
     tempOut.open(tempFileName.c_str(), ios::app);
-
     if(tempOut.fail()) {
        cout << "Could not open " << tempFileName << endl;
        exit(EXIT_FAILURE);
     }
 
-    tempOut  << "\"name\": \"" << bt->name() << "\"," << endl;
-    // type
-    if (bt->type() == libdap::dods_array_c) {
-        libdap::Array *a = (libdap::Array *) bt;
-        tempOut  << "\"type\": \"" << a->var()->type_name() << "\"," << endl;
-    }
-    else {
-        tempOut  << "\"type\": \"" << bt->type_name() << "\"," << endl;
-    }
-
-    //Attributes
-   //transform(strm, bt->get_attr_table(), indent);
-    tempOut << "," << endl;
+    tempOut  << "\"name\"TEST: \"" << bt->name() << "\"," << endl;
     tempOut.close();
-
 }
 
 template<typename T>
@@ -148,7 +135,6 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
        cout << "Could not open " << tempFileName << endl;
        exit(EXIT_FAILURE);
     }
-
 
     tempOut << "[";
 
@@ -182,23 +168,6 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
 
 void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
-    ofstream tempOut;
-    string tempFileName = "/home/ubuntu/hyrax/dds.log";
-
-    // Open/truncate for a new log file
-    tempOut.open(tempFileName.c_str(), ios::trunc);
-    // Append to the existing log file
-    //tempOut.open(tempFileName.c_str(), ios::app);
-
-    if(tempOut.fail()) {
-       cout << "Could not open " << tempFileName << endl;
-       exit(EXIT_FAILURE);
-    }
-
-    //dds->print(tempOut);
-    tempOut.close();
-
-
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
 
@@ -219,11 +188,7 @@ void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
             }
         }
     }
-
-    //validateDataset(dds->get_attr_table());
-
     transform_node_worker(leaves, nodes);
-
 }
 
 void FoDapCovJsonValidation::transform_node_worker(vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes)
@@ -323,11 +288,6 @@ void FoDapCovJsonValidation::validateDataset(libdap::Constructor *cnstrctr)
         }
     }
 
-    // Write this node's metadata (name & attributes)
-    //writeNodeMetadata(strm, cnstrctr, child_indent);
-
-    //transform_node_worker(strm, leaves, nodes, child_indent, sendData);
-
     validateDataset(cnstrctr->get_attr_table());
 
     transform_node_worker(leaves, nodes);
@@ -335,15 +295,8 @@ void FoDapCovJsonValidation::validateDataset(libdap::Constructor *cnstrctr)
 
 void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
 {
-
-    //string childindent = indent + _indent_increment;
-
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
-
-    // Open/truncate for a new log file
-    //tempOut.open(tempFileName.c_str(), ios::trunc);
-    // Append to the existing log file
     tempOut.open(tempFileName.c_str(), ios::app);
 
     if(tempOut.fail()) {
@@ -351,43 +304,28 @@ void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
        exit(EXIT_FAILURE);
     }
 
-
-
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
     long length = focovjson::computeConstrainedShape(a, &shape);
 
-    //*strm << childindent << "\"shape\": [";
-
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
         if (i > 0) tempOut << ",";
-        shapeorig = shape[i];
-        tempOut << shapeorig;
+        shapeOrig = shape[i];
+        tempOut << shapeOrig;
     }
     tempOut << "]";
 
         tempOut << "," << endl;
-
-        // Data
-        //tempOut << "\t" << "\"data\": ";
         unsigned int indx;
 
-        // The string type utilizes a specialized version of libdap:Array.value()
         vector<std::string> sourceValues;
         a->value(sourceValues);
-        /*
-        indx = covjson_simple_type_array_worker(strm, (std::string *) (&sourceValues[0]), 0, &shape, 0);
 
-        if (length != indx)
-            BESDEBUG(FoDapCovJsonTransform_debug_key,
-                "covjson_string_array() - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
-    */
     validateDataset(a->get_attr_table());
 
     tempOut.close();
-
-
 }
+
 /**
  * Write the json representation of the passed DAP Array instance - which had better be one of
  * atomic DAP types. If the parameter sendData is true then include the data.
@@ -480,21 +418,14 @@ template<typename T>
 void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a){
 
     writeLeafMetadata(a);
-
-
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
-
-    // Open/truncate for a new log file
-    //tempOut.open(tempFileName.c_str(), ios::trunc);
-    // Append to the existing log file
     tempOut.open(tempFileName.c_str(), ios::app);
 
     if(tempOut.fail()) {
        cout << "Could not open " << tempFileName << endl;
        exit(EXIT_FAILURE);
     }
-
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
@@ -504,163 +435,87 @@ void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a){
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
         if (i > 0) tempOut<< ",";
         tempOut << shape[i];
+        shapeOrig = shape[i];
     }
-    tempOut << "]";
+    tempOut << "]" << "," << endl;
 
-    tempOut << "," << endl;
-
-    // Data
-    tempOut << "\"data\": ";
-    unsigned int indx = 0;
-    vector<T> src(length);
-    a->value(&src[0]);
-
-    // I added this, and a corresponding block in FoInstance... because I fixed
-    // an issue in libdap::Float64 where the precision was not properly reset
-    // in it's print_val() method. Because of that error, precision was (left at)
-    // 15 when this code was called until I fixed that method. Then this code
-    // was not printing at the required precision. jhrg 9/14/15
-    if (typeid(T) == typeid(libdap::dods_float64)) {
-        //streamsize prec = strm->precision(int_64_precision);
-        try {
-            cout << "going here";
-            indx = covjson_simple_type_array_worker(&src[0], 0, &shape, 0);
-            //strm->precision(prec);
-        }
-        catch(...) {
-            //strm->precision(prec);
-            throw;
-        }
-    }
-    else {
-        cout << "in this else tho";
-        indx = covjson_simple_type_array_worker(&src[0], 0, &shape, 0);
-    }
-
-    //assert(length == indx);
-
-
-    //*strm << endl << indent << "}";
     tempOut.close();
     validateDataset(a->get_attr_table());
 }
 
 void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 {
+    ofstream tempOut;
+    string tempFileName = "/home/ubuntu/hyrax/dds.log";
+    tempOut.open(tempFileName.c_str(), ios::app);
+    if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
+
     if (attr_table.get_size() != 0) {
-        //*strm << endl;
         libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
         libdap::AttrTable::Attr_iter end = attr_table.attr_end();
 
         for (libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
-
             switch (attr_table.get_attr_type(at_iter)) {
-            case libdap::Attr_container: {
-                libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
 
-                // TODO: REWRITE TO LOG NAME
-               // if (atbl->get_name().length() > 0)
-                //    *strm << child_indent + _indent_increment << "\"name\": \"" << atbl->get_name() << "\"," << endl;
+                case libdap::Attr_container: {
 
-                // Recursive call for child attribute table.
-                validateDataset(*atbl);
-                break;
-
-            }
-            default: {
-                // Open attribute object, write name
-                //*strm << child_indent << "{\"name\": \"" << attr_table.get_name(at_iter) << "\", ";
-
-                // Open value array
-               // *strm << "\"value\": [";
-                vector<std::string> *values = attr_table.get_attr_vector(at_iter);
-                // write values
-                for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
-
-                    ofstream tempOut;
-                    string tempFileName = "/home/ubuntu/hyrax/dds.log";
-
-                    // Open/truncate for a new log file
-                    //tempOut.open(tempFileName.c_str(), ios::trunc);
-                    // Append to the existing log file
-                    tempOut.open(tempFileName.c_str(), ios::app);
-
-                    if(tempOut.fail()) {
-                       cout << "Could not open " << tempFileName << endl;
-                       exit(EXIT_FAILURE);
-                    }
-
-                    tempOut << attr_table.get_name(at_iter) << endl;
-                    tempOut << (*values)[i].c_str() << endl;
-                    tempOut.close();
-
-                    checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
-
-                    printf("\n\n\n%s\n\n\n\n", (*values)[i].c_str());
-                    // not first thing? better use a comma...
-                   // if (i > 0) *strm << ",";
-
-                    // Escape the double quotes found in String and URL type attribute values.
-                    /*if (attr_table.get_attr_type(at_iter) == libdap::Attr_string
-                        || attr_table.get_attr_type(at_iter) == libdap::Attr_url) {
-
-                    }
-                    else {
-
-                        *strm << (*values)[i];
-                    }*/
-
+                    libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
+                    validateDataset(*atbl);
+                
+                    break;
                 }
-                // close value array
-               // *strm << "]}";
-                break;
-            }
+
+                default: {
+                    vector<std::string> *values = attr_table.get_attr_vector(at_iter);
+                    // write values
+                    for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
+
+                        tempOut << attr_table.get_name(at_iter) << endl;
+                        tempOut << (*values)[i].c_str() << endl;
+                        checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
+                        printf("\n%s\n", (*values)[i].c_str());
+
+                    }
+                    break;
+                }
 
             }
         }
-
-        //*strm << endl << indent;
     }
+    tempOut.close();
 }
 
 /*
 This function checks the passed in attribute to see if it is one of the required attributes for covjson
 */
 void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value){
+    cout << "name-" << name << " value-"<< value <<endl;
     if(value == "lon" || value == "longitude"|| value == "LONGITUDE"|| value == "Longitude"|| value == "x"){
         hasX = true;
-        if(shapeorig!=NULL)
-            shapex = shapeorig;
-        cout << "here is long";
-
+        if(shapeOrig!=NULL)
+            shapeX = shapeOrig;
     } else if(name=="units" && value == "degrees_east"){
         hasX = true;
-        if(shapeorig!=NULL)
-            shapex = shapeorig;
-        cout << "here is long";
-
+        if(shapeOrig!=NULL)
+            shapeX = shapeOrig;
     }
+    
     if(value == "lat" || value == "latitude" || value == "LATITUDE" || value == "Latitude" || value == "y"){
-        if(shapeorig!=NULL)
-            shapey = shapeorig;
+        if(shapeOrig!=NULL)
+            shapeY = shapeOrig;
         hasY = true;
-
     } else if(name == "units" && value =="degrees_north"){
-        if(shapeorig!=NULL)
-            shapey = shapeorig;
+        if(shapeOrig!=NULL)
+            shapeY = shapeOrig;
         hasY = true;
-
     }
+    
     if (value == "t" || value == "TIME" || value == "time" || value == "s" || value == "seconds" || value == "Seconds"){
-        if(shapeorig!=NULL)
-            shapet = shapeorig;
-        hasTime = true;
-
-
+        if(shapeOrig!=NULL)
+            shapeT = shapeOrig;
+        hasT = true;
     }
-    shapeorig = NULL;
-    cout << "hello";
-
+    shapeOrig = NULL;
 }
 
 /*
@@ -669,10 +524,6 @@ This function checks to see if the attributes needed to create covjson have been
 bool FoDapCovJsonValidation::canConvert(){
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
-
-    // Open/truncate for a new log file
-    //tempOut.open(tempFileName.c_str(), ios::trunc);
-    // Append to the existing log file
     tempOut.open(tempFileName.c_str(), ios::app);
 
     if(tempOut.fail()) {
@@ -680,15 +531,15 @@ bool FoDapCovJsonValidation::canConvert(){
        exit(EXIT_FAILURE);
     }
 
-    if(hasX && hasY && hasTime){
+    if(hasX && hasY && hasT){
 
-        if(shapex > 1 && shapey > 1 && shapet >= 0)
+        if(shapeX > 1 && shapeY > 1 && shapeT >= 0)
             domaintype = 0;
-        else if(shapex == 1 && shapey == 1 && (shapet <= 1 && shapet >= 0))
+        else if(shapeX == 1 && shapeY == 1 && (shapeT <= 1 && shapeT >= 0))
             domaintype = 1;
-        else if(shapex == 1 && shapey == 1 && shapet >= 0)
+        else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
             domaintype = 2;
-        else if(shapex == 1 && shapey == 1 && shapet >= 0)
+        else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
             domaintype = 3;
         tempOut << domaintype;
         tempOut.close();
