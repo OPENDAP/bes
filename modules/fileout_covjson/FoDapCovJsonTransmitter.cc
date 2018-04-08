@@ -147,12 +147,21 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
 
         FoDapCovJsonValidation fv(loaded_dds);
         fv.validateDataset();
-        cout << "hasX-" << fv.hasX << endl;
-        cout << "hasY-" << fv.hasY << endl;
-        cout << "hasT-" << fv.hasT << endl;
-        cout << "shapeX-" << fv.shapeX << endl;
-        cout << "shapeY-" << fv.shapeY << endl;
-        cout << "shapeT-" << fv.shapeT << endl;
+
+        ofstream tempOut;
+        string tempFileName = "/home/ubuntu/hyrax/dds.log";
+        tempOut.open(tempFileName.c_str(), ios::trunc);
+        if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
+
+        tempOut << "hasX-" << fv.hasX << endl;
+        tempOut << "hasY-" << fv.hasY << endl;
+        tempOut << "hasT-" << fv.hasT << endl;
+        tempOut << "shapeX-" << fv.shapeX << endl;
+        tempOut << "shapeY-" << fv.shapeY << endl;
+        tempOut << "shapeT-" << fv.shapeT << endl;
+        
+        tempOut.close();
+
 
         if(fv.canConvert()){
             //means we can convert, found x, y and time
