@@ -99,7 +99,7 @@ public:
     * 2 pointseries
     * 3 point
     */
-    int domainType;
+    int domaintype;
 
     FoDapCovJsonValidation(libdap::DDS *dds);
 

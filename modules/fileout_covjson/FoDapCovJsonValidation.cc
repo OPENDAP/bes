@@ -524,7 +524,7 @@ void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
 /*
 This function checks to see if the attributes needed to create covjson have been found
 */
-bool FoDapCovJsonValidation::canConvert(){
+bool FoDapCovJsonValidation::canConvert() {
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
     tempOut.open(tempFileName.c_str(), ios::app);
@@ -537,18 +537,16 @@ bool FoDapCovJsonValidation::canConvert(){
     if(hasX && hasY && hasT){
 
         if(shapeX > 1 && shapeY > 1 && shapeT >= 0)
-            domainType = 0;
+            domaintype = 0;
         else if(shapeX == 1 && shapeY == 1 && (shapeT <= 1 && shapeT >= 0))
-            domainType = 1;
+            domaintype = 1;
         else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
-            domainType = 2;
+            domaintype = 2;
         else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
-            domainType = 3;
-        //tempOut << domainType;
+            domaintype = 3;
+        //tempOut << domaintype;
         tempOut.close();
         return true;
     }
-
-
     return false;
 }
