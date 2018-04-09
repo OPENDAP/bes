@@ -97,11 +97,11 @@ void FoDapCovJsonValidation::validateDataset()
     hasT = false;
 
     // This is just here to clear out the log file
-    ofstream tempOut;
-    string tempFileName = "/home/ubuntu/hyrax/dds.log";
-    tempOut.open(tempFileName.c_str(), ios::trunc);
-    if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
-    tempOut.close();
+    //ofstream tempOut;
+    //string tempFileName = "/home/ubuntu/hyrax/dds.log";
+    //tempOut.open(tempFileName.c_str(), ios::trunc);
+    //if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
+    //tempOut.close();
 
     validateDataset(_dds);
 }
@@ -120,7 +120,10 @@ void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
        exit(EXIT_FAILURE);
     }
 
-    tempOut  << "\"name\"TEST: \"" << bt->name() << "\"," << endl;
+    //tempOut  << "\"name\": \"" << bt->name() << "\"," << endl;
+
+    // See if the actual array name matches up
+    checkAttribute("",bt->name());
     tempOut.close();
 }
 
@@ -136,7 +139,7 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
        exit(EXIT_FAILURE);
     }
 
-    tempOut << "[";
+    //tempOut << "[";
 
     unsigned int currentDimSize = (*shape)[currentDim];
 
@@ -145,21 +148,21 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
             BESDEBUG(FoDapCovJsonValidation_debug_key,
                 "covjson_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
             indx = covjson_simple_type_array_worker<T>(values, indx, shape, currentDim + 1);
-            if (i + 1 != currentDimSize) tempOut << ", ";
+            //if (i + 1 != currentDimSize) //tempOut << ", ";
         }
         else {
-            if (i) tempOut << ", ";
+            if (i) //tempOut << ", ";
             if (typeid(T) == typeid(std::string)) {
                 // Strings need to be escaped to be included in a JSON object.
                 string val = reinterpret_cast<string*>(values)[indx++]; // ((string *) values)[indx++];
-                tempOut << "\"" << focovjson::escape_for_covjson(val) << "\"";
+                //tempOut << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
             else {
-                tempOut << values[indx++];
+                //tempOut << values[indx++];
             }
         }
     }
-    tempOut << "]";
+    //tempOut << "]";
     tempOut.close();
 
     return indx;
@@ -309,13 +312,13 @@ void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
     long length = focovjson::computeConstrainedShape(a, &shape);
 
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
-        if (i > 0) tempOut << ",";
+        if (i > 0) //tempOut << ",";
         shapeOrig = shape[i];
-        tempOut << shapeOrig;
+        //tempOut << shapeOrig;
     }
-    tempOut << "]";
+    //tempOut << "]";
 
-        tempOut << "," << endl;
+        //tempOut << "," << endl;
         unsigned int indx;
 
         vector<std::string> sourceValues;
@@ -431,13 +434,13 @@ void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a){
     vector<unsigned int> shape(numDim);
     long length = focovjson::computeConstrainedShape(a, &shape);
 
-    tempOut << "\"shape\": [";
+    //tempOut << "\"shape\": [";
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
         if (i > 0) tempOut<< ",";
-        tempOut << shape[i];
+        //tempOut << shape[i];
         shapeOrig = shape[i];
     }
-    tempOut << "]" << "," << endl;
+    //tempOut << "]" << "," << endl;
 
     tempOut.close();
     validateDataset(a->get_attr_table());
@@ -461,7 +464,7 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 
                     libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
                     validateDataset(*atbl);
-                
+
                     break;
                 }
 
@@ -470,8 +473,8 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
                     // write values
                     for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
 
-                        tempOut << attr_table.get_name(at_iter) << endl;
-                        tempOut << (*values)[i].c_str() << endl;
+                        //tempOut << attr_table.get_name(at_iter) << endl;
+                        //tempOut << (*values)[i].c_str() << endl;
                         checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
                         printf("\n%s\n", (*values)[i].c_str());
 
@@ -489,7 +492,7 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 This function checks the passed in attribute to see if it is one of the required attributes for covjson
 */
 void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value){
-    cout << "name-" << name << " value-"<< value <<endl;
+
     if(value == "lon" || value == "longitude"|| value == "LONGITUDE"|| value == "Longitude"|| value == "x"){
         hasX = true;
         if(shapeOrig!=NULL)
@@ -499,7 +502,7 @@ void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
         if(shapeOrig!=NULL)
             shapeX = shapeOrig;
     }
-    
+
     if(value == "lat" || value == "latitude" || value == "LATITUDE" || value == "Latitude" || value == "y"){
         if(shapeOrig!=NULL)
             shapeY = shapeOrig;
@@ -509,7 +512,7 @@ void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
             shapeY = shapeOrig;
         hasY = true;
     }
-    
+
     if (value == "t" || value == "TIME" || value == "time" || value == "s" || value == "seconds" || value == "Seconds"){
         if(shapeOrig!=NULL)
             shapeT = shapeOrig;
@@ -534,14 +537,14 @@ bool FoDapCovJsonValidation::canConvert(){
     if(hasX && hasY && hasT){
 
         if(shapeX > 1 && shapeY > 1 && shapeT >= 0)
-            domaintype = 0;
+            domainType = 0;
         else if(shapeX == 1 && shapeY == 1 && (shapeT <= 1 && shapeT >= 0))
-            domaintype = 1;
+            domainType = 1;
         else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
-            domaintype = 2;
+            domainType = 2;
         else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
-            domaintype = 3;
-        tempOut << domaintype;
+            domainType = 3;
+        //tempOut << domainType;
         tempOut.close();
         return true;
     }

@@ -55,15 +55,6 @@ class FoDapCovJsonValidation: public BESObj {
 private:
     libdap::DDS *_dds;
 
-    /*
-    * if:
-    * 0 grid
-    * 1 vertical profile
-    * 2 pointseries
-    * 3 point 
-    */
-    int domaintype;
-
     void checkAttribute(std::string name, std::string value);
 
     void validateDataset(libdap::DDS *dds);
@@ -100,6 +91,15 @@ public:
     long int shapeY;
     long int shapeT;
     long int shapeOrig;
+
+    /*
+    * if:
+    * 0 grid
+    * 1 vertical profile
+    * 2 pointseries
+    * 3 point
+    */
+    int domainType;
 
     FoDapCovJsonValidation(libdap::DDS *dds);
 

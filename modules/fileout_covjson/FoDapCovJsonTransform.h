@@ -38,6 +38,7 @@
 #include <map>
 
 #include <BESObj.h>
+#include "FoDapCovJsonValidation.h"
 
 namespace libdap {
 class BaseType;
@@ -69,7 +70,7 @@ private:
 
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
 
-    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, FoDapCovJsonValidation fv);
     void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
 
     //void transform(std::ostream *strm, Structure *s,string indent );
@@ -95,7 +96,7 @@ public:
 
     virtual ~FoDapCovJsonTransform() { }
 
-    virtual void transform(std::ostream &ostrm, bool sendData);
+    virtual void transform(std::ostream &ostrm, bool sendData, FoDapCovJsonValidation fv);
 
     virtual void dump(std::ostream &strm) const;
 };

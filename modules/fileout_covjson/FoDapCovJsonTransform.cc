@@ -109,28 +109,20 @@ unsigned int FoDapCovJsonTransform::covjson_simple_type_array_worker(ostream *st
 template<typename T>
 void FoDapCovJsonTransform::covjson_simple_type_array(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
-    *strm << indent << "{" << endl;\
+    //*strm << indent << "{" << endl;
     string childindent = indent + _indent_increment;
 
-    writeLeafMetadata(strm, a, childindent);
+    //writeLeafMetadata(strm, a, childindent);
+    writeLeafMetadata(strm, a, indent);
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
     long length = focovjson::computeConstrainedShape(a, &shape);
 
-    *strm << childindent << "\"shape\": [";
-
-    for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
-        if (i > 0) *strm << ",";
-        *strm << shape[i];
-    }
-    *strm << "]";
-
     if (sendData) {
-        *strm << "," << endl;
 
-        // Data
-        *strm << childindent << "\"data\": ";
+
+        *strm << childindent << "\"values\": ";
         unsigned int indx = 0;
         vector<T> src(length);
         a->value(&src[0]);
@@ -175,7 +167,8 @@ void FoDapCovJsonTransform::covjson_string_array(std::ostream *strm, libdap::Arr
     *strm << indent << "{" << endl;\
     string childindent = indent + _indent_increment;
 
-    writeLeafMetadata(strm, a, childindent);
+    //writeLeafMetadata(strm, a, childindent);
+    writeLeafMetadata(strm, a, indent);
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
@@ -249,22 +242,111 @@ void FoDapCovJsonTransform::writeLeafMetadata(ostream *strm, libdap::BaseType *b
 {
 
     // Name
-    *strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
+    //*strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
+    *strm << indent << "\"" << bt->name() << "\": {" << endl;
 
     // type
-    if (bt->type() == libdap::dods_array_c) {
-        libdap::Array *a = (libdap::Array *) bt;
-        *strm << indent << "\"type\": \"" << a->var()->type_name() << "\"," << endl;
-    }
-    else {
-        *strm << indent << "\"type\": \"" << bt->type_name() << "\"," << endl;
-    }
+    //if (bt->type() == libdap::dods_array_c) {
+    //    libdap::Array *a = (libdap::Array *) bt;
+    //    *strm << indent << "\"type\": \"" << a->var()->type_name() << "\"," << endl;
+    //}
+    //else {
+    //    *strm << indent << "\"type\": \"" << bt->type_name() << "\"," << endl;
+    //}
 
     //Attributes
-    transform(strm, bt->get_attr_table(), indent);
-    *strm << "," << endl;
-
+    //transform(strm, bt->get_attr_table(), indent);
+    //*strm << "," << endl;
 }
+
+/**
+ * will find value name x,y,z,t for the axis of the coverage and return it.
+ */
+// char FoDapCovJsonTransform::Axis_Unit_value(ostream *strm, libdap::AttrTable &attr_table, string indent)
+// {
+//
+//     string child_indent = indent + _indent_increment;
+//
+//     // Start the attributes block
+//     *strm << indent << "\"attributes\": [";
+//
+// //	if(attr_table.get_name().length()>0)
+// //		*strm  << endl << child_indent << "{\"name\": \"name\", \"value\": \"" << attr_table.get_name() << "\"},";
+//
+// // Only do more if there are actually attributes in the table
+//     if (attr_table.get_size() != 0) {
+//         *strm << endl;
+//         libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
+//         libdap::AttrTable::Attr_iter end = attr_table.attr_end();
+//
+//         for (libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
+//
+//             switch (attr_table.get_attr_type(at_iter)) {
+//             case libdap::Attr_container: {
+//                 libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
+//
+//                 // not first thing? better use a comma...
+//                 if (at_iter != begin) *strm << "," << endl;
+//
+//                 // Attribute Containers need to be opened and then a recursive call gets made
+//                 *strm << child_indent << "{" << endl;
+//
+//                 // If the table has a name, write it out as a json property.
+//                 if (atbl->get_name().length() > 0)
+//                     *strm << child_indent + _indent_increment << "\"name\": \"" << atbl->get_name() << "\"," << endl;
+//
+//                 // Recursive call for child attribute table.
+//                 Axis_Unit_value(strm, *atbl, child_indent + _indent_increment);
+//                 *strm << endl << child_indent << "}";
+//
+//                 break;
+//
+//             }
+//             default: {
+//                 // not first thing? better use a comma...
+//                 if (at_iter != begin) *strm << "," << endl;
+//
+//                 // Open attribute object, write name
+//                 *strm << child_indent << "{\"name\": \"" << attr_table.get_name(at_iter) << "\", ";
+//
+//                 // Open value array
+//                 *strm << "\"value\": [";
+//                 vector<std::string> *values = attr_table.get_attr_vector(at_iter);
+//                 // write values
+//                 for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
+//
+//                     // not first thing? better use a comma...
+//                     if (i > 0) *strm << ",";
+//
+//                     // Escape the double quotes found in String and URL type attribute values.
+//                     if (attr_table.get_attr_type(at_iter) == libdap::Attr_string
+//                         || attr_table.get_attr_type(at_iter) == libdap::Attr_url) {
+//                         *strm << "\"";
+//                         // string value = (*values)[i] ;
+//                         *strm << focovjson::escape_for_covjson((*values)[i]);
+//                         *strm << "\"";
+//                     }
+//                     else {
+//
+//                         *strm << (*values)[i];
+//                     }
+//
+//                 }
+//                 // close value array
+//                 *strm << "]}";
+//                 break;
+//             }
+//
+//             }
+//         }
+//
+//         *strm << endl << indent;
+//     }
+//
+//     // close AttrTable COVJSON
+//
+//     *strm << "]";
+// }
 
 /**
  * @brief Get the JSON encoding for a DDS
@@ -320,9 +402,9 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
  * @param ostrm Write the JSON to this stream
  * @param sendData True if data should be sent, False to send only metadata.
  */
-void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData)
+void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, FoDapCovJsonValidation fv)
 {
-    transform(&ostrm, _dds, "", sendData);
+    transform(&ostrm, _dds, "", sendData, fv);
 }
 
 /**
@@ -375,7 +457,9 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
     vector<libdap::BaseType *> nodes, string indent, bool sendData)
 {
     // Write down this nodes leaves
-    *strm << indent << "\"leaves\": [";
+    //*strm << indent << "\"leaves\": [";
+    *strm << indent << "\"axes\": {";
+
     if (leaves.size() > 0) *strm << endl;
     for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
         libdap::BaseType *v = leaves[l];
@@ -387,7 +471,8 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
         transform(strm, v, indent + _indent_increment, sendData);
     }
     if (leaves.size() > 0) *strm << endl << indent;
-    *strm << "]," << endl;
+    //*strm << "]," << endl;
+    *strm << "}," << endl;
 
     // Write down this nodes child nodes
     *strm << indent << "\"nodes\": [";
@@ -405,9 +490,9 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
  * Writes a JSON representation of the DDS to the passed stream. Data is sent is the sendData
  * flag is true.
  */
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData)
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, FoDapCovJsonValidation fv)
 {
-    /**
+    /*
      * w10 sees the world in terms of leaves and nodes. Leaves have data, nodes have other nodes and leaves.
      */
     vector<libdap::BaseType *> leaves;
@@ -431,21 +516,69 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
 
-    // TODO Begin CovJSON file formatting here ?? This is the first recursive call, so
-    //      I believe we should probably print the foloowing here before we print the
+    // TODO Begin CovJSON file formatting here ?? This where the first bracket is printed
+    //      so I believe we should probably print the following here before we print the
     //      axes and referencing. I'm not quite sure where to print referencing yet,
     //      though. We could create a worker to print this formatting or just implement
-    //      it right here
+    //      it right here.
     //
     // {
     //   "type": "Coverage",
     //   "domain": {
     //     "domainType": "Grid",
+    //
+
+    *strm << indent << "{" << endl; // beginning of the file
+
+    string child_indent1 = indent + _indent_increment;
+
+    *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+
+    *strm << child_indent1 << "\"domain\": {" << endl;
+
+    string child_indent2 = child_indent1 + _indent_increment;
+
+    /*
+    * if:
+    * 0 grid
+    * 1 vertical profile
+    * 2 pointseries
+    * 3 point
+    */
+    if(fv.domainType == 0) {
+        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+    }
+    else if(fv.domainType == 1) {
+        *strm << child_indent2 << "\"domainType\": \"VerticalProfile\"," << endl;
+    }
+    else if(fv.domainType == 2) {
+        *strm << child_indent2 << "\"domainType\": \"PointSeries\"," << endl;
+    }
+    else if(fv.domainType == 3) {
+        *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
+    }
+    else {
+		    throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
+    }
+
+    // Write this node's metadata (name & attributes)
+    //writeDatasetMetadata(strm, dds, child_indent);
+
+    // The axes are the first 3 leaves - the transform_node_worker call should parse and
+    // print these values. We need to format them accordingly.
+
     //     "axes": {
     //       "x": { "values": [values...] },
     //       "y": { "values": [values...] },
     //       "t": { "values": [values...] }
     //     },
+    //
+
+    transform_node_worker(strm, leaves, nodes, child_indent2, sendData);
+
+    // I imagine the referencing printing should be done within the worker. I'll leave
+    // this formatting here for reference.
+
     //     "referencing": [
     //     {
     //       "coordinates": ["t"],
@@ -465,16 +598,9 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     //   },
     //   "parameters": {
 
-    // Declare this node
-    *strm << indent << "{" << endl;
-    string child_indent = indent + _indent_increment;
+    *strm << child_indent1 << "}" << endl;
 
-    // Write this node's metadata (name & attributes)
-    //writeDatasetMetadata(strm, dds, child_indent);
-
-    transform_node_worker(strm, leaves, nodes, child_indent, sendData);
-
-    *strm << indent << "}" << endl;
+    *strm << indent << "}" << endl; // end of the file
 }
 
 /**
@@ -545,7 +671,8 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
 
     string childindent = indent + _indent_increment;
 
-    writeLeafMetadata(strm, b, childindent);
+    //writeLeafMetadata(strm, b, childindent);
+    writeLeafMetadata(strm, b, indent);
 
     *strm << childindent << "\"shape\": [1]," << endl;
 
