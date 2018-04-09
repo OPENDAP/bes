@@ -431,6 +431,40 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
 
+    // TODO Begin CovJSON file formatting here ?? This is the first recursive call, so
+    //      I believe we should probably print the foloowing here before we print the
+    //      axes and referencing. I'm not quite sure where to print referencing yet,
+    //      though. We could create a worker to print this formatting or just implement
+    //      it right here
+    //
+    // {
+    //   "type": "Coverage",
+    //   "domain": {
+    //     "domainType": "Grid",
+    //     "axes": {
+    //       "x": { "values": [values...] },
+    //       "y": { "values": [values...] },
+    //       "t": { "values": [values...] }
+    //     },
+    //     "referencing": [
+    //     {
+    //       "coordinates": ["t"],
+    //       "system": {
+    //         "type": "TemporalRS",
+    //         "calendar": "Gregorian"
+    //       }
+    //     },
+    //     {
+    //       "coordinates": ["x", "y"],
+    //       "system": {
+    //         "type": "GeographicCRS",
+    //         "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    //       }
+    //     }
+    //     ]
+    //   },
+    //   "parameters": {
+
     // Declare this node
     *strm << indent << "{" << endl;
     string child_indent = indent + _indent_increment;
