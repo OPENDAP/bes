@@ -35,30 +35,33 @@
 
 #include "BESResponseHandler.h"
 
-/** @brief response handler that builds an OPeNDAP DDS response object
+/**
+ * @brief response handler that builds an OPeNDAP DDS response object
  *
- * A request 'get dds for &lt;def_name&gt;;' will be handled by this
- * response handler. Given a definition name it determines what containers
- * are to be used to build the OPeNDAP DDS response object. It then
+ * A request `<get type="dds" definition=d1" [space="s"]>` will be handled
+ * by this response handler. Given a definition name it determines what
+ * container is to be used to build the DAP2 DDS response object. It then
  * transmits the DDS object using the method send_dds on a specified
  * transmitter object.
+ *
+ * This handler is registered with BESRequestHandlerList using the string
+ * `get.dds` as the key.
  *
  * @see DDS
  * @see BESContainer
  * @see BESTransmitter
  */
 class BESDDSResponseHandler: public BESResponseHandler {
-    public:
-        BESDDSResponseHandler(const string &name);
-        virtual ~BESDDSResponseHandler(void);
+public:
+    BESDDSResponseHandler(const string &name);
+    virtual ~BESDDSResponseHandler(void);
 
-        virtual void execute(BESDataHandlerInterface &dhi);
-        virtual void transmit(BESTransmitter *transmitter,
-                BESDataHandlerInterface &dhi);
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-        virtual void dump(ostream &strm) const;
+    virtual void dump(ostream &strm) const;
 
-        static BESResponseHandler *DDSResponseBuilder(const string &name);
+    static BESResponseHandler *DDSResponseBuilder(const string &name);
 };
 
 #endif // I_BESDDSResponseHandler_h

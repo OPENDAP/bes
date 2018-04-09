@@ -26,17 +26,17 @@ if WITH_DEPENDENCIES
 AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@ --enable-developer
 endif
 
-SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates
+SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 
 if LIBDAP
-SUBDIRS += functions dap dapreader
+SUBDIRS += functions dap dapreader modules
 endif
 
-SUBDIRS += hello_world
+# SUBDIRS += hello_world
 
-if DAP_BUILTIN_MODULES
-SUBDIRS += modules
-endif
+# if DAP_BUILTIN_MODULES
+# SUBDIRS += modules
+# endif
 
 bin_SCRIPTS = bes-config bes-config-pkgconfig bes-tmpfiles-conf
 

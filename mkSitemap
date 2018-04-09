@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# -*- mode: bash; -*-
+#
+# This file is part of the Back End Server component of the
+# Hyrax Data Server.
+#
+# Copyright (c) 2018 OPeNDAP, Inc.
+# Author: Nathan David Potter <ndp@opendap.org>, James Gallagher
+# <jgallagher@opendap.org>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+
+# Set Defaults
+sitePrefix="http:#localhost:8080/opendap"
+nodeSuffix="contents.html"
+leafSuffix=".html"
+catalog="catalog"
+filename="site_map.txt"
+besconf="${prefix}/etc/bes/bes.conf"
+
+# usage function
+usage() { echo "Usage: $0 [-s <site-prefix>] [-n <node-suffix>] [-l <leaf-suffix>] [-c <catalog>] [-f <file-name>] [-b <bes-config>] [-h]" 1>&2; exit 1; }
+
+# Process command line args
+while getopts ":s:n:l:c:f:h" o; do
+    case "${o}" in
+        s)
+            sitePrefix=${OPTARG}
+            ;;
+        n)
+            nodeSuffix=${OPTARG}
+            ;;
+        l)
+            leafSuffix=${OPTARG}
+            ;;
+        c)
+            catalog=${OPTARG}
+            ;;
+        f)
+            filename=${OPTARG}
+            ;;
+        b)
+            besconf=${OPTARG}
+            ;;
+        h)
+            usage
+            ;;
+        *)
+            echo "Unknown stuff"
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+besCmd=`cat <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns:bes="http:#xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+    <buildSiteMap prefix="${sitePrefix}" nodeSuffix="${nodeSuffix}" leafSuffix="$leafSuffix" catalog="$catalog" filename="$filename"/>
+</request>
+EOF
+`
+
+echo "------------------------------------------------"
+echo "mkSitemap: "
+echo "  sitePrefix: ${sitePrefix}"
+echo "  nodeSuffix: ${nodeSuffix}"
+echo "  leafSuffix: ${leafSuffix}"
+echo "  catalog:    ${catalog}"
+echo "  filename:   ${filename}"
+echo "  bes.conf:   ${besconf}"
+echo ""
+
+
+BES_CMD=$(mktemp /tmp/bes_conf.XXXXXXXXXX) || { echo "Failed to create temp file"; exit 1; }
+
+echo "${besCmd}" > $BES_CMD
+
+echo "BES CMD (${BES_CMD}):"
+cat  $BES_CMD
+
+besstandalone -c "${besconf}" -i "${BES_CMD}" 
+
+
+
+
+
