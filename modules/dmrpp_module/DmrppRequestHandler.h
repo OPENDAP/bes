@@ -29,6 +29,7 @@
 #include "BESRequestHandler.h"
 
 #undef DAP2
+class ObjMemCache;  // in bes/dap
 
 namespace libdap {
 	class DMR;
@@ -38,6 +39,12 @@ namespace libdap {
 namespace dmrpp {
 
 class DmrppRequestHandler: public BESRequestHandler {
+
+private:
+    static ObjMemCache *das_cache;
+    static ObjMemCache *dds_cache;
+    static ObjMemCache *dmr_cache;
+
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(const std::string& accessed, bool explicit_containers, libdap::DMR* dmr);
@@ -54,6 +61,9 @@ public:
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);
+    static bool dap_build_das(BESDataHandlerInterface &dhi);
+    static bool dap_build_dds(BESDataHandlerInterface &dhi);
+    static bool dap_build_dap2data(BESDataHandlerInterface &dhi);
 
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
