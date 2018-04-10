@@ -31,7 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESSetContainerResponseHandler.h"
+
+#if 0
 #include "BESSilentInfo.h"
+#endif
+
+
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
 #include "BESDataNames.h"
@@ -58,21 +63,6 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
  * given real name (usually a file name) and the type of data represented
  * by this container (e.g. cedar, cdf, netcdf, hdf, etc...)
  *
- * An informational response object BESInfo is created to hold whether or
- * not the container was successfully added/replaced. Possible responses are:
- *
- * Successfully added container "&lt;sym_name&gt;" in container storage "&lt;store_name&gt;"
- * 
- * 
- * Successfully replaced container "&lt;sym_name&gt;" in container storage "&lt;store_name&gt;"
- * 
- * 
- * Unable to add container "&lt;sym_name&gt;" to container storage "&lt;store_name&gt;"
- * 
- * 
- * Unable to add container "&lt;sym_name&gt;" to container storage "&lt;store_name&gt;"
- * 
- * Container storage "&lt;store_name&gt;" does not exist
  *
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if the specified store name does not exist
@@ -84,9 +74,11 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
  */
 void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    dhi.action_name = SETCONTAINER_STR;
+#if 0
+	dhi.action_name = SETCONTAINER_STR;
     BESInfo *info = new BESSilentInfo();
     d_response_object = info;
+#endif
 
     string store_name = dhi.data[STORE_NAME];
     string symbolic_name = dhi.data[SYMBOLIC_NAME];
@@ -129,12 +121,14 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESSetContainerResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
+#if 0
     if (d_response_object) {
         BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
         if (!info)
             throw BESInternalError("cast error", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
+#endif
 }
 
 /** @brief dumps information about this object
