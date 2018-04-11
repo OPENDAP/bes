@@ -456,8 +456,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
 void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::BaseType *> leaves,
     vector<libdap::BaseType *> nodes, string indent, bool sendData)
 {
-    // Write down this nodes leaves
-    //*strm << indent << "\"leaves\": [";
+    // Write the axes to strm
     *strm << indent << "\"axes\": {";
 
     if (leaves.size() > 0) *strm << endl;
@@ -472,17 +471,51 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
     }
     if (leaves.size() > 0) *strm << endl << indent;
 
+    // Reference printing goes here and can be hard-coded for now
 
+    //     "referencing": [
+    //     {
+    //       "coordinates": ["t"],
+    //       "system": {
+    //         "type": "TemporalRS",
+    //         "calendar": "Gregorian"
+    //       }
+    //     },
+    //     {
+    //       "coordinates": ["x", "y"],
+    //       "system": {
+    //         "type": "GeographicCRS",
+    //         "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    //       }
+    //     }
+    //     ]
+    //   },
+    //   "parameters": {
 
+    string child_indent1 = indent + _indent_increment;
+    string child_indent2 = child_indent1 + _indent_increment;
 
-    //*strm << "]," << endl;
-    *strm << "}," << endl;
+    *strm << "}," << endl << indent << "\"referencing\": [" << endl;
+    *strm << indent << "{" << endl;
+    *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
+    *strm << child_indent1 << "\"system\": {" << endl;
+    *strm << child_indent2 << "\"type\": \"TemporalRS\"," << endl;
+    *strm << child_indent2 << "\"calendar\": \"Gregorian\"," << endl;
+    *strm << child_indent1 << "}" << endl;
+    *strm << indent << "}," << endl;
 
-    // Referencing goes here
+    *strm << indent << "{" << endl;
+    *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
+    *strm << child_indent1 << "\"system\": {" << endl;
+    *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
+    *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"," << endl;
+    *strm << child_indent1 << "}" << endl;
+    *strm << indent << "}" << endl;
+    *strm << indent << "]" << endl;
 
+    *strm << _indent_increment << "}," << endl;
 
-
-    // Write down this nodes child nodes
+    // Write down the parameters and values
     *strm << indent << "\"parameters\": [";
     if (nodes.size() > 0) *strm << endl;
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
@@ -584,35 +617,13 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 
     transform_node_worker(strm, leaves, nodes, child_indent2, sendData);
 
-    // I imagine the referencing printing should be done within the worker. I'll leave
-    // this formatting here for reference.
-
-    //     "referencing": [
-    //     {
-    //       "coordinates": ["t"],
-    //       "system": {
-    //         "type": "TemporalRS",
-    //         "calendar": "Gregorian"
-    //       }
-    //     },
-    //     {
-    //       "coordinates": ["x", "y"],
-    //       "system": {
-    //         "type": "GeographicCRS",
-    //         "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-    //       }
-    //     }
-    //     ]
-    //   },
-    //   "parameters": {
-
     *strm << child_indent1 << "}" << endl;
 
     *strm << indent << "}" << endl; // end of the file
 }
 
 /**
- * Write the json representation of the passed BAseType instance. If the
+ * Write the CovJSON representation of the passed BaseType instance. If the
  * parameter sendData is true then include the data.
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
@@ -651,7 +662,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     case libdap::dods_uint8_c:
     case libdap::dods_int64_c:
     case libdap::dods_uint64_c:
-        // case libdap::dods_url4_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
         string s = (string) "File out COVJSON, " + "DAP4 types not yet supported.";
@@ -669,12 +679,11 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
 }
 
 /**
- * Write the json representation of the passed BaseType instance - which had better be one of the
+ * Write the CovJSON representation of the passed BaseType instance - which had better be one of the
  * atomic DAP types. If the parameter sendData is true then include the data.
  */
 void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, string indent, bool sendData)
 {
-
     *strm << indent << "{" << endl;
 
     string childindent = indent + _indent_increment;
