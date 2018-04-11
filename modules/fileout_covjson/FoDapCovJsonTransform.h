@@ -63,6 +63,7 @@ private:
     std::vector<double> axis_t;
     std::map<std::string, std::string> m;
 
+    //enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
     void writeNodeMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeLeafMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);

@@ -543,19 +543,19 @@ bool FoDapCovJsonValidation::canConvert()
 
     if(hasX && hasY && hasT) {
         if(shapeX > 1 && shapeY > 1 && shapeT >= 0) {
-            domainType = Grid; // 0
+            domainType = 0; // Grid
             canConvert = true;
         }
         else if(shapeX == 1 && shapeY == 1 && (shapeT <= 1 && shapeT >= 0)) {
-            domainType = VerticalProfile; // 1
+            domainType = 1; // Vertical Profile
             canConvert = true;
         }
         else if(shapeX == 1 && shapeY == 1 && shapeT >= 0) {
-            domainType = PointSeries; // 2
+            domainType = 2; // Point Series
             canConvert = true;
         }
         else if(shapeX == 1 && shapeY == 1 && shapeT >= 0) {
-            domainType = Point; // 3
+            domainType = 3; // Point
             canConvert = true;
         }
     }
