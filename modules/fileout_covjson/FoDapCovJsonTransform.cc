@@ -471,11 +471,19 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
         transform(strm, v, indent + _indent_increment, sendData);
     }
     if (leaves.size() > 0) *strm << endl << indent;
+
+
+
+
     //*strm << "]," << endl;
     *strm << "}," << endl;
 
+    // Referencing goes here
+
+
+
     // Write down this nodes child nodes
-    *strm << indent << "\"nodes\": [";
+    *strm << indent << "\"parameters\": [";
     if (nodes.size() > 0) *strm << endl;
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
@@ -487,8 +495,8 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
 }
 
 /**
- * Writes a JSON representation of the DDS to the passed stream. Data is sent is the sendData
- * flag is true.
+ * Writes a CovJSON representation of the DDS to the passed stream. Data is sent if the sendData
+ * flag is true. Otherwise, only metadata is sent.
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, FoDapCovJsonValidation fv)
 {
@@ -545,16 +553,21 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     * 2 pointseries
     * 3 point
     */
-    if(fv.domainType == 0)
+    if(fv.domainType == Grid) {
         *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-    else if(fv.domainType == 1)
+    }
+    else if(fv.domainType == VerticalProfile) {
         *strm << child_indent2 << "\"domainType\": \"VerticalProfile\"," << endl;
-    else if(fv.domainType == 2)
+    }
+    else if(fv.domainType == PointSeries) {
         *strm << child_indent2 << "\"domainType\": \"PointSeries\"," << endl;
-    else if(fv.domainType == 3)
+    }
+    else if(fv.domainType == Point) {
         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
-    else
+    }
+    else {
 		    throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
+    }
 
     // Write this node's metadata (name & attributes)
     //writeDatasetMetadata(strm, dds, child_indent);

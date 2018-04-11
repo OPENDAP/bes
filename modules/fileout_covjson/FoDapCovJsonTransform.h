@@ -58,12 +58,12 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
-    std::vector<double> axis_x;
-    std::vector<double> axis_y;
-    std::vector<double> axis_t;
-    std::map<std::string, std::string> m;
+    //std::vector<double> axis_x;
+    //std::vector<double> axis_y;
+    //std::vector<double> axis_t;
+    //std::map<std::string, std::string> m;
 
-    //enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
+    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
     void writeNodeMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeLeafMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
