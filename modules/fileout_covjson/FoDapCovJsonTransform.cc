@@ -505,7 +505,7 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
     *strm << indent << "}," << endl;
 
     *strm << indent << "{" << endl;
-    *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
+    *strm << child_indent1 << "\"coordinates\": [\"x\", \"y\"]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
     *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
     *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"," << endl;
