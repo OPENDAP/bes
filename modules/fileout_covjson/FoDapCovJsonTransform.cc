@@ -512,15 +512,14 @@ void FoDapCovJsonTransform::transform_node_worker(ostream *strm, vector<libdap::
     *strm << child_indent1 << "}" << endl;
     *strm << indent << "}" << endl;
     *strm << indent << "]" << endl;
-
     *strm << _indent_increment << "}," << endl;
 
     // Write down the parameters and values
-    *strm << indent << "\"parameters\": [";
+    *strm << _indent_increment << "\"parameters\": [";
     if (nodes.size() > 0) *strm << endl;
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
-        transform(strm, v, indent + _indent_increment, sendData);
+        transform(strm, v, _indent_increment + _indent_increment, sendData);
     }
     if (nodes.size() > 0) *strm << endl << indent;
 
