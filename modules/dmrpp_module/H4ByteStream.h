@@ -42,8 +42,10 @@ private:
     std::string d_data_url;
     unsigned long long d_size;
     unsigned long long d_offset;
+    // TODO Remove these
     std::string d_md5;
     std::string d_uuid;
+
     bool d_is_read;
     std::vector<unsigned int> d_chunk_position_in_array;
 
@@ -67,6 +69,7 @@ protected:
 
     void _duplicate(const H4ByteStream &bs)
     {
+#if 1
         // See above
         d_bytes_read = 0;
         d_read_buffer = 0;
@@ -75,6 +78,25 @@ protected:
         d_is_read = false;
         d_curl_handle = 0;
         d_is_in_multi_queue = false;
+#endif
+
+#if 0
+        // For some reason, the assignment of a vector<H4ByteStream> fails
+        // but an assignment of a reference to a vector<H4ByteStream> works.
+        // I thought it was something in the code above - something missing
+        // in _duplicate(), but no. jhrg 4/10/18
+        d_bytes_read = bs.d_bytes_read;
+
+        d_read_buffer = new char[bs.d_read_buffer_size];
+        d_read_buffer_size = bs.d_read_buffer_size;
+        memcpy(d_read_buffer, bs.d_read_buffer, bs.d_read_buffer_size);
+
+        d_read_pointer = bs.d_read_pointer;
+        d_is_read = bs.d_is_read;
+
+        d_curl_handle = bs.d_curl_handle;
+        d_is_in_multi_queue = bs.d_is_in_multi_queue;
+#endif
 
         // These vars are easy to duplicate.
         d_size = bs.d_size;
@@ -114,6 +136,20 @@ public:
         delete[] d_read_buffer;
     }
 
+    /// I think this is broken. vector<H4ByteStream> assignment fails
+    /// in the read_atomic() method but 'assignment' using a reference
+    /// works. This bug shows up in DmrppCommnon::read_atomic().
+    /// jhrg 4/10/18
+    H4ByteStream &operator=(const H4ByteStream &rhs)
+    {
+        if (this == &rhs)
+        return *this;
+
+        _duplicate(rhs);
+
+        return *this;
+    }
+
     void reset_read_pointer()
     {
         d_read_pointer = 0;
@@ -129,9 +165,11 @@ public:
         return get_rbuf() + d_read_pointer;
     }
 
-    virtual CURL *get_curl_handle(){
+    virtual CURL *get_curl_handle() const
+    {
         return d_curl_handle;
     }
+
     virtual void cleanup_curl_handle();
 
     /**
@@ -314,20 +352,20 @@ public:
 
     virtual void read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_size);
 
-    virtual bool is_started(){ return d_is_in_multi_queue; };
-    virtual bool is_read();
-    virtual void set_is_read(bool state);
+    virtual bool is_started() const { return d_is_in_multi_queue; };
+    virtual bool is_read() const { return d_is_read;  }
+
+    virtual void set_is_read(bool state) { d_is_read = state; }
 
     virtual std::string get_curl_range_arg_string();
 
-    virtual void dump(std::ostream & strm) const;
-
-    virtual std::string to_string();
-
     virtual void add_to_multi_read_queue(CURLM *multi_handle);
+
     void complete_read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width);
 
+    virtual void dump(std::ostream & strm) const;
 
+    virtual std::string to_string() const;
 };
 
 } // namespace dmrpp

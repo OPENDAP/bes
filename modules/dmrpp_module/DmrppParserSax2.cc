@@ -56,7 +56,7 @@
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 
-static const string module = "dmrpp";
+static const string module = "dmrpp:2";
 static const string hdf4_namespace = "http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1";
 
 using namespace libdap;
@@ -86,7 +86,6 @@ static const char *states[] = { "parser_start",
 
     "inside_constructor",
 
-    // FIXME "inside_h4_byte_stream",
     "not_dap4_element", "inside_h4_object", "inside_h4_chunkDimensionSizes_element",
 
     "parser_unknown", "parser_error", "parser_fatal_error",
@@ -854,7 +853,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         // Ingest the h4:chunks element and it attributes
         if (strcmp(localname, "chunks") == 0) {
             if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
-
+#if 0
             // This bit of magic sets the URL used to get the data and it's
             // magic in part because it may be a file or an http URL
             unsigned int deflate_level = 0;
@@ -870,7 +869,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     cerr << "There was no 'deflate_level' attribute associated with the variable '" << bt->type_name()
                         << " " << bt->name() << "'" << endl;
             }
-
+#endif
             if (parser->check_attribute("compressionType")) {
                 string compression_type_string(parser->xml_attrs["compressionType"].value);
                 dc->ingest_compression_type(compression_type_string);
@@ -886,9 +885,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         }
         // Ingest an h4:byteStream element and its attributes
         else if (strcmp(localname, "byteStream") == 0) {
-            // Check for a h4:byteStream and process if found
-            // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
-
             string data_url = "unknown_data_location";
             if (parser->check_attribute("href")) {
                 istringstream data_url_ss(parser->xml_attrs["href"].value);
@@ -937,8 +933,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
             unsigned long long offset = 0;
             unsigned long long size = 0;
+#if 0
             string md5("");
             string uuid("");
+#endif
             string chunk_position_in_array("");
 
             if (parser->check_required_attribute("offset")) {
@@ -959,6 +957,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
             }
 
+#if 0
             if (parser->check_required_attribute("md5")) {
                 istringstream md5_ss(parser->xml_attrs["md5"].value);
                 md5 = md5_ss.str();
@@ -977,6 +976,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             else {
                 if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;
             }
+#endif
 
             if (parser->check_attribute("chunkPositionInArray")) {
                 istringstream chunk_position_ss(parser->xml_attrs["chunkPositionInArray"].value);
@@ -988,7 +988,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
             }
 
-            dc->add_chunk(data_url, size, offset, md5, uuid, chunk_position_in_array);
+            dc->add_chunk(data_url, size, offset, "", "", /*md5, uuid,*/ chunk_position_in_array);
         }
     }
         break;

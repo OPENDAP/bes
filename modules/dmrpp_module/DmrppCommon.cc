@@ -22,32 +22,45 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <string>
+#include <sstream>
 #include <vector>
 #include <cstdlib>
 
 #include <cstdlib>
 
-#include <BESIndent.h>
-#include <BESDebug.h>
+#include "BESIndent.h"
+#include "BESDebug.h"
+#include "BESInternalError.h"
 
 #include "DmrppCommon.h"
+#include "DmrppUtil.h"
 #include "H4ByteStream.h"
 
 using namespace std;
-// using namespace libdap;
 
 namespace dmrpp {
-/**
- * Interface for the size and offset information of data described by
- * DMR++ files.
- */
 
-void DmrppCommon::ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string)
+/**
+ * @brief Set the dimension sizes for a chunk
+ *
+ * The string argument holds a space-separated list of integers that
+ * represent the dimensions of a chunk. Parse that string and store
+ * the integers in this instance.
+ *
+ * @param chunk_dim_sizes_string
+ */
+void DmrppCommon::ingest_chunk_dimension_sizes(string chunk_dim_sizes_string)
 {
-    if (!chunk_dim_sizes_string.length()) return;
+    if (chunk_dim_sizes_string.empty()) return;
 
     // Clear the thing if it's got stuff in it.
+#if 0
     if (d_chunk_dimension_sizes.size()) d_chunk_dimension_sizes.clear();
+#endif
+
+    d_chunk_dimension_sizes.clear();
+
+    // TODO use istringstream. jhrg 4/10/18
 
     string space(" ");
     size_t strPos = 0;
@@ -63,15 +76,15 @@ void DmrppCommon::ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_strin
             chunk_dim_sizes_string.erase(0, strPos + space.length());
         }
     }
+
     // If it's multi valued there's still one more value left to process
     // If it's single valued the same is true, so let's ingest that.
     d_chunk_dimension_sizes.push_back(strtol(chunk_dim_sizes_string.c_str(), NULL, 10));
-
 }
 
-void DmrppCommon::ingest_compression_type(std::string compression_type_string)
+void DmrppCommon::ingest_compression_type(string compression_type_string)
 {
-    if (!compression_type_string.length()) return;
+    if (compression_type_string.empty()) return;
 
     // Clear previous state
     d_compression_type_deflate = false;
@@ -79,19 +92,19 @@ void DmrppCommon::ingest_compression_type(std::string compression_type_string)
 
     string deflate("deflate");
     string shuffle("shuffle");
-    size_t strPos = 0;
 
     // Process content
-    if ((strPos = compression_type_string.find(deflate)) != string::npos) {
+    if (compression_type_string.find(deflate) != string::npos) {
         d_compression_type_deflate = true;
     }
 
-    if ((strPos = compression_type_string.find(shuffle)) != string::npos) {
+    if (compression_type_string.find(shuffle) != string::npos) {
         d_compression_type_shuffle = true;
     }
 
-    BESDEBUG("dmrpp",
-            __PRETTY_FUNCTION__ << " - Processed compressionType string. " "d_compression_type_shuffle: " << (d_compression_type_shuffle?"true":"false") << "d_compression_type_deflate: " << (d_compression_type_deflate?"true":"false") << endl);
+    BESDEBUG("dmrpp", "Processed compressionType string. " "d_compression_type_shuffle: "
+        << (d_compression_type_shuffle?"true":"false") << "d_compression_type_deflate: "
+        << (d_compression_type_deflate?"true":"false") << endl);
 }
 
 /**
@@ -110,10 +123,48 @@ unsigned long DmrppCommon::add_chunk(std::string data_url, unsigned long long si
     return d_chunk_refs.size();
 }
 
+/**
+ * @brief read method for the atomic types
+ *
+ * @param name The name of the variable, used for error messages
+ * @return Pointer to a char buffer holding the data.
+ * @exception BESInternalError on error.
+ */
+char *
+DmrppCommon::read_atomic(const string &name)
+{
+    vector<H4ByteStream> &chunk_refs = get_chunk_vec();
+
+    if (chunk_refs.size() == 0) {
+        throw BESInternalError(string("Unable to obtain ByteStream objects for ") + name, __FILE__, __LINE__);
+    }
+
+    // For now we only handle the one chunk case.
+    H4ByteStream &h4_byte_stream = chunk_refs[0];
+    h4_byte_stream.set_rbuf_to_size();
+
+    // First cut at subsetting; read the whole thing and then subset that.
+    curl_read_byte_stream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), &h4_byte_stream);
+
+    // If the expected byte count was not read, it's an error.
+    if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {
+        ostringstream oss;
+        oss << "Wrong number of bytes read for '" << name << "'; expected " << h4_byte_stream.get_size()
+            << " but found " << h4_byte_stream.get_bytes_read();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    return h4_byte_stream.get_rbuf();
+}
+
 void DmrppCommon::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
+
+#if 0
     strm << BESIndent::LMarg << "deflate_level:          " << (get_deflate_level() ? "true" : "false") << endl;
+#endif
+
     strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
 
     vector<unsigned int> chunk_dim_sizes = get_chunk_dimension_sizes();
@@ -124,7 +175,7 @@ void DmrppCommon::dump(ostream & strm) const
     }
     strm << "]" << endl;
 
-    vector<H4ByteStream> chunk_refs = get_immutable_chunks();
+    const vector<H4ByteStream> &chunk_refs = get_immutable_chunks();
     strm << BESIndent::LMarg << "H4ByteStreams (aka chunks):" << (chunk_refs.size() ? "" : "None Found.") << endl;
     BESIndent::Indent();
     for (unsigned int i = 0; i < chunk_refs.size(); i++) {

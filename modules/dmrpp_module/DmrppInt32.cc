@@ -28,8 +28,9 @@
 #include <sstream>
 #include <cassert>
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESIndent.h"
 
 #include "DmrppUtil.h"
 #include "DmrppInt32.h"
@@ -85,40 +86,7 @@ DmrppInt32::read()
     if (read_p())
         return true;
 
-    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
-    if((*chunk_refs).size() == 0){
-        ostringstream oss;
-        oss << "DmrppInt32::read() - Unable to obtain a byteStream object for DmrppInt32 " << name()
-        		<< " Without a byteStream we cannot read! "<< endl;
-        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-    }
-    else {
-		BESDEBUG("dmrpp", "DmrppInt32::read() - Found H4ByteStream (chunks): " << endl);
-    	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
-    		BESDEBUG("dmrpp", "DmrppInt32::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-    	}
-    }
-    // For now we only handle the one chunk case.
-    H4ByteStream h4bs = (*chunk_refs)[0];
-    h4bs.set_rbuf_to_size();
-
-    // Do a range get with libcurl
-    // Slice 'this' to just the DmrppCommon parts. Needed because the generic
-    // version of the 'write_data' callback only knows about DmrppCommon. Passing
-    // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
-    // will leave the code using garbage memory. jhrg 11/23/16
-    BESDEBUG("dmrpp", "DmrppInt32::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-    curl_read_byte_stream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4bs));
-
-    // Could use get_rbuf_size() in place of sizeof() for a more generic version.
-    if (sizeof(dods_int32) != h4bs.get_bytes_read()) {
-        ostringstream oss;
-        oss << "DmrppInt32: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_int32)
-            << " but found " << h4bs.get_bytes_read() << endl;
-        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-    }
-
-    set_value(*reinterpret_cast<dods_int32*>(h4bs.get_rbuf()));
+    set_value(*reinterpret_cast<dods_int32*>(read_atomic(name())));
 
     set_read_p(true);
 

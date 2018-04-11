@@ -140,12 +140,15 @@ std::string H4ByteStream::get_curl_range_arg_string()
     return range.str();
 }
 
+#if 0
 bool H4ByteStream::is_read()
 {
     return d_is_read;
 }
 
-void H4ByteStream::set_is_read(bool state) { d_is_read = state; }
+void H4ByteStream::set_is_read(bool state) {d_is_read = state;}
+
+#endif
 
 void H4ByteStream::add_to_multi_read_queue(CURLM *multi_handle)
 {
@@ -244,9 +247,7 @@ void H4ByteStream::add_to_multi_read_queue(CURLM *multi_handle)
     BESDEBUG(debug,"H4ByteStream::"<< __func__ <<"() - END  "<< to_string() << endl);
 
     return;
-
 }
-
 
 void H4ByteStream::complete_read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width)
 {
@@ -324,7 +325,7 @@ void H4ByteStream::complete_read(bool deflate, unsigned int chunk_size, bool shu
  * @brief Read the chunk associated with this H4ByteStream
  *
  * @param deflate True if we should deflate the data
- * @param chunk_size The size of the chunk once deflated; ignored with deflate is false
+ * @param chunk_size The size of the chunk once deflated; ignored when deflate is false
  * @param shuffle_chunk True if the chunk was shuffled.
  * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
  */
@@ -335,7 +336,7 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
         return;
     }
 
-    if(!d_is_in_multi_queue){
+    if (!d_is_in_multi_queue) {
 
         // This call uses the internal size param and allocates the buffer's memory
         set_rbuf_to_size();
@@ -457,13 +458,11 @@ void H4ByteStream::read(bool deflate, unsigned int chunk_size, bool shuffle, uns
     d_is_read = true;
 }
 
-
-void H4ByteStream::cleanup_curl_handle(){
-    if(d_curl_handle!=0)
-        curl_easy_cleanup(d_curl_handle);
+void H4ByteStream::cleanup_curl_handle()
+{
+    if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
     d_curl_handle = 0;
 }
-
 
 /**
  *
@@ -494,22 +493,12 @@ void H4ByteStream::dump(ostream &oss) const
     oss << "[is_in_multi_queue=" << d_is_in_multi_queue << "]";
 }
 
-
-
-
-string H4ByteStream::to_string()
+string H4ByteStream::to_string() const
 {
     std::ostringstream oss;
     dump(oss);
     return oss.str();
 }
-
-
-
-
-
-
-
 
 } // namespace dmrpp
 

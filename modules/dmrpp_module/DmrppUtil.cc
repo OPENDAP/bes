@@ -139,7 +139,7 @@ void curl_read_byte_stream(const string &url, const string &range, void *user_da
 
 		string file_url("file://");
 		if( ! url.compare(0, file_url.size(), file_url) ){
-			// If it's a file URL then we don;t need to dink around with the HTTP noise..
+			// If it's a file URL then we don't need to dink around with the HTTP noise..
 			BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
 		}
 		else {

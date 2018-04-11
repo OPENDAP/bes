@@ -80,24 +80,10 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
 bool
 DmrppD4Group::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppD4Group::read for " << name() << endl);
-
-    if (read_p())
-        return true;
-
-    // FIXME
-
-    set_read_p(true);
-
-    return true;
-#endif
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     throw BESError("Unsupported type libdap::D4Group (dmrpp::DmrppGroup)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
 }
-
 
 void DmrppD4Group::dump(ostream & strm) const
 {

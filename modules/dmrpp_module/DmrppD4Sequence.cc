@@ -80,23 +80,9 @@ DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
 bool
 DmrppD4Sequence::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppD4Sequence::read for " << name() << endl);
-
-    if (read_p())
-        return true;
-
-    // FIXME
-
-    set_read_p(true);
-
-    return true;
-#endif
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     throw BESError("Unsupported type libdap::D4Sequence (dmrpp::DmrppSequence)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-
 }
 
 void DmrppD4Sequence::dump(ostream & strm) const

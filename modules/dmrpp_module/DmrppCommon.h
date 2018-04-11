@@ -30,6 +30,10 @@
 
 #include "H4ByteStream.h"
 
+namespace libdap {
+    class BaseType;
+}
+
 namespace dmrpp {
 
 /**
@@ -40,17 +44,22 @@ class DmrppCommon {
 
 	friend class DmrppTypeReadTest;
 	friend class DmrppChunkedReadTest;
+
 private:
+#if 0
 	unsigned int d_deflate_level;
+#endif
 	bool d_compression_type_deflate;
 	bool d_compression_type_shuffle;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
 	std::vector<H4ByteStream> d_chunk_refs;
 
-
 protected:
     void _duplicate(const DmrppCommon &dc) {
-    	d_deflate_level =  dc.d_deflate_level;
+#if 0
+        d_deflate_level = dc.d_deflate_level;
+#endif
+
     	d_compression_type_deflate = dc.d_compression_type_deflate;
     	d_compression_type_shuffle = dc.d_compression_type_shuffle;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
@@ -58,25 +67,28 @@ protected:
     }
 
     /**
-     * @brief Returns a pointer to the internal vector of
-     * H4ByteStream objects so that they can be manipulated.
+     * @brief Returns a reference to the internal H4ByteStream vector.
      */
-    virtual std::vector<H4ByteStream> *get_chunk_vec() {
-    	return &d_chunk_refs;
+    virtual std::vector<H4ByteStream> &get_chunk_vec() {
+    	return d_chunk_refs;
     }
+
+    virtual char *read_atomic(const std::string &name);
 
 public:
-    DmrppCommon():
-    	d_deflate_level(0),
-		d_compression_type_deflate(false),
-		d_compression_type_shuffle(false){ }
-
-    DmrppCommon(const DmrppCommon &dc) { _duplicate(dc); }
-
-    virtual ~DmrppCommon() {
-    	// delete[] d_read_buffer;
+    DmrppCommon() :
+        /*d_deflate_level(0),*/ d_compression_type_deflate(false), d_compression_type_shuffle(false)
+    {
     }
 
+    DmrppCommon(const DmrppCommon &dc)
+    {
+        _duplicate(dc);
+    }
+
+    virtual ~DmrppCommon()
+    {
+    }
 
     /**
      * @brief Returns true if this object utilizes deflate compression.
@@ -92,6 +104,7 @@ public:
         return d_compression_type_shuffle;
     }
 
+#if 0
     // TODO These next two methods are not actually needed since the deflate level
     // is not used when deflating stuff. jhrg
     /**
@@ -112,11 +125,8 @@ public:
     virtual unsigned int get_deflate_level() const {
     	return d_deflate_level;
     }
+#endif
 
-    /**
-     * @brief Add a new chunk as defined by an h4:byteStream element
-     * @return The number of chunk refs (byteStreams) held.
-     */
     virtual unsigned long add_chunk(std::string data_url,
     		unsigned long long size,
 			unsigned long long offset,
@@ -124,8 +134,7 @@ public:
 			std::string uuid,
 			std::string position_in_array = "");
 
-    // TODO this is not really an immutable reference, but a copy
-    virtual std::vector<H4ByteStream> get_immutable_chunks() const {
+    virtual const std::vector<H4ByteStream> &get_immutable_chunks() const {
     	return d_chunk_refs;
     }
 

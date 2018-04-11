@@ -81,7 +81,7 @@ bool DmrppByte::read()
 
     if (read_p())
         return true;
-
+#if 0
     vector<H4ByteStream> *chunk_refs = get_chunk_vec();
     if((*chunk_refs).size() == 0){
         ostringstream oss;
@@ -113,6 +113,9 @@ bool DmrppByte::read()
     }
 
     set_value(*reinterpret_cast<dods_byte*>(h4_byte_stream.get_rbuf()));
+#endif
+
+    set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
 
     set_read_p(true);
 

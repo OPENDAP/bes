@@ -85,18 +85,19 @@ DmrppUInt16::read()
     if (read_p())
         return true;
 
+#if 0
     vector<H4ByteStream> *chunk_refs = get_chunk_vec();
-    if((*chunk_refs).size() == 0){
+    if((*chunk_refs).size() == 0) {
         ostringstream oss;
         oss << "DmrppUInt16::read() - Unable to obtain a byteStream object for DmrppUInt16 " << name()
-        		<< " Without a byteStream we cannot read! "<< endl;
+        << " Without a byteStream we cannot read! "<< endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     else {
-		BESDEBUG("dmrpp", "DmrppUInt16::read() - Found H4ByteStream (chunks): " << endl);
-    	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
-    		BESDEBUG("dmrpp", "DmrppUInt16::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-    	}
+        BESDEBUG("dmrpp", "DmrppUInt16::read() - Found H4ByteStream (chunks): " << endl);
+        for(unsigned long i=0; i<(*chunk_refs).size(); i++) {
+            BESDEBUG("dmrpp", "DmrppUInt16::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+        }
     }
     // For now we only handle the one chunk case.
     H4ByteStream h4bs = (*chunk_refs)[0];
@@ -114,11 +115,14 @@ DmrppUInt16::read()
     if (sizeof(dods_uint16) != h4bs.get_bytes_read()) {
         ostringstream oss;
         oss << "DmrppUInt16: Wrong number of bytes read for '" << name() << "'; expected " << sizeof(dods_uint16)
-            << " but found " << h4bs.get_bytes_read() << endl;
+        << " but found " << h4bs.get_bytes_read() << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
     set_value(*reinterpret_cast<dods_uint16*>(h4bs.get_rbuf()));
+#endif
+
+    set_value(*reinterpret_cast<dods_uint16*>(read_atomic(name())));
 
     set_read_p(true);
 

@@ -90,18 +90,19 @@ DmrppD4Enum::read()
     if (read_p())
         return true;
 
+#if 0
     vector<H4ByteStream> *chunk_refs = get_chunk_vec();
     if((*chunk_refs).size() == 0){
         ostringstream oss;
         oss << "DmrppD4Enum::read() - Unable to obtain a byteStream object for DmrppD4Enum " << name()
-        		<< " Without a byteStream we cannot read! "<< endl;
+                << " Without a byteStream we cannot read! "<< endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     else {
-		BESDEBUG("dmrpp", "DmrppD4Enum::read() - Found H4ByteStream (chunks): " << endl);
-    	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
-    		BESDEBUG("dmrpp", "DmrppD4Enum::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-    	}
+        BESDEBUG("dmrpp", "DmrppD4Enum::read() - Found H4ByteStream (chunks): " << endl);
+        for(unsigned long i=0; i<(*chunk_refs).size(); i++){
+            BESDEBUG("dmrpp", "DmrppD4Enum::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+        }
     }
     // For now we only handle the one chunk case.
     H4ByteStream h4bs = (*chunk_refs)[0];
@@ -124,6 +125,9 @@ DmrppD4Enum::read()
     }
 
     set_value(*reinterpret_cast<dods_enum*>(h4bs.get_rbuf()));
+#endif
+
+    set_value(*reinterpret_cast<dods_enum*>(read_atomic(name())));
 
     set_read_p(true);
 

@@ -80,25 +80,10 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 bool
 DmrppUrl::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppUrl::read for " << name() << endl);
-
-    if (read_p())
-        return true;
-
-    // FIXME
-
-    set_read_p(true);
-
-    return true;
-#endif
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     throw BESError("Unsupported type libdap::D4Structure (dmrpp::DmrppStructure)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-
 }
-
 
 void DmrppUrl::dump(ostream & strm) const
 {
