@@ -105,6 +105,10 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
 #endif
 
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
+
         d_response_object = new BESDDSResponse(dds);
 
         BESRequestHandlerList::TheList()->execute_each(dhi);

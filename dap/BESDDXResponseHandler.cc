@@ -84,6 +84,7 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESDEBUG( "bes", "about to set dap version to: " << bdds->get_dap_client_protocol() << endl);
     BESDEBUG( "bes", "about to set xml:base to: " << bdds->get_request_xml_base() << endl);
 
+#if 0
     // I added these two lines from BESDDXResponse. jhrg 10/05/09
     // Note that the get_dap_client_protocol(), ..., methods
     // are defined in BESDapResponse - these are not the methods of the
@@ -98,16 +99,21 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     if (dds->get_keywords().has_keyword("dap")) {
         BESDEBUG("version",
-                "Has keyword 'dap', setting version to: " << dds->get_keywords().get_keyword_value("dap") << endl);
+            "Has keyword 'dap', setting version to: " << dds->get_keywords().get_keyword_value("dap") << endl);
         dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
     }
     else if (!bdds->get_dap_client_protocol().empty()) {
         BESDEBUG("version",
-                "Has non-empty dap version info in bdds, setting version to: " << bdds->get_dap_client_protocol() << endl);
+            "Has non-empty dap version info in bdds, setting version to: " << bdds->get_dap_client_protocol() << endl);
         dds->set_dap_version(bdds->get_dap_client_protocol());
     }
     else {
         BESDEBUG("version", "Has no clue about dap version, using default." << endl);
+    }
+#endif
+
+    if (!bdds->get_dap_client_protocol().empty()) {
+        dds->set_dap_version(bdds->get_dap_client_protocol());
     }
 
     dds->set_request_xml_base(bdds->get_request_xml_base());
