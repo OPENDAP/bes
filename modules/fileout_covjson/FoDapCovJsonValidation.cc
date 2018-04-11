@@ -87,6 +87,7 @@ FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
+
 /*
 * This method is for validating a dds to see if it is possible to convert the dataset into the coverageJson format
 */
@@ -102,7 +103,6 @@ void FoDapCovJsonValidation::validateDataset()
     //tempOut.open(tempFileName.c_str(), ios::trunc);
     //if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
     //tempOut.close();
-
     validateDataset(_dds);
 }
 
@@ -115,6 +115,7 @@ void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
     tempOut.open(tempFileName.c_str(), ios::app);
+
     if(tempOut.fail()) {
        cout << "Could not open " << tempFileName << endl;
        exit(EXIT_FAILURE);
@@ -151,20 +152,19 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
             //if (i + 1 != currentDimSize) //tempOut << ", ";
         }
         else {
-            if (i) //tempOut << ", ";
+            //if (i) //tempOut << ", ";
             if (typeid(T) == typeid(std::string)) {
                 // Strings need to be escaped to be included in a JSON object.
                 string val = reinterpret_cast<string*>(values)[indx++]; // ((string *) values)[indx++];
                 //tempOut << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
-            else {
+            //else {
                 //tempOut << values[indx++];
-            }
+            //}
         }
     }
     //tempOut << "]";
     tempOut.close();
-
     return indx;
 }
 
@@ -309,7 +309,7 @@ void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
-    long length = focovjson::computeConstrainedShape(a, &shape);
+    //long length = focovjson::computeConstrainedShape(a, &shape);
 
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
         if (i > 0) //tempOut << ",";
@@ -319,7 +319,7 @@ void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
     //tempOut << "]";
 
         //tempOut << "," << endl;
-        unsigned int indx;
+        //unsigned int indx;
 
         vector<std::string> sourceValues;
         a->value(sourceValues);
@@ -401,7 +401,6 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
     case libdap::dods_uint8_c:
     case libdap::dods_int64_c:
     case libdap::dods_uint64_c:
-        // case libdap::dods_url4_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
         throw BESInternalError("File out COVJSON, DAP4 types not yet supported.", __FILE__, __LINE__);
@@ -412,14 +411,12 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
         throw BESInternalError("File out COVJSON, Unrecognized type.", __FILE__, __LINE__);
         break;
     }
-
     }
-
 }
 
 template<typename T>
-void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a){
-
+void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a)
+{
     writeLeafMetadata(a);
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
@@ -432,11 +429,11 @@ void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a){
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
-    long length = focovjson::computeConstrainedShape(a, &shape);
+    //long length = focovjson::computeConstrainedShape(a, &shape);
 
     //tempOut << "\"shape\": [";
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
-        if (i > 0) tempOut<< ",";
+        if (i > 0) tempOut << ",";
         //tempOut << shape[i];
         shapeOrig = shape[i];
     }
@@ -451,7 +448,11 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
     tempOut.open(tempFileName.c_str(), ios::app);
-    if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
+
+    if(tempOut.fail()) {
+        cout << "Could not open " << tempFileName << endl;
+        exit(EXIT_FAILURE);
+    }
 
     if (attr_table.get_size() != 0) {
         libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
@@ -461,10 +462,8 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
             switch (attr_table.get_attr_type(at_iter)) {
 
                 case libdap::Attr_container: {
-
                     libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
                     validateDataset(*atbl);
-
                     break;
                 }
 
@@ -472,16 +471,13 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
                     vector<std::string> *values = attr_table.get_attr_vector(at_iter);
                     // write values
                     for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
-
                         //tempOut << attr_table.get_name(at_iter) << endl;
                         //tempOut << (*values)[i].c_str() << endl;
                         checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
                         printf("\n%s\n", (*values)[i].c_str());
-
                     }
                     break;
                 }
-
             }
         }
     }
@@ -491,40 +487,49 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 /*
 This function checks the passed in attribute to see if it is one of the required attributes for covjson
 */
-void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value){
-
+void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
+{
     if(value == "lon" || value == "longitude"|| value == "LONGITUDE"|| value == "Longitude"|| value == "x"){
         hasX = true;
-        if(shapeOrig!=NULL)
+        if(shapeOrig != NULL) {
             shapeX = shapeOrig;
-    } else if(name=="units" && value == "degrees_east"){
+        }
+    }
+    else if(name=="units" && value == "degrees_east") {
         hasX = true;
-        if(shapeOrig!=NULL)
+        if(shapeOrig != NULL) {
             shapeX = shapeOrig;
+        }
     }
 
-    if(value == "lat" || value == "latitude" || value == "LATITUDE" || value == "Latitude" || value == "y"){
-        if(shapeOrig!=NULL)
+    if(value == "lat" || value == "latitude" || value == "LATITUDE" || value == "Latitude" || value == "y") {
+        if(shapeOrig != NULL) {
             shapeY = shapeOrig;
+        }
         hasY = true;
-    } else if(name == "units" && value =="degrees_north"){
-        if(shapeOrig!=NULL)
+    }
+    else if(name == "units" && value =="degrees_north"){
+        if(shapeOrig != NULL) {
             shapeY = shapeOrig;
+        }
         hasY = true;
     }
 
     if (value == "t" || value == "TIME" || value == "time" || value == "s" || value == "seconds" || value == "Seconds"){
-        if(shapeOrig!=NULL)
+        if(shapeOrig != NULL) {
             shapeT = shapeOrig;
+        }
         hasT = true;
     }
+
     shapeOrig = NULL;
 }
 
 /*
 This function checks to see if the attributes needed to create covjson have been found
 */
-bool FoDapCovJsonValidation::canConvert() {
+bool FoDapCovJsonValidation::canConvert()
+{
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
     tempOut.open(tempFileName.c_str(), ios::app);
@@ -534,19 +539,26 @@ bool FoDapCovJsonValidation::canConvert() {
        exit(EXIT_FAILURE);
     }
 
-    if(hasX && hasY && hasT){
+    bool canConvert = false;
 
-        if(shapeX > 1 && shapeY > 1 && shapeT >= 0)
-            domaintype = 0;
-        else if(shapeX == 1 && shapeY == 1 && (shapeT <= 1 && shapeT >= 0))
-            domaintype = 1;
-        else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
-            domaintype = 2;
-        else if(shapeX == 1 && shapeY == 1 && shapeT >= 0)
-            domaintype = 3;
-        //tempOut << domaintype;
-        tempOut.close();
-        return true;
+    if(hasX && hasY && hasT) {
+        if(shapeX > 1 && shapeY > 1 && shapeT >= 0) {
+            domainType = Grid; // 0
+            canConvert = true;
+        }
+        else if(shapeX == 1 && shapeY == 1 && (shapeT <= 1 && shapeT >= 0)) {
+            domainType = VerticalProfile; // 1
+            canConvert = true;
+        }
+        else if(shapeX == 1 && shapeY == 1 && shapeT >= 0) {
+            domainType = PointSeries; // 2
+            canConvert = true;
+        }
+        else if(shapeX == 1 && shapeY == 1 && shapeT >= 0) {
+            domainType = Point; // 3
+            canConvert = true;
+        }
     }
-    return false;
+    tempOut.close();
+    return canConvert;
 }

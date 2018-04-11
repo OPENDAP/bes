@@ -545,13 +545,13 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     * 2 pointseries
     * 3 point
     */
-    if(fv.domaintype == 0)
+    if(fv.domainType == 0)
         *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-    else if(fv.domaintype == 1)
+    else if(fv.domainType == 1)
         *strm << child_indent2 << "\"domainType\": \"VerticalProfile\"," << endl;
-    else if(fv.domaintype == 2)
+    else if(fv.domainType == 2)
         *strm << child_indent2 << "\"domainType\": \"PointSeries\"," << endl;
-    else if(fv.domaintype == 3)
+    else if(fv.domainType == 3)
         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
     else
 		    throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);

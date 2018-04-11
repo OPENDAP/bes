@@ -99,7 +99,8 @@ public:
     * 2 pointseries
     * 3 point
     */
-    int domaintype;
+    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
+    int domainType;
 
     FoDapCovJsonValidation(libdap::DDS *dds);
 
