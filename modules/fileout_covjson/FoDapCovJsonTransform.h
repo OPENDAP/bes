@@ -86,9 +86,9 @@ private:
     //void transform(std::ostream *strm, Grid *g, string indent);
     //void transform(std::ostream *strm, Sequence *s, string indent);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
-    void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
-        std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData);
+    void transformAxesWorker(ostream *strm, std::vector<libdap::BaseType *> leaves, string indent, bool sendData);
     void transformReferenceWorker(ostream *strm, string indent);
+    void transformParametersWorker(ostream *strm, vector<libdap::BaseType *> nodes, string indent, bool sendData);
 
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
