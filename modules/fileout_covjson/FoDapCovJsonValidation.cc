@@ -318,11 +318,11 @@ void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
     }
     //tempOut << "]";
 
-        //tempOut << "," << endl;
-        //unsigned int indx;
+    //tempOut << "," << endl;
+    //unsigned int indx;
 
-        vector<std::string> sourceValues;
-        a->value(sourceValues);
+    vector<std::string> sourceValues;
+    a->value(sourceValues);
 
     validateDataset(a->get_attr_table());
 

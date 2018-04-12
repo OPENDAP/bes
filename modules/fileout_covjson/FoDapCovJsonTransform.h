@@ -58,10 +58,18 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
-    //std::vector<double> axis_x;
-    //std::vector<double> axis_y;
-    //std::vector<double> axis_t;
-    //std::map<std::string, std::string> m;
+
+    /*
+    * if:
+    * 0 NdArray
+    * 1 TiledNdArray
+    * 2 Coverage
+    */
+    string paramType;
+    string paramName;
+    string paramUnits;
+    string paramLongName;
+    string paramHistory;
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
@@ -78,19 +86,20 @@ private:
     //void transform(std::ostream *strm, Grid *g, string indent);
     //void transform(std::ostream *strm, Sequence *s, string indent);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
-    void transform_node_worker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
+    void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
         std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData);
+    void transformReferenceWorker(ostream *strm, string indent);
 
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
     template<typename T>
-    void covjson_simple_type_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
-    void covjson_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void covjsonStringArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     template<typename T>
-    unsigned int covjson_simple_type_array_worker(std::ostream *strm, T *values, unsigned int indx,
+    unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
 public:
     FoDapCovJsonTransform(libdap::DDS *dds);

@@ -80,11 +80,10 @@ private:
     unsigned int covjson_simple_type_array_worker(T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
 
-
-
 public:
     bool hasX;
     bool hasY;
+    bool hasZ;
     bool hasT;
 
     long int shapeX;
