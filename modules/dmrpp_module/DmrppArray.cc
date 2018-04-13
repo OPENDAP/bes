@@ -209,7 +209,7 @@ DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
  * efficient.
  */
 void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *target_index,
-    vector<unsigned int> &subsetAddress, const vector<unsigned int> &array_shape, H4ByteStream *h4bytestream)
+    vector<unsigned int> &subsetAddress, const vector<unsigned int> &array_shape, Chunk *h4bytestream)
 {
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
@@ -311,12 +311,12 @@ bool DmrppArray::read_no_chunks()
 {
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " BEGIN" << endl);
 
-    vector<H4ByteStream> &chunk_refs = get_chunk_vec();
+    vector<Chunk> &chunk_refs = get_chunk_vec();
     if (chunk_refs.size() == 0) {
         throw BESInternalError(string("Unable to obtain a ByteStream object for array ") + name(), __FILE__, __LINE__);
     }
 
-    H4ByteStream &h4_byte_stream = chunk_refs[0];
+    Chunk &h4_byte_stream = chunk_refs[0];
     h4_byte_stream.read(); // Use the default values for deflate (false) and chunk size (0)
 
     if (!is_projected()) {      // if there is no projection constraint
@@ -357,7 +357,7 @@ bool DmrppArray::read_chunks()
 {
     BESDEBUG("dmrpp", __FUNCTION__ << " for variable '" << name() << "' - BEGIN" << endl);
 
-    vector<H4ByteStream> &chunk_refs = get_chunk_vec();
+    vector<Chunk> &chunk_refs = get_chunk_vec();
     if (chunk_refs.size() == 0) {
         ostringstream oss;
         oss << "DmrppArray::" << __func__ << "() - Unable to obtain a byteStream object for array " << name()
@@ -391,7 +391,7 @@ bool DmrppArray::read_chunks()
      * the variables.
      */
     for (unsigned long i = 0; i < chunk_refs.size(); i++) {
-        H4ByteStream &h4bs = chunk_refs[i];
+        Chunk &h4bs = chunk_refs[i];
         BESDEBUG("dmrpp",
             "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs.to_string() << endl);
         vector<unsigned int> target_element_address = h4bs.get_position_in_array();
@@ -416,14 +416,14 @@ bool DmrppArray::read_chunks()
      * correct values out of each chunk and into the array memory.
      */
     for (unsigned long i = 0; i < chunk_refs.size(); i++) {
-        H4ByteStream &h4bs = chunk_refs[i];
+        Chunk &h4bs = chunk_refs[i];
         BESDEBUG("dmrpp",
             "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs.to_string() << endl);
         vector<unsigned int> target_element_address = h4bs.get_position_in_array();
         vector<unsigned int> chunk_source_address(dimensions(), 0);
         // Recursive insertion operation.
         // Note that curl_multi_handle is now null. This 'triggers,' incombination
-        // with the logic in H4ByteStream, the 'decompress and insert the data' mode
+        // with the logic in Chunk, the 'decompress and insert the data' mode
         // of insert_constrained_chunk(). jhrg 4/10/18
         bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs, 0);
         BESDEBUG("dmrpp",
@@ -441,13 +441,13 @@ bool DmrppArray::read_chunks()
  * This helper method reads completely all of the curl_easy handles in the multi_handle.
  *
  * This means that we are reading some or all of the chunks and the chunk vector is
- * passed in so that the curl_easy handle held in each H4ByteStream that was read can be
+ * passed in so that the curl_easy handle held in each Chunk that was read can be
  * cleaned up once the request has been completed.
  *
  * Once this method is completed we will be ready to copy all of the data from the
  * chunks to the array memory
  */
-void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_refs)
+void DmrppArray::multi_finish(CURLM *multi_handle, vector<Chunk> *chunk_refs)
 {
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() BEGIN" << endl);
 
@@ -514,7 +514,7 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
             string h4bs_str = "No Chunk Found For Handle!";
             /* Find out which handle this message is about */
             for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
-                H4ByteStream *this_h4bs = &(*chunk_refs)[idx];
+                Chunk *this_h4bs = &(*chunk_refs)[idx];
 
                 CURL *curl_handle = this_h4bs->get_curl_handle();
                 found = (msg->easy_handle == curl_handle);
@@ -579,11 +579,11 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
  * @param chunk_source_address - This vector is used to hold the chunk
  * element address from where data will be read. The values of this are relative to
  * the chunk's origin (position in array).
- * @param chunk The H4ByteStream containing the read data values to insert.
+ * @param chunk The Chunk containing the read data values to insert.
  * @return
  */
 bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
-    vector<unsigned int> *chunk_source_address, H4ByteStream *chunk, CURLM *multi_handle)
+    vector<unsigned int> *chunk_source_address, Chunk *chunk, CURLM *multi_handle)
 {
 
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " BEGIN "<< endl);
@@ -807,7 +807,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
 /**
  * Reads chunked array data from the relevant sources (as indicated by each
- * H4ByteStream object) for this array.
+ * Chunk object) for this array.
  */
 bool DmrppArray::read()
 {
@@ -824,7 +824,7 @@ bool DmrppArray::read()
         }
         else {
             ostringstream oss;
-            oss << "DmrppArray: Unchunked arrays must have exactly one H4ByteStream object. "
+            oss << "DmrppArray: Unchunked arrays must have exactly one Chunk object. "
                 "This one has " << get_immutable_chunks().size();
             throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }

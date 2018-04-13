@@ -95,11 +95,11 @@ public:
     }
 
     /**
-     * Evaluates a H4ByteStream instance.
+     * Evaluates a Chunk instance.
      * This checks the offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkByteStream(string name, H4ByteStream h4bs, unsigned long long offset, unsigned long long size,
+    void checkByteStream(string name, Chunk h4bs, unsigned long long offset, unsigned long long size,
         string /*md5*/, string /*uuid*/)
     {
 
@@ -118,7 +118,7 @@ public:
 
     /**
      * Evaluates a BaseType pointer believed to be an instance of DrmppCommon
-     * with a single "chunk" (H4ByteStream) member.
+     * with a single "chunk" (Chunk) member.
      * This checks the variables name, offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
@@ -132,7 +132,7 @@ public:
         DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
         CPPUNIT_ASSERT(dc);
 
-        const vector<H4ByteStream> &chunks = dc->get_immutable_chunks();
+        const vector<Chunk> &chunks = dc->get_immutable_chunks();
         CPPUNIT_ASSERT(chunks.size() == 1);
         checkByteStream(bt->name(), chunks[0], offset, size, "", "");
     }

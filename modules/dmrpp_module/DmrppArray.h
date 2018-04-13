@@ -67,16 +67,16 @@ private:
 			unsigned long *target_index,
 			std::vector<unsigned int> &subsetAddress,
 			const std::vector<unsigned int> &array_shape,
-			H4ByteStream *h4bytestream);
+			Chunk *h4bytestream);
 
     virtual bool insert_constrained_chunk(
     		unsigned int dim,
     		std::vector<unsigned int> *target_address,
     		std::vector<unsigned int> *chunk_source_address,
-    		H4ByteStream *chunk,
+    		Chunk *chunk,
     		CURLM *multi_handle);
 
-    void multi_finish(CURLM *curl_multi_handle, std::vector<H4ByteStream> *chunk_refs);
+    void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);

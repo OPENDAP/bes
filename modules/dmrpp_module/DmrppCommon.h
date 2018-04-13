@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "H4ByteStream.h"
+#include "Chunk.h"
 
 namespace libdap {
     class BaseType;
@@ -52,7 +52,7 @@ private:
 	bool d_compression_type_deflate;
 	bool d_compression_type_shuffle;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
-	std::vector<H4ByteStream> d_chunk_refs;
+	std::vector<Chunk> d_chunk_refs;
 
 protected:
     void _duplicate(const DmrppCommon &dc) {
@@ -67,9 +67,9 @@ protected:
     }
 
     /**
-     * @brief Returns a reference to the internal H4ByteStream vector.
+     * @brief Returns a reference to the internal Chunk vector.
      */
-    virtual std::vector<H4ByteStream> &get_chunk_vec() {
+    virtual std::vector<Chunk> &get_chunk_vec() {
     	return d_chunk_refs;
     }
 
@@ -137,7 +137,7 @@ public:
 
 			std::string position_in_array = "");
 
-    virtual const std::vector<H4ByteStream> &get_immutable_chunks() const {
+    virtual const std::vector<Chunk> &get_immutable_chunks() const {
     	return d_chunk_refs;
     }
 
@@ -184,7 +184,7 @@ public:
         if (read_p())
             return true;
 
-        vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+        vector<Chunk> *chunk_refs = get_chunk_vec();
         if((*chunk_refs).size() == 0){
             ostringstream oss;
             oss << "DmrppByte::read() - Unable to obtain byteStream objects for " << name()
@@ -192,7 +192,7 @@ public:
             throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
-    		//BESDEBUG("dmrpp", "DmrppByte::read() - Found H4ByteStream (chunks): " << endl);
+    		//BESDEBUG("dmrpp", "DmrppByte::read() - Found Chunk (chunks): " << endl);
         	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
         		//BESDEBUG("dmrpp", "DmrppByte::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
         	;
@@ -200,12 +200,12 @@ public:
         }
 
         // For now we only handle the one chunk case.
-        H4ByteStream h4_byte_stream = (*chunk_refs)[0];
+        Chunk h4_byte_stream = (*chunk_refs)[0];
         h4_byte_stream.set_rbuf_to_size();
         // First cut at subsetting; read the whole thing and then subset that.
        // BESDEBUG("dmrpp", "DmrppArray::read() - Reading  " << h4_byte_stream.get_size() << " bytes from "<< h4_byte_stream.get_data_url() << ": " << h4_byte_stream.get_curl_range_arg_string() << endl);
 
-        curl_read_byte_stream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4_byte_stream));
+        curl_read_byte_stream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), dynamic_cast<Chunk*>(&h4_byte_stream));
 
         // If the expected byte count was not read, it's an error.
         if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {

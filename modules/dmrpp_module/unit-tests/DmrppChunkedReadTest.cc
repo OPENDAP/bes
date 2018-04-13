@@ -34,7 +34,7 @@
 #include <BESDebug.h>
 #include <BESUtil.h>
 
-#include "H4ByteStream.h"
+#include "Chunk.h"
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppCommon.h"
@@ -126,7 +126,7 @@ public:
     void set_data_url_in_chunks(DmrppCommon *dc)
     {
         // Get the chunks and make sure there's at least one
-        vector<H4ByteStream> &chunks = dc->get_chunk_vec();
+        vector<Chunk> &chunks = dc->get_chunk_vec();
         CPPUNIT_ASSERT(chunks.size() > 0);
         // Tweak the data URLs for the test
         for (unsigned int i = 0; i < chunks.size(); i++) {

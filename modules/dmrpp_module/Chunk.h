@@ -21,8 +21,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _H4ByteStream_h
-#define _H4ByteStream_h 1
+#ifndef _Chunk_h
+#define _Chunk_h 1
 
 #include <string>
 #include <vector>
@@ -37,7 +37,7 @@ namespace dmrpp {
  * semantics of an hdf4:byteStream object, which is used to represent a chunk of
  * data in a (potentially complex) HDF4/HDF5 file.
  */
-class H4ByteStream {
+class Chunk {
 private:
     std::string d_data_url;
     unsigned long long d_size;
@@ -70,11 +70,11 @@ private:
 
     void add_tracking_query_param(std::string& data_access_url);
 
-    friend class H4ByteStreamTest;
+    friend class ChunkTest;
 
 protected:
 
-    void _duplicate(const H4ByteStream &bs)
+    void _duplicate(const Chunk &bs)
     {
         // See above
         d_bytes_read = 0;
@@ -89,8 +89,8 @@ protected:
         d_is_in_multi_queue = false;
 
 #if 0
-        // For some reason, the assignment of a vector<H4ByteStream> fails
-        // but an assignment of a reference to a vector<H4ByteStream> works.
+        // For some reason, the assignment of a vector<Chunk> fails
+        // but an assignment of a reference to a vector<Chunk> works.
         // I thought it was something in the code above - something missing
         // in _duplicate(), but no. jhrg 4/10/18
         d_bytes_read = bs.d_bytes_read;
@@ -119,7 +119,7 @@ protected:
 
 public:
 
-    H4ByteStream() :
+    Chunk() :
             d_data_url(""), d_size(0), d_offset(0), // TODO d_md5(""), d_uuid(""),
             d_is_read(false), d_bytes_read(0),
             d_read_buffer(0), d_read_buffer_size(0), // TODO d_read_pointer(0),
@@ -127,7 +127,7 @@ public:
     {
     }
 
-    H4ByteStream(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
+    Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
             d_data_url(data_url), d_size(size), d_offset(offset), // TODO d_md5(""), d_uuid(""),
             d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0),
             d_curl_handle(0), d_is_in_multi_queue(false)
@@ -136,7 +136,7 @@ public:
     }
 
 #if 0
-    H4ByteStream(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
+    Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
         std::string uuid, std::string position_in_array = "") :
     d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid),
     d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), // TODO  d_read_pointer(0),
@@ -147,21 +147,21 @@ public:
 #endif
 
 
-    H4ByteStream(const H4ByteStream &h4bs)
+    Chunk(const Chunk &h4bs)
     {
         _duplicate(h4bs);
     }
 
-    virtual ~H4ByteStream()
+    virtual ~Chunk()
     {
         delete[] d_read_buffer;
     }
 
-    /// I think this is broken. vector<H4ByteStream> assignment fails
+    /// I think this is broken. vector<Chunk> assignment fails
     /// in the read_atomic() method but 'assignment' using a reference
     /// works. This bug shows up in DmrppCommnon::read_atomic().
     /// jhrg 4/10/18
-    H4ByteStream &operator=(const H4ByteStream &rhs)
+    Chunk &operator=(const Chunk &rhs)
     {
         if (this == &rhs)
         return *this;
@@ -342,7 +342,7 @@ public:
         // correct number of bytes were actually read. I think this is patched, but we
         // should think about what this field really means - the number of bytes read or
         // the size of the current read_buffer? For now this works given a mod in
-        //H4ByteStream::read(...). jhrg 1/18/17
+        //Chunk::read(...). jhrg 1/18/17
         set_bytes_read(size);
     }
 
@@ -411,4 +411,4 @@ public:
 
 } // namespace dmrpp
 
-#endif // _H4ByteStream_h
+#endif // _Chunk_h

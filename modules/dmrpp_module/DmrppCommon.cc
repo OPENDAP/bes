@@ -34,7 +34,7 @@
 
 #include "DmrppCommon.h"
 #include "DmrppUtil.h"
-#include "H4ByteStream.h"
+#include "Chunk.h"
 
 using namespace std;
 
@@ -115,7 +115,7 @@ unsigned long DmrppCommon::add_chunk(std::string data_url, unsigned long long si
         /*std::string md5, std::string uuid,*/ std::string position_in_array)
 {
 
-    d_chunk_refs.push_back(H4ByteStream(data_url, size, offset, /*md5, uuid,*/ position_in_array));
+    d_chunk_refs.push_back(Chunk(data_url, size, offset, /*md5, uuid,*/ position_in_array));
 
     BESDEBUG("dmrpp",
             "DmrppCommon::add_chunk() - Added chunk " << d_chunk_refs.size() << ": " << d_chunk_refs.back().to_string() << endl);
@@ -133,14 +133,14 @@ unsigned long DmrppCommon::add_chunk(std::string data_url, unsigned long long si
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    vector<H4ByteStream> &chunk_refs = get_chunk_vec();
+    vector<Chunk> &chunk_refs = get_chunk_vec();
 
     if (chunk_refs.size() == 0) {
         throw BESInternalError(string("Unable to obtain ByteStream objects for ") + name, __FILE__, __LINE__);
     }
 
     // For now we only handle the one chunk case.
-    H4ByteStream &h4_byte_stream = chunk_refs[0];
+    Chunk &h4_byte_stream = chunk_refs[0];
     h4_byte_stream.set_rbuf_to_size();
 
     // First cut at subsetting; read the whole thing and then subset that.
@@ -175,8 +175,8 @@ void DmrppCommon::dump(ostream & strm) const
     }
     strm << "]" << endl;
 
-    const vector<H4ByteStream> &chunk_refs = get_immutable_chunks();
-    strm << BESIndent::LMarg << "H4ByteStreams (aka chunks):" << (chunk_refs.size() ? "" : "None Found.") << endl;
+    const vector<Chunk> &chunk_refs = get_immutable_chunks();
+    strm << BESIndent::LMarg << "Chunks (aka chunks):" << (chunk_refs.size() ? "" : "None Found.") << endl;
     BESIndent::Indent();
     for (unsigned int i = 0; i < chunk_refs.size(); i++) {
         strm << BESIndent::LMarg;

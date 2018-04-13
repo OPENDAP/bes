@@ -86,7 +86,7 @@ DmrppUInt64::read()
         return true;
 
 #if 0
-    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+    vector<Chunk> *chunk_refs = get_chunk_vec();
     if((*chunk_refs).size() == 0) {
         ostringstream oss;
         oss << "DmrppUInt64::read() - Unable to obtain a byteStream object for DmrppUInt64 " << name()
@@ -94,13 +94,13 @@ DmrppUInt64::read()
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     else {
-        BESDEBUG("dmrpp", "DmrppUInt64::read() - Found H4ByteStream (chunks): " << endl);
+        BESDEBUG("dmrpp", "DmrppUInt64::read() - Found Chunk (chunks): " << endl);
         for(unsigned long i=0; i<(*chunk_refs).size(); i++) {
             BESDEBUG("dmrpp", "DmrppUInt64::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
         }
     }
     // For now we only handle the one chunk case.
-    H4ByteStream h4bs = (*chunk_refs)[0];
+    Chunk h4bs = (*chunk_refs)[0];
     h4bs.set_rbuf_to_size();
 
     // Do a range get with libcurl
@@ -109,7 +109,7 @@ DmrppUInt64::read()
     // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
     // will leave the code using garbage memory. jhrg 11/23/16
     BESDEBUG("dmrpp", "DmrppUInt64::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-    curl_read_byte_stream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4bs));
+    curl_read_byte_stream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<Chunk*>(&h4bs));
 
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (sizeof(dods_uint64) != h4bs.get_bytes_read()) {
