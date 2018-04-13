@@ -130,8 +130,11 @@ public:
     virtual unsigned long add_chunk(std::string data_url,
     		unsigned long long size,
 			unsigned long long offset,
-			std::string md5,
-			std::string uuid,
+#if 0
+            std::string md5,
+            std::string uuid,
+#endif
+
 			std::string position_in_array = "");
 
     virtual const std::vector<H4ByteStream> &get_immutable_chunks() const {

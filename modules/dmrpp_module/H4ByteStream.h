@@ -42,9 +42,11 @@ private:
     std::string d_data_url;
     unsigned long long d_size;
     unsigned long long d_offset;
+#if 0
     // TODO Remove these
     std::string d_md5;
     std::string d_uuid;
+#endif
 
     bool d_is_read;
     std::vector<unsigned int> d_chunk_position_in_array;
@@ -56,12 +58,17 @@ private:
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
 
+#if 0
     unsigned long long d_read_pointer;
+#endif
+
 
     CURL *d_curl_handle;
     char d_curl_error_buf[CURL_ERROR_SIZE];
 
     bool d_is_in_multi_queue;
+
+    void add_tracking_query_param(std::string& data_access_url);
 
     friend class H4ByteStreamTest;
 
@@ -69,16 +76,17 @@ protected:
 
     void _duplicate(const H4ByteStream &bs)
     {
-#if 1
         // See above
         d_bytes_read = 0;
         d_read_buffer = 0;
         d_read_buffer_size = 0;
+#if 0
         d_read_pointer = 0;
+#endif
+
         d_is_read = false;
         d_curl_handle = 0;
         d_is_in_multi_queue = false;
-#endif
 
 #if 0
         // For some reason, the assignment of a vector<H4ByteStream> fails
@@ -101,8 +109,10 @@ protected:
         // These vars are easy to duplicate.
         d_size = bs.d_size;
         d_offset = bs.d_offset;
+#if 0
         d_md5 = bs.d_md5;
         d_uuid = bs.d_uuid;
+#endif
         d_data_url = bs.d_data_url;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
@@ -110,21 +120,32 @@ protected:
 public:
 
     H4ByteStream() :
-            d_data_url(""), d_size(0), d_offset(0), d_md5(""), d_uuid(""),
+            d_data_url(""), d_size(0), d_offset(0), // TODO d_md5(""), d_uuid(""),
             d_is_read(false), d_bytes_read(0),
-            d_read_buffer(0), d_read_buffer_size(0), d_read_pointer(0),
+            d_read_buffer(0), d_read_buffer_size(0), // TODO d_read_pointer(0),
             d_curl_handle(0), d_is_in_multi_queue(false)
     {
     }
 
-    H4ByteStream(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
-            std::string uuid, std::string position_in_array = "") :
-            d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid),
-            d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), d_read_pointer(0),
+    H4ByteStream(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
+            d_data_url(data_url), d_size(size), d_offset(offset), // TODO d_md5(""), d_uuid(""),
+            d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0),
             d_curl_handle(0), d_is_in_multi_queue(false)
     {
         ingest_position_in_array(position_in_array);
     }
+
+#if 0
+    H4ByteStream(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
+        std::string uuid, std::string position_in_array = "") :
+    d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid),
+    d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), // TODO  d_read_pointer(0),
+    d_curl_handle(0), d_is_in_multi_queue(false)
+    {
+        ingest_position_in_array(position_in_array);
+    }
+#endif
+
 
     H4ByteStream(const H4ByteStream &h4bs)
     {
@@ -150,6 +171,7 @@ public:
         return *this;
     }
 
+#if 0
     void reset_read_pointer()
     {
         d_read_pointer = 0;
@@ -164,13 +186,19 @@ public:
     {
         return get_rbuf() + d_read_pointer;
     }
+#endif
+
 
     virtual CURL *get_curl_handle() const
     {
         return d_curl_handle;
     }
 
-    virtual void cleanup_curl_handle();
+    virtual void cleanup_curl_handle()
+    {
+        if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
+        d_curl_handle = 0;
+    }
 
     /**
      * @brief Get the size of this byteStream's data block on disk
@@ -191,14 +219,15 @@ public:
      */
     virtual std::string get_md5() const
     {
-        return d_md5;
+        return ""; // TODO d_md5;
+
     }
     /**
      * @brief Get the uuid string for this byteStream's data block
      */
     virtual std::string get_uuid() const
     {
-        return d_uuid;
+        return ""; // TODO d_uuid;
     }
 
     /**
@@ -233,6 +262,7 @@ public:
         d_bytes_read = bytes_read;
     }
 
+#if 0
     /**
      * @brief Sets the size of the internal read buffer.
      * @deprecated
@@ -250,21 +280,32 @@ public:
         d_read_buffer_size = size;
         set_bytes_read(0);
     }
+#endif
+
 
     /**
-     * @brief Sets the size of the internal read buffer.
+     * @brief Allocates the intenal read buffer to be d_size bytes
      *
-     * The memory management of the read buffer is managed internal to this
-     * class. This means that calling this method will release any previously
-     * allocated read buffer memory and then allocates a new memory block. Since
-     * this method always dumps the exiting read buffer the bytes_read counter is
-     * set to zero.
-     *
-     * @param size Size of the internal read buffer.
+     * The memory of the read buffer is managed internally by this method.
+     * Calling this method will release any previously allocated read buffer
+     * memory and then allocate a new memory block. The bytes_read counter is
+     * reset to zero.
      */
     virtual void set_rbuf_to_size()
     {
+#if 0
         rbuf_size(d_size);
+#endif
+
+        // Calling delete on a null pointer is fine, so we don't need to check
+        // to see if this is the first call.
+        delete[] d_read_buffer;
+        d_read_buffer_size = 0;
+
+        d_read_buffer = new char[d_size];
+        d_read_buffer_size = d_size;
+        set_bytes_read(0);
+
     }
 
     /**

@@ -112,10 +112,10 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
  * @return The number of chunk refs (byteStreams) held.
  */
 unsigned long DmrppCommon::add_chunk(std::string data_url, unsigned long long size, unsigned long long offset,
-        std::string md5, std::string uuid, std::string position_in_array)
+        /*std::string md5, std::string uuid,*/ std::string position_in_array)
 {
 
-    d_chunk_refs.push_back(H4ByteStream(data_url, size, offset, md5, uuid, position_in_array));
+    d_chunk_refs.push_back(H4ByteStream(data_url, size, offset, /*md5, uuid,*/ position_in_array));
 
     BESDEBUG("dmrpp",
             "DmrppCommon::add_chunk() - Added chunk " << d_chunk_refs.size() << ": " << d_chunk_refs.back().to_string() << endl);
