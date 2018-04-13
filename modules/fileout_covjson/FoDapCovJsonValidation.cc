@@ -508,7 +508,7 @@ void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
         }
         hasY = true;
     }
-    else if(name == "units" && value =="degrees_north"){
+    else if(name == "units" && value =="degrees_north") {
         if(shapeOrig != NULL) {
             shapeY = shapeOrig;
         }

@@ -88,7 +88,8 @@ private:
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
     void transformAxesWorker(ostream *strm, std::vector<libdap::BaseType *> leaves, string indent, bool sendData);
     void transformReferenceWorker(ostream *strm, string indent);
-    void transformParametersWorker(ostream *strm, vector<libdap::BaseType *> nodes, string indent, bool sendData);
+    void transformParametersWorker(ostream *strm, /*vector<libdap::BaseType *> leaves,*/ vector<libdap::BaseType *> nodes,
+       FoDapCovJsonValidation fv, string indent, bool sendData);
 
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);

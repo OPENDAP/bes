@@ -88,7 +88,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
         else {
             if (i) *strm << ", ";
             if (typeid(T) == typeid(std::string)) {
-                // Strings need to be escaped to be included in a JSON object.
+                // Strings need to be escaped to be included in a CovJSON object.
                 string val = reinterpret_cast<string*>(values)[indx++]; // ((string *) values)[indx++];
                 *strm << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
@@ -202,7 +202,7 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
 }
 
 /**
- * Writes the covjson opener for the Dataset, including name and top level DAP attributes.
+ * Writes the CovJSON opener for the Dataset, including name and top level DAP attributes.
  */
 void FoDapCovJsonTransform::writeDatasetMetadata(ostream *strm, libdap::DDS *dds, string indent)
 {
@@ -236,6 +236,10 @@ void FoDapCovJsonTransform::writeLeafMetadata(ostream *strm, libdap::BaseType *b
 {
     // Name
     //*strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
+
+    //if(fv-> == "degrees_north")
+    //    *strm << indent << "\"y\": {" << endl;
+
     *strm << indent << "\"" << bt->name() << "\": {" << endl;
 
     // type
@@ -342,10 +346,10 @@ void FoDapCovJsonTransform::writeLeafMetadata(ostream *strm, libdap::BaseType *b
 // }
 
 /**
- * @brief Get the JSON encoding for a DDS
+ * @brief Get the CovJSON encoding for a DDS
  *
- * Set up the JSON output transform object. This constructor builds
- * an object that will build a JSON encoding for a DDS. This class can
+ * Set up the CovJSON output transform object. This constructor builds
+ * an object that will build a CovJSON encoding for a DDS. This class can
  * return both the entire DDS, including data, and a metadata-only
  * response.
  *
@@ -382,17 +386,17 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
 }
 
 /**
- * @brief Transforms each of the marked variables of the DDS to JSON
+ * @brief Transforms each of the marked variables of the DDS to CovJSON
  *
  * For each variable in the DDS, write out that variable and its
- * attributes as JSON. Each OPeNDAP data type translates into a
- * particular JSON type. Also write out any global attributes stored at the
+ * attributes as CovJSON. Each OPeNDAP data type translates into a
+ * particular CovJSON type. Also write out any global attributes stored at the
  * top level of the DataDDS.
  *
  * @note If sendData is true but the DDS does not contain data, the result
  * is undefined.
  *
- * @param ostrm Write the JSON to this stream
+ * @param ostrm Write the CovJSON to this stream
  * @param sendData True if data should be sent, False to send only metadata.
  */
 void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, FoDapCovJsonValidation fv)
@@ -483,14 +487,14 @@ void FoDapCovJsonTransform::transformAxesWorker(ostream *strm, vector<libdap::Ba
  * This worker method allows us to recursively traverse a "node" variables contents and
  * any child nodes will be traversed as well.
  */
-void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, vector<libdap::BaseType *> nodes,
-    string indent, bool sendData)
+void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, /*vector<libdap::BaseType *> leaves,*/
+    vector<libdap::BaseType *> nodes, FoDapCovJsonValidation fv, string indent, bool sendData)
 {
     // Write the axes to strm
     *strm << indent << "\"parameters\": {";
 
-    //if (leaves.size() > 0) *strm << endl;
-    //for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
+    // if (leaves.size() > 0) *strm << endl;
+    // for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
     //    libdap::BaseType *v = leaves[l];
     //    BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
     //    if (l > 0) {
@@ -498,8 +502,8 @@ void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, vector<libd
     //        *strm << endl;
     //    }
     //    transform(strm, v, indent + _indent_increment, sendData);
-    //}
-    //if (leaves.size() > 0) *strm << endl << indent;
+    // }
+    // if (leaves.size() > 0) *strm << endl << indent;
 
     // Write down the parameters and values
     //*strm << _indent_increment << "\"parameters\": [";
@@ -537,8 +541,7 @@ void FoDapCovJsonTransform::transformReferenceWorker(ostream *strm, string inden
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
 
-    *strm << "}," << endl << indent << "\"referencing\": [" << endl;
-    *strm << indent << "{" << endl;
+    *strm << "}," << endl << indent << "\"referencing\": [{" << endl;
     *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
     *strm << child_indent2 << "\"type\": \"TemporalRS\"," << endl;
@@ -552,8 +555,7 @@ void FoDapCovJsonTransform::transformReferenceWorker(ostream *strm, string inden
     *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
     *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"," << endl;
     *strm << child_indent1 << "}" << endl;
-    *strm << indent << "}" << endl;
-    *strm << indent << "]" << endl;
+    *strm << indent << "}]" << endl;
     *strm << _indent_increment << "}," << endl;
 }
 
@@ -649,10 +651,9 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 
     transformReferenceWorker(strm, child_indent2);
 
-    transformParametersWorker(strm, nodes, child_indent1, sendData);
+    transformParametersWorker(strm, nodes, fv, child_indent1, sendData);
 
     *strm << child_indent1 << "}" << endl;
-
     *strm << indent << "}" << endl; // end of the file
 }
 
