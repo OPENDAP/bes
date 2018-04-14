@@ -34,17 +34,12 @@
 
 #include <unistd.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include "BESInternalError.h"
+#include "BESDebug.h"
 
 #include "DmrppArray.h"
 #include "DmrppUtil.h"
-#include "Odometer.h"
 
-
-#if 0
-using namespace dmrpp;
-#endif
 using namespace libdap;
 using namespace std;
 
@@ -214,7 +209,7 @@ DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
  * efficient.
  */
 void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *target_index,
-    vector<unsigned int> &subsetAddress, const vector<unsigned int> &array_shape, H4ByteStream *h4bytestream)
+    vector<unsigned int> &subsetAddress, const vector<unsigned int> &array_shape, Chunk *h4bytestream)
 {
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
@@ -222,7 +217,7 @@ void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *ta
     char *sourceBuf = h4bytestream->get_rbuf();
     char *targetBuf = get_buf();
 
-    unsigned int start = this->dimension_start(dimIter);
+    unsigned int start = this->dimension_start(dimIter);    // TODO typo? should 'start' be the constrained value. jhrg 4/10/18
     unsigned int stop = this->dimension_stop(dimIter, true);
     unsigned int stride = this->dimension_stride(dimIter, true);
     BESDEBUG("dmrpp",
@@ -308,23 +303,20 @@ unsigned long long DmrppArray::get_size(bool constrained)
 }
 
 /**
- * @brief Read an array that is stored with using two or more 'chunks.'
+ * @brief Read an array that is stored with using one 'chunk.'
+ *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
 bool DmrppArray::read_no_chunks()
 {
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " BEGIN" << endl);
 
-    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
-    if (chunk_refs->size() == 0) {
-        ostringstream oss;
-        oss << "DmrppArray::" << __func__ << "() - Unable to obtain a ByteStream object for array " << name()
-                        << " Without a ByteStream we cannot read!";
-        throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    vector<Chunk> &chunk_refs = get_chunk_vec();
+    if (chunk_refs.size() == 0) {
+        throw BESInternalError(string("Unable to obtain a ByteStream object for array ") + name(), __FILE__, __LINE__);
     }
 
-    // For now we only handle the one chunk case.
-    H4ByteStream h4_byte_stream = (*chunk_refs)[0];
+    Chunk &h4_byte_stream = chunk_refs[0];
     h4_byte_stream.read(); // Use the default values for deflate (false) and chunk size (0)
 
     if (!is_projected()) {      // if there is no projection constraint
@@ -365,15 +357,16 @@ bool DmrppArray::read_chunks()
 {
     BESDEBUG("dmrpp", __FUNCTION__ << " for variable '" << name() << "' - BEGIN" << endl);
 
-    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
-    if (chunk_refs->size() == 0) {
+    vector<Chunk> &chunk_refs = get_chunk_vec();
+    if (chunk_refs.size() == 0) {
         ostringstream oss;
         oss << "DmrppArray::" << __func__ << "() - Unable to obtain a byteStream object for array " << name()
                         << " Without a byteStream we cannot read! " << endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     // Allocate target memory.
-    // FIXME - I think this needs to be the constrained size!
+    // FIXME - I think this needs to be the constrained size! Or no bigger than
+    // the sum of the sizes of the chunks when they are uncompressed. jhrg 4/10/18
     reserve_value_capacity(length());
     vector<unsigned int> array_shape = get_shape(false);
     BESDEBUG("dmrpp",
@@ -386,7 +379,7 @@ bool DmrppArray::read_chunks()
     }
 
     BESDEBUG("dmrpp",
-        "DmrppArray::"<< __func__ << "() - "<< dimensions() << "D Array. Processing " << chunk_refs->size() << " chunks" << endl);
+        "DmrppArray::"<< __func__ << "() - "<< dimensions() << "D Array. Processing " << chunk_refs.size() << " chunks" << endl);
 
     /* get a curl_multi handle */
     CURLM *curl_multi_handle = curl_multi_init();
@@ -397,18 +390,18 @@ bool DmrppArray::read_chunks()
      * which utilizes the same code that copies the data from the chunk to
      * the variables.
      */
-    for (unsigned long i = 0; i < chunk_refs->size(); i++) {
-        H4ByteStream *h4bs = &(*chunk_refs)[i];
+    for (unsigned long i = 0; i < chunk_refs.size(); i++) {
+        Chunk &h4bs = chunk_refs[i];
         BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs->to_string() << endl);
-        vector<unsigned int> target_element_address = h4bs->get_position_in_array();
+            "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs.to_string() << endl);
+        vector<unsigned int> target_element_address = h4bs.get_position_in_array();
         vector<unsigned int> chunk_source_address(dimensions(), 0);
         // Recursive insertion operation.
-        bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, h4bs, curl_multi_handle);
+        bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs, curl_multi_handle);
         BESDEBUG("dmrpp",
             "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  "
-                "(chunk was " << (h4bs->is_started()?"QUEUED":"NOT_QUEUED") <<
-                " and " << (h4bs->is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
+                "(chunk was " << (h4bs.is_started()?"QUEUED":"NOT_QUEUED") <<
+                " and " << (h4bs.is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
     }
 
     /*
@@ -416,22 +409,25 @@ bool DmrppArray::read_chunks()
      * that we need to read in our curl_multi handle
      * we dive into multi_finish() to get all of the chunks read.
      */
-    multi_finish(curl_multi_handle, chunk_refs);
+    multi_finish(curl_multi_handle, &chunk_refs);
 
     /*
      * The chunks are all read, so we jump back into the recursive code to copy the
      * correct values out of each chunk and into the array memory.
      */
-    for (unsigned long i = 0; i < chunk_refs->size(); i++) {
-        H4ByteStream *h4bs = &(*chunk_refs)[i];
+    for (unsigned long i = 0; i < chunk_refs.size(); i++) {
+        Chunk &h4bs = chunk_refs[i];
         BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs->to_string() << endl);
-        vector<unsigned int> target_element_address = h4bs->get_position_in_array();
+            "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs.to_string() << endl);
+        vector<unsigned int> target_element_address = h4bs.get_position_in_array();
         vector<unsigned int> chunk_source_address(dimensions(), 0);
         // Recursive insertion operation.
-        bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, h4bs, 0);
+        // Note that curl_multi_handle is now null. This 'triggers,' incombination
+        // with the logic in Chunk, the 'decompress and insert the data' mode
+        // of insert_constrained_chunk(). jhrg 4/10/18
+        bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs, 0);
         BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs->is_read()?"READ":"SKIPPED") << ") flag: "<< flag << endl);
+            "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_read()?"READ":"SKIPPED") << ") flag: "<< flag << endl);
     }
     //##############################################################################
 
@@ -445,13 +441,13 @@ bool DmrppArray::read_chunks()
  * This helper method reads completely all of the curl_easy handles in the multi_handle.
  *
  * This means that we are reading some or all of the chunks and the chunk vector is
- * passed in so that the curl_easy handle held in each H4ByteStream that was read can be
+ * passed in so that the curl_easy handle held in each Chunk that was read can be
  * cleaned up once the request has been completed.
  *
  * Once this method is completed we will be ready to copy all of the data from the
  * chunks to the array memory
  */
-void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_refs)
+void DmrppArray::multi_finish(CURLM *multi_handle, vector<Chunk> *chunk_refs)
 {
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() BEGIN" << endl);
 
@@ -474,7 +470,7 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
             /* wait for activity, timeout or "nothing" */
             BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_wait()" << endl);
             // Block until one or more handles have new data to be read or until a timer expires.
-            // The timer is set to 1000 milliseconds. Return the numer of handles ready for reading.
+            // The timer is set to 1000 milliseconds. Return the number of handles ready for reading.
             mcode = curl_multi_wait(multi_handle, NULL, 0, 1000, &numfds);
             BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_wait() mcode: " << mcode << endl);
         }
@@ -518,7 +514,7 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
             string h4bs_str = "No Chunk Found For Handle!";
             /* Find out which handle this message is about */
             for (unsigned int idx = 0; idx < chunk_refs->size(); idx++) {
-                H4ByteStream *this_h4bs = &(*chunk_refs)[idx];
+                Chunk *this_h4bs = &(*chunk_refs)[idx];
 
                 CURL *curl_handle = this_h4bs->get_curl_handle();
                 found = (msg->easy_handle == curl_handle);
@@ -583,11 +579,11 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<H4ByteStream> *chunk_r
  * @param chunk_source_address - This vector is used to hold the chunk
  * element address from where data will be read. The values of this are relative to
  * the chunk's origin (position in array).
- * @param chunk The H4ByteStream containing the read data values to insert.
+ * @param chunk The Chunk containing the read data values to insert.
  * @return
  */
 bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
-    vector<unsigned int> *chunk_source_address, H4ByteStream *chunk, CURLM *multi_handle)
+    vector<unsigned int> *chunk_source_address, Chunk *chunk, CURLM *multi_handle)
 {
 
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " BEGIN "<< endl);
@@ -663,15 +659,27 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
     if (dim == last_dim) {
         BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - dim: "<< dim << " THIS IS THE INNER-MOST DIM. "<< endl);
-        if(multi_handle){
-            BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Queuing chunk for retrieval: " << chunk->to_string() << endl);
-             chunk->add_to_multi_read_queue(multi_handle);
-             return true;
+        if (multi_handle) {
+            BESDEBUG("dmrpp",
+                "DmrppArray::"<< __func__ <<"() - Queuing chunk for retrieval: " << chunk->to_string() << endl);
+            chunk->add_to_multi_read_queue(multi_handle);
+            return true;
         }
         else {
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Reading " << chunk->to_string() << endl);
 
             // Read and Process chunk
+
+            // Trick: if multi_handle is false but d_is_in_multi_queue is true, then this chunk
+            // has been read. The chunk->read() call looks for that and skips calling
+            // curl_read_byte_stream() from DmrppUtil.cc. It _will_, however, decompress
+            // the chunk, putting the dat in the rbuf, clearing d_is_in_multi_queue and
+            // setting d_is_read.
+            //
+            // That is why the 'multi' read() method for this class (read_chunks()) calls
+            // this mehtod twice - once to queue the reads and once to decompress and 'insert'
+            // the data from the chunks into the array's data buffer.
+            // jhrg 4/10/18
             chunk->read(is_deflate_compression(), get_chunk_size_in_elements() * var()->width(),
                 is_shuffle_compression(), var()->width());
             char * source_buffer = chunk->get_rbuf();
@@ -790,7 +798,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
             // Re-entry here:
             bool flag = insert_constrained_chunk(dim + 1, target_element_address, chunk_source_address, chunk, multi_handle);
-            if(flag)
+            if (flag)
                 return true;
         }
     }
@@ -799,7 +807,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
 
 /**
  * Reads chunked array data from the relevant sources (as indicated by each
- * H4ByteStream object) for this array.
+ * Chunk object) for this array.
  */
 bool DmrppArray::read()
 {
@@ -808,13 +816,16 @@ bool DmrppArray::read()
     // IF the variable is not chunked then go read it.
     if (get_chunk_dimension_sizes().empty()) {
         if (get_immutable_chunks().size() == 1) {
-            // This handles the case for arrays that have exactly one h4:byteStream
+            // This handles the case for arrays that have exactly one h4:byteStream/
+
+            // Note that this does not use the multi curl code - that works only
+            // for chunked data. jhrg 4/10/18
             return read_no_chunks();
         }
         else {
             ostringstream oss;
-            oss << "DmrppArray: Unchunked arrays must have exactly one H4ByteStream object. "
-                "This one has " << get_immutable_chunks().size() << endl;
+            oss << "DmrppArray: Unchunked arrays must have exactly one Chunk object. "
+                "This one has " << get_immutable_chunks().size();
             throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
     }

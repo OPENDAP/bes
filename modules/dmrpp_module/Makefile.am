@@ -24,21 +24,24 @@ SUBDIRS = . unit-tests data
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = DmrppCommon.cc H4ByteStream.cc \
+BES_SRCS = DmrppCommon.cc Chunk.cc \
 DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
 DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
 DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
-DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppUtil.cc \
-Odometer.cc 
+DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppUtil.cc
 
-BES_HDRS = DmrppCommon.h H4ByteStream.h \
+# Odometer.cc 
+
+BES_HDRS = DmrppCommon.h Chunk.h \
 DmrppModule.h DmrppRequestHandler.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
 DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
-DmrppUtil.h Odometer.h 
+DmrppUtil.h
+
+# Odometer.h 
 
 # hack. This is probably not needed and is currently not used, but
 # I'm leaving it in for now. If there are run-time issues with this

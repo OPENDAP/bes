@@ -37,7 +37,7 @@
 #include <BESDebug.h>
 
 #include "DmrppCommon.h"
-#include "H4ByteStream.h"
+#include "Chunk.h"
 #include "DmrppUtil.h"
 
 using namespace std;
@@ -59,7 +59,7 @@ namespace dmrpp {
  */
 size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
-    H4ByteStream *h4bs = reinterpret_cast<H4ByteStream*>(data);
+    Chunk *h4bs = reinterpret_cast<Chunk*>(data);
 
     BESDEBUG("dmrpp", __func__ << "() - BEGIN  chunk: " << h4bs->to_string() << endl);
 
@@ -97,7 +97,7 @@ size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *da
  * @see https://curl.haxx.se/libcurl/c/libcurl.html
  * @param url Get dat from this URL
  * @param range ...and this byte range
- * @param user_data A pointer to a H4ByteStream instance
+ * @param user_data A pointer to a Chunk instance
  */
 void curl_read_byte_stream(const string &url, const string &range, void *user_data)
 {
@@ -139,7 +139,7 @@ void curl_read_byte_stream(const string &url, const string &range, void *user_da
 
 		string file_url("file://");
 		if( ! url.compare(0, file_url.size(), file_url) ){
-			// If it's a file URL then we don;t need to dink around with the HTTP noise..
+			// If it's a file URL then we don't need to dink around with the HTTP noise..
 			BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
 		}
 		else {
@@ -180,14 +180,14 @@ void curl_read_byte_stream(const string &url, const string &range, void *user_da
 				}
 				oss << " content-type: " << content_type;
 
-				H4ByteStream *h4bs = reinterpret_cast<H4ByteStream*>(user_data);
+				Chunk *h4bs = reinterpret_cast<Chunk*>(user_data);
 				long bytes_read = h4bs->get_bytes_read();
 				oss << " bytes_read: " << bytes_read;
 
 				if(content_type.find("text")!=string::npos ||
 						content_type.find("xml")!=string::npos ||
 						content_type.find("json")!=string::npos) {
-					H4ByteStream *h4bs = reinterpret_cast<H4ByteStream*>(user_data);
+					Chunk *h4bs = reinterpret_cast<Chunk*>(user_data);
 					h4bs->get_rbuf()[bytes_read] = 0;
 					string message(h4bs->get_rbuf());
 					oss << endl << message;

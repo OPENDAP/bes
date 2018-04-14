@@ -85,21 +85,22 @@ DmrppFloat32::read()
     if (read_p())
         return true;
 
-    vector<H4ByteStream> *chunk_refs = get_chunk_vec();
+#if 0
+    vector<Chunk> *chunk_refs = get_chunk_vec();
     if((*chunk_refs).size() == 0){
         ostringstream oss;
         oss << "DmrppFloat32::read() - Unable to obtain a byteStream object for DmrppFloat32 " << name()
-        		<< " Without a byteStream we cannot read! "<< endl;
+                << " Without a byteStream we cannot read! "<< endl;
         throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
     else {
-		BESDEBUG("dmrpp", "DmrppFloat32::read() - Found H4ByteStream (chunks): " << endl);
-    	for(unsigned long i=0; i<(*chunk_refs).size(); i++){
-    		BESDEBUG("dmrpp", "DmrppFloat32::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-    	}
+        BESDEBUG("dmrpp", "DmrppFloat32::read() - Found Chunk (chunks): " << endl);
+        for(unsigned long i=0; i<(*chunk_refs).size(); i++){
+            BESDEBUG("dmrpp", "DmrppFloat32::read() - chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
+        }
     }
     // For now we only handle the one chunk case.
-    H4ByteStream h4bs = (*chunk_refs)[0];
+    Chunk h4bs = (*chunk_refs)[0];
     h4bs.set_rbuf_to_size();
 
     // Do a range get with libcurl
@@ -108,7 +109,7 @@ DmrppFloat32::read()
     // in a whole object like DmrppInt32 and then using reinterpret_cast<>()
     // will leave the code using garbage memory. jhrg 11/23/16
     BESDEBUG("dmrpp", "DmrppFloat32::read() - Reading  " << h4bs.get_data_url() << ": " << h4bs.get_curl_range_arg_string() << endl);
-    curl_read_byte_stream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<H4ByteStream*>(&h4bs));
+    curl_read_byte_stream(h4bs.get_data_url(), h4bs.get_curl_range_arg_string(), dynamic_cast<Chunk*>(&h4bs));
 
     // Could use get_rbuf_size() in place of sizeof() for a more generic version.
     if (sizeof(dods_float32) != h4bs.get_bytes_read()) {
@@ -119,6 +120,10 @@ DmrppFloat32::read()
     }
 
     set_value(*reinterpret_cast<dods_float32*>(h4bs.get_rbuf()));
+#endif
+
+
+    set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
 
     set_read_p(true);
 
