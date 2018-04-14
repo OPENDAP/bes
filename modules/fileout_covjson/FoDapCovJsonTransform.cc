@@ -64,12 +64,9 @@ using std::istringstream;
 
 #define FoDapCovJsonTransform_debug_key "focovjson"
 
-const int int_64_precision = 15; // 15 digits to the right of the decimal point. jhrg 9/14/15
+const int int_64_precision = 15; // 15 digits to the right of the decimal point.
 
-/**
- *  @TODO Handle String and URL Arrays including backslash escaping double quotes in values.
- *
- */
+
 template<typename T>
 unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, T *values, unsigned int indx,
     vector<unsigned int> *shape, unsigned int currentDim)
@@ -89,7 +86,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
             if (i) *strm << ", ";
             if (typeid(T) == typeid(std::string)) {
                 // Strings need to be escaped to be included in a CovJSON object.
-                string val = reinterpret_cast<string*>(values)[indx++]; // ((string *) values)[indx++];
+                string val = reinterpret_cast<string*>(values)[indx++];
                 *strm << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
             else {
@@ -109,11 +106,9 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
 template<typename T>
 void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
-    //*strm << indent << "{" << endl;
     string childindent = indent + _indent_increment;
 
-    //writeLeafMetadata(strm, a, childindent);
-    writeLeafMetadata(strm, a, indent);
+    writeAxesMetadata(strm, a, indent);
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
@@ -165,7 +160,7 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
     string childindent = indent + _indent_increment;
 
     *strm << indent << "{" << endl;
-    writeLeafMetadata(strm, a, indent);
+    //writeLeafMetadata(strm, a, indent);
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
@@ -235,27 +230,17 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
  * Writes CovJSON opener for a DAP object that is seen as a "leaf" in w10n semantics.
  * Header includes object name. attributes, and  type.
  */
-void FoDapCovJsonTransform::writeLeafMetadata(ostream *strm, libdap::BaseType *bt, string indent)
+void FoDapCovJsonTransform::writeAxesMetadata(ostream *strm, libdap::BaseType *bt, string indent)
 {
     // TODO Add logic for determining order of printing for x, y, z
     //if(fv-> == "degrees_north")
     //    *strm << indent << "\"y\": {" << endl;
 
+    // Attributes
+    //transform(strm, bt->get_attr_table(), indent);
+
     // Axis name (x, y, or z)
     *strm << indent << "\"" << bt->name() << "\": {" << endl;
-
-    // type
-    //if (bt->type() == libdap::dods_array_c) {
-    //    libdap::Array *a = (libdap::Array *) bt;
-    //    *strm << indent << "\"type\": \"" << a->var()->type_name() << "\"," << endl;
-    //}
-    //else {
-    //    *strm << indent << "\"type\": \"" << bt->type_name() << "\"," << endl;
-    //}
-
-    //Attributes
-    //transform(strm, bt->get_attr_table(), indent);
-    //*strm << "," << endl;
 }
 
 /**
@@ -518,8 +503,6 @@ void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, vector<libd
         transform(strm, v, _indent_increment + _indent_increment, sendData);
     }
     if (nodes.size() > 0) *strm << endl << indent;
-
-    //*strm << "]" << endl;
 }
 
 void FoDapCovJsonTransform::transformReferenceWorker(ostream *strm, string indent, FoDapCovJsonValidation fv)
@@ -635,9 +618,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 		    throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
     }
 
-    // Write this node's metadata (name & attributes)
-    //writeDatasetMetadata(strm, dds, child_indent);
-
     // The axes are the first 3 leaves - the transformAxesWorker call will parse and
     // print these values. We need to ensure they're formatted correctly.
 
@@ -709,7 +689,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
-
     }
 }
 
@@ -719,18 +698,17 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
  */
 void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, string indent, bool sendData)
 {
-    *strm << indent << "{" << endl;
-
     string childindent = indent + _indent_increment;
 
-    //writeLeafMetadata(strm, b, childindent);
-    writeLeafMetadata(strm, b, indent);
+    *strm << indent << "{" << endl;
+
+    //writeLeafMetadata(strm, b, indent);
 
     *strm << childindent << "\"shape\": [1]," << endl;
 
     if (sendData) {
         // Data
-        *strm << childindent << "\"data\": [";
+        *strm << childindent << "\"values\": [";
 
         if (b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
             libdap::Str *strVar = (libdap::Str *) b;
@@ -743,7 +721,6 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
 
         *strm << "]";
     }
-
 }
 
 /**
@@ -752,7 +729,6 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
-
     BESDEBUG(FoDapCovJsonTransform_debug_key,
         "FoCovJsonTransform::transform() - Processing Array. " << " a->type(): " << a->type() << " a->var()->type(): " << a->var()->type() << endl);
 
@@ -818,7 +794,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string in
     case libdap::dods_uint8_c:
     case libdap::dods_int64_c:
     case libdap::dods_uint64_c:
-        // case libdap::dods_url4_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
         throw BESInternalError("File out COVJSON, DAP4 types not yet supported.", __FILE__, __LINE__);
@@ -829,9 +804,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string in
         throw BESInternalError("File out COVJSON, Unrecognized type.", __FILE__, __LINE__);
         break;
     }
-
     }
-
 }
 
 /**
@@ -845,8 +818,8 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_tab
     // Start the attributes block
     *strm << indent << "\"attributes\": [";
 
-    //	if(attr_table.get_name().length()>0)
-    //	*strm  << endl << child_indent << "{\"name\": \"name\", \"value\": \"" << attr_table.get_name() << "\"},";
+    //	if(attr_table.get_name().length() > 0)
+    //	*strm << endl << child_indent << "{\"name\": \"name\", \"value\": \"" << attr_table.get_name() << "\"},";
 
     // Only do more if there are actually attributes in the table
     if (attr_table.get_size() != 0) {
@@ -859,7 +832,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_tab
             case libdap::Attr_container: {
                 libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
 
-                // not first thing? better use a comma...
+                // Not first thing? better use a comma...
                 if (at_iter != begin) *strm << "," << endl;
 
                 // Attribute Containers need to be opened and then a recursive call gets made
@@ -875,7 +848,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_tab
                 break;
             }
             default: {
-                // not first thing? better use a comma...
+                // Not first thing? better use a comma...
                 if (at_iter != begin) *strm << "," << endl;
 
                 // Open attribute object, write name
@@ -884,25 +857,23 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_tab
                 // Open value array
                 *strm << "\"value\": [";
                 vector<std::string> *values = attr_table.get_attr_vector(at_iter);
-                // write values
+                // Write values
                 for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
-                    // not first thing? better use a comma...
+                    // Not first thing? better use a comma...
                     if (i > 0) *strm << ",";
 
                     // Escape the double quotes found in String and URL type attribute values.
                     if (attr_table.get_attr_type(at_iter) == libdap::Attr_string
                         || attr_table.get_attr_type(at_iter) == libdap::Attr_url) {
                         *strm << "\"";
-                        // string value = (*values)[i] ;
                         *strm << focovjson::escape_for_covjson((*values)[i]);
                         *strm << "\"";
                     }
                     else {
-
                         *strm << (*values)[i];
                     }
                 }
-                // close value array
+                // Close value array
                 *strm << "]}";
                 break;
             }
@@ -910,7 +881,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_tab
         }
         *strm << endl << indent;
     }
-
-    // close AttrTable COVJSON
+    // Close CovJSON AttrTable
     *strm << "]";
 }

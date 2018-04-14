@@ -122,7 +122,7 @@ void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
 }
 
 template<typename T>
-unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values, unsigned int indx,
+unsigned int FoDapCovJsonValidation::covjsonSimpleTypeArrayWorker(T *values, unsigned int indx,
     vector<unsigned int> *shape, unsigned int currentDim)
 {
     fstream tempOut;
@@ -138,8 +138,8 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
     for (unsigned int i = 0; i < currentDimSize; i++) {
         if (currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonValidation_debug_key,
-                "covjson_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
-            indx = covjson_simple_type_array_worker<T>(values, indx, shape, currentDim + 1);
+                "covjsonSimpleTypeArrayWorker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
+            indx = covjsonSimpleTypeArrayWorker<T>(values, indx, shape, currentDim + 1);
         }
         else {
             if (typeid(T) == typeid(std::string)) {
@@ -176,10 +176,10 @@ void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
             }
         }
     }
-    transform_node_worker(leaves, nodes);
+    transformNodeWorker(leaves, nodes);
 }
 
-void FoDapCovJsonValidation::transform_node_worker(vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes)
+void FoDapCovJsonValidation::transformNodeWorker(vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes)
 {
     for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
         libdap::BaseType *v = leaves[l];
@@ -230,7 +230,6 @@ void FoDapCovJsonValidation::validateDataset(libdap::BaseType *bt)
     case libdap::dods_uint8_c:
     case libdap::dods_int64_c:
     case libdap::dods_uint64_c:
-        // case libdap::dods_url4_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
         string s = (string) "File out COVJSON, " + "DAP4 types not yet supported.";
@@ -278,10 +277,10 @@ void FoDapCovJsonValidation::validateDataset(libdap::Constructor *cnstrctr)
 
     validateDataset(cnstrctr->get_attr_table());
 
-    transform_node_worker(leaves, nodes);
+    transformNodeWorker(leaves, nodes);
 }
 
-void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
+void FoDapCovJsonValidation::covjsonStringArray(libdap::Array *a)
 {
     ofstream tempOut;
     string tempFileName = "/home/ubuntu/hyrax/dds.log";
@@ -321,40 +320,40 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
     switch (a->var()->type()) {
     // Handle the atomic types - that's easy!
     case libdap::dods_byte_c:
-        covjson_simple_type_array<libdap::dods_byte>(a);
+        covjsonSimpleTypeArray<libdap::dods_byte>(a);
         break;
 
     case libdap::dods_int16_c:
-        covjson_simple_type_array<libdap::dods_int16>(a);
+        covjsonSimpleTypeArray<libdap::dods_int16>(a);
         break;
 
     case libdap::dods_uint16_c:
-        covjson_simple_type_array<libdap::dods_uint16>(a);
+        covjsonSimpleTypeArray<libdap::dods_uint16>(a);
         break;
 
     case libdap::dods_int32_c:
-        covjson_simple_type_array<libdap::dods_int32>(a);
+        covjsonSimpleTypeArray<libdap::dods_int32>(a);
         break;
 
     case libdap::dods_uint32_c:
-        covjson_simple_type_array<libdap::dods_uint32>(a);
+        covjsonSimpleTypeArray<libdap::dods_uint32>(a);
         break;
 
     case libdap::dods_float32_c:
-        covjson_simple_type_array<libdap::dods_float32>(a);
+        covjsonSimpleTypeArray<libdap::dods_float32>(a);
         break;
 
     case libdap::dods_float64_c:
-        covjson_simple_type_array<libdap::dods_float64>(a);
+        covjsonSimpleTypeArray<libdap::dods_float64>(a);
         break;
 
     case libdap::dods_str_c: {
-        covjson_string_array(a);
+        covjsonStringArray(a);
         break;
     }
 
     case libdap::dods_url_c: {
-        covjson_string_array(a);
+        covjsonStringArray(a);
         break;
     }
 
@@ -394,7 +393,7 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
 }
 
 template<typename T>
-void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a)
+void FoDapCovJsonValidation::covjsonSimpleTypeArray(libdap::Array *a)
 {
     writeLeafMetadata(a);
     ofstream tempOut;
@@ -446,7 +445,6 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
                     // write values
                     for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
                         checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
-                        //printf("\n%s\n", (*values)[i].c_str());
                     }
                     break;
                 }

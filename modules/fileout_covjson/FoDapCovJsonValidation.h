@@ -50,7 +50,6 @@ class BESDataHandlerInterface;
 /*
 * This class is for validating a dds to see if it is possible to convert the dataset to the coverageJson format
 */
-
 class FoDapCovJsonValidation: public BESObj {
 private:
     libdap::DDS *_dds;
@@ -61,7 +60,7 @@ private:
 
     void validateDataset(libdap::AttrTable &attr_table);
 
-    void transform_node_worker(std::vector<libdap::BaseType *> leaves, std::vector<libdap::BaseType *> nodes);
+    void transformNodeWorker(std::vector<libdap::BaseType *> leaves, std::vector<libdap::BaseType *> nodes);
 
     void validateDataset(libdap::BaseType *bt);
 
@@ -69,15 +68,15 @@ private:
 
     void validateDataset(libdap::Constructor *cnstrctr);
 
-    void covjson_string_array(libdap::Array *a);
+    void covjsonStringArray(libdap::Array *a);
 
     void writeLeafMetadata(libdap::BaseType *bt);
 
     template<typename T>
-    void covjson_simple_type_array(libdap::Array *a);
+    void covjsonSimpleTypeArray(libdap::Array *a);
 
     template<typename T>
-    unsigned int covjson_simple_type_array_worker(T *values, unsigned int indx,
+    unsigned int covjsonSimpleTypeArrayWorker(T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
 
 public:

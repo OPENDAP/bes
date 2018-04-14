@@ -74,7 +74,7 @@ private:
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
     void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    void writeLeafMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeDatasetMetadata(std::ostream *strm, libdap::DDS *dds, std::string indent);
 
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
