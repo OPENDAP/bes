@@ -73,7 +73,7 @@ private:
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
-    void writeNodeMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeLeafMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeDatasetMetadata(std::ostream *strm, libdap::DDS *dds, std::string indent);
 
@@ -86,7 +86,7 @@ private:
     //void transform(std::ostream *strm, Grid *g, string indent);
     //void transform(std::ostream *strm, Sequence *s, string indent);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
-    void transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves,
+    void transformRangesWorker(ostream *strm, vector<libdap::BaseType *> leaves,
         vector<libdap::BaseType *> nodes, string indent, bool sendData);
     void transformAxesWorker(ostream *strm, std::vector<libdap::BaseType *> leaves, string indent, bool sendData);
     void transformReferenceWorker(ostream *strm, string indent, FoDapCovJsonValidation fv);

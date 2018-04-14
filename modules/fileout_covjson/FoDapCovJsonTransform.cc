@@ -162,10 +162,9 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
  */
 void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
-    *strm << indent << "{" << endl;\
     string childindent = indent + _indent_increment;
 
-    //writeLeafMetadata(strm, a, childindent);
+    *strm << indent << "{" << endl;
     writeLeafMetadata(strm, a, indent);
 
     int numDim = a->dimensions(true);
@@ -173,16 +172,14 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
     long length = focovjson::computeConstrainedShape(a, &shape);
 
     *strm << childindent << "\"shape\": [";
-
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
         if (i > 0) *strm << ",";
         *strm << shape[i];
     }
-    *strm << "]";
 
+    *strm << "]";
     if (sendData) {
         *strm << "," << endl;
-
         // Data array gets printed to strm
         *strm << childindent << "\"values\": ";
         unsigned int indx;
@@ -192,12 +189,11 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
         a->value(sourceValues);
         indx = covjsonSimpleTypeArrayWorker(strm, (std::string *) (&sourceValues[0]), 0, &shape, 0);
 
-        if (length != indx)
+        if (length != indx) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
                 "covjsonStringArray() - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
-
+        }
     }
-
     *strm << endl << indent << "}";
 }
 
@@ -218,15 +214,20 @@ void FoDapCovJsonTransform::writeDatasetMetadata(ostream *strm, libdap::DDS *dds
  * Writes CovJSON opener for a DAP object that is seen as a "node" in w10n semantics.
  * Header includes object name and attributes
  */
-void FoDapCovJsonTransform::writeNodeMetadata(ostream *strm, libdap::BaseType *bt, string indent)
+void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseType *bt, string indent)
 {
     // Name
-    *strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
+    *strm << indent << "\"" << bt->name() << "\": {" << endl;
+
+    // Parsing Attributes
+    // TODO this transform call should be changed to return an array or a vector of values (strings)
+    //      parsed from the attribute tables -- Then we can write all of it here as the parameter's
+    //      metadata.
+    //transform(strm, bt->get_attr_table(), indent);
 
 
 
-    //Attributes
-    transform(strm, bt->get_attr_table(), indent);
+
     *strm << "," << endl;
 }
 
@@ -236,12 +237,11 @@ void FoDapCovJsonTransform::writeNodeMetadata(ostream *strm, libdap::BaseType *b
  */
 void FoDapCovJsonTransform::writeLeafMetadata(ostream *strm, libdap::BaseType *bt, string indent)
 {
-    // Name
-    //*strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
-
+    // TODO Add logic for determining order of printing for x, y, z
     //if(fv-> == "degrees_north")
     //    *strm << indent << "\"y\": {" << endl;
 
+    // Axis name (x, y, or z)
     *strm << indent << "\"" << bt->name() << "\": {" << endl;
 
     // type
@@ -412,17 +412,18 @@ void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, FoDapCovJso
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr, string indent, bool sendData)
 {
+    string child_indent = indent + _indent_increment;
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
-
     // Sort the variables into two sets/
     libdap::DDS::Vars_iter vi = cnstrctr->var_begin();
     libdap::DDS::Vars_iter ve = cnstrctr->var_end();
+
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
-
             libdap::Type type = v->type();
+
             if (type == libdap::dods_array_c) {
                 type = v->var()->type();
             }
@@ -435,27 +436,19 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
         }
     }
 
-    // Declare this node
-    *strm << indent << "{" << endl;
-    string child_indent = indent + _indent_increment;
+    // Write this parameter's metadata (name & attributes)
+    writeParameterMetadata(strm, cnstrctr, indent);
 
-    // Write this node's metadata (name & attributes)
-    writeNodeMetadata(strm, cnstrctr, child_indent);
-
-    //transformAxesWorker(strm, leaves, child_indent, sendData);
-
-    //transformReferenceWorker(strm, child_indent);
-
-    transformNodeWorker(strm, leaves, nodes, child_indent, sendData);
+    transformRangesWorker(strm, leaves, nodes, child_indent, sendData);
 
     *strm << indent << "}" << endl;
 }
 
 /**
- * This worker method allows us to recursively traverse a "node" variables contents and
+ * This worker method allows us to recursively traverse a "node" variable's contents and
  * any child nodes will be traversed as well.
  */
-void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves,
+void FoDapCovJsonTransform::transformRangesWorker(ostream *strm, vector<libdap::BaseType *> leaves,
     vector<libdap::BaseType *> nodes, string indent, bool sendData)
 {
     // Write the axes to strm
@@ -653,8 +646,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     //       "y": { "values": [values...] },
     //       "t": { "values": [values...] }
     //     },
-
-    //transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
 
     transformAxesWorker(strm, leaves, child_indent2, sendData);
 

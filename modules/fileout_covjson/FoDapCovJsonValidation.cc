@@ -89,20 +89,15 @@ FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds)
 }
 
 /*
-* This method is for validating a dds to see if it is possible to convert the dataset into the coverageJson format
+* This method is for validating a dds to see if it is possible to convert the dataset into the CoverageJson format
 */
 void FoDapCovJsonValidation::validateDataset()
 {
     hasX = false;
     hasY = false;
+    hasZ = false;
     hasT = false;
 
-    // This is just here to clear out the log file
-    //ofstream tempOut;
-    //string tempFileName = "/home/ubuntu/hyrax/dds.log";
-    //tempOut.open(tempFileName.c_str(), ios::trunc);
-    //if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
-    //tempOut.close();
     validateDataset(_dds);
 }
 
@@ -121,8 +116,6 @@ void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
        exit(EXIT_FAILURE);
     }
 
-    //tempOut  << "\"name\": \"" << bt->name() << "\"," << endl;
-
     // See if the actual array name matches up
     checkAttribute("",bt->name());
     tempOut.close();
@@ -140,8 +133,6 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
        exit(EXIT_FAILURE);
     }
 
-    //tempOut << "[";
-
     unsigned int currentDimSize = (*shape)[currentDim];
 
     for (unsigned int i = 0; i < currentDimSize; i++) {
@@ -149,21 +140,15 @@ unsigned int FoDapCovJsonValidation::covjson_simple_type_array_worker(T *values,
             BESDEBUG(FoDapCovJsonValidation_debug_key,
                 "covjson_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
             indx = covjson_simple_type_array_worker<T>(values, indx, shape, currentDim + 1);
-            //if (i + 1 != currentDimSize) //tempOut << ", ";
         }
         else {
-            //if (i) //tempOut << ", ";
             if (typeid(T) == typeid(std::string)) {
-                // Strings need to be escaped to be included in a JSON object.
-                string val = reinterpret_cast<string*>(values)[indx++]; // ((string *) values)[indx++];
-                //tempOut << "\"" << focovjson::escape_for_covjson(val) << "\"";
+                // Strings need to be escaped to be included in a CovJSON object.
+                string val = reinterpret_cast<string*>(values)[indx++];
             }
-            //else {
-                //tempOut << values[indx++];
-            //}
         }
     }
-    //tempOut << "]";
+
     tempOut.close();
     return indx;
 }
@@ -312,14 +297,8 @@ void FoDapCovJsonValidation::covjson_string_array(libdap::Array *a)
     //long length = focovjson::computeConstrainedShape(a, &shape);
 
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
-        if (i > 0) //tempOut << ",";
         shapeOrig = shape[i];
-        //tempOut << shapeOrig;
     }
-    //tempOut << "]";
-
-    //tempOut << "," << endl;
-    //unsigned int indx;
 
     vector<std::string> sourceValues;
     a->value(sourceValues);
@@ -429,15 +408,10 @@ void FoDapCovJsonValidation::covjson_simple_type_array(libdap::Array *a)
 
     int numDim = a->dimensions(true);
     vector<unsigned int> shape(numDim);
-    //long length = focovjson::computeConstrainedShape(a, &shape);
 
-    //tempOut << "\"shape\": [";
     for (std::vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
-        if (i > 0) tempOut << ",";
-        //tempOut << shape[i];
         shapeOrig = shape[i];
     }
-    //tempOut << "]" << "," << endl;
 
     tempOut.close();
     validateDataset(a->get_attr_table());
@@ -471,10 +445,8 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
                     vector<std::string> *values = attr_table.get_attr_vector(at_iter);
                     // write values
                     for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
-                        //tempOut << attr_table.get_name(at_iter) << endl;
-                        //tempOut << (*values)[i].c_str() << endl;
                         checkAttribute(attr_table.get_name(at_iter),(*values)[i].c_str());
-                        printf("\n%s\n", (*values)[i].c_str());
+                        //printf("\n%s\n", (*values)[i].c_str());
                     }
                     break;
                 }
