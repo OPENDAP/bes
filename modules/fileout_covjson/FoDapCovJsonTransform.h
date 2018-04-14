@@ -86,10 +86,12 @@ private:
     //void transform(std::ostream *strm, Grid *g, string indent);
     //void transform(std::ostream *strm, Sequence *s, string indent);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
+    void transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves,
+        vector<libdap::BaseType *> nodes, string indent, bool sendData);
     void transformAxesWorker(ostream *strm, std::vector<libdap::BaseType *> leaves, string indent, bool sendData);
-    void transformReferenceWorker(ostream *strm, string indent);
-    void transformParametersWorker(ostream *strm, /*vector<libdap::BaseType *> leaves,*/ vector<libdap::BaseType *> nodes,
-       FoDapCovJsonValidation fv, string indent, bool sendData);
+    void transformReferenceWorker(ostream *strm, string indent, FoDapCovJsonValidation fv);
+    void transformParametersWorker(ostream *strm, vector<libdap::BaseType *> nodes, string indent,
+        bool sendData, FoDapCovJsonValidation fv);
 
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
@@ -102,6 +104,7 @@ private:
     template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
+
 public:
     FoDapCovJsonTransform(libdap::DDS *dds);
 
