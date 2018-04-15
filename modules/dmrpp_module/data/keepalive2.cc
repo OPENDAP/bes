@@ -400,7 +400,7 @@ void curl_multi_worker( vector<Shard *> *shards)
         Shard *shard =*sit;
         shard->open();
         CURL* curl = curl_easy_init();
-        groom_curl_handle(curl,shard,false);
+        groom_curl_handle(curl,shard,false); // false means do not enable keep alive in these curl handles
         shards_map.insert(std::pair<CURL*,Shard*>(curl,shard));
         curl_multi_add_handle(curl_multi_handle, curl);
     }
