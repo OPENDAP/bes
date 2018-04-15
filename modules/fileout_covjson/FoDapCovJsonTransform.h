@@ -58,6 +58,7 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
+    string currAxis;
 
     /*
     * if:
@@ -77,27 +78,31 @@ private:
     void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeDatasetMetadata(std::ostream *strm, libdap::DDS *dds, std::string indent);
 
+    void getAxisAttributes(libdap::AttrTable &attr_table);
+    void getParameterAttributes(libdap::AttrTable &attr_table);
+
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
 
     void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, FoDapCovJsonValidation fv);
-    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData, bool isAxes);
 
     //void transform(std::ostream *strm, Structure *s,string indent );
     //void transform(std::ostream *strm, Grid *g, string indent);
     //void transform(std::ostream *strm, Sequence *s, string indent);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
     void transformRangesWorker(ostream *strm, vector<libdap::BaseType *> leaves,
-        vector<libdap::BaseType *> nodes, string indent, bool sendData);
+        string indent, bool sendData);
     void transformAxesWorker(ostream *strm, std::vector<libdap::BaseType *> leaves, string indent, bool sendData);
     void transformReferenceWorker(ostream *strm, string indent, FoDapCovJsonValidation fv);
     void transformParametersWorker(ostream *strm, vector<libdap::BaseType *> nodes, string indent,
-        bool sendData, FoDapCovJsonValidation fv);
+        bool sendData);
 
-    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData, bool isAxes);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
     template<typename T>
-    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent,
+        bool sendData, bool isAxes);
 
     void covjsonStringArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 

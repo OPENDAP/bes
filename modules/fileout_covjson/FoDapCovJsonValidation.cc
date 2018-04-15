@@ -153,7 +153,6 @@ unsigned int FoDapCovJsonValidation::covjsonSimpleTypeArrayWorker(T *values, uns
     return indx;
 }
 
-
 void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
     vector<libdap::BaseType *> leaves;
