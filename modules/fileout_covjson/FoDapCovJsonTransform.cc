@@ -157,7 +157,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         assert(length == indx);
     }
 
-    *strm << endl << indent << "}";
+    //*strm << endl << indent << "}";
 }
 
 /**
@@ -281,6 +281,7 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
  */
 void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &attr_table)
 {
+    currAxis.clear();
     // Only do more if there are actually attributes in the table
     if (attr_table.get_size() != 0) {
         libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
@@ -337,7 +338,7 @@ void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &
 }
 
 /**
- * will find value name x,y,z,t for the axis of the coverage and return it.
+ *  Will find value name x, y, z, t for the axis of the coverage and return it
  */
 void FoDapCovJsonTransform::getParameterAttributes(ostream *strm, libdap::AttrTable &attr_table)
 {
@@ -632,7 +633,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 
     // The axes are the first 3 leaves - the transformAxesWorker call will parse and
     // print these values. We need to ensure they're formatted correctly.
-
     transformAxesWorker(strm, leaves, child_indent2, sendData);
     transformReferenceWorker(strm, child_indent2, fv);
     transformParametersWorker(strm, nodes, child_indent1, sendData);
