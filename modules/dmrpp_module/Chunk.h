@@ -386,9 +386,14 @@ public:
 
     /**
      * @brief default version of read() for types that are not chunked
+     *
+     * This function does the simple read operation for variables that are
+     * not chunked. We treat 'not-chunked' as 'stored in a single chunk.'
+     * An assumption is that data that are 'not-chunked' are also not compressed
+     * in any way.
      */
     virtual void read() {
-        read(false, 0, false, 0);   // default values for no compression
+        read(false, false, 0, 0);   // default values for no compression
     }
 
     virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
