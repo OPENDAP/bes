@@ -246,7 +246,7 @@ void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
     BESDEBUG(debug, __func__ <<"() - END  "<< to_string() << endl);
 }
 
-void Chunk::complete_read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width)
+void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
 
     // If the expected byte count was not read, it's an error.
@@ -270,6 +270,8 @@ void Chunk::complete_read(bool deflate, unsigned int chunk_size, bool shuffle, u
     // inflating the data (reversing the shuffle --> deflate process). It is
     // possible that data could just be deflated or shuffled (because we
     // have test data are use only shuffle). jhrg 1/20/17
+
+    chunk_size *= elem_width;
 
     if (deflate) {
         char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
@@ -317,19 +319,19 @@ void Chunk::complete_read(bool deflate, unsigned int chunk_size, bool shuffle, u
  * @brief Read the chunk associated with this Chunk
  *
  * @param deflate True if we should deflate the data
- * @param chunk_size The size of the chunk once deflated; ignored when deflate is false
  * @param shuffle_chunk True if the chunk was shuffled.
+ * @param chunk_size The size of the chunk once deflated in elements; ignored when deflate is false
  * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
  */
-void Chunk::read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width)
+void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
+    //  is_deflate, is_shuffle, chunk_size_in elements, var width)
     if (d_is_read) {
         BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Already been read! Returning." << endl);
         return;
     }
 
     if (!d_is_in_multi_queue) {
-
         // This call uses the internal size param and allocates the buffer's memory
         set_rbuf_to_size();
 
@@ -383,11 +385,14 @@ void Chunk::read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned i
         curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
     }
 
+    complete_read(deflate, shuffle, chunk_size, elem_width);
+
+#if 0
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
         ostringstream oss;
         oss << "Chunk: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
-                << " but found " << get_bytes_read() << endl;
+        << " but found " << get_bytes_read() << endl;
         throw BESInternalError("oss.str()", __FILE__, __LINE__);
     }
 
@@ -430,26 +435,12 @@ void Chunk::read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned i
             throw;
         }
     }
-
-#if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
-				if(BESDebug::IsSet("dmrpp")){
-					unsigned long long chunk_buf_size = get_rbuf_size();
-					dods_float32 *vals = (dods_float32 *) get_rbuf();
-					ostream *os = BESDebug::GetStrm();
-					(*os) << std::fixed <<
-							std::setfill('_') <<
-							std::setw(10) <<
-							std::setprecision(0)
-					;
-					(*os) << "DmrppArray::"<< __func__ <<"() - Chunk[" << i << "]: " << endl;
-					for(unsigned long long k=0; k< chunk_buf_size/prototype()->width(); k++){
-						(*os) << vals[k] << ", " << ((k==0)|((k+1)%10)?"":"\n");
-					}
-
-				}
 #endif
+
     d_is_in_multi_queue = false;
+#if 0
     d_is_read = true;
+#endif
 }
 
 #if 0

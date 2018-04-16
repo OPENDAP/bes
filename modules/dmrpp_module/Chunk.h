@@ -386,12 +386,20 @@ public:
 
     /**
      * @brief default version of read() for types that are not chunked
+     *
+     * This function does the simple read operation for variables that are
+     * not chunked. We treat 'not-chunked' as 'stored in a single chunk.'
+     * An assumption is that data that are 'not-chunked' are also not compressed
+     * in any way.
      */
     virtual void read() {
-        read(false, 0, false, 0);   // default values for no compression
+        read(false, false, 0, 0);   // default values for no compression
     }
 
-    virtual void read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_size);
+    virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
+    void complete_read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
+
+    virtual void add_to_multi_read_queue(CURLM *multi_handle);
 
     virtual bool is_started() const { return d_is_in_multi_queue; };
     virtual bool is_read() const { return d_is_read;  }
@@ -399,10 +407,6 @@ public:
     virtual void set_is_read(bool state) { d_is_read = state; }
 
     virtual std::string get_curl_range_arg_string();
-
-    virtual void add_to_multi_read_queue(CURLM *multi_handle);
-
-    void complete_read(bool deflate, unsigned int chunk_size, bool shuffle, unsigned int elem_width);
 
     virtual void dump(std::ostream & strm) const;
 
